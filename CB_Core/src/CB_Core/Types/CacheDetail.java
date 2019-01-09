@@ -45,6 +45,7 @@ public class CacheDetail implements Serializable {
      */
     public int noteCheckSum = 0;
     public String tmpNote = null; // nur fuer den RPC-Import
+    public String userNote = "";
 
     /**
      * for Replication

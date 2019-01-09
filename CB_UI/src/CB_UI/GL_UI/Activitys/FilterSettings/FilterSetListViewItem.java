@@ -11,7 +11,6 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -43,7 +42,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private static float MARGIN;
     private static float BUTTON_MARGIN;
     private final FilterSetEntry mFilterSetEntry;
-    private final ArrayList<FilterSetListViewItem> mChildList = new ArrayList<FilterSetListViewItem>();
+    private final ArrayList<FilterSetListViewItem> mChildList = new ArrayList<>();
     public Vector2 lastItemTouchPos;
     // private Member
     float left;
@@ -509,20 +508,24 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         GL.that.renderOnce();
     }
 
+    int getChecked() {
+        return mFilterSetEntry.getState();
+    }
+
+    void unCheck() {
+        mFilterSetEntry.setState(0);
+    }
+
+    public double getValue() {
+        return mFilterSetEntry.getNumState();
+    }
+
     public void setValue(int value) {
         this.mFilterSetEntry.setState(value);
     }
 
     public void setValue(double value) {
         this.mFilterSetEntry.setState(value);
-    }
-
-    int getChecked() {
-        return mFilterSetEntry.getState();
-    }
-
-    public double getValue() {
-        return mFilterSetEntry.getNumState();
     }
 
     public void setValue(boolean b) {

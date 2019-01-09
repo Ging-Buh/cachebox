@@ -11,7 +11,6 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -297,6 +296,7 @@ public class FilterSetListView extends V_ListView {
             FilterSetListViewItem itm = types.getChild(i);
             int ct = itm.getFilterSetEntry().cacheType.ordinal();
             itm.setValue(props.mCacheTypes[ct]);
+            itm.unCheck();
         }
 
         for (int i = 0; i < attribs.getChildLength(); i++) {
@@ -381,10 +381,6 @@ public class FilterSetListView extends V_ListView {
             ID = IdCounter++;
         }
 
-        public void setState(int State) {
-            mState = State;
-        }
-
         public String getName() {
             return mName;
         }
@@ -402,6 +398,10 @@ public class FilterSetListView extends V_ListView {
 
         public int getState() {
             return mState;
+        }
+
+        public void setState(int State) {
+            mState = State;
         }
 
         public void setState(double State) {

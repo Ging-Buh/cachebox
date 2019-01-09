@@ -137,7 +137,8 @@ public class WriteIntoDB {
             }
             cache.setTmpNote(newNote);
 
-            Database.SetNote(cache, cache.getTmpNote());
+            Database.SetNote(cache, cache.getUserNote() + cache.getTmpNote());
+            cache.setUserNote(""); // better is it
 
         }
 

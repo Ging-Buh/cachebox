@@ -216,7 +216,7 @@ public class CacheDAO {
         // args.put("Solver", cache.);
         // args.put("ListingCheckSum", cache.);
         args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
-
+        args.put("Favorit", cache.isFavorite() ? 1 : 0);
         args.put("FavPoints", cache.favPoints);
         if (cache.detail != null) {
             // write detail information if existing
@@ -238,14 +238,11 @@ public class CacheDAO {
             args.put("AttributesNegative", cache.getAttributesNegative().getLow());
             args.put("AttributesNegativeHigh", cache.getAttributesNegative().getHigh());
             args.put("Hint", cache.getHint());
-
         }
         try {
             Database.Data.sql.insert("Caches", args);
-
         } catch (Exception exc) {
             Log.err(log, "Write Cache", "", exc);
-
         }
     }
 

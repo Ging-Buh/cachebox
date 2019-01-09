@@ -13,7 +13,6 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.UnitFormatter;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
@@ -328,8 +327,13 @@ public class CacheInfo extends CB_View_Base {
                 mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
             }
 
-            if (ifModeFlag(SHOW_NAME) || ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_COORDS) || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE) || ifModeFlag(SHOW_GC) || ifModeFlag(SHOW_LAST_FOUND)) {// Text zusammensetzen
-
+            if (ifModeFlag(SHOW_NAME)
+                    || ifModeFlag(SHOW_OWNER)
+                    || ifModeFlag(SHOW_COORDS)
+                    || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)
+                    || ifModeFlag(SHOW_GC)
+                    || ifModeFlag(SHOW_LAST_FOUND)
+            ) {
                 StringBuilder text = createText();
 
                 mInfo_FontCache = new BitmapFontCache(mBitmapFont);

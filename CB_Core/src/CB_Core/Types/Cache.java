@@ -912,6 +912,20 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
+    public String getUserNote() {
+        if (detail != null) {
+            return detail.userNote;
+        } else {
+            return EMPTY_STRING;
+        }
+    }
+
+    public void setUserNote(String value) {
+        if (detail != null) {
+            detail.userNote = value;
+        }
+    }
+
     public int getSolverChecksum() {
         if (detail != null) {
             return detail.solverCheckSum;

@@ -30,7 +30,7 @@ import static CB_Core.Types.Cache.IS_FULL;
 
 public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private static final String sKlasse = "Import_GSAK";
-    private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote";
+    private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
     EditTextField edtCategory, edtDBName;
     private Button bOK, bCancel, btnSelectDB;
@@ -352,7 +352,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     cache.setHint(reader.getString(ii));
                     break;
                 case "UserNote":
-                    cache.setTmpNote(cache.getTmpNote() + reader.getString(ii));
+                    cache.setUserNote(reader.getString(ii));
                     break;
                 case "LatOriginal":
                     break;
@@ -361,6 +361,9 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 case "Latitude":
                     break;
                 case "Longitude":
+                    break;
+                case "UserFlag":
+                    cache.setFavorite(reader.getInt(ii) == 0 ? false : true);
                     break;
                 default:
                     // Remind the programmer

@@ -32,7 +32,7 @@ public enum CacheTypes {
     HQ(true),
     ;
 
-    private boolean isCache;
+    public boolean isCache;
 
     CacheTypes(boolean isCache) {
         this.isCache = isCache;

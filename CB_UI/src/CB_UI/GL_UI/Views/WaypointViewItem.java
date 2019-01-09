@@ -32,7 +32,7 @@ import com.badlogic.gdx.utils.Align;
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent {
     private static final String log = "WaypointViewItem";
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-    protected extendedCacheInfo info;
+    protected ExtendedCacheInfo extendedCacheInfo;
     protected boolean isPressed = false;
     boolean inChange = false;
     private Cache mCache;
@@ -46,7 +46,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     private BitmapFontCache mNameCache;
     private BitmapFontCache mDescCache;
     private BitmapFontCache mCoordCache;
-    private int ViewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
+    private int ViewMode;
 
     public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint) {
         super(rec, Index, "");
@@ -69,18 +69,15 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
         if (waypoint == null) // this Item is the Cache
         {
-
             if (cache == null) {
                 arrow = null;
                 distance = null;
                 return;
             }
-
-            info = new extendedCacheInfo(this, "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
-            info.setZeroPos();
-            info.setViewMode(ViewMode);
-
-            this.addChild(info);
+            extendedCacheInfo = new ExtendedCacheInfo(this, "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+            extendedCacheInfo.setZeroPos();
+            extendedCacheInfo.setViewMode(ViewMode);
+            this.addChild(extendedCacheInfo);
         }
         requestLayout();
 
@@ -165,9 +162,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     @Override
     public void dispose() {
         PositionChangedEventList.Remove(this);
-        if (info != null)
-            info.dispose();
-        info = null;
+        if (extendedCacheInfo != null)
+            extendedCacheInfo.dispose();
+        extendedCacheInfo = null;
 
         arrow = null;
         // if (distance != null) distance.dispose();
@@ -270,7 +267,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             float textYPos = this.getHeight() - mMargin;
 
-            float allHeight = (mNameCache.setText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
+            float allHeight = (mNameCache.setText(mWaypoint.getGcCode().substring(0,2) + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
             textYPos -= allHeight;
 
             if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
@@ -308,8 +305,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 }
             }
         } else {
-            info.setSize(this);
-            info.requestLayout();
+            extendedCacheInfo.setSize(this);
+            extendedCacheInfo.requestLayout();
         }
 
     }
@@ -324,22 +321,22 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     public float getAttributeHeight() {
-        if (info == null)
+        if (extendedCacheInfo == null)
             return 0;
-        return info.getAttributeHeight();
+        return extendedCacheInfo.getAttributeHeight();
     }
 
     public float getTexteHeight() {
-        if (info == null)
+        if (extendedCacheInfo == null)
             return 0;
-        return info.getTextHeight();
+        return extendedCacheInfo.getTextHeight();
 
     }
 
     public float getStarsHeight() {
-        if (info == null)
+        if (extendedCacheInfo == null)
             return 0;
-        return info.getStarsHeight();
+        return extendedCacheInfo.getStarsHeight();
 
     }
 
@@ -348,9 +345,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
      *
      * @author Longri
      */
-    private class extendedCacheInfo extends CacheInfo {
+    private class ExtendedCacheInfo extends CacheInfo {
 
-        public extendedCacheInfo(CB_RectF rec, String Name, Cache value) {
+        public ExtendedCacheInfo(CB_RectF rec, String Name, Cache value) {
             super(rec, Name, value);
         }
 

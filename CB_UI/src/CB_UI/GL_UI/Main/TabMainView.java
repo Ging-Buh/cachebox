@@ -100,7 +100,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CB_Action_ShowAbout actionShowAboutView;
     public static CB_Action_ShowView actionShowCreditsView;
 
-    public static CB_Action_ShowView actionShowWaypointView;
+    public static CB_Action_ShowWaypointView actionShowWaypointView;
     public static CB_Action_ShowView actionShowLogView;
     public static CB_Action_ShowView actionShowSpoilerView;
     public static CB_Action_ShowView actionShowNotesView;
