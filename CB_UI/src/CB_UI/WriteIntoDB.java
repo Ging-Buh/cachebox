@@ -39,30 +39,36 @@ public class WriteIntoDB {
         Database.Data.GPXFilenameUpdateCacheCount();
 
     }
-
     public static void CacheAndLogsAndImagesIntoDB(GeoCacheRelated geoCacheRelated, GpxFilename forCategory) throws InterruptedException {
+        CacheAndLogsAndImagesIntoDB( geoCacheRelated,  forCategory,  true);
+    }
+
+    public static void CacheAndLogsAndImagesIntoDB(GeoCacheRelated geoCacheRelated, GpxFilename forCategory, boolean keepOldCacheValues) throws InterruptedException {
 
         // Auf eventuellen Thread Abbruch reagieren
         Thread.sleep(2);
 
         Cache cache = geoCacheRelated.cache;
-        Cache oldCache = cacheDAO.getFromDbByCacheId(cache.Id); // !!! without Details and without Description
-        if (oldCache != null) {
-            oldCache.loadDetail(); // Details and Waypoints but without "Description, Solver, Notes, ShortDescription "
-            cache.Rating = oldCache.Rating;
-            if (!cache.isFound()) {
-                if (oldCache.isFound()) cache.setFound(true);
-            }
-            cache.setFavorite(oldCache.isFavorite());
-            cache.setHasUserData(oldCache.isHasUserData());
-            cache.setTourName(oldCache.getTourName());
-            // solver is independant
-            if (oldCache.hasCorrectedCoordinates()) {
-                if (cache.hasCorrectedCoordinates()) {
-                    // changed coords from GS stay preserved
-                } else {
-                    cache.Pos = oldCache.Pos;
-                    cache.setHasCorrectedCoordinates(true);
+        Cache oldCache = null;
+        if (keepOldCacheValues) {
+            oldCache = cacheDAO.getFromDbByCacheId(cache.Id); // !!! without Details and without Description
+            if (oldCache != null) {
+                oldCache.loadDetail(); // Details and Waypoints but without "Description, Solver, Notes, ShortDescription "
+                cache.Rating = oldCache.Rating;
+                if (!cache.isFound()) {
+                    if (oldCache.isFound()) cache.setFound(true);
+                }
+                cache.setFavorite(oldCache.isFavorite());
+                cache.setHasUserData(oldCache.isHasUserData());
+                cache.setTourName(oldCache.getTourName());
+                // solver is independant
+                if (oldCache.hasCorrectedCoordinates()) {
+                    if (cache.hasCorrectedCoordinates()) {
+                        // changed coords from GS stay preserved
+                    } else {
+                        cache.Pos = oldCache.Pos;
+                        cache.setHasCorrectedCoordinates(true);
+                    }
                 }
             }
         }
@@ -100,50 +106,51 @@ public class WriteIntoDB {
         if (!cacheDAO.UpdateDatabase(cache)) {
             cacheDAO.WriteToDatabase(cache);
         }
+        // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+        cache.setLongDescription("");
 
         // Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
         // todo extract solver?
-        if (cache.getTmpNote() != null && cache.getTmpNote().length() > 0) {
-
-            String oldNote = Database.GetNote(cache);
-
-            if (oldNote != null) {
-                oldNote = oldNote.trim();
-            } else {
-                oldNote = "";
-            }
+        if (cache.getTmpNote() != null && cache.getTmpNote().length() > 0 || cache.getUserNote().length()>0) {
             String begin = "<Import from Geocaching.com>";
-            if (!oldNote.startsWith(begin)) {
-                begin = System.getProperty("line.separator") + begin;
-            }
             String end = "</Import from Geocaching.com>";
-            int iBegin = oldNote.indexOf(begin);
-            int iEnd = oldNote.indexOf(end);
-            String newNote;
-            if ((iBegin >= 0) && (iEnd > iBegin)) {
-                // Note from Groundspeak already in Database
-                // -> Replace only this part in whole Note
-                // Copy the old part of Note before the beginning of the groundspeak block
-                newNote = oldNote.substring(0, iBegin);
-                newNote += begin + System.getProperty("line.separator");
-                newNote += cache.getTmpNote();
-                newNote += System.getProperty("line.separator") + end;
-                newNote += oldNote.substring(iEnd + end.length(), oldNote.length());
-            } else {
-                newNote = oldNote + System.getProperty("line.separator");
-                newNote += begin + System.getProperty("line.separator");
-                newNote += cache.getTmpNote();
-                newNote += System.getProperty("line.separator") + end;
+            if (keepOldCacheValues) {
+                String oldNote = Database.GetNote(cache);
+
+                if (oldNote != null) {
+                    oldNote = oldNote.trim();
+                } else {
+                    oldNote = "";
+                }
+                if (!oldNote.startsWith(begin)) {
+                    begin = "\n" + begin;
+                }
+                int iBegin = oldNote.indexOf(begin);
+                int iEnd = oldNote.indexOf(end);
+                String newNote;
+                if ((iBegin >= 0) && (iEnd > iBegin)) {
+                    // Note from Groundspeak already in Database
+                    // -> Replace only this part in whole Note
+                    // Copy the old part of Note before the beginning of the groundspeak block
+                    newNote = oldNote.substring(0, iBegin);
+                    newNote += begin + "\n";
+                    newNote += cache.getTmpNote();
+                    newNote += "\n" + end;
+                    newNote += oldNote.substring(iEnd + end.length(), oldNote.length());
+                } else {
+                    newNote = oldNote + "\n";
+                    newNote += begin + "\n";
+                    newNote += cache.getTmpNote();
+                    newNote += "\n" + end;
+                }
+                cache.setTmpNote(newNote);
+                Database.SetNote(cache, cache.getUserNote() + cache.getTmpNote());
             }
-            cache.setTmpNote(newNote);
-
-            Database.SetNote(cache, cache.getUserNote() + cache.getTmpNote());
-            cache.setUserNote(""); // better is it
-
+            else {
+                Database.SetNote(cache, cache.getUserNote() + "\n" + begin + "\n" + cache.getTmpNote() + "\n" + end + "\n");
+            }
+            cache.setUserNote(""); // better is it, if cache reused, will be fetch from db in NotesView
         }
-
-        // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-        cache.setLongDescription("");
 
         for (LogEntry log : geoCacheRelated.logs) {
             logDAO.WriteToDatabase(log);

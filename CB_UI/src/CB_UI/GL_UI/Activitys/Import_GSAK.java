@@ -169,7 +169,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                         cache = addAttributes(cache);
                         cache = addWayPoints(cache);
                         GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
-                        WriteIntoDB.CacheAndLogsAndImagesIntoDB(geocache, gpxFilename);
+                        WriteIntoDB.CacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
                     }
                 } catch (Exception ex) {
                     Log.err(sKlasse, "Import " + GcCode, ex);
