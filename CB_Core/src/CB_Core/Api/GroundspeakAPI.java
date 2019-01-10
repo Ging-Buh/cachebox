@@ -520,7 +520,7 @@ public class GroundspeakAPI {
             return OK;
         } catch (Exception e) {
             retry(e);
-            Log.err(log, "UploadDraftOrLog geocacheCode: " + cacheCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError , e);
+            Log.err(log, "UploadDraftOrLog geocacheCode: " + cacheCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError, e);
             return ERROR;
         }
     }
@@ -638,34 +638,43 @@ public class GroundspeakAPI {
     }
 
     public static TBList downloadUsersTrackables() {
-        TBList list = new TBList();
-        if (isAccessTokenInvalid()) return list;
+        TBList tbList = new TBList();
+        if (isAccessTokenInvalid()) return tbList;
         LastAPIError = "";
+        int skip = 0;
+        int take = 50;
+
         try {
-            JSONArray jTrackables = getNetz()
-                    .get(getUrl(1, "trackables"))
-                    .param("fields", "referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type,inHolderCollection")
-                    .ensureSuccess()
-                    .asJsonArray()
-                    .getBody();
+            boolean ready = false;
+            do {
+                JSONArray jTrackables = getNetz()
+                        .get(getUrl(1, "trackables"))
+                        .param("fields", "referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type,inHolderCollection")
+                        .param("skip", skip)
+                        .param("take", take)
+                        .ensureSuccess().asJsonArray().getBody();
 
-            for (int ii = 0; ii < jTrackables.length(); ii++) {
-                JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
-                if (!jTrackable.optBoolean("inHolderCollection", false)) {
-                    Trackable tb = createTrackable(jTrackable);
-                    Log.debug(log, "downloadUsersTrackables: add " + tb.getName());
-                    list.add(tb);
-                } else {
-                    Log.debug(log, "downloadUsersTrackables: not in HolderCollection" + jTrackable.optString("name", ""));
+                for (int ii = 0; ii < jTrackables.length(); ii++) {
+                    JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
+                    if (!jTrackable.optBoolean("inHolderCollection", false)) {
+                        Trackable tb = createTrackable(jTrackable);
+                        Log.debug(log, "downloadUsersTrackables: add " + tb.getName());
+                        tbList.add(tb);
+                    } else {
+                        Log.debug(log, "downloadUsersTrackables: not in HolderCollection" + jTrackable.optString("name", ""));
+                    }
                 }
-            }
 
-            Log.info(log, "downloadUsersTrackables done \n" + jTrackables.toString());
-            return list;
+                ready = jTrackables.length() < take;
+                skip = skip + take;
+            }
+            while (!ready);
+            Log.info(log, "downloadUsersTrackables done \n");
+            return tbList;
         } catch (Exception ex) {
-            LastAPIError = ex.getLocalizedMessage();
-            Log.err(log, "downloadUsersTrackables", ex);
-            return list;
+            retry(ex);
+            Log.err(log, "downloadUsersTrackables " + LastAPIError, ex);
+            return tbList;
         }
     }
 
@@ -774,12 +783,12 @@ public class GroundspeakAPI {
     }
 
     private static String fetchWatchListCode() {
-            JSONArray wl = getNetz()
-                    .get(getUrl(1, "users/me/lists?types=wl&fields=referenceCode"))
-                    .ensureSuccess()
-                    .asJsonArray()
-                    .getBody();
-            return ((JSONObject) wl.get(0)).optString("referenceCode", "");
+        JSONArray wl = getNetz()
+                .get(getUrl(1, "users/me/lists?types=wl&fields=referenceCode"))
+                .ensureSuccess()
+                .asJsonArray()
+                .getBody();
+        return ((JSONObject) wl.get(0)).optString("referenceCode", "");
     }
 
     public static String fetchFriends() {
@@ -816,8 +825,7 @@ public class GroundspeakAPI {
             getNetz().put(getUrl(1, "geocaches/" + GcCode + "/correctedcoordinates"))
                     .body(new JSONObject().put("latitude", Pos.getLatitude()).put("longitude", Pos.getLongitude()))
                     .ensureSuccess().asVoid();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             retry(ex);
         }
     }
@@ -1127,8 +1135,7 @@ public class GroundspeakAPI {
                                             cache.Id,
                                             "",
                                             "Final GSAK Corrected"));
-                                }
-                                else {
+                                } else {
                                     cache.Pos = new Coordinate(correctedCoordinates.optDouble("latitude", 0), correctedCoordinates.optDouble("longitude", 0));
                                     cache.setHasCorrectedCoordinates(true);
                                 }
