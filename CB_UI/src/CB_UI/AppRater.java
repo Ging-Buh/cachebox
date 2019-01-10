@@ -104,9 +104,9 @@ public class AppRater {
             }
         });
 
-        msgBox.button1.setText(now);
-        msgBox.button2.setText(later);
-        msgBox.button3.setText(never);
+        msgBox.setButtonText(1,now);
+        msgBox.setButtonText(2,later);
+        msgBox.setButtonText(3,never);
 
     }
 }

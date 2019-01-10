@@ -53,7 +53,7 @@ public class WaitDialog extends ButtonDialog {
         waitDialog.animation = WorkAnimation.GetINSTANCE(imageRec);
         waitDialog.addChild(waitDialog.animation);
 
-        waitDialog.label = new Label("WaitDialog" + " label", contentSize.getBounds());
+        waitDialog.label = new Label(contentSize.getBounds());
         waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
         waitDialog.label.setX(imageRec.getMaxX() + margin);
         waitDialog.label.setWrappedText(msg);

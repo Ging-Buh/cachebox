@@ -67,12 +67,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private static SettingsActivity that;
     private ArrayList<SettingsItem_Audio> audioSettingsList;
     private ArrayList<Lang> Sprachen;
-    private OnMsgBoxClickListener msgBoxReturnListener = new OnMsgBoxClickListener() {
-        @Override
-        public boolean onClick(int which, Object data) {
-            show();
-            return true;
-        }
+    private OnMsgBoxClickListener msgBoxReturnListener = (which, data) -> {
+        show();
+        return true;
     };
     private CB_List<SettingCategory> Categorys = new CB_List<>();
     private Button btnOk, btnCancel, btnMenu;

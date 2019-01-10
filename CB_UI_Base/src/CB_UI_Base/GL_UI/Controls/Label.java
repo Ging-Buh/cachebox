@@ -121,8 +121,8 @@ public class Label extends CB_View_Base {
         setText();
     }
 
-    public Label(String Name, CB_RectF rec) {
-        super(rec, Name);
+    public Label(CB_RectF rec) {
+        super(rec, "");
         mText = "";
         setText();
     }

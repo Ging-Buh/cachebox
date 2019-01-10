@@ -96,7 +96,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (EntryName == null) {
 
             CB_RectF rec = new CB_RectF(left, this.getHeight() / 2, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
-            EntryName = new Label(this.name + " EntryName", rec);
+            EntryName = new Label(rec);
 
             EntryName.setText(mRoute.Name);
 

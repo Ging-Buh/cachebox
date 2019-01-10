@@ -21,7 +21,11 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
+import CB_UI_Base.Math.Size;
+import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import static CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.calcMsgBoxSize;
 
 public class CB_Action_ShowHint extends CB_Action {
 
@@ -31,8 +35,9 @@ public class CB_Action_ShowHint extends CB_Action {
 
     @Override
     public void Execute() {
-        if (getEnabled())
-            HintDialog.show();
+        if (getEnabled()) {
+            showHint();
+        }
     }
 
     @Override
@@ -40,14 +45,23 @@ public class CB_Action_ShowHint extends CB_Action {
         // liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
         if (GlobalCore.getSelectedCache() == null)
             return false;
-        String hintText = GlobalCore.getSelectedCache().getHint();
-        if ((hintText == null) || (hintText.length() == 0))
-            return false;
-        return true;
+        return GlobalCore.getSelectedCache().hasHint();
     }
 
     @Override
     public Sprite getIcon() {
         return Sprites.getSprite(IconName.hintIcon.name());
+    }
+
+    public void showHint() {
+        String HintFromDB = GlobalCore.getSelectedCache().getHint();
+
+        String hintTextDecoded = UnitFormatter.Rot13(HintFromDB) + "\n ";
+        String hintTextEncoded = HintFromDB + "\n ";
+
+        Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
+        Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
+
+        new HintDialog(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
     }
 }

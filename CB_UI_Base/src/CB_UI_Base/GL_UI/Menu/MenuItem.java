@@ -72,7 +72,7 @@ public class MenuItem extends MenuItemBase {
         super.Initial();
         this.removeChilds();
 
-        mLabel = new Label(this.name + " mLabel", this);
+        mLabel = new Label(this);
 
         boolean hasIcon = (mIcon != null);
         if (hasIcon) {

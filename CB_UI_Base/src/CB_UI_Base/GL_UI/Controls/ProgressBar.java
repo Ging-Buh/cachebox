@@ -20,7 +20,7 @@ public class ProgressBar extends CB_View_Base {
     public ProgressBar(CB_RectF rec, String Name) {
         super(rec, Name);
 
-        label = new Label(this.name + " label", this);
+        label = new Label(this);
         label.setHAlignment(HAlignment.CENTER);
 
         this.addChild(label);

@@ -219,19 +219,19 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         float leftMaxWidth = 0;
         CB_RectF lblRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight() / 2.5f);
 
-        lblGPS = new Label(this.name + " lblGPS", lblRec);
+        lblGPS = new Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.Get("gps")).getTextWidth());
 
-        lblAccuracy = new Label(this.name + " lblAccuracy", lblRec);
+        lblAccuracy = new Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(Translation.Get("accuracy")).getTextWidth());
 
-        lblWP = new Label(this.name + " lblWP", lblRec);
+        lblWP = new Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.Get("waypoint")).getTextWidth());
 
-        lblCoord = new Label(this.name + " lblCoord", lblRec);
+        lblCoord = new Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblCoord.setText(Translation.Get("coordinate")).getTextWidth());
 
-        lblCurrent = new Label(this.name + " lblCurrent", lblRec);
+        lblCurrent = new Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.Get("current")).getTextWidth());
 
         // set all lbl to the same max width + margin
@@ -261,12 +261,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         lblRec.setX(lblGPS.getMaxX() + margin);
         lblRec.setWidth(this.getWidth() - margin - lblGPS.getMaxX());
 
-        Gps = new Label(this.name + " Gps", lblRec);
-        Accuracy = new Label(this.name + " Accuracy", lblRec);
+        Gps = new Label(lblRec);
+        Accuracy = new Label(lblRec);
         WaypointLabel = new Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
         WaypointLabel.setRec(lblRec);
-        CoordLabel = new Label(this.name + " CoordLabel", lblRec);
-        Current = new Label(this.name + " Current", lblRec);
+        CoordLabel = new Label(lblRec);
+        Current = new Label(lblRec);
 
         // set Y Pos
         Gps.setY(lblGPS.getY());

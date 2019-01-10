@@ -62,7 +62,7 @@ public abstract class Dialog extends CB_View_Base {
     /**
      * Overlay über alles wird als letztes Gerendert
      */
-    private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
+    private ArrayList<GL_View_Base> overlay = new ArrayList<>();
 
     public Dialog(CB_RectF rec, String Name) {
         super(rec, Name);

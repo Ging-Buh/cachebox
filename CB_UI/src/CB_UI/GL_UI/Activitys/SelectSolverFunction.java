@@ -98,7 +98,7 @@ public class SelectSolverFunction extends ButtonDialog {
         // rechteck für Label erstellen
         CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.5f);
 
-        desc = new Label(this.name + " desc", rec);
+        desc = new Label(rec);
 
         // das Beschreibungs Label erhällt auch den BackGround der Activity.
         // Damit haben alle Bereiche der Activity den Selben Rahmen, dies Wirkt aufgeräumter

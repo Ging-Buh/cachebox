@@ -37,7 +37,6 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -87,25 +86,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             // Store Solver Content into Database after editing one line
             if (GlobalCore.isSetSelectedCache())
                 Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
-        }
-    };
-    final OnMsgBoxClickListener deleteListener = new OnMsgBoxClickListener() {
-        @Override
-        public boolean onClick(int which, Object data) {
-            if (which == 1) {
-                solver.remove(mSelectedIndex);
-                solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
-                solver.Solve();
-                solver.add(solver.size(), new SolverZeile(solver, ""));
-
-                // Store Solver Content into Database after editing one line
-                if (GlobalCore.isSetSelectedCache())
-                    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
-
-                reloadList();
-                return true;
-            } else
-                return false;
         }
     };
     private Cache cache;
@@ -302,7 +282,22 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     }
 
     public void DeleteLine() {
-        GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, deleteListener);
+        GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+            if (which == 1) {
+                solver.remove(mSelectedIndex);
+                solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
+                solver.Solve();
+                solver.add(solver.size(), new SolverZeile(solver, ""));
+
+                // Store Solver Content into Database after editing one line
+                if (GlobalCore.isSetSelectedCache())
+                    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+
+                reloadList();
+                return true;
+            } else
+                return false;
+        });
     }
 
     private CoordinateGPS getSelectedCoordinateResult() {

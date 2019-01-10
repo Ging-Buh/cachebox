@@ -131,7 +131,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
         mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
         mSlideBox.setBackground(Sprites.ProgressBack);
-        mLblCacheName = new Label(this.name + " mLblCacheName", new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
+        mLblCacheName = new Label(new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
         mLblCacheName.setPos(30, 0);
         mLblCacheName.setHAlignment(HAlignment.SCROLL_CENTER);
         mSlideBox.addChild(mLblCacheName);

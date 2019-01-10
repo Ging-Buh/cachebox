@@ -282,9 +282,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         return true;
                     }
                 });
-                msgBox.button1.setText("+");
-                msgBox.button2.setText("=");
-                msgBox.button3.setText("-");
+                msgBox.setButtonText(1,"+");
+                msgBox.setButtonText(2,"=");
+                msgBox.setButtonText(3,"-");
                 msgBox.setData(layer);
             } else {
                 TabMainView.mapView.setCurrentLayer(layer);

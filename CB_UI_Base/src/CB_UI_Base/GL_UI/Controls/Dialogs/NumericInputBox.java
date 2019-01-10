@@ -112,7 +112,7 @@ public class NumericInputBox extends CB_View_Base {
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();
         LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
 
-        Label label = new Label("NumerikInputBox" + " label", LabelRec);
+        Label label = new Label(LabelRec);
         label.setZeroPos();
         label.setY(editText.getMaxY() + margin);
         label.setWrappedText(msg);
@@ -173,7 +173,7 @@ public class NumericInputBox extends CB_View_Base {
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();
         LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
 
-        Label label = new Label("NumerikInputBox" + " label", LabelRec);
+        Label label = new Label(LabelRec);
         label.setZeroPos();
         label.setY(editText.getMaxY() + margin);
         label.setWrappedText(msg);

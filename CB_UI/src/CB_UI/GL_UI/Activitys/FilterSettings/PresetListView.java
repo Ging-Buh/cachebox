@@ -140,58 +140,48 @@ public class PresetListView extends V_ListView {
                 }
             });
 
-            v.setOnLongClickListener(new OnClickListener() {
+            v.setOnLongClickListener((v1, x, y, pointer, button) -> {
+                final int delItemIndex = ((PresetListViewItem) v1).getIndex();
+                GL.that.closeActivity();
+                GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+                    switch (which) {
+                        case 1: // ok Clicked
 
-                @Override
-                public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
-                    final int delItemIndex = ((PresetListViewItem) v).getIndex();
+                            if (delItemIndex < presets.length) {
+                                return false; // Don't delete System Presets
+                            } else {
+                                try {
+                                    String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 
-                    GL.that.closeActivity();
-                    GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            switch (which) {
-                                case 1: // ok Clicked
-
-                                    if (delItemIndex < presets.length) {
-                                        return false; // Don't delete System Presets
-                                    } else {
-                                        try {
-                                            String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-
-                                            int i = presets.length;
-                                            String newUserEntris = "";
-                                            for (String entry : userEntrys) {
-                                                if (i++ != delItemIndex)
-                                                    newUserEntris += entry + SettingString.STRING_SPLITTER;
-                                            }
-                                            Config.UserFilter.setValue(newUserEntris);
-                                            Config.AcceptChanges();
-                                            EditFilterSettings.that.mPresetListView.fillPresetList();
-                                            EditFilterSettings.that.mPresetListView.notifyDataSetChanged();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
+                                    int i = presets.length;
+                                    String newUserEntris = "";
+                                    for (String entry1 : userEntrys) {
+                                        if (i++ != delItemIndex)
+                                            newUserEntris += entry1 + SettingString.STRING_SPLITTER;
                                     }
-                                    TabMainView.actionShowFilter.Execute();
-                                    break;
-                                case 2: // cancel clicked
-                                    TabMainView.actionShowFilter.Execute();
-                                    break;
-                                case 3:
-                                    TabMainView.actionShowFilter.Execute();
-                                    break;
+                                    Config.UserFilter.setValue(newUserEntris);
+                                    Config.AcceptChanges();
+                                    EditFilterSettings.that.mPresetListView.fillPresetList();
+                                    EditFilterSettings.that.mPresetListView.notifyDataSetChanged();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
                             }
-
-                            return true;
-                        }
-
-                    });
+                            TabMainView.actionShowFilter.Execute();
+                            break;
+                        case 2: // cancel clicked
+                            TabMainView.actionShowFilter.Execute();
+                            break;
+                        case 3:
+                            TabMainView.actionShowFilter.Execute();
+                            break;
+                    }
 
                     return true;
-                }
+                });
+
+                return true;
             });
 
             mPresetListViewItems.add(v);

@@ -37,7 +37,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
         that = this;
         isCanceld = false;
 
-        setButtonCaptions(MessageBoxButtons.Cancel);
+        addButtons(MessageBoxButtons.Cancel);
         button3.setOnClickListener(new OnClickListener() {
 
             @Override

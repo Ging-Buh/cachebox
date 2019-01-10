@@ -20,14 +20,14 @@ public class SettingsItemBase extends ListViewItemBackground {
 
         CB_RectF LblRec = new CB_RectF(leftBorder, 0, innerWidth, this.getHalfHeight());
 
-        lblDefault = new Label(this.name + " lblDefault", LblRec);
+        lblDefault = new Label(LblRec);
         lblDefault.setFont(Fonts.getSmall());
         this.addChild(lblDefault);
 
         LblRec.setY(MeasuredLabelHeight);
         LblRec.setHeight(this.getHeight() - MeasuredLabelHeight);
 
-        lblName = new Label(this.name + " lblName", LblRec);
+        lblName = new Label(LblRec);
         lblName.setFont(Fonts.getNormal());
         this.addChild(lblName);
 

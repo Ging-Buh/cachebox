@@ -72,7 +72,7 @@ public class ButtonDialog extends Dialog {
             addChild(iconImage);
         }
 
-        label = new Label(this.name + " label", contentSize.getBounds());
+        label = new Label(contentSize.getBounds());
         label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
         label.setX(imageRec.getMaxX() + 5);
         label.setY(-margin);

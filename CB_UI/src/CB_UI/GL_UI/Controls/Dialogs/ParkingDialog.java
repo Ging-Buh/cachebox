@@ -69,9 +69,9 @@ public class ParkingDialog extends ButtonDialog {
 
         Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
-        lblSetGPS = new Label(this.name + " lblSetGPS", btSetGPS.ScaleCenter(0.8f));
-        lblSelectWP = new Label(this.name + " lblSelectWP", btSelectWP.ScaleCenter(0.8f));
-        lblDeleteP = new Label(this.name + " lblDeleteP", btDeleteP.ScaleCenter(0.8f));
+        lblSetGPS = new Label(btSetGPS.ScaleCenter(0.8f));
+        lblSelectWP = new Label(btSelectWP.ScaleCenter(0.8f));
+        lblDeleteP = new Label(btDeleteP.ScaleCenter(0.8f));
 
         lblSetGPS.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
         lblSelectWP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);

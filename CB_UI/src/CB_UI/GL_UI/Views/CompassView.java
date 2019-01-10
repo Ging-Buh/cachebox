@@ -411,7 +411,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             lblDistance.setX(margin);
             lblDistance.setVAlignment(VAlignment.BOTTOM);
 
-            lblAccuracy = new Label("Accuracy", lblDistance);
+            lblAccuracy = new Label(lblDistance);
             lblAccuracy.setHAlignment(HAlignment.RIGHT);
             lblAccuracy.setZeroPos();
             lblAccuracy.setVAlignment(VAlignment.CENTER);

@@ -137,14 +137,14 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
         lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.Get("MeasureCount"));
 
-        lblMeasureCount = new Label(this.name + " lblMeasureCount", rec2);
+        lblMeasureCount = new Label(rec2);
 
         rec2.setY(lblMeasureCount.getMaxY() + margin);
         rec.setY(lblMeasureCount.getMaxY() + margin);
 
         lblDescMeasureCoord = new Label(this.name + " lblDescMeasureCoord", rec, Translation.Get("MeasureCoord"));
 
-        lblMeasureCoord = new Label(this.name + " lblMeasureCoord", rec2);
+        lblMeasureCoord = new Label(rec2);
 
         this.addChild(lblDescMeasureCount);
         this.addChild(lblMeasureCount);

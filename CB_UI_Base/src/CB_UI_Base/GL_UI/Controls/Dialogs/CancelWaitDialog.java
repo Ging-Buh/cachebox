@@ -102,7 +102,7 @@ public class CancelWaitDialog extends WaitDialog {
 
         CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
-        waitDialog.label = new Label("waitDialog", contentSize.getBounds());
+        waitDialog.label = new Label(contentSize.getBounds());
         waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
         waitDialog.label.setX(imageRec.getMaxX() + margin);
         waitDialog.label.setWrappedText(msg);

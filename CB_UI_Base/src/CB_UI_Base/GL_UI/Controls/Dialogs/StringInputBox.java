@@ -40,9 +40,9 @@ public class StringInputBox extends GL_MsgBox {
         msgBox.setTitle(title);
         msgBox.addLast(editText);
         msgBox.addLast(label);
-        msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
+        msgBox.addButtons(MessageBoxButtons.OKCancel);
 
-        msgBox.mMsgBoxClickListener = Listener;
+        msgBox.setMsgBoxClickListener(Listener);
 
         GL.that.showDialog(msgBox, true);
 

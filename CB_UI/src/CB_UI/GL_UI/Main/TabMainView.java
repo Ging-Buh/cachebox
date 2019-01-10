@@ -119,7 +119,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CB_Action actionShowParking;
     public static CB_Action actionShwDeleteCaches;
     public static CB_Action action_SwitchAutoResort;
-    public static CB_Action actionShowHint;
+    public static CB_Action_ShowHint actionShowHint;
     public static CB_Action action_DayNight;
     public static CB_Action_RecTrack actionRecTrack;
     public static CB_Action actionDayNight;

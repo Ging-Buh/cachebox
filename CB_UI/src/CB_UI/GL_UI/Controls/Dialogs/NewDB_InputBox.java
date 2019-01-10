@@ -26,14 +26,10 @@ public class NewDB_InputBox extends GL_MsgBox {
         msgBox.setTitle(title);
 
         final ChkBox chk = new ChkBox("");
-        msgBox.mMsgBoxClickListener = new OnMsgBoxClickListener() {
-
-            @Override
-            public boolean onClick(int which, Object data) {
-                Listener.onClick(which, chk.isChecked());
-                return true;
-            }
-        };
+        msgBox.setMsgBoxClickListener((which, data) -> {
+            Listener.onClick(which, chk.isChecked());
+            return true;
+        });
         CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
         chk.setY(margin * 2);
@@ -41,7 +37,7 @@ public class NewDB_InputBox extends GL_MsgBox {
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();
         LabelRec.setHeight(LabelRec.getHeight() - chk.getHeight());
 
-        Label lbl = new Label("NewDB_InputBox" + " lbl", LabelRec);
+        Label lbl = new Label(LabelRec);
         lbl.setX(chk.getMaxX() + margin);
         lbl.setY(chk.getY());
         lbl.setText(Translation.Get("UseDefaultRep"));
@@ -65,7 +61,7 @@ public class NewDB_InputBox extends GL_MsgBox {
 
         LabelRec.setHeight(LabelRec.getHeight() - editText.getHeight());
 
-        Label label = new Label("NewDB_InputBox" + " label", LabelRec);
+        Label label = new Label(LabelRec);
         label.setZeroPos();
         label.setY(editText.getMaxY());
         label.setWrappedText(msg);
@@ -75,7 +71,7 @@ public class NewDB_InputBox extends GL_MsgBox {
         msgBox.addChild(chk);
         msgBox.addChild(lbl);
 
-        msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
+        msgBox.addButtons(MessageBoxButtons.OKCancel);
 
         GL.that.showDialog(msgBox, true);
 

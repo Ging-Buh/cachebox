@@ -109,7 +109,7 @@ public class TB_Log extends ActivityBase {
         lblName = new EditTextField(iconRec, this, "lblName");
 
         CacheIcon = new Image(iconRec, "CacheIcon", false);
-        lblPlaced = new Label("lblPlaced", iconRec);
+        lblPlaced = new Label(iconRec);
 
         edit = new EditTextField(this, "edit").setWrapType(WrapType.WRAPPED);
         edit.setWidth(contentBox.getInnerWidth());
@@ -258,24 +258,20 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                        switch (which) {
+                            case GL_MsgBox.BUTTON_NEGATIVE:
+                                logOnline();
+                                return true;
 
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            switch (which) {
-                                case GL_MsgBox.BUTTON_NEGATIVE:
-                                    logOnline();
-                                    return true;
+                            case GL_MsgBox.BUTTON_NEUTRAL:
+                                return true;
 
-                                case GL_MsgBox.BUTTON_NEUTRAL:
-                                    return true;
-
-                                case GL_MsgBox.BUTTON_POSITIVE:
-                                    createFieldNote();
-                                    return true;
-                            }
-                            return true;
+                            case GL_MsgBox.BUTTON_POSITIVE:
+                                createFieldNote();
+                                return true;
                         }
+                        return true;
                     });
                     return;
                 }

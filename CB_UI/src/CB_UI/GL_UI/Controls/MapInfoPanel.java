@@ -178,25 +178,25 @@ public class MapInfoPanel extends CB_View_Base {
 
         float margin = GL_UISizes.margin;
 
-        lblSpeed = new Label(this.name + " lblSpeed", this.ScaleCenter(0.4f));
+        lblSpeed = new Label(ScaleCenter(0.4f));
         lblSpeed.setFont(Fonts.getSmall());
         lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.getHeight() * 0.1f));
         lblSpeed.setText("---");
         this.addChild(lblSpeed);
 
-        lblDistance = new Label(this.name + " lblDistance", this.ScaleCenter(0.4f));
+        lblDistance = new Label(ScaleCenter(0.4f));
         lblDistance.setFont(Fonts.getBig());
         lblDistance.setPos(new Vector2(CompassRec.getWidth() + margin, CompassRec.getWidth() / 2));
         lblDistance.setText("---");
         this.addChild(lblDistance);
 
-        lblLatitude = new Label(this.name + " lblLatitude", this.ScaleCenter(0.4f));
+        lblLatitude = new Label(ScaleCenter(0.4f));
         lblLatitude.setFont(Fonts.getSmall());
         lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
         lblLatitude.setText("---");
         this.addChild(lblLatitude);
 
-        lblLongitude = new Label(this.name + " lblLongitude", this.ScaleCenter(0.4f));
+        lblLongitude = new Label(ScaleCenter(0.4f));
         lblLongitude.setFont(Fonts.getSmall());
         lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth() - rightBorder, this.getHeight() * 0.1f));
         lblLongitude.setText("---");
