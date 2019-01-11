@@ -178,7 +178,7 @@ public class GPXFileImporter {
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/Parent") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                values.put("cache_gsak_Parrent", text);
+                values.put("cache_gsak_Parent", text);
             }
         });
 
@@ -514,7 +514,7 @@ public class GPXFileImporter {
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:Parent") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                values.put("cache_gsak_Parrent", text);
+                values.put("cache_gsak_Parent", text);
             }
         });
 
@@ -533,7 +533,14 @@ public class GPXFileImporter {
             }
         });
 
-        // Cache Rules for GPX from GSAK
+        ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:FavPoints") {
+            @Override
+            public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
+                values.put("cache_gsak_favpoints", text);
+            }
+        });
+
+        // Cache Rules for GPX from Groundspeak
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/extensions/groundspeak:cache", "id", "available", "archived") {
             @Override
@@ -727,7 +734,7 @@ public class GPXFileImporter {
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/gsak:wptExtension/gsak:Parent") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                values.put("cache_gsak_Parrent", text);
+                values.put("cache_gsak_Parent", text);
             }
         });
 
@@ -1157,6 +1164,14 @@ public class GPXFileImporter {
             cache.setState(values.get("cache_state"));
         }
 
+        if (values.containsKey("cache_gsak_favpoints")) {
+            try {
+                cache.favPoints = Integer.parseInt(values.get("cache_gsak_favpoints"));
+            }
+            catch (Exception ignored) {
+            }
+        }
+
         if (values.containsKey("cache_attributes_count")) {
             try {
                 int count = Integer.parseInt(values.get("cache_attributes_count"));
@@ -1354,8 +1369,8 @@ public class GPXFileImporter {
             waypoint.setTitle(waypoint.getGcCode());
             // TODO Hack to get parent Cache
 
-            if (values.containsKey("cache_gsak_Parrent")) {
-                String parent = values.get("cache_gsak_Parrent");
+            if (values.containsKey("cache_gsak_Parent")) {
+                String parent = values.get("cache_gsak_Parent");
                 waypoint.CacheId = Cache.GenerateCacheId(parent);
             } else {
                 waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
