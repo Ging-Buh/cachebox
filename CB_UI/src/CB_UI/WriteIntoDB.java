@@ -136,7 +136,7 @@ public class WriteIntoDB {
                     newNote += begin + "\n";
                     newNote += cache.getTmpNote();
                     newNote += "\n" + end;
-                    newNote += oldNote.substring(iEnd + end.length(), oldNote.length());
+                    newNote += oldNote.substring(iEnd + end.length());
                 } else {
                     newNote = oldNote + "\n";
                     newNote += begin + "\n";

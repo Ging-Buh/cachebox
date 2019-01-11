@@ -16,6 +16,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.CB_Core_Settings;
+import CB_Core.Database;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -24,9 +25,11 @@ import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_UI.GL_UI.Views.FieldNoteViewItem;
+import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -39,16 +42,22 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import android.text.InputType;
 import com.badlogic.gdx.math.Vector2;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EditFieldNotes extends ActivityBase implements KeyboardFocusChangedEvent {
-    private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
     FilterSetListViewItem GcVote;
     Label title;
     private FieldNoteEntry altfieldNote;
@@ -68,6 +77,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyFieldNote;
     private IReturnListener mReturnListener;
+    private Button btnHow;
 
     public EditFieldNotes(FieldNoteEntry note, IReturnListener listener, boolean isNewFieldNote) {
         super(ActivityBase.ActivityRec(), "");
@@ -76,7 +86,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         fieldNote = note;
         altfieldNote = note.copy();
         initLayoutWithValues();
-        iniTextfieldFocus();
+        etComment.showLastLines();
     }
 
     public GL_View_Base touchDown(int x, int y, int pointer, int button) {
@@ -101,9 +111,9 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         scrollBoxContent.initRow(BOTTOMUP);
         if (fieldNote.type.isDirectLogType())
             iniOptions();
-        initLogText();
         iniGC_VoteItem();
-        iniTime();
+        initLogText();
+        // iniTime();
         iniDate();
         iniFoundLine();
         iniTitle();
@@ -256,37 +266,46 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         } else {
             ivTyp.setDrawable(FieldNoteViewItem.getTypeIcon(fieldNote));
         }
-        Box b = new Box(ivTyp, "");
-        b.addLast(ivTyp, FIXED);
-        scrollBoxContent.addNext(b, 0.33f);
+        // Box b = new Box(ivTyp, "");
+        //b.addLast(ivTyp, FIXED);
+        //scrollBoxContent.addNext(b, 0.33f);
+        scrollBoxContent.addNext(ivTyp, FIXED);
+
         title = new Label(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
         title.setFont(Fonts.getBig());
         scrollBoxContent.addLast(title);
     }
 
     private void iniFoundLine() {
-        scrollBoxContent.addNext(new Label(Translation.Get("caches_found")), 0.6f); // dummy
-        tvFounds = new Label("#" + fieldNote.foundNumber);
-        if (fieldNote.isTbFieldNote)
-            tvFounds.setText("");
-        tvFounds.setFont(Fonts.getBig());
-        scrollBoxContent.addLast(tvFounds, 0.4f);
+        // scrollBoxContent.addNext(new Label(Translation.Get("caches_found")), 0.6f); // dummy
     }
 
     private void iniDate() {
         //scrollBoxContent.addNext(new Label(), 0.33f); // dummy
 
-        lblDate = new Label();
-        lblDate.setFont(Fonts.getBig());
-        lblDate.setText(Translation.Get("date") + ":");
-        scrollBoxContent.addNext(lblDate, 0.6f);
+        // lblDate = new Label();
+        // lblDate.setFont(Fonts.getBig());
+        // lblDate.setText(Translation.Get("date") + ":");
+        // scrollBoxContent.addNext(lblDate, 0.2f);
+
+        tvFounds = new Label("#" + fieldNote.foundNumber);
+        if (fieldNote.isTbFieldNote)
+            tvFounds.setText("");
+        tvFounds.setFont(Fonts.getBig());
+        tvFounds.setWidth(tvFounds.getTextWidth());
+        scrollBoxContent.addNext(tvFounds, FIXED);
 
         tvDate = new EditTextField(this, "*" + Translation.Get("date"));
         tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
-        scrollBoxContent.addLast(tvDate, 0.4f);
+        scrollBoxContent.addNext(tvDate, 0.4f);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
         String sDate = iso8601Format.format(fieldNote.timestamp);
         tvDate.setText(sDate);
+        tvTime = new EditTextField(this, "*" + Translation.Get("time"));
+        tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
+        scrollBoxContent.addLast(tvTime, 0.4f);
+        String sTime = new SimpleDateFormat("HH:mm").format(fieldNote.timestamp);
+        tvTime.setText(sTime);
     }
 
     private void iniTime() {
@@ -297,12 +316,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         lblTime.setText(Translation.Get("time") + ":");
         scrollBoxContent.addNext(lblTime, 0.6f);
 
-        tvTime = new EditTextField(this, "*" + Translation.Get("time"));
-        tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
-        scrollBoxContent.addLast(tvTime, 0.4f);
-        DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
-        String sTime = iso8601Format.format(fieldNote.timestamp);
-        tvTime.setText(sTime);
     }
 
     private void iniGC_VoteItem() {
@@ -320,6 +333,99 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         etComment.setHeight(getHeight() / 2.5f);
         scrollBoxContent.addLast(etComment);
         etComment.setText(fieldNote.comment);
+
+        btnHow = new Button("=");
+        btnHow.setOnClickListener((v, x, y, pointer, button) -> {
+            if (btnHow.getText().equals("="))
+                btnHow.setText("+");
+            else if (btnHow.getText().equals("+"))
+                btnHow.setText("|");
+            else btnHow.setText("=");
+            return true;
+        });
+        scrollBoxContent.addNext(btnHow, FIXED);
+
+        Button btnFromNotes = new Button(Translation.Get("fromNotes"));
+        btnFromNotes.setOnClickListener((v, x, y, pointer, button) -> {
+            String text = Database.GetNote(fieldNote.CacheId);
+            if (text.length() > 0) {
+                String sBegin = "<Import from Geocaching.com>";
+                String sEnd = "</Import from Geocaching.com>";
+                int iBegin = text.indexOf(sBegin);
+                int iEnd = text.indexOf(sEnd) + sEnd.length();
+                if (iBegin > 0 && iEnd > 0 && iBegin < iEnd) {
+                    text = text.substring(0, iBegin) + text.substring(iEnd);
+                }
+                sBegin = "<Solver>";
+                sEnd = "</Solver>";
+                iBegin = text.indexOf(sBegin);
+                iEnd = text.indexOf(sEnd) + sEnd.length();
+                if (iBegin > 0 && iEnd > 0 && iBegin < iEnd) {
+                    text = text.substring(0, iBegin).trim() + text.substring(iEnd).trim();
+                }
+            }
+            setupLogText(text);
+            return true;
+        });
+        scrollBoxContent.addNext(btnFromNotes);
+
+        Button btnFromLog = new Button(Translation.Get("fromLog"));
+        btnFromLog.setOnClickListener((v, x, y, pointer, button) -> {
+            setupLogText("FromLog");
+            return true;
+        });
+        // scrollBoxContent.addNext(btnFromLog);
+
+        Button btnFromFile = new Button(Translation.Get("fromFile"));
+        btnFromFile.setOnClickListener((v, x, y, pointer, button) -> {
+            String mPath = Config.TemplateLastUsedPath.getValue();
+            if (mPath.length() == 0) {
+                mPath = Config.mWorkPath + "/User";
+            }
+            mPath = mPath + "/" + Config.TemplateLastUsedName.getValue();
+            PlatformConnector.getFile(mPath, "*.txt", Translation.Get("TemplateTitleSelect"), Translation.Get("TemplateButtonSelect"), PathAndName -> {
+                File file = FileFactory.createFile(PathAndName);
+                BufferedReader br = null;
+                String strLine;
+                StringBuilder text = new StringBuilder();
+                try {
+                    br = new BufferedReader(new InputStreamReader(file.getFileInputStream()));
+                    while ((strLine = br.readLine()) != null) {
+                        text.append(strLine).append("\n");
+                    }
+                    Config.TemplateLastUsedPath.setValue(file.getParent());
+                    Config.TemplateLastUsedName.setValue(file.getName());
+                } catch (Exception ignored) {
+                }
+                try {
+                    if (br != null) br.close();
+                } catch (Exception ignored) {
+                }
+                setupLogText(text.toString());
+            });
+            return true;
+        });
+        scrollBoxContent.addLast(btnFromFile);
+    }
+
+    private void setupLogText(String text) {
+        // todo for ##owner## the cache must be selected (if not first log)
+        text = TemplateFormatter.ReplaceTemplate(text, fieldNote);
+        switch (btnHow.getText()) {
+            case "=":
+                etComment.setText(text);
+                break;
+            case "+":
+                etComment.setText(etComment.getText() + text);
+                break;
+            case "|":
+                etComment.setFocus(true);
+                for (int i = 0; i < text.length(); i++) {
+                    etComment.keyTyped(text.charAt(i));
+                }
+                etComment.setFocus(false);
+                break;
+        }
     }
 
     private void iniOptions() {
@@ -347,17 +453,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         }
         rbDirectLog.setChecked(true);
         rbOnlyFieldNote.setChecked(false);
-    }
-
-    private void iniTextfieldFocus() {
-        registerTextField(etComment);
-        etComment.showLastLines();
-        registerTextField(tvDate);
-        registerTextField(tvTime);
-    }
-
-    public void registerTextField(final EditTextField textField) {
-        allTextFields.add(textField);
     }
 
     @Override

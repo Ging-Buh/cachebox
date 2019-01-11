@@ -10,7 +10,23 @@ import java.util.Date;
 public class TemplateFormatter {
     public static String ReplaceTemplate(String template, FieldNoteEntry fieldNote) {
         template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
-        return ReplaceTemplate(template, fieldNote.timestamp);
+        DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
+        String stime = iso8601Format.format(fieldNote.timestamp);
+        iso8601Format = new SimpleDateFormat("dd-MM-yyyy");
+        String sdate = iso8601Format.format(fieldNote.timestamp);
+
+        template = template.replace("<br>", "\n");
+        template = template.replace("##date##", sdate);
+        template = template.replace("##time##", stime);
+        if (GlobalCore.isSetSelectedCache() && fieldNote.gcCode.equals(GlobalCore.getSelectedCache().getGcCode())) {
+            template = template.replace("##owner##", GlobalCore.getSelectedCache().getOwner());
+        } else {
+            template = template.replace("##owner##", "????????");
+        }
+
+        template = template.replace("##gcusername##", Config.GcLogin.getValue());
+
+        return template;
     }
 
     public static String ReplaceTemplate(String template, Trackable TB) {
@@ -27,6 +43,7 @@ public class TemplateFormatter {
         template = template.replace("##date##", sdate);
         template = template.replace("##time##", stime);
         if (GlobalCore.isSetSelectedCache()) {
+            // todo TB is possibly not in the selected cache
             template = template.replace("##owner##", GlobalCore.getSelectedCache().getOwner());
         } else {
             template = template.replace("##owner##", "????????");

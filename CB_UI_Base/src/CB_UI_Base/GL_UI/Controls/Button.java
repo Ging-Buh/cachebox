@@ -295,6 +295,10 @@ public class Button extends CB_View_Base {
         return null;
     }
 
+    public float getTextWidth() {
+        return lblTxt.getTextWidth(); // + getWidth() - getInnerWidth();
+    }
+
     public void setText(String Text) {
         setText(Text, null, null);
     }
