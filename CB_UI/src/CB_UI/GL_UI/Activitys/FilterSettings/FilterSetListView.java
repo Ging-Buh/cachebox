@@ -296,7 +296,6 @@ public class FilterSetListView extends V_ListView {
             FilterSetListViewItem itm = types.getChild(i);
             int ct = itm.getFilterSetEntry().cacheType.ordinal();
             itm.setValue(props.mCacheTypes[ct]);
-            itm.unCheck();
         }
 
         for (int i = 0; i < attribs.getChildLength(); i++) {
