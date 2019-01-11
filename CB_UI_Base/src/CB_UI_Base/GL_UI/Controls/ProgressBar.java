@@ -19,12 +19,15 @@ public class ProgressBar extends CB_View_Base {
 
     public ProgressBar(CB_RectF rec, String Name) {
         super(rec, Name);
-
         label = new Label(this);
         label.setHAlignment(HAlignment.CENTER);
-
         this.addChild(label);
+    }
 
+    @Override
+    public void setWidth(float width) {
+        super.setWidth(width);
+        label.setWidth(width);
     }
 
     @Override
@@ -48,15 +51,16 @@ public class ProgressBar extends CB_View_Base {
      * @param value
      * @return the pos of Progress end
      */
-    public float setProgress(int value) {
-        if (this.isDisposed())
-            return 0;
-        progress = value;
-        if (progress > 100)
-            progress = 100;
-        progressDrawWidth = (getWidth() / 100) * progress;
-        GL.that.renderOnce();
-        return progressDrawWidth;
+    public void setProgress(int value) {
+        if (!isDisposed()) {
+            if (value > progress) {
+                progress = value;
+                if (progress > 100)
+                    progress = 100;
+                progressDrawWidth = (getWidth() / 100) * progress;
+                GL.that.renderOnce();
+            }
+        }
     }
 
     /**
@@ -64,22 +68,16 @@ public class ProgressBar extends CB_View_Base {
      * @param Msg
      * @return the pos of Progress end
      */
-    public float setProgress(int value, final String Msg) {
-        if (this.isDisposed())
-            return 0;
-        msg = Msg;
-
-        float ret = setProgress(value);
-
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                label.setText(msg);
+    public void setProgress(int value, final String Msg) {
+        if (!isDisposed()) {
+            if (value > progress) {
+                setProgress(value);
+                if (!msg.equals(Msg)) {
+                    msg = Msg;
+                    GL.that.RunOnGL(() -> label.setText(msg));
+                }
             }
-        });
-
-        return ret;
+        }
     }
 
     public void setProgressFill(Drawable drawable) {
@@ -116,7 +114,7 @@ public class ProgressBar extends CB_View_Base {
     }
 
     public void setText(String message) {
-        if (this.isDisposed())
+        if (isDisposed())
             return;
         msg = message;
         label.setText(msg);

@@ -26,8 +26,8 @@ public class FloatControl extends CB_View_Base {
     }
 
     public void setProgress(int value) {
-        float progressDrawWidth = progressbar.setProgress(value);
-        float ButtonPos = progressDrawWidth - slideButton.getHalfWidth();
+        progressbar.setProgress(value);
+        float ButtonPos = progressbar.progressDrawWidth - slideButton.getHalfWidth();
         if (ButtonPos < 0)
             ButtonPos = 0;
         if (ButtonPos > this.getWidth() - slideButton.getWidth())

@@ -14,7 +14,6 @@ public class ProgresssChangedEventList {
             ProgressChangedEvent event = list.get(i);
             event.ProgressChangedEventCalled(Msg, ProgressMessage, Progress);
         }
-
     }
 
     public static void Call(String Msg, int Progress) {
@@ -22,7 +21,6 @@ public class ProgresssChangedEventList {
             ProgressChangedEvent event = list.get(i);
             event.ProgressChangedEventCalled("", Msg, Progress);
         }
-
     }
 
     public static void Remove(ProgressChangedEvent event) {

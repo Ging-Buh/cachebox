@@ -71,6 +71,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private void initClickHandlersAndContent() {
         bOK.setOnClickListener((v, x, y, pointer, button) -> {
             importRuns = true;
+            bOK.disable();
             GL.that.postAsync(() -> {
                 doImport();
                 finish();
@@ -80,6 +81,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
         bCancel.setOnClickListener((v, x, y, pointer, button) -> {
             if (importRuns) {
+                bOK.enable();
                 isCanceled = true;
             } else {
                 finish();
@@ -151,7 +153,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             Config.GSAKLastUsedDatabasePath.setValue(mPath);
             Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
             Config.AcceptChanges();
-            int count = -1;
+            int count = 0;
             CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
             c.moveToFirst();
             int anz = c.getInt(0);
@@ -159,7 +161,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             reader.moveToFirst();
             while (!reader.isAfterLast() && !isCanceled) {
                 count++;
-                ProgresssChangedEventList.Call("", "", count * 100 / anz);
+                ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
                 String GcCode = "";
                 try {
                     GcCode = reader.getString("Code");
@@ -461,16 +463,8 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     @Override
-    public void ProgressChangedEventCalled(String Message, String ProgressMessage, int Progress) {
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                progressBar.setProgress(Progress);
-                // lblProgressMsg.setText(ProgressMessage);
-                if (!Message.equals(""))
-                    progressBar.setText(Message);
-            }
-        });
+    public void ProgressChangedEventCalled(String message, String progressMessage, int progress) {
+        progressBar.setProgress(progress, progressMessage);
     }
 
     @Override

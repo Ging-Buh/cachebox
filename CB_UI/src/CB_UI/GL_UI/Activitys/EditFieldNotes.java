@@ -395,6 +395,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
                     }
                     Config.TemplateLastUsedPath.setValue(file.getParent());
                     Config.TemplateLastUsedName.setValue(file.getName());
+                    Config.AcceptChanges();
                 } catch (Exception ignored) {
                 }
                 try {

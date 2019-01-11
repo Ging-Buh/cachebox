@@ -44,7 +44,7 @@ public class CB_RectF {
      * [9] = centerPos.x <br>
      */
     private float member[] = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    private CB_List<SizeChangedEvent> list = new CB_List<SizeChangedEvent>(1);
+    private CB_List<SizeChangedEvent> list = new CB_List<>(1);
 
     public CB_RectF() {
     }

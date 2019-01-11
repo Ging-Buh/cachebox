@@ -18,6 +18,6 @@ package CB_UI_Base.Math;
 
 public interface SizeChangedEvent {
 
-    public void sizeChanged();
+    void sizeChanged();
 
 }
