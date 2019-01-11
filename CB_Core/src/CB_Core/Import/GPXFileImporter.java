@@ -738,6 +738,13 @@ public class GPXFileImporter {
             }
         });
 
+        ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/gsak:wptExtension/gsak:FavPoints") {
+            @Override
+            public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
+                values.put("cache_gsak_favpoints", text);
+            }
+        });
+
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/gsak:wptExtension/gsak:LatBeforeCorrect") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
@@ -755,7 +762,7 @@ public class GPXFileImporter {
 
         });
 
-        // Cache Rules for GPX from GSAK
+        // Cache Rules for GPX from Groundspeak
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/groundspeak:cache", "id", "available", "archived") {
             @Override
