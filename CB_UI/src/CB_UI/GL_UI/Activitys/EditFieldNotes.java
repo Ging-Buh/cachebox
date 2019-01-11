@@ -69,8 +69,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     private Label tvFounds = null;
     private EditTextField tvDate = null;
     private EditTextField tvTime = null;
-    private Label lblDate = null;
-    private Label lblTime = null;
     private ScrollBox scrollBox = null;
     private Box scrollBoxContent;
     private boolean isNewFieldNote;
@@ -86,7 +84,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         fieldNote = note;
         altfieldNote = note.copy();
         initLayoutWithValues();
-        etComment.showLastLines();
     }
 
     public GL_View_Base touchDown(int x, int y, int pointer, int button) {
@@ -106,33 +103,34 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         addNext(btnOK);
         addLast(btnCancel);
         scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
+        scrollBox.setBackground(this.getBackground());
 
-        scrollBoxContent = new Box(scrollBox.getWidth(), 0);
+        scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
         scrollBoxContent.initRow(BOTTOMUP);
         if (fieldNote.type.isDirectLogType())
             iniOptions();
         iniGC_VoteItem();
         initLogText();
-        // iniTime();
         iniDate();
-        iniFoundLine();
         iniTitle();
         scrollBoxContent.adjustHeight();
 
         scrollBox.setVirtualHeight(scrollBoxContent.getHeight());
         scrollBox.addChild(scrollBoxContent);
         addLast(scrollBox);
+
         setOkAndCancelClickHandlers();
+        etComment.showLastLines();
     }
 
     private void setValuesToLayout() {
-        // initLogText();
+        // initLogText
         etComment.setText(fieldNote.comment);
-        // iniDate();
+        // Date
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
         String sDate = iso8601Format.format(fieldNote.timestamp);
         tvDate.setText(sDate);
-        // iniTime();
+        // Time
         iso8601Format = new SimpleDateFormat("HH:mm");
         String sTime = iso8601Format.format(fieldNote.timestamp);
         tvTime.setText(sTime);
@@ -151,110 +149,99 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         } else {
             rbOnlyFieldNote.setChecked(true);
         }
-        // todo iniGC_VoteItem();
-        // iniFoundLine();
         tvFounds.setText("#" + fieldNote.foundNumber);
         if (fieldNote.isTbFieldNote)
             tvFounds.setText("");
-        // todo Icon anpassen ivTyp
-        // iniTitle();
+        //
         title.setText(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
     }
 
     private void setOkAndCancelClickHandlers() {
-        btnOK.setOnClickListener(new OnClickListener() {
+        btnOK.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mReturnListener != null) {
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mReturnListener != null) {
-
-                    if (fieldNote.type.isDirectLogType()) {
-                        fieldNote.isDirectLog = rbDirectLog.isChecked();
-                    } else {
-                        fieldNote.isDirectLog = false;
-                    }
-
-                    fieldNote.comment = etComment.getText();
-
-                    if (GcVote != null) {
-                        fieldNote.gc_Vote = (int) (GcVote.getValue() * 100);
-                    } else fieldNote.gc_Vote = 0;
-
-                    // parse Date and Time
-                    String date = tvDate.getText();
-                    String time = tvTime.getText();
-
-                    date = date.replace("-", ".");
-                    time = time.replace(":", ".");
-
-                    try {
-                        Date timestamp;
-                        DateFormat formatter;
-
-                        formatter = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
-                        timestamp = formatter.parse(date + "." + time + ".00");
-
-                        fieldNote.timestamp = timestamp;
-                    } catch (ParseException e) {
-                        final GL_MsgBox msg = GL_MsgBox.Show(Translation.Get("wrongDate"), Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
-
-                            @Override
-                            public boolean onClick(int which, Object data) {
-                                Timer runTimer = new Timer();
-                                TimerTask task = new TimerTask() {
-
-                                    @Override
-                                    public void run() {
-                                        show();
-                                    }
-                                };
-
-                                runTimer.schedule(task, 200);
-
-                                return true;
-                            }
-                        });
-
-                        Timer runTimer = new Timer();
-                        TimerTask task = new TimerTask() {
-
-                            @Override
-                            public void run() {
-                                GL.that.showDialog(msg);
-                            }
-                        };
-
-                        runTimer.schedule(task, 200);
-                        return true;
-                    }
-
-                    // check of changes
-                    if (!altfieldNote.equals(fieldNote)) {
-                        fieldNote.uploaded = false;
-                        fieldNote.UpdateDatabase();
-                        FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
-                    }
-
-                    boolean dl = false;
-                    if (fieldNote.isDirectLog)
-                        dl = true;
-
-                    mReturnListener.returnedFieldNote(fieldNote, isNewFieldNote, dl);
+                if (fieldNote.type.isDirectLogType()) {
+                    fieldNote.isDirectLog = rbDirectLog.isChecked();
+                } else {
+                    fieldNote.isDirectLog = false;
                 }
-                finish();
-                return true;
+
+                fieldNote.comment = etComment.getText();
+
+                if (GcVote != null) {
+                    fieldNote.gc_Vote = (int) (GcVote.getValue() * 100);
+                } else fieldNote.gc_Vote = 0;
+
+                // parse Date and Time
+                String date = tvDate.getText();
+                String time = tvTime.getText();
+
+                date = date.replace("-", ".");
+                time = time.replace(":", ".");
+
+                try {
+                    Date timestamp;
+                    DateFormat formatter;
+
+                    formatter = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+                    timestamp = formatter.parse(date + "." + time + ".00");
+
+                    fieldNote.timestamp = timestamp;
+                } catch (ParseException e) {
+                    final GL_MsgBox msg = GL_MsgBox.Show(Translation.Get("wrongDate"), Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
+
+                        @Override
+                        public boolean onClick(int which, Object data) {
+                            Timer runTimer = new Timer();
+                            TimerTask task = new TimerTask() {
+
+                                @Override
+                                public void run() {
+                                    show();
+                                }
+                            };
+
+                            runTimer.schedule(task, 200);
+
+                            return true;
+                        }
+                    });
+
+                    Timer runTimer = new Timer();
+                    TimerTask task = new TimerTask() {
+
+                        @Override
+                        public void run() {
+                            GL.that.showDialog(msg);
+                        }
+                    };
+
+                    runTimer.schedule(task, 200);
+                    return true;
+                }
+
+                // check of changes
+                if (!altfieldNote.equals(fieldNote)) {
+                    fieldNote.uploaded = false;
+                    fieldNote.UpdateDatabase();
+                    FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
+                }
+
+                boolean dl = false;
+                if (fieldNote.isDirectLog)
+                    dl = true;
+
+                mReturnListener.returnedFieldNote(fieldNote, isNewFieldNote, dl);
             }
+            finish();
+            return true;
         });
 
-        btnCancel.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mReturnListener != null)
-                    mReturnListener.returnedFieldNote(null, false, false);
-                finish();
-                return true;
-            }
+        btnCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mReturnListener != null)
+                mReturnListener.returnedFieldNote(null, false, false);
+            finish();
+            return true;
         });
 
     }
@@ -266,9 +253,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         } else {
             ivTyp.setDrawable(FieldNoteViewItem.getTypeIcon(fieldNote));
         }
-        // Box b = new Box(ivTyp, "");
-        //b.addLast(ivTyp, FIXED);
-        //scrollBoxContent.addNext(b, 0.33f);
         scrollBoxContent.addNext(ivTyp, FIXED);
 
         title = new Label(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
@@ -276,18 +260,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         scrollBoxContent.addLast(title);
     }
 
-    private void iniFoundLine() {
-        // scrollBoxContent.addNext(new Label(Translation.Get("caches_found")), 0.6f); // dummy
-    }
-
     private void iniDate() {
-        //scrollBoxContent.addNext(new Label(), 0.33f); // dummy
-
-        // lblDate = new Label();
-        // lblDate.setFont(Fonts.getBig());
-        // lblDate.setText(Translation.Get("date") + ":");
-        // scrollBoxContent.addNext(lblDate, 0.2f);
-
         tvFounds = new Label("#" + fieldNote.foundNumber);
         if (fieldNote.isTbFieldNote)
             tvFounds.setText("");
@@ -306,16 +279,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         scrollBoxContent.addLast(tvTime, 0.4f);
         String sTime = new SimpleDateFormat("HH:mm").format(fieldNote.timestamp);
         tvTime.setText(sTime);
-    }
-
-    private void iniTime() {
-        //scrollBoxContent.addNext(new Label(), 0.33f); // dummy
-
-        lblTime = new Label();
-        lblTime.setFont(Fonts.getBig());
-        lblTime.setText(Translation.Get("time") + ":");
-        scrollBoxContent.addNext(lblTime, 0.6f);
-
     }
 
     private void iniGC_VoteItem() {
@@ -461,7 +424,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         super.onTouchDown(x, y, pointer, button);
 
         if (etComment.contains(x, y)) {
-            // TODO close SoftKeyboard
             scrollBoxContent.setY(0);
         }
 
@@ -470,7 +432,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         for (Iterator<GL_View_Base> iterator = scrollBox.getchilds().reverseIterator(); iterator.hasNext(); ) {
             // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
             GL_View_Base view = iterator.next();
-
             if (view instanceof FilterSetListViewItem) {
                 if (view.contains(x, y)) {
                     ((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
@@ -492,8 +453,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         tvFounds = null;
         tvDate = null;
         tvTime = null;
-        lblDate = null;
-        lblTime = null;
         scrollBox = null;
         GcVote = null;
     }
@@ -527,6 +486,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     }
 
     public interface IReturnListener {
-        public void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote, boolean directlog);
+        void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote, boolean directlog);
     }
 }
