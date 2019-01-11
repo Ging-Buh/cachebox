@@ -543,7 +543,7 @@ public class GroundspeakAPI {
         }
 
         int start = 0;
-        int count = 30;
+        int count = 50;
 
         while (!cancelRun.doCancel())
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis Logs aller Freunde geladen sind.
