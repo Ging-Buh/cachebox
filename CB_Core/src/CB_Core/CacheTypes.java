@@ -191,9 +191,9 @@ public enum CacheTypes {
             case Multi:
                 return "Multi-cache";
             case MultiQuestion:
-                return "Question to Answer";
+                return "Virtual Stage"; // "Question to Answer";
             case MultiStage:
-                return "Stages of a Multicache";
+                return "Physical Stage"; //"Stages of a Multicache";
             case Munzee:
                 break;
             case MyParking:
