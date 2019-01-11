@@ -153,6 +153,9 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             Config.GSAKLastUsedDatabasePath.setValue(mPath);
             Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
             Config.AcceptChanges();
+
+            Database.Data.sql.beginTransaction();
+
             int count = 0;
             CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
             c.moveToFirst();
@@ -179,9 +182,9 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 reader.moveToNext();
             }
             reader.close();
-            // sql.setTransactionSuccessful();
+            Database.Data.sql.setTransactionSuccessful();
         }
-        // sql.endTransaction();
+        Database.Data.sql.endTransaction();
         PlatformConnector.freeSQLInstance(sql);
     }
 
