@@ -657,15 +657,8 @@ public class SearchDialog extends PopUp_Base {
         if (mSearchState == SearchMode.Owner)
             FilterInstances.getLastFilter().filterOwner = searchPattern;
 
-        ApplyFilter();
-    }
+        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
 
-    public void ApplyFilter() {
-        ApplyFilter(FilterInstances.getLastFilter());
-    }
-
-    public void ApplyFilter(FilterProperties filter) {
-        EditFilterSettings.ApplyFilter(filter);
     }
 
     public void doSearchOnline(final String searchPattern, final SearchMode searchMode) {

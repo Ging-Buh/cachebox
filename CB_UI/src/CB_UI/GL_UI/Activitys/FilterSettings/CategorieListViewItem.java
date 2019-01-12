@@ -223,7 +223,8 @@ public class CategorieListViewItem extends ListViewItemBackground {
 
         drawIcon(batch);
         drawRightChkBox(batch);
-        int ChkState = 0;
+
+        int ChkState;
         if (this.categorieEntry.getItemType() == FilterSetListView.COLLAPSE_BUTTON_ITEM) {
             ChkState = this.categorieEntry.getCat().getCheck();
         } else {
@@ -233,19 +234,14 @@ public class CategorieListViewItem extends ListViewItemBackground {
         if (ChkState == 1) {
             if (chkOn == null) {
                 chkOn = Sprites.getSprite("check-on");
-
                 chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-
             }
-
             chkOn.draw(batch);
         }
-        if (ChkState == -1) {
+        else if (ChkState == -1) {
             if (chkOff == null) {
                 chkOff = Sprites.getSprite("check-disable");
-
                 chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-
             }
             chkOff.draw(batch);
         }

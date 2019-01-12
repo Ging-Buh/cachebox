@@ -26,6 +26,13 @@ public class FilterSetListView extends V_ListView {
     public static final int NUMERIC_ITEM = 3;
     public static final int NUMERIC_INT_ITEM = 4;
     public static boolean mustSaveFilter = false;
+    // the collapse buttons
+    private static FilterSetListViewItem activeCollapseButton; // only one should be active
+    private static FilterSetListViewItem general;
+    private static FilterSetListViewItem dt;
+    private static FilterSetListViewItem types;
+    private static FilterSetListViewItem attribs;
+    //
     private static FilterSetListViewItem NotAvailable;
     private static FilterSetListViewItem Archived;
     private static FilterSetListViewItem Finds;
@@ -46,8 +53,6 @@ public class FilterSetListView extends V_ListView {
     private static FilterSetListViewItem maxRating;
     private static FilterSetListViewItem minFavPoints;
     private static FilterSetListViewItem maxFavPoints;
-    private static FilterSetListViewItem types;
-    private static FilterSetListViewItem attribs;
     int index = 0;
     private ArrayList<FilterSetEntry> lFilterSets;
     private ArrayList<FilterSetListViewItem> lFilterSetListViewItems;
@@ -121,7 +126,7 @@ public class FilterSetListView extends V_ListView {
     private void fillFilterSetList() {
 
         // add General
-        FilterSetListViewItem general = addFilterSetCollapseItem(null, Translation.Get("General"), COLLAPSE_BUTTON_ITEM);
+        general = addFilterSetCollapseItem(null, Translation.Get("General"), COLLAPSE_BUTTON_ITEM);
         NotAvailable = general.addChild(addFilterSetItem(Sprites.getSprite("disabled"), Translation.Get("disabled"), THREE_STATE_ITEM));
         Archived = general.addChild(addFilterSetItem(Sprites.getSprite("not-available"), Translation.Get("archived"), THREE_STATE_ITEM));
         Finds = general.addChild(addFilterSetItem(Sprites.getSprite("log0icon"), Translation.Get("myfinds"), THREE_STATE_ITEM));
@@ -134,7 +139,7 @@ public class FilterSetListView extends V_ListView {
         hasCorrectedCoordinates = general.addChild(addFilterSetItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.Get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
         // add D/T
-        FilterSetListViewItem dt = addFilterSetCollapseItem(null, "D / T" + "\n" + "GC-Vote", COLLAPSE_BUTTON_ITEM);
+        dt = addFilterSetCollapseItem(null, "D / T" + "\n" + "GC-Vote", COLLAPSE_BUTTON_ITEM);
         minDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minDifficulty"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
         maxDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
         minTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minTerrain"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
@@ -152,21 +157,6 @@ public class FilterSetListView extends V_ListView {
         for (int i = 0; i < CacheTypes.caches().length; i++) {
             types.addChild(addFilterSetItem(CacheTypes.caches()[i]));
         }
-        /**
-         types.addChild(addFilterSetItem(CacheTypes.Traditional, Sprites.BigIcons.get(0), "Traditional", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Multi, Sprites.BigIcons.get(1), "Multi-Cache", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Mystery, Sprites.BigIcons.get(2), "Mystery", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Camera, Sprites.BigIcons.get(3), "Webcam Cache", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Earth, Sprites.BigIcons.get(4), "Earthcache", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Event, Sprites.BigIcons.get(5), "Event", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.MegaEvent, Sprites.BigIcons.get(6), "Mega Event", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.CITO, Sprites.BigIcons.get(7), "Cache In Trash Out", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Virtual, Sprites.BigIcons.get(8), "Virtual Cache", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Letterbox, Sprites.BigIcons.get(9), "Letterbox", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Wherigo, Sprites.BigIcons.get(10), "Wherigo", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Munzee, Sprites.BigIcons.get(25), "Munzee", CHECK_ITEM));
-         types.addChild(addFilterSetItem(CacheTypes.Giga, Sprites.MapIcons.get(27), "Giga", CHECK_ITEM));
-         **/
 
         // add Attributes
         attribs = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
@@ -252,19 +242,27 @@ public class FilterSetListView extends V_ListView {
         FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
         lFilterSetListViewItems.add(v);
 
-        v.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                collapseButton_Clicked((FilterSetListViewItem) v);
-                return false;
+        v.setOnClickListener((v1, x, y, pointer, button) -> {
+            // only one or none should be active
+            if (activeCollapseButton != null) {
+                if (activeCollapseButton == v1) {
+                    activeCollapseButton = null;
+                } else {
+                    collapseButton_Clicked(activeCollapseButton);
+                    activeCollapseButton = (FilterSetListViewItem) v1;
+                }
+            } else {
+                activeCollapseButton = (FilterSetListViewItem) v1;
             }
+            collapseButton_Clicked((FilterSetListViewItem) v1);
+            return false;
         });
 
         return v;
     }
 
     private void collapseButton_Clicked(FilterSetListViewItem item) {
-        item.toggleChildeViewState();
+        item.toggleChildViewState();
         this.notifyDataSetChanged();
         this.invalidate();
     }
@@ -306,26 +304,19 @@ public class FilterSetListView extends V_ListView {
 
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
-
         super.onTouchDown(x, y, pointer, button);
         synchronized (childs) {
-            // for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
             for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
                 // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                 GL_View_Base view = iterator.next();
-
                 // Invisible Views can not be clicked!
-                if (!view.isVisible())
-                    continue;
-                if (view.contains(x, y)) {
-
-                    ((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
-
+                if (view.isVisible()) {
+                    if (view.contains(x, y)) {
+                        ((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
+                    }
                 }
-
             }
         }
-
         return true;
     }
 

@@ -68,7 +68,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         return item;
     }
 
-    public void toggleChildeViewState() {
+    public void toggleChildViewState() {
         if (mChildList != null && mChildList.size() > 0) {
             boolean newState = !mChildList.get(0).isVisible();
 
