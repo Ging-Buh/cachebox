@@ -56,8 +56,21 @@ public class CacheListDAO {
         for (String gcCode : GC_Codes) {
             orParts.add("GcCode like '%" + gcCode + "%'");
         }
-        String where = FilterProperties.join(" or ", orParts);
+        String where = join(" or ", orParts);
         return ReadCacheList(cacheList, "", where, withDescription, fullDetails, loadAllWaypoints);
+    }
+
+    private String join(String separator, ArrayList<String> array) {
+        String retString = "";
+
+        int count = 0;
+        for (String tmp : array) {
+            retString += tmp;
+            count++;
+            if (count < array.size())
+                retString += separator;
+        }
+        return retString;
     }
 
     public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails, boolean loadAllWaypoints) {

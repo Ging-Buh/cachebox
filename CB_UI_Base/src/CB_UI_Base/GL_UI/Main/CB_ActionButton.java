@@ -22,7 +22,7 @@ public class CB_ActionButton {
         return action;
     }
 
-    public boolean getDefaultAction() {
+    public boolean isDefault() {
         return defaultAction;
     }
 

@@ -4,6 +4,24 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 
+Änderungen bis Version 3294:
+    + Upload korrigierte Koordinaten im Wegpunktmenü
+	+ Staat und Land können bearbeitet werden (Bearbeite Cache).
+	+ Android Tastatur einschaltbar (Wortvorschläge,...)
+	+ Gesten: Hilfe im Menü
+	* Laden aller Freunde
+	* Löschen der Dateien in PocketQuery nach Import
+	* Unterbinden leerer Logs
+	~ Sortierung der PQs nach Namen
+	+ direkter Import aus GSAK Datenbank
+	*+ GPX Export (Beschreibung,...), neue Typen
+	* Laden aller TBs
+	+ Erweiterte Vorlagen fürs Loggen (Notizen, Dateien)
+	+ GPX Import: GSAK Favoritenpunkte
+	~ 50 Logs per call
+	* Filtern Anzeige, ...
+	+ Merke letzte Hauptschaltflächen Aktion (optional statt Standard Aktion)
+
 Änderungen bis Version 3249:
     * diverse Kleinigkeiten
     + Import der Freunde

@@ -3,6 +3,24 @@
 • Fixes = *
 • Deletions = -
 
+Changes up to version 3294:
+     + Upload corrected coordinates in the waypoint menu
+     + State and country can be edited (Edit Cache).
+     + Android keyboard switchable (word suggestions, ...)
+     + Gestures: Help in the menu
+     * Loading all friends
+     * Delete the files in PocketQuery directory after import
+     * Prevent empty logs
+     ~ Sort the PQs by name
+     + direct import from GSAK database
+     *+ GPX export (description, ...), new types
+     * Loading all TBs
+     + Advanced templates for logging (notes, files)
+     + GPX import: GSAK favorites
+     ~ Import 50 logs per call (Log refresh)
+     * Filters display, ...
+     + Remember last action of main buttons (optional instead of default action)
+
 Version changes until 3249:
      * various little things
      + Import of friends

@@ -27,9 +27,9 @@ public class PlatformSettings {
 
     // ------ setPlatformSetting ------
     public interface IPlatformSettings {
-        public SettingBase<?> Read(SettingBase<?> setting);
+        SettingBase<?> Read(SettingBase<?> setting);
 
-        public void Write(SettingBase<?> setting);
+        void Write(SettingBase<?> setting);
 
     }
 

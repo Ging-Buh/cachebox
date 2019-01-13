@@ -259,7 +259,7 @@ public class FilterProperties {
         }
     }
 
-    public static String join(String separator, ArrayList<String> array) {
+    private String join(String separator, ArrayList<String> array) {
         String retString = "";
 
         int count = 0;

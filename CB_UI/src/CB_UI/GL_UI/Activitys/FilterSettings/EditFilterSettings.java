@@ -253,46 +253,40 @@ public class EditFilterSettings extends ActivityBase {
         props = Props;
         pd = WaitDialog.ShowWait(Translation.Get("FilterCaches"));
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    synchronized (Database.Data.Query) {
-                        String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
-                        Log.info(log, "Main.ApplyFilter: " + sqlWhere);
-                        Database.Data.Query.clear();
-                        CacheListDAO cacheListDAO = new CacheListDAO();
-                        cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-                        GlobalCore.checkSelectedCacheValid();
-                    }
-                    CacheListChangedEventList.Call();
-                    pd.dismis();
-                    TabMainView.that.filterSetChanged();
-
-                    // Notify Map
-                    if (MapView.that != null)
-                        MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
-
-                    // Save selected filter (new JSON Format)
-                    // wont save History at the Moment
-                    // Marker must be removed, else isFiltered is shown
-                    // wont change the LastFilter
-                    if (FilterInstances.getLastFilter().isHistory) {
-                        FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
-                        tmp.isHistory = false;
-                        Config.FilterNew.setValue(tmp.toString());
-                    } else {
-                        Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
-                    }
-                    Config.AcceptChanges();
-                } catch (Exception e) {
-                    pd.dismis();
+        new Thread(() -> {
+            try {
+                synchronized (Database.Data.Query) {
+                    String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
+                    Log.info(log, "Main.ApplyFilter: " + sqlWhere);
+                    Database.Data.Query.clear();
+                    CacheListDAO cacheListDAO = new CacheListDAO();
+                    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    GlobalCore.checkSelectedCacheValid();
                 }
+                CacheListChangedEventList.Call();
+                pd.dismis();
+                TabMainView.that.filterSetChanged();
+
+                // Notify Map
+                if (MapView.that != null)
+                    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+
+                // Save selected filter (new JSON Format)
+                // wont save History at the Moment
+                // Marker must be removed, else isFiltered is shown
+                // wont change the LastFilter
+                if (FilterInstances.getLastFilter().isHistory) {
+                    FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
+                    tmp.isHistory = false;
+                    Config.FilterNew.setValue(tmp.toString());
+                } else {
+                    Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+                }
+                Config.AcceptChanges();
+            } catch (Exception e) {
+                pd.dismis();
             }
-
-        };
-
-        thread.start();
+        }).start();
 
     }
 

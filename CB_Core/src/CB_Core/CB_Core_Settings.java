@@ -57,10 +57,12 @@ public interface CB_Core_Settings {
     SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", LiveMap, NORMAL, true, Global, ACB);
     SettingEnum<Live_Cache_Time> LiveCacheTime = new SettingEnum<>("LiveCacheTime", LiveMap, NORMAL, Live_Cache_Time.h_6, Global, ACB, Live_Cache_Time.h_6);
 
-    SettingBool AskAgain = new SettingBool("AskAgain", SettingCategory.RememberAsk, NORMAL, true, SettingStoreType.Platform, SettingUsage.ALL); // used direct Android
-    SettingBool showSandbox = new SettingBool("showSandbox", RememberAsk, NORMAL, false, Platform, ACB);
-
     SettingBool UseCorrectedFinal = new SettingBool("UseCorrectedFinal", Misc, NORMAL, true, Global, ALL);
     SettingBool RunOverLockScreen = new SettingBool("RunOverLockScreen", Misc, NORMAL, true, Global, ACB);
+
+    // base settings, read directly from Platform, before the database can be accessed
+    SettingBool AskAgain = new SettingBool("AskAgain", SettingCategory.RememberAsk, NORMAL, true, SettingStoreType.Platform, SettingUsage.ALL);
+    SettingBool showSandbox = new SettingBool("showSandbox", RememberAsk, NORMAL, false, Platform, ACB);
+    SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Folder, NEVER, "data/lang/en-GB/strings.ini", Platform, ALL, "lan");
 
 }

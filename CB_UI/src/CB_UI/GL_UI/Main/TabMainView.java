@@ -454,17 +454,17 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
         CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
         if (Config.useDescriptiveCB_Buttons.getValue()) {
-            mCacheListButtonOnLeftTab = new CB_Button(btnRec, "CacheList");
-            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Cache");
-            mMapButtonOnLeftTab = new CB_Button(btnRec, "Nav");
-            mToolsButtonOnLeftTab = new CB_Button(btnRec, "Tool");
-            mAboutButtonOnLeftTab = new CB_Button(btnRec, "Misc");
+            mCacheListButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "CacheList");
+            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Cache");
+            mMapButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Nav");
+            mToolsButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Tool");
+            mAboutButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Misc");
         } else {
-            mCacheListButtonOnLeftTab = new CB_Button(btnRec, "CacheList", Sprites.CacheList);
-            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Cache", Sprites.Cache);
-            mMapButtonOnLeftTab = new CB_Button(btnRec, "Nav", Sprites.Nav);
-            mToolsButtonOnLeftTab = new CB_Button(btnRec, "Tool", Sprites.Tool);
-            mAboutButtonOnLeftTab = new CB_Button(btnRec, "Misc", Sprites.Misc);
+            mCacheListButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            mMapButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            mToolsButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            mAboutButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
         CB_ButtonList btnList = new CB_ButtonList();

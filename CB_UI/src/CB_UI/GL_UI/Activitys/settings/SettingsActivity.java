@@ -1277,26 +1277,21 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         };
 
-        Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(int index) {
-                String selected = items[index];
-                for (Lang tmp : Sprachen) {
-                    if (selected.equals(tmp.Name)) {
-                        Config.Sel_LanguagePath.setValue(tmp.Path);
+        Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, index1 -> {
+            String selected = items[index1];
+            for (Lang tmp : Sprachen) {
+                if (selected.equals(tmp.Name)) {
+                    Config.Sel_LanguagePath.setValue(tmp.Path);
+                    try {
+                        Translation.LoadTranslation(tmp.Path);
+                    } catch (Exception e) {
                         try {
-                            Translation.LoadTranslation(tmp.Path);
-                        } catch (Exception e) {
-                            try {
-                                Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
-                            }
+                            Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
                         }
-                        break;
                     }
-
+                    break;
                 }
             }
         });

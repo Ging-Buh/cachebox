@@ -43,6 +43,7 @@ public interface CB_UI_Base_Settings {
     SettingInt FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", Skin, EXPERT, 10, Global, ACB);
 
     SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, false, Global, ACB);
+    SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, false, Global, ACB);
 
     SettingBool useMipMap = new SettingBool("useMipMap", Skin, EXPERT, false, Global, ACB);
     SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", Skin, EXPERT, true, Global, ACB);
@@ -65,7 +66,6 @@ public interface CB_UI_Base_Settings {
     SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", Internal, NEVER, false, Global, ACB);
     SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", Internal, NEVER, false, Global, ACB);
 
-    SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Folder, NEVER, "data/lang/en-GB/strings.ini", Platform, ALL, "lan");
     SettingFolder LanguagePath = new SettingFolder("LanguagePath", Folder, NEVER, "data/lang", Global, ALL, true);
 
 }

@@ -18,7 +18,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Config_Core;
 import CB_Utils.Math.Point;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -26,12 +25,22 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static CB_UI_Base.GL_UI.Sprites.getSprite;
 
 /**
+ * this is the class for the lower 5 buttons, the main buttons
+ * it handles the menu shown by clicking/longclicking and the actions executed on clicking the menu point
+ * <p>
+ * a LongClicks menu points shows the "actions" (mButtonActions) that can be selected/executed for this button.
+ * also shows a hint picture for the defined gestures, if gestures are enabled by configuration
+ * <p>
+ * the first click on the button executes the "default" action (if defined), or the last action depends on configuration "rememberLastAction".
+ * the second click on the button shows the "context menu" of the previous selected action (aktActionView) and the "actions" of the LongClick menu
+ * e.g. if the shown view is the spoilerView (last time clicked), the context menu shown is "reload spoiler" and "start pictureApp"
+ * and then the  actions "description", "Waypoints", "Hints", "Spoiler", ...
+ *
  * @author Longri
  */
 public class CB_Button extends Button {
@@ -41,81 +50,83 @@ public class CB_Button extends Button {
     private final ArrayList<CB_ActionButton> mButtonActions;
     private CB_Action_ShowView aktActionView = null;
     private GestureHelp help;
-    private boolean isFiltered;
-    private boolean GestureIsOn = true;
-    // Auswertung der Finger-Gesten zum Schnellzugriff auf einige ButtonActions
-    private boolean isDragged = false;
     private Point downPos = null;
     private boolean useDescriptiveCB_Buttons;
+    private boolean rememberLastAction;
     private Image mButtonImage;
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-            // Einfacher Click -> alle Actions durchsuchen, ob die aktActionView darin enthalten ist und diese sichtbar ist
-            if ((aktActionView != null) && (aktActionView.hasContextMenu())) {
-                for (CB_ActionButton ba : mButtonActions) {
-                    if (ba.getAction() == aktActionView) {
-                        if (aktActionView.getView() != null && aktActionView.getView().isVisible()) {
-                            // Dieses View ist aktuell das Sichtbare
-                            // -> ein Click auf den Menü-Button zeigt das Contextmenü
-                            // if (aktActionView.ShowContextMenu()) return true;
-
-                            if (aktActionView.hasContextMenu()) {
-                                // das View Context Menü mit dem LongKlick Menü zusammen führen!
-
-                                // Menu zusammen stellen!
-                                // zuerst das View Context Menu
-                                Menu compoundMenu = new Menu("compoundMenu");
-
-                                Menu viewContextMenu = aktActionView.getContextMenu();
-                                if (viewContextMenu != null) {
-                                    compoundMenu.addItems(viewContextMenu.getItems());
-                                    compoundMenu.addOnClickListeners(viewContextMenu.getOnItemClickListeners());
-
-                                    // add divider
-                                    compoundMenu.addDivider();
-
-                                    // add MoreMenu
-                                    compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
-                                }
-
-                                Menu LongClickMenu = getLongClickMenu();
-                                if (LongClickMenu != null) {
-                                    compoundMenu.addItems(LongClickMenu.getItems());
-                                    compoundMenu.addOnClickListeners(LongClickMenu.getOnItemClickListeners());
-
-                                }
-
-                                if (compoundMenu.reorganizeIndexes() > 0) {
-                                    compoundMenu.Show();
-                                }
-                                return true;
-                            }
-
+            // create the menu for the executed action (aktActionView != null then it is the second short click on the button)
+            // if no contextmenu is defined (what is never so), no menu is shown (nothing would happen. you have to long click).
+            // in very early previous versions only the context menu is shown. For another action, you always had to do another Long Click.
+            if ((aktActionView != null)) {
+                if (aktActionView.getView() != null && aktActionView.getView().isVisible()) {
+                    // Dieses View ist aktuell das Sichtbare -> ein Click auf den Menü-Button zeigt das Contextmenü
+                    Menu compoundMenu = new Menu("compoundMenu");
+                    if (aktActionView.hasContextMenu()) {
+                        // first the context menu, if exists
+                        Menu viewContextMenu = aktActionView.getContextMenu();
+                        if (viewContextMenu != null) {
+                            compoundMenu.addItems(viewContextMenu.getItems());
+                            compoundMenu.addOnClickListeners(viewContextMenu.getOnItemClickListeners());
+                            // add divider
+                            compoundMenu.addDivider();
+                            // add MoreMenu ! oh ups, what is this
+                            compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
                         }
                     }
+                    // then the Long Click menu
+                    Menu LongClickMenu = getLongClickMenu();
+                    if (LongClickMenu != null) {
+                        compoundMenu.addItems(LongClickMenu.getItems());
+                        compoundMenu.addOnClickListeners(LongClickMenu.getOnItemClickListeners());
+                    }
+                    // and show
+                    if (compoundMenu.reorganizeIndexes() > 0) {
+                        compoundMenu.Show();
+                    }
+                    else {
+                        // what a problem on reorganizing
+                    }
+                    return true; // only show the menu
                 }
             }
-            // Einfacher Click -> Default Action starten
 
             boolean actionExecuted = false;
-            for (CB_ActionButton ba : mButtonActions) {
-                if (ba.getDefaultAction()) {
+            if (aktActionView != null && rememberLastAction) {
+                for (CB_ActionButton ba : mButtonActions) {
                     CB_Action action = ba.getAction();
-                    if (action != null) {
+                    if (aktActionView.getName().equals(action.getName())) {
                         action.Execute();
-                        if (action instanceof CB_Action_ShowView) {
-                            aktActionView = (CB_Action_ShowView) action;
-                            setButton(aktActionView.getIcon(), aktActionView.getName());
-                        }
+                        aktActionView = (CB_Action_ShowView) action;
+                        setButton(aktActionView.getIcon(), aktActionView.getName());
                         actionExecuted = true;
                         break;
                     }
                 }
             }
+            else {
+                // if the (last) action of this button is not visible,
+                // the default action is executed
+                for (CB_ActionButton ba : mButtonActions) {
+                    if (ba.isDefault()) {
+                        CB_Action action = ba.getAction();
+                        if (action != null) {
+                            action.Execute();
+                            // ?
+                            if (action instanceof CB_Action_ShowView) {
+                                aktActionView = (CB_Action_ShowView) action;
+                                setButton(aktActionView.getIcon(), aktActionView.getName());
+                            }
+                            actionExecuted = true;
+                            break;
+                        }
+                    }
+                }
+            }
 
-            // wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
+            // if no default action defined, perform a LongClick
             if (!actionExecuted) {
                 OnClickListener listener = getOnLongClickListener();
                 if (listener != null) {
@@ -159,10 +170,14 @@ public class CB_Button extends Button {
             return true;
         }
     };
+    private boolean isFiltered;
+    private boolean GestureIsOn = true;
+    private boolean isDragged = false;
 
-    public CB_Button(CB_RectF rec, String Name) {
+    public CB_Button(CB_RectF rec, boolean rememberLastAction, String Name) {
         super(rec, Name);
         useDescriptiveCB_Buttons = true;
+        this.rememberLastAction = rememberLastAction;
         mButtonActions = new ArrayList<>();
         setOnClickListener(onClickListener);
         setOnLongClickListener(longClickListener);
@@ -174,9 +189,10 @@ public class CB_Button extends Button {
         vAlignment = Label.VAlignment.BOTTOM;
     }
 
-    public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites) {
+    public CB_Button(CB_RectF rec, boolean rememberLastAction, String Name, ButtonSprites sprites) {
         super(rec, Name);
         useDescriptiveCB_Buttons = false;
+        this.rememberLastAction = rememberLastAction;
         mButtonActions = new ArrayList<>();
         setOnClickListener(onClickListener);
         setOnLongClickListener(longClickListener);
@@ -252,29 +268,22 @@ public class CB_Button extends Button {
 
     private Menu getLongClickMenu() {
         Menu cm = new Menu("Name");
-
-        cm.addOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-                int mId = ((MenuItem) v).getMenuItemId();
-
-                for (CB_ActionButton ba : mButtonActions) {
-                    if (ba.getAction().getId() == mId) {
-                        CB_Action action = ba.getAction();
-                        action.Execute();
-                        if (action instanceof CB_Action_ShowView) {
-                            aktActionView = (CB_Action_ShowView) action;
-                            setButton(aktActionView.getIcon(), aktActionView.getName());
-                        }
-
-                        GL.that.closeToast();
-                        break;
+        cm.addOnClickListener((v, x, y, pointer, button) -> {
+            int mId = ((MenuItem) v).getMenuItemId();
+            for (CB_ActionButton ba : mButtonActions) {
+                if (ba.getAction().getId() == mId) {
+                    CB_Action action = ba.getAction();
+                    action.Execute();
+                    if (action instanceof CB_Action_ShowView) {
+                        aktActionView = (CB_Action_ShowView) action;
+                        setButton(aktActionView.getIcon(), aktActionView.getName());
                     }
-                }
 
-                return true;
+                    GL.that.closeToast();
+                    break;
+                }
             }
+            return true;
         });
 
         for (CB_ActionButton ba : mButtonActions) {

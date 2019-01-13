@@ -61,14 +61,11 @@ public class FilterSetListView extends V_ListView {
         super(rec, "");
         this.setHasInvisibleItems(true);
         fillFilterSetList();
-
-        this.setBaseAdapter(null);
-        CustomAdapter lvAdapter = new CustomAdapter(lFilterSets, lFilterSetListViewItems);
-        this.setBaseAdapter(lvAdapter);
+        this.setBaseAdapter(new CustomAdapter(lFilterSets, lFilterSetListViewItems));
         this.setDisposeFlag(false);
     }
 
-    public static FilterProperties SaveFilterProperties() {
+    private FilterProperties getFilterProperties() {
         FilterProperties props = new FilterProperties();
         props.NotAvailable = NotAvailable.getChecked();
         props.Archived = Archived.getChecked();
@@ -109,17 +106,13 @@ public class FilterSetListView extends V_ListView {
     protected void render(Batch batch) {
         super.render(batch);
         if (mustSaveFilter)
-            SetFilter();
-    }
-
-    private void SetFilter() {
-        EditFilterSettings.tmpFilterProps = FilterSetListView.SaveFilterProperties();
+            EditFilterSettings.tmpFilterProps = getFilterProperties();
     }
 
     @Override
     public void onShow() {
         if (EditFilterSettings.tmpFilterProps != null && !EditFilterSettings.tmpFilterProps.toString().equals("")) {
-            LoadFilterProperties(EditFilterSettings.tmpFilterProps);
+            setFilterProperties(EditFilterSettings.tmpFilterProps);
         }
     }
 
@@ -267,7 +260,7 @@ public class FilterSetListView extends V_ListView {
         this.invalidate();
     }
 
-    public void LoadFilterProperties(FilterProperties props) {
+    public void setFilterProperties(FilterProperties props) {
         NotAvailable.setValue(props.NotAvailable);
         Archived.setValue(props.Archived);
         Finds.setValue(props.Finds);
