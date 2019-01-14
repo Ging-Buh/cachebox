@@ -609,11 +609,10 @@ public class FilterProperties {
             if (filter.mCacheTypes != null) return false;
         } else {
             if (filter.mCacheTypes == null) return false;
+            if (filter.mCacheTypes.length != mCacheTypes.length) return false;
             for (int i = 0; i < mCacheTypes.length; i++) {
-                if (filter.mCacheTypes.length <= i)
-                    break;
                 if (filter.mCacheTypes[i] != this.mCacheTypes[i])
-                    return false; // nicht gleich!!!
+                    return false;
             }
         }
 
@@ -621,9 +620,8 @@ public class FilterProperties {
             if (filter.mAttributes != null) return false;
         } else {
             if (filter.mAttributes == null) return false;
+            if (filter.mAttributes.length != mAttributes.length) return false;
             for (int i = 1; i < mAttributes.length; i++) {
-                if (filter.mAttributes.length <= i)
-                    break;
                 if (filter.mAttributes[i] != this.mAttributes[i])
                     return false; // nicht gleich!!!
             }

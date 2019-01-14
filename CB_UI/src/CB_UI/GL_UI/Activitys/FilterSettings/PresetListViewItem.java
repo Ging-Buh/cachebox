@@ -24,8 +24,8 @@ public class PresetListViewItem extends ListViewItemBackground {
     /**
      * Vergleicht einen PresetString mit einem FilterString, wobei die Categoryeinstellungen im FilterString ignoriert werden.
      *
-     * @param presetString Der Preset String, mit dem der Filter verglichen wird.
-     * @param filterString Der Filter String, mit dem das Preset verglichen werden soll.
+     * @param presetFilter Der Preset String, mit dem der Filter verglichen wird.
+     * @param filter Der Filter String, mit dem das Preset verglichen werden soll.
      * @return true wenn gleichheit
      */
     public static boolean chkPresetFilter(FilterProperties presetFilter, FilterProperties filter) {
@@ -39,11 +39,7 @@ public class PresetListViewItem extends ListViewItemBackground {
 
         if (EditFilterSettings.tmpFilterProps != null) {
             if (chkPresetFilter(mPresetEntry.getFilterProperties(), EditFilterSettings.tmpFilterProps)) {
-                if (!EditFilterSettings.tmpFilterProps.isExtendedFilter()) {
-                    isSelected = true;
-                } else {
-                    isSelected = false;
-                }
+                isSelected = !EditFilterSettings.tmpFilterProps.isExtendedFilter();
             }
         }
 

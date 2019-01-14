@@ -170,7 +170,7 @@ public class FilterInstances {
     }
 
     public static boolean isLastFilterSet() {
-        return mLastFilter != null && !mLastFilter.toString().equals("") && !ALL.equals(mLastFilter) && mLastFilter.isExtendedFilter();
+        return mLastFilter != null && !mLastFilter.toString().equals("") && !ALL.equals(mLastFilter);
     }
 
     private final static String setCacheTypes(boolean with) {
