@@ -29,7 +29,7 @@ public class PresetListViewItem extends ListViewItemBackground {
      * @return true wenn gleichheit
      */
     public static boolean chkPresetFilter(FilterProperties presetFilter, FilterProperties filter) {
-        // todo ?check: comparing with equal does not ignore categories
+        // todo ? check: comparing with equal does not ignore categories
         return (presetFilter.equals(filter));
     }
 
