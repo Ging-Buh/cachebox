@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
@@ -34,8 +35,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private static Sprite plusBtn;
     private static Sprite minusMinusBtn;
     private static Sprite plusPlusBtn;
-    private static Sprite selectAllBtn;
-    private static Sprite deSelectAllBtn;
+    private static Drawable selectAllBtn;
+    private static Drawable deSelectAllBtn;
     private static Sprite chkOff;
     private static Sprite chkOn;
     private static Sprite chkNo;
@@ -455,10 +456,11 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     }
 
     private void drawSelectItem(Batch batch) {
-        lBounds = new CB_RectF(MARGIN, 0, (getWidth() / 2) - MARGIN, getHeight());
+        float btnWidth = (getWidth() / 2) - 2 * MARGIN;
+        lBounds = new CB_RectF(MARGIN, 0, btnWidth, getHeight());
         lBounds = lBounds.ScaleCenter(0.95f);
 
-        rBounds = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight());
+        rBounds = new CB_RectF(getWidth() - (btnWidth + MARGIN), 0, btnWidth, getHeight());
         rBounds = rBounds.ScaleCenter(0.95f);
 
         boolean rClick = false;
@@ -483,13 +485,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             }
         }
 
-        change sprite to NinePatchDrawable
-        
-        selectAllBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
-        deSelectAllBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
-
-        deSelectAllBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
-        selectAllBtn.setBounds(rBounds.getX(), rBounds.getY(), rBounds.getWidth(), rBounds.getHeight());
+        selectAllBtn = rClick ? Sprites.btnPressed : Sprites.btn;
+        deSelectAllBtn = lClick ? Sprites.btnPressed : Sprites.btn;
 
         if (DeselectAll == null) {
             DeselectAll = new BitmapFontCache(Fonts.getBig());
@@ -501,13 +498,13 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         if (SelectAll == null) {
             SelectAll = new BitmapFontCache(Fonts.getBig());
             SelectAll.setColor(COLOR.getFontColor());
-            SelectAll.setText(Translation.Get("DeSelectAll"), 0, 0);
+            SelectAll.setText(Translation.Get("SelectAll"), 0, 0);
             SelectAll.setPosition(rBounds.getCenterPosX() - (SelectAll.getLayouts().first().width / 2), rBounds.getCenterPosY() + (SelectAll.getLayouts().first().height / 2));
         }
 
 
-        deSelectAllBtn.draw(batch);
-        selectAllBtn.draw(batch);
+        deSelectAllBtn.draw(batch, lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
+        selectAllBtn.draw(batch, rBounds.getX(), rBounds.getY(), rBounds.getWidth(), rBounds.getHeight());
 
         DeselectAll.draw(batch);
         SelectAll.draw(batch);
