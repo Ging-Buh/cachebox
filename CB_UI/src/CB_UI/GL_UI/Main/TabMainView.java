@@ -521,7 +521,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         if (GlobalCore.isTestVersion())
             mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionTestView, false));
 
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue()));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue(),GestureDirection.Up));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSolverView2, false, GestureDirection.Right));
