@@ -491,14 +491,14 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         if (DeselectAll == null) {
             DeselectAll = new BitmapFontCache(Fonts.getBig());
             DeselectAll.setColor(COLOR.getFontColor());
-            DeselectAll.setText(Translation.Get("DeSelectAll"), 0, 0);
+            DeselectAll.setText(Translation.Get("untickAll"), 0, 0);
             DeselectAll.setPosition(lBounds.getCenterPosX() - (DeselectAll.getLayouts().first().width / 2), lBounds.getCenterPosY() + (DeselectAll.getLayouts().first().height / 2));
         }
 
         if (SelectAll == null) {
             SelectAll = new BitmapFontCache(Fonts.getBig());
             SelectAll.setColor(COLOR.getFontColor());
-            SelectAll.setText(Translation.Get("SelectAll"), 0, 0);
+            SelectAll.setText(Translation.Get("tickAll"), 0, 0);
             SelectAll.setPosition(rBounds.getCenterPosX() - (SelectAll.getLayouts().first().width / 2), rBounds.getCenterPosY() + (SelectAll.getLayouts().first().height / 2));
         }
 
@@ -591,6 +591,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     void unCheck() {
         mFilterSetEntry.setState(0);
+    }
+
+    void check() {
+        mFilterSetEntry.setState(1);
     }
 
     public double getValue() {

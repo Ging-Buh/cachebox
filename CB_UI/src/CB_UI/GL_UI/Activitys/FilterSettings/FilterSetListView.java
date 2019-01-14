@@ -158,19 +158,25 @@ public class FilterSetListView extends V_ListView {
             selectAllItem.setSelectAllHandler(new ISelectAllHandler() {
                 @Override
                 public void selectAll() {
-                    throw new RuntimeException("must implement function for select all");
+                    for (int i = 0; i < types.getChildLength(); i++) {
+                        FilterSetListViewItem itm = types.getChild(i);
+                        itm.check();
+                    }
                 }
 
                 @Override
                 public void deselectAll() {
-                    throw new RuntimeException("must implement function for deselect all");
+                    for (int i = 0; i < types.getChildLength(); i++) {
+                        FilterSetListViewItem itm = types.getChild(i);
+                        itm.unCheck();
+                    }
                 }
             });
 
             types.addChild(selectAllItem);
 
             for (int i = 0; i < CacheTypes.caches().length; i++) {
-                types.addChild(addFilterSetItem(CacheTypes.caches()[i]));
+                types.addChild(addFilterSetItem(CacheTypes.caches()[i])).check();
             }
         }
 
