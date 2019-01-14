@@ -11,6 +11,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -20,6 +21,12 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
+interface ISelectAllHandler {
+    void selectAll();
+
+    void deselectAll();
+}
+
 public class FilterSetListViewItem extends ListViewItemBackground {
     private static NinePatch btnBack;
     private static NinePatch btnBack_pressed;
@@ -27,6 +34,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private static Sprite plusBtn;
     private static Sprite minusMinusBtn;
     private static Sprite plusPlusBtn;
+    private static Sprite selectAllBtn;
+    private static Sprite deSelectAllBtn;
     private static Sprite chkOff;
     private static Sprite chkOn;
     private static Sprite chkNo;
@@ -39,6 +48,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private static BitmapFontCache Plus;
     private static BitmapFontCache MinusMinus;
     private static BitmapFontCache PlusPlus;
+    private static BitmapFontCache SelectAll;
+    private static BitmapFontCache DeselectAll;
     private static float MARGIN;
     private static float BUTTON_MARGIN;
     private final FilterSetEntry mFilterSetEntry;
@@ -51,6 +62,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private boolean setValueFont = false;
     private BitmapFontCache Value;
     private boolean Clicked = false;
+
+    private ISelectAllHandler selectAllHandler;
 
     public FilterSetListViewItem(CB_RectF rec, int Index, FilterSetEntry fne) {
         super(rec, Index, fne.getName());
@@ -66,6 +79,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     public FilterSetListViewItem addChild(FilterSetListViewItem item) {
         mChildList.add(item);
         return item;
+    }
+
+    void setSelectAllHandler(ISelectAllHandler handler) {
+        selectAllHandler = handler;
     }
 
     public void toggleChildViewState() {
@@ -114,6 +131,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
                     top = this.getHeight() - this.getTopHeight();
                     drawNumericIntItem(batch);
                     break;
+                case FilterSetListView.SELECT_ALL_ITEM:
+                    top = this.getHeight() - this.getTopHeight();
+                    drawSelectItem(batch);
+                    return;
             }
             // draw Name
             if (EntryName == null) {
@@ -433,6 +454,65 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     }
 
+    private void drawSelectItem(Batch batch) {
+        lBounds = new CB_RectF(MARGIN, 0, (getWidth() / 2) - MARGIN, getHeight());
+        lBounds = lBounds.ScaleCenter(0.95f);
+
+        rBounds = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight());
+        rBounds = rBounds.ScaleCenter(0.95f);
+
+        boolean rClick = false;
+        boolean lClick = false;
+        if (this.lastItemTouchPos != null) {
+            if (this.isPressed) {
+                lClick = lBounds.contains(this.lastItemTouchPos);
+                rClick = rBounds.contains(this.lastItemTouchPos);
+
+                if (lClick || rClick)
+                    Clicked = true;
+            } else {
+                if (Clicked && selectAllHandler != null) {
+                    Clicked = false;
+                    lClick = lBounds.contains(this.lastItemTouchPos);
+                    rClick = rBounds.contains(this.lastItemTouchPos);
+                    if (rClick)
+                        selectAllHandler.selectAll();
+                    if (lClick)
+                        selectAllHandler.deselectAll();
+                }
+            }
+        }
+
+        change sprite to NinePatchDrawable
+        
+        selectAllBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+        deSelectAllBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+
+        deSelectAllBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
+        selectAllBtn.setBounds(rBounds.getX(), rBounds.getY(), rBounds.getWidth(), rBounds.getHeight());
+
+        if (DeselectAll == null) {
+            DeselectAll = new BitmapFontCache(Fonts.getBig());
+            DeselectAll.setColor(COLOR.getFontColor());
+            DeselectAll.setText(Translation.Get("DeSelectAll"), 0, 0);
+            DeselectAll.setPosition(lBounds.getCenterPosX() - (DeselectAll.getLayouts().first().width / 2), lBounds.getCenterPosY() + (DeselectAll.getLayouts().first().height / 2));
+        }
+
+        if (SelectAll == null) {
+            SelectAll = new BitmapFontCache(Fonts.getBig());
+            SelectAll.setColor(COLOR.getFontColor());
+            SelectAll.setText(Translation.Get("DeSelectAll"), 0, 0);
+            SelectAll.setPosition(rBounds.getCenterPosX() - (SelectAll.getLayouts().first().width / 2), rBounds.getCenterPosY() + (SelectAll.getLayouts().first().height / 2));
+        }
+
+
+        deSelectAllBtn.draw(batch);
+        selectAllBtn.draw(batch);
+
+        DeselectAll.draw(batch);
+        SelectAll.draw(batch);
+    }
+
     private void drawIcon(Batch batch) {
         if (mFilterSetEntry.getIcon() != null) {
             float iconHeight = this.getHeight() * 0.8f;
@@ -542,9 +622,6 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     }
 
     public boolean getBoolean() {
-        if (mFilterSetEntry.getState() == 0)
-            return false;
-
-        return true;
+        return mFilterSetEntry.getState() != 0;
     }
 }

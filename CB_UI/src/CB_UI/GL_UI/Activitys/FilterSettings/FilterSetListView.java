@@ -11,6 +11,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -25,6 +26,7 @@ public class FilterSetListView extends V_ListView {
     public static final int THREE_STATE_ITEM = 2;
     public static final int NUMERIC_ITEM = 3;
     public static final int NUMERIC_INT_ITEM = 4;
+    public static final int SELECT_ALL_ITEM = 5;
     public static boolean mustSaveFilter = false;
     // the collapse buttons
     private static FilterSetListViewItem activeCollapseButton; // only one should be active
@@ -89,7 +91,7 @@ public class FilterSetListView extends V_ListView {
         props.MinFavPoints = minFavPoints.getValue();
         props.MaxFavPoints = maxFavPoints.getValue();
 
-        for (int i = 0; i < types.getChildLength(); i++) {
+        for (int i = 1; i < types.getChildLength(); i++) {
             FilterSetListViewItem itm = types.getChild(i);
             int ct = itm.getFilterSetEntry().cacheType.ordinal();
             props.mCacheTypes[ct] = itm.getBoolean();
@@ -146,10 +148,32 @@ public class FilterSetListView extends V_ListView {
 
 
         // add CacheTypes
-        types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
-        for (int i = 0; i < CacheTypes.caches().length; i++) {
-            types.addChild(addFilterSetItem(CacheTypes.caches()[i]));
+        {
+            // create categories button types
+            types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
+
+            //add selectAll/deselectAll button item
+            FilterSetListViewItem selectAllItem = addFilterSetItem(null, "", SELECT_ALL_ITEM);
+
+            selectAllItem.setSelectAllHandler(new ISelectAllHandler() {
+                @Override
+                public void selectAll() {
+                    throw new RuntimeException("must implement function for select all");
+                }
+
+                @Override
+                public void deselectAll() {
+                    throw new RuntimeException("must implement function for deselect all");
+                }
+            });
+
+            types.addChild(selectAllItem);
+
+            for (int i = 0; i < CacheTypes.caches().length; i++) {
+                types.addChild(addFilterSetItem(CacheTypes.caches()[i]));
+            }
         }
+
 
         // add Attributes
         attribs = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
