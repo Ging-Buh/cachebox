@@ -138,7 +138,7 @@ public class Sprites {
             Gdx.gl.glFinish();
         }
 
-        String TexturName = CB_UI_Base_Settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
+        String TexturName = CB_UI_Base_Settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp.atlas" : "UI_IconPack.spp.atlas";
 
         FileHandleCustomAtlas = null;
         FileHandleCustomNightAtlas = null;

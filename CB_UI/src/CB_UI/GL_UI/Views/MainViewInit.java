@@ -79,7 +79,7 @@ public class MainViewInit extends MainViewBase {
             // in jedem Render Vorgang einen Step ausführen
             switch (step) {
                 case 0:
-                    atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp"));
+                    atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp.atlas"));
                     setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
 
                     break;

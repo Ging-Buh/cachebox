@@ -159,7 +159,7 @@ public class ImageLoader {
         String Name = inputFolder.replace("/", "_");
         Name = Name.replace("\\", "_");
         Name = Name.replace(".", "");
-        Name = Name + ".spp";
+        Name = Name + ".spp.atlas";
         return Name;
     }
 
