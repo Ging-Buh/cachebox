@@ -179,7 +179,7 @@ public class V_ListView extends ListViewBase {
                         //							return;
                         //						}
 
-                        if (this.isDragable()) {
+                        if (this.isDraggable()) {
                             if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex))
                                 scrollToItem(mSelectedIndex);
                         } else {

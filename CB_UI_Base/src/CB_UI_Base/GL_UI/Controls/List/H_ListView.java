@@ -142,7 +142,7 @@ public class H_ListView extends ListViewBase {
     }
 
     protected void scrollToSelectedItem() {
-        if (this.isDragable()) {
+        if (this.isDraggable()) {
             Point lastAndFirst = getFirstAndLastVisibleIndex();
             if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex))
                 scrollToItem(mSelectedIndex);

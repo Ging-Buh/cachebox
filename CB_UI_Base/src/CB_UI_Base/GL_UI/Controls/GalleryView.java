@@ -196,7 +196,7 @@ public class GalleryView extends H_ListView {
 
     @Override
     protected void scrollToSelectedItem() {
-        //	if (this.isDragable()) {
+        //	if (this.isDraggable()) {
         //	    Point lastAndFirst = getFirstAndLastVisibleIndex();
         //	    if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex))
         //		scrollToItem(mSelectedIndex);

@@ -67,7 +67,7 @@ public class Scrollbar extends CB_View_Base {
     @Override
     public void render(Batch batch) {
         // Wenn Liste l�nger als Clintbereich zeige Slider
-        if (ListView.isDragable()) {
+        if (ListView.isDraggable()) {
             if (mPushSliderFader.isVisible() || mSliderFader.isVisible() || mSliderAlwaysVisible) {
                 Color color = batch.getColor();// get current Color, you can't modify directly
                 float oldAlpha = color.a; // save its alpha

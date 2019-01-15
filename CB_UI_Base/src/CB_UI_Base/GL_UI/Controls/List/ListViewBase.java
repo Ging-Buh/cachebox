@@ -390,7 +390,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     @Override
-    public boolean isDragable() {
+    public boolean isDraggable() {
         return mIsDraggable;
     }
 

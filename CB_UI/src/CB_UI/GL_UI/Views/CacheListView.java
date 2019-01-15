@@ -230,7 +230,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
                         Cache ca = Database.Data.Query.get(i);
                         if (ca.Id == GlobalCore.getSelectedCache().Id) {
                             listView.setSelection(id);
-                            if (listView.isDragable()) {
+                            if (listView.isDraggable()) {
                                 if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
                                     listView.scrollToItem(id);
                                     Log.debug(log, "Scroll to:" + id);

@@ -145,7 +145,7 @@ public class GL_Input implements InputProcessor {
         touchDraggedActive = false;
         touchDraggedCorrect = new Point(0, 0);
 
-        GL_View_Base view = GL.that.touchDownView(x, y, pointer, button);
+        GL_View_Base view = GL.that.touchActiveView(x, y, pointer, button);
         if (view == null)
             return false;
 
@@ -178,7 +178,7 @@ public class GL_Input implements InputProcessor {
 
     public boolean onTouchDraggedBase(int x, int y, int pointer) {
 
-        CB_View_Base testingView = GL.that.getTestingView();
+        CB_View_Base testingView = GL.that.getActiveView();
 
         if (!touchDownPos.containsKey(pointer)) {
             // für diesen Pointer ist kein touchDownPos gespeichert -> dürfte nicht passieren!!!
@@ -234,7 +234,7 @@ public class GL_Input implements InputProcessor {
         isTouchDown = false;
         cancelLongClickTimer();
 
-        CB_View_Base testingView = GL.that.getTestingView();
+        CB_View_Base testingView = GL.that.getActiveView();
 
         if (!touchDownPos.containsKey(pointer)) {
             // für diesen Pointer ist kein touchDownPos gespeichert -> dürfte nicht passieren!!!

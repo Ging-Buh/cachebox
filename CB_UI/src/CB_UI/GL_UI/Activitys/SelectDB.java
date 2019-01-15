@@ -396,7 +396,7 @@ public class SelectDB extends ActivityBase {
             for (File file : lvAdapter.getFileList()) {
                 if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
                     lvFiles.setSelection(id);
-                    if (lvFiles.isDragable()) {
+                    if (lvFiles.isDraggable()) {
                         if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
                             lvFiles.scrollToItem(id);
                         }

@@ -11,7 +11,6 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -208,32 +207,20 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         if (this.mFilterSetEntry.getState() == 1) {
             if (chkOn == null) {
                 chkOn = Sprites.getSprite("check-on");
-
                 chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-
             }
-
             chkOn.draw(batch);
         }
-
-        boolean rClick = false;
         if (this.lastItemTouchPos != null) {
-            if (this.isPressed) {
-                rClick = rBounds.contains(this.lastItemTouchPos);
-
-                if (rClick)
-                    Clicked = true;
-            } else {
-                if (Clicked) {
-                    Clicked = false;
-                    rClick = rBounds.contains(this.lastItemTouchPos);
-                    if (rClick)
-                        stateClick();
-                }
+            if (isPressed) {
+                // if (rBounds.contains(this.lastItemTouchPos))
+                Clicked = true;
+            } else if (Clicked) {
+                Clicked = false;
+                // if (rBounds.contains(this.lastItemTouchPos))
+                stateClick();
             }
-
         }
-
     }
 
     private void drawThreeStateItem(Batch batch) {

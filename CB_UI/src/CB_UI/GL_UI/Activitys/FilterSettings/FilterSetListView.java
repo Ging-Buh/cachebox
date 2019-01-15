@@ -60,7 +60,7 @@ public class FilterSetListView extends V_ListView {
     private ArrayList<FilterSetListViewItem> lFilterSetListViewItems;
 
     public FilterSetListView(CB_RectF rec) {
-        super(rec, "");
+        super(rec, "FilterSetListView");
         this.setHasInvisibleItems(true);
         fillFilterSetList();
         this.setBaseAdapter(new CustomAdapter(lFilterSets, lFilterSetListViewItems));
@@ -330,17 +330,26 @@ public class FilterSetListView extends V_ListView {
         super.onTouchDown(x, y, pointer, button);
         synchronized (childs) {
             for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
-                // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                 GL_View_Base view = iterator.next();
-                // Invisible Views can not be clicked!
                 if (view.isVisible()) {
                     if (view.contains(x, y)) {
                         ((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
+                        return true; // only one item is clicked
                     }
                 }
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+        super.onTouchDragged(x, y, pointer, KineticPan);
+        for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+            GL_View_Base view = iterator.next();
+            ((FilterSetListViewItem) view).lastItemTouchPos = null;
+        }
+        return false;
     }
 
     public static class FilterSetEntry {

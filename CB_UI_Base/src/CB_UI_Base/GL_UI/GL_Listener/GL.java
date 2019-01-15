@@ -1128,24 +1128,19 @@ public class GL implements ApplicationListener {
 
     }
 
-    public CB_View_Base getTestingView() {
+    public CB_View_Base getActiveView() {
         return currentDialogIsShown ? mDialog : currentActivityIsShown ? mActivity : child;
     }
 
-    public GL_View_Base touchDownView(int x, int y, int pointer, int button) {
-        GL_View_Base view = null;
-
-        if (MarkerIsShown)// zuerst Marker Testen
+    GL_View_Base touchActiveView(int x, int y, int pointer, int button) {
+        if (MarkerIsShown)
         {
-            view = mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
+            return mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
         }
-
-        if (view == null) {
-            CB_View_Base testingView = getTestingView();
-            view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
+        else {
+            CB_View_Base activeView = getActiveView();
+            return activeView.touchDown(x, (int) activeView.getHeight() - y, pointer, button);
         }
-
-        return view;
     }
 
     public void showPopUp(PopUp_Base popUp, float x, float y) {

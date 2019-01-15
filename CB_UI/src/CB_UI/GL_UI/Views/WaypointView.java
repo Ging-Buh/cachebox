@@ -196,7 +196,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                 id++;
                 if (wp == aktWaypoint) {
                     this.setSelection(id);
-                    if (this.isDragable()) {
+                    if (this.isDraggable()) {
                         if (!(lastAndFirst.x <= id && lastAndFirst.y >= id)) {
                             this.scrollToItem(id);
                             Log.debug(log, "Scroll to:" + id);
@@ -209,7 +209,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         } else {
             aktWaypoint = null;
             this.setSelection(0);
-            if (this.isDragable()) {
+            if (this.isDraggable()) {
                 if (!(lastAndFirst.x <= 0 && lastAndFirst.y >= 0)) {
                     this.scrollToItem(0);
                     Log.debug(log, "Scroll to:" + 0);
