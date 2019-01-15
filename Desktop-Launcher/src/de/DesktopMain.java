@@ -106,7 +106,7 @@ public class DesktopMain {
         });
 
         // has been done by launcher
-        // InitalConfig();
+        // InitialConfig();
         // Config.settings.ReadFromDB();
 
         CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
@@ -424,11 +424,11 @@ public class DesktopMain {
     /**
      * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
      */
-    public static void InitalConfig() {
-        String base = new File("").getAbsolutePath();
-        String workPath = base + "/cachebox";
-        workPath = "C:/Daten/_WCB";
-        // not yet initialised Log.debug(log, "workPath=" + workPath);
+    public static void InitialConfig() {
+        File forWorkPathTest = new File("C:/Daten/_WCB");
+        if (!forWorkPathTest.exists())
+            forWorkPathTest = new File("");
+        String workPath = forWorkPathTest.getAbsolutePath();
         new Config(workPath);
         if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
             return;

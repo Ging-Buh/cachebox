@@ -42,7 +42,7 @@ class DCB {
 
         new DesktopFileFactory();
 
-        DesktopMain.InitalConfig();
+        DesktopMain.InitialConfig();
         Config.settings.ReadFromDB();
 
         new CB_SLF4J(Config.mWorkPath);
