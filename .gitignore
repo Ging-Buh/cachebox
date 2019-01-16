@@ -1,6 +1,8 @@
 *.iml
 .gradle
-.idea
+.idea/*.xml
+.idea/libraries
+.idea/caches
 .DS_Store
 /local.properties
 /build
