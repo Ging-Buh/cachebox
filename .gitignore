@@ -1,11 +1,11 @@
 *.iml
 .gradle
-/local.properties
 .idea
-!.idea/runConfigurations
 .DS_Store
+/local.properties
 /build
 /captures
 .externalNativeBuild
 Android_GUI/assets/build.info
 WorkingDir/build.info
+/SkinPacker/skins

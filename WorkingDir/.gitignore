@@ -1,6 +1,11 @@
 data/
+Logs/
+PocketQuery/
+repository/
 skins/
-C:/
+User/
 /badlogic.jpg
-cachebox/
+/build.info
+/*.db3
 cbserver.lock
+cachebox/
