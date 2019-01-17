@@ -54,13 +54,10 @@ public class LiveButton extends ImageButton implements QueStateChanged {
     @Override
     public void render(Batch batch) {
         if (state) {
-            GL.that.postAsync(() -> {
-                GroundspeakAPI.fetchMyUserInfos();
-                if (GroundspeakAPI.isDownloadLimitExceeded()) {
-                    GlobalCore.MsgDownloadLimit();
-                    setState(false);
-                }
-            });
+            if (GroundspeakAPI.isDownloadLimitExceeded()) {
+                GlobalCore.MsgDownloadLimit();
+                setState(false);
+            }
         }
         Animation = (1 + ((int) (GL.that.getStateTime() * 1000) % Duration) / (Duration / Frames));
         if (lastAnimation != Animation) {

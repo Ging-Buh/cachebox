@@ -38,6 +38,7 @@ import java.util.*;
 import static CB_Core.Import.DescriptionImageGrabber.Segmentize;
 import static CB_Core.Types.Cache.IS_FULL;
 import static CB_Core.Types.Cache.IS_LITE;
+import static java.lang.Thread.sleep;
 
 public class GroundspeakAPI {
     public static final int OK = 0;
@@ -63,6 +64,7 @@ public class GroundspeakAPI {
             startTs = System.currentTimeMillis();
             nrOfApiCalls = 0;
             retryCount = 0;
+            active = false;
         }
 
         if (System.currentTimeMillis() - startTs > 60000) {
@@ -101,7 +103,7 @@ public class GroundspeakAPI {
                         try {
                             long ta = 61000 - (System.currentTimeMillis() - startTs);
                             if (ta > 0)
-                                Thread.sleep(ta);
+                                sleep(ta);
                         } catch (InterruptedException ignored) {
                             LastAPIError = "Aborted by user";
                         }
@@ -530,7 +532,7 @@ public class GroundspeakAPI {
 
         // let the calling thread run to an end
         try {
-            Thread.sleep(1000);
+            sleep(1000);
         } catch (InterruptedException ignored) {
         }
 
@@ -875,7 +877,24 @@ public class GroundspeakAPI {
 
     public static UserInfos fetchMyUserInfos() {
         if (me == null || me.memberShipType == MemberShipTypes.Unknown) {
-            if (!active) {
+            Log.debug(log, "fetchMyUserInfos called. Must fetch. Active now: " + active);
+            do {
+                if (active) {
+                    // a try to handle quickly following calls (by another thread)
+                    int waitedForMillis = 0;
+                    do {
+                        try {
+                            sleep(1000);
+                            if (me != null) return me;
+                        } catch (InterruptedException ignored) {
+                        }
+                        waitedForMillis = waitedForMillis + 1;
+                    }
+                    while (active || waitedForMillis == 60);
+                    if (waitedForMillis == 60) {
+                        Log.debug(log, "avoid endless loop");
+                    }
+                }
                 active = true;
                 me = fetchUserInfos("me");
                 if (me.memberShipType == MemberShipTypes.Unknown) {
@@ -886,6 +905,7 @@ public class GroundspeakAPI {
                 }
                 active = false;
             }
+            while (active);
         }
         return me;
     }

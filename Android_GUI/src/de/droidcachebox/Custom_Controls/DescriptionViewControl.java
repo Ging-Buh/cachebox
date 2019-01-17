@@ -38,16 +38,113 @@ import java.util.*;
 
 import static CB_Core.Api.GroundspeakAPI.*;
 
-@SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private final static String log = "DescriptionViewControl";
+    private static final Handler downloadReadyHandler = new Handler();
+    private final static LinkedList<String> NonLocalImages = new LinkedList<>();
+    private final static LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
     private static ProgressDialog pd;
     private static DescriptionViewControl that;
-    private final Handler downloadReadyHandler = new Handler();
-    private final LinkedList<String> NonLocalImages = new LinkedList<>();
-    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
-    private Cache aktCache;
-    private String message = "";
+    private static Cache aktCache;
+    // private static int downloadTryCounter = 0;
+    private static final DialogInterface.OnClickListener downloadCacheDialogResult = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int button) {
+            switch (button) {
+                case -1:
+                    Cache newCache;
+
+                    ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(aktCache);
+                    if (geoCacheRelateds.size() > 0) {
+                        GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
+                        newCache = geoCacheRelated.cache;
+
+                        synchronized (Database.Data.Query) {
+                            Database.Data.sql.beginTransaction();
+
+                            Database.Data.Query.remove(aktCache);
+                            Database.Data.Query.add(newCache);
+
+                            new CacheDAO().UpdateDatabase(newCache);
+                            newCache.setLongDescription("");
+
+                            LogDAO logDAO = new LogDAO();
+                            for (LogEntry apiLog : geoCacheRelated.logs) logDAO.WriteToDatabase(apiLog);
+
+                            WaypointDAO waypointDAO = new WaypointDAO();
+                            for (int i = 0, n = newCache.waypoints.size(); i < n; i++) {
+                                Waypoint waypoint = newCache.waypoints.get(i);
+
+                                boolean update = true;
+
+                                // dont refresh wp if aktCache.wp is user changed
+                                for (int j = 0, m = aktCache.waypoints.size(); j < m; j++) {
+                                    Waypoint wp = aktCache.waypoints.get(j);
+                                    if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
+                                        if (wp.IsUserWaypoint)
+                                            update = false;
+                                        break;
+                                    }
+                                }
+
+                                if (update)
+                                    waypointDAO.WriteToDatabase(waypoint, false);
+                            }
+
+                            ImageDAO imageDAO = new ImageDAO();
+                            for (ImageEntry image : geoCacheRelated.images) imageDAO.WriteToDatabase(image, false);
+
+                            Database.Data.sql.setTransactionSuccessful();
+                            Database.Data.sql.endTransaction();
+
+                            Database.Data.GPXFilenameUpdateCacheCount();
+                        }
+                        aktCache = newCache;
+                        setCache(newCache);
+                        if (!isPremiumMember()) {
+                            String s = "Download successful!\n";
+                            fetchMyCacheLimits();
+                            s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
+                            s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
+
+                            MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                        }
+                    }
+
+                    break;
+            }
+            if (dialog != null)
+                dialog.dismiss();
+        }
+    };
+    private static String message = "";
+    private final static Handler onlineSearchReadyHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1: {
+                    pd.dismiss();
+                    break;
+                }
+                case 2: {
+                    pd.dismiss();
+                    MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                    break;
+                }
+                case 3: {
+                    pd.dismiss();
+                    MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
+                    break;
+                }
+                case 4: {
+                    pd.dismiss();
+                    downloadCacheDialogResult.onClick(null, -1);
+                    break;
+                }
+            }
+        }
+    };
+
     private WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -131,128 +228,15 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
                     if (main.mainActivity == null) return;
-                    main.mainActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scrollTo(0, 0);
-                        }
-                    });
+                    main.mainActivity.runOnUiThread(() -> scrollTo(0, 0));
                 }
             };
             timer.schedule(task, 100);
-
-        }
-
-    };
-    private int downloadTryCounter = 0;
-    private final DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int button) {
-            switch (button) {
-                case -1:
-                    Cache newCache = null;
-
-                    ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(aktCache);
-                    if (geoCacheRelateds.size() > 0) {
-                        GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
-                        newCache = geoCacheRelated.cache;
-
-                        synchronized (Database.Data.Query) {
-                            Database.Data.sql.beginTransaction();
-
-                            Database.Data.Query.remove(aktCache);
-                            Database.Data.Query.add(newCache);
-
-                            new CacheDAO().UpdateDatabase(newCache);
-                            newCache.setLongDescription("");
-
-                            LogDAO logDAO = new LogDAO();
-                            for (LogEntry apiLog : geoCacheRelated.logs) logDAO.WriteToDatabase(apiLog);
-
-                            WaypointDAO waypointDAO = new WaypointDAO();
-                            for (int i = 0, n = newCache.waypoints.size(); i < n; i++) {
-                                Waypoint waypoint = newCache.waypoints.get(i);
-
-                                boolean update = true;
-
-                                // dont refresh wp if aktCache.wp is user changed
-                                for (int j = 0, m = aktCache.waypoints.size(); j < m; j++) {
-                                    Waypoint wp = aktCache.waypoints.get(j);
-                                    if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
-                                        if (wp.IsUserWaypoint)
-                                            update = false;
-                                        break;
-                                    }
-                                }
-
-                                if (update)
-                                    waypointDAO.WriteToDatabase(waypoint, false);
-                            }
-
-                            ImageDAO imageDAO = new ImageDAO();
-                            for (ImageEntry image : geoCacheRelated.images) imageDAO.WriteToDatabase(image, false);
-
-                            Database.Data.sql.setTransactionSuccessful();
-                            Database.Data.sql.endTransaction();
-
-                            Database.Data.GPXFilenameUpdateCacheCount();
-                        }
-                        aktCache = newCache;
-                        setCache(newCache);
-                        if (!isPremiumMember()) {
-                            String s = "Download successful!\n";
-                            fetchMyCacheLimits();
-                            s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
-                            s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
-
-                            MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-                        }
-                    }
-
-                    break;
-            }
-            if (dialog != null)
-                dialog.dismiss();
-        }
-    };
-    private final Handler onlineSearchReadyHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1: {
-                    pd.dismiss();
-                    break;
-                }
-                case 2: {
-                    pd.dismiss();
-                    MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-                    break;
-                }
-                case 3: {
-                    pd.dismiss();
-                    MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, DownloadCacheDialogResult);
-                    break;
-                }
-                case 4: {
-                    pd.dismiss();
-                    DownloadCacheDialogResult.onClick(null, -1);
-                    break;
-                }
-            }
-        }
-    };
-
-    final Runnable downloadComplete = new Runnable() {
-        @Override
-        public void run() {
-            if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
-                setCache(aktCache);
         }
     };
 
@@ -293,77 +277,61 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         that = this;
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        this.getParent();
-        return super.dispatchTouchEvent(event);
-    }
-
-    public void setCache(final Cache cache) {
-        final String mimeType = "text/html";
-        final String encoding = "utf-8";
+    public static void setCache(final Cache cache) {
         if (cache != null) {
+            Log.debug(log, "set " + cache.getGcCode() + " for description");
             if (aktCache == cache) {
                 // todo check maybe new cache values
+                Log.debug(log, "same Cche " + cache.getGcCode());
                 return;
             }
+            aktCache = cache;
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String cachehtml = Database.GetShortDescription(cache) + Database.GetDescription(cache);
-            String html = "";
-            if (cache.getApiStatus() == 1)// GC.com API lite
-            { // Load Standard HTML
-                String nodesc = Translation.Get("GC_NoDescription");
-                html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";
-            } else {
-                html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
+            String html;
+            if (cache.getApiStatus() == Cache.IS_FULL) {
+                html = DescriptionImageGrabber.ResolveImages(cache, Database.GetShortDescription(cache) + Database.GetDescription(cache), false, NonLocalImages, NonLocalImagesUrl);
 
                 if (!Config.DescriptionNoAttributes.getValue())
                     html = getAttributesHtml(cache) + html;
 
                 // add 2 empty lines so that the last line of description can be selected with the markers
                 html += "</br></br>";
+            } else {
+                // a IS_LITE has no description. a NOT_LIVE ?
+                String nodesc = Translation.Get("GC_NoDescription");
+                html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";
             }
 
             final String FinalHtml = html;
-
-            main.mainActivity.runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        DescriptionViewControl.this.loadDataWithBaseURL("fake://fake.de", FinalHtml, mimeType, encoding, null);
-                    } catch (Exception e) {
-                        return; // if an exception here, then this is not initializes
-                    }
+            main.mainActivity.runOnUiThread(() -> {
+                try {
+                    DescriptionViewControl.that.loadDataWithBaseURL("fake://fake.de", FinalHtml, "text/html", "utf-8", null);
+                } catch (Exception ignored) {
                 }
             });
-
         }
 
         try {
-            main.mainActivity.runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (DescriptionViewControl.this.getSettings() != null)
-                        DescriptionViewControl.this.getSettings().setLightTouchEnabled(true);
-                }
+            main.mainActivity.runOnUiThread(() -> {
+                if (DescriptionViewControl.that.getSettings() != null)
+                    DescriptionViewControl.that.getSettings().setLightTouchEnabled(true);
             });
-
         } catch (Exception e1) {
             // dann kann eben nicht gezoomt werden!
         }
 
         // Falls nicht geladene Bilder vorliegen und eine Internetverbindung erlaubt ist, diese laden und Bilder erneut auflösen
         if (NonLocalImagesUrl.size() > 0) {
-            Thread downloadThread = new Thread() {
+            new Thread() {
                 @Override
                 public void run() {
 
+                    /*
                     if (downloadTryCounter > 0) {
                         // Thread.sleep(100);
                     }
+                    */
 
                     boolean anyImagesLoaded = false;
                     while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
@@ -382,18 +350,23 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         }
                     }
                     if (anyImagesLoaded && downloadReadyHandler != null)
-                        downloadReadyHandler.post(downloadComplete);
+                        downloadReadyHandler.post(() -> {
+                            // if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
+                            setCache(aktCache);
+                        });
                 }
-            };
-            downloadThread.start();
+            }.start();
         }
 
         if (cache != null) {
             cache.loadSpoilerRessources();
         }
+
+        if (cache != null)
+            Log.debug(log, "set " + cache.getGcCode() + " finished for description (despite fetching images etc...)");
     }
 
-    private String getAttributesHtml(Cache cache) {
+    private static String getAttributesHtml(Cache cache) {
         StringBuilder sb = new StringBuilder();
         try {
             Iterator<Attributes> attrs = cache.getAttributes().iterator();
@@ -421,6 +394,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        // this.getParent();
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
     public boolean ItemSelected(MenuItem item) {
         return false;
     }
@@ -431,29 +410,25 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     @Override
     public void OnShow() {
-        main.mainActivity.runOnUiThread(new Runnable() {
+        main.mainActivity.runOnUiThread(() -> {
+            if (GlobalCore.isSetSelectedCache()) {
+                // aktCache = GlobalCore.getSelectedCache();
 
-            @Override
-            public void run() {
-                if (GlobalCore.isSetSelectedCache()) {
-                    aktCache = GlobalCore.getSelectedCache();
+                // if (downloadTryCounter > 9) {
+                setCache(GlobalCore.getSelectedCache());
+                // }
+                // downloadTryCounter = 0;
 
-                    if (downloadTryCounter > 9) {
-                        setCache(aktCache);
-                    }
-                    downloadTryCounter = 0;
-
-                    // im Day Mode brauchen wir kein InvertView
-                    // das sollte mehr Performance geben
-                    if (Config.nightMode.getValue()) {
-                        invertViewControl.Me.setVisibility(VISIBLE);
-                    } else {
-                        invertViewControl.Me.setVisibility(GONE);
-                    }
-
-                    that.setWillNotDraw(false);
-                    that.invalidate();
+                // im Day Mode brauchen wir kein InvertView
+                // das sollte mehr Performance geben
+                if (Config.nightMode.getValue()) {
+                    invertViewControl.Me.setVisibility(VISIBLE);
+                } else {
+                    invertViewControl.Me.setVisibility(GONE);
                 }
+
+                that.setWillNotDraw(false);
+                that.invalidate();
             }
         });
     }

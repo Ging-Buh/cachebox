@@ -420,71 +420,68 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
         infoBubble.setInvisible();
-        infoBubble.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (infoBubble.saveButtonClicked(x, y)) {
-                    wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-                        @Override
-                        public void isCanceled() {
+        infoBubble.setOnClickListener((v, x, y, pointer, button) -> {
+            if (infoBubble.saveButtonClicked(x, y)) {
+                wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+                    @Override
+                    public void isCanceled() {
 
-                        }
-                    }, new ICancelRunnable() {
-
-                        @Override
-                        public void run() {
-
-                            String GCCode = infoBubble.getCache().getGcCode();
-                            ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
-                            if (geoCacheRelateds.size() > 0) {
-                                try {
-                                    // todo check, if correct
-                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
-                                } catch (InterruptedException e) {
-                                    Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
-                                }
-                            } else {
-                                String msg = "No Cache loaded: \n remaining Full:" + GroundspeakAPI.fetchMyUserInfos().remaining + "\n remaining Lite:" + GroundspeakAPI.fetchMyUserInfos().remainingLite;
-                                Log.debug(log, msg);
-                                GL.that.Toast(msg);
-                            }
-
-                            // Reload result from DB
-                            synchronized (Database.Data.Query) {
-                                String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                                CacheListDAO cacheListDAO = new CacheListDAO();
-                                cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-                            }
-                            CacheListChangedEventList.Call();
-
-                            Cache selCache = Database.Data.Query.GetCacheByGcCode(GCCode);
-                            GlobalCore.setSelectedCache(selCache);
-                            infoBubble.setCache(selCache, null, true);
-                            wd.close();
-                        }
-
-                        @Override
-                        public boolean doCancel() {
-                            // TODO handle cancel
-                            return false;
-                        }
-                    });
-                } else {
-                    if (infoBubble.getWaypoint() == null) {
-                        // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-                        Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
-                        // wenn ein Cache keine Final hat, aber einen StartWaypointm, dann wird dieser gleich selektiert
-                        if (waypoint == null)
-                            waypoint = infoBubble.getCache().GetStartWaypoint();
-                        GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
-                    } else {
-                        GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
                     }
-                }
+                }, new ICancelRunnable() {
 
-                infoBubble.setInvisible();
-                return true;
+                    @Override
+                    public void run() {
+
+                        String GCCode = infoBubble.getCache().getGcCode();
+                        ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
+                        if (geoCacheRelateds.size() > 0) {
+                            try {
+                                // todo check, if correct
+                                WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                            } catch (InterruptedException e) {
+                                Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                            }
+                        } else {
+                            String msg = "No Cache loaded: \n remaining Full:" + GroundspeakAPI.fetchMyUserInfos().remaining + "\n remaining Lite:" + GroundspeakAPI.fetchMyUserInfos().remainingLite;
+                            Log.debug(log, msg);
+                            GL.that.Toast(msg);
+                        }
+
+                        // Reload result from DB
+                        synchronized (Database.Data.Query) {
+                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
+                            CacheListDAO cacheListDAO = new CacheListDAO();
+                            cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                        }
+                        CacheListChangedEventList.Call();
+
+                        Cache selCache = Database.Data.Query.GetCacheByGcCode(GCCode);
+                        GlobalCore.setSelectedCache(selCache);
+                        infoBubble.setCache(selCache, null, true);
+                        wd.close();
+                    }
+
+                    @Override
+                    public boolean doCancel() {
+                        // TODO handle cancel
+                        return false;
+                    }
+                });
+            } else {
+                if (infoBubble.getWaypoint() == null) {
+                    // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
+                    Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
+                    // wenn ein Cache keine Final hat, aber einen StartWaypointm, dann wird dieser gleich selektiert
+                    if (waypoint == null)
+                        waypoint = infoBubble.getCache().GetStartWaypoint();
+                    GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
+                } else {
+                    GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
+                }
             }
+
+            infoBubble.setInvisible();
+            return true;
         });
         if (Mode == MapMode.Normal)
             this.addChild(infoBubble);

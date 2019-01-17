@@ -18,16 +18,18 @@ package CB_UI.GL_UI.Views;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.CacheContextMenu;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
@@ -43,10 +45,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static CB_Core.Api.GroundspeakAPI.isPremiumMember;
+import static CB_Core.Api.GroundspeakAPI.*;
 
 public class DescriptionView extends CB_View_Base {
-    final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
     final static String BASIC = "Basic";
     final static String PREMIUM = "Premium";
     final static String BASIC_LIMIT = "3";
@@ -55,6 +56,7 @@ public class DescriptionView extends CB_View_Base {
         GL.that.RunOnGL(() -> CacheContextMenu.ReloadSelectedCache());
         return true;
     };
+    private String STRING_POWERD_BY;
     private CacheListViewItem cacheInfo;
     private Button downloadButton;
     private Label MessageLabel, PowerdBy;
@@ -65,6 +67,7 @@ public class DescriptionView extends CB_View_Base {
 
     public DescriptionView(CB_RectF rec, String Name) {
         super(rec, Name);
+        STRING_POWERD_BY = Translation.Get("GC_title");
     }
 
     @Override
@@ -86,7 +89,14 @@ public class DescriptionView extends CB_View_Base {
         resetUi();
 
         if (sel.isLive() || sel.getApiStatus() == Cache.IS_LITE) {
-            showDownloadButton();
+            UserInfos me = fetchMyUserInfos();
+            boolean dontAsk = isPremiumMember() && me.remaining > 3;
+            if (dontAsk) {
+                // simply download, if Premium,..
+                GL.that.RunOnGL(CacheContextMenu::ReloadSelectedCache);
+            } else {
+                showDownloadButton();
+            }
         } else {
             showWebView();
         }
@@ -191,21 +201,18 @@ public class DescriptionView extends CB_View_Base {
     }
 
     private void showDownloadButton() {
-        final Thread getLimitThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
+
+        if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0) {
+            new Thread(() -> {
                 GroundspeakAPI.fetchMyCacheLimits();
                 if (GroundspeakAPI.APIError > 0) {
                     GL.that.Toast(GroundspeakAPI.LastAPIError);
                     return;
                 }
                 resetUi();
-                showDownloadButton();
-            }
-        });
-
-        if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0)
-            getLimitThread.start();
+                showDownloadButton(); // make it me again!!!
+            }).start();
+        }
 
         float contentWidth = this.getWidth() * 0.95f;
 

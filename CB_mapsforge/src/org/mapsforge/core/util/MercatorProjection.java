@@ -47,7 +47,7 @@ public final class MercatorProjection {
     public static final double LATITUDE_MIN = -LATITUDE_MAX;
 
     // TODO some operations actually do not rely on the tile size, but are composited
-    // from operations that require a tileSize parameter (which is effectively cancelled
+    // from operations that require a tileSize parameter (which is effectively canceled
     // out). A shortcut version of those operations should be implemented and then this
     // variable be removed.
     private static final int DUMMY_TILE_SIZE = 256;

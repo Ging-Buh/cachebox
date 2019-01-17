@@ -25,12 +25,13 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
     public DescriptionView(Context context, LayoutInflater inflater) {
         super(context);
-        SelectedCacheEventList.Add(this);
+        // SelectedCacheEventList.Add(this); dont need to create html every change. is enough at calling
         RelativeLayout descriptionLayout = (RelativeLayout) inflater.inflate(R.layout.description_view, null, false);
         this.addView(descriptionLayout);
         mLinearLayout = findViewById(R.id.WebViewLayout);
         mDescriptionViewControl = findViewById(R.id.DescriptionViewControl);
-        SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+        // SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+        // mDescriptionViewControl.setCache(GlobalCore.getSelectedCache());
     }
 
     @Override

@@ -6,7 +6,7 @@
 Changes up to version 3294:
      + Upload corrected coordinates in the waypoint menu
      + State and country can be edited (Edit Cache).
-     + Android keyboard switchable (word suggestions, ...)
+     + You can sitch to Android keyboard (word suggestions, ...)
      + Gestures: Help in the menu
      * Loading all friends
      * Delete the files in PocketQuery directory after import
