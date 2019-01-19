@@ -18,7 +18,6 @@ package CB_Core;
 import CB_Core.Types.Cache;
 import CB_Core.Types.DLong;
 import CB_Utils.Log.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -302,12 +301,12 @@ public class FilterProperties {
         mAttributes = new int[Attributes.values().length]; // !!! attention: Attributes 0 not used
         Arrays.fill(mAttributes, 0);
 
-        GPXFilenameIds = new ArrayList<Long>();
+        GPXFilenameIds = new ArrayList<>();
         filterName = "";
         filterGcCode = "";
         filterOwner = "";
 
-        Categories = new ArrayList<Long>();
+        Categories = new ArrayList<>();
     }
 
     private boolean[] parseCacheTypes(String types) {
@@ -335,9 +334,9 @@ public class FilterProperties {
     }
 
     /**
-     * True, wenn FilterProperties eine Filterung nach Name, Gc-Code oder Owner enthält!
+     * True, wenn FilterProperties eine Filterung nach Name, Gc-Code oder Owner enth&auml;lt!
      *
-     * @return
+     * @return if it contains or not
      */
     public boolean isExtendedFilter() {
         if (filterName != null && filterName.length() > 0)
@@ -367,16 +366,16 @@ public class FilterProperties {
             json.put("isHistory", isHistory);
             // add Cache properties
             json.put("caches",
-                    String.valueOf(Finds) + SEPARATOR + String.valueOf(NotAvailable) + SEPARATOR
-                            + String.valueOf(Archived) + SEPARATOR + String.valueOf(Own) + SEPARATOR
-                            + String.valueOf(ContainsTravelbugs) + SEPARATOR + String.valueOf(Favorites) + SEPARATOR
-                            + String.valueOf(HasUserData) + SEPARATOR + String.valueOf(ListingChanged) + SEPARATOR
-                            + String.valueOf(WithManualWaypoint) + SEPARATOR + String.valueOf(MinDifficulty) + SEPARATOR
-                            + String.valueOf(MaxDifficulty) + SEPARATOR + String.valueOf(MinTerrain) + SEPARATOR
-                            + String.valueOf(MaxTerrain) + SEPARATOR + String.valueOf(MinContainerSize) + SEPARATOR
-                            + String.valueOf(MaxContainerSize) + SEPARATOR + String.valueOf(MinRating) + SEPARATOR
-                            + String.valueOf(MaxRating) + SEPARATOR + String.valueOf(this.hasCorrectedCoordinates) + SEPARATOR
-                            + String.valueOf(MinFavPoints) + SEPARATOR + String.valueOf(MaxFavPoints));
+                    Finds + SEPARATOR + NotAvailable + SEPARATOR
+                            + Archived + SEPARATOR + Own + SEPARATOR
+                            + ContainsTravelbugs + SEPARATOR + Favorites + SEPARATOR
+                            + HasUserData + SEPARATOR + ListingChanged + SEPARATOR
+                            + WithManualWaypoint + SEPARATOR + MinDifficulty + SEPARATOR
+                            + MaxDifficulty + SEPARATOR + MinTerrain + SEPARATOR
+                            + MaxTerrain + SEPARATOR + MinContainerSize + SEPARATOR
+                            + MaxContainerSize + SEPARATOR + MinRating + SEPARATOR
+                            + MaxRating + SEPARATOR + hasCorrectedCoordinates + SEPARATOR
+                            + MinFavPoints + SEPARATOR + MaxFavPoints);
 
             // add Cache Types
             String tmp = "";
@@ -488,16 +487,16 @@ public class FilterProperties {
             if (HasUserData == -1)
                 andParts.add("(HasUserData = 0 or HasUserData is null)");
 
-            andParts.add("Difficulty >= " + String.valueOf(MinDifficulty * 2));
-            andParts.add("Difficulty <= " + String.valueOf(MaxDifficulty * 2));
-            andParts.add("Terrain >= " + String.valueOf(MinTerrain * 2));
-            andParts.add("Terrain <= " + String.valueOf(MaxTerrain * 2));
-            andParts.add("Size >= " + String.valueOf(MinContainerSize));
-            andParts.add("Size <= " + String.valueOf(MaxContainerSize));
-            andParts.add("Rating >= " + String.valueOf(MinRating * 100));
-            andParts.add("Rating <= " + String.valueOf(MaxRating * 100));
+            andParts.add("Difficulty >= " + MinDifficulty * 2);
+            andParts.add("Difficulty <= " + MaxDifficulty * 2);
+            andParts.add("Terrain >= " + MinTerrain * 2);
+            andParts.add("Terrain <= " + MaxTerrain * 2);
+            andParts.add("Size >= " + MinContainerSize);
+            andParts.add("Size <= " + MaxContainerSize);
+            andParts.add("Rating >= " + MinRating * 100);
+            andParts.add("Rating <= " + MaxRating * 100);
 
-            if (MinFavPoints >= 0) andParts.add("FavPoints >= " + String.valueOf(MinFavPoints));
+            if (MinFavPoints >= 0) andParts.add("FavPoints >= " + MinFavPoints);
             if (MaxFavPoints >= 0) andParts.add("FavPoints <= " + String.valueOf(MaxFavPoints));
 
             FilterInstances.hasCorrectedCoordinates = hasCorrectedCoordinates;
@@ -505,7 +504,7 @@ public class FilterProperties {
             String csvTypes = "";
             for (int i = 0; i < mCacheTypes.length; i++) {
                 if (mCacheTypes[i])
-                    csvTypes += String.valueOf(i) + ",";
+                    csvTypes += i + ",";
             }
             if (csvTypes.length() > 0) {
                 csvTypes = csvTypes.substring(0, csvTypes.length() - 1);

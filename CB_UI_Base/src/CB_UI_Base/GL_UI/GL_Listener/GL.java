@@ -1133,14 +1133,17 @@ public class GL implements ApplicationListener {
     }
 
     GL_View_Base touchActiveView(int x, int y, int pointer, int button) {
+        GL_View_Base view = null;
         if (MarkerIsShown)
         {
-            return mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
+            view = mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
         }
-        else {
+        if (view == null)
+        {
             CB_View_Base activeView = getActiveView();
             return activeView.touchDown(x, (int) activeView.getHeight() - y, pointer, button);
         }
+        return view;
     }
 
     public void showPopUp(PopUp_Base popUp, float x, float y) {
