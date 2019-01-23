@@ -7,8 +7,10 @@ public class FunctionBQuersumme extends Function{
 
     public FunctionBQuersumme(Solver solver) {
         super(solver);
-        Names.add(new Function.LocalNames("AlphaQS", "en"));
-        Names.add(new Function.LocalNames("AQS", "en"));
+        Names.add(new Function.LocalNames("AlphaCT", "en"));
+        Names.add(new Function.LocalNames("ACT", "en"));
+        Names.add(new Function.LocalNames("AlphaQS", "de"));
+        Names.add(new Function.LocalNames("AQS", "de"));
     }
 
     @Override
