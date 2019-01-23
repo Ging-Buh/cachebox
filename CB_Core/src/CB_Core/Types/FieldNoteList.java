@@ -26,29 +26,23 @@ import de.cb.sqlite.CoreCursor;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry> {
     private static final String log = "FieldNoteList";
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private boolean croppedList = false;
     private int actCroppedLength = -1;
-    IChanged settingsChangedListener = new IChanged() {
 
-        @Override
-        public void handleChange() {
+    public FieldNoteList() {
+        IChanged settingsChangedListener = () -> {
             synchronized (FieldNoteList.this) {
                 FieldNoteList.this.clear();
                 croppedList = false;
                 actCroppedLength = -1;
             }
-        }
-    };
-
-    public FieldNoteList() {
+        };
         CB_Core_Settings.FieldNotesLoadAll.addSettingChangedListener(settingsChangedListener);
         CB_Core_Settings.FieldNotesLoadLength.addSettingChangedListener(settingsChangedListener);
     }
@@ -71,7 +65,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 
             for (FieldNoteEntry fieldNote : lFieldNotes) {
                 String log = fieldNote.gcCode + "," + fieldNote.GetDateTimeString() + "," + fieldNote.type.toString() + ",\"" + fieldNote.comment + "\"\n";
-                writer.write((log + "\n").getBytes("UTF-8"));
+                writer.write((log + "\n").getBytes(StandardCharsets.UTF_8));
             }
             writer.flush();
             writer.close();
@@ -90,7 +84,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         }
     }
 
-    public void LoadFieldNotes(String where, String order, LoadingType loadingType) {
+    private void LoadFieldNotes(String where, String order, LoadingType loadingType) {
         synchronized (this) {
             // List clear?
             if (loadingType == LoadingType.Loadall || loadingType == LoadingType.LoadNew || loadingType == LoadingType.loadNewLastLength) {
@@ -101,7 +95,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
             if (!where.equals("")) {
                 sql += " where " + where;
             }
-            if (order == "") {
+            if (order.length() == 0) {
                 sql += " order by FoundNumber DESC, Timestamp DESC";
             } else {
                 sql += " order by " + order;
@@ -112,42 +106,39 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 
             if (maybeCropped) {
                 switch (loadingType) {
-                    case Loadall:
-                        // do nothing
-                        break;
                     case LoadNew:
                         actCroppedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
-                        sql += " LIMIT " + String.valueOf(actCroppedLength + 1);
+                        sql += " LIMIT " + (actCroppedLength + 1);
                         break;
                     case loadNewLastLength:
                         if (actCroppedLength == -1)
                             actCroppedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
-                        sql += " LIMIT " + String.valueOf(actCroppedLength + 1);
+                        sql += " LIMIT " + (actCroppedLength + 1);
                         break;
                     case loadMore:
                         int Offset = actCroppedLength;
                         actCroppedLength += CB_Core_Settings.FieldNotesLoadLength.getValue();
-                        sql += " LIMIT " + String.valueOf(CB_Core_Settings.FieldNotesLoadLength.getValue() + 1);
-                        sql += " OFFSET " + String.valueOf(Offset);
+                        sql += " LIMIT " + (CB_Core_Settings.FieldNotesLoadLength.getValue() + 1);
+                        sql += " OFFSET " + Offset;
                 }
             }
 
-            CoreCursor reader = null;
             try {
-                reader = Database.FieldNotes.sql.rawQuery(sql, null);
+                CoreCursor reader = Database.FieldNotes.sql.rawQuery(sql, null);
+                if (reader != null) {
+                    reader.moveToFirst();
+                    while (!reader.isAfterLast()) {
+                        FieldNoteEntry fne = new FieldNoteEntry(reader);
+                        if (!this.contains(fne)) {
+                            this.add(fne);
+                        }
+                        reader.moveToNext();
+                    }
+                    reader.close();
+                }
             } catch (Exception exc) {
                 Log.err(log, "FieldNoteList", "LoadFieldNotes", exc);
             }
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                FieldNoteEntry fne = new FieldNoteEntry(reader);
-                if (!this.contains(fne)) {
-                    this.add(fne);
-                }
-
-                reader.moveToNext();
-            }
-            reader.close();
 
             // check Cropped
             if (maybeCropped) {
@@ -182,13 +173,12 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         }
     }
 
-    public void DeleteFieldNote(long id, LogTypes type) {
+    public void DeleteFieldNote(FieldNoteEntry fnToDelete) {
         synchronized (this) {
             int foundNumber = 0;
             FieldNoteEntry fne = null;
-            // löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
             for (FieldNoteEntry fn : this) {
-                if (fn.Id == id) {
+                if (fn.Id == fnToDelete.Id) {
                     fne = fn;
                 }
             }
@@ -202,16 +192,14 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         }
     }
 
-    public void decreaseFoundNumber(int deletedFoundNumber) {
+    private void decreaseFoundNumber(int deletedFoundNumber) {
         if (deletedFoundNumber > 0) {
             // alle FoundNumbers anpassen, die größer sind
             for (FieldNoteEntry fn : this) {
                 if ((fn.type == LogTypes.found) && (fn.foundNumber > deletedFoundNumber)) {
                     int oldFoundNumber = fn.foundNumber;
                     fn.foundNumber--;
-                    String s = fn.comment;
-                    s = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.foundNumber);
-                    fn.comment = s;
+                    fn.comment = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.foundNumber);
                     fn.fillType();
                     fn.UpdateDatabase();
                 }

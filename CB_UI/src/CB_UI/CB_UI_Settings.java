@@ -132,8 +132,8 @@ public interface CB_UI_Settings {
     SettingString GrabbedTemplate = new SettingLongString("GrabbedTemplate", Templates, NORMAL, GRABED, Global, ACB);
     SettingString PickedTemplate = new SettingLongString("PickedTemplate", Templates, NORMAL, PICKED, Global, ACB);
 
-    SettingBool ShowFieldnotesContextMenuWithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow", Skin, EXPERT, false, Global, ACB);
     SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView", Skin, EXPERT, false, Global, ACB);
+    SettingBool ShowFieldnotesContextMenuWithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow", Skin, EXPERT, false, Global, ACB);
 
     SettingBool MultiDBAsk = new SettingBool("MultiDBAsk", Internal, NEVER, true, Global, ACB);
     SettingString DatabaseName = new SettingString("DatabaseName", Internal, NEVER, "cachebox.db3", Global, ACB);

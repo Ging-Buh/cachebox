@@ -97,40 +97,34 @@ public class FilterProperties {
                     } catch (Exception e) {
                         isHistory = false;
                     }
+                    hasCorrectedCoordinates = 0;
+                    this.MinFavPoints = -1;
+                    this.MaxFavPoints = -1;
                     String caches = json.getString("caches");
                     String[] parts = caches.split(SEPARATOR);
-                    int cnt = 0;
-                    Finds = Integer.parseInt(parts[cnt++]);
-                    NotAvailable = Integer.parseInt(parts[cnt++]);
-                    Archived = Integer.parseInt(parts[cnt++]);
-                    Own = Integer.parseInt(parts[cnt++]);
-                    ContainsTravelbugs = Integer.parseInt(parts[cnt++]);
-                    Favorites = Integer.parseInt(parts[cnt++]);
-                    HasUserData = Integer.parseInt(parts[cnt++]);
-                    ListingChanged = Integer.parseInt(parts[cnt++]);
-                    WithManualWaypoint = Integer.parseInt(parts[cnt++]);
-
-                    MinDifficulty = Float.parseFloat(parts[cnt++]);
-                    MaxDifficulty = Float.parseFloat(parts[cnt++]);
-                    MinTerrain = Float.parseFloat(parts[cnt++]);
-                    MaxTerrain = Float.parseFloat(parts[cnt++]);
-                    MinContainerSize = Float.parseFloat(parts[cnt++]);
-                    MaxContainerSize = Float.parseFloat(parts[cnt++]);
-                    MinRating = Float.parseFloat(parts[cnt++]);
-                    MaxRating = Float.parseFloat(parts[cnt++]);
-
-                    if (parts.length <= 17) {
-                        this.hasCorrectedCoordinates = 0;
-                    } else {
-                        hasCorrectedCoordinates = Integer.parseInt(parts[cnt++]);
-                    }
-
-                    if (parts.length <= 19) {
-                        this.MinFavPoints = -1;
-                        this.MaxFavPoints = -1;
-                    } else {
-                        this.MinFavPoints = Double.parseDouble(parts[cnt++]);
-                        this.MaxFavPoints = Double.parseDouble(parts[cnt]);
+                    for (int cnt = 0; cnt < (parts.length); cnt++) {
+                        switch (cnt) {
+                            case 0: Finds = Integer.parseInt(parts[0]); break;
+                            case 1: NotAvailable = Integer.parseInt(parts[1]); break;
+                            case 2: Archived = Integer.parseInt(parts[2]); break;
+                            case 3: Own = Integer.parseInt(parts[3]); break;
+                            case 4: ContainsTravelbugs = Integer.parseInt(parts[4]); break;
+                            case 5: Favorites = Integer.parseInt(parts[5]); break;
+                            case 6: HasUserData = Integer.parseInt(parts[6]); break;
+                            case 7: ListingChanged = Integer.parseInt(parts[7]); break;
+                            case 8: WithManualWaypoint = Integer.parseInt(parts[8]); break;
+                            case 9: MinDifficulty = Float.parseFloat(parts[9]); break;
+                            case 10: MaxDifficulty = Float.parseFloat(parts[10]); break;
+                            case 11: MinTerrain = Float.parseFloat(parts[11]); break;
+                            case 12: MaxTerrain = Float.parseFloat(parts[12]); break;
+                            case 13: MinContainerSize = Float.parseFloat(parts[13]); break;
+                            case 14: MaxContainerSize = Float.parseFloat(parts[14]); break;
+                            case 15: MinRating = Float.parseFloat(parts[15]); break;
+                            case 16: MaxRating = Float.parseFloat(parts[16]); break;
+                            case 17: hasCorrectedCoordinates = Integer.parseInt(parts[17]); break;
+                            case 18: MinFavPoints = Double.parseDouble(parts[18]); break;
+                            case 19: MaxFavPoints = Double.parseDouble(parts[19]); break;
+                        }
                     }
 
                     mCacheTypes = parseCacheTypes(json.getString("types"));
@@ -149,10 +143,10 @@ public class FilterProperties {
                     for (int i = og; i < mAttributes.length - 1; i++)
                         mAttributes[i + 1] = 0;
 
-                    GPXFilenameIds = new ArrayList<Long>();
+                    GPXFilenameIds = new ArrayList<>();
                     String gpxfilenames = json.getString("gpxfilenameids");
                     parts = gpxfilenames.split(SEPARATOR);
-                    cnt = 0;
+                    int cnt = 0;
                     if (parts.length > cnt) {
                         String tempGPX = parts[cnt++];
                         String[] partsGPX = tempGPX.split("\\" + GPXSEPARATOR);
@@ -497,7 +491,7 @@ public class FilterProperties {
             andParts.add("Rating <= " + MaxRating * 100);
 
             if (MinFavPoints >= 0) andParts.add("FavPoints >= " + MinFavPoints);
-            if (MaxFavPoints >= 0) andParts.add("FavPoints <= " + String.valueOf(MaxFavPoints));
+            if (MaxFavPoints >= 0) andParts.add("FavPoints <= " + MaxFavPoints);
 
             FilterInstances.hasCorrectedCoordinates = hasCorrectedCoordinates;
 

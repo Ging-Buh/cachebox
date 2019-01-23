@@ -8,6 +8,7 @@ public class FunctionCategories extends TreeMap<String, Functions> {
     public FunctionCategories(Solver solver) {
         Functions functions = new Functions("solverGroupText");
         functions.add(new FunctionAlphaSum(solver));
+        // todo @ work functions.add(new FunctionBQuersumme(solver));
         functions.add(new FunctionAlphaPos(solver));
         functions.add(new FunctionHandyCode(solver));
         functions.add(new FunctionHandySum(solver));

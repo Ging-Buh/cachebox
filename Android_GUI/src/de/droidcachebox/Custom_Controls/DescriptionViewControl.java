@@ -148,23 +148,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.contains("fake://fake.de/Attr")) {
-                int pos = url.indexOf("+");
-                if (pos < 0)
-                    return true;
-
-                final String attr = url.substring(pos + 1, url.length() - 1);
-
-                MessageBox.Show(Translation.Get(attr));
-                return true;
-            } else if (url.contains("fake://fake.de?Button")) {
-                int pos = url.indexOf("+");
-                if (pos < 0)
-                    return true;
-
-                final String attr = url.substring(pos + 1, url.length() - 1);
-
-                MessageBox.Show(Translation.Get(attr));
+            // handles submitting a form
+            if (url.contains("fake://fake.de?GetAttInfo")) {
+                // the url is missing the name=value on different devices (perhaps dependant from chromium), so we give that appended to the name and the blank
+                int pos = url.indexOf("+"); // the Blank is converted to + in url
+                // 25 is the length of "fake://fake.de?GetAttInfo"
+                if (pos > 0)
+                    MessageBox.Show(Translation.Get(url.substring(25, pos)));
                 return true;
             } else if (url.contains("fake://fake.de/download")) {
 
@@ -375,28 +365,30 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             if (attrs == null || !attrs.hasNext())
                 return "";
 
+            // alternate is perhaps something like
+            // <button name="action" value="blue"><img src="blue.png" alt="blue"></button>
+            sb.append("<form action=\"Attr\">");
+            // syntx <form action="URL"> absolute or relative
+            // In HTML5, the action attribute is no longer required.
             do {
                 Attributes attribute = attrs.next();
                 File result = new File(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
-
-                sb.append("<form action=\"Attr\">");
-                sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" " + attribute.getImageName() + " \">");
+                // the url is missing the value, so we give that appended in the name and the blank
+                sb.append("<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
             } while (attrs.hasNext());
-
             sb.append("</form>");
 
             if (sb.length() > 0)
                 sb.append("<br>");
             return sb.toString();
-        } catch (Exception ex) {
-            // TODO Handle Exception
+        } catch (Exception ignored) {
             return "";
         }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        // this.getParent();
+        this.getParent();
         return super.dispatchTouchEvent(event);
     }
 

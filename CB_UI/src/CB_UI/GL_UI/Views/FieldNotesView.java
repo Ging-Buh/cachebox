@@ -17,7 +17,6 @@ package CB_UI.GL_UI.Views;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CB_Core_Settings;
-import CB_Core.Database;
 import CB_Core.GCVote.GCVote;
 import CB_Core.LogTypes;
 import CB_Core.Types.*;
@@ -25,7 +24,6 @@ import CB_Core.Types.FieldNoteList.LoadingType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.EditFieldNotes;
-import CB_UI.GL_UI.Activitys.EditFieldNotes.IReturnListener;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -34,7 +32,6 @@ import CB_UI.TemplateFormatter;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -46,8 +43,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -61,20 +56,17 @@ import CB_Utils.Log.Log;
 
 import java.util.Date;
 
+import static CB_Core.Database.Data;
+
 public class FieldNotesView extends V_ListView {
     private static final String log = "FieldNotesView";
     public static FieldNotesView that;
-    public static FieldNoteEntry aktFieldNote;
-    public static boolean firstShow = true;
+    private static FieldNoteEntry aktFieldNote;
+    private static boolean firstShow = true;
     private static CB_RectF ItemRec;
     private static FieldNoteList lFieldNotes;
     private static WaitDialog wd;
-    private static EditFieldNotes.IReturnListener returnListener = new IReturnListener() {
-        @Override
-        public void returnedFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote, boolean directlog) {
-            addOrChangeFieldNote(fieldNote, isNewFieldNote, directlog);
-        }
-    };
+    private static EditFieldNotes.IReturnListener returnListener = FieldNotesView::addOrChangeFieldNote;
     private static EditFieldNotes efnActivity;
     private CustomAdapter lvAdapter;
 
@@ -98,11 +90,11 @@ public class FieldNotesView extends V_ListView {
         firstShow = true;
     }
 
-    public static void addNewFieldnote(LogTypes type) {
-        addNewFieldnote(type, "", false);
+    private static void addNewFieldNote(LogTypes type) {
+        addNewFieldNote(type, "", false);
     }
 
-    public static void addNewFieldnote(LogTypes type, String templateText, boolean withoutShowEdit) {
+    public static void addNewFieldNote(LogTypes type, String templateText, boolean withoutShowEdit) {
         Cache cache = GlobalCore.getSelectedCache();
 
         if (cache == null) {
@@ -343,12 +335,8 @@ public class FieldNotesView extends V_ListView {
 
     private static void logOnline(final FieldNoteEntry fieldNote, final boolean isNewFieldNote) {
 
-        wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+        wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
 
-            @Override
-            public void isCanceled() {
-
-            }
         }, new ICancelRunnable() {
 
             @Override
@@ -396,7 +384,6 @@ public class FieldNotesView extends V_ListView {
 
             @Override
             public boolean doCancel() {
-                // TODO handle cancel
                 return false;
             }
         });
@@ -438,43 +425,39 @@ public class FieldNotesView extends V_ListView {
 
         final Menu cm = new Menu("FieldNoteContextMenu");
 
-        cm.addOnClickListener(new OnClickListener() {
+        cm.addOnClickListener((v, x, y, pointer, button) -> {
+            cm.close();
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                cm.close();
-
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_FOUND:
-                        addNewFieldnote(LogTypes.found);
-                        return true;
-                    case MenuID.MI_ATTENDED:
-                        addNewFieldnote(LogTypes.attended);
-                        return true;
-                    case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                        addNewFieldnote(LogTypes.webcam_photo_taken);
-                        return true;
-                    case MenuID.MI_WILL_ATTENDED:
-                        addNewFieldnote(LogTypes.will_attend);
-                        return true;
-                    case MenuID.MI_NOT_FOUND:
-                        addNewFieldnote(LogTypes.didnt_find);
-                        return true;
-                    case MenuID.MI_MAINTANCE:
-                        addNewFieldnote(LogTypes.needs_maintenance);
-                        return true;
-                    case MenuID.MI_NOTE:
-                        addNewFieldnote(LogTypes.note);
-                        return true;
-                    case MenuID.MI_UPLOAD_FIELDNOTE:
-                        CB_Action_UploadFieldNote.INSTANCE.Execute();
-                        return true;
-                    case MenuID.MI_DELETE_ALL_FIELDNOTES:
-                        deleteAllFieldNotes();
-                        return true;
-                }
-                return false;
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_FOUND:
+                    addNewFieldNote(LogTypes.found);
+                    return true;
+                case MenuID.MI_ATTENDED:
+                    addNewFieldNote(LogTypes.attended);
+                    return true;
+                case MenuID.MI_WEBCAM_FOTO_TAKEN:
+                    addNewFieldNote(LogTypes.webcam_photo_taken);
+                    return true;
+                case MenuID.MI_WILL_ATTENDED:
+                    addNewFieldNote(LogTypes.will_attend);
+                    return true;
+                case MenuID.MI_NOT_FOUND:
+                    addNewFieldNote(LogTypes.didnt_find);
+                    return true;
+                case MenuID.MI_MAINTANCE:
+                    addNewFieldNote(LogTypes.needs_maintenance);
+                    return true;
+                case MenuID.MI_NOTE:
+                    addNewFieldNote(LogTypes.note);
+                    return true;
+                case MenuID.MI_UPLOAD_FIELDNOTE:
+                    CB_Action_UploadFieldNote.INSTANCE.Execute();
+                    return true;
+                case MenuID.MI_DELETE_ALL_FIELDNOTES:
+                    deleteAllFieldNotes();
+                    return true;
             }
+            return false;
         });
 
         if (cache != null) {
@@ -534,22 +517,22 @@ public class FieldNotesView extends V_ListView {
         sm.addOnClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_ENABLED:
-                    addNewFieldnote(LogTypes.enabled);
+                    addNewFieldNote(LogTypes.enabled);
                     return true;
                 case MenuID.MI_TEMPORARILY_DISABLED:
-                    addNewFieldnote(LogTypes.temporarily_disabled);
+                    addNewFieldNote(LogTypes.temporarily_disabled);
                     return true;
                 case MenuID.MI_OWNER_MAINTENANCE:
-                    addNewFieldnote(LogTypes.owner_maintenance);
+                    addNewFieldNote(LogTypes.owner_maintenance);
                     return true;
                 case MenuID.MI_ATTENDED:
-                    addNewFieldnote(LogTypes.attended);
+                    addNewFieldNote(LogTypes.attended);
                     return true;
                 case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    addNewFieldnote(LogTypes.webcam_photo_taken);
+                    addNewFieldNote(LogTypes.webcam_photo_taken);
                     return true;
                 case MenuID.MI_REVIEWER_NOTE:
-                    addNewFieldnote(LogTypes.reviewer_note);
+                    addNewFieldNote(LogTypes.reviewer_note);
                     return true;
             }
             return false;
@@ -622,16 +605,15 @@ public class FieldNotesView extends V_ListView {
                             Config.AcceptChanges();
                             // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
                             // damit das Smiley Symbol aus der Map und der CacheList verschwindet
-                            synchronized (Database.Data.Query) {
-                                Cache tc = Database.Data.Query.GetCacheById(cache.Id);
+                            synchronized (Data.Query) {
+                                Cache tc = Data.Query.GetCacheById(cache.Id);
                                 if (tc != null) {
                                     tc.setFound(false);
                                 }
                             }
                         }
                     }
-                    lFieldNotes.DeleteFieldNote(aktFieldNote.Id, aktFieldNote.type);
-
+                    lFieldNotes.DeleteFieldNote(aktFieldNote);
                     aktFieldNote = null;
 
                     lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
@@ -654,47 +636,40 @@ public class FieldNotesView extends V_ListView {
     }
 
     private void deleteAllFieldNotes() {
-        final GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener() {
-            @Override
-            public boolean onClick(int which, Object data) {
-                switch (which) {
-                    case GL_MsgBox.BUTTON_POSITIVE:
-                        // Yes button clicked
-                        // delete all FieldNotes
-                        // reload all Fieldnotes!
-                        lFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
+        final GL_MsgBox.OnMsgBoxClickListener dialogClickListener = (which, data) -> {
+            switch (which) {
+                case GL_MsgBox.BUTTON_POSITIVE:
+                    // Yes button clicked
+                    // delete all FieldNotes
+                    // reload all Fieldnotes!
+                    lFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
 
-                        for (FieldNoteEntry entry : lFieldNotes) {
-                            entry.DeleteFromDatabase();
+                    for (FieldNoteEntry entry : lFieldNotes) {
+                        entry.DeleteFromDatabase();
 
-                        }
+                    }
 
-                        lFieldNotes.clear();
-                        aktFieldNote = null;
+                    lFieldNotes.clear();
+                    aktFieldNote = null;
 
-                        that.setBaseAdapter(null);
-                        lvAdapter = new CustomAdapter(lFieldNotes);
-                        that.setBaseAdapter(lvAdapter);
-                        break;
+                    that.setBaseAdapter(null);
+                    lvAdapter = new CustomAdapter(lFieldNotes);
+                    that.setBaseAdapter(lvAdapter);
 
-                    case GL_MsgBox.BUTTON_NEGATIVE:
-                        // No button clicked
-                        // do nothing
-                        break;
-                }
-                return true;
+                    // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
+                    break;
 
+                case GL_MsgBox.BUTTON_NEGATIVE:
+                    // No button clicked
+                    // do nothing
+                    break;
             }
+            return true;
+
         };
+
         final String message = Translation.Get("DeleteAllFieldNotesQuestion");
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
-
-            }
-        });
+        GL.that.RunOnGL(() -> GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener));
 
     }
 
@@ -719,13 +694,13 @@ public class FieldNotesView extends V_ListView {
             return;
         }
 
-        synchronized (Database.Data.Query) {
-            cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+        synchronized (Data.Query) {
+            cache = Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
         }
 
         if (cache == null) {
-            Database.Data.Query.add(tmpCache);
-            cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+            Data.Query.add(tmpCache);
+            cache = Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
         }
 
         Waypoint finalWp = null;
@@ -757,7 +732,7 @@ public class FieldNotesView extends V_ListView {
 
     public class CustomAdapter implements Adapter {
 
-        private final CB_FixSizeList<FieldNoteViewItem> fixViewList = new CB_FixSizeList<FieldNoteViewItem>(20);
+        private final CB_FixSizeList<FieldNoteViewItem> fixViewList = new CB_FixSizeList<>(20);
         private FieldNoteList fieldNoteList;
 
         public CustomAdapter(FieldNoteList fieldNoteList) {
@@ -770,16 +745,6 @@ public class FieldNotesView extends V_ListView {
             if (fieldNoteList.isCropped())
                 count++;
             return count;
-        }
-
-        public Object getItem(int position) {
-            if (position >= fieldNoteList.size())
-                return null;
-            return fieldNoteList.get(position);
-        }
-
-        public long getItemId(int position) {
-            return position;
         }
 
         @Override
@@ -842,8 +807,7 @@ public class FieldNotesView extends V_ListView {
             }
 
             // put item to buffer
-            FieldNoteViewItem disposeView = fixViewList.addAndGetLastOut(v);
-            //if (disposeView != null) disposeView.dispose();
+            fixViewList.addAndGetLastOut(v);
 
             return v;
         }

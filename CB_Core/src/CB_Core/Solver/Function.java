@@ -10,7 +10,7 @@ import java.util.Iterator;
 public abstract class Function implements Serializable {
 
     private static final long serialVersionUID = 3322289615650829139L;
-    public ArrayList<LocalNames> Names = new ArrayList<LocalNames>();
+    public ArrayList<LocalNames> Names = new ArrayList<>();
     protected Solver solver;
 
     public Function(Solver solver) {

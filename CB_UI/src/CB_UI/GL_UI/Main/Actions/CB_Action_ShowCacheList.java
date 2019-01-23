@@ -70,99 +70,83 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu cm = new Menu("CacheListContextMenu");
 
-        cm.addOnClickListener(new OnClickListener() {
+        cm.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_RESORT:
+                    synchronized (Database.Data.Query) {
+                        CacheWithWP nearstCacheWp = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_RESORT:
+                        if (nearstCacheWp != null)
+                            GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
+                        if (TabMainView.cacheListView != null)
+                            TabMainView.cacheListView.setSelectedCacheVisible();
+                    }
+                    return true;
+                case MenuID.MI_FilterSet:
+                    TabMainView.actionShowFilter.Execute();
+                    return true;
+                case MenuID.MI_RESET_FILTER:
+                    FilterInstances.setLastFilter(new FilterProperties());
+                    EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+                    return true;
+                case MenuID.MI_SEARCH_LIST:
+
+                    if (SearchDialog.that == null) {
+                        new SearchDialog();
+                    }
+
+                    SearchDialog.that.showNotCloseAutomaticly();
+
+                    return true;
+                case MenuID.AID_SHOW_IMPORT_MENU:
+                    TabMainView.actionShowImportMenu.Execute();
+                    return true;
+                case MenuID.MI_SYNC:
+                    SyncActivity sync = new SyncActivity();
+                    sync.show();
+                    return true;
+                case MenuID.MI_MANAGE_DB:
+                    TabMainView.actionShowSelectDbDialog.Execute();
+                    return true;
+                case MenuID.MI_AUTO_RESORT:
+                    GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
+                    if (GlobalCore.getAutoResort()) {
                         synchronized (Database.Data.Query) {
-                            CacheWithWP nearstCacheWp = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
-
-                            if (nearstCacheWp != null)
-                                GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
-                            if (TabMainView.cacheListView != null)
-                                TabMainView.cacheListView.setSelectedCacheVisible();
+                            Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
                         }
-                        return true;
-                    case MenuID.MI_FilterSet:
-                        TabMainView.actionShowFilter.Execute();
-                        return true;
-                    case MenuID.MI_RESET_FILTER:
-                        FilterInstances.setLastFilter(new FilterProperties());
-                        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
-                        return true;
-                    case MenuID.MI_SEARCH_LIST:
-
-                        if (SearchDialog.that == null) {
-                            new SearchDialog();
-                        }
-
-                        SearchDialog.that.showNotCloseAutomaticly();
-
-                        return true;
-                    case MenuID.AID_SHOW_IMPORT_MENU:
-                        TabMainView.actionShowImportMenu.Execute();
-                        return true;
-                    case MenuID.MI_SYNC:
-                        SyncActivity sync = new SyncActivity();
-                        sync.show();
-                        return true;
-                    case MenuID.MI_MANAGE_DB:
-                        TabMainView.actionShowSelectDbDialog.Execute();
-                        return true;
-                    case MenuID.MI_AUTO_RESORT:
-                        GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
-                        if (GlobalCore.getAutoResort()) {
-                            synchronized (Database.Data.Query) {
-                                Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
-                            }
-                        }
-                        return true;
-                    case MenuID.MI_CB_Action_chkState:
-                        // todo remove the following code | is duplicate in CB_Action_ShowImportMenu
-                        GL.that.postAsync(new Runnable() {
-                            @Override
-                            public void run() {
-                                // First check API-Key with visual Feedback
-                                Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
-                                GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
+                    }
+                    return true;
+                case MenuID.MI_CB_Action_chkState:
+                    // todo remove the following code | is duplicate in CB_Action_ShowImportMenu
+                    GL.that.postAsync(() -> {
+                        // First check API-Key with visual Feedback
+                        Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
+                        GlobalCore.chkAPiLogInWithWaitDialog(isAccessTokenInvalid -> {
+                            Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
+                            if (!isAccessTokenInvalid) {
+                                TimerTask tt = new TimerTask() {
                                     @Override
-                                    public void checkReady(boolean isAccessTokenInvalid) {
-                                        Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
-                                        if (!isAccessTokenInvalid) {
-                                            TimerTask tt = new TimerTask() {
-                                                @Override
-                                                public void run() {
-                                                    GL.that.postAsync(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            new CB_Action_chkState().Execute();
-                                                        }
-                                                    });
-                                                }
-                                            };
-                                            Timer t = new Timer();
-                                            t.schedule(tt, 100);
-                                        }
+                                    public void run() {
+                                        GL.that.postAsync(() -> new CB_Action_chkState().Execute());
                                     }
-                                });
+                                };
+                                Timer t = new Timer();
+                                t.schedule(tt, 100);
                             }
                         });
-                        return true;
-                    case MenuID.MI_NEW_CACHE:
-                        if (editCache == null) editCache = new EditCache();
-                        if (editCache.isDisposed()) editCache = new EditCache();
-                        editCache.create();
-                        return true;
+                    });
+                    return true;
+                case MenuID.MI_NEW_CACHE:
+                    if (editCache == null) editCache = new EditCache();
+                    if (editCache.isDisposed()) editCache = new EditCache();
+                    editCache.create();
+                    return true;
 
-                    case MenuID.AID_SHOW_DELETE_DIALOG:
-                        TabMainView.actionShwDeleteCaches.Execute();
-                        return true;
-                }
-                return false;
+                case MenuID.AID_SHOW_DELETE_DIALOG:
+                    TabMainView.actionShwDeleteCaches.Execute();
+                    return true;
             }
-
+            return false;
         });
 
         String DBName = Config.DatabaseName.getValue();

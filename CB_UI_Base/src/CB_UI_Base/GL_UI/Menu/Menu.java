@@ -445,13 +445,13 @@ public class Menu extends ButtonDialog {
 
     public void addOnClickListener(OnClickListener onItemClickListener) {
         if (this.mOnItemClickListeners == null)
-            this.mOnItemClickListeners = new ArrayList<GL_View_Base.OnClickListener>();
+            this.mOnItemClickListeners = new ArrayList<>();
         this.mOnItemClickListeners.add(onItemClickListener);
     }
 
     public void addOnClickListeners(ArrayList<OnClickListener> onItemClickListeners) {
         if (this.mOnItemClickListeners == null)
-            this.mOnItemClickListeners = new ArrayList<GL_View_Base.OnClickListener>();
+            this.mOnItemClickListeners = new ArrayList<>();
         this.mOnItemClickListeners.addAll(onItemClickListeners);
     }
 

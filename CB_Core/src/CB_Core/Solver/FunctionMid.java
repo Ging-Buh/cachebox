@@ -3,10 +3,15 @@ package CB_Core.Solver;
 import CB_Core.Solver.DataTypes.DataType;
 import CB_Translation_Base.TranslationEngine.Translation;
 
+/**
+ * Return a substring of a string. Parameter 3 defaults to 1
+ * Mid(String; StartPosition; [CharacterCount])
+ *
+ */
 public class FunctionMid extends Function {
     private static final long serialVersionUID = 3727854231542597267L;
 
-    public FunctionMid(Solver solver) {
+    FunctionMid(Solver solver) {
         super(solver);
         Names.add(new LocalNames("Mid", "en"));
     }

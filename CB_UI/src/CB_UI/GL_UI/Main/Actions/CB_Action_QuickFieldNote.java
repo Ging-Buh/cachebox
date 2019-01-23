@@ -24,8 +24,6 @@ import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEventList;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -58,16 +56,16 @@ public class CB_Action_QuickFieldNote extends CB_Action {
             boolean found = true;
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    FieldNotesView.addNewFieldnote(LogTypes.webcam_photo_taken, "", true);
+                    FieldNotesView.addNewFieldNote(LogTypes.webcam_photo_taken, "", true);
                     break;
                 case MenuID.MI_ATTENDED:
-                    FieldNotesView.addNewFieldnote(LogTypes.attended,"", true);
+                    FieldNotesView.addNewFieldNote(LogTypes.attended,"", true);
                     break;
                 case MenuID.MI_QUICK_FOUND:
-                    FieldNotesView.addNewFieldnote(LogTypes.found,"", true);
+                    FieldNotesView.addNewFieldNote(LogTypes.found,"", true);
                     break;
                 case MenuID.MI_QUICK_NOT_FOUND:
-                    FieldNotesView.addNewFieldnote(LogTypes.didnt_find,"", true);
+                    FieldNotesView.addNewFieldNote(LogTypes.didnt_find,"", true);
                     found = false;
                     break;
                 default:

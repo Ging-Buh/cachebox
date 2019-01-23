@@ -2,9 +2,7 @@ package de.droidcachebox.Views;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
