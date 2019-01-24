@@ -5,7 +5,6 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
 import CB_UI_Base.Math.CB_RectF;
 
 public class MainViewBase extends CB_View_Base {
-    public static CB_Action_ShowQuit actionClose = new CB_Action_ShowQuit();
     public static MainViewBase mainView;
 
     public MainViewBase(CB_RectF rec) {

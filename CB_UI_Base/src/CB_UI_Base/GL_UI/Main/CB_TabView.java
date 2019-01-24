@@ -8,9 +8,10 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.GL_UISizes;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.math.Vector2;
+
+import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
 
 /**
  * the CB_TabView shows the aktView<br>
@@ -34,7 +35,7 @@ public class CB_TabView extends CB_View_Base {
         mButtonList = buttonList;
         if (mButtonList == null)
             return;
-        buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
+        buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), MainBtnSize.getHeight()), "ButtonList von " + this.getName());
         buttonListView.setBaseAdapter(new CustomAdapter());
         buttonListView.setUnDraggable();
         buttonListView.setBackground(Sprites.ButtonBack);
@@ -48,8 +49,8 @@ public class CB_TabView extends CB_View_Base {
     }
 
     private void layout() {
-        mContentRec.setHeight(this.getHeight() - GL_UISizes.BottomButtonHeight);
-        mContentRec.setPos(0, GL_UISizes.BottomButtonHeight);
+        mContentRec.setHeight(this.getHeight() - MainBtnSize.getHeight());
+        mContentRec.setPos(0, MainBtnSize.getHeight());
 
         if (aktView != null) {
             // set View size and pos
@@ -63,13 +64,13 @@ public class CB_TabView extends CB_View_Base {
     protected void Initial() {
         // Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
         if (mButtonList.Buttons.size() <= buttonListView.getMaxItemCount()) {
-            float sollDivider = (buttonListView.getWidth() - (GL_UISizes.BottomButtonHeight * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
+            float sollDivider = (buttonListView.getWidth() - (MainBtnSize.getHeight() * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
             buttonListView.setDividerSize(sollDivider);
         }
 
         // Das Button Seitenverh�ltniss ist 88x76!
         // H�he der Buttons einstellen und diese Zentrieren!
-        float buttonHeight = GL_UISizes.BottomButtonHeight * 0.863f;
+        float buttonHeight = MainBtnSize.getHeight() * 0.863f;
         for (CB_Button btn : mButtonList.Buttons) {
             btn.setHeight(buttonHeight);
         }
@@ -178,7 +179,7 @@ public class CB_TabView extends CB_View_Base {
 
         @Override
         public float getItemSize(int position) {
-            return GL_UISizes.BottomButtonHeight;
+            return MainBtnSize.getHeight();
         }
     }
 

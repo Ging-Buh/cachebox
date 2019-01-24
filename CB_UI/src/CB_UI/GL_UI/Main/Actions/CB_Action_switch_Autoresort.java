@@ -11,8 +11,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_switch_Autoresort extends CB_Action {
 
-    public CB_Action_switch_Autoresort() {
+    private static CB_Action_switch_Autoresort that;
+
+    private CB_Action_switch_Autoresort() {
         super("AutoResort", MenuID.AID_AUTO_RESORT);
+    }
+
+    public static CB_Action_switch_Autoresort getInstance() {
+        if (that == null) that = new CB_Action_switch_Autoresort();
+        return that;
     }
 
     @Override

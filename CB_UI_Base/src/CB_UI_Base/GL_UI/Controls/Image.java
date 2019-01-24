@@ -66,13 +66,7 @@ public class Image extends CB_View_Base {
         this.imageLoader = new ImageLoader();
         this.imageLoader.reziseHeight = reziseHeight;
         if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
-            this.imageLoader.setResizeListener(new CB_UI_Base.GL_UI.Controls.ImageLoader.resize() {
-
-                @Override
-                public void sizechanged(float newWidth, float newHeight) {
-                    Image.this.setSize(newWidth, newHeight);
-                }
-            }, this.getWidth());
+            this.imageLoader.setResizeListener((newWidth, newHeight) -> Image.this.setSize(newWidth, newHeight), this.getWidth());
         }
     }
 

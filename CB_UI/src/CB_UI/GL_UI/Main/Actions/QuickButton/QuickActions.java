@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
+import CB_UI.GL_UI.Main.Actions.*;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
@@ -122,57 +122,57 @@ public enum QuickActions {
     public static CB_Action getActionEnumById(int id) {
         switch (id) {
             case 0:
-                return actionShowDescriptionView;
+                return CB_Action_ShowDescriptionView.getInstance();
             case 1:
-                return actionShowWaypointView;
+                return CB_Action_ShowWaypointView.getInstance();
             case 2:
-                return actionShowLogView;
+                return CB_Action_ShowLogView.getInstance();
             case 3:
-                return actionShowMap;
+                return CB_Action_ShowMap.getInstance();
             case 4:
-                return actionShowCompassView;
+                return CB_Action_ShowCompassView.getInstance();
             case 5:
-                return actionShowCacheList;
+                return CB_Action_ShowCacheList.getInstance();
             case 6:
-                return actionShowTrackListView;
+                return CB_Action_ShowTrackListView.getInstance();
             case 7:
-                return actionRecPicture;
+                return actionTakePicture;
             case 8:
-                return actionRecVideo;
+                return actionRecordVideo;
             case 9:
-                return actionRecVoice;
+                return actionRecordVoice;
             case 10:
-                return actionShowSearch;
+                return CB_Action_Show_Search.getInstance();
             case 11:
-                return actionShowFilter;
+                return CB_Action_ShowFilterSettings.getInstance();
             case 12:
-                return action_SwitchAutoResort;
+                return CB_Action_switch_Autoresort.getInstance();
             case 13:
-                return actionShowSolverView;
+                return CB_Action_ShowSolverView.getInstance();
             case 14:
-                return actionShowSpoilerView;
+                return CB_Action_ShowSpoilerView.getInstance();
             case 15:
-                return actionShowHint;
+                return CB_Action_ShowHint.getInstance();
             case 16:
-                return actionShowParking;
+                return CB_Action_Show_Parking_Dialog.getInstance();
             case 17:
-                return action_DayNight;
+                return CB_Action_switch_DayNight.getInstance();
             case 18:
-                return actionShowFieldNotesView;
+                return CB_Action_ShowFieldNotesView.getInstance();
             case 19:
-                return actionQuickFieldNote;
+                return CB_Action_QuickFieldNote.getInstance();
             case 20:
-                return actionShowTrackableListView;
+                return CB_Action_ShowTrackableListView.getInstance();
             case 21:
-                return action_add_WP;
+                return CB_Action_add_WP.getInstance();
             case 22:
-                return actionShowSolverView2;
+                return CB_Action_ShowSolverView2.getInstance(); // todo doppelt
             case 23:
-                return actionShowNotesView;
+                return CB_Action_ShowSolverView.getInstance(); // todo doppelt
             case 24:
-                return CB_Action_UploadFieldNote.INSTANCE;
+                return CB_Action_UploadFieldNote.getInstance();
             case 25:
-                return action_Torch;
+                return CB_Action_switch_Torch.getInstance();
 
         }
         return null;

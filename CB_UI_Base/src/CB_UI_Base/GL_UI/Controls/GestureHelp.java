@@ -17,7 +17,6 @@ package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -25,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
 
 public class GestureHelp extends CB_View_Base {
 
@@ -79,7 +80,7 @@ public class GestureHelp extends CB_View_Base {
     }
 
     public void addBtnIcon(NinePatch icon) {
-        h = GL_UISizes.BottomButtonHeight / 2.4f;
+        h = MainBtnSize.getHeight() / 2.4f;
         d = h / 8;
         cX = (this.getHeight() / 2) - (h / 2);
         cY = cX + d + d;

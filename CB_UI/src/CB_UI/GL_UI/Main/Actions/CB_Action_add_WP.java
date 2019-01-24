@@ -10,8 +10,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_add_WP extends CB_Action {
 
-    public CB_Action_add_WP() {
+    private static CB_Action_add_WP that;
+
+    private CB_Action_add_WP() {
         super("addWP", MenuID.AID_ADD_WP);
+    }
+
+    public static CB_Action_add_WP getInstance() {
+        if (that == null) that = new CB_Action_add_WP();
+        return that;
     }
 
     @Override

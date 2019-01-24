@@ -10,8 +10,17 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowCreditsView extends CB_Action_ShowView {
-    public CB_Action_ShowCreditsView() {
+    private static CB_Action_ShowCreditsView that;
+
+    private CB_Action_ShowCreditsView() {
         super("Credits", MenuID.AID_SHOW_CREDITS);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowCreditsView getInstance() {
+        if (that == null) that = new CB_Action_ShowCreditsView();
+        return that;
     }
 
     @Override

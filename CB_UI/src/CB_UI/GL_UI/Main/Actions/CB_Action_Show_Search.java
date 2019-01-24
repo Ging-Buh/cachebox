@@ -10,15 +10,22 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_Search extends CB_Action {
 
-    public CB_Action_Show_Search() {
+    private static CB_Action_Show_Search that;
+
+    private CB_Action_Show_Search() {
         super("Search", MenuID.AID_SEARCH);
+    }
+
+    public static CB_Action_Show_Search getInstance() {
+        if (that == null) that = new CB_Action_Show_Search();
+        return that;
     }
 
     @Override
     public void Execute() {
 
         if (TabMainView.cacheListView == null || !TabMainView.cacheListView.isVisible()) {
-            TabMainView.actionShowCacheList.Execute();
+            CB_Action_ShowCacheList.getInstance().Execute();
         }
 
         if (SearchDialog.that == null) {

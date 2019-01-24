@@ -9,8 +9,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_switch_DayNight extends CB_Action {
 
-    public CB_Action_switch_DayNight() {
+    private static CB_Action_switch_DayNight that;
+
+    private CB_Action_switch_DayNight() {
         super("DayNight", MenuID.AID_DAY_NIGHT);
+    }
+
+    public static CB_Action_switch_DayNight getInstance() {
+        if (that == null) that = new CB_Action_switch_DayNight();
+        return that;
     }
 
     @Override

@@ -13,6 +13,8 @@ public class CB_Action_ShowTestView extends CB_Action_ShowView {
 
     public CB_Action_ShowTestView() {
         super("TestView", MenuID.AID_TEST_VIEW);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
     }
 
     @Override

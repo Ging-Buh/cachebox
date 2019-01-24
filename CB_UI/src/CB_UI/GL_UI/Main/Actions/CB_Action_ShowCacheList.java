@@ -12,12 +12,8 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
-import CB_UI.GlobalCore.iChkReadyHandler;
-import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -31,10 +27,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CB_Action_ShowCacheList extends CB_Action_ShowView {
-    EditCache editCache = null;
+    private static CB_Action_ShowCacheList that;
+    private EditCache editCache;
 
-    public CB_Action_ShowCacheList() {
-        super("cacheList", "  (" + String.valueOf(Database.Data.Query.size()) + ")", MenuID.AID_SHOW_CACHELIST);
+    private CB_Action_ShowCacheList() {
+        super("cacheList", "  (" + Database.Data.Query.size() + ")", MenuID.AID_SHOW_CACHELIST);
+        editCache = null;
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowCacheList getInstance() {
+        if (that == null) that = new CB_Action_ShowCacheList();
+        return that;
     }
 
     @Override
@@ -83,7 +88,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     }
                     return true;
                 case MenuID.MI_FilterSet:
-                    TabMainView.actionShowFilter.Execute();
+                    CB_Action_ShowFilterSettings.getInstance().Execute();
                     return true;
                 case MenuID.MI_RESET_FILTER:
                     FilterInstances.setLastFilter(new FilterProperties());
@@ -99,14 +104,14 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
                     return true;
                 case MenuID.AID_SHOW_IMPORT_MENU:
-                    TabMainView.actionShowImportMenu.Execute();
+                    CB_Action_ShowImportMenu.getInstance().Execute();
                     return true;
                 case MenuID.MI_SYNC:
                     SyncActivity sync = new SyncActivity();
                     sync.show();
                     return true;
                 case MenuID.MI_MANAGE_DB:
-                    TabMainView.actionShowSelectDbDialog.Execute();
+                    CB_Action_Show_SelectDB_Dialog.getInstance().Execute();
                     return true;
                 case MenuID.MI_AUTO_RESORT:
                     GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
@@ -143,7 +148,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     return true;
 
                 case MenuID.AID_SHOW_DELETE_DIALOG:
-                    TabMainView.actionShwDeleteCaches.Execute();
+                    CB_Action_Show_Delete_Dialog.getInstance().Execute();
                     return true;
             }
             return false;

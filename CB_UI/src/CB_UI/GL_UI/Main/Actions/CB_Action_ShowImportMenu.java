@@ -56,15 +56,18 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     private static final int MI_MAP_DOWNOAD = 199;
     private static final int MI_GetFriends = 211;
     private static final int MI_IMPORT_GSAK = 7;
-
-    private enum menuId {aktualisiereStatus, getFriends, downloadMap, importOverPosition, importByGcCode, importDiverse}
-
+    private static CB_Action_ShowImportMenu that;
     int actExportedCount = 0;
     private ProgressDialog pD;
     private boolean cancel = false;
 
-    public CB_Action_ShowImportMenu() {
+    private CB_Action_ShowImportMenu() {
         super("ImportMenu", MenuID.AID_SHOW_IMPORT_MENU);
+    }
+
+    public static CB_Action_ShowImportMenu getInstance() {
+        if (that == null) that = new CB_Action_ShowImportMenu();
+        return that;
     }
 
     @Override
@@ -177,7 +180,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                         });
                         return true;
                     case MI_GetFriends:
-                        TabMainView.actionGetFriends.getFriends();
+                        CB_Action_GetFriends.getInstance().getFriends();
                         return true;
                     case MI_IMPORT_GSAK:
                         new Import_GSAK().show();
@@ -300,5 +303,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
         }
     }
+
+    private enum menuId {aktualisiereStatus, getFriends, downloadMap, importOverPosition, importByGcCode, importDiverse}
 
 }

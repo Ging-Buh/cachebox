@@ -11,8 +11,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowNotesView extends CB_Action_ShowView {
 
-    public CB_Action_ShowNotesView() {
+    private static CB_Action_ShowNotesView that;
+
+    private CB_Action_ShowNotesView() {
         super("Notes", MenuID.AID_SHOW_NOTES);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowNotesView getInstance() {
+        if (that == null) that = new CB_Action_ShowNotesView();
+        return that;
     }
 
     @Override

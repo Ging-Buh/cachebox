@@ -28,6 +28,7 @@ import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.IReturnListener;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.ISolverBackStringListener;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
@@ -370,8 +371,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
         if (result != null) {
             // Set Map Center
             TabMainView.mapView.setCenter(result);
-            // Show MapView
-            TabMainView.actionShowMap.Execute();
+            CB_Action_ShowMap.getInstance().Execute();
         }
     }
 

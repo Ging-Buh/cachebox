@@ -12,8 +12,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowWaypointView extends CB_Action_ShowView {
 
-    public CB_Action_ShowWaypointView() {
+    private static CB_Action_ShowWaypointView that;
+
+    private CB_Action_ShowWaypointView() {
         super("Waypoints", MenuID.AID_SHOW_WAYPOINTS);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowWaypointView getInstance() {
+        if (that == null) that = new CB_Action_ShowWaypointView();
+        return that;
     }
 
     @Override

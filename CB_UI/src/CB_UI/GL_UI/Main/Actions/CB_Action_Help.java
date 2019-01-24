@@ -9,8 +9,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Help extends CB_Action {
 
-    public CB_Action_Help() {
+    private static CB_Action_Help that;
+
+    private CB_Action_Help() {
         super("Help Online", MenuID.AID_HELP);
+    }
+
+    public static CB_Action_Help getInstance() {
+        if (that == null) that = new CB_Action_Help();
+        return that;
     }
 
     @Override

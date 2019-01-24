@@ -57,10 +57,18 @@ import java.util.Date;
 
 public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     private static final String log = "CB_Action_ShowTrackListView";
+    private static CB_Action_ShowTrackListView that;
     Color TrackColor;
 
-    public CB_Action_ShowTrackListView() {
+    private CB_Action_ShowTrackListView() {
         super("Tracks", MenuID.AID_SHOW_TRACKLIST);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowTrackListView getInstance() {
+        if (that == null) that = new CB_Action_ShowTrackListView();
+        return that;
     }
 
     @Override

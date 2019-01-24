@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CB_Action_UploadFieldNote extends CB_Action {
-    public static CB_Action_UploadFieldNote INSTANCE = new CB_Action_UploadFieldNote();
+    private static CB_Action_UploadFieldNote that;
     private Boolean ThreadCancel = false;
     private String UploadMeldung = "";
     private boolean API_Key_error = false;
@@ -36,6 +36,11 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 
     private CB_Action_UploadFieldNote() {
         super("uploadFieldNotes", MenuID.AID_UPLOAD_FIELD_NOTE);
+    }
+
+    public static CB_Action_UploadFieldNote getInstance() {
+        if (that == null) that = new CB_Action_UploadFieldNote();
+        return that;
     }
 
     @Override

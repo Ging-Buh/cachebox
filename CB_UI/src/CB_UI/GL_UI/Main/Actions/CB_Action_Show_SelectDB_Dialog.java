@@ -36,10 +36,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
     private static final String log = "CB_Action_Show_SelectDB_Dialog";
+    private static CB_Action_Show_SelectDB_Dialog that;
     WaitDialog wd;
 
-    public CB_Action_Show_SelectDB_Dialog() {
+    private CB_Action_Show_SelectDB_Dialog() {
         super("manageDB", MenuID.AID_SHOW_SELECT_DB_DIALOG);
+    }
+
+    public static CB_Action_Show_SelectDB_Dialog getInstance() {
+        if (that == null) that = new CB_Action_Show_SelectDB_Dialog();
+        return that;
     }
 
     @Override

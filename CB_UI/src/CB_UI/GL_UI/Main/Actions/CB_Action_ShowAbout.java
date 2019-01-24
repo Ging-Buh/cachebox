@@ -12,9 +12,19 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowAbout extends CB_Action_ShowView {
 
-    public CB_Action_ShowAbout() {
+    private static CB_Action_ShowAbout that;
+
+    private CB_Action_ShowAbout() {
         super("about", MenuID.AID_SHOW_ABOUT);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
     }
+
+    public static CB_Action_ShowAbout getInstance() {
+        if (that == null) that = new CB_Action_ShowAbout();
+        return that;
+    }
+
 
     @Override
     public void Execute() {

@@ -5,15 +5,19 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_Delete_Dialog extends CB_Action {
 
-    Color TrackColor;
+    private static CB_Action_Show_Delete_Dialog that;
 
-    public CB_Action_Show_Delete_Dialog() {
+    private CB_Action_Show_Delete_Dialog() {
         super("DeleteCaches", MenuID.AID_SHOW_DELETE_DIALOG);
+    }
+
+    public static CB_Action_Show_Delete_Dialog getInstance() {
+        if (that == null) that = new CB_Action_Show_Delete_Dialog();
+        return that;
     }
 
     @Override

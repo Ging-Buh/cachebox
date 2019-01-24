@@ -25,7 +25,7 @@ public abstract class CB_Action_ShowView extends CB_Action {
      * returns the instance of the view (from TabMainView)<br>
      * TabMainView.<view><br>
      *
-     * @return
+     * @return CB_View_Base
      */
     public abstract CB_View_Base getView();
 

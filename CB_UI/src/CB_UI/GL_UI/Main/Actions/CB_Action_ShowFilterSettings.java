@@ -10,8 +10,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowFilterSettings extends CB_Action {
 
-    public CB_Action_ShowFilterSettings() {
+    private static CB_Action_ShowFilterSettings that;
+
+    private CB_Action_ShowFilterSettings() {
         super("Filter", MenuID.AID_SHOW_FILTER_DIALOG);
+    }
+
+    public static CB_Action_ShowFilterSettings getInstance() {
+        if (that == null) that = new CB_Action_ShowFilterSettings();
+        return that;
     }
 
     @Override

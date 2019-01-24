@@ -9,9 +9,15 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowTrackableListView extends CB_Action {
+    private static CB_Action_ShowTrackableListView that;
 
-    public CB_Action_ShowTrackableListView() {
+    private CB_Action_ShowTrackableListView() {
         super("TBList", MenuID.AID_SHOW_TRACKABLELIST);
+    }
+
+    public static CB_Action_ShowTrackableListView getInstance() {
+        if (that == null) that = new CB_Action_ShowTrackableListView();
+        return that;
     }
 
     @Override

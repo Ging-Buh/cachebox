@@ -29,10 +29,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowQuit extends CB_Action {
     static GL_MsgBox msg;
+    private static CB_Action_ShowQuit that;
     String OverrideAppName = null;
 
-    public CB_Action_ShowQuit() {
+    private CB_Action_ShowQuit() {
         super("quit", MenuID.AID_SHOW_QUIT);
+    }
+
+    public static CB_Action_ShowQuit getInstance() {
+        if (that == null) that = new CB_Action_ShowQuit();
+        return that;
     }
 
     public void OverrideAppName(String name) {

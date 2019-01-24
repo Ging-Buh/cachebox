@@ -45,8 +45,14 @@ public class CB_Action_ShowDescExt extends CB_Action {
     private final LinkedList<String> NonLocalImages = new LinkedList<String>();
     private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
 
-    public CB_Action_ShowDescExt() {
+    private static CB_Action_ShowDescExt that;
+    private CB_Action_ShowDescExt() {
         super("descExt", MenuID.AID_SHOW_DescExt);
+    }
+
+    public static CB_Action_ShowDescExt getInstance() {
+        if (that == null) that = new CB_Action_ShowDescExt();
+        return that;
     }
 
     /**

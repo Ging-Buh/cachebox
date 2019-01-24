@@ -36,6 +36,7 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.SearchMode;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowCacheList;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI_Base.Energy;
@@ -2144,7 +2145,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                             if (mustShowCacheList) {
                                 // show cachelist first then search dialog
                                 mustShowCacheList = false;
-                                TabMainView.that.showCacheList();
+                                CB_Action_ShowCacheList.getInstance().Execute();
                                 ImportCacheByGCCode(); // now the search can start (doSearchOnline)
                             } else {
                                 mustShowCacheList = true;

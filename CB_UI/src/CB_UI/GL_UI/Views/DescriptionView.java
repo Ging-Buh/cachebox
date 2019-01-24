@@ -46,6 +46,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static CB_Core.Api.GroundspeakAPI.*;
+import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
 
 public class DescriptionView extends CB_View_Base {
     final static String BASIC = "Basic";
@@ -216,7 +217,7 @@ public class DescriptionView extends CB_View_Base {
 
         float contentWidth = this.getWidth() * 0.95f;
 
-        LiveIcon = new Image(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight, "LIVE-ICON", false);
+        LiveIcon = new Image(MainBtnSize, "LIVE-ICON", false);
         LiveIcon.setSprite(Sprites.LiveBtn.get(0), false);
 
         this.addChild(LiveIcon);

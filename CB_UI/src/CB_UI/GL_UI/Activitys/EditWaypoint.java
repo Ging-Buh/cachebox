@@ -7,6 +7,7 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
@@ -355,8 +356,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
                 // Show WP View?
                 if (showWaypointListAfterFinish) {
-                    if (TabMainView.actionShowWaypointView != null)
-                        TabMainView.actionShowWaypointView.Execute();
+                    CB_Action_ShowWaypointView.getInstance().Execute();
                 }
 
                 return true;

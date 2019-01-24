@@ -5,11 +5,8 @@ import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -20,53 +17,49 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
+    private static CB_Action_ShowSpoilerView that;
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-    private final OnClickListener onItemClickListener = new OnClickListener() {
+    private final OnClickListener onItemClickListener = (v, x, y, pointer, button) -> {
+        switch (((MenuItem) v).getMenuItemId()) {
+            case MenuID.MI_RELOAD_SPOILER:
+                GlobalCore.ImportSpoiler().setReadyListener(() -> {
+                    // erst die Lokalen Images für den Cache neu laden
+                    if (GlobalCore.isSetSelectedCache()) {
+                        GlobalCore.getSelectedCache().loadSpoilerRessources();
+                        GL.that.RunOnGL(() -> {
+                            if (TabMainView.spoilerView != null)
+                                TabMainView.spoilerView.ForceReload();
+                            Execute();
+                            TabMainView.spoilerView.onShow();
+                        });
 
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                    }
 
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_RELOAD_SPOILER:
-                    GlobalCore.ImportSpoiler().setReadyListener(new IReadyListener() {
-                        @Override
-                        public void isReady() {
-                            // erst die Lokalen Images für den Cache neu laden
-                            if (GlobalCore.isSetSelectedCache()) {
-                                GlobalCore.getSelectedCache().loadSpoilerRessources();
-                                GL.that.RunOnGL(new IRunOnGL() {
-
-                                    @Override
-                                    public void run() {
-                                        if (TabMainView.spoilerView != null)
-                                            TabMainView.spoilerView.ForceReload();
-                                        Execute();
-                                        TabMainView.spoilerView.onShow();
-                                    }
-                                });
-
-                            }
-
-                        }
-                    });
-
+                });
+                return true;
+            case MenuID.MI_START_PICTUREAPP:
+                String file = TabMainView.spoilerView.getSelectedFilePath();
+                if (file == null)
                     return true;
-                case MenuID.MI_START_PICTUREAPP:
-                    String file = TabMainView.spoilerView.getSelectedFilePath();
-                    if (file == null)
-                        return true;
-                    PlatformConnector.StartPictureApp(file);
-                    return true;
-            }
-            return false;
+                PlatformConnector.StartPictureApp(file);
+                return true;
         }
+        return false;
     };
-    int spoilerState = -1;
-    Sprite SpoilerIcon;
+    private int spoilerState = -1;
+    private Sprite SpoilerIcon;
 
-    public CB_Action_ShowSpoilerView() {
+    private CB_Action_ShowSpoilerView() {
         super("spoiler", MenuID.AID_SHOW_SPOILER);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
     }
+
+    public static CB_Action_ShowSpoilerView getInstance() {
+        if (that == null) that = new CB_Action_ShowSpoilerView();
+        return that;
+    }
+
 
     @Override
     public void Execute() {

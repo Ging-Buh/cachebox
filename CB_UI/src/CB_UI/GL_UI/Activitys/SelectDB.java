@@ -40,6 +40,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -274,7 +275,7 @@ public class SelectDB extends ActivityBase {
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 stopTimer();
                 if (MustSelect) {
-                    TabMainView.actionClose.Execute();
+                    CB_Action_ShowQuit.getInstance().Execute();
                 } else {
                     finish();
                 }

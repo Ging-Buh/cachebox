@@ -11,8 +11,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowSolverView2 extends CB_Action_ShowView {
 
-    public CB_Action_ShowSolverView2() {
+    private static CB_Action_ShowSolverView2 that;
+
+    private CB_Action_ShowSolverView2() {
         super("Solver v2", MenuID.AID_SHOW_SOLVER2);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowSolverView2 getInstance() {
+        if (that == null) that = new CB_Action_ShowSolverView2();
+        return that;
     }
 
     @Override

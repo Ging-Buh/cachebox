@@ -10,10 +10,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_Settings extends CB_Action {
 
+    private static CB_Action_Show_Settings that;
     boolean lastNightValue;
 
-    public CB_Action_Show_Settings() {
+    private CB_Action_Show_Settings() {
         super("settings", MenuID.AID_SHOW_SETTINGS);
+    }
+
+    public static CB_Action_Show_Settings getInstance() {
+        if (that == null) that = new CB_Action_Show_Settings();
+        return that;
     }
 
     @Override

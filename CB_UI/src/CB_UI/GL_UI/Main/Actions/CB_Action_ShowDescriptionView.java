@@ -15,12 +15,10 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.CacheContextMenu;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Sprites;
@@ -29,13 +27,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
-    private static final String log = "CB_Action_ShowDescriptionView";
     private static final int AID_SHOW_DESCRIPTION = 105;
-    CancelWaitDialog wd = null;
-    EditCache editCache = null;
+    private static CB_Action_ShowDescriptionView that;
 
-    public CB_Action_ShowDescriptionView() {
+    private CB_Action_ShowDescriptionView() {
         super("Description", AID_SHOW_DESCRIPTION);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowDescriptionView getInstance() {
+        if (that == null) that = new CB_Action_ShowDescriptionView();
+        return that;
     }
 
     @Override

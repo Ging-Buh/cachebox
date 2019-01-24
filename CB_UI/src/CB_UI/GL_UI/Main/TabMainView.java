@@ -43,8 +43,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
 import CB_UI_Base.GL_UI.Main.*;
 import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -58,7 +57,6 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.IChanged;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -66,6 +64,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
 
 /**
  * the TabMainView has one tab (leftTab) on the phone<br>
@@ -80,52 +80,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static TabMainView that;
     public static CB_TabView leftTab; // the only one (has been left aand right for Tablet)
 
-    public static CB_Action_ShowCacheList actionShowCacheList;
-    public static CB_Action_ShowTrackableListView actionShowTrackableListView;
-    public static CB_Action_ShowTrackListView actionShowTrackListView;
-
-    public static CB_Action_ShowDescriptionView actionShowDescriptionView;
-
-    public static CB_Action_ShowView actionShowMap;
-    public static CB_Action_ShowView actionShowCompassView;
-    public static CB_Action_ShowView actionNavigateTo1;
-
-    public static CB_Action_ShowView actionShowFieldNotesView;
-    public static CB_Action_ShowView actionRecVoice;
-    public static CB_Action_ShowView actionRecPicture;
-    public static CB_Action_ShowView actionRecVideo;
-    public static CB_Action_ShowView actionShowSolverView;
-    public static CB_Action_ShowView actionShowSolverView2;
-
-    public static CB_Action_ShowAbout actionShowAboutView;
-    public static CB_Action_ShowView actionShowCreditsView;
-
-    public static CB_Action_ShowWaypointView actionShowWaypointView;
-    public static CB_Action_ShowView actionShowLogView;
-    public static CB_Action_ShowView actionShowSpoilerView;
-    public static CB_Action_ShowView actionShowNotesView;
-
-    public static CB_Action_ShowView actionTestView;
-
-    public static CB_Action actionShowImportMenu;
-    public static CB_Action_ShowFilterSettings actionShowFilter;
-    public static CB_Action actionShowSettings;
-    public static CB_Action actionShowSelectDbDialog;
-    public static CB_Action actionShowDescExt;
-    // public static CB_Action actionGenerateRoute;
-    public static CB_Action actionQuickFieldNote;
-    public static CB_Action actionShowSearch;
-    public static CB_Action action_add_WP;
-    public static CB_Action actionShowParking;
-    public static CB_Action actionShwDeleteCaches;
-    public static CB_Action action_SwitchAutoResort;
-    public static CB_Action_ShowHint actionShowHint;
-    public static CB_Action action_DayNight;
-    public static CB_Action_RecTrack actionRecTrack;
-    public static CB_Action actionDayNight;
-    public static CB_Action_GetFriends actionGetFriends;
-    public static CB_Action_switch_Torch action_Torch;
-    public static CB_Action actionHelp;
+    public static CB_Action_ShowActivity actionTakePicture;
+    public static CB_Action_ShowActivity actionRecordVideo;
+    public static CB_Action_ShowActivity actionRecordVoice;
 
     public static MapView mapView = null;
     public static CacheListView cacheListView = null;
@@ -141,87 +98,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static WaypointView waypointView = null;
     public static TestView testView = null;
     public static SolverView2 solverView2 = null;
+
     private static boolean TrackRecIsRegisted = false;
-    private final API_ErrorEventHandler handler = new API_ErrorEventHandler() {
-
-        @Override
-        public void InvalidAPI_Key() {
-
-            Timer t = new Timer();
-            TimerTask tt = new TimerTask() {
-
-                @Override
-                public void run() {
-                    String Msg = Translation.Get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
-                    Msg += Translation.Get("wantApi");
-
-                    GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKey();
-                            return true;
-                        }
-                    });
-                }
-            };
-            t.schedule(tt, 1500);
-        }
-
-        @Override
-        public void ExpiredAPI_Key() {
-            Timer t = new Timer();
-            TimerTask tt = new TimerTask() {
-
-                @Override
-                public void run() {
-                    String Msg = Translation.Get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
-                    Msg += Translation.Get("wantApi");
-
-                    GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKey();
-                            return true;
-                        }
-                    });
-                }
-            };
-            t.schedule(tt, 1500);
-        }
-
-        @Override
-        public void NoAPI_Key() {
-
-            Timer t = new Timer();
-            TimerTask tt = new TimerTask() {
-
-                @Override
-                public void run() {
-                    String Msg = Translation.Get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
-                    Msg += Translation.Get("wantApi");
-
-                    GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKey();
-                            return true;
-                        }
-                    }, Config.RememberAsk_Get_API_Key);
-                }
-            };
-            t.schedule(tt, 1500);
-        }
-    };
     private CB_Button mCacheListButtonOnLeftTab; // default: show CacheList
-    private CB_Button mDescriptionButtonOnLeftTab; // default: show CacheDecription on Phone and Waypoints on Tablet
-    private CB_Button mMapButtonOnLeftTab; // default: show map on phone and show Compass on Tablet
-    private CB_Button mToolsButtonOnLeftTab; // default: show ToolsMenu or Fieldnotes (depends on config)
+    private CB_Button mDescriptionButtonOnLeftTab; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
+    private CB_Button mMapButtonOnLeftTab; // default: show map on phone ( and show Compass on Tablet )
+    private CB_Button mToolsButtonOnLeftTab; // default: show ToolsMenu or Fieldnotes or Fieldnotes Context menu (depends on config)
     private CB_Button mAboutButtonOnLeftTab; // default: show About View
 
     private boolean isInitial = false;
@@ -249,7 +131,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         synchronized (Database.Data.Query) {
             CacheListDAO cacheListDAO = new CacheListDAO();
             cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-            cacheListDAO = null;
         }
         CacheListChangedEventList.Call();
     }
@@ -315,87 +196,95 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         GlobalCore.receiver = new CB_UI.GlobalLocationReceiver();
 
         UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
-        Config.ImperialUnits.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
-            }
-        });
+        Config.ImperialUnits.addSettingChangedListener(() -> UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue()));
 
-        Config.ShowAllWaypoints.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                reloadCacheList();
-                // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
-                if (MapView.that != null)
-                    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
-            }
+        Config.ShowAllWaypoints.addSettingChangedListener(() -> {
+            reloadCacheList();
+            // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
+            if (MapView.that != null)
+                MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
         });
 
         CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
         CoreSettingsForward.DisplayOff = Energy.DisplayOff();
-        Energy.addChangedEventListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
-                CoreSettingsForward.DisplayOff = Energy.DisplayOff();
-            }
+        Energy.addChangedEventListener(() -> {
+            CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
+            CoreSettingsForward.DisplayOff = Energy.DisplayOff();
         });
 
-        API_ErrorEventHandlerList.addHandler(handler);
+        API_ErrorEventHandlerList.addHandler(new API_ErrorEventHandler() {
+            @Override
+            public void InvalidAPI_Key() {
+                TimerTask tt = new TimerTask() {
 
-        actionShowAboutView = new CB_Action_ShowAbout();
+                    @Override
+                    public void run() {
+                        String Msg = Translation.Get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
+                        Msg += Translation.Get("wantApi");
 
-        // CacheList alternatives + context
-        actionShowCacheList = new CB_Action_ShowCacheList();
-        action_SwitchAutoResort = new CB_Action_switch_Autoresort();
-        actionShowFilter = new CB_Action_ShowFilterSettings();
-        actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
-        actionShowSearch = new CB_Action_Show_Search();
-        actionShowImportMenu = new CB_Action_ShowImportMenu();
-        actionShowParking = new CB_Action_Show_Parking_Dialog();
-        actionShwDeleteCaches = new CB_Action_Show_Delete_Dialog();
-        actionShowTrackableListView = new CB_Action_ShowTrackableListView();
-        actionShowTrackListView = new CB_Action_ShowTrackListView();
+                        GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
 
-        // CacheDescription alternatives + context
-        actionShowDescriptionView = new CB_Action_ShowDescriptionView();
-        actionShowWaypointView = new CB_Action_ShowWaypointView();
-        actionShowLogView = new CB_Action_ShowLogView();
-        actionShowSpoilerView = new CB_Action_ShowSpoilerView();
-        actionShowHint = new CB_Action_ShowHint();
-        actionShowNotesView = new CB_Action_ShowNotesView();
-        actionShowDescExt = new CB_Action_ShowDescExt();
-        action_add_WP = new CB_Action_add_WP();
+                            @Override
+                            public boolean onClick(int which, Object data) {
+                                if (which == GL_MsgBox.BUTTON_POSITIVE)
+                                    PlatformConnector.callGetApiKey();
+                                return true;
+                            }
+                        });
+                    }
+                };
+                new Timer().schedule(tt, 1500);
+            }
 
-        // map alternatives + context
-        actionShowMap = new CB_Action_ShowMap();
-        actionShowCompassView = new CB_Action_ShowCompassView();
-        actionNavigateTo1 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
-        if (GlobalCore.isTestVersion())
-            actionTestView = new CB_Action_ShowTestView();
+            @Override
+            public void ExpiredAPI_Key() {
+                Timer t = new Timer();
+                TimerTask tt = new TimerTask() {
 
-        // fieldnotesalternatives + context
-        actionShowFieldNotesView = new CB_Action_ShowFieldNotesView();
-        actionRecTrack = new CB_Action_RecTrack();
-        actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
-        actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
-        actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
-        actionShowSolverView = new CB_Action_ShowSolverView();
-        actionShowSolverView2 = new CB_Action_ShowSolverView2();
+                    @Override
+                    public void run() {
+                        String Msg = Translation.Get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
+                        Msg += Translation.Get("wantApi");
 
-        // context of about
-        actionShowCreditsView = new CB_Action_ShowCreditsView();
-        actionShowSettings = new CB_Action_Show_Settings();
-        actionDayNight = new CB_Action_switch_DayNight();
-        actionHelp = new CB_Action_Help();
-        action_DayNight = new CB_Action_switch_DayNight();
+                        GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
 
+                            @Override
+                            public boolean onClick(int which, Object data) {
+                                if (which == GL_MsgBox.BUTTON_POSITIVE)
+                                    PlatformConnector.callGetApiKey();
+                                return true;
+                            }
+                        });
+                    }
+                };
+                t.schedule(tt, 1500);
+            }
 
-        // others QuickButtons
-        actionQuickFieldNote = new CB_Action_QuickFieldNote();
-        // actionGenerateRoute = new CB_Action_GenerateRoute();
-        // actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
+            @Override
+            public void NoAPI_Key() {
+
+                Timer t = new Timer();
+                TimerTask tt = new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        String Msg = Translation.Get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
+                        Msg += Translation.Get("wantApi");
+
+                        GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
+
+                            @Override
+                            public boolean onClick(int which, Object data) {
+                                if (which == GL_MsgBox.BUTTON_POSITIVE)
+                                    PlatformConnector.callGetApiKey();
+                                return true;
+                            }
+                        }, Config.RememberAsk_Get_API_Key);
+                    }
+                };
+                t.schedule(tt, 1500);
+            }
+        });
 
         addPhoneTab();
 
@@ -452,19 +341,18 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.UI_Left.getWidth(), getHeight() - UiSizes.that.getInfoSliderHeight());
         leftTab = new CB_TabView(rec, "leftTab");
 
-        CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
         if (Config.useDescriptiveCB_Buttons.getValue()) {
-            mCacheListButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "CacheList");
-            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Cache");
-            mMapButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Nav");
-            mToolsButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Tool");
-            mAboutButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Misc");
+            mCacheListButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
+            mDescriptionButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Cache");
+            mMapButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Nav");
+            mToolsButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Tool");
+            mAboutButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Misc");
         } else {
-            mCacheListButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mMapButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mToolsButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mAboutButtonOnLeftTab = new CB_Button(btnRec, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            mCacheListButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            mDescriptionButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            mMapButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            mToolsButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            mAboutButtonOnLeftTab = new CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
         CB_ButtonList btnList = new CB_ButtonList();
@@ -476,71 +364,51 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         leftTab.setButtonList(btnList);
         addChild(leftTab);
 
-        actionShowCacheList.setTab(this, leftTab);
-        // actionShowTrackableListView.setTab(this, leftTab);
-        actionShowTrackListView.setTab(this, leftTab);
-        actionShowDescriptionView.setTab(this, leftTab);
-        actionShowWaypointView.setTab(this, leftTab);
-        actionShowLogView.setTab(this, leftTab);
-        actionShowNotesView.setTab(this, leftTab);
-        actionShowSpoilerView.setTab(this, leftTab);
-        actionShowMap.setTab(this, leftTab);
-        actionShowCompassView.setTab(this, leftTab);
-        actionNavigateTo1.setTab(this, leftTab);
-        if (GlobalCore.isTestVersion())
-            actionTestView.setTab(this, leftTab);
-        actionShowFieldNotesView.setTab(this, leftTab);
-        actionRecPicture.setTab(this, leftTab);
-        actionRecVideo.setTab(this, leftTab);
-        actionRecVoice.setTab(this, leftTab);
-        actionShowSolverView.setTab(this, leftTab);
-        actionShowSolverView2.setTab(this, leftTab);
-        actionShowAboutView.setTab(this, leftTab);
-        actionShowCreditsView.setTab(this, leftTab);
-
         // Actions den Buttons zuweisen
-        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
-        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowParking, false));
-        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
-        //mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
+        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowCacheList.getInstance(), true, GestureDirection.Up));
+        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Show_Parking_Dialog.getInstance(), false));
+        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackableListView.getInstance(), false, GestureDirection.Right));
+        //mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Down));
 
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowHint, false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSpoilerView, false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowNotesView, false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowDescExt, false));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowDescriptionView.getInstance(), true, GestureDirection.Up));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowWaypointView.getInstance(), false, GestureDirection.Right));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowHint.getInstance(), false));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSpoilerView.getInstance(), false));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowLogView.getInstance(), false, GestureDirection.Down));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowNotesView.getInstance(), false));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackableListView.getInstance(), false));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowDescExt.getInstance(), false));
 
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Left));
-        // mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
+        mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowMap.getInstance(), true, GestureDirection.Up));
+        mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowCompassView.getInstance(), false, GestureDirection.Right));
+        CB_Action_ShowActivity actionNavigateTo = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
+        mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionNavigateTo, false, GestureDirection.Down));
+        mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left));
         if (GlobalCore.isTestVersion())
-            mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionTestView, false));
+            mMapButtonOnLeftTab.addAction(new CB_ActionButton(new CB_Action_ShowTestView(), false));
 
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue(), GestureDirection.Up));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSolverView2, false, GestureDirection.Right));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecVoice, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecVideo, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowParking, false));
-        // mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecTrack, false));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowFieldNotesView.getInstance(), Config.ShowFieldnotesAsDefaultView.getValue(), GestureDirection.Up));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackableListView.getInstance(), false));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSolverView2.getInstance(), false, GestureDirection.Right));
+        actionTakePicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionTakePicture, false, GestureDirection.Down));
+        actionRecordVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecordVideo, false));
+        actionRecordVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecordVoice, false));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Show_Parking_Dialog.getInstance(), false));
 
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCreditsView, false));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionDayNight, false));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionHelp, false));
-        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(actionGetFriends = new CB_Action_GetFriends(), false)));
-        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(action_Torch = new CB_Action_switch_Torch(), false)));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionClose, false, GestureDirection.Down));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowCreditsView.getInstance(), false));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Show_Settings.getInstance(), false, GestureDirection.Left));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_switch_DayNight.getInstance(), false));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Help.getInstance(), false));
+        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(CB_Action_GetFriends.getInstance(), false)));
+        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(CB_Action_switch_Torch.getInstance(), false)));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowQuit.getInstance(), false, GestureDirection.Down));
 
-        actionShowAboutView.Execute();
+        CB_Action_ShowAbout.getInstance().Execute();
     }
 
     private void autoLoadTrack() {
@@ -623,10 +491,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         GL.that.RestartRender();
     }
 
-    public boolean isFiltered() {
-        return isFiltered;
-    }
-
     public void mToolsButtonOnLeftTabPerformClick() {
         mToolsButtonOnLeftTab.performClick();
     }
@@ -647,7 +511,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         // ##################################
         // Set new list size at context menu
         // ##################################
-        String Name = "";
+        String Name;
 
         synchronized (Database.Data.Query) {
             int filterCount = Database.Data.Query.size();
@@ -658,16 +522,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             int DBCount = Database.Data.getCacheCountInDB();
             String strFilterCount = "";
             if (filterCount != DBCount) {
-                strFilterCount = String.valueOf(filterCount) + "/";
+                strFilterCount = filterCount + "/";
             }
 
-            Name = "  (" + strFilterCount + String.valueOf(DBCount) + ")";
+            Name = "  (" + strFilterCount + DBCount + ")";
         }
-        actionShowCacheList.setNameExtension(Name);
-    }
-
-    public void showCacheList() {
-        actionShowCacheList.Execute();
+        CB_Action_ShowCacheList.getInstance().setNameExtension(Name);
     }
 
     @Override
@@ -697,7 +557,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
                     return;// don't show if showing compass
                 if (mapView != null && mapView.isVisible() && mapView.isCarMode())
                     return; // don't show on visible map at carMode
-                actionShowCompassView.Execute();
+                CB_Action_ShowCompassView.getInstance().Execute();
                 GlobalCore.switchToCompassCompleted = true;
             }
         }

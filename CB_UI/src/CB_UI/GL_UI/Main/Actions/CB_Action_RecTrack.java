@@ -13,8 +13,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_RecTrack extends CB_Action {
 
-    public CB_Action_RecTrack() {
+    private static CB_Action_RecTrack that;
+
+    private CB_Action_RecTrack() {
         super("RecTrack", MenuID.AID_SHOW_TRACK_MENU);
+    }
+
+    public static CB_Action_RecTrack getInstance() {
+        if (that == null) that = new CB_Action_RecTrack();
+        return that;
     }
 
     @Override
@@ -30,30 +37,24 @@ public class CB_Action_RecTrack extends CB_Action {
     @Override
     public void Execute() {
         showMenuTrackRecording();
-        // TabMainView.that.switchDayNight();
-        // new CB_Action_ShowActivity("DayNight", CB_Action.AID_DAY_NIGHT, ViewConst.DAY_NIGHT, SpriteCache.Icons.get(48)).Execute();
     }
 
     private void showMenuTrackRecording() {
         MenuItem mi;
         Menu cm2 = new Menu("TrackRecordContextMenu");
-        cm2.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_START:
-                        TrackRecorder.StartRecording();
-                        return true;
-                    case MenuID.MI_PAUSE:
-                        TrackRecorder.PauseRecording();
-                        return true;
-                    case MenuID.MI_STOP:
-                        TrackRecorder.StopRecording();
-                        return true;
-                }
-                return false;
+        cm2.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_START:
+                    TrackRecorder.StartRecording();
+                    return true;
+                case MenuID.MI_PAUSE:
+                    TrackRecorder.PauseRecording();
+                    return true;
+                case MenuID.MI_STOP:
+                    TrackRecorder.StopRecording();
+                    return true;
             }
+            return false;
         });
         mi = cm2.addItem(MenuID.MI_START, "start");
         mi.setEnabled(!TrackRecorder.recording);

@@ -122,8 +122,7 @@ public class GL_UISizes implements SizeChangedEvent {
     // */
     // public static SizeF DT_Size;
     static float scale = 0;
-    public static int BottomButtonHeight = convertDip2Pix(65);
-    public static float TopButtonHeight = convertDip2Pix(35);
+    public static CB_RectF MainBtnSize;
     /**
      * Ist false solange die Größen nicht berechnet sind. Diese müssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
      * FontFaktor) in den Settings geändert Wurde.
@@ -255,17 +254,13 @@ public class GL_UISizes implements SizeChangedEvent {
         Log.debug(log, "GL_UISizes.calcSizes()");
         // größe der Frames berechnen
         int frameLeftwidth = UI_Size_Base.that.RefWidth;
-
-        int WindowWidth = UI_Size_Base.that.getWindowWidth();
-        int frameRightWidth = WindowWidth - frameLeftwidth;
-
-        // max 65dp
-
-        BottomButtonHeight = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
+        // private static int BottomButtonHeight = convertDip2Pix(65);
+        int MainButtonSideLength = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
+        MainBtnSize = new CB_RectF(0, 0, MainButtonSideLength, MainButtonSideLength);
 
         margin = (float) (6.6666667 * DPI);
 
-        frameHeight = UI_Size_Base.that.getWindowHeight() - convertDip2Pix(35) - BottomButtonHeight;
+        frameHeight = UI_Size_Base.that.getWindowHeight() - convertDip2Pix(35) - MainButtonSideLength;
 
         UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
         UI_Right = UI_Left.copy();

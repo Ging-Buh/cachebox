@@ -29,8 +29,15 @@ import static CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.calcMsgBoxSize;
 
 public class CB_Action_ShowHint extends CB_Action {
 
-    public CB_Action_ShowHint() {
+    private static CB_Action_ShowHint that;
+
+    private CB_Action_ShowHint() {
         super("hint", MenuID.AID_SHOW_HINT);
+    }
+
+    public static CB_Action_ShowHint getInstance() {
+        if (that == null) that = new CB_Action_ShowHint();
+        return that;
     }
 
     @Override

@@ -58,6 +58,8 @@ import com.badlogic.gdx.utils.async.AsyncTask;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
+
 public class GL implements ApplicationListener {
 
     public static final int FRAME_RATE_IDLE = 200;
@@ -1223,7 +1225,7 @@ public class GL implements ApplicationListener {
 
     public void Toast(String string, int length) {
         if (toast == null) {
-            toast = new CB_UI_Base.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, GL_UISizes.BottomButtonHeight / 1.5f), "StringToast");
+            toast = new CB_UI_Base.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, MainBtnSize.getHeight() / 1.5f), "StringToast");
         }
         toast.setWrappedText(string);
 
@@ -1234,7 +1236,7 @@ public class GL implements ApplicationListener {
         toast.setWidth(bounds.width + border);
         toast.setHeight(bounds.height + border);
 
-        toast.setPos((width / 2) - (bounds.width / 2), GL_UISizes.BottomButtonHeight * 1.3f);
+        toast.setPos((width / 2) - (bounds.width / 2), MainBtnSize.getHeight() * 1.3f);
 
         Toast(toast, length);
     }

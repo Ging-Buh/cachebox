@@ -451,7 +451,7 @@ public class FieldNotesView extends V_ListView {
                     addNewFieldNote(LogTypes.note);
                     return true;
                 case MenuID.MI_UPLOAD_FIELDNOTE:
-                    CB_Action_UploadFieldNote.INSTANCE.Execute();
+                    CB_Action_UploadFieldNote.getInstance().Execute();
                     return true;
                 case MenuID.MI_DELETE_ALL_FIELDNOTES:
                     deleteAllFieldNotes();

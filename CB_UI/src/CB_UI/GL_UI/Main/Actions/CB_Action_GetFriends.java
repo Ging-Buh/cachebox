@@ -12,8 +12,15 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import static CB_UI_Base.GL_UI.Menu.MenuID.AID_GetFriends;
 
 public class CB_Action_GetFriends extends CB_Action {
-    public CB_Action_GetFriends() {
+    private static CB_Action_GetFriends that;
+
+    private CB_Action_GetFriends() {
         super("Friends", AID_GetFriends);
+    }
+
+    public static CB_Action_GetFriends getInstance() {
+        if (that == null) that = new CB_Action_GetFriends();
+        return that;
     }
 
     @Override
@@ -33,8 +40,7 @@ public class CB_Action_GetFriends extends CB_Action {
                 Config.Friends.setValue(friends);
                 Config.AcceptChanges();
                 GL_MsgBox.Show(Translation.Get("ok") + ":\n" + friends, Translation.Get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-            }
-            else {
+            } else {
                 GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             }
         });

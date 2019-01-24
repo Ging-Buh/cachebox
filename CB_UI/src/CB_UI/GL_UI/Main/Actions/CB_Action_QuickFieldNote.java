@@ -34,8 +34,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_QuickFieldNote extends CB_Action {
 
-    public CB_Action_QuickFieldNote() {
+    private static CB_Action_QuickFieldNote that;
+
+    private CB_Action_QuickFieldNote() {
         super("QuickFieldNote", MenuID.AID_QUICK_FIELDNOTE);
+    }
+
+    public static CB_Action_QuickFieldNote getInstance() {
+        if (that == null) that = new CB_Action_QuickFieldNote();
+        return that;
     }
 
     @Override
@@ -59,13 +66,13 @@ public class CB_Action_QuickFieldNote extends CB_Action {
                     FieldNotesView.addNewFieldNote(LogTypes.webcam_photo_taken, "", true);
                     break;
                 case MenuID.MI_ATTENDED:
-                    FieldNotesView.addNewFieldNote(LogTypes.attended,"", true);
+                    FieldNotesView.addNewFieldNote(LogTypes.attended, "", true);
                     break;
                 case MenuID.MI_QUICK_FOUND:
-                    FieldNotesView.addNewFieldNote(LogTypes.found,"", true);
+                    FieldNotesView.addNewFieldNote(LogTypes.found, "", true);
                     break;
                 case MenuID.MI_QUICK_NOT_FOUND:
-                    FieldNotesView.addNewFieldNote(LogTypes.didnt_find,"", true);
+                    FieldNotesView.addNewFieldNote(LogTypes.didnt_find, "", true);
                     found = false;
                     break;
                 default:

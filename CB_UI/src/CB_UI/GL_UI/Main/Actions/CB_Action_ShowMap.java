@@ -58,6 +58,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private static final int START = 1;
     private static final int PAUSE = 2;
     private static final int STOP = 3;
+    private static CB_Action_ShowMap that;
     int menuID;
     private Menu mRenderThemesSelectionMenu;
     private final OnClickListener onItemClickListener = new OnClickListener() {
@@ -140,8 +141,15 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         }
     };
 
-    public CB_Action_ShowMap() {
+    private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
+        tabMainView = TabMainView.that;
+        tab = TabMainView.leftTab;
+    }
+
+    public static CB_Action_ShowMap getInstance() {
+        if (that == null) that = new CB_Action_ShowMap();
+        return that;
     }
 
     @Override
@@ -282,9 +290,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         return true;
                     }
                 });
-                msgBox.setButtonText(1,"+");
-                msgBox.setButtonText(2,"=");
-                msgBox.setButtonText(3,"-");
+                msgBox.setButtonText(1, "+");
+                msgBox.setButtonText(2, "=");
+                msgBox.setButtonText(3, "-");
                 msgBox.setData(layer);
             } else {
                 TabMainView.mapView.setCurrentLayer(layer);

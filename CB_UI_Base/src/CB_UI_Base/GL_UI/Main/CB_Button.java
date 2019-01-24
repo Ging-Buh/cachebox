@@ -15,7 +15,6 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Math.Point;
@@ -28,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.ArrayList;
 
 import static CB_UI_Base.GL_UI.Sprites.getSprite;
+import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
 
 /**
  * this is the class for the lower 5 buttons, the main buttons
@@ -239,7 +239,7 @@ public class CB_Button extends Button {
         GestureDirection gestureDirection = Action.getGestureDirection();
         if (gestureDirection != GestureDirection.None) {
             if (help == null) {
-                float h = GL_UISizes.BottomButtonHeight * 2;
+                float h = MainBtnSize.getHeight() * 2;
                 help = new GestureHelp(new SizeF(h, h), "help");
             }
 

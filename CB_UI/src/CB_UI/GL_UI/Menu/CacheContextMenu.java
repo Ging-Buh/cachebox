@@ -11,7 +11,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
 import CB_UI.GL_UI.Activitys.EditCache;
-import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
+import CB_UI.GL_UI.Main.Actions.*;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
@@ -86,26 +86,22 @@ public class CacheContextMenu {
             // todo CB_UI_Base.GL_UI.Menu.MenuItemDivider cannot be cast to CB_UI_Base.GL_UI.Menu.MenuItem
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_HINT:
-                    TabMainView.actionShowHint.showHint();
+                    CB_Action_ShowHint.getInstance().showHint();
                     return true;
                 case MI_RELOAD_CACHE:
                     ReloadSelectedCache();
                     return true;
                 case MI_WAYPOINTS:
-                    if (TabMainView.actionShowWaypointView != null)
-                        TabMainView.actionShowWaypointView.Execute();
+                    CB_Action_ShowWaypointView.getInstance().Execute();
                     return true;
                 case MI_SHOW_LOGS:
-                    if (TabMainView.actionShowLogView != null)
-                        TabMainView.actionShowLogView.Execute();
+                        CB_Action_ShowLogView.getInstance().Execute();
                     return true;
                 case MI_SPOILER:
-                    if (TabMainView.actionShowSpoilerView != null)
-                        TabMainView.actionShowSpoilerView.Execute();
+                        CB_Action_ShowSpoilerView.getInstance().Execute();
                     return true;
                 case MI_SOLVER:
-                    if (TabMainView.actionShowSolverView != null)
-                        TabMainView.actionShowSolverView.Execute();
+                        CB_Action_ShowSolverView.getInstance().Execute();
                     return true;
                 case MI_EDIT_CACHE:
                     new EditCache().update(GlobalCore.getSelectedCache());

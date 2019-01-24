@@ -33,7 +33,7 @@ public class Menu extends ButtonDialog {
     private static CB_RectF sMenuRec = null;
     private static boolean MENU_REC_IsInitial = false;
     public float ItemHeight = -1f;
-    public ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
+    public ArrayList<MenuItemBase> mItems = new ArrayList<>();
     protected ArrayList<OnClickListener> mOnItemClickListeners;
     private V_ListView mListView;
     private Menu mMoreMenu = null;

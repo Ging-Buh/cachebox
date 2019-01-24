@@ -5,15 +5,18 @@ import CB_UI.GL_UI.Controls.Dialogs.ParkingDialog;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_Parking_Dialog extends CB_Action {
 
-    Color TrackColor;
-
-    public CB_Action_Show_Parking_Dialog() {
+    private static CB_Action_Show_Parking_Dialog that;
+    private CB_Action_Show_Parking_Dialog() {
         super("MyParking", MenuID.AID_SHOW_PARKING_DIALOG);
+    }
+
+    public static CB_Action_Show_Parking_Dialog getInstance() {
+        if (that == null) that = new CB_Action_Show_Parking_Dialog();
+        return that;
     }
 
     @Override
