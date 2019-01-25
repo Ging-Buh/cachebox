@@ -381,9 +381,9 @@ public class MainViewInit extends MainViewBase {
         CoreSettingsForward.Categories = new Categories();
         Database.Data.GPXFilenameUpdateCacheCount();
 
-        synchronized (Database.Data.Query) {
+        synchronized (Database.Data.cacheList) {
             CacheListDAO cacheListDAO = new CacheListDAO();
-            cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
             cacheListDAO = null;
         }
 
@@ -432,8 +432,8 @@ public class MainViewInit extends MainViewBase {
         GL.that.switchToMainView();
 
         if (GlobalCore.restartCache != null) {
-            synchronized (Database.Data.Query) {
-                Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
+            synchronized (Database.Data.cacheList) {
+                Cache c = Database.Data.cacheList.GetCacheByGcCode(GlobalCore.restartCache);
                 if (c != null) {
                     if (GlobalCore.restartWaypoint != null) {
                         WaypointDAO dao = new WaypointDAO();

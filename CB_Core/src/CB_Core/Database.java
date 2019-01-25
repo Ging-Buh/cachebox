@@ -37,7 +37,7 @@ public abstract class Database extends Database_Core {
     public static Database Data;
     public static Database FieldNotes;
     public static Database Settings;
-    public CacheList Query;
+    public CacheList cacheList;
     protected DatabaseType databaseType;
 
     public Database(DatabaseType databaseType) {
@@ -48,7 +48,7 @@ public abstract class Database extends Database_Core {
             case CacheBox:
                 Log.info(log, "CacheBox");
                 latestDatabaseChange = DatabaseVersions.LatestDatabaseChange;
-                Query = new CacheList();
+                cacheList = new CacheList();
                 break;
             case FieldNotes:
                 Log.info(log, "FieldNotes");

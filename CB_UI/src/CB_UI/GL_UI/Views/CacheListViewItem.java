@@ -109,7 +109,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
             if (mCache.Pos == null) {
                 // mCache was disposed
-                Cache c = Database.Data.Query.GetCacheById(mCache.Id);
+                Cache c = Database.Data.cacheList.GetCacheById(mCache.Id);
                 if (c == null) {
                     return;
                 }

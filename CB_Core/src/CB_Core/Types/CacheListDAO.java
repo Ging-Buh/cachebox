@@ -91,9 +91,9 @@ public class CacheListDAO {
 
         Log.trace(log, "ReadCacheList 1.Waypoints");
         SortedMap<Long, CB_List<Waypoint>> waypoints;
-        waypoints = new TreeMap<Long, CB_List<Waypoint>>();
+        waypoints = new TreeMap<>();
         // zuerst alle Waypoints einlesen
-        CB_List<Waypoint> wpList = new CB_List<Waypoint>();
+        CB_List<Waypoint> wpList = new CB_List<>();
         long aktCacheID = -1;
 
         String sql = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
@@ -120,7 +120,7 @@ public class CacheListDAO {
             }
             if (wp.CacheId != aktCacheID) {
                 aktCacheID = wp.CacheId;
-                wpList = new CB_List<Waypoint>();
+                wpList = new CB_List<>();
                 waypoints.put(aktCacheID, wpList);
             }
             wpList.add(wp);
@@ -275,13 +275,12 @@ public class CacheListDAO {
     private ArrayList<String> getGcCodeList(String where) {
         CacheList list = new CacheList();
         ReadCacheList(list, where, false, false);
-        ArrayList<String> StrList = new ArrayList<String>();
+        ArrayList<String> StrList = new ArrayList<>();
 
         for (int i = 0, n = list.size(); i < n; i++) {
             StrList.add(list.get(i).getGcCode());
         }
         list.dispose();
-        list = null;
         return StrList;
     }
 

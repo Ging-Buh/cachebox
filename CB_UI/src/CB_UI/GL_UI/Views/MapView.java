@@ -86,7 +86,7 @@ import static CB_UI_Base.GL_UI.Sprites.*;
  */
 public class MapView extends MapViewBase implements SelectedCacheEvent, PositionChangedEvent {
     private static final String log = "MapView";
-    public static MapView that = null;
+    private static MapView[] Instances = new MapView[MapMode.values().length];
     public static int INITIAL_WP_LIST = 4;
     private static boolean MapTileLoderPreInitial = false;
     private static boolean MapTileLoderPreInitialAtWork = false;
@@ -202,21 +202,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     public MapView(CB_RectF rec, MapMode Mode, String Name) {
         super(rec, Name);
-        // statischen that nur setzen wenn die HauptMapView initialisiert wird
-        if (Mode == MapMode.Normal) {
-            that = this;
-        } else {
-            this.setOnDoubleClickListener(new OnClickListener() {
-
-                @Override
-                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    // Center own position!
-                    setCenter(Locator.getCoordinate());
-                    return true;
-                }
+        MapView.Instances[Mode.ordinal()] = this;
+        if (Mode != MapMode.Normal) {
+            this.setOnDoubleClickListener((v, x, y, pointer, button) -> {
+                // Center own position!
+                setCenter(Locator.getCoordinate());
+                return true;
             });
         }
-
         this.Mode = Mode;
 
         Config.MapsforgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
@@ -448,14 +441,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         }
 
                         // Reload result from DB
-                        synchronized (Database.Data.Query) {
+                        synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                             CacheListDAO cacheListDAO = new CacheListDAO();
-                            cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                         }
                         CacheListChangedEventList.Call();
 
-                        Cache selCache = Database.Data.Query.GetCacheByGcCode(GCCode);
+                        Cache selCache = Database.Data.cacheList.GetCacheByGcCode(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         wd.close();
@@ -508,7 +501,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         }
 
         // Initial SettingsChanged Events
-        MapView.that.SetNightMode(Config.nightMode.getValue());
+        MapView.Instances[MapMode.Normal.ordinal()].SetNightMode(Config.nightMode.getValue());
         Config.nightMode.addSettingChangedListener(new IChanged() {
             @Override
             public void handleChange() {
@@ -516,7 +509,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             }
         });
 
-        MapView.that.SetNorthOriented(Config.MapNorthOriented.getValue());
+        MapView.Instances[MapMode.Normal.ordinal()].SetNorthOriented(Config.MapNorthOriented.getValue());
         Config.MapNorthOriented.addSettingChangedListener(new IChanged() {
 
             @Override
@@ -526,6 +519,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             }
         });
 
+    }
+
+    public static MapView getNormalMap() {
+        return MapView.Instances[MapMode.Normal.ordinal()];
     }
 
     @Override
@@ -1357,12 +1354,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         try {
             if (Database.Data != null) {
 
-                if (Database.Data.Query != null) {
-                    synchronized (Database.Data.Query) {
-                        if (Database.Data.Query.size() > 0) {
+                if (Database.Data.cacheList != null) {
+                    synchronized (Database.Data.cacheList) {
+                        if (Database.Data.cacheList.size() > 0) {
                             // Koordinaten des ersten Caches der Datenbank
                             // nehmen
-                            setCenter(new CoordinateGPS(Database.Data.Query.get(0).Pos.getLatitude(), Database.Data.Query.get(0).Pos.getLongitude()));
+                            setCenter(new CoordinateGPS(Database.Data.cacheList.get(0).Pos.getLatitude(), Database.Data.cacheList.get(0).Pos.getLongitude()));
                             positionInitialized = true;
                             // setLockPosition(0);
                         } else {
@@ -1371,7 +1368,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         }
                     }
                 } else {
-                    // Wenn Query == null
+                    // Wenn cacheList == null
                     setCenter(new CoordinateGPS(48.0, 12.0));
                 }
             } else {

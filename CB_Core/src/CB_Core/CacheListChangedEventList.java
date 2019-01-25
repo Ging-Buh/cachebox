@@ -44,16 +44,16 @@ public class CacheListChangedEventList {
         if (CoreSettingsForward.DisplayOff)
             return;
 
-        synchronized (Database.Data.Query) {
-            Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+        synchronized (Database.Data.cacheList) {
+            Cache cache = Database.Data.cacheList.GetCacheByGcCode("CBPark");
 
             if (cache != null)
-                Database.Data.Query.remove(cache);
+                Database.Data.cacheList.remove(cache);
 
             // add Parking Cache
             if (CB_Core_Settings.ParkingLatitude.getValue() != 0) {
                 cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", CacheTypes.MyParking, "CBPark");
-                Database.Data.Query.add(0, cache);
+                Database.Data.cacheList.add(0, cache);
             }
 
             // add all Live Caches
@@ -62,19 +62,19 @@ public class CacheListChangedEventList {
                     Cache ca = LiveMapQue.LiveCaches.get(i);
                     if (ca == null)
                         continue;
-                    if (!Database.Data.Query.contains(ca)) {
+                    if (!Database.Data.cacheList.contains(ca)) {
                         if (FilterInstances.getLastFilter().passed(ca)) {
                             ca.setLive(true);
-                            Database.Data.Query.add(ca);
+                            Database.Data.cacheList.add(ca);
                         }
                     }
                 } else {
                     Cache ca = LiveMapQue.LiveCaches.get(i);
                     if (ca == null)
                         continue;
-                    if (!Database.Data.Query.contains(ca)) {
+                    if (!Database.Data.cacheList.contains(ca)) {
                         ca.setLive(true);
-                        Database.Data.Query.add(ca);
+                        Database.Data.cacheList.add(ca);
                     }
                 }
 

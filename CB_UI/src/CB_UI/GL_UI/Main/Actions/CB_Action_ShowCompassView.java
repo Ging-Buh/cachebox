@@ -85,16 +85,12 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.compassView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.compassView = new CompassView(tab.getContentRec(), "CompassView");
-
-        if ((TabMainView.compassView != null) && (tab != null))
-            tab.ShowView(TabMainView.compassView);
+        tab.ShowView(CompassView.getInstance());
     }
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.compassView;
+        return CompassView.getInstance();
     }
 
     @Override

@@ -6,7 +6,6 @@ import CB_Core.Export.GpxSerializer.ProgressListener;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.*;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
@@ -236,7 +235,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             }
 
         // Export all Caches from DB
-        final ArrayList<String> allGeocodesForExport = Database.Data.Query.getGcCodes();
+        final ArrayList<String> allGeocodesForExport = Database.Data.cacheList.getGcCodes();
 
         final int count = allGeocodesForExport.size();
         actExportedCount = 0;

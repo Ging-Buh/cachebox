@@ -113,13 +113,13 @@ public class CB_Action_LoadLogs extends CB_Action {
                 pd.close();
                 if (result != -1) {
                     /*
-                     * // Reload result from DB synchronized (Database.Data.Query) { String sqlWhere =
+                     * // Reload result from DB synchronized (Database.Data.cacheList) { String sqlWhere =
                      * FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()); CacheListDAO cacheListDAO = new CacheListDAO();
-                     * cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere); }
+                     * cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere); }
                      *
                      * CachListChangedEventList.Call();
                      */
-                    synchronized (Database.Data.Query) {
+                    synchronized (Database.Data.cacheList) {
                         GL_MsgBox.Show(sCanceled + Translation.Get("LogsLoaded") + " " + ChangedCount, Translation.Get("LoadLogs"), MessageBoxIcon.None);
                     }
 

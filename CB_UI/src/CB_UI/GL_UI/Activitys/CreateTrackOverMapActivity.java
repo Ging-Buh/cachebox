@@ -67,26 +67,17 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     private CB_List<Waypoint> waypoints;
     private Waypoint selectedWP;
     private Track track;
-    private OnClickListener onOkClik = new OnClickListener() {
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-            return false;
-        }
-    };
-    private OnClickListener onAddClik = new OnClickListener() {
+    private OnClickListener onOkClick = (v, x, y, pointer, button) -> false;
+    private OnClickListener onAddClick = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
             final Coordinate coord = mapView.center;
             if ((coord == null) || (!coord.isValid()))
                 return false;
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() {
-                    //Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
-                    Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
-                    addWP(newWP);
-                }
+            GL.that.RunOnGL(() -> {
+                //Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
+                Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
+                addWP(newWP);
             });
             return true;
         }
@@ -113,8 +104,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     private void createControls() {
         float btWidth = innerWidth / 3;
 
-        btnOk = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onOkClik);
-        btnAdd = new Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClik);
+        btnOk = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onOkClick);
+        btnAdd = new Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClick);
         btnCancel = new Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
 
         // translations
@@ -285,8 +276,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
             lblName.dispose();
         lblName = null;
 
-        onOkClik = null;
-        onAddClik = null;
+        onOkClick = null;
+        onAddClick = null;
         onCancelClik = null;
     }
 

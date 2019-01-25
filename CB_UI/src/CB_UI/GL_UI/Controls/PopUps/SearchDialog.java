@@ -385,7 +385,7 @@ public class SearchDialog extends PopUp_Base {
 
             boolean criterionMatches = false;
 
-            synchronized (Database.Data.Query) {
+            synchronized (Database.Data.cacheList) {
 
                 if (!mSearchAktive) {
                     mSearchAktive = true;
@@ -393,8 +393,8 @@ public class SearchDialog extends PopUp_Base {
 
                 Cache tmp = null;
                 if (beginnSearchIndex < 0) beginnSearchIndex = 0;
-                for (int i = beginnSearchIndex, n = Database.Data.Query.size(); i < n; i++) {
-                    tmp = Database.Data.Query.get(i);
+                for (int i = beginnSearchIndex, n = Database.Data.cacheList.size(); i < n; i++) {
+                    tmp = Database.Data.cacheList.get(i);
 
                     switch (mSearchState) {
                         case Title:
@@ -521,8 +521,8 @@ public class SearchDialog extends PopUp_Base {
             public void run() {
 
                 Coordinate searchCoord;
-                if (MapView.that != null && MapView.that.isVisible()) {
-                    searchCoord = MapView.that.center;
+                if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
+                    searchCoord = MapView.getNormalMap().center;
                 } else {
                     searchCoord = Locator.getCoordinate();
                 }
@@ -582,13 +582,13 @@ public class SearchDialog extends PopUp_Base {
 
                     int counter = 0;
 
-                    synchronized (Database.Data.Query) {
+                    synchronized (Database.Data.cacheList) {
                         for (int j = 0; j < geoCacheRelateds.size(); j++) {
                             GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(j);
                             Cache cache = geoCacheRelated.cache;
                             counter++;
-                            if (Database.Data.Query.GetCacheById(cache.Id) == null) {
-                                Database.Data.Query.add(cache);
+                            if (Database.Data.cacheList.GetCacheById(cache.Id) == null) {
+                                Database.Data.cacheList.add(cache);
 
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.Id);
@@ -624,7 +624,7 @@ public class SearchDialog extends PopUp_Base {
 
                     if (counter == 1) {
                         // select this Cache
-                        Cache cache = Database.Data.Query.GetCacheById(geoCacheRelateds.get(0).cache.Id);
+                        Cache cache = Database.Data.cacheList.GetCacheById(geoCacheRelateds.get(0).cache.Id);
                         GlobalCore.setSelectedCache(cache);
                     }
 

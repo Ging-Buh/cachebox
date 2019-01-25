@@ -31,7 +31,6 @@ import CB_UI.*;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.*;
 import CB_UI.GL_UI.Views.*;
-import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.GL_UI.Views.TestViews.TestView;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
@@ -84,12 +83,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CB_Action_ShowActivity actionRecordVideo;
     public static CB_Action_ShowActivity actionRecordVoice;
 
-    public static MapView mapView = null;
     public static CacheListView cacheListView = null;
     public static AboutView aboutView = null;
-    public static CompassView compassView = null;
     public static CreditsView creditsView = null;
-    public static DescriptionView descriptionView = null;
     public static FieldNotesView fieldNotesView = null;
     public static NotesView notesView = null;
     public static SolverView solverView = null;
@@ -116,6 +112,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         TrackRecIsRegisted = true;
         that = this;
 
+        // comment out is just a try : alternative destroy yourself on hide
+        /*
         Timer releaseTimer = new Timer();
         TimerTask releaseTask = new TimerTask() {
             @Override
@@ -124,13 +122,14 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             }
         };
         releaseTimer.scheduleAtFixedRate(releaseTask, 5000, 5000);
+        */
     }
 
     public static void reloadCacheList() {
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-        synchronized (Database.Data.Query) {
+        synchronized (Database.Data.cacheList) {
             CacheListDAO cacheListDAO = new CacheListDAO();
-            cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
         }
         CacheListChangedEventList.Call();
     }
@@ -140,7 +139,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
      */
     private void releaseNonvisibleViews() {
         if (cacheListView != null && !cacheListView.isVisible()) {
-            //Log.debug(log, "Release CachelistView");
             cacheListView.dispose();
             cacheListView = null;
         }
@@ -149,12 +147,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             //Log.debug(log, "Release aboutView");
             aboutView.dispose();
             aboutView = null;
-        }
-
-        if (compassView != null && !compassView.isVisible()) {
-            //Log.debug(log, "Release compassView");
-            compassView.dispose();
-            compassView = null;
         }
 
         if (fieldNotesView != null && !fieldNotesView.isVisible()) {
@@ -201,8 +193,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         Config.ShowAllWaypoints.addSettingChangedListener(() -> {
             reloadCacheList();
             // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
-            if (MapView.that != null)
-                MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+            if (MapView.getNormalMap() != null)
+                MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
         });
 
         CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
@@ -303,9 +295,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         // set last selected Cache
         String sGc = Config.LastSelectedCache.getValue();
         if (sGc != null && sGc.length() > 0) {
-            synchronized (Database.Data.Query) {
-                for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
-                    Cache c = Database.Data.Query.get(i);
+            synchronized (Database.Data.cacheList) {
+                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                    Cache c = Database.Data.cacheList.get(i);
                     if (c.getGcCode().equalsIgnoreCase(sGc)) {
                         Log.debug(log, "TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
                         GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
@@ -316,11 +308,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         }
 
         GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
-
-        // create MapView Instanz
-        CB_TabView mapTap = leftTab;
-        TabMainView.mapView = new MapView(mapTap.getContentRec(), MapMode.Normal, "MapView");
-        MapView.that.SetZoom(Config.lastZoomLevel.getValue());
 
         PlatformConnector.FirstShow();
         filterSetChanged();
@@ -424,8 +411,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
                 }
             }
         } else {
-            File sddir = FileFactory.createFile(trackPath);
-            sddir.mkdirs();
+            (FileFactory.createFile(trackPath)).mkdirs();
         }
     }
 
@@ -456,7 +442,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
                 Config.changeDayNight();
             GL.that.onStop();
             Sprites.loadSprites(true);
-            mapView.invalidateTexture();
+            MapView.getNormalMap().invalidateTexture();
             GL.that.onStart();
             CallSkinChanged();
 
@@ -513,10 +499,10 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         // ##################################
         String Name;
 
-        synchronized (Database.Data.Query) {
-            int filterCount = Database.Data.Query.size();
+        synchronized (Database.Data.cacheList) {
+            int filterCount = Database.Data.cacheList.size();
 
-            if (Database.Data.Query.GetCacheByGcCode("CBPark") != null)
+            if (Database.Data.cacheList.GetCacheByGcCode("CBPark") != null)
                 --filterCount;
 
             int DBCount = Database.Data.getCacheCountInDB();
@@ -553,9 +539,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             }
 
             if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Config.SoundApproachDistance.getValue())) {
-                if (compassView != null && compassView.isVisible())
+                if (CompassView.getInstance().isVisible())
                     return;// don't show if showing compass
-                if (mapView != null && mapView.isVisible() && mapView.isCarMode())
+                if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible() && MapView.getNormalMap().isCarMode())
                     return; // don't show on visible map at carMode
                 CB_Action_ShowCompassView.getInstance().Execute();
                 GlobalCore.switchToCompassCompleted = true;

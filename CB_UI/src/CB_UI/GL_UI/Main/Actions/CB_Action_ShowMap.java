@@ -21,7 +21,6 @@ import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Activitys.MapDownload;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
@@ -59,87 +58,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private static final int PAUSE = 2;
     private static final int STOP = 3;
     private static CB_Action_ShowMap that;
-    int menuID;
+    private int menuID;
     private Menu mRenderThemesSelectionMenu;
-    private final OnClickListener onItemClickListener = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_LAYER:
-                    showMapLayerMenu();
-                    return true;
-                case MenuID.MI_RENDERTHEMES:
-                    MenuItem mi = (MenuItem) v;
-                    if (mi.isEnabled()) {
-                        return showModusSelectionMenu();
-                    } else
-                        return false;
-                case MenuID.MI_MAPVIEW_OVERLAY_VIEW:
-                    showMapOverlayMenu();
-                    return true;
-                case MenuID.MI_MAPVIEW_VIEW:
-                    showMapViewLayerMenu();
-                    return true;
-                case MenuID.MI_ALIGN_TO_COMPSS:
-                    MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
-                    return true;
-                case MenuID.MI_SHOW_ALL_WAYPOINTS:
-                    toggleSetting(Config.ShowAllWaypoints);
-                    return true;
-                case MenuID.MI_HIDE_FINDS:
-                    toggleSettingWithReload(Config.MapHideMyFinds);
-                    return true;
-                case MenuID.MI_SHOW_RATINGS:
-                    toggleSetting(Config.MapShowRating);
-                    return true;
-                case MenuID.MI_SHOW_DT:
-                    toggleSetting(Config.MapShowDT);
-                    return true;
-                case MenuID.MI_SHOW_TITLE:
-                    toggleSetting(Config.MapShowTitles);
-                    return true;
-                case MenuID.MI_SHOW_DIRECT_LINE:
-                    toggleSetting(Config.ShowDirektLine);
-                    return true;
-                case MenuID.MI_SHOW_ACCURACY_CIRCLE:
-                    toggleSetting(Config.ShowAccuracyCircle);
-                    return true;
-                case MenuID.MI_SHOW_CENTERCROSS:
-                    toggleSetting(Config.ShowMapCenterCross);
-                    return true;
-                case MenuID.MI_MAP_SHOW_COMPASS:
-                    toggleSetting(Config.MapShowCompass);
-                    return true;
-                case MenuID.MI_CENTER_WP:
-                    if (MapView.that != null) {
-                        MapView.that.createWaypointAtCenter();
-                    }
-                    return true;
-            /*
-            case MenuID.MI_SETTINGS:
-				TabMainView.actionShowSettings.Execute();
-				return true;
-			*/
-			/*
-			case MenuID.MI_SEARCH:
-				if (SearchDialog.that == null) {
-					new SearchDialog();
-				}
-				SearchDialog.that.showNotCloseAutomaticly();
-				return true;
-			*/
-                case MenuID.MI_TREC_REC:
-                    showMenuTrackRecording();
-                    return true;
-                case MenuID.MI_MAP_DOWNOAD:
-                    MapDownload.getInstance().show();
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    };
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -154,16 +74,18 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.mapView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.mapView = new MapView(tab.getContentRec(), MapMode.Normal, "MapView");
+        if ((MapView.getNormalMap() == null) && (tabMainView != null) && (tab != null)) {
+            new MapView(tab.getContentRec(), MapMode.Normal, "MapView");
+            MapView.getNormalMap().SetZoom(Config.lastZoomLevel.getValue());
+        }
 
-        if ((TabMainView.mapView != null) && (tab != null))
-            tab.ShowView(TabMainView.mapView);
+        if ((MapView.getNormalMap() != null) && (tab != null))
+            tab.ShowView(MapView.getNormalMap());
     }
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.mapView;
+        return MapView.getNormalMap();
     }
 
     @Override
@@ -184,7 +106,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
         Menu icm = new Menu("menu_mapviewgl");
-
         icm.addItem(MenuID.MI_LAYER, "Layer");
         MenuItem mi = icm.addItem(MenuID.MI_RENDERTHEMES, "Renderthemes");
         if (LocatorSettings.RenderThemesFolder.getValue().length() == 0) {
@@ -192,14 +113,40 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         }
         icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
         icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
-        icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", MapView.that.GetAlignToCompass());
+        icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", MapView.getNormalMap().GetAlignToCompass());
         icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
-        // icm.addItem(MenuID.MI_SETTINGS, "settings", Sprites.getSprite(IconName.settings.name()));
-        // icm.addItem(MenuID.MI_SEARCH, "Search", SpriteCache.Icons.get(27));
         icm.addItem(MenuID.MI_TREC_REC, "RecTrack");
-        //icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
-
-        icm.addOnClickListener(onItemClickListener);
+        icm.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_LAYER:
+                    showMapLayerMenu();
+                    return true;
+                case MenuID.MI_RENDERTHEMES:
+                    if (v.isEnabled()) {
+                        return showModusSelectionMenu();
+                    } else
+                        return false;
+                case MenuID.MI_MAPVIEW_OVERLAY_VIEW:
+                    showMapOverlayMenu();
+                    return true;
+                case MenuID.MI_MAPVIEW_VIEW:
+                    showMapViewLayerMenu();
+                    return true;
+                case MenuID.MI_ALIGN_TO_COMPSS:
+                    MapView.getNormalMap().SetAlignToCompass(!MapView.getNormalMap().GetAlignToCompass());
+                    return true;
+                case MenuID.MI_CENTER_WP:
+                    if (MapView.getNormalMap() != null) {
+                        MapView.getNormalMap().createWaypointAtCenter();
+                    }
+                    return true;
+                case MenuID.MI_TREC_REC:
+                    showMenuTrackRecording();
+                    return true;
+                default:
+                    return false;
+            }
+        });
         return icm;
     }
 
@@ -207,12 +154,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         Menu icm = new Menu("MapViewShowLayerContextMenu");
 
         // Sorting (perhaps use an arraylist of layers without the overlay layers)
-        Collections.sort(ManagerBase.Manager.getLayers(), new Comparator<Layer>() {
-            @Override
-            public int compare(Layer layer1, Layer layer2) {
-                return layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase());
-            }
-        });
+        Collections.sort(ManagerBase.Manager.getLayers(), (layer1, layer2) -> layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase()));
 
         int menuID = 0;
         String[] curentLayerNames = MapView.mapTileLoader.getCurrentLayer().getNames();
@@ -252,22 +194,19 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
 
-        icm.addOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Layer layer = (Layer) ((MenuItem) v).getData();
-                selectLayer(layer);
-                showLanguageSelectionMenu(layer);
-                return true;
-            }
+        icm.addOnClickListener((v, x, y, pointer, button) -> {
+            Layer layer = (Layer) v.getData();
+            selectLayer(layer);
+            showLanguageSelectionMenu(layer);
+            return true;
         });
 
         icm.Show();
     }
 
     private void selectLayer(Layer layer) {
-        if (layer.Name.equals(TabMainView.mapView.getCurrentLayer().Name)) {
-            TabMainView.mapView.clearAdditionalLayers();
+        if (layer.Name.equals(MapView.getNormalMap().getCurrentLayer().Name)) {
+            MapView.getNormalMap().clearAdditionalLayers();
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
@@ -278,14 +217,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         switch (which) {
                             case GL_MsgBox.BUTTON_POSITIVE:
                                 // add the selected map to the curent layer
-                                TabMainView.mapView.addAdditionalLayer(layer);
+                                MapView.getNormalMap().addAdditionalLayer(layer);
                                 break;
                             case GL_MsgBox.BUTTON_NEUTRAL:
                                 // switch curent layer to selected
-                                TabMainView.mapView.setCurrentLayer(layer);
+                                MapView.getNormalMap().setCurrentLayer(layer);
                                 break;
                             default:
-                                TabMainView.mapView.removeAdditionalLayer(layer);
+                                MapView.getNormalMap().removeAdditionalLayer(layer);
                         }
                         return true;
                     }
@@ -295,7 +234,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 msgBox.setButtonText(3, "-");
                 msgBox.setData(layer);
             } else {
-                TabMainView.mapView.setCurrentLayer(layer);
+                MapView.getNormalMap().setCurrentLayer(layer);
             }
         }
     }
@@ -346,9 +285,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 Layer layer = (Layer) ((MenuItem) v).getData();
                 if (layer == MapView.mapTileLoader.getCurrentOverlayLayer()) {
                     // switch off Overlay
-                    TabMainView.mapView.SetCurrentOverlayLayer(null);
+                    MapView.getNormalMap().SetCurrentOverlayLayer(null);
                 } else {
-                    TabMainView.mapView.SetCurrentOverlayLayer(layer);
+                    MapView.getNormalMap().SetCurrentOverlayLayer(layer);
                 }
                 // Refresh menu
                 icm.close();
@@ -373,7 +312,39 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         icm.addCheckableItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "MenuTextShowAccuracyCircle", Config.ShowAccuracyCircle.getValue());
         icm.addCheckableItem(MenuID.MI_SHOW_CENTERCROSS, "ShowCenterCross", Config.ShowMapCenterCross.getValue());
 
-        icm.addOnClickListener(onItemClickListener);
+        icm.addOnClickListener( (v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_HIDE_FINDS:
+                    toggleSettingWithReload(Config.MapHideMyFinds);
+                    return true;
+                case MenuID.MI_MAP_SHOW_COMPASS:
+                    toggleSetting(Config.MapShowCompass);
+                    return true;
+                case MenuID.MI_SHOW_ALL_WAYPOINTS:
+                    toggleSetting(Config.ShowAllWaypoints);
+                    return true;
+                case MenuID.MI_SHOW_RATINGS:
+                    toggleSetting(Config.MapShowRating);
+                    return true;
+                case MenuID.MI_SHOW_DT:
+                    toggleSetting(Config.MapShowDT);
+                    return true;
+                case MenuID.MI_SHOW_TITLE:
+                    toggleSetting(Config.MapShowTitles);
+                    return true;
+                case MenuID.MI_SHOW_DIRECT_LINE:
+                    toggleSetting(Config.ShowDirektLine);
+                    return true;
+                case MenuID.MI_SHOW_ACCURACY_CIRCLE:
+                    toggleSetting(Config.ShowAccuracyCircle);
+                    return true;
+                case MenuID.MI_SHOW_CENTERCROSS:
+                    toggleSetting(Config.ShowMapCenterCross);
+                    return true;
+                default:
+                    return false;
+            }
+        });
         icm.Show();
     }
 
@@ -417,15 +388,15 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
         Config.AcceptChanges();
-        if (MapView.that != null)
-            MapView.that.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
+        if (MapView.getNormalMap() != null)
+            MapView.getNormalMap().setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
     }
 
     private void toggleSettingWithReload(SettingBool setting) {
         setting.setValue(!setting.getValue());
         Config.AcceptChanges();
-        if (MapView.that != null)
-            MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+        if (MapView.getNormalMap() != null)
+            MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
     }
 
     private HashMap<String, String> getRenderThemes() {

@@ -18,7 +18,8 @@ package CB_UI.GL_UI.Views;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Menu.CacheContextMenu;
+import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -66,9 +67,14 @@ public class DescriptionView extends CB_View_Base {
     private float margin;
     private Cache sel;
 
-    public DescriptionView(CB_RectF rec, String Name) {
-        super(rec, Name);
+    private static DescriptionView that;
+    private DescriptionView() {
+        super(TabMainView.leftTab.getContentRec(), "DescriptionView");
         STRING_POWERD_BY = Translation.Get("GC_title");
+    }
+    public static DescriptionView getInstance() {
+        if (that == null) that = new DescriptionView();
+        return that;
     }
 
     @Override

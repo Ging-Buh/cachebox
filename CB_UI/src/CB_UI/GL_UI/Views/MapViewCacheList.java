@@ -349,9 +349,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 
                         tmplist.clear();
                         selectedWP = null;
-                        synchronized (Database.Data.Query) {
-                            for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
-                                Cache cache = Database.Data.Query.get(i);
+                        synchronized (Database.Data.cacheList) {
+                            for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                                Cache cache = Database.Data.cacheList.get(i);
                                 // Funde
                                 if (hideMyFinds && cache.isFound())
                                     continue;

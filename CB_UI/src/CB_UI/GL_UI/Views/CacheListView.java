@@ -25,7 +25,7 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
-import CB_UI.GL_UI.Menu.CacheContextMenu;
+import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -63,8 +63,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
             int selectionIndex = ((ListViewItemBase) v).getIndex();
 
             Cache cache;
-            synchronized (Database.Data.Query) {
-                cache = Database.Data.Query.get(selectionIndex);
+            synchronized (Database.Data.cacheList) {
+                cache = Database.Data.cacheList.get(selectionIndex);
             }
             if (cache != null) {
                 // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
@@ -85,8 +85,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
             int selectionIndex = ((ListViewItemBase) v).getIndex();
 
             Cache cache;
-            synchronized (Database.Data.Query) {
-                cache = Database.Data.Query.get(selectionIndex);
+            synchronized (Database.Data.cacheList) {
+                cache = Database.Data.cacheList.get(selectionIndex);
             }
             Waypoint finalWp = null;
             if (cache.HasFinalWaypoint())
@@ -176,12 +176,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
         PositionChangedEventList.Add(this);
 
-        synchronized (Database.Data.Query) {
+        synchronized (Database.Data.cacheList) {
             try {
-                lvAdapter = new CustomAdapter(Database.Data.Query);
+                lvAdapter = new CustomAdapter(Database.Data.cacheList);
                 listView.setBaseAdapter(lvAdapter);
 
-                int itemCount = Database.Data.Query.size();
+                int itemCount = Database.Data.cacheList.size();
                 int itemSpace = listView.getMaxItemCount();
 
                 if (itemSpace >= itemCount) {
@@ -225,9 +225,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
                 int id = 0;
                 Point firstAndLast = listView.getFirstAndLastVisibleIndex();
 
-                synchronized (Database.Data.Query) {
-                    for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
-                        Cache ca = Database.Data.Query.get(i);
+                synchronized (Database.Data.cacheList) {
+                    for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                        Cache ca = Database.Data.cacheList.get(i);
                         if (ca.Id == GlobalCore.getSelectedCache().Id) {
                             listView.setSelection(id);
                             if (listView.isDraggable()) {
@@ -289,12 +289,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
         } catch (Exception e) {
             e.printStackTrace();
         }
-        synchronized (Database.Data.Query) {
-            lvAdapter = new CustomAdapter(Database.Data.Query);
+        synchronized (Database.Data.cacheList) {
+            lvAdapter = new CustomAdapter(Database.Data.cacheList);
 
             listView.setBaseAdapter(lvAdapter);
 
-            int itemCount = Database.Data.Query.size();
+            int itemCount = Database.Data.cacheList.size();
             int itemSpace = listView.getMaxItemCount();
 
             if (itemSpace >= itemCount) {

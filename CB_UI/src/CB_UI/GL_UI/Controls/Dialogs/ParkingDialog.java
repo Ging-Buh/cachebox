@@ -90,8 +90,8 @@ public class ParkingDialog extends ButtonDialog {
         this.addChild(layout);
 
         // chk disable select and delete Button
-        synchronized (Database.Data.Query) {
-            Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+        synchronized (Database.Data.cacheList) {
+            Cache cache = Database.Data.cacheList.GetCacheByGcCode("CBPark");
             if (cache == null) {
                 btSelectWP.disable();
                 btDeleteP.disable();
@@ -120,8 +120,8 @@ public class ParkingDialog extends ButtonDialog {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                synchronized (Database.Data.Query) {
-                    Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+                synchronized (Database.Data.cacheList) {
+                    Cache cache = Database.Data.cacheList.GetCacheByGcCode("CBPark");
                     if (cache != null)
                         GlobalCore.setSelectedCache(cache);
                 }

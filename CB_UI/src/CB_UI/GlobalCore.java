@@ -154,7 +154,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
         // {
         // if (!Cache.getGcCode().equals("CBPark"))
         // {
-        // Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
+        // Cache lastCache = Database.Data.cacheList.GetCacheById(selectedCache.Id);
         //
         // }
         // }
@@ -218,7 +218,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
     public static void checkSelectedCacheValid() {
 
-        CacheList List = Database.Data.Query;
+        CacheList List = Database.Data.cacheList;
 
         // Prüfen, ob der SelectedCache noch in der cacheList drin ist.
         if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {

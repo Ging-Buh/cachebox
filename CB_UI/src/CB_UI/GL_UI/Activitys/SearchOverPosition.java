@@ -233,7 +233,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         box.addNext(tglBtnGPS);
         box.addLast(tglBtnMap);
 
-        if (MapView.that == null)
+        if (MapView.getNormalMap() == null)
             tglBtnMap.disable();
 
     }
@@ -271,10 +271,10 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         });
 
         tglBtnMap.setOnClickListener((v, x, y, pointer, button) -> {
-            if (MapView.that == null) {
+            if (MapView.getNormalMap() == null) {
                 actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
             } else {
-                actSearchPos = MapView.that.center;
+                actSearchPos = MapView.getNormalMap().center;
             }
 
             setToggleBtnState(1);
@@ -298,8 +298,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             return true;
         });
 
-        if (MapView.that != null && MapView.that.isVisible()) {
-            actSearchPos = MapView.that.center;
+        if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
+            actSearchPos = MapView.getNormalMap().center;
             searcheState = 1;
         } else {
             actSearchPos = Locator.getCoordinate();
@@ -501,8 +501,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             } else {
 
                 // Notify Map
-                if (MapView.that != null)
-                    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+                if (MapView.getNormalMap() != null)
+                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
                 if (dis != null) {
                     SearchOverPosition.this.removeChildsDirekt(dis);
                     dis.dispose();

@@ -356,8 +356,7 @@ public class SQLiteClass implements SQLiteInterface {
             Log.trace(log, "set Transaction Successful");
             if (myDB != null)
                 myDB.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ignored) {
         }
     }
 

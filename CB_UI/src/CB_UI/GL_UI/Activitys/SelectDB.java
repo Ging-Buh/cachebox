@@ -25,7 +25,6 @@ import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.Dialogs.NewDB_InputBox;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -172,9 +171,9 @@ public class SelectDB extends ActivityBase {
                     CoreSettingsForward.Categories = new Categories();
                     Database.Data.GPXFilenameUpdateCacheCount();
 
-                    synchronized (Database.Data.Query) {
+                    synchronized (Database.Data.cacheList) {
                         CacheListDAO cacheListDAO = new CacheListDAO();
-                        cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                        cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                         GlobalCore.checkSelectedCacheValid();
                     }
 

@@ -67,6 +67,13 @@ public class MenuItem extends MenuItemBase {
         }
     }
 
+    public boolean isCheckboxClicked(float x) {
+        // true, if clicked right of the beginning of the image
+        if (checkImage == null)
+            return false;
+        else return x > checkImage.getX();
+    }
+
     @Override
     protected void Initial() {
         super.Initial();

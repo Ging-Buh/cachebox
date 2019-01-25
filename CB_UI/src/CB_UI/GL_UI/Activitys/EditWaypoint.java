@@ -6,9 +6,7 @@ import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
@@ -349,8 +347,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
                 }
 
                 // Änderungen auch an die MapView melden
-                if (MapView.that != null)
-                    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+                if (MapView.getNormalMap() != null)
+                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
 
                 finish();
 

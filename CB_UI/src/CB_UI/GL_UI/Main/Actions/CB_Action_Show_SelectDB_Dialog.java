@@ -87,7 +87,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 
             @Override
             public void run() {
-                Database.Data.Query.clear();
+                Database.Data.cacheList.clear();
                 Database.Data.sql.close();
                 Database.Data.StartUp(Config.mWorkPath + "/" + Config.DatabaseName.getValue());
 
@@ -100,17 +100,17 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
                 String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                 Database.Data.GPXFilenameUpdateCacheCount();
 
-                synchronized (Database.Data.Query) {
+                synchronized (Database.Data.cacheList) {
                     CacheListDAO cacheListDAO = new CacheListDAO();
-                    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                 }
 
                 // set selectedCache from lastselected Cache
                 GlobalCore.setSelectedCache(null);
                 String sGc = Config.LastSelectedCache.getValue();
                 if (sGc != null && sGc.length() > 0) {
-                    for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
-                        Cache c = Database.Data.Query.get(i);
+                    for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                        Cache c = Database.Data.cacheList.get(i);
 
                         if (c.getGcCode().equalsIgnoreCase(sGc)) {
                             try {
@@ -125,9 +125,9 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
                     }
                 }
                 // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
-                if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0)) {
-                    Log.debug(log, "Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
-                    GlobalCore.setSelectedCache(Database.Data.Query.get(0));
+                if ((GlobalCore.getSelectedCache() == null) && (Database.Data.cacheList.size() > 0)) {
+                    Log.debug(log, "Set selectedCache to " + Database.Data.cacheList.get(0).getGcCode() + " from firstInDB");
+                    GlobalCore.setSelectedCache(Database.Data.cacheList.get(0));
                 }
 
                 GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());

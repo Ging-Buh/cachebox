@@ -298,112 +298,108 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         this.addChild(dis, false);
 
         importRuns = true;
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean threadCanceld = false;
+        thread = new Thread(() -> {
+            boolean threadCanceld = false;
 
-                try {
-                    Thread.sleep(200);
+            try {
+                Thread.sleep(200);
 
-                    if (actSearchType != null) {
+                if (actSearchType != null) {
 
-                        // alle per API importierten Caches landen in der Category und
-                        // GpxFilename
-                        // API-Import
-                        // Category suchen, die dazu gehört
-                        Category category = CoreSettingsForward.Categories.getCategory("API-Import");
-                        if (category != null) // should not happen!!!
-                        {
-                            GpxFilename gpxFilename = category.addGpxFilename("API-Import");
-                            if (gpxFilename != null) {
+                    // alle per API importierten Caches landen in der Category und
+                    // GpxFilename
+                    // API-Import
+                    // Category suchen, die dazu gehört
+                    Category category = CoreSettingsForward.Categories.getCategory("API-Import");
+                    if (category != null) // should not happen!!!
+                    {
+                        GpxFilename gpxFilename = category.addGpxFilename("API-Import");
+                        if (gpxFilename != null) {
 
-                                String searchPattern = mEingabe.getText().trim();
+                            String searchPattern = mEingabe.getText().trim();
 
-                                Coordinate searchCoord;
-                                if (MapView.that != null && MapView.that.isVisible()) {
-                                    searchCoord = MapView.that.center;
-                                } else {
-                                    searchCoord = Locator.getCoordinate();
-                                }
-                                if (searchCoord == null) {
-                                    return;
-                                }
-
-                                Query q = new Query()
-                                        .setMaxToFetch(50)
-                                        .resultWithFullFields()
-                                        .resultWithLogs(30)
-                                        //.resultWithImages(30)
-                                        ;
-                                if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
-                                if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
-                                if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
-
-                                ArrayList<GeoCacheRelated> geoCacheRelateds;
-                                dis.setAnimationType(AnimationType.Download);
-                                switch (actSearchType) {
-                                    case Title:
-                                        q.searchInCircleOf100Miles(searchCoord)
-                                                .searchForTitle(searchPattern);
-                                        geoCacheRelateds = searchGeoCaches(q);
-                                        break;
-                                    case Owner:
-                                        q.searchInCircleOf100Miles(searchCoord)
-                                                .searchForOwner(searchPattern);
-                                        geoCacheRelateds = searchGeoCaches(q);
-                                        break;
-                                    default: // GCCode
-                                        // todo API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
-                                        if (searchPattern.contains(",")) {
-                                            geoCacheRelateds = fetchGeoCaches(q, searchPattern);
-                                        }
-                                        else {
-                                            geoCacheRelateds = fetchGeoCache(q, searchPattern);
-                                        }
-                                        break;
-                                }
-
-                                dis.setAnimationType(AnimationType.Work);
-                                if (geoCacheRelateds.size() > 0) {
-                                    try {
-                                        dis.setAnimationType(AnimationType.Work);
-                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
-                                    } catch (InterruptedException e) {
-                                        Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
-                                    }
-                                }
-
+                            Coordinate searchCoord;
+                            if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
+                                searchCoord = MapView.getNormalMap().center;
+                            } else {
+                                searchCoord = Locator.getCoordinate();
                             }
+                            if (searchCoord == null) {
+                                return;
+                            }
+
+                            Query q = new Query()
+                                    .setMaxToFetch(50)
+                                    .resultWithFullFields()
+                                    .resultWithLogs(30)
+                                    //.resultWithImages(30)
+                                    ;
+                            if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
+                            if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
+                            if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
+
+                            ArrayList<GeoCacheRelated> geoCacheRelateds;
+                            dis.setAnimationType(AnimationType.Download);
+                            switch (actSearchType) {
+                                case Title:
+                                    q.searchInCircleOf100Miles(searchCoord)
+                                            .searchForTitle(searchPattern);
+                                    geoCacheRelateds = searchGeoCaches(q);
+                                    break;
+                                case Owner:
+                                    q.searchInCircleOf100Miles(searchCoord)
+                                            .searchForOwner(searchPattern);
+                                    geoCacheRelateds = searchGeoCaches(q);
+                                    break;
+                                default: // GCCode
+                                    // todo API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
+                                    if (searchPattern.contains(",")) {
+                                        geoCacheRelateds = fetchGeoCaches(q, searchPattern);
+                                    }
+                                    else {
+                                        geoCacheRelateds = fetchGeoCache(q, searchPattern);
+                                    }
+                                    break;
+                            }
+
+                            dis.setAnimationType(AnimationType.Work);
+                            if (geoCacheRelateds.size() > 0) {
+                                try {
+                                    dis.setAnimationType(AnimationType.Work);
+                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
+                                } catch (InterruptedException e) {
+                                    Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                                }
+                            }
+
                         }
                     }
-                } catch (InterruptedException e) {
-                    // Thread abgebrochen!
-                    threadCanceld = true;
                 }
-
-                // Delete all LongDescription from Query! LongDescription is Loading by showing DescriptionView direct from DB
-                // for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
-                // {
-                // Cache cache = Database.Data.Query.get(i);
-                // cache.longDescription = "";
-                // }
-
-                if (!threadCanceld) {
-                    CacheListChangedEventList.Call();
-                    cancelImport();
-                    finish();
-                } else {
-
-                    // Notify Map
-                    if (MapView.that != null)
-                        MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
-
-                    bImport.enable();
-                }
-                importRuns = false;
+            } catch (InterruptedException e) {
+                // Thread abgebrochen!
+                threadCanceld = true;
             }
 
+            // Delete all LongDescription from cacheList! LongDescription is Loading by showing DescriptionView direct from DB
+            // for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++)
+            // {
+            // Cache cache = Database.Data.cacheList.get(i);
+            // cache.longDescription = "";
+            // }
+
+            if (!threadCanceld) {
+                CacheListChangedEventList.Call();
+                cancelImport();
+                finish();
+            } else {
+
+                // Notify Map
+                if (MapView.getNormalMap() != null)
+                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
+
+                bImport.enable();
+            }
+            importRuns = false;
         });
 
         thread.setPriority(Thread.MAX_PRIORITY);

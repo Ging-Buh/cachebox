@@ -35,8 +35,8 @@ public class CB_Action_add_WP extends CB_Action {
     public void Execute() {
         // wenn MapView sichtbar und im Modus Free, dann nehme Koordinaten vom Mittelpunkt der Karte
         // ansonsten mit den aktuellen Koordinaten!
-        if (MapView.that != null && MapView.that.isVisible()) {
-            MapView.that.createWaypointAtCenter();
+        if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
+            MapView.getNormalMap().createWaypointAtCenter();
             return;
         }
 

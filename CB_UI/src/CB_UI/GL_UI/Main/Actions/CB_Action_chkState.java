@@ -42,12 +42,12 @@ public class CB_Action_chkState extends CB_Action {
             cancel = false;
             ArrayList<Cache> chkList = new ArrayList<>();
 
-            synchronized (Database.Data.Query) {
-                if (Database.Data.Query == null || Database.Data.Query.size() == 0)
+            synchronized (Database.Data.cacheList) {
+                if (Database.Data.cacheList == null || Database.Data.cacheList.size() == 0)
                     return;
                 ChangedCount = 0;
-                for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
-                    chkList.add(Database.Data.Query.get(i));
+                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                    chkList.add(Database.Data.cacheList.get(i));
                 }
 
             }
@@ -123,16 +123,16 @@ public class CB_Action_chkState extends CB_Action {
             if (result != -1) {
 
                 // Reload result from DB
-                synchronized (Database.Data.Query) {
+                synchronized (Database.Data.cacheList) {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                     CacheListDAO cacheListDAO = new CacheListDAO();
-                    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                     cacheListDAO = null;
                 }
 
                 CacheListChangedEventList.Call();
-                synchronized (Database.Data.Query) {
-                    GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(), Translation.Get("chkState"), MessageBoxIcon.None);
+                synchronized (Database.Data.cacheList) {
+                    GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.Get("chkState"), MessageBoxIcon.None);
                 }
 
             }

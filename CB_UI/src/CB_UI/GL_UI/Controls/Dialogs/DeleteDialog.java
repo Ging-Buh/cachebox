@@ -67,44 +67,37 @@ public class DeleteDialog extends ButtonDialog {
 
         this.setHeight(box.getHeight() + this.mFooterHeight + this.mTitleHeight + 3 * margin);
 
-        btDelFilter.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                close();
+        btDelFilter.setOnClickListener((v, x, y, pointer, button) -> {
+            close();
 
-                wd = CancelWaitDialog.ShowWait(Translation.Get("DelActFilter"), new IcancelListener() {
+            wd = CancelWaitDialog.ShowWait(Translation.Get("DelActFilter"), () -> {
 
-                    @Override
-                    public void isCanceled() {
+            }, new ICancelRunnable() {
 
-                    }
-                }, new ICancelRunnable() {
+                @Override
+                public void run() {
+                    CacheListDAO dao = new CacheListDAO();
+                    long nun = dao.deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
+                            CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+                    cleanupLogs();
+                    cleanupWaypoints();
+                    wd.close();
 
-                    @Override
-                    public void run() {
-                        CacheListDAO dao = new CacheListDAO();
-                        long nun = dao.deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
-                                CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
-                        cleanupLogs();
-                        cleanupWaypoints();
-                        wd.close();
+                    // reset Filter
+                    FilterInstances.setLastFilter(new FilterProperties());
+                    EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());// all Caches
 
-                        // reset Filter
-                        FilterInstances.setLastFilter(new FilterProperties());
-                        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());// all Caches
+                    String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
+                    GL.that.Toast(msg);
+                }
 
-                        String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
-                        GL.that.Toast(msg);
-                    }
-
-                    @Override
-                    public boolean doCancel() {
-                        // TODO Handle Cancel
-                        return false;
-                    }
-                });
-                return true;
-            }
+                @Override
+                public boolean doCancel() {
+                    // TODO Handle Cancel
+                    return false;
+                }
+            });
+            return true;
         });
 
         btDelArchived.setOnClickListener(new OnClickListener() {

@@ -1,5 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
@@ -22,16 +23,18 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import de.cb.sqlite.Database_Core;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class CB_Action_ShowCacheList extends CB_Action_ShowView {
+    private static final int MI_FAVORIT = 164;
     private static CB_Action_ShowCacheList that;
     private EditCache editCache;
 
     private CB_Action_ShowCacheList() {
-        super("cacheList", "  (" + Database.Data.Query.size() + ")", MenuID.AID_SHOW_CACHELIST);
+        super("cacheList", "  (" + Database.Data.cacheList.size() + ")", MenuID.AID_SHOW_CACHELIST);
         editCache = null;
         tabMainView = TabMainView.that;
         tab = TabMainView.leftTab;
@@ -76,10 +79,11 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         Menu cm = new Menu("CacheListContextMenu");
 
         cm.addOnClickListener((v, x, y, pointer, button) -> {
+            boolean checked;
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_RESORT:
-                    synchronized (Database.Data.Query) {
-                        CacheWithWP nearstCacheWp = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                    synchronized (Database.Data.cacheList) {
+                        CacheWithWP nearstCacheWp = Database.Data.cacheList.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
                         if (nearstCacheWp != null)
                             GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
@@ -88,11 +92,28 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     }
                     return true;
                 case MenuID.MI_FilterSet:
-                    CB_Action_ShowFilterSettings.getInstance().Execute();
+                    checked = ((MenuItem) v).isChecked();
+                    if (((MenuItem) v).isCheckboxClicked(x))
+                        checked = !checked;
+                    if (checked) {
+                        CB_Action_ShowFilterSettings.getInstance().Execute();
+                    } else {
+                        FilterInstances.setLastFilter(new FilterProperties());
+                        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+                    }
                     return true;
-                case MenuID.MI_RESET_FILTER:
-                    FilterInstances.setLastFilter(new FilterProperties());
-                    EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+                case MI_FAVORIT:
+                    checked = ((MenuItem) v).isChecked();
+                    if (((MenuItem) v).isCheckboxClicked(x))
+                        checked = !checked;
+                    Database.Data.sql.beginTransaction();
+                    Database_Core.Parameters args = new Database_Core.Parameters();
+                    args.put("Favorit", checked ? 1 : 0);
+                    Database.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
+                    Database.Data.sql.endTransaction();
+                    Database.Data.sql.setTransactionSuccessful();
+                    TabMainView.reloadCacheList();
+                    GlobalCore.checkSelectedCacheValid();
                     return true;
                 case MenuID.MI_SEARCH_LIST:
 
@@ -116,8 +137,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                 case MenuID.MI_AUTO_RESORT:
                     GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
                     if (GlobalCore.getAutoResort()) {
-                        synchronized (Database.Data.Query) {
-                            Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                        synchronized (Database.Data.cacheList) {
+                            Database.Data.cacheList.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
                         }
                     }
                     return true;
@@ -164,8 +185,12 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
         MenuItem mi;
         cm.addItem(MenuID.MI_RESORT, "ResortList", Sprites.getSprite(IconName.sortIcon.name()));
-        cm.addItem(MenuID.MI_FilterSet, "Filter", Sprites.getSprite(IconName.filter.name()));
-        cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", Sprites.getSprite(IconName.filter.name()));
+        mi = cm.addItem(MenuID.MI_FilterSet, "Filter", Sprites.getSprite(IconName.filter.name()));
+        mi.setCheckable(true);
+        mi.setChecked(true); // todo perhaps init with isfiltered
+        mi = cm.addItem(MI_FAVORIT, "Favorite", Sprites.getSprite(IconName.favorit.name()));
+        mi.setCheckable(true);
+        mi.setChecked(true); // default is to mark as Favorite
         cm.addItem(MenuID.MI_SEARCH_LIST, "Search", Sprites.getSprite(IconName.lupe.name()));
         cm.addItem(MenuID.AID_SHOW_IMPORT_MENU, "importExport", Sprites.getSprite(IconName.importIcon.name()));
         if (SyncActivity.RELEASED)

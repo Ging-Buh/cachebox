@@ -131,7 +131,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.Size = CacheSizes.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
-        newValues.Pos = MapView.that.center; // Locator.getLocation().toCordinate();
+        newValues.Pos = MapView.getNormalMap().center; // Locator.getLocation().toCordinate();
         if (!newValues.Pos.isValid())
             newValues.Pos = GlobalCore.getSelectedCoord();
         // GC - Code bestimmen für freies CWxxxx = CustomWaypint
@@ -140,7 +140,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         do {
             count++;
             newValues.setGcCode(prefix + String.format("%04d", count));
-        } while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
+        } while (Database.Data.cacheList.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
         newValues.setName(newValues.getGcCode());
         newValues.setOwner("Unbekannt");
         newValues.setState("");
@@ -191,7 +191,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
             cache.Id = Cache.GenerateCacheId(gcc);
 
-            Cache cl = Database.Data.Query.GetCacheById(cache.Id);
+            Cache cl = Database.Data.cacheList.GetCacheById(cache.Id);
 
             if (cl != null) {
                 update = true;
@@ -217,7 +217,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 cacheDAO.UpdateDatabase(cache);
                 CacheListChangedEventList.Call();
             } else {
-                Database.Data.Query.add(cache);
+                Database.Data.cacheList.add(cache);
                 cacheDAO.WriteToDatabase(cache);
                 CacheListChangedEventList.Call();
                 GlobalCore.setSelectedCache(cache);

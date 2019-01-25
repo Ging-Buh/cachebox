@@ -563,11 +563,11 @@ public class FieldNotesView extends V_ListView {
         if (aktFieldNote == null)
             return;
         // final Cache cache =
-        // Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+        // Database.Data.cacheList.GetCacheByGcCode(aktFieldNote.gcCode);
 
         Cache tmpCache = null;
         // suche den Cache aus der DB.
-        // Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
+        // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
         CacheList lCaches = new CacheList();
         CacheListDAO cacheListDAO = new CacheListDAO();
         cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
@@ -605,8 +605,8 @@ public class FieldNotesView extends V_ListView {
                             Config.AcceptChanges();
                             // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
                             // damit das Smiley Symbol aus der Map und der CacheList verschwindet
-                            synchronized (Data.Query) {
-                                Cache tc = Data.Query.GetCacheById(cache.Id);
+                            synchronized (Data.cacheList) {
+                                Cache tc = Data.cacheList.GetCacheById(cache.Id);
                                 if (tc != null) {
                                     tc.setFound(false);
                                 }
@@ -678,7 +678,7 @@ public class FieldNotesView extends V_ListView {
             return;
 
         // suche den Cache aus der DB.
-        // Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
+        // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
         CacheList lCaches = new CacheList();
         CacheListDAO cacheListDAO = new CacheListDAO();
         cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
@@ -694,13 +694,13 @@ public class FieldNotesView extends V_ListView {
             return;
         }
 
-        synchronized (Data.Query) {
-            cache = Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+        synchronized (Data.cacheList) {
+            cache = Data.cacheList.GetCacheByGcCode(aktFieldNote.gcCode);
         }
 
         if (cache == null) {
-            Data.Query.add(tmpCache);
-            cache = Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+            Data.cacheList.add(tmpCache);
+            cache = Data.cacheList.GetCacheByGcCode(aktFieldNote.gcCode);
         }
 
         Waypoint finalWp = null;

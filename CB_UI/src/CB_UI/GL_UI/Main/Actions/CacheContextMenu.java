@@ -1,4 +1,4 @@
-package CB_UI.GL_UI.Menu;
+package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheListChangedEventList;
@@ -11,8 +11,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
 import CB_UI.GL_UI.Activitys.EditCache;
-import CB_UI.GL_UI.Main.Actions.*;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -110,11 +108,10 @@ public class CacheContextMenu {
                     GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
                     CacheDAO dao = new CacheDAO();
                     dao.UpdateDatabase(GlobalCore.getSelectedCache());
-                    // Update Query
-                    Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+                    // Update cacheList
+                    Database.Data.cacheList.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
                     // Update View
-                    if (TabMainView.descriptionView != null)
-                        TabMainView.descriptionView.onShow();
+                    CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(false);
                     CacheListChangedEventList.Call();
                     return true;
                 case AddToWatchList:
@@ -173,19 +170,16 @@ public class CacheContextMenu {
                         }
 
                         // Reload result from DB
-                        synchronized (Database.Data.Query) {
+                        synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                             CacheListDAO cacheListDAO = new CacheListDAO();
-                            cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                         }
                         CacheListChangedEventList.Call();
                         //
-                        GlobalCore.setSelectedCache(Database.Data.Query.GetCacheByGcCode(GCCode));
+                        GlobalCore.setSelectedCache(Database.Data.cacheList.GetCacheByGcCode(GCCode));
                         GL.that.RunOnGL(() -> {
-                            if (TabMainView.descriptionView != null) {
-                                TabMainView.descriptionView.forceReload();
-                                TabMainView.descriptionView.onShow();
-                            }
+                            CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
                             GL.that.renderOnce();
                         });
                     }

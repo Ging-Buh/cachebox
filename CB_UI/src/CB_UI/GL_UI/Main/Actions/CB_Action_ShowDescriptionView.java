@@ -16,7 +16,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Menu.CacheContextMenu;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -43,11 +42,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.descriptionView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.descriptionView = new DescriptionView(tab.getContentRec(), "DescriptionView");
-
-        if ((TabMainView.descriptionView != null) && (tab != null))
-            tab.ShowView(TabMainView.descriptionView);
+        tab.ShowView(DescriptionView.getInstance());
     }
 
     @Override
@@ -62,7 +57,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.descriptionView;
+        return DescriptionView.getInstance();
     }
 
     @Override
@@ -73,5 +68,10 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
         return CacheContextMenu.getCacheContextMenu(false);
+    }
+
+    public void updateDescriptionView(boolean forceReload) {
+        if (forceReload) DescriptionView.getInstance().forceReload();
+        DescriptionView.getInstance().onShow();
     }
 }

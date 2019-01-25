@@ -118,8 +118,8 @@ public class LiveMapQue {
                 Thread callThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        synchronized (Database.Data.Query) {
-                            Database.Data.Query.removeAll(removedCaches);
+                        synchronized (Database.Data.cacheList) {
+                            Database.Data.cacheList.removeAll(removedCaches);
                         }
                         CacheListChangedEventList.Call();
                         for (int i = 0; i < eventList.size(); i++)

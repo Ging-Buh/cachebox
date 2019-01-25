@@ -95,7 +95,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
             int selectionIndex = ((ListViewItemBase) v).getIndex();
-            // GlobalCore.SelectedCache(Database.Data.Query.get(selectionIndex));
+            // GlobalCore.SelectedCache(Database.Data.cacheList.get(selectionIndex));
             setSelection(selectionIndex);
             // edit als default Aktion bei Click
             TabMainView.solverView2.ChangeLine();
@@ -370,7 +370,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
         CoordinateGPS result = getSelectedCoordinateResult();
         if (result != null) {
             // Set Map Center
-            TabMainView.mapView.setCenter(result);
+            MapView.getNormalMap().setCenter(result);
             CB_Action_ShowMap.getInstance().Execute();
         }
     }

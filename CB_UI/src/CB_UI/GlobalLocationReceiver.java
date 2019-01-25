@@ -120,8 +120,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                     try {
                         if (!initialResortAfterFirstFixCompleted && Locator.getProvider() != ProviderType.NULL) {
                             if (GlobalCore.getSelectedCache() == null) {
-                                synchronized (Database.Data.Query) {
-                                    CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                                synchronized (Database.Data.cacheList) {
+                                    CacheWithWP ret = Database.Data.cacheList.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
                                     if (ret != null && ret.getCache() != null) {
                                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
@@ -143,7 +143,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                         // schau die 50 nächsten Caches durch, wenn einer davon näher ist
                         // als der aktuell nächste -> umsortieren und raus
                         // only when showing Map or cacheList
-                        if (!Database.Data.Query.ResortAtWork) {
+                        if (!Database.Data.cacheList.ResortAtWork) {
                             if (GlobalCore.getAutoResort()) {
                                 if ((GlobalCore.NearestCache() == null)) {
                                     GlobalCore.setNearestCache(GlobalCore.getSelectedCache());
@@ -159,8 +159,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                         }
                                         float nearestDistance = GlobalCore.NearestCache().Distance(CalculationType.FAST, true);
 
-                                        for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
-                                            Cache cache = Database.Data.Query.get(i);
+                                        for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                                            Cache cache = Database.Data.cacheList.get(i);
                                             z++;
                                             if (z >= 50) {
                                                 return;
@@ -183,7 +183,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                         }
                                     }
                                     if (resort || z == 0) {
-                                        CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                                        CacheWithWP ret = Database.Data.cacheList.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
                                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                         GlobalCore.setNearestCache(ret.getCache());

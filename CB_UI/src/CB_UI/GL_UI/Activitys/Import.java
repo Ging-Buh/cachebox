@@ -1034,7 +1034,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                         long startTime = System.currentTimeMillis();
 
                         Database.Data.sql.beginTransaction();
-                        Database.Data.Query.clear();
+                        Database.Data.cacheList.clear();
                         try {
                             importer.importGpx(directoryPath, ip);
                             Database.Data.sql.setTransactionSuccessful();

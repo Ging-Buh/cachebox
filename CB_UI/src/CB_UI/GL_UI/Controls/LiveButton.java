@@ -73,8 +73,8 @@ public class LiveButton extends ImageButton implements QueStateChanged {
     public boolean click(int x, int y, int pointer, int button) {
         setState(!state);
         if (state) {
-            if (MapView.that != null) {
-                Coordinate center = MapView.that.center;
+            if (MapView.getNormalMap() != null) {
+                Coordinate center = MapView.getNormalMap().center;
                 LiveMapQue.quePosition(center);
             }
         }

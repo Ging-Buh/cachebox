@@ -256,12 +256,12 @@ public class EditFilterSettings extends ActivityBase {
 
         new Thread(() -> {
             try {
-                synchronized (Database.Data.Query) {
+                synchronized (Database.Data.cacheList) {
                     String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
                     Log.info(log, "Main.ApplyFilter: " + sqlWhere);
-                    Database.Data.Query.clear();
+                    Database.Data.cacheList.clear();
                     CacheListDAO cacheListDAO = new CacheListDAO();
-                    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
                 CacheListChangedEventList.Call();
@@ -269,8 +269,8 @@ public class EditFilterSettings extends ActivityBase {
                 TabMainView.that.filterSetChanged();
 
                 // Notify Map
-                if (MapView.that != null)
-                    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+                if (MapView.getNormalMap() != null)
+                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
 
                 // Save selected filter (new JSON Format)
                 // wont save History at the Moment

@@ -195,8 +195,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 // Notify QuickButtonList
                 QuickButtonList.that.notifyDataSetChanged();
 
-                if (MapView.that != null)
-                    MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
+                if (MapView.getNormalMap() != null)
+                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
                 finish();
                 return true;

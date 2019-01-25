@@ -59,11 +59,11 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
                         newCache = geoCacheRelated.cache;
 
-                        synchronized (Database.Data.Query) {
+                        synchronized (Database.Data.cacheList) {
                             Database.Data.sql.beginTransaction();
 
-                            Database.Data.Query.remove(aktCache);
-                            Database.Data.Query.add(newCache);
+                            Database.Data.cacheList.remove(aktCache);
+                            Database.Data.cacheList.add(newCache);
 
                             new CacheDAO().UpdateDatabase(newCache);
                             newCache.setLongDescription("");
