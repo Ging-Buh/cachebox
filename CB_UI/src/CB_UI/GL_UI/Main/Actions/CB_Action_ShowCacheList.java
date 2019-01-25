@@ -110,8 +110,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", checked ? 1 : 0);
                     Database.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
-                    Database.Data.sql.endTransaction();
                     Database.Data.sql.setTransactionSuccessful();
+                    Database.Data.sql.endTransaction();
                     TabMainView.reloadCacheList();
                     GlobalCore.checkSelectedCacheValid();
                     return true;
