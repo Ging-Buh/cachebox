@@ -464,7 +464,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
                         int importLimit;
                         try {
-                            importLimit = Integer.parseInt(Radius.getText());
+                            importLimit = Integer.parseInt(edtImportLimit.getText());
                         } catch (Exception ex) {
                             importLimit = Config.ImportLimit.getDefaultValue();
                         }

@@ -1681,7 +1681,7 @@ public class GroundspeakAPI {
         }
 
         private void addSearchFilter(String filter) {
-            qString.append('+').append(filter.replace("+", "%2B"));
+            qString.append('+').append(filter);
         }
 
         public Query resultWithLiteFields() {
@@ -1758,7 +1758,7 @@ public class GroundspeakAPI {
 
         public Request putQuery(Request r) {
             String qs = qString.toString();
-            if (qs.length() > 0) r.param("q", qs.substring(1)); // .replace(" ", "%20"));
+            if (qs.length() > 0) r.param("q", qs.substring(1));
             String fs = fieldsString.toString();
             if (fs.length() > 0) r.param("fields", fs.substring(1));
             String es = expandString.toString();
