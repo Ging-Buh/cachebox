@@ -182,8 +182,8 @@ public class GroundspeakAPI {
                                 .param("skip", skip)
                                 .param("take", take)
                                 .param("lite", onlyLiteFields)
-                                .ensureSuccess())
-                                .asJsonArray();
+                                .ensureSuccess()
+                        ).asJsonArray();
 
                         retryCount = 0;
 
@@ -798,7 +798,7 @@ public class GroundspeakAPI {
             int skip = 0;
             int take = 50;
             try {
-                String friends = "";
+                StringBuilder friends = new StringBuilder();
                 boolean ready = false;
                 do {
                     JSONArray jFriends = getNetz().get(getUrl(1, "friends"))
@@ -807,7 +807,7 @@ public class GroundspeakAPI {
                             .param("take", take)
                             .ensureSuccess().asJsonArray().getBody();
                     for (int ii = 0; ii < jFriends.length(); ii++) {
-                        friends = friends + ((JSONObject) jFriends.get(ii)).optString("username", "") + ",";
+                        friends.append(((JSONObject) jFriends.get(ii)).optString("username", "")).append(",");
                     }
                     skip = skip + take;
                     if (jFriends.length() < take) ready = true;
@@ -1634,7 +1634,8 @@ public class GroundspeakAPI {
 
         public Query searchInCircle(Coordinate center, int radiusInMeters) {
             if (radiusInMeters > 160934) radiusInMeters = 160934; // max 100 miles
-            addSearchFilter("location:[" + center.latitude + "," + center.longitude + "]+radius:" + radiusInMeters + "m");
+            addSearchFilter("location:[" + center.latitude + "," + center.longitude + "]");
+            addSearchFilter("radius:" + radiusInMeters + "m");
             return this;
         }
 
@@ -1680,7 +1681,7 @@ public class GroundspeakAPI {
         }
 
         private void addSearchFilter(String filter) {
-            qString.append('+').append(filter);
+            qString.append('+').append(filter.replace("+", "%2B"));
         }
 
         public Query resultWithLiteFields() {

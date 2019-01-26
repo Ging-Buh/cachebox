@@ -131,7 +131,10 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.Size = CacheSizes.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
-        newValues.Pos = MapView.getNormalMap().center; // Locator.getLocation().toCordinate();
+        if (MapView.getNormalMap() != null)
+            newValues.Pos = MapView.getNormalMap().center; // Locator.getLocation().toCordinate();
+        else
+            newValues.Pos = GlobalCore.getSelectedCoord(); // new Coordinate();
         if (!newValues.Pos.isValid())
             newValues.Pos = GlobalCore.getSelectedCoord();
         // GC - Code bestimmen für freies CWxxxx = CustomWaypint

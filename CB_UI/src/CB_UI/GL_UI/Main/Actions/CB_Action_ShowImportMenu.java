@@ -107,86 +107,71 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu icm = new Menu("CacheListShowImportMenu");
 
-        icm.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MI_CHK_STATE_API:
-                        GL.that.postAsync(new Runnable() {
-                            @Override
-                            public void run() {
-                                // First check API-Key with visual Feedback
-                                Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
-                                GlobalCore.chkAPiLogInWithWaitDialog(new GlobalCore.iChkReadyHandler() {
+        icm.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MI_CHK_STATE_API:
+                    GL.that.postAsync(() -> {
+                        // First check API-Key with visual Feedback
+                        Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
+                        GlobalCore.chkAPiLogInWithWaitDialog(isAccessTokenInvalid -> {
+                            Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
+                            if (!isAccessTokenInvalid) {
+                                TimerTask tt = new TimerTask() {
                                     @Override
-                                    public void checkReady(boolean isAccessTokenInvalid) {
-                                        Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
-                                        if (!isAccessTokenInvalid) {
-                                            TimerTask tt = new TimerTask() {
-                                                @Override
-                                                public void run() {
-                                                    GL.that.postAsync(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            new CB_Action_chkState().Execute();
-                                                        }
-                                                    });
-                                                }
-                                            };
-                                            Timer t = new Timer();
-                                            t.schedule(tt, 100);
-                                        }
+                                    public void run() {
+                                        GL.that.postAsync(() -> new CB_Action_chkState().Execute());
                                     }
-                                });
+                                };
+                                Timer t = new Timer();
+                                t.schedule(tt, 100);
                             }
                         });
-                        return true;
-                    case MI_IMPORT:
-                        GL.that.postAsync(() -> new Import().show());
-                        return true;
-                    case MI_IMPORT_GS_API_POSITION:
-                        new SearchOverPosition().show();
-                        return true;
-                    case MI_IMPORT_GS_API_SEARCH:
-                        SearchOverNameOwnerGcCode.ShowInstanz();
-                        return true;
-                    case MI_IMPORT_GCV:
-                        new Import(MI_IMPORT_GCV).show();
-                        return true;
-                    case MI_IMPORT_GS_PQ:
-                        GL.that.postAsync(() -> new Import(MI_IMPORT_GS_PQ).show());
-                        return true;
-                    case MI_IMPORT_GPX:
-                        new Import(MI_IMPORT_GPX).show();
-                        return true;
-                    case MI_EXPORT_CBS:
-                        new Import_CBServer().show();
-                        return true;
-                    case MI_MAP_DOWNOAD:
-                        MapDownload.getInstance().show();
-                        return true;
-                    case MI_EXPORT_RUN:
-                        StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
-                            @Override
-                            public boolean onClick(int which, Object data) {
-                                if (which == 1) {
-                                    final String FileName = StringInputBox.editText.getText();
-                                    GL.that.RunOnGL(() -> ExportgetFolderStep(FileName));
-                                }
-                                return true;
+                    });
+                    return true;
+                case MI_IMPORT:
+                    GL.that.postAsync(() -> new Import().show());
+                    return true;
+                case MI_IMPORT_GS_API_POSITION:
+                    new SearchOverPosition().show();
+                    return true;
+                case MI_IMPORT_GS_API_SEARCH:
+                    SearchOverNameOwnerGcCode.ShowInstanz();
+                    return true;
+                case MI_IMPORT_GCV:
+                    new Import(MI_IMPORT_GCV).show();
+                    return true;
+                case MI_IMPORT_GS_PQ:
+                    GL.that.postAsync(() -> new Import(MI_IMPORT_GS_PQ).show());
+                    return true;
+                case MI_IMPORT_GPX:
+                    new Import(MI_IMPORT_GPX).show();
+                    return true;
+                case MI_EXPORT_CBS:
+                    new Import_CBServer().show();
+                    return true;
+                case MI_MAP_DOWNOAD:
+                    MapDownload.getInstance().show();
+                    return true;
+                case MI_EXPORT_RUN:
+                    StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
+                        @Override
+                        public boolean onClick(int which, Object data) {
+                            if (which == 1) {
+                                final String FileName = StringInputBox.editText.getText();
+                                GL.that.RunOnGL(() -> ExportgetFolderStep(FileName));
                             }
-                        });
-                        return true;
-                    case MI_GetFriends:
-                        CB_Action_GetFriends.getInstance().getFriends();
-                        return true;
-                    case MI_IMPORT_GSAK:
-                        new Import_GSAK().show();
-                        return true;
-                }
-                return true;
+                            return true;
+                        }
+                    });
+                    return true;
+                case MI_GetFriends:
+                    CB_Action_GetFriends.getInstance().getFriends();
+                    return true;
+                case MI_IMPORT_GSAK:
+                    new Import_GSAK().show();
+                    return true;
             }
+            return true;
         });
         icm.addItem(MI_CHK_STATE_API, "chkState"); // , Sprites.getSprite(IconName.dayGcLiveIcon.name())
         icm.addItem(MI_IMPORT, "moreImport");

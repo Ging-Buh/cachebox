@@ -373,15 +373,14 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                 ist = 1;
 
             Radius.setText(String.valueOf(ist));
-        } catch (NumberFormatException e) {
-
+        } catch (NumberFormatException ignored) {
         }
     }
 
     /**
      * 0=GPS, 1= Map, 2= Manuell
      */
-    public void setToggleBtnState(int value) {
+    private void setToggleBtnState(int value) {
         searcheState = value;
         setToggleBtnState();
     }
