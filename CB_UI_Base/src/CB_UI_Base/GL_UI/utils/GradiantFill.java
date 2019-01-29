@@ -130,25 +130,22 @@ public class GradiantFill {
     }
 
     private void disposeTexture() {
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                try {
-                    if (mPixmap != null)
-                        mPixmap.dispose();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    if (mTexture != null)
-                        mTexture.dispose();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                mPixmap = null;
-                mTexture = null;
-                mTextureRegion = null;
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            try {
+                if (mPixmap != null)
+                    mPixmap.dispose();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            try {
+                if (mTexture != null)
+                    mTexture.dispose();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mPixmap = null;
+            mTexture = null;
+            mTextureRegion = null;
         });
 
     }

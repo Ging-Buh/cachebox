@@ -256,13 +256,9 @@ public class Image extends CB_View_Base {
     }
 
     public void forceImageLoad() {
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                if (imageLoader != null)
-                    imageLoader.getDrawable(0);
-            }
+        GL.that.RunOnGL(() -> {
+            if (imageLoader != null)
+                imageLoader.getDrawable(0);
         });
 
     }

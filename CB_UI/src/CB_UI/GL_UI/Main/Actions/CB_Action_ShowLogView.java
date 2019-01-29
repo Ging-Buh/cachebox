@@ -24,8 +24,6 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
     private CB_Action_ShowLogView() {
         super("ShowLogs", MenuID.AID_SHOW_LOGS);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowLogView getInstance() {
@@ -36,12 +34,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     @Override
     public void Execute() {
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
-
-        if ((LogView.that == null) && (tabMainView != null) && (tab != null))
-            LogView.that = new LogView(tab.getContentRec(), "LogView");
-
-        if ((LogView.that != null) && (tab != null))
-            tab.ShowView(LogView.that);
+        TabMainView.leftTab.ShowView(LogView.that);
     }
 
     @Override

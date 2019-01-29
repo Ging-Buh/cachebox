@@ -33,7 +33,7 @@ public class Energy {
     // ##########################
     // Dont Render
     // ##########################
-    protected static ArrayList<IChanged> ChangedEventList = new ArrayList<IChanged>();
+    protected static ArrayList<IChanged> ChangedEventList = new ArrayList<>();
     /**
      * Explain of no Render jobs!
      */

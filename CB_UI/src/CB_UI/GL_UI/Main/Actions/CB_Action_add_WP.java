@@ -1,7 +1,5 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.WaypointView;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -35,13 +33,10 @@ public class CB_Action_add_WP extends CB_Action {
     public void Execute() {
         // wenn MapView sichtbar und im Modus Free, dann nehme Koordinaten vom Mittelpunkt der Karte
         // ansonsten mit den aktuellen Koordinaten!
-        if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
-            MapView.getNormalMap().createWaypointAtCenter();
+        if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
+            CB_Action_ShowMap.getInstance().normalMapView.createWaypointAtCenter();
             return;
         }
-
-        if ((TabMainView.waypointView == null))
-            TabMainView.waypointView = new WaypointView(TabMainView.leftTab.getContentRec(), "WaypointView");
-        WaypointView.that.addWP();
+        WaypointView.getInstance().addWP();
     }
 }

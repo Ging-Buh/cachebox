@@ -16,7 +16,6 @@
 
 package CB_UI;
 
-import CB_UI_Base.Global;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.*;
 
@@ -59,7 +58,7 @@ public interface CB_UI_Settings {
     SettingBool MapShowDT = new SettingBool("MapShowDT", Map, NEVER, true, Global, ACB);
     SettingBool MapShowTitles = new SettingBool("MapShowTitles", Map, NEVER, true, Global, ACB);
     SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", Map, NEVER, false, Global, ACB);
-    SettingBool MapShowCompass = new SettingBool("MapShowCompass", Map, NEVER, true, Global, ACB);
+    SettingBool MapShowInfo = new SettingBool("MapShowCompass", Map, NEVER, true, Global, ACB);
     SettingBool MapNorthOriented = new SettingBool("MapNorthOriented", Map, NEVER, true, Global, ACB);
     SettingBool ShowDirektLine = new SettingBool("ShowDirektLine", Map, NEVER, false, Global, ACB);
     SettingBool MapHideMyFinds = new SettingBool("MapHideMyFinds", Map, NEVER, false, Global, ACB);
@@ -97,7 +96,6 @@ public interface CB_UI_Settings {
     SettingLongString UserFilter = new SettingLongString("UserFilter", Misc, NEVER, "", Global, ACB);
     SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", Misc, EXPERT, true, Global, ACB);
     SettingBool StartWithAutoSelect = new SettingBool("StartWithAutoSelect", Misc, EXPERT, false, Global, ACB);
-    SettingBool DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", Misc, EXPERT, false, Global, ACB);
     SettingBool ImperialUnits = new SettingBool("ImperialUnits", Misc, NORMAL, false, Global, ACB);
     SettingBool switchViewApproach = new SettingBool("switchViewApproach", Misc, EXPERT, false, Global, ACB);
     SettingBool vibrateFeedback = new SettingBool("vibrateFeedback", Misc, EXPERT, true, Global, ACB);

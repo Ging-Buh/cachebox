@@ -20,7 +20,6 @@ import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -28,39 +27,35 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ImportAnimation extends Box {
 
-    AnimationBase mAnimation;
+    private AnimationBase mAnimation;
     private Drawable back;
 
-    public ImportAnimation(CB_RectF rec) {
+    ImportAnimation(CB_RectF rec) {
         super(rec, "");
         setAnimationType(AnimationType.Work);
     }
 
-    public void setAnimationType(final AnimationType Type) {
-        GL.that.RunOnGL(new IRunOnGL() {
+    void setAnimationType(final AnimationType Type) {
+        GL.that.RunOnGL(() -> {
+            if (ImportAnimation.this.isDisposed())
+                return;
+            float size = ImportAnimation.this.getHalfWidth() / 2;
+            float halfSize = ImportAnimation.this.getHalfWidth() / 4;
+            CB_RectF imageRec = new CB_RectF(ImportAnimation.this.getHalfWidth() - halfSize, ImportAnimation.this.getHalfHeight() - halfSize, size, size);
 
-            @Override
-            public void run() {
-                if (ImportAnimation.this.isDisposed())
-                    return;
-                float size = ImportAnimation.this.getHalfWidth() / 2;
-                float halfSize = ImportAnimation.this.getHalfWidth() / 4;
-                CB_RectF imageRec = new CB_RectF(ImportAnimation.this.getHalfWidth() - halfSize, ImportAnimation.this.getHalfHeight() - halfSize, size, size);
+            ImportAnimation.this.removeChilds();
 
-                ImportAnimation.this.removeChilds();
+            switch (Type) {
+                case Work:
+                    mAnimation = WorkAnimation.GetINSTANCE(imageRec);
+                    break;
 
-                switch (Type) {
-                    case Work:
-                        mAnimation = WorkAnimation.GetINSTANCE(imageRec);
-                        break;
-
-                    case Download:
-                        mAnimation = DownloadAnimation.GetINSTANCE(imageRec);
-                        break;
-                }
-
-                ImportAnimation.this.addChild(mAnimation);
+                case Download:
+                    mAnimation = DownloadAnimation.GetINSTANCE(imageRec);
+                    break;
             }
+
+            ImportAnimation.this.addChild(mAnimation);
         });
 
     }

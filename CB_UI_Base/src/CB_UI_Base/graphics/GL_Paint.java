@@ -16,7 +16,6 @@
 package CB_UI_Base.graphics;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
@@ -134,23 +133,9 @@ public class GL_Paint implements ext_Paint {
         return (int) layout.width;
     }
 
-    public void setColor(Color color) {
-        this.color = new HSV_Color(color);
-    }
-
-    @Override
-    public void setColor(int color) {
-        this.color = new HSV_Color(color);
-    }
-
     @Override
     public void setDashPathEffect(float[] strokeDasharray) {
         this.strokeDasharray = strokeDasharray;
-    }
-
-    @Override
-    public void setStyle(GL_Style style) {
-        this.style = style;
     }
 
     public void setTextAlign(GL_Align align) {
@@ -165,13 +150,7 @@ public class GL_Paint implements ext_Paint {
 
     private void createFont() {
         if (this.textSize > 0) {
-            GL.that.RunOnGL(new IRunOnGL() {
-
-                @Override
-                public void run() {
-                    GL_Paint.this.font = FontCache.get(GL_Paint.this.getGLFontFamily(), GL_Paint.this.getGLFontStyle(), GL_Paint.this.getTextSize());
-                }
-            });
+            GL.that.RunOnGL(() -> GL_Paint.this.font = FontCache.get(GL_Paint.this.getGLFontFamily(), GL_Paint.this.getGLFontStyle(), GL_Paint.this.getTextSize()));
 
         } else {
             this.font = null;
@@ -370,6 +349,11 @@ public class GL_Paint implements ext_Paint {
     }
 
     @Override
+    public void setStyle(GL_Style style) {
+        this.style = style;
+    }
+
+    @Override
     public void setStyle(Style style) {
         switch (style) {
             case FILL:
@@ -442,6 +426,15 @@ public class GL_Paint implements ext_Paint {
     public int getColor() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    public void setColor(Color color) {
+        this.color = new HSV_Color(color);
+    }
+
+    @Override
+    public void setColor(int color) {
+        this.color = new HSV_Color(color);
     }
 
     @Override

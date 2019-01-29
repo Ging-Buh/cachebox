@@ -6,15 +6,12 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
@@ -23,19 +20,14 @@ import CB_Utils.Events.ProgresssChangedEventList;
 public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
     public static final boolean RELEASED = false;
     private static Boolean importCancel = false;
-    private Button bOK, bCancel;
+    private Button bOK;
     private float innerHeight;
-    private Label lblTitle, lblProgressMsg;
+    private Label lblProgressMsg;
     private ProgressBar pgBar;
     private Boolean importStarted = false;
 
     private ScrollBox scrollBox;
-    IAnimatedHeightChangedListener mAnimationListener = new IAnimatedHeightChangedListener() {
-        @Override
-        public void animatedHeightChanged(float Height) {
-            Layout();
-        }
-    };
+    IAnimatedHeightChangedListener mAnimationListener = Height -> Layout();
 
     public SyncActivity() {
         super(ActivityRec(), "importActivity");
@@ -69,43 +61,33 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
 
     private void createOkCancelBtn() {
         bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        Button bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.Get("import"));
         bCancel.setText(Translation.Get("cancel"));
 
         this.addChild(bOK);
-        bOK.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // ImportNow();
-                return true;
-            }
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            // ImportNow();
+            return true;
         });
 
         this.addChild(bCancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (importCancel)
-                    return true;
-
-                if (importStarted) {
-                    GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE) {
-                                // cancelImport();
-                            }
-                            return true;
-                        }
-                    });
-                } else
-                    finish();
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (importCancel)
                 return true;
-            }
+
+            if (importStarted) {
+                GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                        // cancelImport();
+                    }
+                    return true;
+                });
+            } else
+                finish();
+            return true;
         });
 
     }
@@ -115,7 +97,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-        lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
+        Label lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
         float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
         this.addChild(lblTitle);
@@ -150,15 +132,11 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
     @Override
     public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                pgBar.setProgress(Progress);
-                lblProgressMsg.setText(ProgressMessage);
-                if (!Message.equals(""))
-                    pgBar.setText(Message);
-            }
+        GL.that.RunOnGL(() -> {
+            pgBar.setProgress(Progress);
+            lblProgressMsg.setText(ProgressMessage);
+            if (!Message.equals(""))
+                pgBar.setText(Message);
         });
 
     }

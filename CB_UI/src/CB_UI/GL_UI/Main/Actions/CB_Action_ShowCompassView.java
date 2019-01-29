@@ -74,8 +74,6 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 
     private CB_Action_ShowCompassView() {
         super("Compass", MenuID.AID_SHOW_COMPASS);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowCompassView getInstance() {
@@ -85,7 +83,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        tab.ShowView(CompassView.getInstance());
+        TabMainView.leftTab.ShowView(CompassView.getInstance());
     }
 
     @Override

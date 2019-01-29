@@ -16,8 +16,6 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView {
 
     private CB_Action_ShowFieldNotesView() {
         super("Fieldnotes", MenuID.AID_SHOW_FIELDNOTES);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowFieldNotesView getInstance() {
@@ -27,11 +25,7 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.fieldNotesView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.fieldNotesView = new FieldNotesView(tab.getContentRec(), "FieldNotesView");
-
-        if ((TabMainView.fieldNotesView != null) && (tab != null))
-            tab.ShowView(TabMainView.fieldNotesView);
+        TabMainView.leftTab.ShowView(FieldNotesView.getInstance());
     }
 
     @Override
@@ -46,7 +40,7 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.fieldNotesView;
+        return FieldNotesView.getInstance();
     }
 
     @Override
@@ -56,6 +50,6 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        return FieldNotesView.that.getContextMenu();
+        return FieldNotesView.getInstance().getContextMenu();
     }
 }

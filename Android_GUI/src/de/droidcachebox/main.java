@@ -39,6 +39,7 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog.SearchMode;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowCacheList;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MainViewInit;
+import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.*;
@@ -49,7 +50,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.ViewID;
@@ -65,7 +65,6 @@ import CB_Utils.Plattform;
 import CB_Utils.Settings.*;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.annotation.SuppressLint;
@@ -360,12 +359,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         Config.AcceptChanges();
 
-        Config.RunOverLockScreen.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                setLockScreenProperty();
-            }
-        });
+        Config.RunOverLockScreen.addSettingChangedListener(() -> setLockScreenProperty());
 
         // Initial Android TexturePacker
         new Android_Packer();
@@ -595,48 +589,43 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Intent Result Take Photo
         if (requestCode == Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                GL.that.RunIfInitial(new IRunOnGL() {
-
-                    @Override
-                    public void run() {
-                        Log.info(sKlasse, "Photo taken");
-                        try {
-                            // move the photo from temp to UserImageFolder
-                            String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
-                            String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
-                            if (!sourceName.equals(destinationName)) {
-                                File source = FileFactory.createFile(sourceName);
-                                File destination = FileFactory.createFile(destinationName);
-                                if (!source.renameTo(destination)) {
-                                    Log.err(sKlasse, "move from " + sourceName + " to " + destinationName + " failed");
-                                }
+                GL.that.RunIfInitial(() -> {
+                    Log.info(sKlasse, "Photo taken");
+                    try {
+                        // move the photo from temp to UserImageFolder
+                        String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
+                        String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
+                        if (!sourceName.equals(destinationName)) {
+                            File source = FileFactory.createFile(sourceName);
+                            File destination = FileFactory.createFile(destinationName);
+                            if (!source.renameTo(destination)) {
+                                Log.err(sKlasse, "move from " + sourceName + " to " + destinationName + " failed");
                             }
-
-                            // for the photo to show within spoilers
-                            if (GlobalCore.isSetSelectedCache()) {
-                                GlobalCore.getSelectedCache().loadSpoilerRessources();
-                                if (TabMainView.spoilerView != null)
-                                    TabMainView.spoilerView.ForceReload();
-                            }
-
-                            TabMainView.that.reloadSprites(false);
-
-                            // track annotation
-                            String TrackFolder = Config.TrackFolder.getValue();
-                            String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                            CB_Locator.Location lastLocation = CB_Locator.Locator.getLastSavedFineLocation();
-                            if (lastLocation == null) {
-                                lastLocation = CB_Locator.Locator.getLocation(ProviderType.any);
-                                if (lastLocation == null) {
-                                    Log.info(sKlasse, "No (GPS)-Location for Trackrecording.");
-                                    return;
-                                }
-                            }
-                            // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-                            TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
-                        } catch (Exception e) {
-                            Log.err(sKlasse, e.getLocalizedMessage());
                         }
+
+                        // for the photo to show within spoilers
+                        if (GlobalCore.isSetSelectedCache()) {
+                            GlobalCore.getSelectedCache().loadSpoilerRessources();
+                            SpoilerView.getInstance().ForceReload();
+                        }
+
+                        TabMainView.that.reloadSprites(false);
+
+                        // track annotation
+                        String TrackFolder = Config.TrackFolder.getValue();
+                        String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+                        CB_Locator.Location lastLocation = Locator.getLastSavedFineLocation();
+                        if (lastLocation == null) {
+                            lastLocation = Locator.getLocation(ProviderType.any);
+                            if (lastLocation == null) {
+                                Log.info(sKlasse, "No (GPS)-Location for Trackrecording.");
+                                return;
+                            }
+                        }
+                        // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
+                        TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
+                    } catch (Exception e) {
+                        Log.err(sKlasse, e.getLocalizedMessage());
                     }
                 });
 
@@ -650,46 +639,42 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Intent Result Record Video
         if (requestCode == Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                GL.that.RunIfInitial(new IRunOnGL() {
-
-                    @Override
-                    public void run() {
-                        Log.info(sKlasse, "Video recorded.");
-                        String ext = "";
-                        try {
-                            // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
-                            String recordedVideoFilePath = "";
-                            // first get the tempfile pathAndName (recordedVideoFilePath)
-                            String[] proj = {MediaStore.Images.Media.DATA}; // want to get Path to the file on disk.
-                            Cursor cursor = getContentResolver().query(uri, proj, null, null, null); // result set
-                            if (cursor != null && cursor.getCount() != 0) {
-                                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA); // my meaning: if only one element index is 0
-                                cursor.moveToFirst(); // first row ( here we should have only one row )
-                                recordedVideoFilePath = cursor.getString(columnIndex);
-                            }
-                            if (cursor != null) {
-                                cursor.close();
-                            }
-
-                            if (recordedVideoFilePath.length() > 0) {
-                                ext = FileIO.GetFileExtension(recordedVideoFilePath);
-
-                                File source = FileFactory.createFile(recordedVideoFilePath);
-                                String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
-                                File destination = FileFactory.createFile(destinationName);
-                                if (!source.renameTo(destination)) {
-                                    Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
-                                } else {
-                                    Log.info(sKlasse, "Video saved at " + destinationName);
-                                    // track annotation
-                                    String TrackFolder = Config.TrackFolder.getValue();
-                                    String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                                    TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.err(sKlasse, e.getLocalizedMessage());
+                GL.that.RunIfInitial(() -> {
+                    Log.info(sKlasse, "Video recorded.");
+                    String ext = "";
+                    try {
+                        // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
+                        String recordedVideoFilePath = "";
+                        // first get the tempfile pathAndName (recordedVideoFilePath)
+                        String[] proj = {MediaStore.Images.Media.DATA}; // want to get Path to the file on disk.
+                        Cursor cursor = getContentResolver().query(uri, proj, null, null, null); // result set
+                        if (cursor != null && cursor.getCount() != 0) {
+                            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA); // my meaning: if only one element index is 0
+                            cursor.moveToFirst(); // first row ( here we should have only one row )
+                            recordedVideoFilePath = cursor.getString(columnIndex);
                         }
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+
+                        if (recordedVideoFilePath.length() > 0) {
+                            ext = FileIO.GetFileExtension(recordedVideoFilePath);
+
+                            File source = FileFactory.createFile(recordedVideoFilePath);
+                            String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
+                            File destination = FileFactory.createFile(destinationName);
+                            if (!source.renameTo(destination)) {
+                                Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
+                            } else {
+                                Log.info(sKlasse, "Video saved at " + destinationName);
+                                // track annotation
+                                String TrackFolder = Config.TrackFolder.getValue();
+                                String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+                                TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.err(sKlasse, e.getLocalizedMessage());
                     }
                 });
             } else {
@@ -701,12 +686,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         // Intent Result get API key
         if (requestCode == Global.REQUEST_CODE_GET_API_KEY) {
-            GL.that.RunIfInitial(new IRunOnGL() {
-                @Override
-                public void run() {
-                    SettingsActivity.resortList();
-                }
-            });
+            GL.that.RunIfInitial(() -> SettingsActivity.resortList());
             Config.AcceptChanges();
         }
 
@@ -773,26 +753,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             waitForGL.set(true);
 
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() {
-                    pWaitD.dismiss();
-                    pWaitD = null;
-                    waitForGL.set(false);
-                }
+            GL.that.RunOnGL(() -> {
+                pWaitD.dismiss();
+                pWaitD = null;
+                waitForGL.set(false);
             });
 
-            Thread chkThread = new Thread(new Runnable() {
+            Thread chkThread = new Thread(() -> {
+                while (waitForGL.get()) {
+                    GL.that.renderOnce(true);
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
 
-                @Override
-                public void run() {
-                    while (waitForGL.get()) {
-                        GL.that.renderOnce(true);
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-
-                        }
                     }
                 }
             });
@@ -840,22 +813,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             this.mWakeLock.acquire();
         }
 
-        Config.SuppressPowerSaving.addSettingChangedListener(new IChanged() {
+        Config.SuppressPowerSaving.addSettingChangedListener(() -> {
+            if (Config.SuppressPowerSaving.getValue()) {
+                Log.debug(sKlasse, "main => onResume SuppressPowerSaving");
+                final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
+                main.this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
+                main.this.mWakeLock.acquire();
 
-            @Override
-            public void handleChange() {
-                if (Config.SuppressPowerSaving.getValue()) {
-                    Log.debug(sKlasse, "main => onResume SuppressPowerSaving");
-                    final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
-                    main.this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
-                    main.this.mWakeLock.acquire();
-
-                } else {
-                    final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    main.this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Cachebox non Powersave");
-                    main.this.mWakeLock.acquire();
-                }
+            } else {
+                final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                main.this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Cachebox non Powersave");
+                main.this.mWakeLock.acquire();
             }
         });
 
@@ -1165,15 +1134,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
              */
 
             int updateTime = Config.gpsUpdateTime.getValue();
-            Config.gpsUpdateTime.addSettingChangedListener(new IChanged() {
-                @Override
-                public void handleChange() {
-                    int updateTime = Config.gpsUpdateTime.getValue();
-                    try {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, main.this);
-                    } catch (SecurityException sex) {
-                        Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
-                    }
+            Config.gpsUpdateTime.addSettingChangedListener(() -> {
+                int updateTime1 = Config.gpsUpdateTime.getValue();
+                try {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime1, 1, main.this);
+                } catch (SecurityException sex) {
+                    Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
                 }
             });
 
@@ -2265,12 +2231,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Use Imperial units?
         try {
             Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-            Config.ImperialUnits.addSettingChangedListener(new IChanged() {
-                @Override
-                public void handleChange() {
-                    Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-                }
-            });
+            Config.ImperialUnits.addSettingChangedListener(() -> Locator.setUseImperialUnits(Config.ImperialUnits.getValue()));
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.UseImperialUnits");
         }
@@ -2278,13 +2239,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // GPS update time?
         try {
             Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-            Config.gpsUpdateTime.addSettingChangedListener(new IChanged() {
-
-                @Override
-                public void handleChange() {
-                    Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-                }
-            });
+            Config.gpsUpdateTime.addSettingChangedListener(() -> Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue()));
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.MinUpdateTime");
         }
@@ -2292,12 +2247,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Use magnetic Compass?
         try {
             Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-            Config.HardwareCompass.addSettingChangedListener(new IChanged() {
-                @Override
-                public void handleChange() {
-                    Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-                }
-            });
+            Config.HardwareCompass.addSettingChangedListener(() -> Locator.setUseHardwareCompass(Config.HardwareCompass.getValue()));
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.UseHardwareCompass");
         }
@@ -2305,12 +2255,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Magnetic compass level
         try {
             Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-            Config.HardwareCompassLevel.addSettingChangedListener(new IChanged() {
-                @Override
-                public void handleChange() {
-                    Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-                }
-            });
+            Config.HardwareCompassLevel.addSettingChangedListener(() -> Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue()));
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.HardwareCompassLevel");
         }

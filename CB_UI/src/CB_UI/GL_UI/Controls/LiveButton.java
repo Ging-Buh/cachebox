@@ -5,7 +5,7 @@ import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.LiveMapQue.QueStateChanged;
 import CB_Locator.Coordinate;
 import CB_UI.Config;
-import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -73,10 +73,8 @@ public class LiveButton extends ImageButton implements QueStateChanged {
     public boolean click(int x, int y, int pointer, int button) {
         setState(!state);
         if (state) {
-            if (MapView.getNormalMap() != null) {
-                Coordinate center = MapView.getNormalMap().center;
-                LiveMapQue.quePosition(center);
-            }
+            Coordinate center = CB_Action_ShowMap.getInstance().normalMapView.center;
+            LiveMapQue.quePosition(center);
         }
         return true;
     }

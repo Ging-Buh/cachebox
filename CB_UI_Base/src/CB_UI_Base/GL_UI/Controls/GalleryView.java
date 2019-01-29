@@ -128,24 +128,20 @@ public class GalleryView extends H_ListView {
                 final float div1 = Math.abs(mPos - pos1);
                 final float div2 = Math.abs(mPos - pos2);
                 final int idx = i;
-                GL.that.RunOnGL(new IRunOnGL() {
+                GL.that.RunOnGL(() -> {
 
-                    @Override
-                    public void run() {
-
-                        if (div1 <= div2) {
-                            //Snap to 1
-                            mBottomAnimation = false;
-                            GalleryView.this.scrollTo(pos1);
-                            Log.debug(log, "SnapIn first " + pos1);
-                            snapIn(idx);
-                        } else {
-                            //Snap to 2
-                            mBottomAnimation = true;
-                            GalleryView.this.scrollTo(pos2);
-                            Log.debug(log, "SnapIn second " + pos2);
-                            snapIn(idx + 1);
-                        }
+                    if (div1 <= div2) {
+                        //Snap to 1
+                        mBottomAnimation = false;
+                        GalleryView.this.scrollTo(pos1);
+                        Log.debug(log, "SnapIn first " + pos1);
+                        snapIn(idx);
+                    } else {
+                        //Snap to 2
+                        mBottomAnimation = true;
+                        GalleryView.this.scrollTo(pos2);
+                        Log.debug(log, "SnapIn second " + pos2);
+                        snapIn(idx + 1);
                     }
                 });
                 break;

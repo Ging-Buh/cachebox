@@ -23,15 +23,16 @@ import CB_Locator.Locator;
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
-import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
+import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.utils.KineticPan;
 import CB_UI_Base.GL_UI.utils.KineticZoom;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
@@ -53,7 +54,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Timer;
 
 /**
  * @author ging-buh
@@ -61,12 +61,11 @@ import java.util.Timer;
  * @author arbor95
  */
 public abstract class MapViewBase extends CB_View_Base implements PositionChangedEvent, invalidateTextureEvent {
-    public static final boolean debug = false;
     private static final String log = "MapViewBase";
     public static int INITIAL_SETTINGS = 1;
     public static int INITIAL_THEME = 2;
+    public static int INITIAL_WP_LIST = 4;
     public static int INITIAL_ALL = 7;
-    public static int INITIAL_WITH_OUT_ZOOM = 8;
     public static int INITIAL_SETTINGS_WITH_OUT_ZOOM = 9;
 
     // ######################################
@@ -104,73 +103,30 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected float iconFactor = 1.5f;
     protected boolean showMapCenterCross;
     protected PolygonDrawable CrossLines = null;
-    protected IChanged themeChangedEventHandler = new IChanged() {
-
-        @Override
-        public void handleChange() {
-            MapViewBase.this.invalidateTexture();
-        }
-    };
-    protected AccuracyDrawable accuracyDrawable = null;
+    protected IChanged themeChangedEventHandler = () -> MapViewBase.this.invalidateTexture();
     protected String mapsForgeThemePath;
     protected float scale;
     protected int outScreenDraw = 0;
     protected float lastDynamicZoom = -1;
     protected InputState inputState = InputState.Idle;
-    // protected LoadedSortedTiles tilesToDraw = new LoadedSortedTiles((short) 10);
-    long posx = 8745;
-    long posy = 5685;
-    long pos20y = 363904;
-    long size20 = 256;
-    long startTime;
-    Timer myTimer;
-    boolean useNewInput = true;
-    boolean NightMode = false;
-    int debugcount = 0;
     String str = "";
+    private AccuracyDrawable accuracyDrawable = null;
+    private boolean NightMode = false;
     private MapState mapState = MapState.FREE;
     // protected boolean alignToCompass = false;
     private float mapHeading = 0;
     private KineticPan kineticPan = null;
-
-    public MapViewBase(String Name) {
-        super(Name);
-    }
-
-    public MapViewBase(float X, float Y, float Width, float Height, String Name) {
-        super(X, Y, Width, Height, Name);
-    }
-
-    public MapViewBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
-        super(X, Y, Width, Height, Parent, Name);
-    }
 
     public MapViewBase(CB_RectF rec, String Name) {
         super(rec, Name);
         invalidateTextureEventList.Add(this);
     }
 
-    public MapViewBase(CB_RectF rec, GL_View_Base Parent, String Name) {
-        super(rec, Parent, Name);
-    }
-
-    public MapViewBase(SizeF size, String Name) {
-        super(size, Name);
-    }
-
-    public boolean GetNightMode() {
-        return this.NightMode;
-    }
-
-    public void SetNightMode(boolean NightMode) {
+    protected void SetNightMode(boolean NightMode) {
         this.NightMode = NightMode;
     }
 
-    public boolean GetNorthOriented() {
-        return this.NorthOriented;
-    }
-
-    public void SetNorthOriented(boolean NorthOriented) {
+    protected void SetNorthOriented(boolean NorthOriented) {
         this.NorthOriented = NorthOriented;
     }
 
@@ -185,20 +141,25 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             drawingHeight = mapIntHeight;
         }
 
-        setVisible();
+        if (camera == null) {
+            // onResized(this);
+            Log.debug(log, "why is the camera zero");
+        } else {
 
-        int zoom = MapTileLoader.MAX_MAP_ZOOM;
-        float tmpZoom = camera.zoom;
-        float faktor = 1.5f;
-        faktor = faktor / iconFactor;
-        while (tmpZoom > faktor) {
-            tmpZoom /= 2;
-            zoom--;
+            setVisible();
+
+            int zoom = MapTileLoader.MAX_MAP_ZOOM;
+            float tmpZoom = camera.zoom; //
+            float faktor = 1.5f;
+            faktor = faktor / iconFactor; //
+            while (tmpZoom > faktor) {
+                tmpZoom /= 2;
+                zoom--;
+            }
+            aktZoom = zoom;
+
+            calcPixelsPerMeter(); // uses camera
         }
-        aktZoom = zoom;
-
-        calcPixelsPerMeter();
-
     }
 
     @Override
@@ -221,14 +182,15 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if (rec.getWidth() <= 0 || rec.getHeight() <= 0)
             return;
 
-        // wenn sich die Gr��e nicht ge�ndert hat, brauchen wir nicht zu machen!
+        // do not need to do anything, if nothing changed
         if (rec.getWidth() == this.mapIntWidth && rec.getHeight() == this.mapIntHeight) {
-            // Ausser wenn Camera == null!
+            // except Camera == null!
             if (camera != null)
                 return;
         }
+
         this.mapIntWidth = (int) rec.getWidth();
-        this.mapIntHeight = (int) rec.getHeight(); // Gdx.graphics.getHeight();
+        this.mapIntHeight = (int) rec.getHeight();
         this.drawingWidth = (int) rec.getWidth();
         this.drawingHeight = (int) rec.getHeight();
 
@@ -239,8 +201,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         camera.zoom = MapTileLoader.getMapTilePosFactor(aktZoom);
 
         camera.position.set(0, 0, 0);
-
-        // Log.debug(log, "MapView Size Changed MaxY=" + this.getMaxY());
 
         requestLayout();
 
@@ -286,7 +246,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         mapTileLoader.clearLoadedTiles();
     }
 
-    public void removeAdditionalLayer(Layer layer) {
+    public void removeAdditionalLayer() {
         Layer currentLayer = mapTileLoader.getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         LocatorSettings.CurrentMapLayer.setValue(currentLayer.getNames());
@@ -357,10 +317,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if ((kineticPan != null) && (kineticPan.getStarted())) {
             long faktor = MapTileLoader.getMapTilePosFactor(aktZoom);
             Point pan = kineticPan.getAktPan();
-            // debugString = pan.x + " - " + pan.y;
-            // camera.position.add(pan.x * faktor, pan.y * faktor, 0);
-            // screenCenterW.x = camera.position.x;
-            // screenCenterW.y = camera.position.y;
             screenCenterT.x += pan.x * faktor;
             screenCenterT.y += pan.y * faktor;
             calcCenter();
@@ -379,27 +335,17 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             screenCenterW.x = screenCenterT.x;
             screenCenterW.y = screenCenterT.y;
         }
+
         loadTiles();
-        /*
-         * if (alignToCompass) { camera.up.x = 0; camera.up.y = 1; camera.up.z = 0; camera.rotate(-mapHeading, 0, 0, 1); } else {
-         * camera.up.x = 0; camera.up.y = 1; camera.up.z = 0; }
-         */
         camera.update();
-
-        // synchronized (screenCenterW)
-        // {
         renderMapTiles(batch);
-        renderSyncronOverlay(batch);
-        // }
-        // renderDebugInfo(batch);
-
-        renderNonSyncronOverlay(batch);
-
+        renderSynchronOverlay(batch);
+        renderNonSynchronOverlay(batch);
     }
 
-    protected abstract void renderSyncronOverlay(Batch batch);
+    protected abstract void renderSynchronOverlay(Batch batch);
 
-    protected abstract void renderNonSyncronOverlay(Batch batch);
+    protected abstract void renderNonSynchronOverlay(Batch batch);
 
     private void renderMapTiles(Batch batch) {
         batch.disableBlending();
@@ -1328,13 +1274,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         mapTileLoader.clearLoadedTiles();
         mapScale.ZoomChanged();
 
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                if (CrossLines != null)
-                    CrossLines.dispose();
-                CrossLines = null;
-            }
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            if (CrossLines != null)
+                CrossLines.dispose();
+            CrossLines = null;
         });
 
     }

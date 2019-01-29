@@ -16,10 +16,10 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class CreditsView extends CB_View_Base {
+    private static CreditsView that;
     private final float ref;
     private final Image logo;
     private final ScrollBox scrollBox;
@@ -39,11 +40,11 @@ public class CreditsView extends CB_View_Base {
     private float lineHeight;
     private float margin;
 
-    public CreditsView(CB_RectF rec, String Name) {
-        super(rec, Name);
+    private CreditsView() {
+        super(TabMainView.leftTab.getContentRec(), "CreditsView");
+        CB_RectF rec = this;
         this.setBackground(Sprites.AboutBack);
-
-        ref = UI_Size_Base.that.getWindowHeight() / 13;
+        ref = UI_Size_Base.that.getWindowHeight() / 13f;
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 
         logo = new Image(CB_LogoRec, "Logo", false);
@@ -58,20 +59,19 @@ public class CreditsView extends CB_View_Base {
         this.addChild(scrollBox);
 
         layout = new Linearlayout(rec.getWidth(), "LinearLayout");
-        layout.setLayoutChangedListener(new LayoutChanged() {
-
-            @Override
-            public void LayoutIsChanged(Linearlayout linearLayout, float newHeight) {
-                scrollBox.setVirtualHeight(newHeight);
-            }
-        });
+        layout.setLayoutChangedListener((linearLayout, newHeight) -> scrollBox.setVirtualHeight(newHeight));
 
         scrollBox.addChild(layout);
 
     }
 
+    public static CreditsView getInstance() {
+        if (that == null) that = new CreditsView();
+        return that;
+    }
+
     private ArrayList<Person> getPersons() {
-        ArrayList<Person> list = new ArrayList<CreditsView.Person>();
+        ArrayList<Person> list = new ArrayList<>();
 
         list.add(new Person("hannes!", Job.idea, "2009-2011"));
         list.add(new Person("Stonefinger", Job.designer));
@@ -207,24 +207,22 @@ public class CreditsView extends CB_View_Base {
     public class Person implements Comparable<Person> {
 
         public String name;
-        public String nick;
-        public Job job;
-        public String email;
         public String desc = null;
         public Sprite image = null;
+        Job job;
 
-        public Person(String Name, Job job) {
+        Person(String Name, Job job) {
             this.job = job;
             this.name = Name;
         }
 
-        public Person(String Name, Job job, String desc) {
+        Person(String Name, Job job, String desc) {
             this.job = job;
             this.name = Name;
             this.desc = desc;
         }
 
-        public Person(String Name, Job job, Sprite image) {
+        Person(String Name, Job job, Sprite image) {
             this.job = job;
             this.name = Name;
             this.image = image;
@@ -234,7 +232,6 @@ public class CreditsView extends CB_View_Base {
         public int compareTo(Person o) {
             if (this.job == Job.developer || o.job == Job.developer)
                 return 0;
-
             if (this.name == null)
                 return -1;
             if (o.name == null)

@@ -16,8 +16,6 @@ public class CB_Action_ShowWaypointView extends CB_Action_ShowView {
 
     private CB_Action_ShowWaypointView() {
         super("Waypoints", MenuID.AID_SHOW_WAYPOINTS);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowWaypointView getInstance() {
@@ -27,11 +25,7 @@ public class CB_Action_ShowWaypointView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.waypointView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.waypointView = new WaypointView(tab.getContentRec(), "WaypointView");
-
-        if ((TabMainView.waypointView != null) && (tab != null))
-            tab.ShowView(TabMainView.waypointView);
+        TabMainView.leftTab.ShowView(WaypointView.getInstance());
     }
 
     @Override
@@ -46,7 +40,7 @@ public class CB_Action_ShowWaypointView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.waypointView;
+        return WaypointView.getInstance();
     }
 
     @Override
@@ -56,9 +50,6 @@ public class CB_Action_ShowWaypointView extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-
-        if (WaypointView.that != null)
-            return WaypointView.that.getContextMenu();
-        return null;
+        return WaypointView.getInstance().getContextMenu();
     }
 }

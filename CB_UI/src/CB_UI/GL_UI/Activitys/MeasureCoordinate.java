@@ -32,8 +32,6 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.PointD;
@@ -49,14 +47,11 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     private final int projectionZoom = 18;// 18;
     // Erdradius / anzahl Kacheln = Meter pro Kachel
     private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
+    private final MeasuredCoordList mMeasureList = new MeasuredCoordList();
     private Button bOK = null;
-    private Button bCancel = null;
-    private MeasuredCoordList mMeasureList = new MeasuredCoordList();
     private Label lblMeasureCount;
     private Label lblMeasureCoord;
-    private Label lblDescMeasureCount;
     private Label lblDescMeasureCoord;
-    ;
     private int MeasureCount = 0;
     private Sprite drawing = null;
     private Pixmap drawingPixmap = null;
@@ -88,7 +83,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         bOK = new Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());
-        bCancel = new Button(btnRec, "CancelButton");
+        Button bCancel = new Button(btnRec, "CancelButton");
 
         bOK.setText(Translation.Get("ok"));
         bCancel.setText(Translation.Get("cancel"));
@@ -96,35 +91,22 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         this.addChild(bOK);
         this.addChild(bCancel);
 
-        bOK.setOnClickListener(new OnClickListener() {
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mCoordReturnListener != null) {
+                synchronized (mMeasureList) {
+                    GL.that.RunOnGL(() -> mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord()));
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mCoordReturnListener != null) {
-                    synchronized (mMeasureList) {
-                        GL.that.RunOnGL(new IRunOnGL() {
-                            @Override
-                            public void run() {
-                                mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord());
-                            }
-                        });
-
-                    }
                 }
-                finish();
-                return true;
             }
+            finish();
+            return true;
         });
 
-        bCancel.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mCoordReturnListener != null)
-                    mCoordReturnListener.returnCoord(null);
-                finish();
-                return true;
-            }
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mCoordReturnListener != null)
+                mCoordReturnListener.returnCoord(null);
+            finish();
+            return true;
         });
 
     }
@@ -135,7 +117,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
         CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
 
-        lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.Get("MeasureCount"));
+        Label lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.Get("MeasureCount"));
 
         lblMeasureCount = new Label(rec2);
 
@@ -259,8 +241,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
                     factor /= 2;
 
-                    int x = (int) centerX;
-                    int y = (int) centerY;
+                    int x = centerX;
+                    int y = centerY;
 
                     // Track zeichnen
 
@@ -316,20 +298,13 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     public void PositionChanged() {
         synchronized (mMeasureList) {
 
-            if (mMeasureList == null) {
-                GL.that.Toast("MeasureList = null");
-                return;
-            }
-
-            // Coordinate coord = new Coordinate(locator.getLocation());
-
             if (MeasureCount == 0)
                 lblMeasureCoord.setText("");
 
             MeasureCount++;
             mMeasureList.add(new MeasuredCoord(Locator.getLocation(ProviderType.GPS).toCordinate()));
 
-            lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
+            lblMeasureCount.setText(MeasureCount + "/" + mMeasureList.size());
 
             // nach jeder 10. Messung die Liste Aufräumen
             if (mMeasureList.size() % 10 == 0) {
@@ -381,7 +356,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     }
 
     public interface ICoordReturnListener {
-        public void returnCoord(Coordinate coord);
+        void returnCoord(Coordinate coord);
     }
 
 }

@@ -79,27 +79,20 @@ public class WaitDialog extends ButtonDialog {
     }
 
     public void setAnimation(final AnimationBase Animation) {
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                WaitDialog.this.removeChild(WaitDialog.this.animation);
-                CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
-                WaitDialog.this.animation = Animation.INSTANCE(imageRec);
-                WaitDialog.this.addChild(WaitDialog.this.animation);
-            }
+        GL.that.RunOnGL(() -> {
+            WaitDialog.this.removeChild(WaitDialog.this.animation);
+            CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+            WaitDialog.this.animation = Animation.INSTANCE(imageRec);
+            WaitDialog.this.addChild(WaitDialog.this.animation);
         });
 
     }
 
     public void dismis() {
         Log.debug(log, "WaitDialog.Dismis");
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                GL.that.closeDialog(WaitDialog.this);
-                GL.that.renderOnce();
-            }
+        GL.that.RunOnGL(() -> {
+            GL.that.closeDialog(WaitDialog.this);
+            GL.that.renderOnce();
         });
     }
 

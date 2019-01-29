@@ -78,8 +78,7 @@ public class CB_Action_QuickFieldNote extends CB_Action {
                 default:
                     return false;
             }
-            if (FieldNotesView.that != null)
-                FieldNotesView.that.notifyDataSetChanged();
+            FieldNotesView.getInstance().notifyDataSetChanged();
             // damit der Status geändert wird
             // damit die Icons in der Map aktualisiert werden
             CacheListChangedEventList.Call();

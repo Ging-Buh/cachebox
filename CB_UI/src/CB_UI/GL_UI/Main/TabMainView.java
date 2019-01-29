@@ -30,14 +30,13 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.*;
-import CB_UI.GL_UI.Views.*;
-import CB_UI.GL_UI.Views.TestViews.TestView;
+import CB_UI.GL_UI.Views.CompassView;
+import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -64,6 +63,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
 
 /**
@@ -83,19 +83,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CB_Action_ShowActivity actionRecordVideo;
     public static CB_Action_ShowActivity actionRecordVoice;
 
-    public static CacheListView cacheListView = null;
-    public static AboutView aboutView = null;
-    public static CreditsView creditsView = null;
-    public static FieldNotesView fieldNotesView = null;
-    public static NotesView notesView = null;
-    public static SolverView solverView = null;
-    public static SpoilerView spoilerView = null;
-    public static TrackListView trackListView = null;
-    public static WaypointView waypointView = null;
-    public static TestView testView = null;
-    public static SolverView2 solverView2 = null;
-
-    private static boolean TrackRecIsRegisted = false;
     private CB_Button mCacheListButtonOnLeftTab; // default: show CacheList
     private CB_Button mDescriptionButtonOnLeftTab; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
     private CB_Button mMapButtonOnLeftTab; // default: show map on phone ( and show Compass on Tablet )
@@ -107,22 +94,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
     public TabMainView(CB_RectF rec) {
         super(rec);
-        if (!TrackRecIsRegisted)
-            PositionChangedEventList.Add(this);
-        TrackRecIsRegisted = true;
+        PositionChangedEventList.Add(this);
         that = this;
-
-        // comment out is just a try : alternative destroy yourself on hide
-        /*
-        Timer releaseTimer = new Timer();
-        TimerTask releaseTask = new TimerTask() {
-            @Override
-            public void run() {
-                releaseNonvisibleViews();
-            }
-        };
-        releaseTimer.scheduleAtFixedRate(releaseTask, 5000, 5000);
-        */
     }
 
     public static void reloadCacheList() {
@@ -134,52 +107,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         CacheListChangedEventList.Call();
     }
 
-    /**
-     * release all non visible Views
-     */
-    private void releaseNonvisibleViews() {
-        if (cacheListView != null && !cacheListView.isVisible()) {
-            cacheListView.dispose();
-            cacheListView = null;
-        }
-
-        if (aboutView != null && !aboutView.isVisible()) {
-            //Log.debug(log, "Release aboutView");
-            aboutView.dispose();
-            aboutView = null;
-        }
-
-        if (fieldNotesView != null && !fieldNotesView.isVisible()) {
-            //Log.debug(log, "Release fieldNotesView");
-            fieldNotesView.dispose();
-            fieldNotesView = null;
-        }
-
-        if (LogView.that != null && !LogView.that.isVisible()) {
-            boolean doRelease = true;
-            if (LogView.that.getCache() != null)
-                if (GlobalCore.isSetSelectedCache())
-                    if (LogView.that.getCache().equals(GlobalCore.getSelectedCache()))
-                        doRelease = false;
-            if (doRelease) {
-                //Log.debug(log, "Release logView");
-                LogView.that.dispose();
-                LogView.that = null;
-            }
-        }
-
-        if (waypointView != null && !waypointView.isVisible()) {
-            //Log.debug(log, "Release waypointView");
-            waypointView.dispose();
-            waypointView = null;
-        }
-
-        if (solverView2 != null && !solverView2.isVisible()) {
-            //Log.debug(log, "Release solverView2");
-            solverView2.dispose();
-            solverView2 = null;
-        }
-    }
 
     @Override
     protected void Initial() {
@@ -193,8 +120,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         Config.ShowAllWaypoints.addSettingChangedListener(() -> {
             reloadCacheList();
             // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
-            if (MapView.getNormalMap() != null)
-                MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
+            CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
         });
 
         CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
@@ -430,7 +356,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
                 Config.changeDayNight();
             GL.that.onStop();
             Sprites.loadSprites(true);
-            MapView.getNormalMap().invalidateTexture();
+            CB_Action_ShowMap.getInstance().normalMapView.invalidateTexture();
             GL.that.onStart();
             CallSkinChanged();
 
@@ -529,7 +455,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Config.SoundApproachDistance.getValue())) {
                 if (CompassView.getInstance().isVisible())
                     return;// don't show if showing compass
-                if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible() && MapView.getNormalMap().isCarMode())
+                if (CB_Action_ShowMap.getInstance().normalMapView.isVisible() && CB_Action_ShowMap.getInstance().normalMapView.isCarMode())
                     return; // don't show on visible map at carMode
                 CB_Action_ShowCompassView.getInstance().Execute();
                 GlobalCore.switchToCompassCompleted = true;

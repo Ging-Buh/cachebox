@@ -371,32 +371,28 @@ public class ImageLoader {
         if (State == 3) {
             if (inGenerate)
                 return;
-            GL.that.RunOnGL(new IRunOnGL() {
+            GL.that.RunOnGL(() -> {
+                try {
+                    inGenerate = true;
 
-                @Override
-                public void run() {
-                    try {
-                        inGenerate = true;
-
-                        if (mPath != null) {
-                            if (mPath.endsWith(".gif")) {
-                                anim = GifDecoder.loadGIFAnimation(PlayMode.LOOP, Gdx.files.absolute(mPath).read());
-                            } else {
-                                loadAsync();
-                            }
+                    if (mPath != null) {
+                        if (mPath.endsWith(".gif")) {
+                            anim = GifDecoder.loadGIFAnimation(PlayMode.LOOP, Gdx.files.absolute(mPath).read());
+                        } else {
+                            loadAsync();
                         }
-
-                    } catch (com.badlogic.gdx.utils.GdxRuntimeException e) {
-                        ImageLoadError = true;
-                        Log.err(log, "Load GL Image", e);
-                        State = 4;
-                    } catch (Exception e) {
-                        ImageLoadError = true;
-                        Log.err(log, "Load GL Image", e);
-                        e.printStackTrace();
                     }
-                    inGenerate = false;
+
+                } catch (com.badlogic.gdx.utils.GdxRuntimeException e) {
+                    ImageLoadError = true;
+                    Log.err(log, "Load GL Image", e);
+                    State = 4;
+                } catch (Exception e) {
+                    ImageLoadError = true;
+                    Log.err(log, "Load GL Image", e);
+                    e.printStackTrace();
                 }
+                inGenerate = false;
             });
 
             return;
@@ -423,18 +419,14 @@ public class ImageLoader {
                 final TextureLoader tl = new TextureLoader(new AbsoluteFileHandleResolver());
                 try {
                     tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
-                    GL.that.RunOnGL(new IRunOnGL() {
-
-                        @Override
-                        public void run() {
-                            // Log.info(log, "LoadSync " + mPath + ":" + ImgName);
-                            mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
-                            Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
-                            spriteWidth = sprite.getWidth();
-                            spriteHeight = sprite.getHeight();
-                            setSprite(sprite, reziseHeight);
-                            // Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
-                        }
+                    GL.that.RunOnGL(() -> {
+                        // Log.info(log, "LoadSync " + mPath + ":" + ImgName);
+                        mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+                        Sprite sprite = new Sprite(mImageTex);
+                        spriteWidth = sprite.getWidth();
+                        spriteHeight = sprite.getHeight();
+                        setSprite(sprite, reziseHeight);
+                        // Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
                     });
                 } catch (Exception e) {
                     //e.printStackTrace();
@@ -516,36 +508,32 @@ public class ImageLoader {
 
     public void dispose() {
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                if (mImageTex != null) {
-                    try {
-                        assetManager.unload(ImgName);
-                    } catch (Exception e) {
-                    }
-                    mImageTex.dispose();
+        GL.that.RunOnGL(() -> {
+            if (mImageTex != null) {
+                try {
+                    assetManager.unload(ImgName);
+                } catch (Exception e) {
                 }
-
-                mImageTex = null;
-                mDrawable = null;
-                loadingThread = null;
-                mPath = null;
-
-                ImageDownloadThread = null;
-                if (Atlanten != null) {
-                    Atlanten.clear();
-                    Atlanten = null;
-                }
-
-                AtlasPath = null;
-                ImgName = null;
-                animDrawable = null;
-
-                animSprite = null;
-                anim = null;
+                mImageTex.dispose();
             }
+
+            mImageTex = null;
+            mDrawable = null;
+            loadingThread = null;
+            mPath = null;
+
+            ImageDownloadThread = null;
+            if (Atlanten != null) {
+                Atlanten.clear();
+                Atlanten = null;
+            }
+
+            AtlasPath = null;
+            ImgName = null;
+            animDrawable = null;
+
+            animSprite = null;
+            anim = null;
         });
     }
 

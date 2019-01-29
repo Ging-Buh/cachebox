@@ -16,8 +16,6 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView {
 
     private CB_Action_ShowAbout() {
         super("about", MenuID.AID_SHOW_ABOUT);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowAbout getInstance() {
@@ -28,11 +26,7 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.aboutView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.aboutView = new AboutView(tab.getContentRec(), "AboutView");
-
-        if ((TabMainView.aboutView != null) && (tab != null))
-            tab.ShowView(TabMainView.aboutView);
+            TabMainView.leftTab.ShowView(AboutView.getInstance());
     }
 
     @Override
@@ -47,7 +41,7 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.aboutView;
+        return AboutView.getInstance();
     }
 
     @Override

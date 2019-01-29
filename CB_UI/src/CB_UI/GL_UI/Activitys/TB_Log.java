@@ -30,15 +30,11 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
@@ -81,21 +77,15 @@ public class TB_Log extends ActivityBase {
 
         btnClose = new Button("Close");
         btnClose.setText(Translation.Get("close"));
-        btnClose.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                TB_Log.this.finish();
-                return true;
-            }
+        btnClose.setOnClickListener((v, x, y, pointer, button) -> {
+            TB_Log.this.finish();
+            return true;
         });
 
         btnAction = new ImageButton("Action");
-        btnAction.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                LogNow();
-                return true;
-            }
+        btnAction.setOnClickListener((v, x, y, pointer, button) -> {
+            LogNow();
+            return true;
         });
 
         contentBox = new Box(ActivityRec(), "ContentBox");
@@ -153,13 +143,7 @@ public class TB_Log extends ActivityBase {
                 final String errorMsg = Translation.Get("NoCacheSelect");
                 this.finish();
 
-                GL.that.RunOnGL(new IRunOnGL() {
-
-                    @Override
-                    public void run() {
-                        GL_MsgBox.Show(errorMsg, "", MessageBoxIcon.Error);
-                    }
-                });
+                GL.that.RunOnGL(() -> GL_MsgBox.Show(errorMsg, "", MessageBoxIcon.Error));
                 return;
             }
 
@@ -242,12 +226,8 @@ public class TB_Log extends ActivityBase {
 
     private void logOnline() {
 
-        wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+        wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
 
-            @Override
-            public void isCanceled() {
-
-            }
         }, new ICancelRunnable() {
 
             @Override
@@ -279,36 +259,26 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                        switch (which) {
+                            case GL_MsgBox.BUTTON_NEGATIVE:
+                                logOnline();
+                                return true;
 
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            switch (which) {
-                                case GL_MsgBox.BUTTON_NEGATIVE:
-                                    logOnline();
-                                    return true;
+                            case GL_MsgBox.BUTTON_NEUTRAL:
+                                return true;
 
-                                case GL_MsgBox.BUTTON_NEUTRAL:
-                                    return true;
-
-                                case GL_MsgBox.BUTTON_POSITIVE:
-                                    createFieldNote();
-                                    return true;
-                            }
-                            return true;
+                            case GL_MsgBox.BUTTON_POSITIVE:
+                                createFieldNote();
+                                return true;
                         }
+                        return true;
                     });
                     return;
                 }
 
                 if (LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(new IRunOnGL() {
-
-                        @Override
-                        public void run() {
-                            GL_MsgBox.Show(LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error);
-                        }
-                    });
+                    GL.that.RunOnGL(() -> GL_MsgBox.Show(LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error));
                 }
 
                 if (wd != null)
@@ -317,13 +287,7 @@ public class TB_Log extends ActivityBase {
 
                 // Refresh TB List after Droped Off or Picked or Grabed
                 if (LT == LogTypes.dropped_off || LT == LogTypes.retrieve || LT == LogTypes.grab_it) {
-                    GL.that.RunOnGL(new IRunOnGL() {
-
-                        @Override
-                        public void run() {
-                            TrackableListView.that.RefreshTbList();
-                        }
-                    });
+                    GL.that.RunOnGL(() -> TrackableListView.that.RefreshTbList());
                 }
 
             }
@@ -360,7 +324,7 @@ public class TB_Log extends ActivityBase {
     }
 
     private String getCache_GcCode() {
-        /**
+        /*
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.CurrentGeocacheCode != null) {
@@ -375,7 +339,7 @@ public class TB_Log extends ActivityBase {
     }
 
     private String getCache_Name() {
-        /**
+        /*
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.CurrentGeocacheCode != null) {
@@ -390,7 +354,7 @@ public class TB_Log extends ActivityBase {
     }
 
     private long getCache_ID() {
-        /**
+        /*
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.CurrentGeocacheCode != null) {
@@ -405,7 +369,7 @@ public class TB_Log extends ActivityBase {
     }
 
     private String getCache_URL() {
-        /**
+        /*
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.CurrentGeocacheCode != null) {
@@ -420,7 +384,7 @@ public class TB_Log extends ActivityBase {
     }
 
     private int getCache_Type() {
-        /**
+        /*
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.CurrentGeocacheCode != null) {

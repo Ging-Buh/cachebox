@@ -18,7 +18,6 @@ package CB_UI_Base.Math;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
-import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 
@@ -115,14 +114,13 @@ public class GL_UISizes implements SizeChangedEvent {
      */
     public static SizeF TargetArrow;
     public static float margin;
+    public static CB_RectF MainBtnSize;
     static float frameHeight = -1;
-
     // /**
     // * Die Größe der D/T Wertungs Stars
     // */
     // public static SizeF DT_Size;
     static float scale = 0;
-    public static CB_RectF MainBtnSize;
     /**
      * Ist false solange die Größen nicht berechnet sind. Diese müssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
      * FontFaktor) in den Settings geändert Wurde.
@@ -184,13 +182,7 @@ public class GL_UISizes implements SizeChangedEvent {
         if (!isInitial) {
             calcSizes();
 
-            CB_UI_Base_Settings.nightMode.addSettingChangedListener(new IChanged() {
-
-                @Override
-                public void handleChange() {
-                    Fonts.setNightMode(CB_UI_Base_Settings.nightMode.getValue());
-                }
-            });
+            CB_UI_Base_Settings.nightMode.addSettingChangedListener(() -> Fonts.setNightMode(CB_UI_Base_Settings.nightMode.getValue()));
 
             try {
                 Fonts.loadFonts();

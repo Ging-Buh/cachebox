@@ -14,8 +14,6 @@ public class CB_Action_ShowCreditsView extends CB_Action_ShowView {
 
     private CB_Action_ShowCreditsView() {
         super("Credits", MenuID.AID_SHOW_CREDITS);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowCreditsView getInstance() {
@@ -25,11 +23,7 @@ public class CB_Action_ShowCreditsView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.creditsView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.creditsView = new CreditsView(tab.getContentRec(), "CreditsView");
-
-        if ((TabMainView.creditsView != null) && (tab != null))
-            tab.ShowView(TabMainView.creditsView);
+        TabMainView.leftTab.ShowView(CreditsView.getInstance());
     }
 
     @Override
@@ -44,7 +38,7 @@ public class CB_Action_ShowCreditsView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.creditsView;
+        return CreditsView.getInstance();
     }
 
 }

@@ -28,6 +28,7 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.SatBarChart;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -42,7 +43,6 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -55,31 +55,23 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent {
-    protected final IReturnValueListener mDialogListener = new IReturnValueListener() {
-        @Override
-        public void returnValue(int value) {
-            Config.FoundOffset.setValue(value);
-            Config.AcceptChanges();
-            AboutView.this.refreshText();
-        }
-
-        @Override
-        public void cancelClicked() {
-
-        }
-
-    };
-    Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
-    Image CB_Logo;
-    float margin;
-    CancelWaitDialog pd;
+    private static AboutView that;
+    private Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
+    private Image CB_Logo;
+    private float margin;
+    private CancelWaitDialog pd;
     private SatBarChart chart;
     private int result = -1;
 
-    public AboutView(CB_RectF rec, String Name) {
-        super(rec, Name);
+    private AboutView() {
+        super(TabMainView.leftTab.getContentRec(), "AboutView");
         registerSkinChangedEvent();
         createControls();
+    }
+
+    public static AboutView getInstance() {
+        if (that == null) that = new AboutView();
+        return that;
     }
 
     @Override
@@ -128,7 +120,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
             return;
 
         this.setBackground(Sprites.AboutBack);
-        float ref = UI_Size_Base.that.getWindowHeight() / 13;
+        float ref = UI_Size_Base.that.getWindowHeight() / 13f;
         margin = UI_Size_Base.that.getMargin();
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
         //Log.debug(log, "CB_Logo" + CB_LogoRec.toString());
@@ -156,52 +148,56 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-                ms = GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
+                ms = GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                    // Behandle das ergebniss
+                    switch (which) {
+                        case 1:
+                            ms.close();
+                            pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
+                                @Override
+                                public void run() {
+                                    result = GroundspeakAPI.fetchMyUserInfos().findCount;
+                                    pd.close();
 
-                    @Override
-                    public boolean onClick(int which, Object data) {
-                        // Behandle das ergebniss
-                        switch (which) {
-                            case 1:
-                                ms.close();
-                                pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
-                                    @Override
-                                    public void run() {
-                                        result = GroundspeakAPI.fetchMyUserInfos().findCount;
-                                        pd.close();
+                                    if (result > -1) {
+                                        String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
+                                        GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
 
-                                        if (result > -1) {
-                                            String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
-                                            GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
-
-                                            Config.FoundOffset.setValue(result);
-                                            Config.AcceptChanges();
-                                            AboutView.this.refreshText();
-                                        }
-
+                                        Config.FoundOffset.setValue(result);
+                                        Config.AcceptChanges();
+                                        AboutView.this.refreshText();
                                     }
-                                    @Override
-                                    public boolean doCancel() {
-                                        return false;
-                                    }
-                                });
 
-                                break;
-                            case 3:
-                                ms.close();
-                                GL.that.RunOnGL(new IRunOnGL() {
+                                }
 
-                                    @Override
-                                    public void run() {
-                                        NumericInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), Config.FoundOffset.getValue(), mDialogListener);
-                                    }
-                                });
+                                @Override
+                                public boolean doCancel() {
+                                    return false;
+                                }
+                            });
 
-                                break;
+                            break;
+                        case 3:
+                            ms.close();
+                            GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), Config.FoundOffset.getValue(), new IReturnValueListener() {
+                                @Override
+                                public void returnValue(int value) {
+                                    Config.FoundOffset.setValue(value);
+                                    Config.AcceptChanges();
+                                    AboutView.this.refreshText();
+                                }
 
-                        }
-                        return true;
+                                @Override
+                                public void cancelClicked() {
+
+                                }
+
+                            }));
+
+                            break;
+
                     }
+                    return true;
                 });
 
                 return true;
@@ -277,15 +273,11 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
         // set LinkColor
 
-        WaypointLabel.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (GlobalCore.getSelectedCache() == null)
-                    return true;
-                PlatformConnector.callUrl(GlobalCore.getSelectedCache().getUrl());
+        WaypointLabel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (GlobalCore.getSelectedCache() == null)
                 return true;
-            }
+            PlatformConnector.callUrl(GlobalCore.getSelectedCache().getUrl());
+            return true;
         });
 
         // add to Screen
@@ -316,21 +308,24 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
     }
 
     private void setYpositions() {
-        if (CB_Logo != null)
+        if (CB_Logo != null) {
             CB_Logo.setY(this.getHeight() - (margin * 2) - CB_Logo.getHeight());
-        if (descTextView != null)
-            descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
-        if (CachesFoundLabel != null)
-            CachesFoundLabel.setY(descTextView.getY() - CachesFoundLabel.getHeight() + margin);
-        if (chart != null)
-            chart.setHeight(CachesFoundLabel.getY() - Gps.getMaxY());
+            if (descTextView != null) {
+                descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
+                if (CachesFoundLabel != null) {
+                    CachesFoundLabel.setY(descTextView.getY() - CachesFoundLabel.getHeight() + margin);
+                    if (chart != null)
+                        chart.setHeight(CachesFoundLabel.getY() - Gps.getMaxY());
+                }
+            }
+        }
     }
 
-    public void refreshText() {
+    private void refreshText() {
         if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null)
             return;
         try {
-            CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
+            CachesFoundLabel.setText(Translation.Get("caches_found") + " " + Config.FoundOffset.getValue());
 
             Cache selectedCache = GlobalCore.getSelectedCache();
             Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
@@ -349,7 +344,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
                 }
             }
             GL.that.renderOnce();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -377,13 +372,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
     @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                refreshText();
-            }
-        });
+        GL.that.RunOnGL(this::refreshText);
     }
 
     @Override
@@ -411,6 +400,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
     @Override
     public void dispose() {
+        that = null;
 
         if (descTextView != null)
             descTextView.dispose();

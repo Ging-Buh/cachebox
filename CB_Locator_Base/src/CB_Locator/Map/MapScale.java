@@ -33,25 +33,25 @@ import java.text.NumberFormat;
 public class MapScale extends CB_View_Base implements invalidateTextureEvent {
     private static final String log = "MapScale";
     private final static NumberFormat nf = NumberFormat.getInstance();
-    final int[] scaleNumUnits = new int[]{4, 3, 4, 3, 4, 5, 3};
-    final float[] scaleSteps = new float[]{1, 1.5f, 2, 3, 4, 5, 7.5f};
+    private final int[] scaleNumUnits = new int[]{4, 3, 4, 3, 4, 5, 3};
+    private final float[] scaleSteps = new float[]{1, 1.5f, 2, 3, 4, 5, 7.5f};
     private final MapViewBase mapInstanz;
     /**
      * Anzahl der Schritte auf dem Maßstab
      */
-    int scaleUnits = 10;
+    private int scaleUnits = 5; // must always be between 3 and 5
     /**
      * Länge des Maßstabs in Metern
      */
-    double scaleLength = 1000;
-    float pixelsPerMeter;
-    int generatedZomm = -1;
+    private double scaleLength = 1000;
+    private float pixelsPerMeter;
+    private int generatedZomm = -1;
     private BitmapFontCache fontCache;
-    private float sollwidth = 0;
+    private float sollwidth;
     private Drawable CachedScaleDrawable;
     private float drawableWidth = 0;
     private String distanceString;
-    private boolean imperialunits = false;
+    private boolean imperialunits;
 
     public MapScale(CB_RectF rec, String Name, MapViewBase mapInstanz, boolean useImperialUnits) {
         super(rec, Name);
@@ -124,7 +124,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
         ZoomChanged();
     }
 
-    public void ZoomChanged() {
+    void ZoomChanged() {
+        // todo is called, when scaleUnits is not yet initialized
         pixelsPerMeter = mapInstanz.pixelsPerMeter;
         drawableWidth = (int) (scaleLength * pixelsPerMeter);
         if (fontCache == null) {
@@ -136,7 +137,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
         try {
             GlyphLayout bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
             this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
-            CachedScaleDrawable = Sprites.MapScale[scaleUnits - 3];
+            CachedScaleDrawable = Sprites.MapScale[scaleUnits - 3]; // 0 = 3 Striche, 1 = 4 Striche, 2 = 5 Striche
             float margin = (this.getHeight() - bounds.height) / 1.6f;
             fontCache.setPosition(this.getWidth() - bounds.width - margin, margin);
         } catch (Exception e) {
@@ -163,7 +164,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
                 CachedScaleDrawable.draw(batch, 0, 0, drawableWidth, this.getHeight());
             if (fontCache != null)
                 fontCache.draw(batch);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 

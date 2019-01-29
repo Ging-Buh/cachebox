@@ -31,8 +31,6 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
     private CB_Action_ShowDescriptionView() {
         super("Description", AID_SHOW_DESCRIPTION);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowDescriptionView getInstance() {
@@ -42,7 +40,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        tab.ShowView(DescriptionView.getInstance());
+        TabMainView.leftTab.ShowView(DescriptionView.getInstance());
     }
 
     @Override

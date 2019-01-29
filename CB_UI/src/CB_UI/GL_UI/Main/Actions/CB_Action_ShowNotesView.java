@@ -15,8 +15,6 @@ public class CB_Action_ShowNotesView extends CB_Action_ShowView {
 
     private CB_Action_ShowNotesView() {
         super("Notes", MenuID.AID_SHOW_NOTES);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowNotesView getInstance() {
@@ -26,11 +24,7 @@ public class CB_Action_ShowNotesView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.notesView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.notesView = new NotesView(tab.getContentRec(), "NotesView");
-
-        if ((TabMainView.notesView != null) && (tab != null))
-            tab.ShowView(TabMainView.notesView);
+        TabMainView.leftTab.ShowView(NotesView.getInstance());
     }
 
     @Override
@@ -45,6 +39,6 @@ public class CB_Action_ShowNotesView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.notesView;
+        return NotesView.getInstance();
     }
 }

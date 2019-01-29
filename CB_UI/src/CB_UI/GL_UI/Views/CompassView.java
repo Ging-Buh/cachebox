@@ -24,7 +24,6 @@ import CB_Locator.CoordinateGPS;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Locator;
-import CB_Locator.Map.MapViewBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.CacheInfo;
@@ -59,7 +58,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -67,19 +65,27 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     private static final String log = "CompassView";
     private static CompassView that;
     private CB_RectF imageRec;
-    private Image frame, scale, arrow, att[], Icon, Sun, Moon;
+    private Image frame;
+    private Image scale;
+    private Image arrow;
+    private Image[] att;
+    private Image Icon;
+    private Image Sun;
+    private Image Moon;
     private Box topContentBox, leftBox, rightBox, rightBoxMask, distanceBack;
     private ScrollBox topBox;
-    private MapViewBase map;
     private SatBarChart chart;
     private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblOwnCoords, lblBearing;
-    private CacheInfo SDT;
+    private CacheInfo cacheInfo;
     private Cache aktCache;
     private Waypoint aktWaypoint;
-    private float margin, attHeight, descHeight, lblHeight;
+    private float margin;
+    private float descHeight;
+    private float lblHeight;
     private boolean initDone, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
     private boolean lastUsedCompass = Locator.UseMagneticCompass();
-    IChanged settingChangedListener = () -> {
+    private MapView mCompassMapView;
+    private IChanged settingChangedListener = () -> {
         readSettings();
         createControls();
     };
@@ -98,20 +104,24 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
     @Override
     public void onShow() {
-        Log.info(log, "onShow");
+        aktCache = GlobalCore.getSelectedCache();
+        aktWaypoint = GlobalCore.getSelectedWaypoint();
         Initial();
+        setCache();
         if (chart != null) {
             chart.onShow();
             chart.setDrawWithAlpha(false);
         }
+        try {
+            if (mCompassMapView != null) mCompassMapView.onShow();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        PositionChanged();
         SelectedCacheEventList.Add(this);
         PositionChangedEventList.Add(this);
-        if (map != null)
-            map.onShow();
         CacheListChangedEventList.Add(this);
         invalidateTextureEventList.Add(this);
-
-        PositionChanged();
     }
 
     @Override
@@ -120,8 +130,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             chart.onHide();
         SelectedCacheEventList.Remove(this);
         PositionChangedEventList.Remove(this);
-        if (map != null)
-            map.onHide();
+        if (mCompassMapView != null) {
+            mCompassMapView.onHide();
+        }
         CacheListChangedEventList.Remove(this);
         invalidateTextureEventList.Remove(this);
     }
@@ -174,8 +185,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             if (aktCache == null)
                 return;
             synchronized (aktCache) {
+                Log.debug(log, "new cache: " + aktCache.getGcCode() + ":" + aktCache.getName());
 
-                if (aktCache.isDetailLoaded()) {
+                if (!aktCache.isDetailLoaded()) {
+                    Log.debug(log, "loading details.");
                     aktCache.loadDetail();
                 }
 
@@ -242,8 +255,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
                 }
 
-                if (showSDT & SDT != null) {
-                    SDT.setCache(aktCache);
+                if (showSDT & cacheInfo != null) {
+                    cacheInfo.setCache(aktCache);
                 }
 
             }
@@ -256,6 +269,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     }
 
     private void Layout() {
+        Log.debug(log, "Layout");
 
         // Die Größe des Kompasses nach rest Platz berechnen
 
@@ -309,7 +323,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     }
 
     private void createControls() {
-        Log.info(log, "createControls");
         this.removeChilds();
 
         if (distanceBack != null) {
@@ -323,7 +336,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         }
 
         lblHeight = Fonts.Measure("Tg").height * 1.3f;
-        attHeight = (this.getWidth() / 9) - margin;
+        float attHeight = (this.getWidth() / 9) - margin;
 
         // Calc content height
         float contentHeight = margin + margin;
@@ -379,10 +392,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             this.addChild(rightBox);
             this.addChild(rightBoxMask);
 
-            if (map == null)
-                map = new MapView(rightBox, MapMode.Compass, "CompassMap");
-            map.setZeroPos();
-            rightBox.addChild(map);
+            if (mCompassMapView == null) mCompassMapView = new MapView(rightBox, MapMode.Compass);
+            mCompassMapView.setZeroPos();
+            rightBox.addChild(mCompassMapView);
 
             lblDistance = new Label("Distance", margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f));
             BitmapFont font = Fonts.getCompass();
@@ -538,23 +550,23 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             topContentBox.addLast(lblBearing);
         }
 
-        // add SDT line or LastFound
+        // add cacheInfo line or LastFound
         if (showSDT || showLastFound) {
 
-            int ViewMode = 0;
+            int viewMode = 0;
             if (showSDT)
-                ViewMode += CacheInfo.SHOW_S_D_T;
+                viewMode += CacheInfo.SHOW_S_D_T;
             if (showLastFound)
-                ViewMode += CacheInfo.SHOW_LAST_FOUND;
+                viewMode += CacheInfo.SHOW_LAST_FOUND;
 
             float infoHeight = Fonts.MeasureSmall("Tg").height * 1.3f;
             if (showSDT && showLastFound) {
                 infoHeight *= 2.5f;
             }
 
-            SDT = new CacheInfo(new SizeF(topContentBox.getWidth(), infoHeight), "SDT info", aktCache);
-            SDT.setViewMode(ViewMode);
-            topContentBox.addLast(SDT);
+            cacheInfo = new CacheInfo(new SizeF(topContentBox.getWidth(), infoHeight), "cacheInfo", aktCache);
+            cacheInfo.setViewMode(viewMode);
+            topContentBox.addLast(cacheInfo);
         }
 
         // add Attribute
@@ -621,14 +633,11 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     @Override
     public void PositionChanged() {
         if (this.isDisposed()) {
-            Log.info(log, "PositionChanged, but this is disposed.");
             return;
         }
         if (aktCache == null) {
-            Log.info(log, "PositionChanged, but akt Cache is null");
             return;
         }
-        Log.info(log, "PositionChanged");
 
         CoordinateGPS position = Locator.getCoordinate();
 
@@ -849,9 +858,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         if (topBox != null)
             topBox.dispose();
         topBox = null;
-        if (map != null)
-            map.dispose();
-        map = null;
+        if (mCompassMapView != null) {
+            mCompassMapView.dispose();
+            mCompassMapView = null;
+        }
         if (chart != null)
             chart.dispose();
         chart = null;
@@ -882,9 +892,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         if (lblBearing != null)
             lblBearing.dispose();
         lblBearing = null;
-        if (SDT != null)
-            SDT.dispose();
-        SDT = null;
+        if (cacheInfo != null)
+            cacheInfo.dispose();
+        cacheInfo = null;
 
         aktCache = null;
         aktWaypoint = null;

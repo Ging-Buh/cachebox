@@ -45,15 +45,12 @@ public class TrackRecorder {
     private final static CompassType _GPS = CompassType.GPS;
     public static boolean pauseRecording = false;
     public static boolean recording = false;
-    public static double SaveAltitude = 0;
-
-    // / Letzte aufgezeichnete Position des Empfängers
-    public static Location LastRecordedPosition = Location.NULL_LOCATION;
-    static String mFriendlyName = "";
-    static String mMediaPath = "";
-    static Location mMediaCoord = null;
-    static String mTimestamp = "";
-    // StreamWriter outStream = null;
+    private static double SaveAltitude = 0;
+    private static Location LastRecordedPosition = Location.NULL_LOCATION;
+    private static String mFriendlyName = "";
+    private static String mMediaPath = "";
+    private static Location mMediaCoord = null;
+    private static String mTimestamp = "";
     private static File gpxfile = null;
     private static FileWriter writer = null;
     private static boolean writeAnnotateMedia = false;
@@ -80,13 +77,12 @@ public class TrackRecorder {
             try {
                 writer = gpxfile.getFileWriter();
                 try {
-                    writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-                    writer.append(
-                            "<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
-                    writer.append("<time>" + GetDateTimeString() + "</time>\n");
-                    // set real bounds or basecamp (mapsource) will not import this track
-                    // writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
-                    writer.append("<trk><trkseg>\n");
+                    writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                            .append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n")
+                            .append("<time>").append(GetDateTimeString()).append("</time>\n")
+                            // set real bounds or basecamp (mapsource) will not import this track
+                            // writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
+                            .append("<trk><trkseg>\n");
                     writer.flush();
                 } catch (IOException e) {
                     Log.err(log, "IOException", e);
@@ -142,8 +138,12 @@ public class TrackRecorder {
         if (gpxfile == null)
             return;
 
-        String xml = "<wpt lat=\"" + String.valueOf(location.getLatitude()) + "\" lon=\"" + String.valueOf(location.getLongitude()) + "\">\n" + "   <ele>" + String.valueOf(location.getAltitude()) + "</ele>\n" + "   <time>" + timestamp + "</time>\n"
-                + "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
+        String xml = "<wpt lat=\"" + location.getLatitude() + "\" lon=\"" + location.getLongitude() + "\">\n"
+                + "   <ele>" + location.getAltitude() + "</ele>\n"
+                + "   <time>" + timestamp + "</time>\n"
+                + "   <name>" + friendlyName + "</name>\n"
+                + "   <link href=\"" + mediaPath + "\" />\n"
+                + "</wpt>\n";
 
         RandomAccessFile rand;
         try {
@@ -199,7 +199,7 @@ public class TrackRecorder {
         } else {
             writePos = true;
             TrackPoint NewPoint;
-            double AltDiff = 0;
+            double AltDiff;
 
             // wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
             // zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
@@ -211,12 +211,12 @@ public class TrackRecorder {
             if (cachedDistance > Config.TrackDistance.getValue()) {
                 StringBuilder sb = new StringBuilder();
 
-                sb.append("<trkpt lat=\"" + String.valueOf(Locator.getLatitude(GPS)) + "\" lon=\"" + String.valueOf(Locator.getLongitude(GPS)) + "\">\n");
-                sb.append("   <ele>" + String.valueOf(Locator.getAlt()) + "</ele>\n");
-                sb.append("   <time>" + GetDateTimeString() + "</time>\n");
-                sb.append("   <course>" + String.valueOf(Locator.getHeading(_GPS)) + "</course>\n");
-                sb.append("   <speed>" + String.valueOf(Locator.SpeedOverGround()) + "</speed>\n");
-                sb.append("</trkpt>\n");
+                sb.append("<trkpt lat=\"").append(Locator.getLatitude(GPS)).append("\" lon=\"").append(Locator.getLongitude(GPS)).append("\">\n")
+                        .append("   <ele>").append(Locator.getAlt()).append("</ele>\n")
+                        .append("   <time>").append(GetDateTimeString()).append("</time>\n")
+                        .append("   <course>").append(Locator.getHeading(_GPS)).append("</course>\n")
+                        .append("   <speed>").append(Locator.SpeedOverGround()).append("</speed>\n")
+                        .append("</trkpt>\n");
 
                 RandomAccessFile rand;
                 try {
@@ -250,8 +250,7 @@ public class TrackRecorder {
                 GlobalCore.AktuelleRoute.Points.add(NewPoint);
 
                 // notify TrackListView
-                if (TrackListView.that != null)
-                    TrackListView.that.notifyActTrackChanged();
+                TrackListView.getInstance().notifyActTrackChanged();
 
                 RouteOverlay.RoutesChanged();
                 LastRecordedPosition = Locator.getLocation(GPS).cpy();
@@ -289,7 +288,6 @@ public class TrackRecorder {
     private static String generateTrackFileName() {
         SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
         String sDate = datFormat.format(new Date());
-
         return "Track_" + sDate + ".gpx";
     }
 

@@ -10,8 +10,8 @@ import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
-import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
+import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
@@ -131,10 +131,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.Size = CacheSizes.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
-        if (MapView.getNormalMap() != null)
-            newValues.Pos = MapView.getNormalMap().center; // Locator.getLocation().toCordinate();
-        else
-            newValues.Pos = GlobalCore.getSelectedCoord(); // new Coordinate();
+        newValues.Pos = CB_Action_ShowMap.getInstance().normalMapView.center;
         if (!newValues.Pos.isValid())
             newValues.Pos = GlobalCore.getSelectedCoord();
         // GC - Code bestimmen für freies CWxxxx = CustomWaypint
@@ -224,8 +221,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 cacheDAO.WriteToDatabase(cache);
                 CacheListChangedEventList.Call();
                 GlobalCore.setSelectedCache(cache);
-                if (TabMainView.cacheListView != null)
-                    TabMainView.cacheListView.setSelectedCacheVisible();
+                CacheListView.getInstance().setSelectedCacheVisible();
             }
 
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB

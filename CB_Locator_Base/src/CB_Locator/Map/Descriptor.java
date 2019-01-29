@@ -36,7 +36,6 @@ public class Descriptor implements Comparable<Descriptor> {
     public final static double PI_4 = (Math.PI * 4);
     public static String TileCacheFolder;
     private static final IChanged TileCacheFolderSettingChanged = new IChanged() {
-
         @Override
         public void handleChange() {
             TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
@@ -44,9 +43,9 @@ public class Descriptor implements Comparable<Descriptor> {
                 TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
         }
     };
-    public static int[] TilesPerLine = null;
-    public static int[] TilesPerColumn = null;
-    static int[] tileOffset = null;
+    static int[] tileOffset;
+    private static int[] TilesPerLine;
+    private static int[] TilesPerColumn;
 
     static {
         int maxZoom = 25;

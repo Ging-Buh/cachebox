@@ -16,7 +16,6 @@
 package CB_UI_Base.graphics;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
 import CB_Utils.MathUtils;
@@ -95,12 +94,7 @@ public class TextDrawable implements IRotateDrawable, Disposable {
 
         if (Cache == null) {
             Cache = new TextOnPath(Text, workPath, fill, stroke, center);
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() {
-                    workPath.dispose();
-                }
-            });
+            GL.that.RunOnGL(() -> workPath.dispose());
         }
         if (Cache != null) {
 

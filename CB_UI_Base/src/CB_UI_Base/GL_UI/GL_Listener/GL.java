@@ -162,11 +162,8 @@ public class GL implements ApplicationListener {
         GL_UISizes.initial(width, height);
 
         Initialize();
-        CB_UI_Base_Settings.nightMode.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                mDarknessSprite = null;// for new creation with changed color
-            }
+        CB_UI_Base_Settings.nightMode.addSettingChangedListener(() -> {
+            mDarknessSprite = null;// for new creation with changed color
         });
 
         if (Gdx.input != null) {
@@ -204,13 +201,10 @@ public class GL implements ApplicationListener {
             grayFader = new Fader(); // !!! is calling GL.that.GLrenderOnce(true)
             grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
             grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
-            IChanged ce = new IChanged() {
-                @Override
-                public void handleChange() {
-                    grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
-                    grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
-                    grayFader.resetFadeOut();
-                }
+            IChanged ce = () -> {
+                grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
+                grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
+                grayFader.resetFadeOut();
             };
             CB_UI_Base_Settings.dontUseAmbient.addSettingChangedListener(ce);
             CB_UI_Base_Settings.ambientTime.addSettingChangedListener(ce);
@@ -1136,12 +1130,10 @@ public class GL implements ApplicationListener {
 
     GL_View_Base touchActiveView(int x, int y, int pointer, int button) {
         GL_View_Base view = null;
-        if (MarkerIsShown)
-        {
+        if (MarkerIsShown) {
             view = mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
         }
-        if (view == null)
-        {
+        if (view == null) {
             CB_View_Base activeView = getActiveView();
             return activeView.touchDown(x, (int) activeView.getHeight() - y, pointer, button);
         }

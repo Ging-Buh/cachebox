@@ -141,7 +141,7 @@ public class Linearlayout extends CB_View_Base {
     }
 
     public interface LayoutChanged {
-        public void LayoutIsChanged(Linearlayout linearLayout, float newHeight);
+        void LayoutIsChanged(Linearlayout linearLayout, float newHeight);
     }
 
 }

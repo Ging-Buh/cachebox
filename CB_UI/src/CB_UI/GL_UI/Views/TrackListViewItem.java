@@ -4,17 +4,14 @@ import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
-import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.UnitFormatter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -28,7 +25,6 @@ public class TrackListViewItem extends ListViewItemBackground {
     private static CB_RectF rChkBounds;
     private final IRouteChangedListener mRouteChangedListener;
     public Vector2 lastItemTouchPos;
-    // private Member
     private Track mRoute;
     private float left;
     private Label EntryName;
@@ -47,8 +43,8 @@ public class TrackListViewItem extends ListViewItemBackground {
 
         super.render(batch);
 
-        boolean rClick = false;
-        boolean lClick = false;
+        boolean rClick;
+        boolean lClick;
         if (this.isPressed) {
             // Log.debug(log, "TrackListViewItem => is Pressed");
 
@@ -164,14 +160,10 @@ public class TrackListViewItem extends ListViewItemBackground {
     private void chkClick() {
         // Log.debug(log, "TrackListViewItem => Chk Clicked");
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                mRoute.ShowRoute = !mRoute.ShowRoute;
-                if (mRouteChangedListener != null)
-                    mRouteChangedListener.routeChanged(mRoute);
-            }
+        GL.that.RunOnGL(() -> {
+            mRoute.ShowRoute = !mRoute.ShowRoute;
+            if (mRouteChangedListener != null)
+                mRouteChangedListener.routeChanged(mRoute);
         });
         GL.that.renderOnce();
     }
@@ -179,24 +171,16 @@ public class TrackListViewItem extends ListViewItemBackground {
     private void colorClick() {
         // Log.debug(log, "TrackListViewItem => Color Clicked");
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), mRoute.getColor(), new IReturnListener() {
-
-                    @Override
-                    public void returnColor(Color color) {
-                        if (color == null)// no changes
-                        {
-                            return;
-                        }
-                        mRoute.setColor(color);
-                        colorReck = null;
-                    }
-                });
-                clrPick.show();
-            }
+        GL.that.RunOnGL(() -> {
+            ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), mRoute.getColor(), color -> {
+                if (color == null)// no changes
+                {
+                    return;
+                }
+                mRoute.setColor(color);
+                colorReck = null;
+            });
+            clrPick.show();
         });
         GL.that.renderOnce();
     }
@@ -213,7 +197,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     public interface IRouteChangedListener {
-        public void routeChanged(Track route);
+        void routeChanged(Track route);
     }
 
 }

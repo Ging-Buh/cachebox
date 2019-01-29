@@ -102,13 +102,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable {
         if (GL.that.isGlThread()) {
             createData();
         } else {
-            GL.that.RunOnGL(new IRenderFBO() {
-
-                @Override
-                public void run() {
-                    createData();
-                }
-            });
+            GL.that.RunOnGL((IRenderFBO) () -> createData());
         }
     }
 
@@ -125,13 +119,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable {
         if (GL.that.isGlThread()) {
             createData();
         } else {
-            GL.that.RunOnGL(new IRenderFBO() {
-
-                @Override
-                public void run() {
-                    createData();
-                }
-            });
+            GL.that.RunOnGL((IRenderFBO) () -> createData());
         }
     }
 

@@ -1,8 +1,7 @@
 package CB_UI.GL_UI.Views;
 
-import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Views.TrackListViewItem.IRouteChangedListener;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.RouteOverlay;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -13,30 +12,18 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Iterator;
 
 public class TrackListView extends V_ListView {
-    public static CB_RectF ItemRec;
-    public static TrackListView that;
-    BitmapFontCache emptyMsg;
-    int selectedTrackItem;
-    private final OnClickListener onItemClickListener = new OnClickListener() {
+    private static CB_RectF ItemRec;
+    private static TrackListView that;
+    private int selectedTrackItem;
+    private TrackListViewItem aktRouteItem;
 
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            selectedTrackItem = ((ListViewItemBase) v).getIndex();
-            setSelection(selectedTrackItem);
-            return true;
-        }
-    };
-    TrackListViewItem aktRouteItem;
-
-    public TrackListView(CB_RectF rec, String Name) {
-        super(rec, Name);
-        that = this;
+    private TrackListView() {
+        super(TabMainView.leftTab.getContentRec(), "TrackListView");
 
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 
@@ -49,6 +36,11 @@ public class TrackListView extends V_ListView {
 
     }
 
+    public static TrackListView getInstance() {
+        if (that == null) that = new TrackListView();
+        return that;
+    }
+
     @Override
     public void onShow() {
         this.notifyDataSetChanged();
@@ -56,7 +48,8 @@ public class TrackListView extends V_ListView {
 
     @Override
     public void onHide() {
-        // platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
+        this.dispose();
+        that = null;
     }
 
     @Override
@@ -107,15 +100,15 @@ public class TrackListView extends V_ListView {
             int index = position;
             if (GlobalCore.AktuelleRoute != null) {
                 if (position == 0) {
-                    aktRouteItem = new TrackListViewItem(ItemRec, index, GlobalCore.AktuelleRoute, new IRouteChangedListener() {
-
-                        @Override
-                        public void routeChanged(Track route) {
-                            // Notify Map to Reload RouteOverlay
-                            RouteOverlay.RoutesChanged();
-                        }
+                    aktRouteItem = new TrackListViewItem(ItemRec, index, GlobalCore.AktuelleRoute, route -> {
+                        // Notify Map to Reload RouteOverlay
+                        RouteOverlay.RoutesChanged();
                     });
-                    aktRouteItem.setOnClickListener(onItemClickListener);
+                    aktRouteItem.setOnClickListener((v, x, y, pointer, button) -> {
+                        selectedTrackItem = ((ListViewItemBase) v).getIndex();
+                        setSelection(selectedTrackItem);
+                        return true;
+                    });
                     aktRouteItem.setOnLongClickListener(TrackListView.this.getOnLongClickListener());
 
                     return aktRouteItem;
@@ -123,16 +116,16 @@ public class TrackListView extends V_ListView {
                 position--;
             }
 
-            TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.getRoute(position), new IRouteChangedListener() {
-
-                @Override
-                public void routeChanged(Track route) {
-                    // Notify Map to Reload RouteOverlay
-                    RouteOverlay.RoutesChanged();
-                }
+            TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.getRoute(position), route -> {
+                // Notify Map to Reload RouteOverlay
+                RouteOverlay.RoutesChanged();
             });
 
-            v.setOnClickListener(onItemClickListener);
+            v.setOnClickListener((v1, x, y, pointer, button) -> {
+                selectedTrackItem = ((ListViewItemBase) v1).getIndex();
+                setSelection(selectedTrackItem);
+                return true;
+            });
             v.setOnLongClickListener(TrackListView.this.getOnLongClickListener());
             return v;
         }

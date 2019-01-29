@@ -63,26 +63,22 @@ public class Box extends CB_View_Base {
     protected void drawBorder(Batch batch) {
         if (borderSprite == null) {
             try {
-                GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
+                GL.that.RunOnGLWithThreadCheck(() -> {
 
-                    @Override
-                    public void run() {
+                    int w = (int) getWidth();
+                    int h = (int) getHeight();
 
-                        int w = (int) getWidth();
-                        int h = (int) getHeight();
+                    Pixmap borderRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+                    borderRegPixmap.setColor(borderColor);
 
-                        Pixmap borderRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-                        borderRegPixmap.setColor(borderColor);
+                    int borderAsInt = Math.round(Box.this.borderSize);
 
-                        int borderAsInt = Math.round(Box.this.borderSize);
-
-                        for (int i = 0; i < borderAsInt + 1; i++) {
-                            borderRegPixmap.drawRectangle(i, i, ((int) getWidth()) - (i), ((int) getHeight()) - (i));
-                        }
-
-                        borderSprite = new Sprite(new Texture(borderRegPixmap, Pixmap.Format.RGBA8888, false),
-                                (int) getWidth(), (int) getHeight());
+                    for (int i = 0; i < borderAsInt + 1; i++) {
+                        borderRegPixmap.drawRectangle(i, i, ((int) getWidth()) - (i), ((int) getHeight()) - (i));
                     }
+
+                    borderSprite = new Sprite(new Texture(borderRegPixmap, Pixmap.Format.RGBA8888, false),
+                            (int) getWidth(), (int) getHeight());
                 });
 
             } catch (Exception e) {

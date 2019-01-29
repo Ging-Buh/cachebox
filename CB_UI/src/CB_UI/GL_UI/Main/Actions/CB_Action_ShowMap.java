@@ -49,6 +49,8 @@ import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 
 import java.util.*;
 
+import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
+
 /**
  * @author Longri
  */
@@ -60,11 +62,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private static CB_Action_ShowMap that;
     private int menuID;
     private Menu mRenderThemesSelectionMenu;
+    public MapView normalMapView;
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
+        normalMapView = new MapView(TabMainView.leftTab.getContentRec(), MapMode.Normal);
+        normalMapView.SetZoom(Config.lastZoomLevel.getValue());
     }
 
     public static CB_Action_ShowMap getInstance() {
@@ -74,18 +77,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((MapView.getNormalMap() == null) && (tabMainView != null) && (tab != null)) {
-            new MapView(tab.getContentRec(), MapMode.Normal, "MapView");
-            MapView.getNormalMap().SetZoom(Config.lastZoomLevel.getValue());
-        }
-
-        if ((MapView.getNormalMap() != null) && (tab != null))
-            tab.ShowView(MapView.getNormalMap());
+        TabMainView.leftTab.ShowView(normalMapView);
     }
 
     @Override
     public CB_View_Base getView() {
-        return MapView.getNormalMap();
+        return normalMapView;
     }
 
     @Override
@@ -113,7 +110,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         }
         icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
         icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
-        icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", MapView.getNormalMap().GetAlignToCompass());
+        icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", normalMapView.GetAlignToCompass());
         icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
         icm.addItem(MenuID.MI_TREC_REC, "RecTrack");
         icm.addOnClickListener((v, x, y, pointer, button) -> {
@@ -133,12 +130,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                     showMapViewLayerMenu();
                     return true;
                 case MenuID.MI_ALIGN_TO_COMPSS:
-                    MapView.getNormalMap().SetAlignToCompass(!MapView.getNormalMap().GetAlignToCompass());
+                    normalMapView.SetAlignToCompass(!normalMapView.GetAlignToCompass());
                     return true;
                 case MenuID.MI_CENTER_WP:
-                    if (MapView.getNormalMap() != null) {
-                        MapView.getNormalMap().createWaypointAtCenter();
-                    }
+                        normalMapView.createWaypointAtCenter();
                     return true;
                 case MenuID.MI_TREC_REC:
                     showMenuTrackRecording();
@@ -205,8 +200,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private void selectLayer(Layer layer) {
-        if (layer.Name.equals(MapView.getNormalMap().getCurrentLayer().Name)) {
-            MapView.getNormalMap().clearAdditionalLayers();
+        if (layer.Name.equals(normalMapView.getCurrentLayer().Name)) {
+            normalMapView.clearAdditionalLayers();
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
@@ -217,14 +212,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         switch (which) {
                             case GL_MsgBox.BUTTON_POSITIVE:
                                 // add the selected map to the curent layer
-                                MapView.getNormalMap().addAdditionalLayer(layer);
+                                normalMapView.addAdditionalLayer(layer);
                                 break;
                             case GL_MsgBox.BUTTON_NEUTRAL:
                                 // switch curent layer to selected
-                                MapView.getNormalMap().setCurrentLayer(layer);
+                                normalMapView.setCurrentLayer(layer);
                                 break;
                             default:
-                                MapView.getNormalMap().removeAdditionalLayer(layer);
+                                normalMapView.removeAdditionalLayer();
                         }
                         return true;
                     }
@@ -234,7 +229,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 msgBox.setButtonText(3, "-");
                 msgBox.setData(layer);
             } else {
-                MapView.getNormalMap().setCurrentLayer(layer);
+                normalMapView.setCurrentLayer(layer);
             }
         }
     }
@@ -252,14 +247,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         lsm.addItem(menuID++, "", lang); // ohne Translation
                         //mi.setData(which);
                     }
-                    lsm.addOnClickListener(new OnClickListener() {
-                        @Override
-                        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                            String selectedLanguage = ((MenuItem) v).getTitle();
-                            Config.PreferredMapLanguage.setValue(selectedLanguage);
-                            Config.AcceptChanges();
-                            return true;
-                        }
+                    lsm.addOnClickListener((v, x, y, pointer, button) -> {
+                        String selectedLanguage = ((MenuItem) v).getTitle();
+                        Config.PreferredMapLanguage.setValue(selectedLanguage);
+                        Config.AcceptChanges();
+                        return true;
                     });
                     lsm.Show();
                     hasLanguage = true;
@@ -285,9 +277,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 Layer layer = (Layer) ((MenuItem) v).getData();
                 if (layer == MapView.mapTileLoader.getCurrentOverlayLayer()) {
                     // switch off Overlay
-                    MapView.getNormalMap().SetCurrentOverlayLayer(null);
+                    normalMapView.SetCurrentOverlayLayer(null);
                 } else {
-                    MapView.getNormalMap().SetCurrentOverlayLayer(layer);
+                    normalMapView.SetCurrentOverlayLayer(layer);
                 }
                 // Refresh menu
                 icm.close();
@@ -303,7 +295,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         OptionMenu icm = new OptionMenu("MapViewShowLayerContextMenu");
 
         icm.addCheckableItem(MenuID.MI_HIDE_FINDS, "HideFinds", Config.MapHideMyFinds.getValue());
-        icm.addCheckableItem(MenuID.MI_MAP_SHOW_COMPASS, "MapShowCompass", Config.MapShowCompass.getValue());
+        icm.addCheckableItem(MenuID.MI_MAP_SHOW_INFO, "MapShowCompass", Config.MapShowInfo.getValue());
         icm.addCheckableItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints", Config.ShowAllWaypoints.getValue());
         icm.addCheckableItem(MenuID.MI_SHOW_RATINGS, "ShowRatings", Config.MapShowRating.getValue());
         icm.addCheckableItem(MenuID.MI_SHOW_DT, "ShowDT", Config.MapShowDT.getValue());
@@ -317,8 +309,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 case MenuID.MI_HIDE_FINDS:
                     toggleSettingWithReload(Config.MapHideMyFinds);
                     return true;
-                case MenuID.MI_MAP_SHOW_COMPASS:
-                    toggleSetting(Config.MapShowCompass);
+                case MenuID.MI_MAP_SHOW_INFO:
+                    toggleSetting(Config.MapShowInfo);
                     return true;
                 case MenuID.MI_SHOW_ALL_WAYPOINTS:
                     toggleSetting(Config.ShowAllWaypoints);
@@ -388,15 +380,13 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
         Config.AcceptChanges();
-        if (MapView.getNormalMap() != null)
-            MapView.getNormalMap().setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
+        normalMapView.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
     }
 
     private void toggleSettingWithReload(SettingBool setting) {
         setting.setValue(!setting.getValue());
         Config.AcceptChanges();
-        if (MapView.getNormalMap() != null)
-            MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
+        normalMapView.setNewSettings(INITIAL_WP_LIST);
     }
 
     private HashMap<String, String> getRenderThemes() {

@@ -21,7 +21,6 @@ import CB_Locator.Map.Layer.MapType;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.http.Webb;
@@ -94,13 +93,10 @@ public abstract class ManagerBase {
         DISPLAY_MODEL = displaymodel;
 
         if (LocatorSettings.CurrentMapLayer != null)
-            LocatorSettings.CurrentMapLayer.addSettingChangedListener(new IChanged() {
-                @Override
-                public void handleChange() {
-                    Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");
-                    if (layer.isMapsForge())
-                        initMapDatabase(layer);
-                }
+            LocatorSettings.CurrentMapLayer.addSettingChangedListener(() -> {
+                Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");
+                if (layer.isMapsForge())
+                    initMapDatabase(layer);
             });
     }
 
@@ -315,19 +311,16 @@ public abstract class ManagerBase {
         }
 
         try {
-            LocatorSettings.UserMap1.addSettingChangedListener(new IChanged() {
-                @Override
-                public void handleChange() {
-                    try {
-                        if (userMaps[0] != null) {
-                            layers.remove(userMaps[0]);
-                        }
-                        String url = LocatorSettings.UserMap1.getValue();
-                        userMaps[0] = getUserMap(url, "UserMap1");
-                        layers.add(userMaps[0]);
-                    } catch (Exception e) {
-                        Log.err(log, "Initial UserMap1", e);
+            LocatorSettings.UserMap1.addSettingChangedListener(() -> {
+                try {
+                    if (userMaps[0] != null) {
+                        layers.remove(userMaps[0]);
                     }
+                    String url = LocatorSettings.UserMap1.getValue();
+                    userMaps[0] = getUserMap(url, "UserMap1");
+                    layers.add(userMaps[0]);
+                } catch (Exception e) {
+                    Log.err(log, "Initial UserMap1", e);
                 }
             });
         } catch (Exception e) {
@@ -345,19 +338,16 @@ public abstract class ManagerBase {
         }
 
         try {
-            LocatorSettings.UserMap2.addSettingChangedListener(new IChanged() {
-                @Override
-                public void handleChange() {
-                    try {
-                        if (userMaps[1] != null) {
-                            layers.remove(userMaps[1]);
-                        }
-                        String url = LocatorSettings.UserMap2.getValue();
-                        userMaps[1] = getUserMap(url, "UserMap2");
-                        layers.add(userMaps[1]);
-                    } catch (Exception e) {
-                        Log.err(log, "Initial UserMap2", e);
+            LocatorSettings.UserMap2.addSettingChangedListener(() -> {
+                try {
+                    if (userMaps[1] != null) {
+                        layers.remove(userMaps[1]);
                     }
+                    String url = LocatorSettings.UserMap2.getValue();
+                    userMaps[1] = getUserMap(url, "UserMap2");
+                    layers.add(userMaps[1]);
+                } catch (Exception e) {
+                    Log.err(log, "Initial UserMap2", e);
                 }
             });
         } catch (Exception e) {

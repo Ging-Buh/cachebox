@@ -6,7 +6,6 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -19,40 +18,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     private static CB_Action_ShowSpoilerView that;
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-    private final OnClickListener onItemClickListener = (v, x, y, pointer, button) -> {
-        switch (((MenuItem) v).getMenuItemId()) {
-            case MenuID.MI_RELOAD_SPOILER:
-                GlobalCore.ImportSpoiler().setReadyListener(() -> {
-                    // erst die Lokalen Images für den Cache neu laden
-                    if (GlobalCore.isSetSelectedCache()) {
-                        GlobalCore.getSelectedCache().loadSpoilerRessources();
-                        GL.that.RunOnGL(() -> {
-                            if (TabMainView.spoilerView != null)
-                                TabMainView.spoilerView.ForceReload();
-                            Execute();
-                            TabMainView.spoilerView.onShow();
-                        });
-
-                    }
-
-                });
-                return true;
-            case MenuID.MI_START_PICTUREAPP:
-                String file = TabMainView.spoilerView.getSelectedFilePath();
-                if (file == null)
-                    return true;
-                PlatformConnector.StartPictureApp(file);
-                return true;
-        }
-        return false;
-    };
     private int spoilerState = -1;
     private Sprite SpoilerIcon;
 
     private CB_Action_ShowSpoilerView() {
         super("spoiler", MenuID.AID_SHOW_SPOILER);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowSpoilerView getInstance() {
@@ -63,11 +33,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.spoilerView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.spoilerView = new SpoilerView(tab.getContentRec(), "SpoilerView");
-
-        if ((TabMainView.spoilerView != null) && (tab != null))
-            tab.ShowView(TabMainView.spoilerView);
+        TabMainView.leftTab.ShowView(SpoilerView.getInstance());
     }
 
     @Override
@@ -91,7 +57,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.spoilerView;
+        return SpoilerView.getInstance();
     }
 
     @Override
@@ -102,7 +68,32 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
         Menu icm = new Menu("menu_compassView");
-        icm.addOnClickListener(onItemClickListener);
+        icm.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_RELOAD_SPOILER:
+                    GlobalCore.ImportSpoiler().setReadyListener(() -> {
+                        // erst die Lokalen Images für den Cache neu laden
+                        if (GlobalCore.isSetSelectedCache()) {
+                            GlobalCore.getSelectedCache().loadSpoilerRessources();
+                            GL.that.RunOnGL(() -> {
+                                SpoilerView.getInstance().ForceReload();
+                                Execute();
+                                SpoilerView.getInstance().onShow();
+                            });
+
+                        }
+
+                    });
+                    return true;
+                case MenuID.MI_START_PICTUREAPP:
+                    String file = SpoilerView.getInstance().getSelectedFilePath();
+                    if (file == null)
+                        return true;
+                    PlatformConnector.StartPictureApp(file);
+                    return true;
+            }
+            return false;
+        });
         icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
         icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp", Sprites.getSprite("image-export"));
 

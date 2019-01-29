@@ -8,6 +8,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.API_Button;
 import CB_UI.GL_UI.Controls.QuickButtonList;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI.GL_UI.SoundCache;
 import CB_UI.GL_UI.SoundCache.Sounds;
@@ -39,7 +40,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -195,8 +195,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 // Notify QuickButtonList
                 QuickButtonList.that.notifyDataSetChanged();
 
-                if (MapView.getNormalMap() != null)
-                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_NEW_SETTINGS);
+                CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
                 finish();
                 return true;
@@ -245,7 +244,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         }
 
         for (SettingCategory cat : Categorys) {
-            ArrayList<SettingBase<?>> CatList= new ArrayList<>();
+            ArrayList<SettingBase<?>> CatList = new ArrayList<>();
             for (SettingBase settingItem : AllSettingList) {
                 if (settingItem.getCategory().name().equals(cat.name())) {
                     CatList.add(settingItem);
@@ -450,27 +449,23 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 EditKey = Config.settings.indexOf(SB);
 
-                GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
+                GL.that.RunOnGLWithThreadCheck(() -> {
+                    ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListener() {
 
-                    @Override
-                    public void run() {
-                        ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListener() {
+                        @Override
+                        public void returnColor(Color color) {
+                            if (color == null)
+                                return; // nothing changed
 
-                            @Override
-                            public void returnColor(Color color) {
-                                if (color == null)
-                                    return; // nothing changed
-
-                                SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
-                                if (SetValue != null)
-                                    SetValue.setValue(color);
-                                resortList();
-                                // Activity wieder anzeigen
-                                show();
-                            }
-                        });
-                        clrPick.show();
-                    }
+                            SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
+                            if (SetValue != null)
+                                SetValue.setValue(color);
+                            resortList();
+                            // Activity wieder anzeigen
+                            show();
+                        }
+                    });
+                    clrPick.show();
                 });
 
                 return true;

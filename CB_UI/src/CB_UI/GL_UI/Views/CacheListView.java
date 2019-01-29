@@ -26,16 +26,18 @@ import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
-import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
-import CB_UI_Base.GL_UI.Controls.List.ListViewBase.IListPosChanged;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
+import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
@@ -50,78 +52,32 @@ import java.util.TimerTask;
 
 public class CacheListView extends CB_View_Base implements CacheListChangedEventListener, SelectedCacheEvent, PositionChangedEvent {
     private static final String log = "CacheListView";
+    private static CacheListView that;
     private V_ListView listView;
     private Scrollbar scrollBar;
-
     private CustomAdapter lvAdapter;
     private BitmapFontCache emptyMsg;
     private Boolean isShown = false;
-    private OnClickListener onItemClickListener = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            int selectionIndex = ((ListViewItemBase) v).getIndex();
-
-            Cache cache;
-            synchronized (Database.Data.cacheList) {
-                cache = Database.Data.cacheList.get(selectionIndex);
-            }
-            if (cache != null) {
-                // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-                Waypoint waypoint = cache.GetFinalWaypoint();
-                if (waypoint == null)
-                    waypoint = cache.GetStartWaypoint();
-                GlobalCore.setSelectedWaypoint(cache, waypoint);
-            }
-            listView.setSelection(selectionIndex);
-            setSelectedCacheVisible();
-            return true;
-        }
-    };
-    private OnClickListener onItemLongClickListener = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            int selectionIndex = ((ListViewItemBase) v).getIndex();
-
-            Cache cache;
-            synchronized (Database.Data.cacheList) {
-                cache = Database.Data.cacheList.get(selectionIndex);
-            }
-            Waypoint finalWp = null;
-            if (cache.HasFinalWaypoint())
-                finalWp = cache.GetFinalWaypoint();
-            if (finalWp == null)
-                finalWp = cache.GetStartWaypoint();
-            // shutdown AutoResort when selecting a cache by hand
-            GlobalCore.setAutoResort(false);
-            GlobalCore.setSelectedWaypoint(cache, finalWp);
-
-            invalidate();
-            CacheContextMenu.getCacheContextMenu(true).Show();
-            return true;
-        }
-    };
     private float searchPlaceholder = 0;
 
-    public CacheListView(CB_RectF rec, String Name) {
-        super(rec, Name);
+    private CacheListView() {
+        super(TabMainView.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
         CacheListChangedEventList.Add(this);
         SelectedCacheEventList.Add(this);
-        listView = new V_ListView(rec, Name);
+        listView = new V_ListView(TabMainView.leftTab.getContentRec(), "CacheListView");
         listView.setZeroPos();
 
-        listView.addListPosChangedEventHandler(new IListPosChanged() {
-            @Override
-            public void ListPosChanged() {
-                scrollBar.ScrollPositionChanged();
-            }
-        });
+        listView.addListPosChangedEventHandler(() -> scrollBar.ScrollPositionChanged());
         scrollBar = new Scrollbar(listView);
 
         this.addChild(listView);
         this.addChild(scrollBar);
+    }
+
+    public static CacheListView getInstance() {
+        if (that == null) that = new CacheListView();
+        return that;
     }
 
     @Override
@@ -218,49 +174,41 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        listView.RunIfListInitial(new IRunOnGL() {
+        listView.RunIfListInitial(() -> {
+            int id = 0;
+            Point firstAndLast = listView.getFirstAndLastVisibleIndex();
 
-            @Override
-            public void run() {
-                int id = 0;
-                Point firstAndLast = listView.getFirstAndLastVisibleIndex();
-
-                synchronized (Database.Data.cacheList) {
-                    for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
-                        Cache ca = Database.Data.cacheList.get(i);
-                        if (ca.Id == GlobalCore.getSelectedCache().Id) {
-                            listView.setSelection(id);
-                            if (listView.isDraggable()) {
-                                if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
-                                    listView.scrollToItem(id);
-                                    Log.debug(log, "Scroll to:" + id);
-                                }
+            synchronized (Database.Data.cacheList) {
+                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                    Cache ca = Database.Data.cacheList.get(i);
+                    if (ca.Id == GlobalCore.getSelectedCache().Id) {
+                        listView.setSelection(id);
+                        if (listView.isDraggable()) {
+                            if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
+                                listView.scrollToItem(id);
+                                Log.debug(log, "Scroll to:" + id);
                             }
-                            break;
                         }
-                        id++;
+                        break;
                     }
-
+                    id++;
                 }
 
-                TimerTask task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        GL.that.RunOnGL(new IRunOnGL() {
-
-                            @Override
-                            public void run() {
-                                if (listView != null)
-                                    listView.chkSlideBack();
-                                GL.that.renderOnce();
-                            }
-                        });
-                    }
-                };
-
-                Timer timer = new Timer();
-                timer.schedule(task, 50);
             }
+
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    GL.that.RunOnGL(() -> {
+                        if (listView != null)
+                            listView.chkSlideBack();
+                        GL.that.renderOnce();
+                    });
+                }
+            };
+
+            Timer timer = new Timer();
+            timer.schedule(task, 50);
         });
 
         GL.that.renderOnce();
@@ -309,7 +257,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
             try {
                 diverend = GlobalCore.getSelectedCache().Id != ((CacheListViewItem) listView.getSelectedItem()).getCache().Id;
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
             if (diverend) {
@@ -326,13 +274,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
             CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
             if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id) {
                 // TODO Run if ListView Initial and after showing
-                listView.RunIfListInitial(new IRunOnGL() {
-
-                    @Override
-                    public void run() {
-                        setSelectedCacheVisible();
-                    }
-                });
+                listView.RunIfListInitial(this::setSelectedCacheVisible);
 
             }
         }
@@ -379,10 +321,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
         onResized(this);
     }
 
-    public V_ListView getListView() {
-        return listView;
-    }
-
     @Override
     public Priority getPriority() {
         return Priority.Normal;
@@ -394,9 +332,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
     @Override
     public void dispose() {
-
-        onItemLongClickListener = null;
-        onItemClickListener = null;
+        that = null;
 
         if (listView != null)
             listView.dispose();
@@ -421,7 +357,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     public class CustomAdapter implements Adapter {
         private CacheList cacheList;
 
-        private int Count = 0;
+        private int Count;
 
         public CustomAdapter(CacheList cacheList) {
             synchronized (cacheList) {
@@ -452,8 +388,44 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
                 CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
                 v.setClickable(true);
-                v.setOnClickListener(onItemClickListener);
-                v.setOnLongClickListener(onItemLongClickListener);
+                v.setOnClickListener((v1, x, y, pointer, button) -> {
+                    int selectionIndex = ((ListViewItemBase) v1).getIndex();
+
+                    Cache cache1;
+                    synchronized (Database.Data.cacheList) {
+                        cache1 = Database.Data.cacheList.get(selectionIndex);
+                    }
+                    if (cache1 != null) {
+                        // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
+                        Waypoint waypoint = cache1.GetFinalWaypoint();
+                        if (waypoint == null)
+                            waypoint = cache1.GetStartWaypoint();
+                        GlobalCore.setSelectedWaypoint(cache1, waypoint);
+                    }
+                    listView.setSelection(selectionIndex);
+                    setSelectedCacheVisible();
+                    return true;
+                });
+                v.setOnLongClickListener((v12, x, y, pointer, button) -> {
+                    int selectionIndex = ((ListViewItemBase) v12).getIndex();
+
+                    Cache cache12;
+                    synchronized (Database.Data.cacheList) {
+                        cache12 = Database.Data.cacheList.get(selectionIndex);
+                    }
+                    Waypoint finalWp = null;
+                    if (cache12.HasFinalWaypoint())
+                        finalWp = cache12.GetFinalWaypoint();
+                    if (finalWp == null)
+                        finalWp = cache12.GetStartWaypoint();
+                    // shutdown AutoResort when selecting a cache by hand
+                    GlobalCore.setAutoResort(false);
+                    GlobalCore.setSelectedWaypoint(cache12, finalWp);
+
+                    invalidate();
+                    CacheContextMenu.getCacheContextMenu(true).Show();
+                    return true;
+                });
 
                 return v;
             }

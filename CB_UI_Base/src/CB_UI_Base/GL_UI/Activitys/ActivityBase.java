@@ -76,12 +76,7 @@ public class ActivityBase extends CB_View_Base {
     }
 
     protected void finish() {
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                GL.that.closeActivity();
-            }
-        });
+        GL.that.RunOnGL(() -> GL.that.closeActivity());
 
     }
 

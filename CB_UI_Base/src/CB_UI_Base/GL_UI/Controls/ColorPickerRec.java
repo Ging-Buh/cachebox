@@ -31,13 +31,7 @@ public class ColorPickerRec extends CB_View_Base {
     }
 
     private void colorChanged() {
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                setBackground(new ColorDrawable(mColor));
-            }
-        });
+        GL.that.RunOnGL(() -> setBackground(new ColorDrawable(mColor)));
 
     }
 }

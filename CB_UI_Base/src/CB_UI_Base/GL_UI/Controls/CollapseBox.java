@@ -98,7 +98,7 @@ public class CollapseBox extends Box {
     }
 
     public interface IAnimatedHeightChangedListener {
-        public void animatedHeightChanged(float Height);
+        void animatedHeightChanged(float Height);
     }
 
 }

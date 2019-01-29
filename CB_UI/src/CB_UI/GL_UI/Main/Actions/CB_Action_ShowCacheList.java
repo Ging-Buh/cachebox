@@ -36,8 +36,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
     private CB_Action_ShowCacheList() {
         super("cacheList", "  (" + Database.Data.cacheList.size() + ")", MenuID.AID_SHOW_CACHELIST);
         editCache = null;
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowCacheList getInstance() {
@@ -47,16 +45,12 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.cacheListView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.cacheListView = new CacheListView(tab.getContentRec(), "CacheListView");
-
-        if ((TabMainView.cacheListView != null) && (tab != null))
-            tab.ShowView(TabMainView.cacheListView);
+        TabMainView.leftTab.ShowView(CacheListView.getInstance());
     }
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.cacheListView;
+        return CacheListView.getInstance();
     }
 
     @Override
@@ -87,8 +81,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
                         if (nearstCacheWp != null)
                             GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
-                        if (TabMainView.cacheListView != null)
-                            TabMainView.cacheListView.setSelectedCacheVisible();
+                        CacheListView.getInstance().setSelectedCacheVisible();
                     }
                     return true;
                 case MenuID.MI_FilterSet:

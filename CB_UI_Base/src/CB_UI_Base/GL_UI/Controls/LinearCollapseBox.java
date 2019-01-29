@@ -19,7 +19,6 @@ public class LinearCollapseBox extends CollapseBox {
         this.childs.add(linearLayout);
 
         linearLayout.setLayoutChangedListener(new LayoutChanged() {
-
             @Override
             public void LayoutIsChanged(Linearlayout linearLayout, float newHeight) {
                 layout();

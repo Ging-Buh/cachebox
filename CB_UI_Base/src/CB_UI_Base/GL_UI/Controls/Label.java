@@ -360,12 +360,7 @@ public class Label extends CB_View_Base {
             TimerTask later = new TimerTask() {
                 @Override
                 public void run() {
-                    GL.that.RunOnGL(new IRunOnGL() {
-                        @Override
-                        public void run() {
-                            setText();
-                        }
-                    });
+                    GL.that.RunOnGL(() -> setText());
                 }
             };
             new Timer().schedule(later, 100);
@@ -418,12 +413,7 @@ public class Label extends CB_View_Base {
             // Try again
             ErrorCount++;
             if (ErrorCount < 5)
-                GL.that.RunOnGL(new IRunOnGL() {
-                    @Override
-                    public void run() {
-                        setTextPosition();
-                    }
-                });
+                GL.that.RunOnGL(() -> setTextPosition());
         }
     }
 

@@ -78,12 +78,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     public CB_View_Base getView() {
         // don't return a view.
         // show menu direct.
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                Execute();
-            }
-        });
+        GL.that.RunOnGL(() -> Execute());
 
         return null;
     }
@@ -194,12 +189,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
         PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()), Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListener() {
             @Override
             public void returnFolder(final String Path) {
-                GL.that.RunOnGL(new IRunOnGL() {
-                    @Override
-                    public void run() {
-                        ausgebenDatei(FileName, Path);
-                    }
-                });
+                GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path));
             }
         });
     }

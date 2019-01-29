@@ -11,15 +11,12 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
@@ -41,15 +38,13 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "MapDownload";
     private static MapDownload INSTANCE;
     private final String URL_FREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
-    boolean DownloadIsCompleted = false;
-    int AllProgress = 0;
-    int MapCount = 0;
-    int errors = 0;
-    CB_List<MapRepositoryInfo> mapInfoList = new CB_List<MapDownload.MapRepositoryInfo>();
-    CB_List<MapDownloadItem> mapInfoItemList = new CB_List<MapDownloadItem>();
-    MapRepositoryInfo actMapRepositoryInfo;
+    private boolean DownloadIsCompleted = false;
+    private int AllProgress = 0;
+    private CB_List<MapRepositoryInfo> mapInfoList = new CB_List<>();
+    private CB_List<MapDownloadItem> mapInfoItemList = new CB_List<>();
+    private MapRepositoryInfo actMapRepositoryInfo;
     private Button bOK, bCancel;
-    private Label lblTitle, lblProgressMsg;
+    private Label lblProgressMsg;
     private ProgressBar pgBar;
     private Boolean importStarted = false;
     private ScrollBox scrollBox;
@@ -97,41 +92,29 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         bCancel.setText(Translation.Get("cancel"));
 
         this.addChild(bOK);
-        bOK.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                ImportNow();
-                return true;
-            }
-
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            ImportNow();
+            return true;
         });
 
         this.addChild(bCancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (BreakawayImportThread.isCanceled()) {
-                    BreakawayImportThread.reset();
-                    finish();
-                    return true;
-                }
-
-                if (importStarted) {
-                    GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE) {
-                                finishImport();
-                            }
-                            return true;
-                        }
-
-                    });
-                } else
-                    finish();
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (BreakawayImportThread.isCanceled()) {
+                BreakawayImportThread.reset();
+                finish();
                 return true;
             }
+
+            if (importStarted) {
+                GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                        finishImport();
+                    }
+                    return true;
+                });
+            } else
+                finish();
+            return true;
         });
 
     }
@@ -141,7 +124,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-        lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
+        Label lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
         float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
         this.addChild(lblTitle);
@@ -166,15 +149,11 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     @Override
     public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                pgBar.setProgress(Progress);
-                lblProgressMsg.setText(ProgressMessage);
-                if (!Message.equals(""))
-                    pgBar.setText(Message);
-            }
+        GL.that.RunOnGL(() -> {
+            pgBar.setProgress(Progress);
+            lblProgressMsg.setText(ProgressMessage);
+            if (!Message.equals(""))
+                pgBar.setText(Message);
         });
 
     }
@@ -202,64 +181,60 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             item.beginDownload();
         }
 
-        Thread dlProgressChecker = new Thread(new Runnable() {
+        Thread dlProgressChecker = new Thread(() -> {
 
-            @Override
-            public void run() {
-
-                while (!DownloadIsCompleted) {
-                    if (canceld) {
-                        for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
-                            MapDownloadItem item = mapInfoItemList.get(i);
-                            item.cancelDownload();
-                        }
-                    }
-
-                    int calcAll = 0;
-                    int downloadCount = 0;
+            while (!DownloadIsCompleted) {
+                if (canceld) {
                     for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
                         MapDownloadItem item = mapInfoItemList.get(i);
-                        int actPro = item.getDownloadProgress();
-                        if (actPro > -1) {
-                            calcAll += actPro;
-                            downloadCount++;
-                        }
-
+                        item.cancelDownload();
                     }
-                    int newAllProgress = downloadCount != 0 ? calcAll / downloadCount : 0;
+                }
 
-                    if (AllProgress != newAllProgress) {
-                        AllProgress = newAllProgress;
-                        pgBar.setProgress(AllProgress);
-                        lblProgressMsg.setText(AllProgress + " %");
-                    }
-
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-
-                        e.printStackTrace();
-                    }
-
-                    // chk download ready
-                    boolean chk = true;
-                    for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
-                        MapDownloadItem item = mapInfoItemList.get(i);
-                        if (!item.isFinished()) {
-                            chk = false;
-                            break;
-                        }
-                    }
-
-                    if (chk) {
-                        // all downloads ready
-                        DownloadIsCompleted = true;
-                        finishImport();
+                int calcAll = 0;
+                int downloadCount = 0;
+                for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+                    MapDownloadItem item = mapInfoItemList.get(i);
+                    int actPro = item.getDownloadProgress();
+                    if (actPro > -1) {
+                        calcAll += actPro;
+                        downloadCount++;
                     }
 
                 }
+                int newAllProgress = downloadCount != 0 ? calcAll / downloadCount : 0;
+
+                if (AllProgress != newAllProgress) {
+                    AllProgress = newAllProgress;
+                    pgBar.setProgress(AllProgress);
+                    lblProgressMsg.setText(AllProgress + " %");
+                }
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                    e.printStackTrace();
+                }
+
+                // chk download ready
+                boolean chk = true;
+                for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+                    MapDownloadItem item = mapInfoItemList.get(i);
+                    if (!item.isFinished()) {
+                        chk = false;
+                        break;
+                    }
+                }
+
+                if (chk) {
+                    // all downloads ready
+                    DownloadIsCompleted = true;
+                    finishImport();
+                }
 
             }
+
         });
 
         dlProgressChecker.start();
@@ -311,49 +286,41 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
     private void readRepository() {
         isChkRepository = true;
-        Thread tread = new Thread(new Runnable() {
+        new Thread(() -> {
+            // Read XML
+            repository_freizeitkarte_android = Webb.create()
+                    .get(URL_FREIZEITKARTE)
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asString()
+                    .getBody();
 
-            @Override
-            public void run() {
-                // Read XML
-                repository_freizeitkarte_android = Webb.create()
-                        .get(URL_FREIZEITKARTE)
-                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
-                        .ensureSuccess()
-                        .asString()
-                        .getBody();
+            fillDownloadList();
 
-                fillDownloadList();
-
-                if (dis != null) {
-                    MapDownload.this.removeChildsDirekt(dis);
-                    dis.dispose();
-                    dis = null;
-                }
-                bOK.enable();
-                isChkRepository = false;
-                lblProgressMsg.setText("");
-
-                if (ManagerBase.Manager != null)
-                    ManagerBase.Manager.initMapPacks();
+            if (dis != null) {
+                MapDownload.this.removeChildsDirekt(dis);
+                dis.dispose();
+                dis = null;
             }
+            bOK.enable();
+            isChkRepository = false;
+            lblProgressMsg.setText("");
 
-        });
-        tread.start();
+            if (ManagerBase.Manager != null)
+                ManagerBase.Manager.initMapPacks();
+        }).start();
 
     }
 
     private void fillDownloadList() {
         scrollBox.removeChilds();
 
-        Map<String, String> values = new HashMap<String, String>();
+        Map<String, String> values = new HashMap<>();
         System.setProperty("sjxp.namespaces", "false");
-        List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
-        ruleList = createRepositoryRules(ruleList);
+        List<IRule<Map<String, String>>> ruleList = createRepositoryRules(new ArrayList<>());
 
-        @SuppressWarnings("unchecked")
-        XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
+        XMLParser<Map<String, String>> parserCache = new XMLParser<>(ruleList.toArray(new IRule[0]));
 
         InputStream stream = new ByteArrayInputStream(repository_freizeitkarte_android.getBytes());
         parserCache.parse(stream, values);
@@ -362,7 +329,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         // get and check the target directory (global value)
         String workPath = Config.MapPackFolder.getValue();
-        Boolean isWritable;
+        boolean isWritable;
         if (workPath.length() > 0)
             isWritable = FileIO.canWrite(workPath);
         else
@@ -459,7 +426,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         public String Description;
         public String Url;
         public int Size;
-        public String MD5;
+        String MD5;
     }
 
 }

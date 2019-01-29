@@ -632,16 +632,13 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             // Remove first
             childs.remove(view);
         }
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                if (last) {
-                    childs.add(0, view);
-                } else {
-                    childs.add(view);
-                }
-                chkChildClickable();
+        GL.that.RunOnGL(() -> {
+            if (last) {
+                childs.add(0, view);
+            } else {
+                childs.add(view);
             }
+            chkChildClickable();
         });
 
         return view;
@@ -649,47 +646,38 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     @Override
     public void removeChild(final GL_View_Base view) {
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                try {
-                    if (childs != null && childs.size() > 0)
-                        childs.remove(view);
-                } catch (Exception e) {
-                }
-                chkChildClickable();
+        GL.that.RunOnGL(() -> {
+            try {
+                if (childs != null && childs.size() > 0)
+                    childs.remove(view);
+            } catch (Exception e) {
             }
+            chkChildClickable();
         });
     }
 
     @Override
     public void removeChilds() {
 
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                try {
-                    if (childs != null && childs.size() > 0)
-                        childs.clear();
-                } catch (Exception e) {
-                }
-                chkChildClickable();
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            try {
+                if (childs != null && childs.size() > 0)
+                    childs.clear();
+            } catch (Exception e) {
             }
+            chkChildClickable();
         });
     }
 
     @Override
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                try {
-                    if (childs != null && childs.size() > 0)
-                        childs.remove(Childs);
-                } catch (Exception e) {
-                }
-                chkChildClickable();
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            try {
+                if (childs != null && childs.size() > 0)
+                    childs.remove(Childs);
+            } catch (Exception e) {
             }
+            chkChildClickable();
         });
     }
 

@@ -34,8 +34,6 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
@@ -60,39 +58,27 @@ import static CB_UI_Base.GL_UI.Sprites.*;
  */
 public class CreateTrackOverMapActivity extends ActivityBase {
     private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
+    public MapView mTrackMapView;
     private Label lblName;
     private EditTextField editName;
-    private MapView mapView;
     private Button btnOk, btnAdd, btnCancel;
     private CB_List<Waypoint> waypoints;
     private Waypoint selectedWP;
-    private Track track;
     private OnClickListener onOkClick = (v, x, y, pointer, button) -> false;
-    private OnClickListener onAddClick = new OnClickListener() {
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            final Coordinate coord = mapView.center;
-            if ((coord == null) || (!coord.isValid()))
-                return false;
-            GL.that.RunOnGL(() -> {
-                //Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
-                Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
-                addWP(newWP);
-            });
-            return true;
-        }
+    private OnClickListener onAddClick = (v, x, y, pointer, button) -> {
+        final Coordinate coord = mTrackMapView.center;
+        if ((coord == null) || (!coord.isValid()))
+            return false;
+        GL.that.RunOnGL(() -> {
+            //Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
+            Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
+            addWP(newWP);
+        });
+        return true;
     };
-    private OnClickListener onCancelClik = new OnClickListener() {
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
-            return true;
-        }
+    private OnClickListener onCancelClik = (v, x, y, pointer, button) -> {
+        GL.that.RunOnGL(() -> finish());
+        return true;
     };
 
     public CreateTrackOverMapActivity(String Name) {
@@ -126,47 +112,43 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
         CB_RectF mapRec = new CB_RectF(leftBorder, btnOk.getMaxY() + margin, innerWidth, innerHeight - (btnOk.getHalfHeight() + editName.getHeight() + (4 * margin) + topBorder));
 
-        mapView = new MapView(mapRec, MapMode.Track, "MapView");
-        this.addChild(mapView);
+        mTrackMapView = new MapView(mapRec, MapMode.Track);
+        this.addChild(mTrackMapView);
 
-        mapView.setOnLongClickListener(new OnClickListener() {
+        mTrackMapView.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // chk if any TrackPoint clicked
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // chk if any TrackPoint clicked
+            double minDist = Double.MAX_VALUE;
+            WaypointRenderInfo minWpi = null;
+            Vector2 clickedAt = new Vector2(x, y);
 
-                double minDist = Double.MAX_VALUE;
-                WaypointRenderInfo minWpi = null;
-                Vector2 clickedAt = new Vector2(x, y);
-
-                for (int i = 0, n = tmplist.size(); i < n; i++) {
-                    WaypointRenderInfo wpi = tmplist.get(i);
-                    Vector2 screen = mapView.worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
-                    if (clickedAt != null) {
-                        double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
-                        if (aktDist < minDist) {
-                            minDist = aktDist;
-                            minWpi = wpi;
-                        }
+            for (int i = 0, n = tmplist.size(); i < n; i++) {
+                WaypointRenderInfo wpi = tmplist.get(i);
+                Vector2 screen = mTrackMapView.worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+                if (clickedAt != null) {
+                    double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
+                    if (aktDist < minDist) {
+                        minDist = aktDist;
+                        minWpi = wpi;
                     }
                 }
-
-                if (minDist < 40) {
-                    selectedWP = minWpi.Waypoint;
-
-                    // Show PopUpMenu
-                    //					CB_RectF rec = new CB_RectF(x - 1, y - 1, 2, 2);
-                    //					CB_RectF mapWorld = mapView.getWorldRec();
-                    //					rec = rec.ScaleCenter(150);
-                    //					PopUpMenu menu = new PopUpMenu(rec, "popUpMenu");
-                    //					menu.setPos(mapWorld.getX() + x - menu.getHalfWidth(), mapView.getY() + y - menu.getHalfHeight());
-                    //					menu.showNotCloseAutomaticly();
-                } else {
-                    selectedWP = null;
-                }
-
-                return true;
             }
+
+            if (minDist < 40) {
+                selectedWP = minWpi.Waypoint;
+
+                // Show PopUpMenu
+                //					CB_RectF rec = new CB_RectF(x - 1, y - 1, 2, 2);
+                //					CB_RectF mapWorld = mapView.getWorldRec();
+                //					rec = rec.ScaleCenter(150);
+                //					PopUpMenu menu = new PopUpMenu(rec, "popUpMenu");
+                //					menu.setPos(mapWorld.getX() + x - menu.getHalfWidth(), mapView.getY() + y - menu.getHalfHeight());
+                //					menu.showNotCloseAutomaticly();
+            } else {
+                selectedWP = null;
+            }
+
+            return true;
         });
 
     }
@@ -177,7 +159,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         waypoints.add(wp);
         if (waypoints.size() == 2) {
             // Two Points, begins with Track drawing
-            track = new Track("generate", Color.RED);
+            Track track = new Track("generate", Color.RED);
             GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(0)));
             GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(1)));
         }
@@ -242,16 +224,16 @@ public class CreateTrackOverMapActivity extends ActivityBase {
             }
         }
 
-        batch.setProjectionMatrix(mapView.myParentInfo.Matrix());
+        batch.setProjectionMatrix(mTrackMapView.myParentInfo.Matrix());
 
-        Gdx.gl.glScissor((int) mapView.thisWorldRec.getX(), (int) mapView.thisWorldRec.getY(), (int) mapView.thisWorldRec.getWidth() + 1, (int) mapView.thisWorldRec.getHeight() + 1);
+        Gdx.gl.glScissor((int) mTrackMapView.thisWorldRec.getX(), (int) mTrackMapView.thisWorldRec.getY(), (int) mTrackMapView.thisWorldRec.getWidth() + 1, (int) mTrackMapView.thisWorldRec.getHeight() + 1);
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
         SizeF drawingSize = new SizeF(40, 40);
 
         for (int i = 0; i < tmplist.size(); i++) {
 
-            mapView.renderWPI(batch, drawingSize, drawingSize, tmplist.get(i));
+            mTrackMapView.renderWPI(batch, drawingSize, drawingSize, tmplist.get(i));
 
         }
 
@@ -260,6 +242,10 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     @Override
     public void dispose() {
         super.dispose();
+        if (mTrackMapView != null) {
+            mTrackMapView.dispose();
+            mTrackMapView = null;
+        }
         if (btnOk != null)
             btnOk.dispose();
         btnOk = null;

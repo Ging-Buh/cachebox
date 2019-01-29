@@ -1217,6 +1217,6 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     public interface ISolverBackStringListener {
-        public void BackString(String backString);
+        void BackString(String backString);
     }
 }

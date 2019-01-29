@@ -15,8 +15,7 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.GroundspeakAPI.PQ;
+import CB_Core.Api.GroundspeakAPI.*;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
@@ -30,7 +29,6 @@ import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.*;
@@ -43,14 +41,10 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -70,39 +64,48 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import java.io.IOException;
 import java.util.*;
 
+import static CB_Core.Api.GroundspeakAPI.*;
 import static CB_UI.GL_UI.Main.Actions.CB_Action_ShowImportMenu.*;
 
 public class Import extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "Import";
-    final boolean MAP_LINE_ACTIVE = false;
+    private final boolean MAP_LINE_ACTIVE = false;
     private final float CollapseBoxMaxHeight;
     private final long ANIMATION_TICK = 450;
     private final ScrollBox scrollBox;
-    protected Date ImportStart;
-    ArrayList<String> values = new ArrayList<String>();
+    private Date ImportStart;
+    private ArrayList<String> values = new ArrayList<>();
     private boolean PQ_LINE_ACTIVE = true;
-    private boolean CBS_LINE_ACTIVE = false;
+    private boolean CBS_LINE_ACTIVE;
     private boolean GPX_LINE_ACTIVE = true;
     private boolean GCV_LINE_ACTIVE = true;
     private boolean LOG_LINE_ACTIVE = true;
     private boolean DB_LINE_ACTIVE = true;
-    private boolean IMAGE_LINE_ACTIVE = true;
-    private int importType = 0; // um direkt gleich den Import für eine bestimmte API starten zu können
+    private boolean IMAGE_LINE_ACTIVE;
+    private int importType; // um direkt gleich den Import für eine bestimmte API starten zu können
     private V_ListView lvPQs, lvCBServer;
-    private Button bOK, bCancel, refreshPqList, refreshCBServerList, btnSelectFile;
+    private Button bOK;
+    private Button refreshPqList;
+    private Button refreshCBServerList;
+    private Button btnSelectFile;
     private float innerLeft, innerHeight, CollapseBoxHeight;
     private float CollapseBoxLogsMaxHeight;
-    private Label lblTitle, lblPQ, lblCBServer, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
+    private Label lblPQ;
+    private Label lblCBServer;
+    private Label lblGPX;
+    private Label lblGcVote;
+    private Label lblImage;
+    private Label lblSpoiler;
+    private Label lblMaps;
+    private Label lblProgressMsg;
+    private Label lblLogs;
+    private Label lblCompact;
     private ProgressBar pgBar;
     private ChkBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
     private CollapseBox PQ_ListCollapseBox, CBServerCollapseBox, LogCollapseBox;
-    IAnimatedHeightChangedListener mAnimationListener = new IAnimatedHeightChangedListener() {
-        @Override
-        public void animatedHeightChanged(float Height) {
-            Layout();
-        }
-    };
+    private IAnimatedHeightChangedListener mAnimationListener = height -> animatedHeightChanged();
     private Spinner spinner;
+
     private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
         @Override
@@ -154,7 +157,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private float itemHeight = -1;
     private ImportAnimation dis;
     private volatile BreakawayImportThread importThread;
-    private volatile Thread CopyThread;
 
     public Import() {
         this(0);
@@ -163,11 +165,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     public Import(int importType) {
         super(ActivityRec(), "importActivity");
         this.importType = importType;
-        if (StringH.isEmpty(Config.CBS_IP.getValue()))
-            CBS_LINE_ACTIVE = false;
-        else {
-            CBS_LINE_ACTIVE = true;
-        }
+        CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
         IMAGE_LINE_ACTIVE = true;
         switch (importType) {
             case MI_IMPORT_GS_PQ:
@@ -214,7 +212,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         scrollBox.setY(bOK.getMaxY() + margin);
         scrollBox.setBackground(this.getBackground());
         if (PQ_LINE_ACTIVE) {
-            if (!GroundspeakAPI.isPremiumMember()) {
+            if (!isPremiumMember()) {
                 PQ_LINE_ACTIVE = false;
             }
         }
@@ -268,46 +266,36 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     private void createOkCancelBtn() {
         bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Import");
-        bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Import");
+        Button bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Import");
 
         // Translations
         bOK.setText(Translation.Get("import"));
         bCancel.setText(Translation.Get("cancel"));
 
         this.addChild(bOK);
-        bOK.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                ImportNow();
-                return true;
-            }
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            ImportNow();
+            return true;
         });
 
         this.addChild(bCancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (BreakawayImportThread.isCanceled()) {
-                    BreakawayImportThread.reset();
-                    finish();
-                    return true;
-                }
-
-                if (importStarted) {
-                    GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE) {
-                                cancelImport();
-                            }
-                            return true;
-                        }
-                    });
-                } else
-                    finish();
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (BreakawayImportThread.isCanceled()) {
+                BreakawayImportThread.reset();
+                finish();
                 return true;
             }
+
+            if (importStarted) {
+                GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                        cancelImport();
+                    }
+                    return true;
+                });
+            } else
+                finish();
+            return true;
         });
 
     }
@@ -317,7 +305,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-        lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
+        Label lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
         float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
         this.addChild(lblTitle);
@@ -396,13 +384,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         refreshPqList.setX(margin);
         refreshPqList.setY(margin);
         refreshPqList.setText(Translation.Get("refreshPqList"));
-        refreshPqList.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                refreshPqList();
-                return true;
-            }
+        refreshPqList.setOnClickListener((v, x, y, pointer, button) -> {
+            refreshPqList();
+            return true;
         });
 
         lvPQs = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, PQ_ListCollapseBox.getWidth(), PQ_ListCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
@@ -426,13 +410,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         refreshCBServerList.setX(margin);
         refreshCBServerList.setY(margin);
         refreshCBServerList.setText(Translation.Get("refreshCBServerList"));
-        refreshCBServerList.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                refreshCBServerList();
-                return true;
-            }
+        refreshCBServerList.setOnClickListener((v, x, y, pointer, button) -> {
+            refreshCBServerList();
+            return true;
         });
 
         lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, CBServerCollapseBox.getWidth(), CBServerCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
@@ -464,19 +444,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         btnSelectFile.setPos(checkBoxImportGPX.getMaxX() + (checkBoxImportGPX.getWidth() * 2.2f), checkBoxImportGPX.getY());
         btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
 
-        btnSelectFile.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                PlatformConnector.getFile("", "", "", "", new IgetFileReturnListener() {
-
-                    @Override
-                    public void returnFile(String Path) {
-                        copyGPX2PQ_Folder(Path);
-                    }
-                });
-                return true;
-            }
+        btnSelectFile.setOnClickListener((v, x, y, pointer, button) -> {
+            PlatformConnector.getFile("", "", "", "", this::copyGPX2PQ_Folder);
+            return true;
         });
 
         scrollBox.addChild(checkBoxImportGPX);
@@ -616,13 +586,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
         };
 
-        spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(int index) {
-                Config.LogMaxMonthAge.setValue(index);
-                Config.AcceptChanges();
-            }
+        spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, index -> {
+            Config.LogMaxMonthAge.setValue(index);
+            Config.AcceptChanges();
         });
 
         LogCollapseBox.addChild(spinner);
@@ -638,24 +604,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         input.setText(String.valueOf(Config.LogMinCount.getValue()));
         input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());
         LogCollapseBox.addChild(input);
-        input.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
-                    @Override
-                    public void returnValue(int value) {
-                        Config.LogMinCount.setValue(value);
-                        Config.AcceptChanges();
-                        input.setText(String.valueOf(value));
-                    }
+        input.setOnClickListener((v, x, y, pointer, button) -> {
+            NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
+                @Override
+                public void returnValue(int value) {
+                    Config.LogMinCount.setValue(value);
+                    Config.AcceptChanges();
+                    input.setText(String.valueOf(value));
+                }
 
-                    @Override
-                    public void cancelClicked() {
-                    }
+                @Override
+                public void cancelClicked() {
+                }
 
-                });
-                return true;
-            }
+            });
+            return true;
         });
     }
 
@@ -738,7 +701,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         checkImportPQfromGC.setEnabled(true);
 
         if (checkImportPQfromGC.isChecked()) {
-            checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? true : false);
+            checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE);
             checkBoxImportGPX.setEnabled(false);
         }
         checkBoxCompactDB.setChecked(DB_LINE_ACTIVE ? Config.CompactDB.getValue() : false);
@@ -793,24 +756,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lvPQs.notifyDataSetChanged();
         refreshPqList.disable();
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                PqList = GroundspeakAPI.fetchPocketQueryList();
-                Collections.sort(PqList, (p1, p2) -> p1.Name.compareTo(p2.Name));
-                // todo do not ignore APIError
-                lvPQs.setBaseAdapter(new PqListAdapter());
-                lvPQs.notifyDataSetChanged();
-
-                stopAnimationTimer();
-                lvPQs.setEmptyMsg(Translation.Get("EmptyPqList"));
-
-                refreshPqList.enable();
+        new Thread(() -> {
+            PqList = fetchPocketQueryList();
+            if (APIError != OK) {
+                GL_MsgBox.Show(LastAPIError, Translation.Get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             }
+            // even if error: you can use PqList, may be empty
+            Collections.sort(PqList, (p1, p2) -> p1.Name.compareTo(p2.Name));
+            lvPQs.setBaseAdapter(new PqListAdapter());
+            lvPQs.notifyDataSetChanged();
 
-        };
+            stopAnimationTimer();
+            lvPQs.setEmptyMsg(Translation.Get("EmptyPqList"));
 
-        thread.start();
+            refreshPqList.enable();
+        }).start();
 
         mAnimationTimer = new Timer();
         mAnimationTimer.schedule(new TimerTask() {
@@ -825,9 +785,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 if (animationValue > 5)
                     animationValue = 0;
 
-                String s = "";
+                StringBuilder s = new StringBuilder();
                 for (int i = 0; i < animationValue; i++) {
-                    s += ".";
+                    s.append(".");
                 }
 
                 lvPQs.setEmptyMsg(Translation.Get("LoadPqList") + s);
@@ -844,35 +804,29 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lvCBServer.notifyDataSetChanged();
         refreshCBServerList.disable();
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                RpcClientCB rpc = new RpcClientCB();
-                RpcAnswer answer = rpc.getExportList();
+        new Thread(() -> {
+            RpcClientCB rpc = new RpcClientCB();
+            RpcAnswer answer = rpc.getExportList();
 
-                if (answer != null) {
-                    if (answer instanceof RpcAnswer_GetExportList) {
-                        cbServerExportList = ((RpcAnswer_GetExportList) answer).getList();
-                        // GL_MsgBox.Show("RpcAntwort: " + answer.toString());
-                    } else {
-                        cbServerExportList = null;
-                    }
+            if (answer != null) {
+                if (answer instanceof RpcAnswer_GetExportList) {
+                    cbServerExportList = ((RpcAnswer_GetExportList) answer).getList();
+                    // GL_MsgBox.Show("RpcAntwort: " + answer.toString());
                 } else {
                     cbServerExportList = null;
                 }
-
-                lvCBServer.setBaseAdapter(new CustomAdapterCBServer());
-                lvCBServer.notifyDataSetChanged();
-
-                stopAnimationTimer();
-                lvCBServer.setEmptyMsg(Translation.Get("EmptyCBServerList"));
-
-                refreshCBServerList.enable();
+            } else {
+                cbServerExportList = null;
             }
 
-        };
+            lvCBServer.setBaseAdapter(new CustomAdapterCBServer());
+            lvCBServer.notifyDataSetChanged();
 
-        thread.start();
+            stopAnimationTimer();
+            lvCBServer.setEmptyMsg(Translation.Get("EmptyCBServerList"));
+
+            refreshCBServerList.enable();
+        }).start();
 
         mAnimationTimer = new Timer();
         mAnimationTimer.schedule(new TimerTask() {
@@ -887,9 +841,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 if (animationValue > 5)
                     animationValue = 0;
 
-                String s = "";
+                StringBuilder s = new StringBuilder();
                 for (int i = 0; i < animationValue; i++) {
-                    s += ".";
+                    s.append(".");
                 }
 
                 lvCBServer.setEmptyMsg(Translation.Get("LoadCBServerList") + s);
@@ -934,7 +888,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     }
 
-    public void ImportThread(final String directoryPath, final File directory) {
+    private void ImportThread(final String directoryPath, final File directory) {
         importThread = new BreakawayImportThread() {
             @Override
             public void run() {
@@ -989,13 +943,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                                     downloadPqList.add(pq);
                             }
 
-                            Iterator<PQ> iterator = downloadPqList.iterator();
 
                             ip.setJobMax("importGC", downloadPqList.size());
 
                             dis.setAnimationType(AnimationType.Download);
 
-                            if (iterator != null && iterator.hasNext()) {
+                            Iterator<PQ> iterator = downloadPqList.iterator();
+                            if (iterator.hasNext()) {
                                 do {
                                     if (BreakawayImportThread.isCanceled()) {
                                         cancelImport();
@@ -1007,8 +961,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                                     if (pq.doDownload) {
                                         ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
-                                        GroundspeakAPI.fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
-                                        // todo do not ignore APIError
+                                        fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
+                                        if (APIError != OK) {
+                                            GL_MsgBox.Show(LastAPIError, Translation.Get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                        }
                                     }
 
                                 } while (iterator.hasNext());
@@ -1022,8 +978,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                     try {
                         dis.setAnimationType(AnimationType.Work);
-                    } catch (Exception e) {
-
+                    } catch (Exception ignored) {
                     }
 
                     // Importiere alle GPX Files im Import Folder, auch in ZIP verpackte
@@ -1061,7 +1016,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                         File[] filelist = directory.listFiles();
                         for (File tmp : filelist) {
                             if (tmp.isDirectory()) {
-                                ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<File>());
+                                ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<>());
                                 for (File tmp2 : ordnerInhalt) {
                                     try {
                                         tmp2.delete();
@@ -1074,7 +1029,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                             try {
                                 tmp.delete();
                                 if (tmp.exists()) {
-                                    Log.err(log,"Delete " + tmp.getAbsolutePath());
+                                    Log.err(log, "Delete " + tmp.getAbsolutePath());
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -1135,8 +1090,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                         dis.setAnimationType(AnimationType.Download);
                         int result = importer.importImages(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
-                        if (result == GroundspeakAPI.ERROR) {
-                            GL.that.Toast(GroundspeakAPI.LastAPIError);
+                        if (result == ERROR) {
+                            GL.that.Toast(LastAPIError);
                             ip.ProgressChangeMsg("", "");
                             return;
                         }
@@ -1207,8 +1162,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         if (ImportStart != null) {
             Date Importfin = new Date();
             long ImportZeit = Importfin.getTime() - ImportStart.getTime();
-
-            Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "Cache " + String.valueOf(GPXFileImporter.LogCount) + "Logs in " + String.valueOf(ImportZeit);
+            Msg = "Import " + GPXFileImporter.CacheCount + "Cache " + GPXFileImporter.LogCount + "Logs in " + ImportZeit;
         } else {
             Msg = "Import canceld";
         }
@@ -1245,15 +1199,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     @Override
     public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                pgBar.setProgress(Progress);
-                lblProgressMsg.setText(ProgressMessage);
-                if (!Message.equals(""))
-                    pgBar.setText(Message);
-            }
+        GL.that.RunOnGL(() -> {
+            pgBar.setProgress(Progress);
+            lblProgressMsg.setText(ProgressMessage);
+            if (!Message.equals(""))
+                pgBar.setText(Message);
         });
 
     }
@@ -1267,26 +1217,26 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         dis.setAnimationType(AnimationType.Work);
 
-        CopyThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                CopyRule rule = new CopyRule(file, Config.PocketQueryFolder.getValue());
-                Copy copyHelper = new Copy(rule);
-                try {
-                    copyHelper.Run();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                cancelImport();
+        Thread copyThread = new Thread(() -> {
+            CopyRule rule = new CopyRule(file, Config.PocketQueryFolder.getValue());
+            Copy copyHelper = new Copy(rule);
+            try {
+                copyHelper.Run();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            cancelImport();
         });
-        CopyThread.start();
+        copyThread.start();
+    }
+
+    private void animatedHeightChanged() {
+        Layout();
     }
 
     public class PqListAdapter implements Adapter {
 
-        public PqListAdapter() {
+        PqListAdapter() {
         }
 
         @Override
@@ -1322,7 +1272,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     public class CustomAdapterCBServer implements Adapter {
 
-        public CustomAdapterCBServer() {
+        CustomAdapterCBServer() {
         }
 
         @Override

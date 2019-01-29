@@ -16,10 +16,13 @@
 package CB_UI.GL_UI.Controls.PopUps;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.*;
+import CB_Core.CacheListChangedEventList;
+import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
+import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -29,8 +32,8 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Controls.Slider.YPositionChanged;
-import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
+import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.Enums.WrapType;
@@ -46,7 +49,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
@@ -71,16 +73,10 @@ public class SearchDialog extends PopUp_Base {
 
         @Override
         public void Position(float SliderTop, float SliderBottom) {
-
-            if (TabMainView.cacheListView != null) {
-                setY(TabMainView.cacheListView.getMaxY() - that.getHeight());
-            }
+            setY(CacheListView.getInstance().getMaxY() - that.getHeight());
         }
     };
 
-    /*
-     * Buttons
-     */
     CancelWaitDialog wd = null;
     GL_MsgBox MSB;
     /**
@@ -452,13 +448,7 @@ public class SearchDialog extends PopUp_Base {
             public void checkReady(boolean invalidAccessToken) {
 
                 if (invalidAccessToken) {
-                    GL.that.RunOnGL(new IRunOnGL() {
-
-                        @Override
-                        public void run() {
-                            GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
-                        }
-                    });
+                    GL.that.RunOnGL(() -> GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
                 } else {
 
                     wd = CancelWaitDialog.ShowWait(Translation.Get("Search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
@@ -509,20 +499,14 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
         Log.debug(log, "searchOnlineNow");
-        wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
-            @Override
-            public void isCanceled() {
-                closeWaitDialog();
-            }
-        }, new ICancelRunnable() {
+        wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), () -> closeWaitDialog(), new ICancelRunnable() {
 
             @Override
             public void run() {
 
                 Coordinate searchCoord;
-                if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
-                    searchCoord = MapView.getNormalMap().center;
+                if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
+                    searchCoord = CB_Action_ShowMap.getInstance().normalMapView.center;
                 } else {
                     searchCoord = Locator.getCoordinate();
                 }
@@ -686,10 +670,8 @@ public class SearchDialog extends PopUp_Base {
     public void onShow() {
         try {
 
-            if (TabMainView.cacheListView != null) {
-                setY(TabMainView.cacheListView.getMaxY() - this.getHeight());
-                TabMainView.cacheListView.setTopPlaceHolder(this.getHeight());
-            }
+            setY(CacheListView.getInstance().getMaxY() - this.getHeight());
+            CacheListView.getInstance().setTopPlaceHolder(this.getHeight());
 
             if (!GL.that.PopUpIsShown())
                 that.showNotCloseAutomaticly();
@@ -703,10 +685,7 @@ public class SearchDialog extends PopUp_Base {
     @Override
     public void onHide() {
         Slider.that.removePosChangedEvent(listener);
-
-        if (TabMainView.cacheListView != null) {
-            TabMainView.cacheListView.resetPlaceHolder();
-        }
+        CacheListView.getInstance().resetPlaceHolder();
     }
 
     private void askPremium() {
@@ -717,31 +696,23 @@ public class SearchDialog extends PopUp_Base {
             @Override
             public void checkReady(boolean invalidAccessToken) {
                 if (invalidAccessToken) {
-                    GL.that.RunOnGL(new IRunOnGL() {
-                        @Override
-                        public void run() {
-                            GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
-                        }
-                    });
+                    GL.that.RunOnGL(() -> GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
                 } else {
                     closeWD();
-                    GL.that.RunOnGL(new IRunOnGL() {
-                        @Override
-                        public void run() {
-                            if (isPremiumMember()) {
-                                showTargetApiDialog();
-                            } else {
-                                MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
-                                    @Override
-                                    public boolean onClick(int which, Object data) {
-                                        closeMsgBox();
-                                        if (which == GL_MsgBox.BUTTON_POSITIVE) {
-                                            showTargetApiDialog();
-                                        }
-                                        return true;
+                    GL.that.RunOnGL(() -> {
+                        if (isPremiumMember()) {
+                            showTargetApiDialog();
+                        } else {
+                            MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
+                                @Override
+                                public boolean onClick(int which, Object data) {
+                                    closeMsgBox();
+                                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                                        showTargetApiDialog();
                                     }
-                                });
-                            }
+                                    return true;
+                                }
+                            });
                         }
                     });
                 }

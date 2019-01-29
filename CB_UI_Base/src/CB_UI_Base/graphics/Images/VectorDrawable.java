@@ -171,79 +171,74 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
         if (!RunOnGlSetted && m_fboEnabled && m_fboRegion == null) {
             RunOnGlSetted = true;
 
-            GL.that.RunOnGL(new IRenderFBO() {
+            GL.that.RunOnGL((IRenderFBO) () -> {
+                synchronized (isDisposed) {
 
-                @Override
-                public void run() {
-                    synchronized (isDisposed) {
+                    if (isDisposed.get()) {
+                        return;
+                    }
 
-                        if (isDisposed.get()) {
-                            return;
-                        }
+                    try {
+                        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
-                        try {
-                            Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+                        long start = System.currentTimeMillis();
 
-                            long start = System.currentTimeMillis();
+                        m_fbo = new FrameBuffer(Format.RGBA8888, fboScalerWidth, fboScalerHeight, false);
+                        m_fboRegion = new TextureRegion(m_fbo.getColorBufferTexture());
+                        m_fboRegion.flip(flipX, flipY);
 
-                            m_fbo = new FrameBuffer(Format.RGBA8888, fboScalerWidth, fboScalerHeight, false);
-                            m_fboRegion = new TextureRegion(m_fbo.getColorBufferTexture());
-                            m_fboRegion.flip(flipX, flipY);
+                        m_fbo.begin();
 
-                            m_fbo.begin();
+                        // clear screen
+                        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-                            // clear screen
-                            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+                        GL.that.getPolygonSpriteBatch().setColor(new Color(Color.WHITE));
 
-                            GL.that.getPolygonSpriteBatch().setColor(new Color(Color.WHITE));
+                        GL.that.getPolygonSpriteBatch().begin();
 
-                            GL.that.getPolygonSpriteBatch().begin();
+                        Matrix4 matrix = new Matrix4().setToOrtho2D(0, 0, width, height);
+                        matrix.scale(FBO_SCALER, FBO_SCALER, 1);
+                        GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
 
-                            Matrix4 matrix = new Matrix4().setToOrtho2D(0, 0, width, height);
-                            matrix.scale(FBO_SCALER, FBO_SCALER, 1);
+                        // draw Background
+                        GL.that.getPolygonSpriteBatch().disableBlending();
+                        background.draw(GL.that.getPolygonSpriteBatch(), 0, 0, fboScalerWidth, fboScalerHeight);
+                        GL.that.getPolygonSpriteBatch().enableBlending();
+                        int count = 0;
+
+                        for (int i = 0, n = drawableList.size(); i < n; i++) {
+                            MatrixDrawable drw = drawableList.get(i);
+                            if (count++ > 2500) {
+                                GL.that.getPolygonSpriteBatch().flush();
+                                count = 0;
+                            }
+                            matrix = new Matrix4().setToOrtho2D(0, 0, width, height);
+                            if (drw.matrix != null) {
+
+                                matrix.mul(drw.matrix.getMatrix4());
+                            }
+
                             GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
-
-                            // draw Background
-                            GL.that.getPolygonSpriteBatch().disableBlending();
-                            background.draw(GL.that.getPolygonSpriteBatch(), 0, 0, fboScalerWidth, fboScalerHeight);
-                            GL.that.getPolygonSpriteBatch().enableBlending();
-                            int count = 0;
-
-                            for (int i = 0, n = drawableList.size(); i < n; i++) {
-                                MatrixDrawable drw = drawableList.get(i);
-                                if (count++ > 2500) {
-                                    GL.that.getPolygonSpriteBatch().flush();
-                                    count = 0;
-                                }
-                                matrix = new Matrix4().setToOrtho2D(0, 0, width, height);
-                                if (drw.matrix != null) {
-
-                                    matrix.mul(drw.matrix.getMatrix4());
-                                }
-
-                                GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
-                                drw.drawable.draw(GL.that.getPolygonSpriteBatch(), 0, 0, width, height, 0);
-                            }
-
-                            if (m_fbo != null) {
-                                GL.that.getPolygonSpriteBatch().end();
-                                m_fbo.end();
-                                m_fboEnabled = false;
-                            }
-
-                            FBOisDrawed = true;
-                            FBO_DrawingTime = System.currentTimeMillis() - start;
-                            Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-                            GL.that.getPolygonSpriteBatch().setProjectionMatrix(oriMatrix);
-
-                            m_fboEnabled = false;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
+                            drw.drawable.draw(GL.that.getPolygonSpriteBatch(), 0, 0, width, height, 0);
                         }
+
+                        if (m_fbo != null) {
+                            GL.that.getPolygonSpriteBatch().end();
+                            m_fbo.end();
+                            m_fboEnabled = false;
+                        }
+
+                        FBOisDrawed = true;
+                        FBO_DrawingTime = System.currentTimeMillis() - start;
+                        Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+                        GL.that.getPolygonSpriteBatch().setProjectionMatrix(oriMatrix);
+
+                        m_fboEnabled = false;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
                     }
                 }
-
             });
 
         }

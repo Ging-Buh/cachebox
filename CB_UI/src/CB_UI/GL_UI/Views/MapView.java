@@ -35,7 +35,6 @@ import CB_Locator.Map.*;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
-import CB_UI.GL_UI.Activitys.EditWaypoint.IReturnListener;
 import CB_UI.GL_UI.Controls.InfoBubble;
 import CB_UI.GL_UI.Controls.LiveButton;
 import CB_UI.GL_UI.Controls.MapInfoPanel;
@@ -45,13 +44,10 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites.*;
 import CB_UI_Base.GL_UI.utils.KineticZoom;
 import CB_UI_Base.Math.CB_RectF;
@@ -68,7 +64,6 @@ import CB_Utils.Log.Log;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -86,75 +81,152 @@ import static CB_UI_Base.GL_UI.Sprites.*;
  */
 public class MapView extends MapViewBase implements SelectedCacheEvent, PositionChangedEvent {
     private static final String log = "MapView";
-    private static MapView[] Instances = new MapView[MapMode.values().length];
-    public static int INITIAL_WP_LIST = 4;
-    private static boolean MapTileLoderPreInitial = false;
-    private static boolean MapTileLoderPreInitialAtWork = false;
-    /**
-     * Rechteck vom Target-Pfeil zur onClick bestimmung
-     */
-    private final CB_RectF TargetArrow = new CB_RectF();
-    protected SortedMap<Integer, Integer> DistanceZoomLevel;
-    MapMode Mode = MapMode.Normal;
-    // ####### Enthaltene Controls ##########
-    LiveButton liveButton;
-    MultiToggleButton togBtn;
-    MapInfoPanel info;
-
-    // private GL_ZoomScale zoomScale;
-    InfoBubble infoBubble;
-    CancelWaitDialog wd = null;
-    int zoomCross = 16;
-    // Settings values
-    boolean showRating;
-    boolean showDT;
-    boolean showTitles;
-    boolean hideMyFinds;
-    boolean showCompass;
-    boolean showDirectLine;
-    boolean showAllWaypoints;
-    GL_Paint paint;
-    Cache lastSelectedCache = null;
-    Waypoint lastSelectedWaypoint = null;
-    GlyphLayout layout = null;
-    CB_RectF TargetArrowScreenRec;
+    private boolean MapTileLoderPreInitial = false;
+    private CB_RectF TargetArrow = new CB_RectF();
+    private SortedMap<Integer, Integer> DistanceZoomLevel;
+    private MapMode Mode;
+    private LiveButton liveButton;
+    private MultiToggleButton togBtn;
+    private InfoBubble infoBubble;
+    private CancelWaitDialog wd = null;
+    private int zoomCross = 16;
+    private boolean showRating;
+    private boolean showDT;
+    private boolean showTitles;
+    private boolean hideMyFinds;
+    private boolean showDirectLine;
+    private boolean showAllWaypoints;
+    private GL_Paint paint;
+    private Cache lastSelectedCache = null;
+    private Waypoint lastSelectedWaypoint = null;
+    private GlyphLayout layout = null;
+    private CB_RectF TargetArrowScreenRec;
     private MapViewCacheList mapCacheList;
-    protected OnClickListener onClickListener = new OnClickListener() {
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+    private int lastCompassMapZoom = -1;
+    // only normal map fields
+    private MapInfoPanel info;
+
+    public MapView(CB_RectF cb_RectF, MapMode Mode) {
+        super(cb_RectF, Mode.name());
+        this.Mode = Mode;
+        if (Mode != MapMode.Normal) {
+            setOnDoubleClickListener((v, x, y, pointer, button) -> {
+                if (this.Mode == MapMode.Track)
+                    setMapState(MapState.FREE);
+                else setMapState(MapState.GPS);
+                // Center own position!
+                setCenter(Locator.getCoordinate());
+                return true;
+            });
+        }
+
+        Config.MapsforgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
+
+        Config.MapsforgeDayStyle.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeNightStyle.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarDayStyle.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarNightStyle.addSettingChangedListener(themeChangedEventHandler);
+
+        registerSkinChangedEvent();
+
+        setBackground(ListBack);
+
+        int maxNumTiles;
+        // calculate max Map Tile cache
+        try {
+            int aTile = 256 * 256;
+            maxTilesPerScreen = (int) ((getWidth() * getHeight()) / aTile + 0.5);
+            maxNumTiles = (int) (maxTilesPerScreen * 6);// 6 times as much as necessary
+
+        } catch (Exception e) {
+            maxNumTiles = 60;
+        }
+
+        maxNumTiles = Math.min(maxNumTiles, 60);
+        maxNumTiles = Math.max(maxNumTiles, 20);
+
+        mapTileLoader.setMaxNumTiles(maxNumTiles);
+
+        mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
+
+        if (Mode == MapMode.Normal) {
+            addChild(mapScale);
+        } else {
+            mapScale.setInvisible();
+        }
+
+        // initial Zoom Buttons
+        zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
+
+        zoomBtn.setX(getWidth() - (zoomBtn.getWidth() + UI_Size_Base.that.getMargin()));
+
+        zoomBtn.setOnClickListenerDown((v, x, y, pointer, button) -> {
+            // bei einer Zoom Animation in negativer Richtung muss der setDiffCameraZoom gesetzt werden!
+            // zoomScale.setDiffCameraZoom(-1.9f, true);
+            // zoomScale.setZoom(zoomBtn.getZoom());
+            zoomScale.resetFadeOut();
+            inputState = InputState.Idle;
+
+            lastDynamicZoom = zoomBtn.getZoom();
+
+            kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+            GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
+            GL.that.renderOnce();
+            calcPixelsPerMeter();
+            return true;
+        });
+        zoomBtn.setOnClickListenerUp((v, x, y, pointer, button) -> {
+            setZoomScale(zoomBtn.getZoom());
+            zoomScale.resetFadeOut();
+            inputState = InputState.Idle;
+
+            lastDynamicZoom = zoomBtn.getZoom();
+
+            kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+            GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
+            GL.that.renderOnce();
+            calcPixelsPerMeter();
+            return true;
+        });
+
+        if (Mode == MapMode.Compass) {
+            zoomBtn.setInvisible();
+        } else {
+            addChild(zoomBtn);
+            zoomBtn.setMinimumFadeValue(0.25f);
+        }
+
+        setOnClickListener((v, x, y, pointer, button) -> {
             WaypointRenderInfo minWpi = null;
-            Vector2 clickedAt = new Vector2(x, y);
 
             if (TargetArrow != null && TargetArrow.contains(x, y)) {
                 if (GlobalCore.isSetSelectedCache()) {
-                    if (GlobalCore.isSetSelectedCache()) {
-                        if (GlobalCore.getSelectedWaypoint() != null) {
-                            Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
-                            setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
-                        } else {
-                            Coordinate tmp = GlobalCore.getSelectedCache().Pos;
-                            setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
-                        }
-
-                        // switch map state to WP
-                        togBtn.setState(2);
+                    if (GlobalCore.getSelectedWaypoint() != null) {
+                        Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
+                        setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
+                    } else {
+                        Coordinate tmp = GlobalCore.getSelectedCache().Pos;
+                        setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     }
-                    return false;
+
+                    // switch map state to WP
+                    togBtn.setState(2);
                 }
+                return false;
             }
 
             synchronized (mapCacheList.list) {
-
                 double minDist = Double.MAX_VALUE;
                 for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
                     WaypointRenderInfo wpi = mapCacheList.list.get(i);
                     Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
-                    if (clickedAt != null) {
-                        double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
-                        if (aktDist < minDist) {
-                            minDist = aktDist;
-                            minWpi = wpi;
-                        }
+                    double aktDist = Math.sqrt(Math.pow(screen.x - x, 2) + Math.pow(screen.y - y, 2));
+                    if (aktDist < minDist) {
+                        minDist = aktDist;
+                        minWpi = wpi;
                     }
                 }
                 // empty mapCacheList
@@ -179,8 +251,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                             // so we must do the selection here
                             GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
                             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
-                            data.hideMyFinds = MapView.this.hideMyFinds;
-                            data.showAllWaypoints = MapView.this.showAllWaypoints;
+                            data.hideMyFinds = hideMyFinds;
+                            data.showAllWaypoints = showAllWaypoints;
                             mapCacheList.update(data);
                         }
                     } else {
@@ -190,130 +262,27 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         infoBubble.setVisible();
                     }
                     inputState = InputState.Idle;
-                } else {
-                    // Click outside Bubble -> hide Bubble
-                    // Log.info(log, "outside click (hidden bubble)");
                 }
             }
             return false;
-        }
-    };
-    private int lastCompassMapZoom = -1;
-
-    public MapView(CB_RectF rec, MapMode Mode, String Name) {
-        super(rec, Name);
-        MapView.Instances[Mode.ordinal()] = this;
-        if (Mode != MapMode.Normal) {
-            this.setOnDoubleClickListener((v, x, y, pointer, button) -> {
-                // Center own position!
-                setCenter(Locator.getCoordinate());
-                return true;
-            });
-        }
-        this.Mode = Mode;
-
-        Config.MapsforgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
-
-        Config.MapsforgeDayStyle.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeNightStyle.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarDayStyle.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarNightStyle.addSettingChangedListener(themeChangedEventHandler);
-
-        registerSkinChangedEvent();
-        setBackground(ListBack);
-        int maxNumTiles = 0;
-        // calculate max Map Tile cache
-        try {
-            int aTile = 256 * 256;
-            maxTilesPerScreen = (int) ((rec.getWidth() * rec.getHeight()) / aTile + 0.5);
-
-            maxNumTiles = (int) (maxTilesPerScreen * 6);// 6 times as much as necessary
-
-        } catch (Exception e) {
-            maxNumTiles = 60;
-        }
-
-        maxNumTiles = Math.min(maxNumTiles, 60);
-        maxNumTiles = Math.max(maxNumTiles, 20);
-
-        mapTileLoader.setMaxNumTiles(maxNumTiles);
-
-        mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.getHalfWidth(), GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
-
-        if (Mode == MapMode.Normal) {
-            this.addChild(mapScale);
-        } else {
-            mapScale.setInvisible();
-        }
-
-        // initial Zoom Buttons
-        zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
-
-        zoomBtn.setX(this.getWidth() - (zoomBtn.getWidth() + UI_Size_Base.that.getMargin()));
-
-        zoomBtn.setOnClickListenerDown(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // bei einer Zoom Animation in negativer Richtung muss der setDiffCameraZoom gesetzt werden!
-                // zoomScale.setDiffCameraZoom(-1.9f, true);
-                // zoomScale.setZoom(zoomBtn.getZoom());
-                zoomScale.resetFadeOut();
-                inputState = InputState.Idle;
-
-                lastDynamicZoom = zoomBtn.getZoom();
-
-                kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
-                GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-                GL.that.renderOnce();
-                calcPixelsPerMeter();
-                return true;
-            }
         });
-        zoomBtn.setOnClickListenerUp(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                setZoomScale(zoomBtn.getZoom());
-                zoomScale.resetFadeOut();
-                inputState = InputState.Idle;
-
-                lastDynamicZoom = zoomBtn.getZoom();
-
-                kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
-                GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-                GL.that.renderOnce();
-                calcPixelsPerMeter();
-                return true;
-            }
-        });
-
-        if (Mode == MapMode.Compass) {
-            zoomBtn.setInvisible();
-        } else {
-            this.addChild(zoomBtn);
-            zoomBtn.setMinimumFadeValue(0.25f);
-        }
-
-        this.setOnClickListener(onClickListener);
 
         float InfoHeight = 0;
         if (Mode == MapMode.Normal) {
-            info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel", this));
+            info = (MapInfoPanel) addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel", this));
             InfoHeight = info.getHeight();
         }
 
         CB_RectF ZoomScaleRec = new CB_RectF();
-        ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.DPI), this.getHeight() - InfoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+        ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.DPI), getHeight() - InfoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
         ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
         zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
         if (Mode == MapMode.Normal)
-            this.addChild(zoomScale);
+            addChild(zoomScale);
 
-        mapIntWidth = (int) rec.getWidth();
-        mapIntHeight = (int) rec.getHeight();
+        mapIntWidth = (int) getWidth();
+        mapIntHeight = (int) getHeight();
         drawingWidth = mapIntWidth;
         drawingHeight = mapIntHeight;
 
@@ -343,12 +312,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         liveButton = new LiveButton();
         liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
-        Config.DisableLiveMap.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                requestLayout();
-            }
-        });
+        Config.DisableLiveMap.addSettingChangedListener(this::requestLayout);
 
         togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
@@ -362,13 +326,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         MapState last = MapState.values()[Config.LastMapToggleBtnState.getValue()];
         togBtn.setState(last.ordinal());
 
-        togBtn.setOnStateChangedListener(new OnStateChangeListener() {
-
-            @Override
-            public void onStateChange(GL_View_Base v, int State) {
-                setMapState(MapState.values()[State]);
-            }
-        });
+        togBtn.setOnStateChangedListener((v, State) -> setMapState(MapState.values()[State]));
         togBtn.registerSkinChangedEvent();
 
         switch (Mode) {
@@ -404,22 +362,19 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         }
 
         if (Mode == MapMode.Normal) {
-            this.addChild(togBtn);
+            addChild(togBtn);
             if (Config.DisableLiveMap.getValue()) {
                 liveButton.setState(false);
             }
-            this.addChild(liveButton);
+            addChild(liveButton);
         }
 
         infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
         infoBubble.setInvisible();
         infoBubble.setOnClickListener((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
-                wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-                    @Override
-                    public void isCanceled() {
+                wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
 
-                    }
                 }, new ICancelRunnable() {
 
                     @Override
@@ -429,7 +384,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
                         if (geoCacheRelateds.size() > 0) {
                             try {
-                                // todo check, if correct
                                 WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                             } catch (InterruptedException e) {
                                 Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
@@ -477,9 +431,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             return true;
         });
         if (Mode == MapMode.Normal)
-            this.addChild(infoBubble);
+            addChild(infoBubble);
 
-        resize(rec.getWidth(), rec.getHeight());
+        resize(getWidth(), getHeight());
 
         try {
             center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
@@ -501,32 +455,19 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         }
 
         // Initial SettingsChanged Events
-        MapView.Instances[MapMode.Normal.ordinal()].SetNightMode(Config.nightMode.getValue());
-        Config.nightMode.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                MapView.this.SetNightMode(Config.nightMode.getValue());
-            }
+        SetNightMode(Config.nightMode.getValue());
+        Config.nightMode.addSettingChangedListener(() -> SetNightMode(Config.nightMode.getValue()));
+
+        SetNorthOriented(Config.MapNorthOriented.getValue());
+        Config.MapNorthOriented.addSettingChangedListener(() -> {
+            SetNorthOriented(Config.MapNorthOriented.getValue());
+            PositionChanged();
         });
 
-        MapView.Instances[MapMode.Normal.ordinal()].SetNorthOriented(Config.MapNorthOriented.getValue());
-        Config.MapNorthOriented.addSettingChangedListener(new IChanged() {
-
-            @Override
-            public void handleChange() {
-                MapView.this.SetNorthOriented(Config.MapNorthOriented.getValue());
-                MapView.this.PositionChanged();
-            }
-        });
-
-    }
-
-    public static MapView getNormalMap() {
-        return MapView.Instances[MapMode.Normal.ordinal()];
     }
 
     @Override
-    protected void renderSyncronOverlay(Batch batch) {
+    protected void renderSynchronOverlay(Batch batch) {
         batch.setProjectionMatrix(myParentInfo.Matrix());
 
         // calculate icon size
@@ -544,22 +485,22 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     }
 
     @Override
-    protected void renderNonSyncronOverlay(Batch batch) {
+    protected void renderNonSynchronOverlay(Batch batch) {
         renderUI(batch);
     }
 
-    void renderUI(Batch batch) {
+    private void renderUI(Batch batch) {
         batch.setProjectionMatrix(myParentInfo.Matrix());
 
         if (showMapCenterCross) {
             if (getMapState() == MapState.FREE) {
                 if (CrossLines == null) {
-                    int crossSize = Math.min(mapIntHeight / 3, mapIntWidth / 3) / 2;
+                    float crossSize = Math.min(mapIntHeight / 3.0f, mapIntWidth / 3.0f) / 2;
                     float strokeWidth = 2 * UI_Size_Base.that.getScale();
 
                     GeometryList geomList = new GeometryList();
-                    Line l1 = new Line(mapIntWidth / 2 - crossSize, mapIntHeight / 2, mapIntWidth / 2 + crossSize, mapIntHeight / 2);
-                    Line l2 = new Line(mapIntWidth / 2, mapIntHeight / 2 - crossSize, mapIntWidth / 2, mapIntHeight / 2 + crossSize);
+                    Line l1 = new Line(mapIntWidth / 2.0f - crossSize, mapIntHeight / 2.0f, mapIntWidth / 2.0f + crossSize, mapIntHeight / 2.0f);
+                    Line l2 = new Line(mapIntWidth / 2.0f, mapIntHeight / 2.0f - crossSize, mapIntWidth / 2.0f, mapIntHeight / 2.0f + crossSize);
                     Quadrangle q1 = new Quadrangle(l1, strokeWidth);
                     Quadrangle q2 = new Quadrangle(l2, strokeWidth);
 
@@ -596,8 +537,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.getLongitude()));
         float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.getLatitude()));
 
-        float halfHeight = (mapIntHeight / 2) - ySpeedVersatz;
-        float halfWidth = mapIntWidth / 2;
+        float halfHeight = mapIntHeight / 2.0f - ySpeedVersatz;
+        float halfWidth = mapIntWidth / 2.0f;
 
         // create ScreenRec
         try {
@@ -639,7 +580,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                 arrow.draw(batch);
 
                 // get real bounding box of TargetArrow
-                float t[] = arrow.getVertices();
+                float[] t = arrow.getVertices();
                 float maxX = Math.max(Math.max(t[0], t[5]), Math.max(t[10], t[15]));
                 float minX = Math.min(Math.min(t[0], t[5]), Math.min(t[10], t[15]));
                 float maxY = Math.max(Math.max(t[1], t[6]), Math.max(t[11], t[16]));
@@ -687,12 +628,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                 paint = new GL_Paint();
                 paint.setGLColor(Color.RED);
             }
-            PolygonDrawable po = new PolygonDrawable(line.getVertices(), line.getTriangles(), paint, this.mapIntWidth, this.mapIntHeight);
-            po.draw(batch, 0, 0, this.mapIntWidth, this.mapIntHeight, 0);
+            PolygonDrawable po = new PolygonDrawable(line.getVertices(), line.getTriangles(), paint, mapIntWidth, mapIntHeight);
+            po.draw(batch, 0, 0, mapIntWidth, mapIntHeight, 0);
             po.dispose();
         }
         // Don't render if outside of screen !!
-        if ((screen.x < 0 - WpSize.width || screen.x > this.getWidth() + WpSize.height) || (screen.y < 0 - WpSize.height || screen.y > this.getHeight() + WpSize.height)) {
+        if ((screen.x < 0 - WpSize.width || screen.x > getWidth() + WpSize.height) || (screen.y < 0 - WpSize.height || screen.y > getHeight() + WpSize.height)) {
             if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
                 // check if wp selected
                 if (wpi.Waypoint != null && wpi.Waypoint.equals(infoBubble.getWaypoint()) || wpi.Waypoint == null && infoBubble.getWaypoint() == null)
@@ -756,7 +697,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
                 float halfWidth = layout.width / 2;
                 Fonts.getNormal().draw(batch, layout, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 
@@ -804,8 +745,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         // mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
-        data.hideMyFinds = this.hideMyFinds;
-        data.showAllWaypoints = this.showAllWaypoints;
+        data.hideMyFinds = hideMyFinds;
+        data.showAllWaypoints = showAllWaypoints;
         mapCacheList.update(data);
 
         if (getCenterGps()) {
@@ -821,7 +762,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         try {
             CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new CoordinateGPS(cache.Pos.getLatitude(), cache.Pos.getLongitude());
             setCenter(target);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
@@ -844,14 +785,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     }
 
     public void LoadTrack(String trackPath, String file) {
-
-        String absolutPath = "";
+        String absolutePath;
         if (file.equals("")) {
-            absolutPath = trackPath;
+            absolutePath = trackPath;
         } else {
-            absolutPath = trackPath + "/" + file;
+            absolutePath = trackPath + "/" + file;
         }
-        RouteOverlay.MultiLoadRoute(absolutPath, RouteOverlay.getNextColor());
+        RouteOverlay.MultiLoadRoute(absolutePath, RouteOverlay.getNextColor());
         RouteOverlay.RoutesChanged();
     }
 
@@ -893,7 +833,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     // Create new Waypoint at screen center
     public void createWaypointAtCenter() {
-        String newGcCode = "";
+        String newGcCode;
         try {
             newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
         } catch (Exception e) {
@@ -907,28 +847,24 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
         Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
 
-        EditWaypoint EdWp = new EditWaypoint(newWP, new IReturnListener() {
+        EditWaypoint EdWp = new EditWaypoint(newWP, waypoint -> {
+            if (waypoint != null) {
 
-            @Override
-            public void returnedWP(Waypoint waypoint) {
-                if (waypoint != null) {
-
-                    GlobalCore.getSelectedCache().waypoints.add(waypoint);
-                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
-                    if (waypoint.IsStart) {
-                        // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
-                        // definiert
-                        // ist!!!
-                        WaypointDAO wpd = new WaypointDAO();
-                        wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
-                    }
-                    WaypointDAO waypointDAO = new WaypointDAO();
-                    waypointDAO.WriteToDatabase(waypoint);
-
-                    // informiere WaypointListView über Änderung
-                    WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
-                    GL.that.renderOnce();
+                GlobalCore.getSelectedCache().waypoints.add(waypoint);
+                GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
+                if (waypoint.IsStart) {
+                    // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
+                    // definiert
+                    // ist!!!
+                    WaypointDAO wpd = new WaypointDAO();
+                    wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 }
+                WaypointDAO waypointDAO = new WaypointDAO();
+                waypointDAO.WriteToDatabase(waypoint);
+
+                // informiere WaypointListView über Änderung
+                WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
+                GL.that.renderOnce();
             }
         }, true, false);
         EdWp.show();
@@ -937,7 +873,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     @Override
     public void dispose() {
-        // remove eventHandler
         SelectedCacheEventList.Remove(this);
         super.dispose();
     }
@@ -951,14 +886,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     @Override
     public void onHide() {
         CB_UI.SelectedCacheEventList.Remove(this);
-        super.onHide(); // of MapViewBase
+        super.onHide();
     }
 
     @Override
     protected void loadTiles() {
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
-        data.hideMyFinds = this.hideMyFinds;
-        data.showAllWaypoints = this.showAllWaypoints;
+        data.hideMyFinds = hideMyFinds;
+        data.showAllWaypoints = showAllWaypoints;
         mapCacheList.update(data);
 
         super.loadTiles();
@@ -995,7 +930,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
                     float heading = Locator.getHeading();
 
-                    float result[] = new float[2];
+                    float[] result = new float[2];
 
                     MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
 
@@ -1004,7 +939,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                     float relativeBearing = bearing - heading;
                     info.setBearing(relativeBearing, heading);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
         }
@@ -1036,18 +971,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     @Override
     public void requestLayout() {
 
-        if (this.isDisposed()) return;
+        if (isDisposed()) return;
 
         // Log.debug(log, "MapView clacLayout()");
         float margin = GL_UISizes.margin;
 
         float infoHeight = 0;
         if (Mode == MapMode.Normal) {
-            info.setPos(new Vector2(margin, this.mapIntHeight - margin - info.getHeight()));
-            info.setVisible(showCompass);
+            info.setPos(new Vector2(margin, mapIntHeight - margin - info.getHeight()));
+            info.setVisible(Config.MapShowInfo.getValue());
             infoHeight = info.getHeight();
         }
-        togBtn.setPos(new Vector2(this.mapIntWidth - margin - togBtn.getWidth(), this.mapIntHeight - margin - togBtn.getHeight()));
+        togBtn.setPos(new Vector2(mapIntWidth - margin - togBtn.getWidth(), mapIntHeight - margin - togBtn.getHeight()));
 
         if (Config.DisableLiveMap.getValue()) {
             liveButton.setInvisible();
@@ -1058,7 +993,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         liveButton.setRec(togBtn);
         liveButton.setY(togBtn.getY() - margin - liveButton.getHeight());
 
-        zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI), this.getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+        zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI), getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
         GL.that.renderOnce();
     }
@@ -1122,9 +1057,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         if (Mode == MapMode.Compass) {
             // Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
-            Coordinate position = null;
             // if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-            position = Locator.getCoordinate();
+            Coordinate position = Locator.getCoordinate();
 
             float distance = -1;
             if (GlobalCore.isSetSelectedCache() && position.isValid()) {
@@ -1148,34 +1082,21 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                 }
             }
 
-            if (setZoomTo != lastCompassMapZoom) {
-                lastCompassMapZoom = setZoomTo;
-                zoomBtn.setZoom(setZoomTo);
-                inputState = InputState.Idle;
+            if (camera == null) {
+                Log.debug(log, "Why is camera null");
+            } else {
+                if (setZoomTo != lastCompassMapZoom) {
+                    lastCompassMapZoom = setZoomTo;
+                    zoomBtn.setZoom(setZoomTo);
+                    inputState = InputState.Idle;
 
-                kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+                    kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
-                GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-                GL.that.renderOnce();
-                calcPixelsPerMeter();
+                    GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
+                    GL.that.renderOnce();
+                    calcPixelsPerMeter();
+                }
             }
-
-        }
-    }
-
-    @Override
-    public boolean doubleClick(int x, int y, int pointer, int button) {
-        if (Mode != MapMode.Normal) {
-            // Center map on CompassMode
-            setMapState(MapState.GPS);
-            if (Mode != MapMode.Normal) {
-                // If TrackMode set MapState.Free for showing CenterCross
-                setMapState(MapState.FREE);
-            }
-
-            return true;
-        } else {
-            return super.doubleClick(x, y, pointer, button);
         }
     }
 
@@ -1183,8 +1104,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     protected void SkinIsChanged() {
         super.SkinIsChanged();
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
-        data.hideMyFinds = this.hideMyFinds;
-        data.showAllWaypoints = this.showAllWaypoints;
+        data.hideMyFinds = hideMyFinds;
+        data.showAllWaypoints = showAllWaypoints;
         mapCacheList.update(data);
         if (infoBubble.isVisible()) {
             infoBubble.setCache(infoBubble.getCache(), infoBubble.getWaypoint(), true);
@@ -1201,10 +1122,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     @Override
     public void onShow() {
-        super.onShow(); // of MapViewBase
-
+        super.onShow();
         CB_UI.SelectedCacheEventList.Add(this);
-        this.NorthOriented = Mode == MapMode.Normal ? Config.MapNorthOriented.getValue() : false;
+        NorthOriented = Mode == MapMode.Normal ? Config.MapNorthOriented.getValue() : false;
         SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
     }
 
@@ -1218,7 +1138,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             showDT = Mode == MapMode.Compass ? false : Config.MapShowDT.getValue();
             showTitles = Mode == MapMode.Compass ? false : Config.MapShowTitles.getValue();
             hideMyFinds = Config.MapHideMyFinds.getValue();
-            showCompass = Mode == MapMode.Compass ? false : Config.MapShowCompass.getValue();
             showDirectLine = Mode == MapMode.Compass ? false : Config.ShowDirektLine.getValue();
             showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
             showAccuracyCircle = Mode == MapMode.Compass ? false : Config.ShowAccuracyCircle.getValue();
@@ -1230,16 +1149,15 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             }
 
             if (info != null)
-                info.setVisible(showCompass);
+                info.setVisible(Mode == MapMode.Compass ? false : Config.MapShowInfo.getValue());
 
             if (InitialFlags == INITIAL_ALL) {
                 iconFactor = Config.MapViewDPIFaktor.getValue();
 
-                int setAktZoom = Mode == MapMode.Compass ? Config.lastZoomLevel.getValue() : Config.lastZoomLevel.getValue();
                 int setMaxZoom = Mode == MapMode.Compass ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();
                 int setMinZoom = Mode == MapMode.Compass ? Config.CompassMapMinZoomLevel.getValue() : Config.OsmMinLevel.getValue();
 
-                aktZoom = setAktZoom;
+                aktZoom = Config.lastZoomLevel.getValue();
                 zoomBtn.setMaxZoom(setMaxZoom);
                 zoomBtn.setMinZoom(setMinZoom);
                 zoomBtn.setZoom(aktZoom);
@@ -1249,13 +1167,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
                 if (Mode == MapMode.Compass) {
                     // Berechne die darstellbare Entfernung für jedes ZoomLevel
-                    DistanceZoomLevel = new TreeMap<Integer, Integer>();
+                    DistanceZoomLevel = new TreeMap<>();
 
-                    int posiblePixel = (int) this.getHalfHeight();
+                    int possiblePixel = (int) getHalfHeight();
 
                     for (int i = setMaxZoom; i > setMinZoom; i--) {
                         float PixelForZoomLevel = getPixelsPerMeter(i);
-                        DistanceZoomLevel.put(i, (int) (posiblePixel / PixelForZoomLevel));
+                        DistanceZoomLevel.put(i, (int) (possiblePixel / PixelForZoomLevel));
                     }
                 }
 
@@ -1263,7 +1181,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         }
 
         if ((InitialFlags & INITIAL_THEME) != 0) {
-            String mapsforgeThemesStyle = "";
+            String mapsforgeThemesStyle;
             mapsForgeThemePath = "";
             if (CarMode) {
                 ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
@@ -1291,10 +1209,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         if ((InitialFlags & INITIAL_WP_LIST) != 0) {
             if (mapCacheList != null) {
                 MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
-                this.hideMyFinds = Config.MapHideMyFinds.getValue();
-                data.hideMyFinds = this.hideMyFinds;
-                this.showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
-                data.showAllWaypoints = this.showAllWaypoints;
+                hideMyFinds = Config.MapHideMyFinds.getValue();
+                data.hideMyFinds = hideMyFinds;
+                showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
+                data.showAllWaypoints = showAllWaypoints;
                 mapCacheList.update(data);
             }
 
@@ -1305,44 +1223,28 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             if (!MapTileLoderPreInitial) {
                 MapTileLoderPreInitial = true;
 
-                Thread preLoadThread = new Thread(new Runnable() {
+                Thread preLoadThread = new Thread(() -> {
+                    int halfMapIntWidth = mapIntWidth / 2;
+                    int halfMapIntHeight = mapIntHeight / 2;
 
-                    @Override
-                    public void run() {
-                        int halfMapIntWidth = mapIntWidth / 2;
-                        int halfMapIntHeight = mapIntHeight / 2;
-
-                        synchronized (screenCenterT) {
-                            screenCenterW.x = screenCenterT.x;
-                            screenCenterW.y = screenCenterT.y;
-                        }
-
-                        // preload only one Tile(the Tile on Center)
-                        loVector.set(halfMapIntWidth, halfMapIntHeight);
-                        lo.set(screenToDescriptor(loVector, aktZoom, lo));
-
-                        MapTileLoderPreInitialAtWork = true;
-                        mapTileLoader.loadTiles(MapView.this, lo, lo, aktZoom);
-                        Thread checkPreLoadReadyThread = new Thread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                while (true) {
-                                    if (mapTileLoader.LoadedTilesSize() > 0) {
-                                        break;
-                                    }
-                                    try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException e) {
-
-                                    }
-                                }
-
-                                MapTileLoderPreInitialAtWork = false;
-                            }
-                        });
-                        checkPreLoadReadyThread.start();
+                    synchronized (screenCenterT) {
+                        screenCenterW.x = screenCenterT.x;
+                        screenCenterW.y = screenCenterT.y;
                     }
+
+                    // preload only one Tile(the Tile on Center)
+                    loVector.set(halfMapIntWidth, halfMapIntHeight);
+                    lo.set(screenToDescriptor(loVector, aktZoom, lo));
+
+                    mapTileLoader.loadTiles(MapView.this, lo, lo, aktZoom);
+                    new Thread(() -> {
+                        while (mapTileLoader.LoadedTilesSize() <= 0) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException ignored) {
+                            }
+                        }
+                    }).start();
                 });
                 preLoadThread.start();
             }

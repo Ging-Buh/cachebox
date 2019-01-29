@@ -10,19 +10,21 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.WaypointViewItem;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
-import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
+import CB_UI_Base.GL_UI.Handler;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeChangedEvent;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 import java.util.ArrayList;
@@ -146,18 +148,14 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
         this.addChild(mSlideBox);
 
         //register QuickButtonStateChangedEvent
-        CB_UI_Settings.quickButtonShow.addSettingChangedListener(new IChanged() {
-
-            @Override
-            public void handleChange() {
-                if (CB_UI_Settings.quickButtonShow.getValue()) {
-                    quickButtonList.setHeight(QuickButtonMaxHeight);
-                } else {
-                    quickButtonList.setHeight(0);
-                }
-                quickButtonList.notifyDataSetChanged();
-                Initial();
+        CB_UI_Settings.quickButtonShow.addSettingChangedListener(() -> {
+            if (CB_UI_Settings.quickButtonShow.getValue()) {
+                quickButtonList.setHeight(QuickButtonMaxHeight);
+            } else {
+                quickButtonList.setHeight(0);
             }
+            quickButtonList.notifyDataSetChanged();
+            Initial();
         });
 
     }
@@ -219,15 +217,12 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
         actCache = cache;
         actWaypoint = waypoint;
 
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                if (cache != null) {
-                    if (mLblCacheName != null) {
-                        mLblCacheName.setText(CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName());
-                    }
-                    fillCacheWpInfo();
+        GL.that.RunOnGL(() -> {
+            if (cache != null) {
+                if (mLblCacheName != null) {
+                    mLblCacheName.setText(CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName());
                 }
+                fillCacheWpInfo();
             }
         });
     }
@@ -365,13 +360,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     private void setPos_onUI(final int newValue) {
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                setSliderPos(newValue);
-            }
-        });
+        GL.that.RunOnGL(() -> setSliderPos(newValue));
 
     }
 

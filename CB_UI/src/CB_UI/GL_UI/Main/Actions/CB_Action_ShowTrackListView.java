@@ -36,11 +36,8 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -58,12 +55,10 @@ import java.util.Date;
 public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     private static final String log = "CB_Action_ShowTrackListView";
     private static CB_Action_ShowTrackListView that;
-    Color TrackColor;
+    private Color TrackColor;
 
     private CB_Action_ShowTrackListView() {
         super("Tracks", MenuID.AID_SHOW_TRACKLIST);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowTrackListView getInstance() {
@@ -73,11 +68,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.trackListView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.trackListView = new TrackListView(tab.getContentRec(), "TrackListView");
-
-        if ((TabMainView.trackListView != null) && (tab != null))
-            tab.ShowView(TabMainView.trackListView);
+        TabMainView.leftTab.ShowView(TrackListView.getInstance());
     }
 
     @Override
@@ -92,7 +83,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.trackListView;
+        return TrackListView.getInstance();
     }
 
     @Override
@@ -104,118 +95,94 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListContextMenu");
 
-        cm.addOnClickListener(new OnClickListener() {
+        cm.addOnClickListener((v, x, y, pointer, button) -> {
+            Log.info(log, "[TrackListContextMenu] clicked " + ((MenuItem) v).getMenuItemId());
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_GENERATE:
+                    showMenuCreate();
+                    return true;
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Log.info(log, "[TrackListContextMenu] clicked " + ((MenuItem) v).getMenuItemId());
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_GENERATE:
-                        showMenuCreate();
-                        return true;
+                case MenuID.MI_RENAME:
+                    final TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
 
-                    case MenuID.MI_RENAME:
-                        if (TrackListView.that != null) {
-                            final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
-
-                            StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.Get("RenameTrack"), selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener() {
-
-                                @Override
-                                public boolean onClick(int which, Object data) {
-                                    String text = StringInputBox.editText.getText();
-                                    // Behandle das ergebniss
-                                    switch (which) {
-                                        case 1: // ok Clicket
-                                            selectedTrackItem.getRoute().Name = text;
-                                            TrackListView.that.notifyDataSetChanged();
-                                            break;
-                                        case 2: // cancel clicket
-                                            break;
-                                        case 3:
-                                            break;
-                                    }
-
-                                    return true;
-                                }
-                            });
-
-                            TrackListView.that.notifyDataSetChanged();
-                            return true;
+                    StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.Get("RenameTrack"), selectedTrackItem.getRoute().Name, (which, data) -> {
+                        String text = StringInputBox.editText.getText();
+                        // Behandle das ergebniss
+                        switch (which) {
+                            case 1: // ok Clicket
+                                selectedTrackItem.getRoute().Name = text;
+                                TrackListView.getInstance().notifyDataSetChanged();
+                                break;
+                            case 2: // cancel clicket
+                                break;
+                            case 3:
+                                break;
                         }
-                        return true;
-
-                    case MenuID.MI_LOAD:
-                        PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"), Translation.Get("load"), new IgetFileReturnListener() {
-                            @Override
-                            public void returnFile(String Path) {
-                                if (Path != null) {
-                                    TrackColor = RouteOverlay.getNextColor();
-
-                                    RouteOverlay.MultiLoadRoute(Path, TrackColor);
-                                    Log.debug(log, "Load Track :" + Path);
-                                    if (TrackListView.that != null)
-                                        TrackListView.that.notifyDataSetChanged();
-                                }
-                            }
-                        });
 
                         return true;
+                    });
 
-                    case MenuID.MI_SAVE:
-                        PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"), Translation.Get("save"), new IgetFileReturnListener() {
-                            TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
+                    TrackListView.getInstance().notifyDataSetChanged();
+                    return true;
 
-                            @Override
-                            public void returnFile(String Path) {
-                                if (Path != null) {
-                                    RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
-                                    Log.debug(log, "Load Track :" + Path);
-                                    if (TrackListView.that != null)
-                                        TrackListView.that.notifyDataSetChanged();
-                                }
-                            }
-                        });
-
-                        return true;
-
-                    case MenuID.MI_DELETE_TRACK:
-                        if (TrackListView.that != null) {
-                            TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
-
-                            if (selectedTrackItem == null) {
-                                Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "NoTrackSelected");
-                                GL_MsgBox.Show(Translation.Get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener() {
-
-                                    @Override
-                                    public boolean onClick(int which, Object data) {
-                                        // hier brauchen wir nichts machen!
-                                        return true;
-                                    }
-                                });
-                                return true;
-                            }
-
-                            if (selectedTrackItem.getRoute().IsActualTrack) {
-                                Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "IsActualTrack");
-                                GL_MsgBox.Show(Translation.Get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
-                                return false;
-                            }
-
-                            Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " remove " + "selectedTrackItem");
-                            RouteOverlay.remove(selectedTrackItem.getRoute());
-                            selectedTrackItem = null;
-                            TrackListView.that.notifyDataSetChanged();
-                            return true;
+                case MenuID.MI_LOAD:
+                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"), Translation.Get("load"), Path -> {
+                        if (Path != null) {
+                            TrackColor = RouteOverlay.getNextColor();
+                            RouteOverlay.MultiLoadRoute(Path, TrackColor);
+                            Log.debug(log, "Load Track :" + Path);
+                            TrackListView.getInstance().notifyDataSetChanged();
                         }
-                }
-                return false;
+                    });
+
+                    return true;
+
+                case MenuID.MI_SAVE:
+                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"), Translation.Get("save"), new IgetFileReturnListener() {
+                        TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
+
+                        @Override
+                        public void returnFile(String Path) {
+                            if (Path != null) {
+                                RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
+                                Log.debug(log, "Load Track :" + Path);
+                                TrackListView.getInstance().notifyDataSetChanged();
+                            }
+                        }
+                    });
+
+                    return true;
+
+                case MenuID.MI_DELETE_TRACK:
+                    TrackListViewItem mTrackItem = TrackListView.getInstance().getSelectedItem();
+
+                    if (mTrackItem == null) {
+                        Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "NoTrackSelected");
+                        GL_MsgBox.Show(Translation.Get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, (which, data) -> {
+                            // hier brauchen wir nichts machen!
+                            return true;
+                        });
+                        return true;
+                    }
+
+                    if (mTrackItem.getRoute().IsActualTrack) {
+                        Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "IsActualTrack");
+                        GL_MsgBox.Show(Translation.Get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                        return false;
+                    }
+
+                    Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " remove " + "selectedTrackItem");
+                    RouteOverlay.remove(mTrackItem.getRoute());
+                    TrackListView.getInstance().notifyDataSetChanged();
+                    return true;
             }
+            return false;
         });
 
-        TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
         cm.addItem(MenuID.MI_LOAD, "load");
         cm.addItem(MenuID.MI_GENERATE, "generate");
         // rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
+        TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
         if (selectedTrackItem != null && !selectedTrackItem.getRoute().IsActualTrack) {
             cm.addItem(MenuID.MI_RENAME, "rename");
             cm.addItem(MenuID.MI_SAVE, "save");
@@ -227,23 +194,19 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
     private void showMenuCreate() {
         Menu cm2 = new Menu("TrackListCreateContextMenu");
-        cm2.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_P2P:
-                        GenTrackP2P();
-                        return true;
-                    case MenuID.MI_PROJECT:
-                        GenTrackProjection();
-                        return true;
-                    case MenuID.MI_CIRCLE:
-                        GenTrackCircle();
-                        return true;
-                }
-                return false;
+        cm2.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_P2P:
+                    GenTrackP2P();
+                    return true;
+                case MenuID.MI_PROJECT:
+                    GenTrackProjection();
+                    return true;
+                case MenuID.MI_CIRCLE:
+                    GenTrackCircle();
+                    return true;
             }
+            return false;
         });
         cm2.addItem(MenuID.MI_P2P, "Point2Point");
         cm2.addItem(MenuID.MI_PROJECT, "Projection");
@@ -258,30 +221,25 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         if (coord == null)
             coord = Locator.getCoordinate();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener() {
+        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
-            @Override
-            public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance) {
+            if (targetCoord == null || startCoord == null)
+                return;
 
-                if (targetCoord == null || startCoord == null)
-                    return;
+            float[] dist = new float[4];
+            TrackColor = RouteOverlay.getNextColor();
+            Track route = new Track(null, TrackColor);
 
-                float[] dist = new float[4];
-                TrackColor = RouteOverlay.getNextColor();
-                Track route = new Track(null, TrackColor);
+            route.Name = "Point 2 Point Route";
+            route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-                route.Name = "Point 2 Point Route";
-                route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-                route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
+            route.TrackLength = dist[0];
 
-                MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-                route.TrackLength = dist[0];
-
-                route.ShowRoute = true;
-                RouteOverlay.add(route);
-                if (TrackListView.that != null)
-                    TrackListView.that.notifyDataSetChanged();
-            }
+            route.ShowRoute = true;
+            RouteOverlay.add(route);
+            TrackListView.getInstance().notifyDataSetChanged();
         }, Type.p2p, null);
         pC.show();
 
@@ -292,31 +250,25 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         if (coord == null)
             coord = Locator.getCoordinate();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener() {
+        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
-            @Override
-            public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance) {
+            if (targetCoord == null || startCoord == null)
+                return;
 
-                if (targetCoord == null || startCoord == null)
-                    return;
+            float[] dist = new float[4];
+            TrackColor = RouteOverlay.getNextColor();
+            Track route = new Track(null, TrackColor);
+            route.Name = "Projected Route";
 
-                float[] dist = new float[4];
-                TrackColor = RouteOverlay.getNextColor();
-                Track route = new Track(null, TrackColor);
-                route.Name = "Projected Route";
+            route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-                route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-                route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
+            route.TrackLength = dist[0];
 
-                MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-                route.TrackLength = dist[0];
-
-                route.ShowRoute = true;
-                RouteOverlay.add(route);
-                if (TrackListView.that != null)
-                    TrackListView.that.notifyDataSetChanged();
-            }
-
+            route.ShowRoute = true;
+            RouteOverlay.add(route);
+            TrackListView.getInstance().notifyDataSetChanged();
         }, Type.projetion, null);
 
         pC.show();
@@ -328,49 +280,38 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         if (coord == null)
             coord = Locator.getCoordinate();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener() {
+        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
-            @Override
-            public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance) {
+            if (targetCoord == null || startCoord == null)
+                return;
 
-                if (targetCoord == null || startCoord == null)
-                    return;
+            float[] dist = new float[4];
+            TrackColor = RouteOverlay.getNextColor();
+            Track route = new Track(null, TrackColor);
+            route.Name = "Circle Route";
 
-                float[] dist = new float[4];
-                TrackColor = RouteOverlay.getNextColor();
-                Track route = new Track(null, TrackColor);
-                route.Name = "Circle Route";
+            route.ShowRoute = true;
+            RouteOverlay.add(route);
 
-                route.ShowRoute = true;
-                RouteOverlay.add(route);
+            Coordinate Projektion;
+            Coordinate LastCoord = new CoordinateGPS(0, 0);
 
-                Coordinate Projektion = new CoordinateGPS(0, 0);
-                Coordinate LastCoord = new CoordinateGPS(0, 0);
-
-                for (int i = 0; i <= 360; i += 10) // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme
-                // mit dem Reduktionsalgorythmus
-                {
-                    Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
-
-                    route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
-
-                    if (!LastCoord.isValid()) {
-                        LastCoord = Projektion;
-                        LastCoord.setValid(true);
-                    } else {
-                        MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
-                        route.TrackLength += dist[0];
-                        LastCoord = Projektion;
-                        LastCoord.setValid(true);
-                    }
-
+            // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme mit dem Reduktionsalgorythmus
+            for (int i = 0; i <= 360; i += 10) {
+                Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
+                route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
+                if (!LastCoord.isValid()) {
+                    LastCoord = Projektion;
+                    LastCoord.setValid(true);
+                } else {
+                    MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
+                    route.TrackLength += dist[0];
+                    LastCoord = Projektion;
+                    LastCoord.setValid(true);
                 }
-                if (TrackListView.that != null)
-                    TrackListView.that.notifyDataSetChanged();
             }
-
+            TrackListView.getInstance().notifyDataSetChanged();
         }, Type.circle, null);
-
         pC.show();
     }
 

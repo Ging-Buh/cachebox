@@ -201,60 +201,48 @@ public abstract class GL_View_Base extends CB_RectF {
     public GL_View_Base addChild(final GL_View_Base view, final boolean last) {
         if (childs.contains(view))
             return view;
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                if (last) {
-                    childs.add(0, view);
-                } else {
-                    childs.add(view);
-                }
-                chkChildClickable();
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            if (last) {
+                childs.add(0, view);
+            } else {
+                childs.add(view);
             }
+            chkChildClickable();
         });
 
         return view;
     }
 
     public void removeChild(final GL_View_Base view) {
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                try {
-                    if (childs != null && childs.size() > 0)
-                        childs.remove(view);
-                } catch (Exception e) {
-                }
-                chkChildClickable();
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            try {
+                if (childs != null && childs.size() > 0)
+                    childs.remove(view);
+            } catch (Exception e) {
             }
+            chkChildClickable();
         });
     }
 
     public void removeChilds() {
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                try {
-                    if (childs != null && childs.size() > 0)
-                        childs.clear();
-                } catch (Exception e) {
-                }
-                chkChildClickable();
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            try {
+                if (childs != null && childs.size() > 0)
+                    childs.clear();
+            } catch (Exception e) {
             }
+            chkChildClickable();
         });
     }
 
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                try {
-                    if (childs != null && childs.size() > 0)
-                        childs.remove(Childs);
-                } catch (Exception e) {
-                }
-                chkChildClickable();
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            try {
+                if (childs != null && childs.size() > 0)
+                    childs.remove(Childs);
+            } catch (Exception e) {
             }
+            chkChildClickable();
         });
     }
 
@@ -535,24 +523,20 @@ public abstract class GL_View_Base extends CB_RectF {
     protected void writeDebug() {
         if (DebugSprite == null) {
             try {
-                GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
+                GL.that.RunOnGLWithThreadCheck(() -> {
+                    // int w = getNextHighestPO2((int) getWidth());
+                    // int h = getNextHighestPO2((int) getHeight());
 
-                    @Override
-                    public void run() {
-                        // int w = getNextHighestPO2((int) getWidth());
-                        // int h = getNextHighestPO2((int) getHeight());
+                    int w = (int) getWidth();
+                    int h = (int) getHeight();
 
-                        int w = (int) getWidth();
-                        int h = (int) getHeight();
+                    debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+                    debugRegPixmap.setColor(1f, 0f, 0f, 1f);
+                    debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
 
-                        debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-                        debugRegPixmap.setColor(1f, 0f, 0f, 1f);
-                        debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
+                    debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
 
-                        debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
-
-                        DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
-                    }
+                    DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
                 });
 
             } catch (Exception e) {
@@ -908,18 +892,15 @@ public abstract class GL_View_Base extends CB_RectF {
 
         try {
 
-            GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-                @Override
-                public void run() {
-                    if (debugRegTexture != null) {
-                        debugRegTexture.dispose();
-                        debugRegTexture = null;
-                    }
+            GL.that.RunOnGLWithThreadCheck(() -> {
+                if (debugRegTexture != null) {
+                    debugRegTexture.dispose();
+                    debugRegTexture = null;
+                }
 
-                    if (debugRegPixmap != null) {
-                        debugRegPixmap.dispose();
-                        debugRegPixmap = null;
-                    }
+                if (debugRegPixmap != null) {
+                    debugRegPixmap.dispose();
+                    debugRegPixmap = null;
                 }
             });
 

@@ -15,8 +15,6 @@ public class CB_Action_ShowSolverView extends CB_Action_ShowView {
 
     private CB_Action_ShowSolverView() {
         super("Solver", MenuID.AID_SHOW_SOLVER);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     public static CB_Action_ShowSolverView getInstance() {
@@ -26,11 +24,7 @@ public class CB_Action_ShowSolverView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        if ((TabMainView.solverView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.solverView = new SolverView(tab.getContentRec(), "SolverView");
-
-        if ((TabMainView.solverView != null) && (tab != null))
-            tab.ShowView(TabMainView.solverView);
+        TabMainView.leftTab.ShowView(SolverView.getInstance());
     }
 
     @Override
@@ -45,6 +39,6 @@ public class CB_Action_ShowSolverView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.solverView;
+        return SolverView.getInstance();
     }
 }

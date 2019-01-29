@@ -353,13 +353,7 @@ public class GL_MsgBox extends Dialog {
         msgBox.label.setWrappedText(msg);
         msgBox.addChild(msgBox.label);
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                GL.that.showDialog(msgBox);
-            }
-        });
+        GL.that.RunOnGL(() -> GL.that.showDialog(msgBox));
 
         return msgBox;
     }

@@ -16,7 +16,6 @@
 package CB_Locator.Map;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
@@ -31,9 +30,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  */
 public class TileGL_Bmp extends TileGL {
     private static final String log = "TileGL_Bmp";
-    public static int LifeCount;
     private final Format format;
-    private Texture texture = null;
+    private Texture texture;
     private byte[] bytes;
     private boolean inCreation = false;
 
@@ -43,7 +41,6 @@ public class TileGL_Bmp extends TileGL {
         this.bytes = bytes;
         this.format = format;
         State = state;
-        LifeCount++;
         createTexture();
     }
 
@@ -61,9 +58,7 @@ public class TileGL_Bmp extends TileGL {
         if (inCreation)
             return false;
         createTexture();
-        if (texture != null)
-            return true;
-        return false;
+        return texture != null;
     }
 
     private void createTexture() {
@@ -88,27 +83,24 @@ public class TileGL_Bmp extends TileGL {
             inCreation = false;
         } else {
             // create Texture on next GlThread
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() {
-                    if (isDisposed)
-                        return;
-                    if (texture != null)
-                        return;
-                    if (bytes == null)
-                        return;
-                    try {
-                        Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-                        texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
-                        pixmap.dispose();
-                        pixmap = null;
-                    } catch (Exception ex) {
-                        Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
-                    }
-                    bytes = null;
-                    inCreation = false;
-                    GL.that.renderOnce();
+            GL.that.RunOnGL(() -> {
+                if (isDisposed)
+                    return;
+                if (texture != null)
+                    return;
+                if (bytes == null)
+                    return;
+                try {
+                    Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
+                    texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
+                    pixmap.dispose();
+                    pixmap = null;
+                } catch (Exception ex) {
+                    Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
                 }
+                bytes = null;
+                inCreation = false;
+                GL.that.renderOnce();
             });
         }
 
@@ -168,23 +160,18 @@ public class TileGL_Bmp extends TileGL {
             }
             texture = null;
         } else {
-            GL.that.RunOnGL(new IRunOnGL() {
-
-                @Override
-                public void run() {
-                    try {
-                        if (texture != null)
-                            texture.dispose();
-                    } catch (java.lang.NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                    texture = null;
+            GL.that.RunOnGL(() -> {
+                try {
+                    if (texture != null)
+                        texture.dispose();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
                 }
+                texture = null;
             });
         }
 
         bytes = null;
-        LifeCount--;
         isDisposed = true;
     }
 

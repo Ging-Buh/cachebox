@@ -21,10 +21,8 @@ import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.Size;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.LogLevel;
-import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import CB_Utils.fileProvider.FilenameFilter;
 import de.CB_Utils.fileProvider.DesktopFileFactory;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -47,25 +45,17 @@ class DCB {
 
         new CB_SLF4J(Config.mWorkPath);
         CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        Config.AktLogLevel.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-            }
-        });
+        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
 
         File Dir = FileFactory.createFile("./");
         final String[] files;
 
-        files = Dir.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                if (filename.contains("src"))
-                    return true;
-                if (filename.contains("DCB") && filename.endsWith("jar"))
-                    return true;
-                return false;
-            }
+        files = Dir.list((dir, filename) -> {
+            if (filename.contains("src"))
+                return true;
+            if (filename.contains("DCB") && filename.endsWith("jar"))
+                return true;
+            return false;
         });
 
         if (files.length > 0 && Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {

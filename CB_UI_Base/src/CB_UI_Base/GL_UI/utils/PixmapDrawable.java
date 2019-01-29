@@ -1,7 +1,6 @@
 package CB_UI_Base.GL_UI.utils;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,14 +10,10 @@ public class PixmapDrawable extends EmptyDrawable {
 
     public PixmapDrawable(final Pixmap pixmap) {
         // must create on GL Thread
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                tex = new Texture(pixmap);
-                // tex.bind();
-                pixmap.dispose();
-            }
+        GL.that.RunOnGL(() -> {
+            tex = new Texture(pixmap);
+            // tex.bind();
+            pixmap.dispose();
         });
 
     }

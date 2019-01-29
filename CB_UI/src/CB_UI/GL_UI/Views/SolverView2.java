@@ -25,7 +25,6 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
-import CB_UI.GL_UI.Activitys.EditWaypoint.IReturnListener;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.ISolverBackStringListener;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
@@ -41,24 +40,28 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 
 public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     private static final String log = "SolverView2";
-    boolean neu = false;
+    private static SolverView2 that;
+    private final ISolverBackStringListener backListener;
+    private boolean neu;
     private CustomAdapter lvAdapter;
     private Solver solver;
-    final ISolverBackStringListener backListener = new ISolverBackStringListener() {
+    private Cache cache;
 
-        @Override
-        public void BackString(String backString) {
+    private SolverView2() {
+        super(TabMainView.leftTab.getContentRec(), "SolverView2");
+        // Log.debug(log, "Create SolverView2 => " + this.toString());
+        cache = null;
+        neu = false;
+        backListener = backString -> {
             SolverZeile zeile;
             if (neu) {
                 zeile = new SolverZeile(solver, backString);
@@ -68,8 +71,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
                 zeile.setText(backString);
             }
 
-            for (int i = 0; i < solver.size(); i++) {
-                SolverZeile zeile2 = solver.get(i);
+            for (SolverZeile zeile2 : solver) {
                 zeile2.setText(zeile2.getOrgText());
                 zeile2.Parse();
             }
@@ -87,41 +89,12 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             // Store Solver Content into Database after editing one line
             if (GlobalCore.isSetSelectedCache())
                 Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
-        }
-    };
-    private Cache cache;
-    private final OnClickListener onItemClickListener = new OnClickListener() {
+        };
+    }
 
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            int selectionIndex = ((ListViewItemBase) v).getIndex();
-            // GlobalCore.SelectedCache(Database.Data.cacheList.get(selectionIndex));
-            setSelection(selectionIndex);
-            // edit als default Aktion bei Click
-            TabMainView.solverView2.ChangeLine();
-            return true;
-        }
-    };
-    private final OnClickListener onItemLongClickListener = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            int selectionIndex = ((ListViewItemBase) v).getIndex();
-            setSelection(selectionIndex);
-
-            Menu cm = getContextMenu();
-            cm.Show();
-
-            return true;
-        }
-
-    };
-
-    public SolverView2(CB_RectF rec, String Name) {
-        super(rec, Name);
-
-        Log.debug(log, "Create SolverView2 => " + rec.toString());
-        cache = null;
+    public static SolverView2 getInstance() {
+        if (that == null) that = new SolverView2();
+        return that;
     }
 
     @Override
@@ -211,41 +184,36 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     public Menu getContextMenu() {
         Menu cm = new Menu("SolverViewItemContextMenu");
 
-        cm.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_CHANGE_LINE:
-                        TabMainView.solverView2.ChangeLine();
-                        return true;
-                    case MenuID.MI_INSERT_LINE:
-                        TabMainView.solverView2.InsertLine();
-                        return true;
-                    case MenuID.MI_DELETE_LINE:
-                        TabMainView.solverView2.DeleteLine();
-                        return true;
-                    case MenuID.MI_SET_AS_WAYPOINT:
-                        TabMainView.solverView2.SetAsWaypoint();
-                        break;
-                    case MenuID.MI_SET_AS_MAPCENTER:
-                        TabMainView.solverView2.SetAsMapCenter();
-                        break;
-                    case MenuID.MI_ADD_MISSING_VARIABLES:
-                        int ii = 0;
-                        for (String s : solver.MissingVariables.keySet()) {
-                            solver.add(ii++, new SolverZeile(solver, s + "="));
-                        }
-                        for (int i = 0; i < solver.size(); i++) {
-                            SolverZeile zeile2 = solver.get(i);
-                            zeile2.setText(zeile2.getOrgText());
-                            zeile2.Parse();
-                        }
-                        reloadList();
-                        break;
-                }
-                return false;
+        cm.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_CHANGE_LINE:
+                    ChangeLine();
+                    return true;
+                case MenuID.MI_INSERT_LINE:
+                    InsertLine();
+                    return true;
+                case MenuID.MI_DELETE_LINE:
+                    DeleteLine();
+                    return true;
+                case MenuID.MI_SET_AS_WAYPOINT:
+                    SetAsWaypoint();
+                    break;
+                case MenuID.MI_SET_AS_MAPCENTER:
+                    SetAsMapCenter();
+                    break;
+                case MenuID.MI_ADD_MISSING_VARIABLES:
+                    int ii = 0;
+                    for (String s : solver.MissingVariables.keySet()) {
+                        solver.add(ii++, new SolverZeile(solver, s + "="));
+                    }
+                    for (SolverZeile zeile2 : solver) {
+                        zeile2.setText(zeile2.getOrgText());
+                        zeile2.Parse();
+                    }
+                    reloadList();
+                    break;
             }
+            return false;
         });
 
         cm.addItem(MenuID.MI_CHANGE_LINE, "editLine");
@@ -269,20 +237,20 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
         intiList();
     }
 
-    public void ChangeLine() {
+    private void ChangeLine() {
         if (solver == null || mSelectedIndex < 0) return;
         SolverDialog2 solverDialog = new SolverDialog2(cache, solver, solver.get(mSelectedIndex).getOrgText(), true, DataType.None);
         neu = false;
         solverDialog.show(backListener);
     }
 
-    public void InsertLine() {
+    private void InsertLine() {
         SolverDialog2 solverDialog = new SolverDialog2(cache, solver, "", true, DataType.None);
         neu = true;
         solverDialog.show(backListener);
     }
 
-    public void DeleteLine() {
+    private void DeleteLine() {
         GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             if (which == 1) {
                 solver.remove(mSelectedIndex);
@@ -330,7 +298,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
         }
     }
 
-    public void SetAsWaypoint() {
+    private void SetAsWaypoint() {
         // Add new Waypoint with the selected Coordinates in the solver list
         // if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
         CoordinateGPS result = getSelectedCoordinateResult();
@@ -347,30 +315,27 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             } catch (Exception e) {
                 return;
             }
-            EditWaypoint EdWp = new EditWaypoint(wp, new IReturnListener() {
-                @Override
-                public void returnedWP(Waypoint waypoint) {
-                    if (waypoint != null) {
-                        // Waypoint in der DB speichern
-                        GlobalCore.getSelectedCache().waypoints.add(waypoint);
-                        WaypointDAO waypointDAO = new WaypointDAO();
-                        waypointDAO.WriteToDatabase(waypoint);
-                        WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
-                        GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
-                    }
+            EditWaypoint EdWp = new EditWaypoint(wp, waypoint -> {
+                if (waypoint != null) {
+                    // Waypoint in der DB speichern
+                    GlobalCore.getSelectedCache().waypoints.add(waypoint);
+                    WaypointDAO waypointDAO = new WaypointDAO();
+                    waypointDAO.WriteToDatabase(waypoint);
+                    WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
+                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 }
             }, false, true);
             EdWp.show();
         }
     }
 
-    public void SetAsMapCenter() {
+    private void SetAsMapCenter() {
         // Center Map to the actual selected Coordinates in the solver list
         // if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
         CoordinateGPS result = getSelectedCoordinateResult();
         if (result != null) {
             // Set Map Center
-            MapView.getNormalMap().setCenter(result);
+            CB_Action_ShowMap.getInstance().normalMapView.setCenter(result);
             CB_Action_ShowMap.getInstance().Execute();
         }
     }
@@ -400,12 +365,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             return solver.size();
         }
 
-        public Object getItem(int position) {
-            if (solver == null)
-                return null;
-            return solver.get(position);
-        }
-
         @Override
         public ListViewItemBase getView(int position) {
             if (solver == null)
@@ -414,12 +373,27 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             //FIXME cache SolverViewItem, don't create new. Bad dispose this cache
 
             SolverZeile solverZeile = solver.get(position);
-            SolverViewItem v = new SolverViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, solverZeile);
-            v.setClickable(true);
-            v.setOnClickListener(onItemClickListener);
-            v.setOnLongClickListener(onItemLongClickListener);
+            SolverViewItem solverViewItem = new SolverViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, solverZeile);
+            solverViewItem.setClickable(true);
+            solverViewItem.setOnClickListener((v, x, y, pointer, button) -> {
+                int selectionIndex = ((ListViewItemBase) v).getIndex();
+                // GlobalCore.SelectedCache(Database.Data.cacheList.get(selectionIndex));
+                setSelection(selectionIndex);
+                // edit als default Aktion bei Click
+                ChangeLine();
+                return true;
+            });
+            solverViewItem.setOnLongClickListener((v, x, y, pointer, button) -> {
+                int selectionIndex = ((ListViewItemBase) v).getIndex();
+                setSelection(selectionIndex);
 
-            return v;
+                Menu cm = getContextMenu();
+                cm.Show();
+
+                return true;
+            });
+
+            return solverViewItem;
         }
 
         @Override

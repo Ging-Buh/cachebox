@@ -110,12 +110,7 @@ public class ButtonDialog extends Dialog {
     }
 
     public void close() {
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                GL.that.closeDialog(ButtonDialog.this);
-            }
-        });
+        GL.that.RunOnGL(() -> GL.that.closeDialog(ButtonDialog.this));
 
     }
 
@@ -240,15 +235,11 @@ public class ButtonDialog extends Dialog {
     }
 
     public void Show() {
-        GL.that.RunOnGL(new IRunOnGL() {
+        GL.that.RunOnGL(() -> {
+            try {
+                GL.that.showDialog(ButtonDialog.this);
+            } catch (Exception e) {
 
-            @Override
-            public void run() {
-                try {
-                    GL.that.showDialog(ButtonDialog.this);
-                } catch (Exception e) {
-
-                }
             }
         });
 

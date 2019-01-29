@@ -20,13 +20,12 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Locator.Coordinate;
-import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
 import CB_UI_Base.Enums.WrapType;
@@ -48,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static CB_Core.Api.GroundspeakAPI.*;
+import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 
 public class SearchOverPosition extends ActivityBase implements KeyboardFocusChangedEvent {
     private static final String log = "SearchOverPosition";
@@ -233,9 +233,6 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         box.addNext(tglBtnGPS);
         box.addLast(tglBtnMap);
 
-        if (MapView.getNormalMap() == null)
-            tglBtnMap.disable();
-
     }
 
     private void initClickHandlersAndContent() {
@@ -271,12 +268,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         });
 
         tglBtnMap.setOnClickListener((v, x, y, pointer, button) -> {
-            if (MapView.getNormalMap() == null) {
-                actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
-            } else {
-                actSearchPos = MapView.getNormalMap().center;
-            }
-
+            actSearchPos = CB_Action_ShowMap.getInstance().normalMapView.center;
             setToggleBtnState(1);
             return true;
         });
@@ -298,8 +290,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             return true;
         });
 
-        if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
-            actSearchPos = MapView.getNormalMap().center;
+        if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
+            actSearchPos = CB_Action_ShowMap.getInstance().normalMapView.center;
             searcheState = 1;
         } else {
             actSearchPos = Locator.getCoordinate();
@@ -500,8 +492,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             } else {
 
                 // Notify Map
-                if (MapView.getNormalMap() != null)
-                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
+                CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
                 if (dis != null) {
                     SearchOverPosition.this.removeChildsDirekt(dis);
                     dis.dispose();

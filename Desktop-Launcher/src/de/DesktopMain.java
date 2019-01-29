@@ -20,7 +20,6 @@ import CB_Utils.Plattform;
 import CB_Utils.Settings.*;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.IChanged;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -44,10 +43,11 @@ import java.util.prefs.Preferences;
 
 public class DesktopMain {
     private static final String log = "DesktopMain";
-    private static GL CB_UI;
     static float compassheading = -1;
     // Retrieve the user preference node for the package com.mycompany
     static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
+    private static GL CB_UI;
+    private static String OS = System.getProperty("os.name").toLowerCase();
 
     public static void start(DevicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame) {
 
@@ -388,6 +388,8 @@ public class DesktopMain {
 
     }
 
+    // ################## simulation#################
+
     private static void Run(boolean simulate) {
         CB_UI.onStart();
 
@@ -398,8 +400,6 @@ public class DesktopMain {
         }
 
     }
-
-    // ################## simulation#################
 
     private static void showSimmulateForm() {
         // final simulateForm sim = new simulateForm("Simulate Form");
@@ -466,44 +466,20 @@ public class DesktopMain {
 
         // Use Imperial units?
         CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-        Config.ImperialUnits.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-            }
-        });
+        Config.ImperialUnits.addSettingChangedListener(() -> CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue()));
 
         // GPS update time?
         CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-        Config.gpsUpdateTime.addSettingChangedListener(new IChanged() {
-
-            @Override
-            public void handleChange() {
-                CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-            }
-        });
+        Config.gpsUpdateTime.addSettingChangedListener(() -> CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue()));
 
         // Use magnetic Compass?
         CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-        Config.HardwareCompass.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-            }
-        });
+        Config.HardwareCompass.addSettingChangedListener(() -> CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue()));
 
         // Magnetic compass level
         CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-        Config.HardwareCompassLevel.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-            }
-        });
+        Config.HardwareCompassLevel.addSettingChangedListener(() -> CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue()));
     }
-
-
-    private static String OS = System.getProperty("os.name").toLowerCase();
 
     public static boolean isWindows() {
         return (OS.indexOf("win") >= 0);

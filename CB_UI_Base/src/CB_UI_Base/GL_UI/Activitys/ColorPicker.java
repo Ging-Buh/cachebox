@@ -84,30 +84,19 @@ public class ColorPicker extends ActivityBase {
         bCancel.setText(Translation.Get("cancel"));
 
         this.addChild(bOK);
-        bOK.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                GL.that.RunOnGL(new IRunOnGL() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                });
-                if (mReturnListener != null)
-                    mReturnListener.returnColor(actColor);
-                return true;
-            }
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            GL.that.RunOnGL(() -> finish());
+            if (mReturnListener != null)
+                mReturnListener.returnColor(actColor);
+            return true;
         });
 
         this.addChild(bCancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mReturnListener != null)
-                    mReturnListener.returnColor(null);
-                finish();
-                return true;
-            }
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mReturnListener != null)
+                mReturnListener.returnColor(null);
+            finish();
+            return true;
         });
 
     }
@@ -274,18 +263,14 @@ public class ColorPicker extends ActivityBase {
 
     private void regenarateActColorBox() {
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                if (actColorDrawable == null) {
-                    actColorDrawable = new ColorDrawable(actColor);
-                } else {
-                    actColorDrawable.setColor(actColor);
-                }
-
-                actColorBox.setBackground(actColorDrawable);
+        GL.that.RunOnGL(() -> {
+            if (actColorDrawable == null) {
+                actColorDrawable = new ColorDrawable(actColor);
+            } else {
+                actColorDrawable.setColor(actColor);
             }
+
+            actColorBox.setBackground(actColorDrawable);
         });
 
     }

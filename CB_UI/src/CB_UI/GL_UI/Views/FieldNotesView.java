@@ -60,7 +60,7 @@ import static CB_Core.Database.Data;
 
 public class FieldNotesView extends V_ListView {
     private static final String log = "FieldNotesView";
-    public static FieldNotesView that;
+    private static FieldNotesView that;
     private static FieldNoteEntry aktFieldNote;
     private static boolean firstShow = true;
     private static CB_RectF ItemRec;
@@ -70,9 +70,12 @@ public class FieldNotesView extends V_ListView {
     private static EditFieldNotes efnActivity;
     private CustomAdapter lvAdapter;
 
-    public FieldNotesView(CB_RectF rec, String Name) {
-        super(rec, Name);
-        that = this;
+    public static FieldNotesView getInstance() {
+        if (that == null) that = new FieldNotesView();
+        return that;
+    }
+    private FieldNotesView() {
+        super(TabMainView.leftTab.getContentRec(), "FieldNotesView");
         this.mCanDispose = false;
         this.setForceHandleTouchEvents(true);
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);

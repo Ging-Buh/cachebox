@@ -25,14 +25,13 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
-import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.WriteIntoDB;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
@@ -43,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.ArrayList;
 
 import static CB_Core.Api.GroundspeakAPI.*;
+import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 
 public class SearchOverNameOwnerGcCode extends ActivityBase {
     private static final String log = "SearchOverNameOwnerGcCode";
@@ -89,10 +89,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         initialContent();
     }
 
-    public static SearchOverNameOwnerGcCode ShowInstanz() {
-        SearchOverNameOwnerGcCode ret = new SearchOverNameOwnerGcCode();
-        ret.show();
-        return ret;
+    public static void ShowInstanz() {
+        new SearchOverNameOwnerGcCode().show();
     }
 
     @Override
@@ -109,29 +107,21 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         bCancel.setText(Translation.Get("cancel"));
 
         this.addChild(bImport);
-        bImport.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                ImportNow();
-                return true;
-            }
-
+        bImport.setOnClickListener((v, x, y, pointer, button) -> {
+            ImportNow();
+            return true;
         });
 
         this.addChild(bCancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (importRuns) {
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (importRuns) {
 
-                    cancelImport();
+                cancelImport();
 
-                } else {
-                    finish();
-                }
-                return true;
+            } else {
+                finish();
             }
-
+            return true;
         });
 
     }
@@ -253,31 +243,19 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
         checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
 
-        mTglBtnTitle.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(0);
-                return true;
-            }
+        mTglBtnTitle.setOnClickListener((v, x, y, pointer, button) -> {
+            switchSearcheMode(0);
+            return true;
         });
 
-        mTglBtnGc.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(1);
-                return true;
-            }
+        mTglBtnGc.setOnClickListener((v, x, y, pointer, button) -> {
+            switchSearcheMode(1);
+            return true;
         });
 
-        mTglBtnOwner.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(2);
-                return true;
-            }
+        mTglBtnOwner.setOnClickListener((v, x, y, pointer, button) -> {
+            switchSearcheMode(2);
+            return true;
         });
     }
 
@@ -319,8 +297,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             String searchPattern = mEingabe.getText().trim();
 
                             Coordinate searchCoord;
-                            if (MapView.getNormalMap() != null && MapView.getNormalMap().isVisible()) {
-                                searchCoord = MapView.getNormalMap().center;
+                            if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
+                                searchCoord = CB_Action_ShowMap.getInstance().normalMapView.center;
                             } else {
                                 searchCoord = Locator.getCoordinate();
                             }
@@ -355,8 +333,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                     // todo API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
                                     if (searchPattern.contains(",")) {
                                         geoCacheRelateds = fetchGeoCaches(q, searchPattern);
-                                    }
-                                    else {
+                                    } else {
                                         geoCacheRelateds = fetchGeoCache(q, searchPattern);
                                     }
                                     break;
@@ -394,8 +371,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             } else {
 
                 // Notify Map
-                if (MapView.getNormalMap() != null)
-                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
+                CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 bImport.enable();
             }

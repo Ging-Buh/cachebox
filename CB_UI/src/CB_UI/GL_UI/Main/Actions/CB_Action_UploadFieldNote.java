@@ -138,26 +138,15 @@ public class CB_Action_UploadFieldNote extends CB_Action {
                         GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
                     }
                 }
-                if (FieldNotesView.that != null)
-                    FieldNotesView.that.notifyDataSetChanged();
+                FieldNotesView.getInstance().notifyDataSetChanged();
             }
         };
 
         // ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
-                PD.setCancelListener(new ICancelListener() {
-
-                    @Override
-                    public void isCanceled() {
-                        cancel.set(true);
-                    }
-                });
-            }
+        GL.that.RunOnGL(() -> {
+            PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
+            PD.setCancelListener(() -> cancel.set(true));
         });
 
     }

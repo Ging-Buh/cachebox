@@ -37,15 +37,12 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -74,11 +71,9 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private float itemHeight = -1;
     private ImportAnimation dis;
     private volatile BreakawayImportThread importThread;
-    private float CollapseBoxHeight;
 
     public Import_CBServer() {
         super(ActivityRec(), "importActivity");
-        CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
         scrollBox = new ScrollBox(ActivityRec());
         scrollBox.setBackground(this.getBackground());
         createOkCancelBtn();
@@ -113,57 +108,43 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         bCancel.setText(Translation.Get("cancel"));
 
         this.addNext(bOK);
-        bOK.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                ImportNow();
-                return true;
-            }
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            ImportNow();
+            return true;
         });
 
         this.addLast(bCancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (BreakawayImportThread.isCanceled()) {
-                    BreakawayImportThread.reset();
-                    finish();
-                    return true;
-                }
-
-                if (importStarted) {
-                    GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE) {
-                                cancelImport();
-                            }
-                            return true;
-                        }
-                    });
-                } else
-                    finish();
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (BreakawayImportThread.isCanceled()) {
+                BreakawayImportThread.reset();
+                finish();
                 return true;
             }
+
+            if (importStarted) {
+                GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                        cancelImport();
+                    }
+                    return true;
+                });
+            } else
+                finish();
+            return true;
         });
 
         refreshExportList = new Button(name);
         refreshExportList.setText(Translation.Get("refreshExportList"));
-        refreshExportList.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                refreshExportList();
-                return true;
-            }
+        refreshExportList.setOnClickListener((v, x, y, pointer, button) -> {
+            refreshExportList();
+            return true;
         });
         this.addLast(refreshExportList);
 
     }
 
     private void createTitleLine() {
-        Label lblTitle = new Label(Translation.Get("export"),Fonts.getBig(),null,null);
+        Label lblTitle = new Label(Translation.Get("export"), Fonts.getBig(), null, null);
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
         CB_RectF rec = new CB_RectF(0, 0, 0, lineHeight);
@@ -206,24 +187,18 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         lvExport.notifyDataSetChanged();
         refreshExportList.disable();
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                exportList = new ExportList();
-                exportList.loadExportList();
+        new Thread(() -> {
+            exportList = new ExportList();
+            exportList.loadExportList();
 
-                lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
-                lvExport.notifyDataSetChanged();
+            lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
+            lvExport.notifyDataSetChanged();
 
-                stopTimer();
-                lvExport.setEmptyMsg(Translation.Get("EmptyExportCBServerList"));
+            stopTimer();
+            lvExport.setEmptyMsg(Translation.Get("EmptyExportCBServerList"));
 
-                refreshExportList.enable();
-            }
-
-        };
-
-        thread.start();
+            refreshExportList.enable();
+        }).start();
 
         mAnimationTimer = new Timer();
         long ANIMATION_TICK = 450;
@@ -239,9 +214,9 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
                 if (animationValue > 5)
                     animationValue = 0;
 
-                String s = "";
+                StringBuilder s = new StringBuilder();
                 for (int i = 0; i < animationValue; i++) {
-                    s += ".";
+                    s.append(".");
                 }
 
                 lvExport.setEmptyMsg(Translation.Get("LoadExportCBServerList") + s);
@@ -273,7 +248,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
     }
 
-    public void ImportThread() {
+    private void ImportThread() {
         importThread = new BreakawayImportThread() {
             @Override
             public void run() {
@@ -284,10 +259,10 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
                 try {
 
                     dis.setAnimationType(AnimationType.Work);
-                        progress.setJobMax("exportCBServer", 1);
-                        progress.ProgressChangeMsg("Export CBServer", "");
-                        runExport();
-                        progress.ProgressInkrement("exportCBServer", "", true);
+                    progress.setJobMax("exportCBServer", 1);
+                    progress.ProgressChangeMsg("Export CBServer", "");
+                    runExport();
+                    progress.ProgressInkrement("exportCBServer", "", true);
 
                     Thread.sleep(1000);
 
@@ -339,20 +314,16 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     @Override
     public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
 
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                pgBar.setProgress(Progress);
-                lblProgressMsg.setText(ProgressMessage);
-                if (!Message.equals(""))
-                    pgBar.setText(Message);
-            }
+        GL.that.RunOnGL(() -> {
+            pgBar.setProgress(Progress);
+            lblProgressMsg.setText(ProgressMessage);
+            if (!Message.equals(""))
+                pgBar.setText(Message);
         });
 
     }
 
-    protected void runExport() {
+    private void runExport() {
         ExportList toExport = new ExportList();
         // notwendige Informationen sammeln
         for (ExportEntry entry : exportList) {
@@ -381,7 +352,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         // Export zm CB_Server auführen
         RpcClientCB client = new RpcClientCB();
         RpcAnswer answer = client.ExportChangesToServer(toExport);
-        if ((answer != null) && (answer instanceof RpcAnswer_ExportChangesToServer)) {
+        if ((answer instanceof RpcAnswer_ExportChangesToServer)) {
             // Export ohne Fehler -> Replicationseinträge entfernen
             String sql = "delete from Replication";
             Database.Data.sql.execSQL(sql);
@@ -389,9 +360,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             exportList.loadExportList();
             lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
             lvExport.notifyDataSetChanged();
-        } else {
-            // Fehler beim Export
-            // TODO
         }
     }
 
@@ -401,8 +369,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
             WaypointDAO waypointDAO = new WaypointDAO();
-            Waypoint wp = waypointDAO.getWaypoint(reader, true);
-            result = wp;
+            result = waypointDAO.getWaypoint(reader, true);
             reader.moveToNext();
 
         }
@@ -412,7 +379,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
     public class CustomAdapterExportCBServer implements Adapter {
 
-        public CustomAdapterExportCBServer() {
+        CustomAdapterExportCBServer() {
         }
 
         @Override

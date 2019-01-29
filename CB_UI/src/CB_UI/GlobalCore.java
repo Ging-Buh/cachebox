@@ -33,12 +33,10 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
@@ -61,22 +59,20 @@ import static CB_Core.Api.GroundspeakAPI.*;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final String CurrentVersion = "2.0.";
-    public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
+    public static final String aboutMsg1 = "Team Cachebox (2011-2019)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
     public static final String splashMsg = aboutMsg + br + br + "POWERED BY:";
+    private static final String CurrentVersion = "2.0.";
     private static final String log = "GlobalCore";
     public static boolean restartAfterKill = false;
     public static String restartCache;
     public static String restartWaypoint;
     public static boolean filterLogsOfFriends = false;
     public static Track AktuelleRoute = null;
-    // #######################################
     public static int aktuelleRouteCount = 0;
     public static boolean switchToCompassCompleted = false;
-    // public static long TrackDistance;
     public static GlobalLocationReceiver receiver;
     public static boolean RunFromSplash = false;
     private static GlobalCore mINSTANCE;
@@ -117,7 +113,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             return false;
     }
 
-    public static Cache NearestCache() {
+    static Cache NearestCache() {
         return nearestCache;
     }
 
@@ -137,9 +133,9 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     /**
      * if changeAutoResort == false -> do not change state of autoResort Flag
      *
-     * @param cache
-     * @param waypoint
-     * @param changeAutoResort
+     * @param cache            cache
+     * @param waypoint         wapoint
+     * @param changeAutoResort changeAutoResort
      */
     public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort) {
 
@@ -195,13 +191,9 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
      */
     public static boolean APIisOnline() {
         if (GroundspeakAPI.GetSettingsAccessToken().length() == 0) {
-            Log.info(log, "GlobalCore.APIisOnline() - no GC - API AccessToken");
             return false;
         }
-        if (PlatformConnector.isOnline()) {
-            return true;
-        }
-        return false;
+        return PlatformConnector.isOnline();
     }
 
     public static Coordinate getSelectedCoord() {
@@ -242,13 +234,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     public static CancelWaitDialog ImportSpoiler() {
-        wd = CancelWaitDialog.ShowWait(Translation.Get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
-            @Override
-            public void isCanceled() {
-                // TODO Handle Cancel
-
-            }
+        wd = CancelWaitDialog.ShowWait(Translation.Get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
+            // canceled
         }, new ICancelRunnable() {
 
             @Override
@@ -261,7 +248,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
                 wd.close();
                 if (result != OK) {
                     GL.that.Toast(LastAPIError);
-                    return;
                 }
             }
 
@@ -275,12 +261,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     public static void MsgDownloadLimit() {
-        GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-            @Override
-            public void run() {
-                GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
-            }
-        });
+        GL.that.RunOnGLWithThreadCheck(() -> GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null));
 
     }
 
@@ -322,16 +303,13 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     /**
      * Returns true, if a Cache selected and this Cache object is valid.
      *
-     * @return
+     * @return see above
      */
     public static boolean isSetSelectedCache() {
         if (selectedCache == null)
             return false;
 
-        if (selectedCache.getGcCode().length() == 0)
-            return false;
-
-        return true;
+        return selectedCache.getGcCode().length() != 0;
     }
 
     private void initVersionInfos() {
@@ -366,7 +344,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     public String getVersionString() {
-        return "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  (" + VersionPrefix + ")";
+        return "Version: " + CurrentVersion + CurrentRevision + "  (" + VersionPrefix + ")";
     }
 
     @Override

@@ -13,17 +13,11 @@ public class CB_Action_ShowTestView extends CB_Action_ShowView {
 
     public CB_Action_ShowTestView() {
         super("TestView", MenuID.AID_TEST_VIEW);
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     @Override
     public void Execute() {
-        if ((TabMainView.testView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.testView = new TestView(tab.getContentRec(), "TestView");
-
-        if ((TabMainView.testView != null) && (tab != null))
-            tab.ShowView(TabMainView.testView);
+        TabMainView.leftTab.ShowView(TestView.getInstance());
     }
 
     @Override
@@ -38,6 +32,6 @@ public class CB_Action_ShowTestView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.testView;
+        return TestView.getInstance();
     }
 }

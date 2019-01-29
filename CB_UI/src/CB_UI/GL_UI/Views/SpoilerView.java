@@ -18,13 +18,13 @@ package CB_UI.GL_UI.Views;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Activitys.ImageActivity;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
@@ -35,49 +35,20 @@ import java.util.ArrayList;
 public class SpoilerView extends CB_View_Base {
     private final static int MAX_THUMB_WIDTH = 500;
     private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
-    private final OnClickListener onGalleryItemDoubleClicked = new OnClickListener() {
+    private static SpoilerView that;
+    private Cache actCache;
+    private final CB_List<GalleryBigItem> bigItems = new CB_List<>();
+    private final CB_List<GalleryItem> overviewItems = new CB_List<>();
+    private GalleryView gallery;
+    private GalleryView galleryOverwiew;
+    private boolean forceReload = false;
+    private ImageDAO imageDAO = new ImageDAO();
 
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            Image selectionImage = ((GalleryBigItem) v).getImage();
+    private SpoilerView() {
+        super(TabMainView.leftTab.getContentRec(), "SpoilerView");
 
-            String path = selectionImage.getImageLoader().getOriginalImagePath();
-
-            Image img = new Image(SpoilerView.this, "Image for Activity", true);
-            img.setImage(path);
-
-            ImageActivity ac = new ImageActivity(img);
-            ac.show();
-            return true;
-        }
-    };
-    Cache actCache;
-    CB_List<GalleryBigItem> bigItems = new CB_List<GalleryBigItem>();
-    CB_List<GalleryItem> overviewItems = new CB_List<GalleryItem>();
-    GalleryView gallery;
-    GalleryView galleryOverwiew;
-    private final OnClickListener onIconClicked = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            final int idx = ((GalleryItem) v).getIndex();
-
-            gallery.notifyDataSetChanged();
-
-            gallery.scrollToItem(idx);
-            galleryOverwiew.setSelection(idx);
-            galleryOverwiew.scrollItemToCenter(idx);
-            return true;
-        }
-    };
-    boolean forceReload = false;
-    ImageDAO imageDAO = new ImageDAO();
-
-    public SpoilerView(CB_RectF rec, String Name) {
-        super(rec, Name);
-
-        CB_RectF gr = rec.copy();
-        gr.setHeight(rec.getHeight() * 0.85f);
+        CB_RectF gr = this.copy();
+        gr.setHeight(this.getHeight() * 0.85f);
 
         gallery = new GalleryView(gr, "gallery") {
             @Override
@@ -90,12 +61,17 @@ public class SpoilerView extends CB_View_Base {
         this.addChild(gallery);
 
         CB_RectF or = gr.copy();
-        or.setHeight(rec.getHeight() - gr.getHeight());
+        or.setHeight(this.getHeight() - gr.getHeight());
         galleryOverwiew = new GalleryView(or, "overview");
         galleryOverwiew.setPos(0, this.getHeight() - or.getHeight());
         galleryOverwiew.showSelectedItemCenter(true);
 
         this.addChild(galleryOverwiew);
+    }
+
+    public static SpoilerView getInstance() {
+        if (that == null) that = new SpoilerView();
+        return that;
     }
 
     public void ForceReload() {
@@ -167,14 +143,34 @@ public class SpoilerView extends CB_View_Base {
                         }
 
                         GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
-                        item.setOnDoubleClickListener(onGalleryItemDoubleClicked);
+                        item.setOnDoubleClickListener((v, x, y, pointer, button) -> {
+                            Image selectionImage = ((GalleryBigItem) v).getImage();
+
+                            String path = selectionImage.getImageLoader().getOriginalImagePath();
+
+                            Image img = new Image(SpoilerView.this, "Image for Activity", true);
+                            img.setImage(path);
+
+                            ImageActivity ac = new ImageActivity(img);
+                            ac.show();
+                            return true;
+                        });
                         bigItems.add(item);
 
                         ImageLoader overviewloader = new ImageLoader(true); // image loader with thumb
                         overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
                         overviewloader.setImage(imageEntry.LocalPath);
                         GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-                        overviewItem.setOnClickListener(onIconClicked);
+                        overviewItem.setOnClickListener((v, x, y, pointer, button) -> {
+                            final int idx = ((GalleryItem) v).getIndex();
+
+                            gallery.notifyDataSetChanged();
+
+                            gallery.scrollToItem(idx);
+                            galleryOverwiew.setSelection(idx);
+                            galleryOverwiew.scrollItemToCenter(idx);
+                            return true;
+                        });
                         if (firstItem == null)
                             firstItem = overviewItem;
                         overviewItems.add(overviewItem);
@@ -243,14 +239,12 @@ public class SpoilerView extends CB_View_Base {
     }
 
     public class GalaryImageAdapter implements Adapter {
-        public GalaryImageAdapter() {
+        GalaryImageAdapter() {
         }
 
         @Override
         public int getCount() {
             synchronized (bigItems) {
-                if (bigItems == null)
-                    return 0;
                 return bigItems.size();
             }
         }
@@ -258,8 +252,6 @@ public class SpoilerView extends CB_View_Base {
         @Override
         public ListViewItemBase getView(int position) {
             synchronized (bigItems) {
-                if (bigItems == null)
-                    return null;
                 if (bigItems.size() == 0)
                     return null;
                 return bigItems.get(position);
@@ -269,8 +261,6 @@ public class SpoilerView extends CB_View_Base {
         @Override
         public float getItemSize(int position) {
             synchronized (bigItems) {
-                if (bigItems == null)
-                    return 0;
                 if (bigItems.size() == 0)
                     return 0;
                 GalleryBigItem item = bigItems.get(position);
@@ -282,14 +272,12 @@ public class SpoilerView extends CB_View_Base {
     }
 
     public class OverviewImageAdapter implements Adapter {
-        public OverviewImageAdapter() {
+        OverviewImageAdapter() {
         }
 
         @Override
         public int getCount() {
             synchronized (overviewItems) {
-                if (overviewItems == null)
-                    return 0;
                 return overviewItems.size();
             }
         }
@@ -297,8 +285,6 @@ public class SpoilerView extends CB_View_Base {
         @Override
         public ListViewItemBase getView(int position) {
             synchronized (overviewItems) {
-                if (overviewItems == null)
-                    return null;
                 if (overviewItems.size() == 0)
                     return null;
                 return overviewItems.get(position);
@@ -308,8 +294,6 @@ public class SpoilerView extends CB_View_Base {
         @Override
         public float getItemSize(int position) {
             synchronized (overviewItems) {
-                if (overviewItems == null)
-                    return 0;
                 if (overviewItems.size() == 0)
                     return 0;
                 GalleryItem item = overviewItems.get(position);

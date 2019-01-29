@@ -23,8 +23,8 @@ import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowFilterSettings;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -47,6 +47,8 @@ import CB_Utils.Log.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 
 public class EditFilterSettings extends ActivityBase {
     private static final String log = "EditFilterSettings";
@@ -269,8 +271,7 @@ public class EditFilterSettings extends ActivityBase {
                 TabMainView.that.filterSetChanged();
 
                 // Notify Map
-                if (MapView.getNormalMap() != null)
-                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
+                CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 // Save selected filter (new JSON Format)
                 // wont save History at the Moment

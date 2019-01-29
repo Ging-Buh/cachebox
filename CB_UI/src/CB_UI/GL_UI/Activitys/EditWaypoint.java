@@ -6,8 +6,8 @@ import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.CoordinateButton;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
-import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
@@ -16,42 +16,37 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import java.util.ArrayList;
+import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 
 public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEvent {
 
-    private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
-    float virtualHeight = 0;
-    private boolean showWaypointListAfterFinish = false;
+    private float virtualHeight = 0;
+    private boolean showWaypointListAfterFinish;
     private Waypoint waypoint;
-    private CoordinateButton bCoord = null;
-    private Spinner sType = null;
-    private ChkBox cbStartPoint = null;
-    private float cbStartPointWidth = 0;
-    private Button bOK = null;
-    private Button bHelp = null;
-    private Button bCancel = null;
-    private Label tvCacheName = null;
-    private Label tvTyp = null;
-    private Label tvStartPoint = null;
-    private Label tvTitle = null;
-    private EditTextField etTitle = null;
-    private Label tvDescription = null;
-    private EditTextField etDescription = null;
-    private Label tvClue = null;
-    private EditTextField etClue = null;
-    private Boolean firstShow = true;
+    private CoordinateButton bCoord;
+    private Spinner sType;
+    private ChkBox cbStartPoint;
+    private float cbStartPointWidth;
+    private Button bOK;
+    private Label tvCacheName;
+    private Label tvTyp;
+    private Label tvStartPoint;
+    private Label tvTitle;
+    private EditTextField etTitle;
+    private Label tvDescription;
+    private EditTextField etDescription;
+    private Label tvClue;
+    private EditTextField etClue;
+    private Boolean firstShow;
     // damit kann festgelegt werden, ob beim Start des WaypointDialogs gleich der Coordinaten-Dialog gezeigt werden soll oder nicht.
-    private Boolean showCoordinateDialog = false;
+    private Boolean showCoordinateDialog;
     private ScrollBox scrollBox;
     private IReturnListener mReturnListener;
 
@@ -77,7 +72,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         iniTitleTextClue();
         iniOkCancel();
 
-        iniTextfieldFocus();
         layoutTextFields();
 
         scrollBox.setHeight(this.getHeight() - bOK.getMaxY() - margin);
@@ -85,6 +79,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         scrollBox.setBackground(this.getBackground());
         scrollBox.setBorders(0, 0);
 
+        cbStartPointWidth = 0;
+        firstShow = true;
     }
 
     private void iniCacheNameLabel() {
@@ -129,39 +125,35 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTypeSpinner() {
         CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth - cbStartPointWidth, UI_Size_Base.that.getButtonHeight());
-        sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(int index) {
-                EditWaypoint.this.show();
-                showCbStartPoint(false);
-                switch (index) {
-                    case 0:
-                        waypoint.Type = CacheTypes.ReferencePoint;
-                        break;
-                    case 1:
-                        waypoint.Type = CacheTypes.MultiStage;
-                        showCbStartPoint(true);
-                        break;
-                    case 2:
-                        waypoint.Type = CacheTypes.MultiQuestion;
-                        break;
-                    case 3:
-                        waypoint.Type = CacheTypes.Trailhead;
-                        break;
-                    case 4:
-                        waypoint.Type = CacheTypes.ParkingArea;
-                        break;
-                    case 5:
-                        waypoint.Type = CacheTypes.Final;
-                        break;
-                }
-
+        sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), index -> {
+            EditWaypoint.this.show();
+            showCbStartPoint(false);
+            switch (index) {
+                case 0:
+                    waypoint.Type = CacheTypes.ReferencePoint;
+                    break;
+                case 1:
+                    waypoint.Type = CacheTypes.MultiStage;
+                    showCbStartPoint(true);
+                    break;
+                case 2:
+                    waypoint.Type = CacheTypes.MultiQuestion;
+                    break;
+                case 3:
+                    waypoint.Type = CacheTypes.Trailhead;
+                    break;
+                case 4:
+                    waypoint.Type = CacheTypes.ParkingArea;
+                    break;
+                case 5:
+                    waypoint.Type = CacheTypes.Final;
+                    break;
             }
+
         });
 
         // CheckBox for the selection whether this WP is the startpoint of the cache
-        rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.that.getButtonHeight() / 2), tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.that.getButtonHeight() / 2.0f), tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
         cbStartPoint = new ChkBox(rec, "CheckBoxStartPoint");
         cbStartPoint.setVisible(false);
 
@@ -199,7 +191,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private SpinnerAdapter getSpinerAdapter() {
         final String[] names = new String[]{Translation.Get("Reference"), Translation.Get("StageofMulti"), Translation.Get("Question2Answer"), Translation.Get("Trailhead"), Translation.Get("Parking"), Translation.Get("Final")};
 
-        SpinnerAdapter adapter = new SpinnerAdapter() {
+        return new SpinnerAdapter() {
 
             @Override
             public String getText(int position) {
@@ -232,8 +224,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
                 return names.length;
             }
         };
-
-        return adapter;
 
     }
 
@@ -320,11 +310,11 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         bOK = new Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());
-        bHelp = new Button(btnRec, "HelpButton");
+        Button bHelp = new Button(btnRec, "HelpButton");
         bHelp.setText(Translation.Get("help"));
 
         btnRec.setX(bOK.getMaxX());
-        bCancel = new Button(btnRec, "CancelButton");
+        Button bCancel = new Button(btnRec, "CancelButton");
 
         bOK.setText(Translation.Get("ok"));
         bCancel.setText(Translation.Get("cancel"));
@@ -333,66 +323,41 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         // this.addChild(bHelp);
         this.addChild(bCancel);
 
-        bOK.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mReturnListener != null) {
-                    waypoint.Pos = bCoord.getCoordinate();
-                    waypoint.setTitle(etTitle.getText());
-                    waypoint.setDescription(etDescription.getText());
-                    waypoint.setClue(etClue.getText());
-                    waypoint.IsStart = cbStartPoint.isChecked();
-                    mReturnListener.returnedWP(waypoint);
-                }
-
-                // Änderungen auch an die MapView melden
-                if (MapView.getNormalMap() != null)
-                    MapView.getNormalMap().setNewSettings(MapView.INITIAL_WP_LIST);
-
-                finish();
-
-                // Show WP View?
-                if (showWaypointListAfterFinish) {
-                    CB_Action_ShowWaypointView.getInstance().Execute();
-                }
-
-                return true;
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mReturnListener != null) {
+                waypoint.Pos = bCoord.getCoordinate();
+                waypoint.setTitle(etTitle.getText());
+                waypoint.setDescription(etDescription.getText());
+                waypoint.setClue(etClue.getText());
+                waypoint.IsStart = cbStartPoint.isChecked();
+                mReturnListener.returnedWP(waypoint);
             }
+
+            // Änderungen auch an die MapView melden
+            CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+
+            finish();
+
+            // Show WP View?
+            if (showWaypointListAfterFinish) {
+                CB_Action_ShowWaypointView.getInstance().Execute();
+            }
+
+            return true;
         });
 
-        bCancel.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mReturnListener != null)
-                    mReturnListener.returnedWP(null);
-                finish();
-                return true;
-            }
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mReturnListener != null)
+                mReturnListener.returnedWP(null);
+            finish();
+            return true;
         });
-        bHelp.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                return true;
-            }
-        });
-    }
-
-    private void iniTextfieldFocus() {
-        registerTextField(etTitle);
-        registerTextField(etDescription);
-        registerTextField(etClue);
+        bHelp.setOnClickListener((v, x, y, pointer, button) -> true);
     }
 
     private void showCbStartPoint(boolean visible) {
         tvStartPoint.setVisible(visible);
         cbStartPoint.setVisible(visible);
-    }
-
-    public void registerTextField(final EditTextField textField) {
-        allTextFields.add(textField);
     }
 
     private void scrollToY(float y, float maxY) {

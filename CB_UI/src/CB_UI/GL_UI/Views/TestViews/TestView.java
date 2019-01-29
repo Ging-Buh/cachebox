@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Views.TestViews;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GL_UI.Activitys.CreateTrackOverMapActivity;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -38,6 +39,7 @@ public class TestView extends CB_View_Base {
     public static final String br = System.getProperty("line.separator");
     public static final String splashMsg = "Team" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission" + br + " " + br + "7.Zeile";
     public static final int MAX_MAP_ZOOM = 22;
+    private static TestView that;
     final int mapIntWidth = 3000;
     final int mapIntHeight = 3000;
     final Coordinate center = new CoordinateGPS(50.44, 9.28);
@@ -65,8 +67,8 @@ public class TestView extends CB_View_Base {
     ProgressDialog PD;
     private CB_UI_Base.GL_UI.Controls.EditTextField wrappedTextField;
 
-    public TestView(CB_RectF rec, String Name) {
-        super(rec, Name);
+    private TestView() {
+        super(TabMainView.leftTab.getContentRec(), "TestView");
 
         this.setClickable(true);
 
@@ -203,6 +205,11 @@ public class TestView extends CB_View_Base {
         this.addChild(labelTest);
         requestLayout();
 
+    }
+
+    public static TestView getInstance() {
+        if (that == null) that = new TestView();
+        return that;
     }
 
     @Override

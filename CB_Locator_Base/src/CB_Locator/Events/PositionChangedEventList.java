@@ -5,7 +5,6 @@ import CB_Locator.Locator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class PositionChangedEventList {
     private static final ArrayList<PositionChangedEvent> list = new ArrayList<PositionChangedEvent>();
@@ -21,13 +20,10 @@ public class PositionChangedEventList {
             if (!list.contains(event)) {
                 list.add(event);
 
-                Collections.sort(list, new Comparator<PositionChangedEvent>() {
-                    @Override
-                    public int compare(PositionChangedEvent arg0, PositionChangedEvent arg1) {
-                        int o2 = arg0.getPriority().ordinal();
-                        int o1 = arg1.getPriority().ordinal();
-                        return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-                    }
+                Collections.sort(list, (arg0, arg1) -> {
+                    int o2 = arg0.getPriority().ordinal();
+                    int o1 = arg1.getPriority().ordinal();
+                    return (Integer.compare(o1, o2));
                 });
 
             }

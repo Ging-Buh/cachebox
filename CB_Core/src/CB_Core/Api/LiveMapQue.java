@@ -69,6 +69,7 @@ public class LiveMapQue {
         protected boolean LoopBreak() {
             return descStack.empty();
         }
+
         protected void Loop() {
             Log.debug(LIVE_CACHE_NAME, "Loop start");
             GL.that.postAsync(() -> {
@@ -192,7 +193,7 @@ public class LiveMapQue {
 
     }
 
-    public static ArrayList<GroundspeakAPI.GeoCacheRelated> loadDescLiveFromCache(GroundspeakAPI.Query query) {
+    private static ArrayList<GroundspeakAPI.GeoCacheRelated> loadDescLiveFromCache(GroundspeakAPI.Query query) {
         String path = query.getDescriptor().getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
 
         String result;
@@ -208,7 +209,7 @@ public class LiveMapQue {
             }
             result = sb.toString();
             br.close();
-            if (result != null && result.length() > 0) {
+            if (result.length() > 0) {
                 JSONArray json = (JSONArray) new JSONTokener(result).nextValue();
                 if (gpxFilename == null) {
                     Category category = CoreSettingsForward.Categories.getCategory("API-Import");
@@ -223,7 +224,7 @@ public class LiveMapQue {
         return null;
     }
 
-    protected static boolean descExistLiveCache(Descriptor desc) {
+    private static boolean descExistLiveCache(Descriptor desc) {
         String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
         return FileIO.FileExists(path, CB_Core_Settings.LiveCacheTime.getEnumValue().getMinuten());
     }
@@ -239,7 +240,6 @@ public class LiveMapQue {
 
         final Descriptor desc = new Descriptor(coord, Used_Zoom);
         queDesc(desc);
-        return;
     }
 
     public static void queScreen(Descriptor lo, Descriptor ru) {

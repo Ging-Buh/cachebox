@@ -15,8 +15,6 @@ public class CB_Action_ShowActivity extends CB_Action_ShowView {
         super(Name, ID);
         viewConst = ViewConst;
         mIcon = icon;
-        tabMainView = TabMainView.that;
-        tab = TabMainView.leftTab;
     }
 
     @Override

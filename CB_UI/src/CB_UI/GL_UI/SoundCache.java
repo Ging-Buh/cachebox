@@ -31,14 +31,7 @@ public class SoundCache {
     private static Music GPS_fix;
     private static Music Approach;
     private static Music AutoResort;
-    private static IChanged changedListener = new IChanged() {
-
-        @Override
-        public void handleChange() {
-            setVolumes();
-        }
-
-    };
+    private static IChanged changedListener = SoundCache::setVolumes;
 
     public static void play(Sounds sound) {
         play(sound, false);
@@ -89,7 +82,7 @@ public class SoundCache {
         setVolumes();
     }
 
-    public static void setVolumes() {
+    private static void setVolumes() {
 
         // calc volume Global and own
         float GlobalVolume = Config.GlobalVolume.getValue().Volume;

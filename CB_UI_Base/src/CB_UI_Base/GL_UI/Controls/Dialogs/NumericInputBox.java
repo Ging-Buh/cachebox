@@ -300,13 +300,7 @@ public class NumericInputBox extends CB_View_Base {
     }
 
     private static void close(final GL_MsgBox msgBox) {
-        GL.that.RunOnGL(new IRunOnGL() {
-
-            @Override
-            public void run() {
-                GL.that.closeDialog(msgBox);
-            }
-        });
+        GL.that.RunOnGL(() -> GL.that.closeDialog(msgBox));
 
     }
 
