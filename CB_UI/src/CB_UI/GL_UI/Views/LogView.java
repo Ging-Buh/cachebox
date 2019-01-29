@@ -21,6 +21,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -40,14 +41,13 @@ import java.util.ArrayList;
 
 public class LogView extends V_ListView implements SelectedCacheEvent {
     private static CB_RectF ItemRec;
-    public static LogView that;
+    private static LogView that;
     private Cache aktCache;
     private ListViewBaseAdapter lvAdapter;
     private CB_List<LogViewItem> itemList;
 
-    public LogView(CB_RectF rec, String Name) {
-        super(rec, Name);
-        that = this;
+    private LogView() {
+        super(TabMainView.leftTab.getContentRec(), "LogView");
         setForceHandleTouchEvents(true);
         ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);
@@ -55,6 +55,11 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
         this.setBaseAdapter(null);
         setCache(GlobalCore.getSelectedCache());
         this.setDisposeFlag(false);
+    }
+
+    public static LogView getInstance() {
+        if (that == null) that = new LogView();
+        return that;
     }
 
     @Override

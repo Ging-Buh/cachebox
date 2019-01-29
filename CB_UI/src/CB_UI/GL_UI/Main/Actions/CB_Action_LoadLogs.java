@@ -95,9 +95,7 @@ public class CB_Action_LoadLogs extends CB_Action {
                         Database.Data.sql.setTransactionSuccessful();
                         Database.Data.sql.endTransaction();
 
-                        if (LogView.that != null) {
-                            LogView.that.resetInitial();
-                        }
+                        LogView.getInstance().resetInitial();
 
                     }
 

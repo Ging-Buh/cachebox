@@ -34,7 +34,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     @Override
     public void Execute() {
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
-        TabMainView.leftTab.ShowView(LogView.that);
+        TabMainView.leftTab.ShowView(LogView.getInstance());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return LogView.that;
+        return LogView.getInstance();
     }
 
     @Override
@@ -71,9 +71,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
                     return true;
                 case MenuID.MI_FILTERLOGS:
                     GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
-                    if (LogView.that != null) {
-                        LogView.that.resetInitial();
-                    }
+                    LogView.getInstance().resetInitial();
                     break;
             }
             return false;

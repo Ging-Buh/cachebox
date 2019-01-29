@@ -166,9 +166,9 @@ public enum QuickActions {
             case 21:
                 return CB_Action_add_WP.getInstance();
             case 22:
-                return CB_Action_ShowSolverView2.getInstance(); // todo doppelt
+                return CB_Action_ShowSolverView2.getInstance();
             case 23:
-                return CB_Action_ShowSolverView.getInstance(); // todo doppelt
+                return CB_Action_ShowNotesView.getInstance();
             case 24:
                 return CB_Action_UploadFieldNote.getInstance();
             case 25:

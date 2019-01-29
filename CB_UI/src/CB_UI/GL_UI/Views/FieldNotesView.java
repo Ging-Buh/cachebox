@@ -70,10 +70,6 @@ public class FieldNotesView extends V_ListView {
     private static EditFieldNotes efnActivity;
     private CustomAdapter lvAdapter;
 
-    public static FieldNotesView getInstance() {
-        if (that == null) that = new FieldNotesView();
-        return that;
-    }
     private FieldNotesView() {
         super(TabMainView.leftTab.getContentRec(), "FieldNotesView");
         this.mCanDispose = false;
@@ -91,6 +87,11 @@ public class FieldNotesView extends V_ListView {
 
         this.setEmptyMsg(Translation.Get("EmptyFieldNotes"));
         firstShow = true;
+    }
+
+    public static FieldNotesView getInstance() {
+        if (that == null) that = new FieldNotesView();
+        return that;
     }
 
     private static void addNewFieldNote(LogTypes type) {

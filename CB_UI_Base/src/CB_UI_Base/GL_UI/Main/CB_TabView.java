@@ -78,41 +78,37 @@ public class CB_TabView extends CB_View_Base {
 
     public void ShowView(final CB_View_Base view) {
 
-        Thread th = new Thread(new Runnable() {
+        Thread th = new Thread(() -> {
+            GL.that.clearRenderViews();
+            GL.that.closeAllDialogs();
 
-            @Override
-            public void run() {
-                GL.that.clearRenderViews();
-                GL.that.closeAllDialogs();
-
-                // delete all Views up to the ButtonList
-                if (aktView != null && aktView != view) {
-                    removeChild(aktView);
-                    // aktView.onStop();
-                    aktView.onHide();
-                    aktView.setInvisible();
-                }
-
-                try {
-                    // set View size and pos
-                    view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
-                    view.setPos(new Vector2(0, buttonListView.getHeight()));
-                } catch (Exception e) {
-                    Log.err(sKlasse, "set view size", e);
-                    return;
-                }
-
-                if (aktView == view)
-                    return;
-
-                aktView = view;
-                addChild(aktView);
-
-                aktView.setVisible();
-                sendOnShow2aktView();
-
-                GL.that.renderOnce();
+            // delete all Views up to the ButtonList
+            if (aktView != null && aktView != view) {
+                removeChild(aktView);
+                // aktView.onStop();
+                aktView.onHide();
+                aktView.setInvisible();
             }
+
+            try {
+                // set View size and pos
+                view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
+                view.setPos(new Vector2(0, buttonListView.getHeight()));
+            } catch (Exception e) {
+                Log.err(sKlasse, "set view size", e);
+                return;
+            }
+
+            if (aktView == view)
+                return;
+
+            aktView = view;
+            addChild(aktView);
+
+            aktView.setVisible();
+            sendOnShow2aktView();
+
+            GL.that.renderOnce();
         });
 
         th.start();
