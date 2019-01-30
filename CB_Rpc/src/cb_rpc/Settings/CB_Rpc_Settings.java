@@ -16,17 +16,14 @@
 package cb_rpc.Settings;
 
 import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 
+import static CB_Utils.Settings.SettingCategory.CBS;
+import static CB_Utils.Settings.SettingModus.*;
+import static CB_Utils.Settings.SettingStoreType.Global;
+import static CB_Utils.Settings.SettingUsage.ACB;
+
 public interface CB_Rpc_Settings {
-    // Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
-    SettingModus DEVELOPER = CB_Utils.Settings.SettingModus.DEVELOPER;
-    SettingModus NORMAL = CB_Utils.Settings.SettingModus.NORMAL;
-    //SettingModus EXPERT = CB_Utils.Settings.SettingModus.EXPERT;
-    //SettingModus NEVER = CB_Utils.Settings.SettingModus.NEVER;
-
-    SettingString CBS_IP = new SettingString("CBS_IP", CB_Utils.Settings.SettingCategory.CBS, NORMAL, "", CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
-    SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CB_Utils.Settings.SettingCategory.CBS, DEVELOPER, 100, CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
-
+    SettingString CBS_IP = new SettingString("CBS_IP", CBS, EXPERT, "", Global, ACB);
+    SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CBS, DEVELOPER, 100, Global, ACB);
 }

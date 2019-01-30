@@ -38,7 +38,6 @@ import CB_Utils.Log.Log;
  * @author Longri
  */
 public class NotesView extends CB_View_Base implements SelectedCacheEvent, KeyboardFocusChangedEvent {
-    // TODO insert translations
     private static NotesView that;
     private final String sKlasse = "NotesView";
     private boolean mustLoadNotes;
@@ -60,7 +59,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
         addNext(getSolverButton);
         uploadButton = new Button(Translation.Get("Upload"));
         addLast(uploadButton);
-        notesHeight = getAvailableHeight();
+        notesHeight = getAvailableHeight() - getY(); // !!! this is because TabMainView.leftTab.getContentRec() doesn't start at y=0
         notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
         this.addLast(notes);
         notesDefaultYPos = notes.getY();
@@ -76,9 +75,9 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
                     int result = GroundspeakAPI.uploadCacheNote(aktCache.getGcCode(), UploadText);
                     b.disable();
                     if (result == 0) {
-                        b.setText("erfolgreich");
+                        b.setText(Translation.Get("successful"));
                     } else {
-                        b.setText("Fehler");
+                        b.setText(Translation.Get("Error"));
                     }
                 });
             }
@@ -119,12 +118,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
 
     @Override
     public void KeyboardFocusChanged(EditTextField editTextField) {
-        chkFocus(editTextField);
-    }
-
-    // Handling keyboard popup
-    private void chkFocus(EditTextField editTextField) {
-        uploadButton.setText("Upload");
+        uploadButton.setText(Translation.Get("Upload"));
         uploadButton.enable();
         if (editTextField == notes) {
             notes.setHeight(this.getHalfHeight());

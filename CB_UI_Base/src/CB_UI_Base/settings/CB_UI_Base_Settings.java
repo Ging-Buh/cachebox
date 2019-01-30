@@ -35,19 +35,20 @@ public interface CB_UI_Base_Settings {
 
     SettingFolder SkinFolder = new SettingFolder("SkinFolder", Folder, DEVELOPER, "default", Global, ACB, false);
 
+    SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, true, Global, ACB);
+    SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, true, Global, ACB);
+    SettingBool GestureOn = new SettingBool("GestureOn", Skin, EXPERT, true, Global, ACB);
+    SettingBool useMipMap = new SettingBool("useMipMap", Skin, DEVELOPER, false, Global, ACB);
+    SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", Skin, DEVELOPER, true, Global, ACB);
+    SettingInt ambientTime = new SettingInt("ambientTime", Skin, DEVELOPER, 10, Global, ACB);
+    SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", Skin, DEVELOPER, new HSV_Color(0.2f, 1f, 0.2f, 1f), Global, ACB);
+
     SettingInt FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", Skin, EXPERT, 25, Global, ACB);
     SettingInt FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", Skin, EXPERT, 16, Global, ACB);
     SettingInt FONT_SIZE_NORMAL = new SettingInt("FONT_SIZE_NORMAL", Skin, EXPERT, 14, Global, ACB);
     SettingInt FONT_SIZE_NORMAL_BUBBLE = new SettingInt("FONT_SIZE_NORMAL_BUBBLE", Skin, EXPERT, 13, Global, ACB);
     SettingInt FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", Skin, EXPERT, 12, Global, ACB);
     SettingInt FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", Skin, EXPERT, 10, Global, ACB);
-
-    SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, false, Global, ACB);
-    SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, false, Global, ACB);
-
-    SettingBool useMipMap = new SettingBool("useMipMap", Skin, EXPERT, false, Global, ACB);
-    SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", Skin, EXPERT, true, Global, ACB);
-    SettingInt ambientTime = new SettingInt("ambientTime", Skin, EXPERT, 10, Global, ACB);
 
     SettingDouble MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", Map, NEVER, 1.0, Global, ACB);
 
@@ -58,11 +59,9 @@ public interface CB_UI_Base_Settings {
 
     SettingFolder ImageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
 
-    SettingBool GestureOn = new SettingBool("GestureOn", Misc, EXPERT, false, Global, ACB);
 
     SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), Global, ACB);
 
-    SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", Skin, EXPERT, new HSV_Color(0.2f, 1f, 0.2f, 1f), Global, ACB);
     SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", Internal, NEVER, false, Global, ACB);
     SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", Internal, NEVER, false, Global, ACB);
 

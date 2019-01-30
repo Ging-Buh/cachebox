@@ -61,7 +61,7 @@ public interface CB_Core_Settings {
     SettingBool RunOverLockScreen = new SettingBool("RunOverLockScreen", Misc, NORMAL, true, Global, ACB);
 
     // base settings, read directly from Platform, before the database can be accessed
-    SettingBool AskAgain = new SettingBool("AskAgain", SettingCategory.RememberAsk, NORMAL, true, SettingStoreType.Platform, SettingUsage.ALL);
+    SettingBool AskAgain = new SettingBool("AskAgain", RememberAsk, NORMAL, true, Platform, ALL);
     SettingBool showSandbox = new SettingBool("showSandbox", RememberAsk, NORMAL, false, Platform, ACB);
     SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Folder, NEVER, "data/lang/en-GB/strings.ini", Platform, ALL, "lan");
 

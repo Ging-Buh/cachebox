@@ -31,13 +31,13 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Lists.CB_List;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LogView extends V_ListView implements SelectedCacheEvent {
     private static CB_RectF ItemRec;
@@ -89,21 +89,18 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 
     private void createItemList() {
         if (itemList == null)
-            itemList = new CB_List<LogViewItem>();
+            itemList = new CB_List<>();
         itemList.clear();
 
         if (aktCache == null)
             return;
 
-        CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-        cleanLogs = Database.Logs(aktCache);
+        CB_List<LogEntry> cleanLogs = Database.Logs(aktCache);
 
         String finders = Config.Friends.getValue().replace(", ", "|").replace(",", "|");
         String[] finder = finders.split("\\|");
-        ArrayList<String> friendList = new ArrayList<String>();
-        for (String f : finder) {
-            friendList.add(f);
-        }
+        ArrayList<String> friendList = new ArrayList<>();
+        Collections.addAll(friendList, finder);
 
         int index = 0;
         for (int i = 0, n = cleanLogs.size(); i < n; i++) {
@@ -118,14 +115,10 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
             rec.setHeight(MeasureItemHeight(logEntry));
             final LogViewItem v = new LogViewItem(rec, index++, logEntry);
 
-            v.setOnLongClickListener(new OnClickListener() {
-
-                @Override
-                public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                    v.copyToClipboard();
-                    GL.that.Toast(Translation.Get("CopyToClipboard"));
-                    return true;
-                }
+            v.setOnLongClickListener((view, x, y, pointer, button) -> {
+                v.copyToClipboard();
+                GL.that.Toast(Translation.Get("CopyToClipboard"));
+                return true;
             });
 
             itemList.add(v);
@@ -176,7 +169,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
     }
 
     public class ListViewBaseAdapter implements Adapter {
-        public ListViewBaseAdapter() {
+        ListViewBaseAdapter() {
         }
 
         @Override
