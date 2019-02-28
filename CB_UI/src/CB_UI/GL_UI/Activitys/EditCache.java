@@ -93,8 +93,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         box.addLast(cacheTitle);
         box.addLast(cacheCoords);
         box.addLast(cacheOwner);
-        box.addLast(cacheState);
         box.addLast(cacheCountry);
+        box.addLast(cacheState);
         cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
         cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
         box.addLast(cacheDescription);

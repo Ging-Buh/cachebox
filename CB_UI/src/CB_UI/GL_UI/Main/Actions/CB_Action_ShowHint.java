@@ -63,8 +63,8 @@ public class CB_Action_ShowHint extends CB_Action {
     public void showHint() {
         String HintFromDB = GlobalCore.getSelectedCache().getHint();
 
-        String hintTextDecoded = UnitFormatter.Rot13(HintFromDB) + "\n ";
-        String hintTextEncoded = HintFromDB + "\n ";
+        String hintTextEncoded = UnitFormatter.Rot13(HintFromDB) + "\n "; // in DB is readable
+        String hintTextDecoded = HintFromDB + "\n ";
 
         Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
         Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
