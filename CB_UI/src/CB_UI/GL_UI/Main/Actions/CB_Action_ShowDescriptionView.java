@@ -70,6 +70,9 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
     public void updateDescriptionView(boolean forceReload) {
         if (forceReload) DescriptionView.getInstance().forceReload();
-        DescriptionView.getInstance().onShow();
+        if (DescriptionView.getInstance().isVisible()) {
+            // so this will never be called, i think
+            DescriptionView.getInstance().onShow();
+        }
     }
 }

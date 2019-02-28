@@ -111,7 +111,7 @@ public class CacheContextMenu {
                     // Update cacheList
                     Database.Data.cacheList.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
                     // Update View
-                    CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(false);
+                    CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
                     CacheListChangedEventList.Call();
                     return true;
                 case AddToWatchList:
