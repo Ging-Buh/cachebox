@@ -156,8 +156,8 @@ public class CacheDAO {
             detail.setHint(reader.getString(readerOffset + 10).trim());
         else
             detail.setHint("");
-        detail.State = reader.getString(readerOffset + 11);
-        detail.Country = reader.getString(readerOffset + 12);
+        detail.Country = reader.getString(readerOffset + 11);
+        detail.State = reader.getString(readerOffset + 12);
 
         if (withDescription) {
             detail.longDescription = reader.getString(readerOffset + 13);
