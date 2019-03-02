@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent {
 
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-    protected extendedCacheInfo info;
+    protected ExtendedCacheInfo info;
     protected boolean isPressed = false;
     double heading = 0;
     private Sprite liveCacheIcon;
@@ -47,7 +47,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     public CacheListViewItem(CB_RectF rec, int Index, Cache cache) {
         super(rec, Index, cache.getName());
         mCache = cache;
-        info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+        info = new ExtendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
         info.setZeroPos();
         distance.setColor(COLOR.getFontColor());
         this.addChild(info);
@@ -235,9 +235,9 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
      *
      * @author Longri
      */
-    class extendedCacheInfo extends CacheInfo {
+    class ExtendedCacheInfo extends CacheInfo {
 
-        public extendedCacheInfo(CB_RectF rec, String Name, Cache value) {
+        public ExtendedCacheInfo(CB_RectF rec, String Name, Cache value) {
             super(rec, Name, value);
         }
 

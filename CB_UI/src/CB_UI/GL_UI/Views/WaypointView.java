@@ -100,18 +100,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
         Point lastAndFirst = this.getFirstAndLastVisibleIndex();
 
-        Log.debug(log, "[Waypoint Select]");
-        try {
-            Log.debug(log, "First visible:[" + lastAndFirst.x + "]" + this.lvAdapter.getItem(lastAndFirst.x).toString());
-        } catch (Exception e) {
-            Log.debug(log, "no firstItem with index :" + lastAndFirst.x);
-        }
-        try {
-            Log.debug(log, "Last visible:[" + lastAndFirst.y + "]" + this.lvAdapter.getItem(lastAndFirst.y).toString());
-        } catch (Exception e) {
-            Log.debug(log, "no lastItem with index :" + lastAndFirst.y);
-        }
-
         if (aktCache == null)
             return;
 

@@ -283,7 +283,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 }
             }
 
-            String sCoord = "";
+            String sCoord;
 
             if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
                 sCoord = mWaypoint.Pos.formatCoordinateLineBreak();

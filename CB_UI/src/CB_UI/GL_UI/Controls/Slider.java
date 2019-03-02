@@ -38,23 +38,16 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private final QuickButtonList quickButtonList;
     private final Label mLblCacheName;
     private final int QuickButtonMaxHeight;
-    private final double AnimationMulti = 1.4;
     private final Handler handler = new Handler();
-    private final ArrayList<YPositionChanged> eventList = new ArrayList<YPositionChanged>();
-    int debugInt = 0;
-    WaypointViewItem cacheDesc;
-    WaypointViewItem waypointDesc;
-    private final SizeChangedEvent onItemSizeChanged = new SizeChangedEvent() {
-
-        @Override
-        public void sizeChanged() {
-            layout();
-            GL.that.renderOnce(true);
-        }
+    private final ArrayList<YPositionChanged> eventList = new ArrayList<>();
+    private WaypointViewItem cacheDesc;
+    private WaypointViewItem waypointDesc;
+    private final SizeChangedEvent onItemSizeChanged = () -> {
+        layout();
+        GL.that.renderOnce(true);
     };
     private Cache actCache;
     private Waypoint actWaypoint;
-    private int QuickButtonHeight;
     private boolean swipeUp = false;
     private boolean swipeDown = false;
     private boolean AnimationIsRunning = false;
@@ -65,7 +58,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private float touchYoffset = 0;
     private boolean oneTouchUP = false;
     private AtomicInteger animationCounter = new AtomicInteger(0);
-    Runnable AnimationTask = new Runnable() {
+    private Runnable AnimationTask = new Runnable() {
 
         @Override
         public void run() {
@@ -83,7 +76,8 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
             }
 
 
-            int newValue = 0;
+            int newValue;
+            double animationMulti = 1.4;
             if (AnimationDirection == -1) {
                 float tmp = yPos - AnimationTarget;
                 if (tmp <= 0)// Div 0 vehindern
@@ -92,7 +86,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
                     AnimationIsRunning = false;
                 }
 
-                newValue = (int) (yPos - (tmp / AnimationMulti));
+                newValue = (int) (yPos - (tmp / animationMulti));
                 if (newValue <= AnimationTarget) {
                     setPos_onUI(AnimationTarget);
                     AnimationIsRunning = false;
@@ -107,7 +101,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
                     setPos_onUI(AnimationTarget);
                     AnimationIsRunning = false;
                 } else {
-                    newValue = (int) (yPos + (tmp / AnimationMulti));
+                    newValue = (int) (yPos + (tmp / animationMulti));
                     if (newValue >= AnimationTarget) {
                         setPos_onUI(AnimationTarget);
                         AnimationIsRunning = false;
@@ -160,12 +154,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     }
 
-    public static void setAndroidSliderPos(int pos) {
-        if (that != null && mSlideBox != null) {
-            that.setSliderPos(that.getHeight() - pos - mSlideBox.getHeight());
-        }
-    }
-
     public static boolean setAndroidSliderHeight(int height) {
         if (that != null && mSlideBox != null) {
             // the Android Slider has transparent zones on top and button,
@@ -193,7 +181,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     protected void Initial() {
-        float initialPos = 0;
+        float initialPos;
         if (Config.quickButtonShow.getValue()) {
             initialPos = this.getHeight() - mSlideBox.getHeight() - QuickButtonMaxHeight;
         } else {
@@ -282,7 +270,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
-        debugInt = y;
         isKinetigPan = false;
         oneTouchUP = false;
         AnimationIsRunning = false;
@@ -292,10 +279,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
         }
 
         // return true if slider down
-        if (yPos <= 0)
-            return true;
-
-        return false;
+        return yPos <= 0;
 
     }
 
@@ -311,24 +295,25 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
         return true;
     }
 
-    public void ActionUp() // Slider zurück scrollen lassen
+    private void ActionUp() // Slider zurück scrollen lassen
     {
         boolean QuickButtonShow = Config.quickButtonShow.getValue();
 
         // check if QuickButtonList snap in
+        int quickButtonHeight;
         if (this.getHeight() - mSlideBox.getMaxY() >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow) {
-            QuickButtonHeight = QuickButtonMaxHeight;
+            quickButtonHeight = QuickButtonMaxHeight;
             Config.quickButtonLastShow.setValue(true);
             Config.AcceptChanges();
         } else {
-            QuickButtonHeight = 0;
+            quickButtonHeight = 0;
             Config.quickButtonLastShow.setValue(false);
             Config.AcceptChanges();
         }
 
         if (swipeUp || swipeDown) {
             if (swipeUp) {
-                startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
+                startAnimationTo(QuickButtonShow ? quickButtonHeight : 0);
             } else {
                 startAnimationTo((int) (getHeight() - mSlideBox.getHeight()));
             }
@@ -336,7 +321,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
         } else {
             if (yPos > getHeight() * 0.5) {
-                startAnimationTo((int) (getHeight() - mSlideBox.getHeight() - (QuickButtonShow ? QuickButtonHeight : 0)));
+                startAnimationTo((int) (getHeight() - mSlideBox.getHeight() - (QuickButtonShow ? quickButtonHeight : 0)));
             } else {
                 startAnimationTo(0);
 
@@ -415,12 +400,12 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
         if (cacheDesc != null) {
             cacheDesc.setPos(0, YLayoutPos);
-            YLayoutPos += GL_UISizes.margin + cacheDesc.getHeight();
+            // YLayoutPos += GL_UISizes.margin + cacheDesc.getHeight();
         }
     }
 
     public interface YPositionChanged {
-        public void Position(float top, float Bottom);
+        void Position(float top, float Bottom);
     }
 
 }

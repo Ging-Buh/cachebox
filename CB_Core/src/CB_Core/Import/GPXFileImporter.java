@@ -1311,7 +1311,6 @@ public class GPXFileImporter {
                     cache.waypoints.add(FinalWp);
 
                     // the coordinates of the Cache are not changed. we have a Final with valid coordinates
-                    // cache.setHasCorrectedCoordinates(true);
                 }
             }
             else {

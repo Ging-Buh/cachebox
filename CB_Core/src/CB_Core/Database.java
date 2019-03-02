@@ -197,7 +197,7 @@ public abstract class Database extends Database_Core {
     }
 
     public static CB_List<LogEntry> Logs(Cache cache) {
-        CB_List<LogEntry> result = new CB_List<LogEntry>();
+        CB_List<LogEntry> result = new CB_List<>();
         if (cache == null) // if no cache is selected!
             return result;
         CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]{Long.toString(cache.Id)});

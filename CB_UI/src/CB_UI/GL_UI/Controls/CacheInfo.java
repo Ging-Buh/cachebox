@@ -53,7 +53,7 @@ public class CacheInfo extends CB_View_Base {
     /**
      * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
      */
-    public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 11
+    public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T;
     /**
      * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
      */
@@ -122,19 +122,14 @@ public class CacheInfo extends CB_View_Base {
     }
 
     private static String getLastFoundLogDate(Cache mCache) {
-        String FoundDate = "";
-        CB_List<LogEntry> logs = new CB_List<LogEntry>();
-        logs = Database.Logs(mCache);
-
+        CB_List<LogEntry> logs = Database.Logs(mCache);
         for (int i = 0, n = logs.size(); i < n; i++) {
             LogEntry l = logs.get(i);
             if (l.Type == LogTypes.found) {
-                SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-                FoundDate = postFormater.format(l.Timestamp);
-                break;
+                return new SimpleDateFormat("dd.MM.yy").format(l.Timestamp);
             }
         }
-        return FoundDate;
+        return "";
     }
 
     void initialMesure() {
@@ -440,6 +435,9 @@ public class CacheInfo extends CB_View_Base {
         String br = "\n";
         StringBuilder text = new StringBuilder();
         if (ifModeFlag(SHOW_NAME)) {
+            if (mViewMode == VIEW_MODE_WAYPOINTS) {
+                text.append(mCache.getGcCode()).append(": ");
+            }
             text.append(mCache.getName());
             text.append(br);
         }
