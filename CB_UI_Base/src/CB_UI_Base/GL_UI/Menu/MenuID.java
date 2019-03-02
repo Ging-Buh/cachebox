@@ -200,4 +200,5 @@ public class MenuID {
 
     public static final int AID_HELP = 209;
     public static final int MI_RENDERTHEMES = 210;
+    public static final int AID_MAIL = 211;
 }

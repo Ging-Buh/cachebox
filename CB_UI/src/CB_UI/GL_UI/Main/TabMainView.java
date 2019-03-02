@@ -305,6 +305,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Show_Settings.getInstance(), false, GestureDirection.Left));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_switch_DayNight.getInstance(), false));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Help.getInstance(), false));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Mail.getInstance(), false));
         mAboutButtonOnLeftTab.addAction((new CB_ActionButton(CB_Action_GetFriends.getInstance(), false)));
         mAboutButtonOnLeftTab.addAction((new CB_ActionButton(CB_Action_switch_Torch.getInstance(), false)));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowQuit.getInstance(), false, GestureDirection.Down));
