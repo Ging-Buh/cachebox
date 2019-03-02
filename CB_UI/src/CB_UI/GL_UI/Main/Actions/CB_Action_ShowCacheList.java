@@ -178,12 +178,12 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
         MenuItem mi;
         cm.addItem(MenuID.MI_RESORT, "ResortList", Sprites.getSprite(IconName.sortIcon.name()));
-        mi = cm.addItem(MenuID.MI_FilterSet, "Filter", Sprites.getSprite(IconName.filter.name()));
+        mi = cm.addItem(MenuID.MI_FilterSet, "setOrResetFilter", Sprites.getSprite(IconName.filter.name()));
         mi.setCheckable(true);
         mi.setChecked(true); // todo perhaps init with isfiltered
         cm.addItem(MenuID.MI_SEARCH_LIST, "Search", Sprites.getSprite(IconName.lupe.name()));
         cm.addItem(MenuID.AID_SHOW_IMPORT_MENU, "importExport", Sprites.getSprite(IconName.importIcon.name()));
-        mi = cm.addItem(MI_FAVORIT, "Favorite", Sprites.getSprite(IconName.favorit.name()));
+        mi = cm.addItem(MI_FAVORIT, "setOrResetFavorites", Sprites.getSprite(IconName.favorit.name()));
         mi.setCheckable(true);
         mi.setChecked(true); // default is to mark as Favorite
         if (SyncActivity.RELEASED)
