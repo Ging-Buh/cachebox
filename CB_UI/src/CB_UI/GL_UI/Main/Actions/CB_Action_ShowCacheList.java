@@ -200,7 +200,9 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         cm.addItem(MenuID.MI_RESORT, "ResortList", Sprites.getSprite(IconName.sortIcon.name()));
         mi = cm.addItem(MenuID.MI_FilterSet, "setOrResetFilter", Sprites.getSprite(IconName.filter.name()));
         mi.setCheckable(true);
-        mi.setChecked(true); // todo perhaps init with isfiltered
+        mi.setChecked(true);
+        if (!FilterInstances.isLastFilterSet())
+            mi.setCheckable(false);
         cm.addItem(MenuID.MI_SEARCH_LIST, "Search", Sprites.getSprite(IconName.lupe.name()));
         cm.addItem(MenuID.AID_SHOW_IMPORT_MENU, "importExport", Sprites.getSprite(IconName.importIcon.name()));
         mi = cm.addItem(MI_FAVORIT, "setOrResetFavorites", Sprites.getSprite(IconName.favorit.name()));
