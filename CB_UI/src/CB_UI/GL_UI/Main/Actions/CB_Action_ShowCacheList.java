@@ -5,6 +5,7 @@ import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Types.CacheWithWP;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -14,6 +15,9 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -32,6 +36,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
     private static final int MI_FAVORIT = 164;
     private static CB_Action_ShowCacheList that;
     private EditCache editCache;
+    private GL_MsgBox gL_MsgBox;
 
     private CB_Action_ShowCacheList() {
         super("cacheList", "  (" + Database.Data.cacheList.size() + ")", MenuID.AID_SHOW_CACHELIST);
@@ -74,6 +79,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
         cm.addOnClickListener((v, x, y, pointer, button) -> {
             boolean checked;
+            final boolean finalchecked;
+            String msgText;
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_RESORT:
                     synchronized (Database.Data.cacheList) {
@@ -99,14 +106,27 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     checked = ((MenuItem) v).isChecked();
                     if (((MenuItem) v).isCheckboxClicked(x))
                         checked = !checked;
-                    Database.Data.sql.beginTransaction();
-                    Database_Core.Parameters args = new Database_Core.Parameters();
-                    args.put("Favorit", checked ? 1 : 0);
-                    Database.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
-                    Database.Data.sql.setTransactionSuccessful();
-                    Database.Data.sql.endTransaction();
-                    TabMainView.reloadCacheList();
-                    GlobalCore.checkSelectedCacheValid();
+                    finalchecked = checked;
+                    if (checked) {
+                        msgText = "askSetFavorites";
+                    }
+                    else {
+                        msgText = "askResetFavorites";
+                    }
+                    gL_MsgBox = GL_MsgBox.Show(Translation.Get(msgText), Translation.Get("Favorites"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question, (which, data) -> {
+                        gL_MsgBox_close();
+                        if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                            Database.Data.sql.beginTransaction();
+                            Database_Core.Parameters args = new Database_Core.Parameters();
+                            args.put("Favorit", finalchecked ? 1 : 0);
+                            Database.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
+                            Database.Data.sql.setTransactionSuccessful();
+                            Database.Data.sql.endTransaction();
+                            TabMainView.reloadCacheList();
+                            GlobalCore.checkSelectedCacheValid();
+                        }
+                        return true;
+                    });
                     return true;
                 case MenuID.MI_SEARCH_LIST:
 
@@ -197,6 +217,10 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", Sprites.getSprite(IconName.DELETE.name()));
 
         return cm;
+    }
+
+    private void gL_MsgBox_close() {
+        gL_MsgBox.close();
     }
 
     public void setName(String newName) {
