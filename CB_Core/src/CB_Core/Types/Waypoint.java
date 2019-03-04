@@ -3,6 +3,7 @@ package CB_Core.Types;
 import CB_Core.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 
@@ -166,7 +167,11 @@ public class Waypoint implements Serializable {
     public String getTitle() {
         if (Title == null)
             return EMPTY_STRING;
-        return new String(Title, UTF_8);
+        String ret = new String(Title, UTF_8);
+        if (ret.equals("Final GSAK Corrected")) {
+            ret = Translation.Get("coordinatesAreCorrected");
+        }
+        return ret;
     }
 
     public void setTitle(String title) {

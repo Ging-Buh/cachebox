@@ -132,8 +132,11 @@ public class MenuID {
     public static final int AID_CHK_STATE = 138;
     public static final int AID_SHOW_PARKING_DIALOG = 140;
     public static final int AID_SHOW_DELETE_DIALOG = 141;
-    public static final int AID_GetFriends = 211;
 
+    public static final int AID_HELP = 209;
+    public static final int MI_RENDERTHEMES = 210;
+    public static final int AID_GetFriends = 211;
+    public static final int AID_MAIL = 212;
 
     // Compass
     public static final int MI_COMPASS_SHOW_MAP = 142;
@@ -198,7 +201,4 @@ public class MenuID {
     public static final int AID_SWITCH_DESCRIPTION = 206;
     public static final int AID_SHOW_DescExt = 207;
 
-    public static final int AID_HELP = 209;
-    public static final int MI_RENDERTHEMES = 210;
-    public static final int AID_MAIL = 211;
 }
