@@ -126,7 +126,7 @@ public class CacheList extends MoveableList<Cache> {
                                     if (nextCache.Type != CacheTypes.Mystery) {
                                         break;
                                     } else {
-                                        if (nextCache.CorrectedCoordiantesOrMysterySolved()) {
+                                        if (nextCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                                             break;
                                         }
                                     }

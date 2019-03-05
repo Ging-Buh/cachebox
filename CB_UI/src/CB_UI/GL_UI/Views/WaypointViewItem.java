@@ -267,7 +267,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             float textYPos = this.getHeight() - mMargin;
 
-            float allHeight = (mNameCache.setText(mWaypoint.getGcCode().substring(0,2) + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
+            float allHeight = (mNameCache.setText(mWaypoint.getGcCode().substring(0,2) + ": " + mWaypoint.getTitleForGui(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
             textYPos -= allHeight;
 
             if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {

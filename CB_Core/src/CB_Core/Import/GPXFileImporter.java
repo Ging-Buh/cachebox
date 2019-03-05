@@ -1297,15 +1297,12 @@ public class GPXFileImporter {
 
                     for (int i = 0; i < wplist.size(); i++) {
                         Waypoint wp = wplist.get(i);
-                        if (wp.Type == CacheTypes.Final) {
-                            if (wp.getTitle().equalsIgnoreCase("Final GSAK Corrected")) {
-                                newGcCode = wp.getGcCode();
-                                break;
-                            }
+                        if (wp.isCorrectedFinal()) {
+                            newGcCode = wp.getGcCode();
+                            break;
                         }
                     }
 
-                    // "Final GSAK Corrected" is used for recognition of finals from GSAK on gpx - Import
                     Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
 
                     cache.waypoints.add(FinalWp);

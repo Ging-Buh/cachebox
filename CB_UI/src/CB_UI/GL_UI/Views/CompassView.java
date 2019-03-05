@@ -216,7 +216,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
                 if (showIcon && Icon != null) {
                     if (aktWaypoint == null) {
-                        if (aktCache.CorrectedCoordiantesOrMysterySolved()) {
+                        if (aktCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                             Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + "Solved")));
                         } else {
                             Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.Type.name())));
@@ -230,7 +230,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                     if (aktWaypoint == null) {
                         lbl_Name.setText(aktCache.getName());
                     } else {
-                        lbl_Name.setText(aktWaypoint.getTitle());
+                        lbl_Name.setText(aktWaypoint.getTitleForGui());
                     }
                 }
 

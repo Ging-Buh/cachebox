@@ -336,7 +336,7 @@ public class CacheInfoList {
         info.Longitude = cache.Longitude();
         info.Found = cache.isFound();
         info.favorite = cache.isFavorite();
-        info.CorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
+        info.CorrectedCoordinates = cache.hasCorrectedCoordiantesOrHasCorrectedFinal();
 
         if (mCacheInfoList == null)
             mCacheInfoList = new HashMap<String, CacheInfo>();

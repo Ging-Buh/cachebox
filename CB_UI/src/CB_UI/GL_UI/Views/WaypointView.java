@@ -190,7 +190,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                     GL.that.postAsync(() -> {
                         if (aktCache.hasCorrectedCoordinates())
                             GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.Pos);
-                        else if (aktWaypoint.hasCorrectedFinal())
+                        else if (aktWaypoint.isCorrectedFinal())
                             GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
                         if (GroundspeakAPI.APIError == 0) {
                             GL_MsgBox.Show(Translation.Get("ok"), Translation.Get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
@@ -214,7 +214,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         if (aktWaypoint != null || aktCache != null)
             cm.addItem(MI_PROJECTION, "Projection");
         MenuItem mi = cm.addItem(MI_UploadCorrectedCoordinates, "UploadCorrectedCoordinates");
-        mi.setEnabled(aktCache.hasCorrectedCoordinates() || (aktWaypoint != null && aktWaypoint.hasCorrectedFinal()));
+        mi.setEnabled(aktCache.hasCorrectedCoordinates() || (aktWaypoint != null && aktWaypoint.isCorrectedFinal()));
         cm.addItem(MI_FROM_GPS, "FromGps");
 
         return cm;
@@ -304,7 +304,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     }
 
     private void deleteWP() {
-        GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitle() + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
                 case GL_MsgBox.BUTTON_POSITIVE:
                     // Yes button clicked

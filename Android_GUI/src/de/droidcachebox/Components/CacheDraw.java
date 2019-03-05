@@ -156,7 +156,7 @@ public class CacheDraw {
             int correctPos = (int) (UI_Size_Base.that.getScaledFontSize() * 1.3);
 
             // Draw Icon
-            if (cache.CorrectedCoordiantesOrMysterySolved()) {
+            if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                 ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], left + VoteWidth - correctPos, top - UI_Size_Base.that.getScaledFontSize() / 2, UI_Size_Base.that.getIconSize());
             } else {
                 ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], left + VoteWidth - correctPos, top - UI_Size_Base.that.getScaledFontSize() / 2, UI_Size_Base.that.getIconSize());

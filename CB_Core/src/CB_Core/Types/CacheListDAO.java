@@ -21,7 +21,6 @@ import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
-import CB_Core.FilterProperties;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -162,7 +161,7 @@ public class CacheListDAO {
                         cache.waypoints.add(tmpwaypoints.get(i));
                     }
                 }
-                boolean hasCorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
+                boolean hasCorrectedCoordinates = cache.hasCorrectedCoordiantesOrHasCorrectedFinal();
                 if (FilterInstances.hasCorrectedCoordinates < 0) {
                     // show only those without corrected ones
                     if (hasCorrectedCoordinates)

@@ -303,12 +303,9 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * -- korrigierte Koordinaten (kommt nur aus GSAK? bzw CacheWolf-Import) -- oder Mystery mit gueltigem Final
      */
-    public boolean CorrectedCoordiantesOrMysterySolved() {
+    public boolean hasCorrectedCoordiantesOrHasCorrectedFinal() {
         if (this.hasCorrectedCoordinates())
             return true;
-
-        if (this.Type != CacheTypes.Mystery)
-            return false;
 
         if (this.waypoints == null || this.waypoints.size() == 0)
             return false;
@@ -323,23 +320,21 @@ public class Cache implements Comparable<Cache>, Serializable {
                     x = true;
             }
         }
-        ;
         return x;
     }
 
     /**
-     * true, if a this mystery cache has a final waypoint
+     * true, if this cache has a final waypoint
      */
     public boolean HasFinalWaypoint() {
         return GetFinalWaypoint() != null;
     }
 
     /**
-     * search the final waypoint for a mystery cache
+     * search the final waypoint for a cache
      */
     public Waypoint GetFinalWaypoint() {
-        if (this.Type != CacheTypes.Mystery)
-            return null;
+        // if (this.Type != CacheTypes.Mystery) return null;
         if (waypoints == null || waypoints.size() == 0)
             return null;
 
@@ -352,9 +347,22 @@ public class Cache implements Comparable<Cache>, Serializable {
                 return wp;
             }
         }
-        ;
-
         return null;
+    }
+
+    public boolean hasCorrectedFinal() {
+        Waypoint w = GetFinalWaypoint();
+        if (w == null) return false;
+        return w.isCorrectedFinal();
+    }
+
+    public Waypoint getCorrectedFinal() {
+        Waypoint w = GetFinalWaypoint();
+        if (w == null) return null;
+        if (w.isCorrectedFinal())
+            return w;
+        else
+            return null;
     }
 
     /**

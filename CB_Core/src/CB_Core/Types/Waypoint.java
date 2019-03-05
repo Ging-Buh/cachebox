@@ -167,11 +167,14 @@ public class Waypoint implements Serializable {
     public String getTitle() {
         if (Title == null)
             return EMPTY_STRING;
-        String ret = new String(Title, UTF_8);
-        if (ret.equals("Final GSAK Corrected")) {
-            ret = Translation.Get("coordinatesAreCorrected");
-        }
-        return ret;
+        return new String(Title, UTF_8);
+    }
+
+    public String getTitleForGui() {
+        if (isCorrectedFinal())
+            return Translation.Get("coordinatesAreCorrected");
+        else
+            return getTitle();
     }
 
     public void setTitle(String title) {
@@ -240,7 +243,8 @@ public class Waypoint implements Serializable {
         return false;
     }
 
-    public boolean hasCorrectedFinal() {
-        return this.IsUserWaypoint && this.Type == CacheTypes.Final && this.Pos.isValid();
+    public boolean isCorrectedFinal() {
+        // return new String(Title, (UTF_8)).equals("Final GSAK Corrected");
+        return this.Type == CacheTypes.Final && this.IsUserWaypoint && this.Pos.isValid();
     }
 }

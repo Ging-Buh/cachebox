@@ -688,7 +688,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         // Beschriftung
         if (wpi.Cache != null && showTitles && (aktZoom >= 15)) {
             try {
-                String Name = drawAsWaypoint ? wpi.Waypoint.getTitle() : wpi.Cache.getName();
+                String Name = drawAsWaypoint ? wpi.Waypoint.getTitleForGui() : wpi.Cache.getName();
 
                 if (layout == null)
                     layout = new GlyphLayout(Fonts.getNormal(), Name);

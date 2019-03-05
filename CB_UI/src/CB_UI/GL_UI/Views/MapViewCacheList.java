@@ -149,7 +149,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
             return getSprite("star");
         else if (cache.isFound())
             return getSprite("mapFound");
-        else if ((cache.Type == CacheTypes.Mystery) && cache.CorrectedCoordiantesOrMysterySolved())
+        else if ((cache.Type == CacheTypes.Mystery) && cache.hasCorrectedCoordiantesOrHasCorrectedFinal())
             return getSprite("mapSolved");
         else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint())
             return getSprite("mapMultiStartP"); // Multi mit Startpunkt
@@ -168,6 +168,8 @@ public class MapViewCacheList implements CacheListChangedEventListener {
         else if (cache.ImTheOwner())
             icon = "small7";
         else {
+            if (cache.HasFinalWaypoint() || cache.HasStartWaypoint())
+                solved = "Solved";
             switch (cache.Type) {
                 case Multi:
                     icon = "small2";
@@ -185,8 +187,6 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                     break;
                 case Mystery:
                     icon = "small5";
-                    if (cache.HasFinalWaypoint() || cache.HasStartWaypoint())
-                        solved = "Solved";
                     break;
                 case Wherigo:
                     icon = "small5";
