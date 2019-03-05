@@ -241,11 +241,11 @@ public class splash extends Activity {
         }
 
         // initial GDX
-        Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+        Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath()); // /data/data/de.droidcachebox/files
         // read some setting from Android Preferences (Platform
         androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
-        workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
+        workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
         boolean askAgain = androidSetting.getBoolean("AskAgain", true);
         showSandbox = androidSetting.getBoolean("showSandbox", false);
 
@@ -256,9 +256,9 @@ public class splash extends Activity {
         PlatformConnector.setGetFileListener(fileExplorer);
         PlatformConnector.setGetFolderListener(fileExplorer);
 
-        String LangPath = androidSetting.getString("Sel_LanguagePath", "");
+        String LangPath = androidSetting.getString("Sel_LanguagePath", ""); // ""
         if (LangPath.length() == 0) {
-            String locale = Locale.getDefault().getLanguage();
+            String locale = Locale.getDefault().getLanguage(); // de
             if (locale.contains("de")) {
                 LangPath = "data/lang/de/strings.ini";
             } else if (locale.contains("cs")) {
@@ -280,15 +280,16 @@ public class splash extends Activity {
             }
         }
         try {
-            new Translation(workPath, FileType.Internal);
-            Translation.LoadTranslation(LangPath);
+            new Translation(workPath, FileType.Internal); // /data/cachebox
+            Translation.LoadTranslation(LangPath); // data/lang/de/strings.ini
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (askAgain || FileIO.FileExists(workPath + "/askAgain.txt")) {
+            workPath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
 
-            String externalSd = getExternalSdPath();
+            String externalSd = getExternalSdPath();  // externalSd = null or ...
             boolean hasExtSd;
             final String externalSd2 = externalSd;
             if (externalSd != null) {
@@ -660,7 +661,6 @@ public class splash extends Activity {
     private String getExternalSdPath() {
 
         String externalSd;
-        workPath = Environment.getExternalStorageDirectory().getPath();
         if ((externalSd = testExtSdPath(workPath)) == null) {
             String prev;
             int pos = workPath.indexOf("/", 2); // search for the second /
