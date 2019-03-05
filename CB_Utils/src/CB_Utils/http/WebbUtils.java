@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,10 +74,8 @@ public class WebbUtils {
     public static JSONObject toJsonObject(byte[] bytes) {
         String json;
         try {
-            json = new String(bytes, Const.UTF8);
+            json = new String(bytes, StandardCharsets.UTF_8);
             return new JSONObject(json);
-        } catch (UnsupportedEncodingException e) {
-            throw new WebbException(e);
         } catch (JSONException e) {
             throw new WebbException("payload is not a valid JSON object", e);
         }
@@ -91,10 +90,8 @@ public class WebbUtils {
     public static JSONArray toJsonArray(byte[] bytes) {
         String json;
         try {
-            json = new String(bytes, Const.UTF8);
+            json = new String(bytes, StandardCharsets.UTF_8);
             return new JSONArray(json);
-        } catch (UnsupportedEncodingException e) {
-            throw new WebbException(e);
         } catch (JSONException e) {
             throw new WebbException("payload is not a valid JSON array", e);
         }
@@ -224,7 +221,7 @@ public class WebbUtils {
             bodyStr = request.payload.toString();
         }
         if (bodyStr != null) {
-            requestBody = bodyStr.getBytes(Const.UTF8);
+            requestBody = bodyStr.getBytes(StandardCharsets.UTF_8);
         }
 
         if (requestBody == null) {
@@ -321,7 +318,7 @@ public class WebbUtils {
         // we are ignoring headers describing the content type of the response, instead
         // try to force the content based on the type the client is expecting it (clazz)
         if (clazz == String.class) {
-            response.setBody(new String(responseBody, Const.UTF8));
+            response.setBody(new String(responseBody, StandardCharsets.UTF_8));
         } else if (clazz == Const.BYTE_ARRAY_CLASS) {
             response.setBody(responseBody);
         } else if (clazz == JSONObject.class) {
@@ -359,7 +356,7 @@ public class WebbUtils {
 
         // fallback to String if bytes are valid UTF-8 characters ...
         try {
-            response.errorBody = new String(responseBody, Const.UTF8);
+            response.errorBody = new String(responseBody, StandardCharsets.UTF_8);
             return;
         } catch (Exception ignored) {
             // ignored - was just a try!

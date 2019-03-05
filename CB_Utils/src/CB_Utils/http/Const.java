@@ -14,7 +14,7 @@ class Const {
     static final String HDR_ACCEPT_ENCODING = "Accept-Encoding";
     static final String HDR_ACCEPT = "Accept";
     static final String HDR_USER_AGENT = "User-Agent";
-    static final String UTF8 = "utf-8";
+    static final String UTF8 = "UTF-8";
 
     static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     static final Class BYTE_ARRAY_CLASS = EMPTY_BYTE_ARRAY.getClass();

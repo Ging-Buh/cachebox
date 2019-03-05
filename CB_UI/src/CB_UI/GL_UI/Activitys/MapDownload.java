@@ -32,6 +32,7 @@ import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class MapDownload extends ActivityBase implements ProgressChangedEvent {
@@ -49,12 +50,13 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     private Boolean importStarted = false;
     private ScrollBox scrollBox;
     private ImportAnimation dis;
-    private String repository_freizeitkarte_android = "";
+    private String repository_freizeitkarte_android;
     private boolean canceld = false;
     private boolean isChkRepository = false;
 
     private MapDownload() {
         super(ActivityRec(), "mapDownloadActivity");
+        repository_freizeitkarte_android = "";
         scrollBox = new ScrollBox(ActivityRec());
         this.addChild(scrollBox);
         createOkCancelBtn();

@@ -145,18 +145,37 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     }
 
     private Sprite getMapIcon(Cache cache) {
-        if (cache.ImTheOwner())
-            return getSprite("star");
-        else if (cache.isFound())
-            return getSprite("mapFound");
-        else if ((cache.Type == CacheTypes.Mystery) && cache.hasCorrectedCoordiantesOrHasCorrectedFinal())
-            return getSprite("mapSolved");
-        else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint())
-            return getSprite("mapMultiStartP"); // Multi mit Startpunkt
-        else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint())
-            return getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
-        else
-            return getSprite("map" + cache.Type.name());
+        if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+            if (cache.Type == CacheTypes.Mystery)
+                return getSprite("mapMysterySolved");
+            else if (cache.Type == CacheTypes.Multi)
+                return getSprite("mapMultiSolved");
+            else if (cache.Type == CacheTypes.Wherigo)
+                return getSprite("mapWherigoSolved");
+            else if (cache.Type == CacheTypes.Letterbox)
+                return getSprite("mapLetterboxSolved");
+            else if (cache.Type == CacheTypes.Traditional)
+                return getSprite("mapTraditionalSolved");
+            else if (cache.Type == CacheTypes.Virtual)
+                return getSprite("mapVirtualSolved");
+            else if (cache.Type == CacheTypes.Camera)
+                return getSprite("mapCameraSolved");
+            else if (cache.Type == CacheTypes.Earth)
+                return getSprite("mapEarthSolved");
+            return getSprite("mapMysterySolved");
+        }
+        else {
+            if (cache.ImTheOwner())
+                return getSprite("star");
+            else if (cache.isFound())
+                return getSprite("mapFound");
+            else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint())
+                return getSprite("mapMultiStartP"); // Multi mit Startpunkt
+            else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint())
+                return getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
+            else
+                return getSprite("map" + cache.Type.name());
+        }
     }
 
     private Sprite getSmallMapIcon(Cache cache) {
@@ -363,8 +382,8 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                                 boolean showWaypoints = showAllWaypoints || selectedCache;
                                 double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
                                 double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-                                Waypoint fwp = null; // Final Waypoint
-                                Waypoint swp = null; // Start Waypoint
+                                Waypoint finalWaypoint = null; // Final Waypoint
+                                Waypoint startWaypoint = null; // Start Waypoint
                                 // sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
                                 if (showWaypoints) {
                                     if (selectedCache) {
@@ -374,26 +393,25 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                                         addWaypoints(cache, iconSize);
                                     }
                                 } else {
-                                    if (cache.Type == CacheTypes.Mystery) {
-                                        if (!cache.hasCorrectedCoordinates()) {
-                                            fwp = cache.GetFinalWaypoint();
-                                            if (fwp != null) {
-                                                // nehme Mystery-Final
-                                                MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, fwp.Pos.getLongitude());
-                                                MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, fwp.Pos.getLatitude());
-                                            }
+                                    if (!cache.hasCorrectedCoordinates()) {
+                                        finalWaypoint = cache.GetFinalWaypoint();
+                                        if (finalWaypoint != null) {
+                                            // show cache at Final coords
+                                            MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, finalWaypoint.Pos.getLongitude());
+                                            MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, finalWaypoint.Pos.getLatitude());
                                         }
                                     }
+                                    // only Multi or Mysterie have a startWaypoint
                                     if ((cache.Type == CacheTypes.Multi) || (cache.Type == CacheTypes.Mystery)) {
-                                        if (!cache.hasCorrectedCoordinates() && (fwp == null)) {
+                                        if (!cache.hasCorrectedCoordinates() && (finalWaypoint == null)) {
                                             // Suche, ob zu diesem Cache ein Start-Waypoint definiert ist
                                             // Wenn ja, und wenn es kein Mystery mit Final ist dann wird das CacheIcon in der Map auf diesen
                                             // WP verschoben wenn der Cache nicht selected ist.
-                                            swp = cache.GetStartWaypoint();
-                                            if (swp != null) {
+                                            startWaypoint = cache.GetStartWaypoint();
+                                            if (startWaypoint != null) {
                                                 // nehme Start Waypoint
-                                                MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, swp.Pos.getLongitude());
-                                                MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, swp.Pos.getLatitude());
+                                                MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, startWaypoint.Pos.getLongitude());
+                                                MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, startWaypoint.Pos.getLatitude());
                                             }
                                         }
                                     }
