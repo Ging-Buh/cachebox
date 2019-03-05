@@ -205,7 +205,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-                GL_MsgBox msgBox = GL_MsgBox.Show(Translation.Get("AddOrChange"), Translation.Get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+                GL_MsgBox msgBox = GL_MsgBox.Show(Translation.Get("AddOrChangeMap"), Translation.Get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
                     @Override
                     public boolean onClick(int which, Object data) {
                         Layer layer = (Layer) data;
