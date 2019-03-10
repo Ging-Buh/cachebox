@@ -391,16 +391,16 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
                 v.setOnClickListener((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
 
-                    Cache cache1;
+                    Cache tmp;
                     synchronized (Database.Data.cacheList) {
-                        cache1 = Database.Data.cacheList.get(selectionIndex);
+                        tmp = Database.Data.cacheList.get(selectionIndex);
                     }
-                    if (cache1 != null) {
+                    if (tmp != null) {
                         // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-                        Waypoint waypoint = cache1.GetFinalWaypoint();
+                        Waypoint waypoint = tmp.getCorrectedFinal();
                         if (waypoint == null)
-                            waypoint = cache1.GetStartWaypoint();
-                        GlobalCore.setSelectedWaypoint(cache1, waypoint);
+                            waypoint = tmp.getStartWaypoint();
+                        GlobalCore.setSelectedWaypoint(tmp, waypoint);
                     }
                     listView.setSelection(selectionIndex);
                     setSelectedCacheVisible();
@@ -409,18 +409,16 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
                 v.setOnLongClickListener((v12, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v12).getIndex();
 
-                    Cache cache12;
+                    Cache tmp;
                     synchronized (Database.Data.cacheList) {
-                        cache12 = Database.Data.cacheList.get(selectionIndex);
+                        tmp = Database.Data.cacheList.get(selectionIndex);
                     }
-                    Waypoint finalWp = null;
-                    if (cache12.HasFinalWaypoint())
-                        finalWp = cache12.GetFinalWaypoint();
+                    Waypoint finalWp = tmp.getCorrectedFinal();
                     if (finalWp == null)
-                        finalWp = cache12.GetStartWaypoint();
+                        finalWp = tmp.getStartWaypoint();
                     // shutdown AutoResort when selecting a cache by hand
                     GlobalCore.setAutoResort(false);
-                    GlobalCore.setSelectedWaypoint(cache12, finalWp);
+                    GlobalCore.setSelectedWaypoint(tmp, finalWp);
 
                     invalidate();
                     CacheContextMenu.getCacheContextMenu(true).Show();

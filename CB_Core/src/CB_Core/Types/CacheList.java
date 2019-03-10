@@ -123,12 +123,8 @@ public class CacheList extends MoveableList<Cache> {
                                         break;
                                     }
                                 } else {
-                                    if (nextCache.Type != CacheTypes.Mystery) {
+                                    if (nextCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                                         break;
-                                    } else {
-                                        if (nextCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-                                            break;
-                                        }
                                     }
                                 }
                             }
@@ -140,12 +136,12 @@ public class CacheList extends MoveableList<Cache> {
             // -> gleich den Final Waypoint auswahlen!!!
             // When the next Cache is a mystery with final waypoint
             // -> activate the final waypoint!!!
-            Waypoint waypoint = nextCache.GetFinalWaypoint();
+            Waypoint waypoint = nextCache.getCorrectedFinal();
             if (waypoint == null) {
                 // wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat
                 // Wenn ein Cache einen Startpunkt definiert hat dann wird beim Selektieren dieses Caches gleich dieser Startpunkt
                 // selektiert
-                waypoint = nextCache.GetStartWaypoint();
+                waypoint = nextCache.getStartWaypoint();
             }
 
             retValue = new CacheWithWP(nextCache, waypoint);

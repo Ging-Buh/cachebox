@@ -417,10 +417,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             } else {
                 if (infoBubble.getWaypoint() == null) {
                     // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-                    Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
+                    Waypoint waypoint = infoBubble.getCache().getCorrectedFinal();
                     // wenn ein Cache keine Final hat, aber einen StartWaypointm, dann wird dieser gleich selektiert
                     if (waypoint == null)
-                        waypoint = infoBubble.getCache().GetStartWaypoint();
+                        waypoint = infoBubble.getCache().getStartWaypoint();
                     GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
                 } else {
                     GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());

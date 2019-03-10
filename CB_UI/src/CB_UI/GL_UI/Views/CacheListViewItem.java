@@ -118,7 +118,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
             Coordinate position = Locator.getCoordinate();
 
-            Waypoint FinalWp = mCache.GetFinalWaypoint();
+            Waypoint FinalWp = mCache.getCorrectedFinal();
 
             Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
             CalculationType calcType = CalculationType.FAST;

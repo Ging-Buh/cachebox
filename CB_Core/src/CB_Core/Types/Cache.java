@@ -304,37 +304,13 @@ public class Cache implements Comparable<Cache>, Serializable {
      * -- korrigierte Koordinaten (kommt nur aus GSAK? bzw CacheWolf-Import) -- oder Mystery mit gueltigem Final
      */
     public boolean hasCorrectedCoordiantesOrHasCorrectedFinal() {
-        if (this.hasCorrectedCoordinates())
-            return true;
-
-        if (this.waypoints == null || this.waypoints.size() == 0)
-            return false;
-
-        boolean x;
-        x = false;
-
-        for (int i = 0, n = waypoints.size(); i < n; i++) {
-            Waypoint wp = waypoints.get(i);
-            if (wp.Type == CacheTypes.Final) {
-                if (!(wp.Pos.getLatitude() == 0 && wp.Pos.getLongitude() == 0))
-                    x = true;
-            }
-        }
-        return x;
-    }
-
-    /**
-     * true, if this cache has a final waypoint
-     */
-    public boolean HasFinalWaypoint() {
-        return GetFinalWaypoint() != null;
+        return hasCorrectedCoordinates() || getCorrectedFinal() != null;
     }
 
     /**
      * search the final waypoint for a cache
      */
-    public Waypoint GetFinalWaypoint() {
-        // if (this.Type != CacheTypes.Mystery) return null;
+    public Waypoint getFinalWaypoint() {
         if (waypoints == null || waypoints.size() == 0)
             return null;
 
@@ -350,14 +326,9 @@ public class Cache implements Comparable<Cache>, Serializable {
         return null;
     }
 
-    public boolean hasCorrectedFinal() {
-        Waypoint w = GetFinalWaypoint();
-        if (w == null) return false;
-        return w.isCorrectedFinal();
-    }
-
+    // also checks flag userwaypoint
     public Waypoint getCorrectedFinal() {
-        Waypoint w = GetFinalWaypoint();
+        Waypoint w = getFinalWaypoint();
         if (w == null) return null;
         if (w.isCorrectedFinal())
             return w;
@@ -366,20 +337,11 @@ public class Cache implements Comparable<Cache>, Serializable {
     }
 
     /**
-     * true if this is a mystery of multi with a Stage Waypoint defined as StartPoint
-     *
-     * @return
-     */
-    public boolean HasStartWaypoint() {
-        return GetStartWaypoint() != null;
-    }
-
-    /**
      * search the start Waypoint for a multi or mystery
      *
      * @return
      */
-    public Waypoint GetStartWaypoint() {
+    public Waypoint getStartWaypoint() {
         if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery))
             return null;
 
@@ -461,7 +423,7 @@ public class Cache implements Comparable<Cache>, Serializable {
             return 0;
         Waypoint waypoint = null;
         if (useFinal)
-            waypoint = this.GetFinalWaypoint();
+            waypoint = getCorrectedFinal();
         // Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
         // Diszanzberechnung vom Final aus gemacht werden
         // If a mystery has a final waypoint, the distance will be calculated to

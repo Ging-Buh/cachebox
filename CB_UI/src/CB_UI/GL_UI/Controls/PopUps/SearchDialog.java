@@ -414,13 +414,10 @@ public class SearchDialog extends PopUp_Base {
                     mSearchAktive = false;
                     GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
                 } else {
-
-                    Waypoint finalWp = null;
                     if (tmp != null) {
-                        if (tmp.HasFinalWaypoint())
-                            finalWp = tmp.GetFinalWaypoint();
-                        else if (tmp.HasStartWaypoint())
-                            finalWp = tmp.GetStartWaypoint();
+                        Waypoint finalWp = tmp.getCorrectedFinal();
+                        if (finalWp == null)
+                            finalWp = tmp.getStartWaypoint();
                         GlobalCore.setSelectedWaypoint(tmp, finalWp);
                     }
                     // deactivate autoResort when Cache is selected by hand
