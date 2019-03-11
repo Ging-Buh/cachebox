@@ -145,7 +145,12 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     }
 
     private Sprite getMapIcon(Cache cache) {
-        if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+        // todo what is with unavailable, archived
+        if (cache.ImTheOwner())
+            return getSprite("star");
+        else if (cache.isFound())
+            return getSprite("mapFound");
+        else if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
             if (cache.Type == CacheTypes.Mystery)
                 return getSprite("mapMysterySolved");
             else if (cache.Type == CacheTypes.Multi)
@@ -164,18 +169,13 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                 return getSprite("mapEarthSolved");
             return getSprite("mapMysterySolved");
         }
-        else {
-            if (cache.ImTheOwner())
-                return getSprite("star");
-            else if (cache.isFound())
-                return getSprite("mapFound");
-            else if ((cache.Type == CacheTypes.Multi) && cache.getStartWaypoint() != null)
-                return getSprite("mapMultiStartP"); // Multi mit Startpunkt
-            else if ((cache.Type == CacheTypes.Mystery) && cache.getStartWaypoint() != null)
-                return getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
-            else
-                return getSprite("map" + cache.Type.name());
-        }
+        else if ((cache.Type == CacheTypes.Multi) && cache.getStartWaypoint() != null)
+            return getSprite("mapMultiStartP"); // Multi mit Startpunkt
+        else if ((cache.Type == CacheTypes.Mystery) && cache.getStartWaypoint() != null)
+            return getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
+        else
+            return getSprite("map" + cache.Type.name());
+
     }
 
     private Sprite getSmallMapIcon(Cache cache) {
@@ -205,8 +205,6 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                     icon = "small4";
                     break;
                 case Mystery:
-                    icon = "small5";
-                    break;
                 case Wherigo:
                     icon = "small5";
                     break;
