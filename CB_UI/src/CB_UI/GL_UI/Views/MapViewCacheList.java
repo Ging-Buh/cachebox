@@ -145,7 +145,6 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     }
 
     private Sprite getMapIcon(Cache cache) {
-        // todo what is with unavailable, archived
         if (cache.ImTheOwner())
             return getSprite("star");
         else if (cache.isFound())

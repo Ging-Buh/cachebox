@@ -307,33 +307,20 @@ public class Cache implements Comparable<Cache>, Serializable {
         return hasCorrectedCoordinates() || getCorrectedFinal() != null;
     }
 
-    /**
-     * search the final waypoint for a cache
-     */
-    public Waypoint getFinalWaypoint() {
+    // also checks flag userwaypoint
+    public Waypoint getCorrectedFinal() {
         if (waypoints == null || waypoints.size() == 0)
             return null;
 
         for (int i = 0, n = waypoints.size(); i < n; i++) {
             Waypoint wp = waypoints.get(i);
             if (wp.Type == CacheTypes.Final) {
-                // do not activate final waypoint with invalid coordinates
                 if (!wp.Pos.isValid() || wp.Pos.isZero())
                     continue;
-                return wp;
+                if (wp.IsUserWaypoint) return wp;
             }
         }
         return null;
-    }
-
-    // also checks flag userwaypoint
-    public Waypoint getCorrectedFinal() {
-        Waypoint w = getFinalWaypoint();
-        if (w == null) return null;
-        if (w.isCorrectedFinal())
-            return w;
-        else
-            return null;
     }
 
     /**
