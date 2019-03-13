@@ -39,7 +39,7 @@ import static CB_UI_Base.GL_UI.Sprites.*;
  */
 public class MapViewCacheList implements CacheListChangedEventListener {
     private static final String log = "MapViewCacheList";
-    public final CB_List<WaypointRenderInfo> list = new CB_List<MapViewCacheList.WaypointRenderInfo>();
+    public final CB_List<WaypointRenderInfo> list = new CB_List<>();
     private final int maxZoomLevel;
     /**
      * State 0: warten auf neuen Update Befehl <br>
@@ -49,7 +49,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
      * State 4: queueProcessor abgebrochen
      */
     private final AtomicInteger state = new AtomicInteger(0);
-    private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
+    private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<>();
     public int anz = 0;
     MapViewCacheListUpdateData savedQuery = null;
     MapViewCacheListUpdateData LastUpdateData = null;
@@ -60,6 +60,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     private WaypointRenderInfo selectedWP;
     private boolean hideMyFinds = false;
     private boolean showAllWaypoints = false;
+    private boolean showAtOriginalPosition = false;
     private Vector2 lastPoint1;
     private Vector2 lastPoint2;
     private int lastzoom;
@@ -149,6 +150,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
             return getSprite("star");
         else if (cache.isFound())
             return getSprite("mapFound");
+        else if (showAtOriginalPosition && !cache.hasCorrectedCoordinates())
+            // todo for corrected coordinates there is no original position saved at the moment
+            return getSprite("map" + cache.Type.name());
         else if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
             if (cache.Type == CacheTypes.Mystery)
                 return getSprite("mapMysterySolved");
@@ -261,6 +265,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
         LastUpdateData = data;
         this.showAllWaypoints = data.showAllWaypoints;
         this.hideMyFinds = data.hideMyFinds;
+        showAtOriginalPosition = data.showAtOriginalPosition;
 
         if (data.point1 == null || data.point2 == null)
             return;
@@ -322,6 +327,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
         public boolean doNotCheck;
         public boolean hideMyFinds = false;
         public boolean showAllWaypoints = false;
+        public boolean showAtOriginalPosition = false;
 
         public MapViewCacheListUpdateData(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck) {
             this.point1 = point1;
@@ -368,53 +374,44 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                         synchronized (Database.Data.cacheList) {
                             for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                                 Cache cache = Database.Data.cacheList.get(i);
-                                // Funde
-                                if (hideMyFinds && cache.isFound())
-                                    continue;
+                                // handle show option "
+                                if (hideMyFinds && cache.isFound()) continue;
                                 boolean selectedCache = false;
                                 if (GlobalCore.isSetSelectedCache()) {
                                     selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
                                 }
-
                                 boolean showWaypoints = showAllWaypoints || selectedCache;
                                 double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
                                 double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
                                 Waypoint finalWaypoint = null;
                                 Waypoint startWaypoint;
-                                // sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
                                 if (showWaypoints) {
-                                    if (selectedCache) {
-                                        if (GlobalCore.isSetSelectedCache())
-                                            addWaypoints(GlobalCore.getSelectedCache(), iconSize);
-                                    } else {
-                                        addWaypoints(cache, iconSize);
-                                    }
+                                    addWaypoints(cache, iconSize);
                                 }
-                                // show Cache at corrected final
-                                if (!cache.hasCorrectedCoordinates()) {
-                                    finalWaypoint = cache.getCorrectedFinal();
-                                    if (finalWaypoint != null) {
-                                        // show cache at Final coords
-                                        MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, finalWaypoint.Pos.getLongitude());
-                                        MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, finalWaypoint.Pos.getLatitude());
+                                if (!showAtOriginalPosition) {
+                                    // show Cache at corrected final
+                                    if (!cache.hasCorrectedCoordinates()) {
+                                        finalWaypoint = cache.getCorrectedFinal();
+                                        if (finalWaypoint != null) {
+                                            // show cache at Final coords
+                                            MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, finalWaypoint.Pos.getLongitude());
+                                            MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, finalWaypoint.Pos.getLatitude());
+                                        }
                                     }
-                                }
-                                // or show Cache at Startwaypoint (only for Multi and Mysterie)
-                                if ((cache.Type == CacheTypes.Multi) || (cache.Type == CacheTypes.Mystery)) {
-                                    if (!cache.hasCorrectedCoordinates() && (finalWaypoint == null)) {
-                                        // Suche, ob zu diesem Cache ein Start-Waypoint definiert ist
-                                        // Wenn ja, und wenn es kein Mystery mit Final ist dann wird das CacheIcon in der Map auf diesen
-                                        // WP verschoben wenn der Cache nicht selected ist.
-                                        startWaypoint = cache.getStartWaypoint();
-                                        if (startWaypoint != null) {
-                                            // nehme Start Waypoint
-                                            MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, startWaypoint.Pos.getLongitude());
-                                            MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, startWaypoint.Pos.getLatitude());
+                                    // or show Cache at Startwaypoint (only for Multi and Mysterie)
+                                    if ((cache.Type == CacheTypes.Multi) || (cache.Type == CacheTypes.Mystery)) {
+                                        // todo ? really show corrected coord if a startWP is defined?
+                                        if (!cache.hasCorrectedCoordinates() && (finalWaypoint == null)) {
+                                            startWaypoint = cache.getStartWaypoint();
+                                            if (startWaypoint != null) {
+                                                MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, startWaypoint.Pos.getLongitude());
+                                                MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, startWaypoint.Pos.getLatitude());
+                                            }
                                         }
                                     }
                                 }
+                                // Cache Icon Overlay, ...
                                 if (isVisible(MapX, MapY) || selectedCache) {
-                                    // sichtbaren Cache/Mystery-Final hinzufügen
                                     WaypointRenderInfo wpi = new WaypointRenderInfo();
                                     wpi.MapX = (float) MapX;
                                     wpi.MapY = (float) MapY;
@@ -453,8 +450,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                             // es steht noch eine Anfrage an!
                             // Diese jetzt ausführen!
                             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(savedQuery);
-                            data.hideMyFinds = MapViewCacheList.this.hideMyFinds;
-                            data.showAllWaypoints = MapViewCacheList.this.showAllWaypoints;
+                            data.hideMyFinds = hideMyFinds;
+                            data.showAllWaypoints = showAllWaypoints;
+                            data.showAtOriginalPosition = showAtOriginalPosition;
                             savedQuery = null;
                             update(data);
                         }
@@ -471,7 +469,4 @@ public class MapViewCacheList implements CacheListChangedEventListener {
             return;
         }
     }
-
-    ;
-
 }

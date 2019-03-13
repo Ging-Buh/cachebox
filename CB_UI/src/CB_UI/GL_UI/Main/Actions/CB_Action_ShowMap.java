@@ -50,6 +50,7 @@ import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import java.util.*;
 
 import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
+import static CB_UI_Base.GL_UI.Menu.MenuID.MI_SHOW_AT_ORIGINAL_POSITION;
 
 /**
  * @author Longri
@@ -294,6 +295,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void showMapViewLayerMenu() {
         OptionMenu icm = new OptionMenu("MapViewShowLayerContextMenu");
 
+        icm.addCheckableItem(MI_SHOW_AT_ORIGINAL_POSITION, "ShowAtOriginalPosition", Config.ShowAtOriginalPosition.getValue());
         icm.addCheckableItem(MenuID.MI_HIDE_FINDS, "HideFinds", Config.MapHideMyFinds.getValue());
         icm.addCheckableItem(MenuID.MI_MAP_SHOW_INFO, "MapShowCompass", Config.MapShowInfo.getValue());
         icm.addCheckableItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints", Config.ShowAllWaypoints.getValue());
@@ -306,6 +308,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
         icm.addOnClickListener( (v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
+                case MI_SHOW_AT_ORIGINAL_POSITION:
+                    toggleSettingWithReload(Config.ShowAtOriginalPosition);
+                    return true;
                 case MenuID.MI_HIDE_FINDS:
                     toggleSettingWithReload(Config.MapHideMyFinds);
                     return true;

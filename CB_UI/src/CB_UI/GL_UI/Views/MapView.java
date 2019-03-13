@@ -253,6 +253,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
                             data.hideMyFinds = hideMyFinds;
                             data.showAllWaypoints = showAllWaypoints;
+                            data.showAtOriginalPosition = showAtOriginalPosition;
                             mapCacheList.update(data);
                         }
                     } else {
@@ -747,6 +748,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
+        data.showAtOriginalPosition = showAtOriginalPosition;
         mapCacheList.update(data);
 
         if (getCenterGps()) {
@@ -894,6 +896,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
+        data.showAtOriginalPosition = showAtOriginalPosition;
         mapCacheList.update(data);
 
         super.loadTiles();
@@ -1106,6 +1109,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
+        data.showAtOriginalPosition = showAtOriginalPosition;
         mapCacheList.update(data);
         if (infoBubble.isVisible()) {
             infoBubble.setCache(infoBubble.getCache(), infoBubble.getWaypoint(), true);
@@ -1142,6 +1146,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
             showAccuracyCircle = Mode == MapMode.Compass ? false : Config.ShowAccuracyCircle.getValue();
             showMapCenterCross = Mode == MapMode.Compass ? false : Config.ShowMapCenterCross.getValue();
+            showAtOriginalPosition  = Mode == MapMode.Compass ? false : Config.ShowAtOriginalPosition.getValue();
 
             if (Mode == MapMode.Track) {
                 showMapCenterCross = true;
@@ -1213,6 +1218,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                 data.hideMyFinds = hideMyFinds;
                 showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
                 data.showAllWaypoints = showAllWaypoints;
+                showAtOriginalPosition  = Mode == MapMode.Compass ? false : Config.ShowAtOriginalPosition.getValue();
+                data.showAtOriginalPosition = showAtOriginalPosition;
                 mapCacheList.update(data);
             }
 

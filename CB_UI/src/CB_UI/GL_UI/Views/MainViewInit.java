@@ -208,9 +208,9 @@ public class MainViewInit extends MainViewBase {
         OSM_Logo.setPos(xPos, yPos);
 
         this.addChild(GC_Logo);
-        this.addChild(Mapsforge_Logo);
         this.addChild(LibGdx_Logo);
-        this.addChild(Route_Logo);
+        this.addChild(Mapsforge_Logo);
+        // this.addChild(Route_Logo);
         this.addChild(OSM_Logo);
 
     }

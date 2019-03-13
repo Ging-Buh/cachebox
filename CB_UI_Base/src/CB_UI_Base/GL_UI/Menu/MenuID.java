@@ -201,4 +201,5 @@ public class MenuID {
     public static final int AID_SWITCH_DESCRIPTION = 206;
     public static final int AID_SHOW_DescExt = 207;
 
+    public static final int MI_SHOW_AT_ORIGINAL_POSITION = 208;
 }

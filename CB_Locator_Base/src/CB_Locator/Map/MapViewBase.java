@@ -102,6 +102,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected boolean NorthOriented = true;
     protected float iconFactor = 1.5f;
     protected boolean showMapCenterCross;
+    protected boolean showAtOriginalPosition;
     protected PolygonDrawable CrossLines = null;
     protected IChanged themeChangedEventHandler = () -> MapViewBase.this.invalidateTexture();
     protected String mapsForgeThemePath;

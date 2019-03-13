@@ -54,6 +54,7 @@ public interface CB_UI_Settings {
     SettingString quickButtonList = new SettingString("quickButtonList", QuickList, NEVER, "1,15,14,19,12,23,2,13", Global, ACB);
     SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", QuickList, NEVER, false, Global, ACB);
 
+    SettingBool ShowAtOriginalPosition = new SettingBool("ShowAtOriginalPosition", Map, NEVER, false, Global, ACB);
     SettingBool MapShowRating = new SettingBool("MapShowRating", Map, NEVER, true, Global, ACB);
     SettingBool MapShowDT = new SettingBool("MapShowDT", Map, NEVER, true, Global, ACB);
     SettingBool MapShowTitles = new SettingBool("MapShowTitles", Map, NEVER, true, Global, ACB);
