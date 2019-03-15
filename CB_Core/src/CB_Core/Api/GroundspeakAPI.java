@@ -1663,6 +1663,16 @@ public class GroundspeakAPI {
             return this;
         }
 
+        public Query onlyTheseGeoCaches(String commaSeparatedListOfGCCodes) {
+            addSearchFilter("code:" + commaSeparatedListOfGCCodes);
+            return this;
+        }
+
+        public Query notTheseGeoCaches(String commaSeparatedListOfGCCodes) {
+            addSearchFilter("code:" + "not(" + commaSeparatedListOfGCCodes + ")");
+            return this;
+        }
+
         public Query publishedDate(Date date, String when) {
             String before = "";
             String after = "";

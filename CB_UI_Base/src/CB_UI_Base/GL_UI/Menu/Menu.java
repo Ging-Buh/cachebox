@@ -75,7 +75,7 @@ public class Menu extends ButtonDialog {
     private int Level = 0;
 
     public Menu(String Name) {
-        super(getMenuRec(), Name);
+        super(getMenuRec() , Name);
 
         if (ItemHeight == -1f)
             ItemHeight = UI_Size_Base.that.getButtonHeight();
@@ -183,9 +183,8 @@ public class Menu extends ButtonDialog {
                 for (MenuItemBase item : mItems) {
                     higherValue += item.getHeight() + mListView.getDividerHeight();
                 }
-                higherValue = Math.min(higherValue, UI_Size_Base.that.getWindowHeight() * 0.95f);
-                if (higherValue > UI_Size_Base.that.getWindowHeight() * 0.95f) {
-                    higherValue = UI_Size_Base.that.getWindowHeight() * 0.95f;
+                if (higherValue > UI_Size_Base.that.getWindowHeight() - 2 * UI_Size_Base.that.getButtonHeight()) {
+                    higherValue = UI_Size_Base.that.getWindowHeight() - 2 * UI_Size_Base.that.getButtonHeight();
                 }
                 float MenuWidth = GL_UISizes.UI_Left.getWidth();
                 this.setSize(MenuWidth, higherValue);

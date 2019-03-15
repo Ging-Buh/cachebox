@@ -300,7 +300,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecordVoice, false));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Show_Parking_Dialog.getInstance(), false));
 
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowQuit.getInstance(), false, GestureDirection.Down));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowCreditsView.getInstance(), false));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Show_Settings.getInstance(), false, GestureDirection.Left));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_switch_DayNight.getInstance(), false));
@@ -308,7 +308,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Mail.getInstance(), false));
         mAboutButtonOnLeftTab.addAction((new CB_ActionButton(CB_Action_GetFriends.getInstance(), false)));
         mAboutButtonOnLeftTab.addAction((new CB_ActionButton(CB_Action_switch_Torch.getInstance(), false)));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowQuit.getInstance(), false, GestureDirection.Down));
+        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up));
 
         CB_Action_ShowAbout.getInstance().Execute();
     }

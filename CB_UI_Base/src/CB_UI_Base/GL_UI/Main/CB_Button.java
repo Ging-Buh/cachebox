@@ -293,20 +293,21 @@ public class CB_Button extends Button {
             MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtension());
             // if (CB_UI_Base_Settings.GestureOn.getValue()) {            }
             if (ba.getGestureDirection() != GestureDirection.None) {
+                String direction;
                 switch (ba.getGestureDirection()) {
                     case Up:
-                        mi.setTitle(mi.getTitle() + " (Wisch " + "Hoch" + ")");
+                        direction = Translation.Get("up");
                         break;
                     case Down:
-                        mi.setTitle(mi.getTitle() + " (Wisch " + "Runter" + ")");
+                        direction = Translation.Get("down");
                         break;
                     case Left:
-                        mi.setTitle(mi.getTitle() + " (Wisch " + "Links" + ")");
+                        direction = Translation.Get("left");
                         break;
-                    case Right:
-                        mi.setTitle(mi.getTitle() + " (Wisch " + "Rechts" + ")");
-                        break;
+                    default:
+                        direction = Translation.Get("right");
                 }
+                mi.setTitle(mi.getTitle() + " (" + Translation.Get("wipe") + " " + direction  + ")");
             }
             mi.setEnabled(action.getEnabled());
             mi.setCheckable(action.getIsCheckable());
