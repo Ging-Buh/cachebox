@@ -12,7 +12,7 @@ public class CB_ButtonList {
 
     public void addButton(CB_Button Button) {
         if (Buttons == null)
-            Buttons = new ArrayList<CB_Button>();
+            Buttons = new ArrayList<>();
         Buttons.add(Button);
     }
 

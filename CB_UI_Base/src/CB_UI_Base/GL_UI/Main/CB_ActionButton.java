@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_ActionButton {
     private final CB_Action action;
     private final boolean defaultAction;
-    private GestureDirection gestureDirection = GestureDirection.None;
+    private GestureDirection gestureDirection;
 
     public CB_ActionButton(CB_Action action, boolean defaultAction, GestureDirection gestureDirection) {
         this.action = action;
