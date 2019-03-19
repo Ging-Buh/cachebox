@@ -82,7 +82,6 @@ public class CB_TabView extends CB_View_Base {
             GL.that.clearRenderViews();
             GL.that.closeAllDialogs();
 
-            // delete all Views up to the ButtonList
             if (aktView != null && aktView != view) {
                 removeChild(aktView);
                 // aktView.onStop();

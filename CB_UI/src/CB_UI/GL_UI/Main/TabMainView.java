@@ -277,7 +277,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSpoilerView.getInstance(), false));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowLogView.getInstance(), false, GestureDirection.Down));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowNotesView.getInstance(), false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackableListView.getInstance(), false));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowDescExt.getInstance(), false));
 
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowMap.getInstance(), true, GestureDirection.Up));
@@ -289,7 +288,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             mMapButtonOnLeftTab.addAction(new CB_ActionButton(new CB_Action_ShowTestView(), false));
 
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowFieldNotesView.getInstance(), Config.ShowFieldnotesAsDefaultView.getValue(), GestureDirection.Up));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackableListView.getInstance(), false));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSolverView2.getInstance(), false, GestureDirection.Right));
         actionTakePicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));

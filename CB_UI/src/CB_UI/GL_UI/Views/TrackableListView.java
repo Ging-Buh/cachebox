@@ -7,10 +7,12 @@ import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.TB_Details;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
+import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -36,7 +38,7 @@ import java.util.Date;
 
 import static CB_Core.Api.GroundspeakAPI.*;
 
-public class TrackableListView extends ActivityBase {
+public class TrackableListView extends CB_View_Base {
     private static final String log = "TrackableListView";
     private static final int MI_SEARCH = 37;
     private static final int MI_REFRESH_TB_LIST = 165;
@@ -48,42 +50,18 @@ public class TrackableListView extends ActivityBase {
     private V_ListView listView;
     private CustomAdapter lvAdapter;
     private TBList mTB_List;
-    private Button btnAction;
     private CancelWaitDialog wd;
-    private final OnClickListener menuItemClickListener = new OnClickListener() {
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MI_SEARCH:
-                    searchTB();
-                    break;
-                case MI_REFRESH_TB_LIST:
-                    RefreshTbList();
-                    break;
-                case MI_TB_VISIT:
-                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
-                    break;
-                case MI_TB_DROPPED:
-                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
-                    RefreshTbList();
-                    break;
-                case MI_TB_NOTE:
-                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
-                    break;
-                case MI_QUIT:
-                    finish();
-                    break;
-            }
-            return true;
-        }
-    };
-
-    public TrackableListView(CB_RectF rec, String Name) {
-        super(rec, Name);
+    private TrackableListView() {
+        super(TabMainView.leftTab.getContentRec(), "TrackableListView");
         that = this;
         setBackground(Sprites.ListBack);
         lvAdapter = new CustomAdapter();
+    }
+
+    public static TrackableListView getInstance() {
+        if (that == null) that = new TrackableListView();
+        return that;
     }
 
     public void dispose() {
@@ -104,14 +82,6 @@ public class TrackableListView extends ActivityBase {
     }
 
     protected void Initial() {
-        btnAction = new Button(Translation.Get("TB_Actions"));
-        btnAction.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                showMenu();
-                return true;
-            }
-        });
 
         listView = new V_ListView(new CB_RectF(0, 0, getWidth(), 0), "listView");
         listView.setEmptyMsg(Translation.Get("TB_List_Empty"));
@@ -165,7 +135,6 @@ public class TrackableListView extends ActivityBase {
         this.removeChilds();
         initRow(BOTTOMUP);
 
-        addLast(btnAction);
         listView.setHeight(getAvailableHeight());
         addLast(listView);
 
@@ -263,18 +232,35 @@ public class TrackableListView extends ActivityBase {
         });
     }
 
-    private void showMenu() {
-
+    public Menu getContextMenu() {
         final Menu cm = new Menu("TBLogContextMenu");
-        cm.addOnClickListener(menuItemClickListener);
-
+        cm.addOnClickListener((v, x, y, pointer, button) -> {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MI_SEARCH:
+                    searchTB();
+                    break;
+                case MI_REFRESH_TB_LIST:
+                    RefreshTbList();
+                    break;
+                case MI_TB_VISIT:
+                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
+                    break;
+                case MI_TB_DROPPED:
+                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
+                    RefreshTbList();
+                    break;
+                case MI_TB_NOTE:
+                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
+                    break;
+            }
+            return true;
+        });
         cm.addItem(MI_SEARCH, "SearchTB", Sprites.getSprite(IconName.lupe.name()));
         cm.addItem(MI_REFRESH_TB_LIST, "RefreshInventory");
         cm.addItem(MI_TB_NOTE, "all_note", Sprites.getSprite(IconName.TBNOTE.name()));
         cm.addItem(MI_TB_VISIT, "all_visit", Sprites.getSprite(IconName.TBVISIT.name()));
         cm.addItem(MI_TB_DROPPED, "all_dropped", Sprites.getSprite(IconName.TBDROP.name()));
-        cm.addItem(MI_QUIT, "cancel", Sprites.getSprite(IconName.closeIcon.name()));
-        cm.Show();
+        return cm;
     }
 
     public class CustomAdapter implements Adapter {

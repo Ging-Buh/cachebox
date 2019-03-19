@@ -1861,40 +1861,31 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             @Override
             public void hideForDialog() {
-
-                Timer timer = new Timer();
-                TimerTask task = new TimerTask() {
+                new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                // chk for timer conflict (releay set invisible)
-                                // only if not showing Dialog or Activity
-                                if (!GL.that.isShownDialogOrActivity()) {
-                                    if (aktView != null) {
-                                        ((View) aktView).setVisibility(View.VISIBLE);
-                                        aktView.OnShow();
-                                        setContentSize(lastLeft, lastTop, lastRight, lastBottom);
-                                    }
-                                    if (aktTabView != null) {
-                                        ((View) aktTabView).setVisibility(View.VISIBLE);
-                                        aktTabView.OnShow();
-                                        setContentSize(lastLeft, lastTop, lastRight, lastBottom);
-                                    }
-                                    if (InfoDownSlider != null)
-                                        ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
-                                    if (cacheNameView != null)
-                                        ((View) cacheNameView).setVisibility(View.INVISIBLE);
+                        runOnUiThread(() -> {
+                            // chk for timer conflict (releay set invisible)
+                            // only if not showing Dialog or Activity
+                            if (!GL.that.isShownDialogOrActivity()) {
+                                if (aktView != null) {
+                                    ((View) aktView).setVisibility(View.VISIBLE);
+                                    aktView.OnShow();
+                                    setContentSize(lastLeft, lastTop, lastRight, lastBottom);
                                 }
+                                if (aktTabView != null) {
+                                    ((View) aktTabView).setVisibility(View.VISIBLE);
+                                    aktTabView.OnShow();
+                                    setContentSize(lastLeft, lastTop, lastRight, lastBottom);
+                                }
+                                if (InfoDownSlider != null)
+                                    (InfoDownSlider).setVisibility(View.INVISIBLE);
+                                if (cacheNameView != null)
+                                    (cacheNameView).setVisibility(View.INVISIBLE);
                             }
                         });
-
                     }
-                };
-                timer.schedule(task, 50);
-
+                }, 50);
             }
 
             @Override

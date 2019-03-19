@@ -57,12 +57,13 @@ public class CB_Button extends Button {
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            // create the menu for the executed action (aktActionView != null then it is the second short click on the button)
-            // if no contextmenu is defined (what is never so), no menu is shown (nothing would happen. you have to long click).
-            // in very early previous versions only the context menu is shown. For another action, you always had to do another Long Click.
+            // create the menu for the executed action aktActionView != null and view is visible
+            // for CB_Action_ShowActivity the view is always null and stays invisible, no menu is shown. you have to long click.
+            // in very early previous versions only the context menu is shown.
+            // For another action, you always had to do another Long Click.
             if ((aktActionView != null)) {
                 if (aktActionView.getView() != null && aktActionView.getView().isVisible()) {
-                    // Dieses View ist aktuell das Sichtbare -> ein Click auf den Menü-Button zeigt das Contextmenü
+                    // this view is the visible (==> second click) -> show contextmenu + longmenu
                     Menu compoundMenu = new Menu("compoundMenu");
                     if (aktActionView.hasContextMenu()) {
                         // first the context menu, if exists
@@ -429,16 +430,6 @@ public class CB_Button extends Button {
         }
         isDragged = false;
         return true;
-    }
-
-    public CB_Button disableGester() {
-        GestureIsOn = false;
-        return this;
-    }
-
-    public CB_Button enableGester() {
-        GestureIsOn = true;
-        return this;
     }
 
     public void setActView(CB_View_Base View) {
