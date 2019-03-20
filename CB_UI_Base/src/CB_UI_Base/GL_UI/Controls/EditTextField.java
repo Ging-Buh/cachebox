@@ -33,7 +33,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
 import java.util.ArrayList;
@@ -43,55 +42,28 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class EditTextField extends EditTextFieldBase {
-
-    // factor for the size of the selectinMarkers
-    static protected final double markerFactor = 2.0;
     private static final String log = "EditTextField";
     final Lock displayTextLock = new ReentrantLock();
-    private final CB_List<IListPosChanged> listPosChangedHandlers = new CB_List<IListPosChanged>();
+    private final CB_List<IListPosChanged> listPosChangedHandlers = new CB_List<>();
     protected TextFieldStyle style;
-    protected int inputType; // for Android InputType
-    protected String text, messageText; // both in todo state
-    /**
-     * the text to display/edit, separated in lines
-     */
     protected ArrayList<Line> lines;
-    /**
-     * the position, where a new character will be inserted
-     * a blinking | will be shown at the position
-     */
     protected Point cursor = new Point(0, 0);
-    protected float cursorHeight;
-    /**
-     * oberste sichtbare Zeile ist displayText(topline)
-     */
-    protected int topLine;
-    /**
-     * Anzahl der sichtbaren Zeilen
-     */
-    protected int maxLineCount;
-    /**
-     * Anzahl der Pixel, um die der Text der aktuellen Zeile nach links gescrollt ist
-     */
-    protected float leftPos;
-    /**
-     * Textbreite: Anzahl der sichtbaren Pixel
-     */
-    protected float textWidth;
-    /**
-     * Texthoehe: Anzahl der sichtbaren Pixel
-     */
     protected float textHeight;
-    protected TextFieldFilter mTextFieldFilter;
-    protected boolean passwordMode;
-    protected StringBuilder passwordBuffer;
-    protected Selection selectedArea = null;
-    protected char passwordCharacter = BULLET;
-    float bgTopHeight = 0;
-    float bgBottomHeight = 0;
-    float bgLeftWidth = 0;
-    float bgRightWidth = 0;
-    boolean selectionIsActive = false;
+    private int inputType; // for Android InputType
+    private String text;
+    private int topLine;
+    private int maxLineCount;
+    private float leftPos;
+    private float textWidth;
+    private boolean passwordMode;
+    private StringBuilder passwordBuffer;
+    private Selection selectedArea = null;
+    private char passwordCharacter = BULLET;
+    private float bgTopHeight = 0;
+    private float bgBottomHeight = 0;
+    private float bgLeftWidth = 0;
+    private float bgRightWidth = 0;
+    private boolean selectionIsActive = false;
     private WrapType mWrapType = WrapType.SINGLELINE;
     private Point touchDownPos = null;
     private float topLineAtTouchDown = 0;
@@ -119,16 +91,17 @@ public class EditTextField extends EditTextFieldBase {
         topLine = 0;
         leftPos = 0;
         this.style = getDefaultStyle();
-        lines = new ArrayList<Line>();
+        lines = new ArrayList<>();
         setText(""); // does all calculations
         setClickable(true);
     }
 
-    public void setInputType(int type) {
-        inputType = type;
-    }
     public int getInputType() {
         return inputType;
+    }
+
+    public void setInputType(int type) {
+        inputType = type;
     }
 
     @Override
@@ -161,14 +134,6 @@ public class EditTextField extends EditTextFieldBase {
         return this;
     }
 
-    public void setPasswordCharacter(char passwordCharacter) {
-        this.passwordCharacter = passwordCharacter;
-    }
-
-    /**
-     * Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)} is
-     * called.
-     */
     public TextFieldStyle getStyle() {
         return style;
     }
@@ -183,11 +148,6 @@ public class EditTextField extends EditTextFieldBase {
         style.setBackground(background, backgroundFocused);
     }
 
-    /**
-     * calculates bgLeftWidth, bgRightWidth, bgTopHeight, bgBottomHeight, textWidth, textHeight, maxLineCount
-     *
-     * @param focused sizes depend on focused or not
-     */
     private void calculateSizeDependencies(boolean focused) {
         bgLeftWidth = style.getLeftWidth(focused);
         bgRightWidth = style.getRightWidth(focused);
@@ -200,6 +160,11 @@ public class EditTextField extends EditTextFieldBase {
         textWidth = getWidth() - bgLeftWidth - bgRightWidth;
         textHeight = getHeight() - bgTopHeight - bgBottomHeight;
         maxLineCount = (int) (textHeight / style.font.getLineHeight()); // !angebrochene Zeile nicht mitzählen
+    }
+
+    public float getTextHeight() {
+        // unfocused
+        return style.font.getLineHeight() * lines.size() + style.getBottomHeight(false) + style.getTopHeight(false);
     }
 
     @Override
@@ -242,31 +207,23 @@ public class EditTextField extends EditTextFieldBase {
                 }
             }
 
-            if ((lines.size() == 1) && (getNthLine(0).displayText.length() == 0)) {
-                if (!focused && messageText != null) {
-                    if (style.messageFontColor != null) {
-                        style.font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b, style.messageFontColor.a);
-                    } else {
-                        style.font.setColor(0.7f, 0.7f, 0.7f, 1f);
-                    }
-                    style.font.draw(batch, messageText, bgLeftWidth, textY);
-                }
-            } else {
-                style.font.setColor(style.fontColor.r, style.fontColor.g, style.fontColor.b, style.fontColor.a); //?
-                textY += this.style.font.getLineHeight() * topLine;
-                for (Line line : lines) {
-                    style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
-                    textY -= this.style.font.getLineHeight();
-                }
+            style.font.setColor(style.fontColor.r, style.fontColor.g, style.fontColor.b, style.fontColor.a);
+            textY += this.style.font.getLineHeight() * topLine;
+            for (Line line : lines) {
+                // try hack : if (textY < this.getHeight() && textY > 0) {                    }
+                style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
+                textY -= this.style.font.getLineHeight();
             }
 
             if (focused) {
                 if (cursorOn && style.cursor != null) {
-                    textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
-                    cursorHeight = this.style.font.getLineHeight() + style.font.getDescent() / 2;
-                    float xpos = getCursorX();
-                    style.cursor.draw(batch, xpos, getCursorY() + cursorHeight + style.font.getDescent(), style.cursor.getMinWidth(), cursorHeight);
+                    float cursorHeight = style.font.getLineHeight();
+                    float cursorWidth = style.cursor.getMinWidth();
+                    style.cursor.draw(batch, getCursorX() - cursorWidth, getCursorY() + cursorHeight - style.font.getAscent(), cursorWidth * 2, cursorHeight);
                 }
+            } else {
+                // hack to show text only inside box
+                style.cursor.draw(batch, 0, 0, style.cursor.getMinWidth(), 0);
             }
 
             // input cursor
@@ -342,12 +299,6 @@ public class EditTextField extends EditTextFieldBase {
         sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
     }
 
-    /**
-     * Wenn calcCursor == true -> Cursorposition wird evtl. angepasst, sonst nicht
-     *
-     * @param line
-     * @param calcCursor
-     */
     private void updateDisplayText(Line line, boolean calcCursor) {
         float maxWidth = getWidth() - 50; // noch falsch!!!!!!!!!!!!!!!!!!!!!
         // wenn dies eine autoWrap Zeile ist muss zuerst die Zeile davor überprüft werden,
@@ -389,19 +340,16 @@ public class EditTextField extends EditTextFieldBase {
                         lines.remove(line);
                         int lineCount = lines.size();
                         sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
-                        // 2014-07-09: cursor.x und idWord = 0 setzen damit später der Cursor auf das Ende der vorherigen Zeile gesetzt
-                        // wird
+                        // 2014-07-09: cursor.x und idWord = 0 setzen damit später der Cursor auf das Ende der vorherigen Zeile gesetzt wird
                         cursor.x = 0;
                         idWord = 0;
                     } else {
                         computeGlyphAdvancesAndPositions(line.displayText, line.glyphAdvances, line.glyphPositions);
                     }
                     if (cursor.x > idWord) {
-                        cursor.x -= idWord; // Cursor ist hinter den Zeichen die in die vorherige Zeile verschoben werden -> nach Vorne
-                        // setzen
+                        cursor.x -= idWord; // Cursor ist hinter den Zeichen die in die vorherige Zeile verschoben werden -> nach Vorne setzen
                     } else {
-                        // cursor ist innerhalb der Zeichen, die in die vorherige Zeile verschoben werden -> Cursor in die vorherige Zeile
-                        // verschieben
+                        // cursor ist innerhalb der Zeichen, die in die vorherige Zeile verschoben werden -> Cursor in die vorherige Zeile verschieben
                         cursor.x = previousLine.displayText.length() + 1/* - 1 */;
                         setCursorLine(cursor.y - 1, true);
                         // anschließende Zeile noch mal berechnen.
@@ -420,7 +368,7 @@ public class EditTextField extends EditTextFieldBase {
         float len = line.getWidth();
 
         // Prüfen, ob Zeile zu lang geworden ist und ob am Ende Zeichen in die nächste Zeile verschoben werden müssen
-        if ((len > maxWidth) && isWrapped()) {
+        if ((len > maxWidth) && mWrapType == WrapType.WRAPPED) {
             // automatischen Umbruch einfügen
             // erstes Zeichen suchen, das außerhalb des max. Bereichs liegt
             int id = 0;
@@ -523,11 +471,6 @@ public class EditTextField extends EditTextFieldBase {
         return c == ' ' || c == '(' || c == ')' || c == '[' || c == ']' | c == '{' || c == '}' || c == '.' || c == ',' || c == ';' || c == ':';
     }
 
-    ;
-
-    /**
-     * onTouchDown
-     */
     @Override
     public boolean onTouchDown(int X, int Y, int pointer, int button) {
         touchDownPos = new Point(X, Y);
@@ -538,9 +481,6 @@ public class EditTextField extends EditTextFieldBase {
         return true;
     }
 
-    /**
-     * the text and the selectionmarker/s will be moved (by dx,dy relative to touchDownPos)
-     */
     @Override
     public boolean onTouchDragged(int dx, int dy, int pointer, boolean KineticPan) {
         boolean bearbeitet = false;
@@ -647,9 +587,6 @@ public class EditTextField extends EditTextFieldBase {
         return true;
     }
 
-    /**
-     * mark the word at the clicked position
-     */
     @Override
     public boolean doubleClick(int x, int y, int pointer, int button) {
         // Doppelklick markiert Wort unter dem Cursor und setzt 2 Marker
@@ -770,16 +707,6 @@ public class EditTextField extends EditTextFieldBase {
         GL.that.hideMarker();
     }
 
-    /**
-     * A new cursorposition of the desired SelectionMarker given by the selectionMarkerType is calculated.<br>
-     * It is the nearest position of a character determined by the actual position and the difference given by dx and dy<br>
-     * In case of CenterSelectionMarker, the blinking cursor is moved, the new position of the SelectionMarker is returned.<br>
-     *
-     * @param dx
-     * @param dy
-     * @param selectionMarkerType
-     * @return the new cursor position in pixels
-     */
     public Point aSelectionMarkerIsDragged(int dx, int dy, SelectionMarker.Type selectionMarkerType) {
         Point useCursor = cursor;
         switch (selectionMarkerType) {
@@ -1029,12 +956,6 @@ public class EditTextField extends EditTextFieldBase {
         return true;
     }
 
-    /**
-     * liefert das DisplayText-Object der angegebenen Zeile
-     *
-     * @param nth
-     * @return
-     */
     private Line getNthLine(int nth) {
         if (nth < 0)
             return null;
@@ -1043,23 +964,11 @@ public class EditTextField extends EditTextFieldBase {
         return lines.get(nth);
     }
 
-    /**
-     * Zeile des Cursors ändern. Sicherstellen, dass der Cursor sichtbar ist
-     *
-     * @param newCursorLine
-     * @param hideSelectionMarker
-     */
     private void setCursorLine(int newCursorLine, boolean hideSelectionMarker) {
         cursor.y = newCursorLine;
         setTextAtCursorVisible(hideSelectionMarker);
     }
 
-    /**
-     * topLine and leftPos are set for cursor to be in visible part
-     * SelectionMarker will be hidden, if desired
-     *
-     * @param hideSelectionMarker
-     */
     private void setTextAtCursorVisible(boolean hideSelectionMarker) {
         try {
             if (hideSelectionMarker)
@@ -1117,9 +1026,6 @@ public class EditTextField extends EditTextFieldBase {
         setTextAtCursorVisible(true);
     }
 
-    /**
-     * Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField.
-     */
     @Override
     public String copyToClipboard() {
         if (clipboard == null)
@@ -1140,9 +1046,6 @@ public class EditTextField extends EditTextFieldBase {
         return ret;
     }
 
-    /**
-     * Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField.
-     */
     @Override
     public String pasteFromClipboard() {
         if (clipboard == null)
@@ -1212,9 +1115,6 @@ public class EditTextField extends EditTextFieldBase {
         return null;
     }
 
-    /**
-     * markierte Zeichen löschen
-     */
     private void deleteSelection() {
         if (selectedArea == null)
             return;
@@ -1342,10 +1242,6 @@ public class EditTextField extends EditTextFieldBase {
                     return true;
                 }
             }
-            if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
-                if (mTextFieldFilter != null && !mTextFieldFilter.acceptChar(this, character))
-                    return true;
-            }
 
             if (font.getData().getGlyph(character) != null) {
                 if (selectedArea != null)
@@ -1378,36 +1274,6 @@ public class EditTextField extends EditTextFieldBase {
             return false;
     }
 
-    private boolean isWrapped() {
-        return mWrapType == WrapType.WRAPPED;
-    }
-
-    /**
-     * @param filter May be null.
-     */
-    public void setTextFieldFilter(TextFieldFilter filter) {
-        this.mTextFieldFilter = filter;
-    }
-
-    /**
-     * @return May be null.
-     */
-    public String getMessageText() {
-        return messageText;
-    }
-
-    /**
-     * Sets the text that will be drawn in the text field if no text has been entered.
-     *
-     * @parma messageText May be null.
-     */
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
-    }
-
-    /**
-     * @return Never null, might be an empty string.
-     */
     public String getText() {
 
         StringBuilder sb = new StringBuilder();
@@ -1489,7 +1355,7 @@ public class EditTextField extends EditTextFieldBase {
                 endPos = selectedArea.cursorEnd.x;
             }
 
-            sb.append(line.displayText.substring(startPos, endPos));
+            sb.append(line.displayText, startPos, endPos);
             if (n < selectedArea.cursorEnd.y) {
                 sb.append(Global.br);
             }
@@ -1505,9 +1371,6 @@ public class EditTextField extends EditTextFieldBase {
         return ret;
     }
 
-    /**
-     * Sets the selected text.
-     */
     public void setSelection(int selectionStart, int selectionEnd) {
 
         String aktText = getText();
@@ -1542,9 +1405,6 @@ public class EditTextField extends EditTextFieldBase {
         selectedArea = null;
     }
 
-    /**
-     * Sets the cursor position and clears any selection.
-     */
     public void setCursorPosition(int cursorPosition) {
         if (cursorPosition < 0)
             throw new IllegalArgumentException("cursorPosition must be >= 0");
@@ -1579,9 +1439,6 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
-    /**
-     * becomesFocus recalculates the sizes cause the background changed
-     */
     @Override
     public void becomesFocus() {
         if (becomesFocusListener != null)
@@ -1676,6 +1533,7 @@ public class EditTextField extends EditTextFieldBase {
     public int getLineCount() {
         return lines.size();
     }
+
     public void showLastLines() {
         if (lines.size() < this.maxLineCount) {
             topLine = 0;
@@ -1697,17 +1555,6 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
-    public float getLineHeight() {
-        return this.style.font.getLineHeight();
-    }
-
-    /**
-     * Computes the glyph advances for the given character sequence and stores them in the provided {@link FloatArray}. The float
-     * arrays are cleared. An additional element is added at the end.
-     *
-     * @param glyphAdvances  the glyph advances output array.
-     * @param glyphPositions the glyph positions output array.
-     */
     public void computeGlyphAdvancesAndPositions(CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
         glyphAdvances.clear();
         glyphPositions.clear();
@@ -1751,9 +1598,6 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
-    /**
-     * a long click shows the CopyPastePopUp
-     */
     @Override
     protected void registerPopUpLongClick() {
         this.setOnLongClickListener(new OnClickListener() {
@@ -1821,9 +1665,6 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
-    /**
-     * to store the begin and the end of a selection within a text<br>
-     */
     private class Selection {
         private final Point cursorStart;
         private final Point cursorEnd;

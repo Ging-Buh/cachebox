@@ -58,8 +58,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class EditFieldNotes extends ActivityBase implements KeyboardFocusChangedEvent {
-    FilterSetListViewItem GcVote;
-    Label title;
+    private FilterSetListViewItem GcVote;
+    private Label title;
     private FieldNoteEntry altfieldNote;
     private FieldNoteEntry fieldNote;
     private Button btnOK = null;
@@ -331,13 +331,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
             return true;
         });
         scrollBoxContent.addNext(btnFromNotes);
-
-        Button btnFromLog = new Button(Translation.Get("fromLog"));
-        btnFromLog.setOnClickListener((v, x, y, pointer, button) -> {
-            setupLogText("FromLog");
-            return true;
-        });
-        // scrollBoxContent.addNext(btnFromLog);
 
         Button btnFromFile = new Button(Translation.Get("fromFile"));
         btnFromFile.setOnClickListener((v, x, y, pointer, button) -> {
