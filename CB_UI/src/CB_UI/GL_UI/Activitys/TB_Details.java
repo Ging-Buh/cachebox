@@ -86,10 +86,8 @@ public class TB_Details extends ActivityBase {
         image = new Image(iconRec, "Image", false);
         lblDescription = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         description = new EditTextField(this, "AboutDesc");
-        description.setEditable(false);
         lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         currentGoal = new EditTextField(this, "GoalDesc");
-        currentGoal.setEditable(false);
 
         lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
@@ -156,6 +154,7 @@ public class TB_Details extends ActivityBase {
     private void addScrollBoxContent(Label lbl, EditTextField edt, String text) {
         lbl.setHeight(lbl.getTextHeight());
         scrollBoxContent.addLast(lbl);
+        edt.setEditable(false);
         edt.setWidth(scrollBoxContent.getInnerWidth());
         edt.setWrapType(WrapType.WRAPPED);
         edt.setText(text);
