@@ -23,6 +23,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     private CB_Action_ShowSpoilerView() {
         super("spoiler", MenuID.AID_SHOW_SPOILER);
+        contextMenu = createContextMenu();
     }
 
     public static CB_Action_ShowSpoilerView getInstance() {
@@ -60,13 +61,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
         return SpoilerView.getInstance();
     }
 
-    @Override
-    public boolean hasContextMenu() {
-        return true;
-    }
-
-    @Override
-    public Menu getContextMenu() {
+    private Menu createContextMenu() {
         Menu icm = new Menu("menu_compassView");
         icm.addOnClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {

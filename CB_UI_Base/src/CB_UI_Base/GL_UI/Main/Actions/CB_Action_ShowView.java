@@ -5,12 +5,15 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 
 public abstract class CB_Action_ShowView extends CB_Action {
 
+    protected Menu contextMenu;
+
     public CB_Action_ShowView(String translationId, int id) {
         super(translationId, id);
     }
 
     public CB_Action_ShowView(String translationId, String translationExtension, int id) {
         super(translationId, translationExtension, id);
+        contextMenu = null;
     }
 
     /**
@@ -25,7 +28,7 @@ public abstract class CB_Action_ShowView extends CB_Action {
      * @return if has
      */
     public boolean hasContextMenu() {
-        return getContextMenu() != null;
+        return contextMenu != null;
     }
 
     /**
@@ -34,6 +37,6 @@ public abstract class CB_Action_ShowView extends CB_Action {
      * @return the Menu
      */
     public Menu getContextMenu() {
-        return null;
+        return contextMenu;
     }
 }

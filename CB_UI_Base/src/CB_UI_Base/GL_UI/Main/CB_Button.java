@@ -138,6 +138,7 @@ public class CB_Button extends Button {
             return true;
         }
     };
+
     private final OnClickListener longClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -269,6 +270,7 @@ public class CB_Button extends Button {
 
     private Menu getLongClickMenu() {
         Menu cm = new Menu("Name");
+
         cm.addOnClickListener((v, x, y, pointer, button) -> {
             int mId = ((MenuItem) v).getMenuItemId();
             for (CB_ActionButton ba : mButtonActions) {
@@ -279,7 +281,6 @@ public class CB_Button extends Button {
                         aktActionView = (CB_Action_ShowView) action;
                         setButton(aktActionView.getIcon(), aktActionView.getName());
                     }
-
                     GL.that.closeToast();
                     break;
                 }
@@ -292,7 +293,6 @@ public class CB_Button extends Button {
             if (action == null)
                 continue;
             MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtension());
-            // if (CB_UI_Base_Settings.GestureOn.getValue()) {            }
             if (ba.getGestureDirection() != GestureDirection.None) {
                 String direction;
                 switch (ba.getGestureDirection()) {
@@ -316,9 +316,8 @@ public class CB_Button extends Button {
             Sprite icon = action.getIcon();
             if (icon != null)
                 mi.setIcon(new SpriteDrawable(action.getIcon()));
-            else
-                icon = null;
         }
+
         return cm;
     }
 

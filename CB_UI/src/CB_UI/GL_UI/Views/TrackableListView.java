@@ -11,20 +11,15 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
-import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
@@ -45,7 +40,6 @@ public class TrackableListView extends CB_View_Base {
     private static final int MI_TB_DROPPED = 167;
     private static final int MI_TB_VISIT = 169;
     private static final int MI_TB_NOTE = 171;
-    private static final int MI_QUIT = 24;
     public static TrackableListView that;
     private V_ListView listView;
     private CustomAdapter lvAdapter;
@@ -90,7 +84,7 @@ public class TrackableListView extends CB_View_Base {
         Layout();
     }
 
-    public void reloadTB_List() {
+    private void reloadTB_List() {
         mTB_List = TrackableListDAO.ReadTbList("");
         lvAdapter = new CustomAdapter();
         if (listView != null)
@@ -99,10 +93,7 @@ public class TrackableListView extends CB_View_Base {
 
     private boolean fetchTB(final String TBCode) {
         if (TBCode.length() > 0) {
-            wd = CancelWaitDialog.ShowWait(Translation.Get("Search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-                @Override
-                public void isCanceled() {
-                }
+            wd = CancelWaitDialog.ShowWait(Translation.Get("Search"), DownloadAnimation.GetINSTANCE(), () -> {
             }, new ICancelRunnable() {
                 @Override
                 public void run() {
@@ -123,7 +114,6 @@ public class TrackableListView extends CB_View_Base {
 
                 @Override
                 public boolean doCancel() {
-                    // TODO handle cancel
                     return false;
                 }
             });
@@ -143,12 +133,8 @@ public class TrackableListView extends CB_View_Base {
 
     // Inventar neu laden
     public void RefreshTbList() {
-        wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+        wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), () -> {
 
-            @Override
-            public void isCanceled() {
-
-            }
         }, new ICancelRunnable() {
 
             @Override
@@ -174,32 +160,18 @@ public class TrackableListView extends CB_View_Base {
 
             @Override
             public boolean doCancel() {
-                // TODO handle cancel
                 return false;
             }
         });
     }
 
-    public void LogTBs(String title, final int LogTypeId, final String LogText) {
-        wd = CancelWaitDialog.ShowWait(title, DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+    private void LogTBs(String title, final int LogTypeId, final String LogText) {
+        wd = CancelWaitDialog.ShowWait(title, DownloadAnimation.GetINSTANCE(), () -> {
 
-            @Override
-            public void isCanceled() {
-
-            }
         }, new ICancelRunnable() {
 
             @Override
             public void run() {
-                // todo Dialog for local or direct log
-                    /*
-                        private void LogNow () {
-                        if (rbDirectLog.isChecked())
-                            logOnline();
-                        else
-                            createFieldNote();
-                        }
-                    */
                 for (Trackable tb : mTB_List) {
                     if (uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGcCode(), LogTypeId, new Date(), LogText) != OK) {
                         GL.that.Toast(LastAPIError);
@@ -210,25 +182,20 @@ public class TrackableListView extends CB_View_Base {
 
             @Override
             public boolean doCancel() {
-                // TODO handle cancel
                 return false;
             }
         });
     }
 
     private void searchTB() {
-        StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("InputTB_Code"), Translation.Get("SearchTB"), "", new GL_MsgBox.OnMsgBoxClickListener() {
-            @Override
-            public boolean onClick(int which, Object data) {
-                switch (which) {
-                    case 1: // ok
-                        fetchTB(StringInputBox.editText.getText());
-                        break;
-                    case 3: // cancel
-                        break;
-                }
-                return true;
+        StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("InputTB_Code"), Translation.Get("SearchTB"), "", (which, data) -> {
+            switch (which) {
+                case 1: // ok
+                    return fetchTB(StringInputBox.editText.getText());
+                case 3: // cancel
+                    break;
             }
+            return true;
         });
     }
 
@@ -252,6 +219,8 @@ public class TrackableListView extends CB_View_Base {
                 case MI_TB_NOTE:
                     LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
                     break;
+                default:
+                    return false;
             }
             return true;
         });
@@ -275,14 +244,11 @@ public class TrackableListView extends CB_View_Base {
         @Override
         public ListViewItemBase getView(final int position) {
             TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, mTB_List.get(position));
-            v.setOnClickListener(new OnClickListener() {
-                @Override
-                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    if (TB_Details.that == null)
-                        new TB_Details();
-                    TB_Details.that.Show(mTB_List.get(position));
-                    return true;
-                }
+            v.setOnClickListener((v1, x, y, pointer, button) -> {
+                if (TB_Details.that == null)
+                    new TB_Details();
+                TB_Details.that.Show(mTB_List.get(position));
+                return true;
             });
 
             return v;
