@@ -18,6 +18,7 @@ package CB_Core.Types;
 import CB_Core.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Utils.Log.Log;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.MoveableList;
 
@@ -110,20 +111,27 @@ public class CacheList extends MoveableList<Cache> {
                 nextCache = this.get(i);
                 if (!nextCache.isArchived()) {
                     if (nextCache.isAvailable()) {
-                        if (!nextCache.isFound())
-                        // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht)
-                        {
+                        if (!nextCache.isFound()) {
+                            // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht)
                             if (!nextCache.ImTheOwner()) {
                                 if ((nextCache.Type == CacheTypes.Event) || (nextCache.Type == CacheTypes.MegaEvent) || (nextCache.Type == CacheTypes.CITO) || (nextCache.Type == CacheTypes.Giga)) {
                                     Calendar dateHidden = GregorianCalendar.getInstance();
                                     Calendar today = GregorianCalendar.getInstance();
-                                    dateHidden.setTime(nextCache.getDateHidden());
-                                    if (("" + today.get(Calendar.DAY_OF_MONTH) + today.get(Calendar.MONTH) + today.get(Calendar.YEAR))
-                                            .equals("" + dateHidden.get(Calendar.DAY_OF_MONTH) + dateHidden.get(Calendar.MONTH) + dateHidden.get(Calendar.YEAR))) {
-                                        break;
+                                    try {
+                                        dateHidden.setTime(nextCache.getDateHidden());
+                                        if (("" + today.get(Calendar.DAY_OF_MONTH) + today.get(Calendar.MONTH) + today.get(Calendar.YEAR))
+                                                .equals("" + dateHidden.get(Calendar.DAY_OF_MONTH) + dateHidden.get(Calendar.MONTH) + dateHidden.get(Calendar.YEAR))) {
+                                            break;
+                                        }
+                                    } catch (Exception ex) {
+                                        Log.err("CacheList", nextCache.getGcCode() + " Hidden:" + nextCache.getDateHidden());
                                     }
                                 } else {
-                                    if (nextCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+                                    if (nextCache.Type == CacheTypes.Mystery) {
+                                        if (nextCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+                                            break;
+                                        }
+                                    } else {
                                         break;
                                     }
                                 }
