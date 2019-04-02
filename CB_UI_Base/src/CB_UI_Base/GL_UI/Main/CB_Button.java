@@ -182,7 +182,7 @@ public class CB_Button extends Button {
         this.rememberLastAction = rememberLastAction;
         mButtonActions = new ArrayList<>();
         setOnClickListener(onClickListener);
-        setOnLongClickListener(longClickListener);
+        // setOnLongClickListener(longClickListener);
         drawableNormal = new SpriteDrawable(getSprite("button"));
         drawablePressed = new SpriteDrawable(getSprite("btn-pressed"));
         drawableDisabled = null;
@@ -197,7 +197,7 @@ public class CB_Button extends Button {
         this.rememberLastAction = rememberLastAction;
         mButtonActions = new ArrayList<>();
         setOnClickListener(onClickListener);
-        setOnLongClickListener(longClickListener);
+        // setOnLongClickListener(longClickListener);
         setButtonSprites(sprites);
         isFiltered = false;
         vAlignment = Label.VAlignment.BOTTOM;
