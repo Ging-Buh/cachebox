@@ -18,6 +18,9 @@ package CB_UI;
 import CB_Core.CB_Core_Settings;
 import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
@@ -47,7 +50,8 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
     protected void acceptChanges() {
         if (settings.WriteToDB()) {
             //TODO change to Dialog for restart now
-            GL.that.Toast(Translation.Get("SettingChangesNeedRestart"));
+            // GL.that.Toast(Translation.Get("SettingChangesNeedRestart"));
+            GL_MsgBox.Show(Translation.Get("Desc_SettingChangesNeedRestart"), Translation.Get("SettingChangesNeedRestart"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
         }
     }
 

@@ -23,6 +23,13 @@ public class SettingBool extends SettingBase<Boolean> {
         this.value = defaultValue;
     }
 
+    public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needRestart) {
+        super(name, category, modus, StoreType, usage);
+        this.defaultValue = defaultValue;
+        this.value = defaultValue;
+        if (needRestart) setNeedRestart();
+    }
+
     @Override
     public String toDBString() {
         return String.valueOf(value);

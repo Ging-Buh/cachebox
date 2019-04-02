@@ -48,8 +48,8 @@ public class TrackListView extends V_ListView {
 
     @Override
     public void onHide() {
-        this.dispose();
-        that = null;
+        // this.dispose();
+        // that = null;
     }
 
     @Override

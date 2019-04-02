@@ -35,11 +35,11 @@ public interface CB_UI_Base_Settings {
 
     SettingFolder SkinFolder = new SettingFolder("SkinFolder", Folder, DEVELOPER, "default", Global, ACB, false);
 
-    SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, true, Global, ACB);
-    SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, true, Global, ACB);
-    SettingBool GestureOn = new SettingBool("GestureOn", Skin, EXPERT, true, Global, ACB);
+    SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, true, Global, ACB, true);
+    SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, true, Global, ACB, true);
+    SettingBool GestureOn = new SettingBool("GestureOn", Skin, EXPERT, true, Global, ACB,true);
     SettingBool useMipMap = new SettingBool("useMipMap", Skin, DEVELOPER, false, Global, ACB);
-    SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", Skin, DEVELOPER, true, Global, ACB);
+    SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", Skin, DEVELOPER, true, Global, ACB, false);
     SettingInt ambientTime = new SettingInt("ambientTime", Skin, DEVELOPER, 10, Global, ACB);
     SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", Skin, DEVELOPER, new HSV_Color(0.2f, 1f, 0.2f, 1f), Global, ACB);
 

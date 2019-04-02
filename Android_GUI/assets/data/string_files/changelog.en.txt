@@ -3,6 +3,15 @@
 • Fixes = *
 • Deletions = -
 
+Changes up to version 3346:
+    + Cachetype filter add buttons for all / none
+	+ Solver add letters crosstotal sum (AlphaCrossTotalSum)
+	+ Setting or removing favorites for selected caches
+	+ E-Mail to the owner of the selected cache
+	+ Save/show corrected coordinates for all cachetypes in final or cache
+	~ Description for attributes show if clicked there in cache descrition view
+	~ Found date now stays correct on upload to drafts
+
 Changes up to version 3294:
      + Upload corrected coordinates in the waypoint menu
      + State and country can be edited (Edit Cache).

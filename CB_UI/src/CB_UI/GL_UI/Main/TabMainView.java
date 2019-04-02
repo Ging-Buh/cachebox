@@ -284,8 +284,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         CB_Action_ShowActivity actionNavigateTo = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionNavigateTo, false, GestureDirection.Down));
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left));
-        if (GlobalCore.isTestVersion())
-            mMapButtonOnLeftTab.addAction(new CB_ActionButton(new CB_Action_ShowTestView(), false));
 
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowFieldNotesView.getInstance(), Config.ShowFieldnotesAsDefaultView.getValue(), GestureDirection.Up));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left));
