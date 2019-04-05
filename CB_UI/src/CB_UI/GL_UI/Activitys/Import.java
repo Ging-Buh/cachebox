@@ -15,7 +15,6 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.GroundspeakAPI.*;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
@@ -217,8 +216,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 if (!isPremiumMember()) {
                     PQ_LINE_ACTIVE = false;
                 }
-            }
-            else {
+            } else {
                 GL_MsgBox.Show(Translation.Get("Desc_ImportPQsFromGeocachingCom"), Translation.Get("apiKeyInvalid"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
             }
         }

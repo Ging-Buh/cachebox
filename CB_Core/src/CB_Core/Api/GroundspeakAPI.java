@@ -618,7 +618,7 @@ public class GroundspeakAPI {
             try {
                 Response<JSONArray> r = getNetz()
                         .get(getUrl(1, "geocaches/" + cacheCode + "/images"))
-                        .param("fields", "url,description")
+                        .param("fields", "url,description,referenceCode")
                         .param("skip", skip)
                         .param("take", take)
                         .ensureSuccess()
@@ -1351,10 +1351,11 @@ public class GroundspeakAPI {
                 JSONObject jImage = (JSONObject) jImages.get(ii);
                 String Description = jImage.optString("description", "");
                 String uri = jImage.optString("url", "");
+                String referenceCode = jImage.optString("referenceCode", "GC");
+                boolean isCacheImage = referenceCode.startsWith("GC");
 
                 if (uri.length() > 0) {
-                    // ignore log images (in API 1.0 logImages are no longer contained)
-                    if (!uri.contains("/cache/log")) {
+                    if (isCacheImage) {
                         ImageEntry imageEntry = new ImageEntry();
                         imageEntry.CacheId = Cache.GenerateCacheId(GcCode);
                         imageEntry.Description = Description;

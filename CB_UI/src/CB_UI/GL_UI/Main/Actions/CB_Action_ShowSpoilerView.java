@@ -23,14 +23,13 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     private CB_Action_ShowSpoilerView() {
         super("spoiler", MenuID.AID_SHOW_SPOILER);
-        contextMenu = createContextMenu();
+        // contextMenu = createContextMenu();
     }
 
     public static CB_Action_ShowSpoilerView getInstance() {
         if (that == null) that = new CB_Action_ShowSpoilerView();
         return that;
     }
-
 
     @Override
     public void Execute() {
@@ -59,6 +58,16 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     @Override
     public CB_View_Base getView() {
         return SpoilerView.getInstance();
+    }
+
+    @Override
+    public boolean hasContextMenu() {
+        return true;
+    }
+
+    @Override
+    public Menu getContextMenu() {
+        return createContextMenu();
     }
 
     private Menu createContextMenu() {
