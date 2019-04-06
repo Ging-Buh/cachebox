@@ -27,6 +27,9 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
@@ -209,16 +212,17 @@ public class DescriptionView extends CB_View_Base {
 
     private void showDownloadButton() {
 
-        if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0) {
-            new Thread(() -> {
-                GroundspeakAPI.fetchMyCacheLimits();
-                if (GroundspeakAPI.APIError > 0) {
-                    GL.that.Toast(GroundspeakAPI.LastAPIError);
-                    return;
+        if (fetchMyUserInfos().remaining <= 0) {
+            fetchMyCacheLimits();
+            if (fetchMyUserInfos().remaining <= 0) {
+                if (isPremiumMember()) {
+                    GL_MsgBox.Show(Translation.Get("LiveDescLimit"), Translation.Get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                 }
-                resetUi();
-                showDownloadButton(); // make it me again!!!
-            }).start();
+                else {
+                    GL_MsgBox.Show(Translation.Get("LiveDescLimitBasic"), Translation.Get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                }
+                return;
+            }
         }
 
         float contentWidth = this.getWidth() * 0.95f;
