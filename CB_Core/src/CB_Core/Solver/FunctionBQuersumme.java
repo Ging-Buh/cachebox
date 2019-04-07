@@ -15,18 +15,18 @@ public class FunctionBQuersumme extends Function{
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncAlphaQSum".hashCode());
+        return Translation.get("solverFuncAlphaQSum".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescAlphaQSum".hashCode());
+        return Translation.get("solverDescAlphaQSum".hashCode());
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaQSum");
+            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaQSum");
         }
         int result = 0;
         if (parameter[0].length() == 0)

@@ -35,7 +35,7 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -115,14 +115,14 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
     }
 
     private void addControls() {
-        btnSolve = new Button(Translation.Get("Solve"));
+        btnSolve = new Button(Translation.get("Solve"));
         btnSolve.setOnClickListener((v, x, y, pointer, button) -> {
             solve();
             return true;
         });
         this.addChild(btnSolve);
 
-        btnFunct = new Button(Translation.Get("Funct."));
+        btnFunct = new Button(Translation.get("Funct."));
         btnFunct.setOnClickListener((v, x, y, pointer, button) -> {
             SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, function -> {
                 // ausgewählte Funktion verarbeiten!
@@ -164,7 +164,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
         });
         this.addChild(btnFunct);
 
-        btnSelect = new Button(Translation.Get("Select."));
+        btnSelect = new Button(Translation.get("Select."));
         btnSelect.setOnClickListener((v, x, y, pointer, button) -> {
             GL.that.setFocusedEditTextField(null);
             return true;
@@ -173,11 +173,11 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
         btnSelect.setVisible(false);
         this.addChild(btnSelect);
 
-        btnInputWindow = new Button(Translation.Get("LeftWindow"));
+        btnInputWindow = new Button(Translation.get("LeftWindow"));
         this.addChild(btnInputWindow);
-        btnBothWindow = new Button(Translation.Get("BothWindow"));
+        btnBothWindow = new Button(Translation.get("BothWindow"));
         this.addChild(btnBothWindow);
-        btnResultWindow = new Button(Translation.Get("RightWindow"));
+        btnResultWindow = new Button(Translation.get("RightWindow"));
         this.addChild(btnResultWindow);
 
         edInput = new EditTextField(this, "edInput");
@@ -310,7 +310,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
                 message.append(s);
             }
 
-            GL_MsgBox.Show(Translation.Get("insertVars") + "\n" + message, Translation.Get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, (which, data) -> {
+            MessageBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, (which, data) -> {
                 {
                     // Behandle das ergebniss
                     if (which == 1) {/* User clicked OK so do some stuff */

@@ -180,13 +180,13 @@ public class MessageBox extends android.app.Dialog {
         switch (dialogId) {
             case DialogID.MSG_BOX_1:
                 MessageBox.Builder customBuilder = new MessageBox.Builder(getActivity());
-                customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listener);
+                customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
                 dialog = customBuilder.create();
                 break;
 
             case DialogID.MSG_BOX_2:
                 MessageBox.Builder customBuilder2 = new MessageBox.Builder(getActivity());
-                customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listener);
+                customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
                 dialog = customBuilder2.create();
                 break;
 
@@ -228,29 +228,29 @@ public class MessageBox extends android.app.Dialog {
     private static void setButtonCaptions(Bundle b) {
         int button = b.getInt("buttons");
         if (button == 0) {
-            button1 = Translation.Get("abort");
-            button2 = Translation.Get("retry");
-            button3 = Translation.Get("ignore");
+            button1 = Translation.get("abort");
+            button2 = Translation.get("retry");
+            button3 = Translation.get("ignore");
         } else if (button == 1) {
-            button1 = Translation.Get("ok");
+            button1 = Translation.get("ok");
             button2 = "";
             button3 = "";
         } else if (button == 2) {
-            button1 = Translation.Get("ok");
+            button1 = Translation.get("ok");
             button2 = "";
-            button3 = Translation.Get("cancel");
+            button3 = Translation.get("cancel");
         } else if (button == 3) {
-            button1 = Translation.Get("retry");
+            button1 = Translation.get("retry");
             button2 = "";
-            button3 = Translation.Get("cancel");
+            button3 = Translation.get("cancel");
         } else if (button == 4) {
-            button1 = Translation.Get("yes");
+            button1 = Translation.get("yes");
             button2 = "";
-            button3 = Translation.Get("no");
+            button3 = Translation.get("no");
         } else if (button == 5) {
-            button1 = Translation.Get("yes");
-            button2 = Translation.Get("no");
-            button3 = Translation.Get("cancel");
+            button1 = Translation.get("yes");
+            button2 = Translation.get("no");
+            button3 = Translation.get("cancel");
         }
     }
 

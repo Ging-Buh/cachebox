@@ -74,7 +74,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
         iniCommentLabel();
 
         if (this.fieldnote == null) {
-            Button btnLoadMore = new Button(Translation.Get("LoadMore"));
+            Button btnLoadMore = new Button(Translation.get("LoadMore"));
             btnLoadMore.setWidth(this.getWidth());
             btnLoadMore.setOnClickListener(new OnClickListener() {
 

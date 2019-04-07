@@ -200,8 +200,8 @@ public class NumPad extends CB_View_Base {
 
         btn_Del.setText("Del");
         btn_Bck.setText("Back");
-        btn_OK.setText(Translation.Get("ok"));
-        btn_Cancel.setText(Translation.Get("cancel"));
+        btn_OK.setText(Translation.get("ok"));
+        btn_Cancel.setText(Translation.get("cancel"));
         btn_left.setText("<");
         btn_right.setText(">");
 

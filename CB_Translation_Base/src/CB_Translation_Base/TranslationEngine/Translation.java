@@ -92,10 +92,10 @@ public class Translation {
      *                 second... Get("abc {1} def {3} ghi {2}", "123", "456", "789"); Result: "abc 123 def 789 ghi 456"
      * @return String
      */
-    public static String Get(String StringId, String... params) {
+    public static String get(String StringId, String... params) {
         if (that == null)
             return "Translation not initial";
-        return that.get(StringId, params);
+        return that.getTranslation(StringId, params);
     }
 
     /**
@@ -110,10 +110,10 @@ public class Translation {
      *                 Result: "abc 123 def 789 ghi 456"<br>
      * @return String
      */
-    public static String Get(int hashCode, String... params) {
+    public static String get(int hashCode, String... params) {
         if (that == null)
             return "Translation not initial";
-        return that.get(hashCode, params);
+        return that.getTranslation(hashCode, params);
     }
 
     /**
@@ -274,7 +274,7 @@ public class Translation {
             ReplacedRead = ReplacedRead.replace("\\\"", "\"");
             if (!Default) {
                 // dont add if added on Def
-                String contains = Get(readID);
+                String contains = get(readID);
                 if (contains.startsWith("$ID: "))
                     List.add(new Translations(readID, ReplacedRead));
             } else {
@@ -283,8 +283,8 @@ public class Translation {
         }
     }
 
-    private String get(String StringId, String... params) {
-        String retString = get(StringId.hashCode(), params);
+    private String getTranslation(String StringId, String... params) {
+        String retString = getTranslation(StringId.hashCode(), params);
         if (retString == "") {
             retString = "$ID: " + StringId;// "No translation found";
 
@@ -298,7 +298,7 @@ public class Translation {
         return retString;
     }
 
-    private String get(int Id, String... params) {
+    private String getTranslation(int Id, String... params) {
 
         if (mStringList == null || mRefTranslation == null)
             return "Translation  not initial";
@@ -337,7 +337,7 @@ public class Translation {
         int i = 1;
         for (String param : params) {
             if ((param.length() >= 1) && (param.charAt(0) == '$'))
-                param = Get(param.substring(1));
+                param = get(param.substring(1));
             retString = retString.replace("{" + i + "}", param);
             i++;
         }

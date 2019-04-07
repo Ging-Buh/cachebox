@@ -11,7 +11,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
@@ -118,7 +118,7 @@ public class CB_Action_chkState extends CB_Action {
         @Override
         public void RunnableIsReady(boolean canceld) {
             Log.debug(sKlasse, "chkState ready");
-            String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
+            String sCanceld = canceld ? Translation.get("isCanceld") + GlobalCore.br : "";
 
             if (result != -1) {
 
@@ -132,7 +132,7 @@ public class CB_Action_chkState extends CB_Action {
 
                 CacheListChangedEventList.Call();
                 synchronized (Database.Data.cacheList) {
-                    GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.Get("chkState"), MessageBoxIcon.None);
+                    MessageBox.show(sCanceld + Translation.get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.get("chkState"), MessageBoxIcon.None);
                 }
 
             }
@@ -156,6 +156,6 @@ public class CB_Action_chkState extends CB_Action {
     @Override
     public void Execute() {
         Log.debug(sKlasse, "Execute ProgressDialog");
-        pd = ProgressDialog.Show(Translation.Get("chkState"), DownloadAnimation.GetINSTANCE(), ChkStatRunnable);
+        pd = ProgressDialog.Show(Translation.get("chkState"), DownloadAnimation.GetINSTANCE(), ChkStatRunnable);
     }
 }

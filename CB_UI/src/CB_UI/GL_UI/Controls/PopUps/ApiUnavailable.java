@@ -43,7 +43,7 @@ public class ApiUnavailable extends Toast {
         this.mTextField.setZeroPos();
         this.mTextField.setWidth(this.getWidth() * 0.8f);
         this.mTextField.setX(this.getHalfWidth() - mTextField.getHalfWidth());
-        this.setWrappedText(Translation.Get("API-offline"));
+        this.setWrappedText(Translation.get("API-offline"));
 
         this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon", false);
         this.mIcon.setSprite(Sprites.getSprite("api-offline"), false);

@@ -34,7 +34,7 @@ public class DeleteDialog extends ButtonDialog {
     private CancelWaitDialog wd;
 
     public DeleteDialog() {
-        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
+        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
 
         msgBoxContentSize = getContentSize();
 
@@ -50,9 +50,9 @@ public class DeleteDialog extends ButtonDialog {
         btDelArchived.setImage(Sprites.getSpriteDrawable("delete-archived"));
         btDelFounds.setImage(Sprites.getSpriteDrawable("delete-founds"));
 
-        lblDelFilter = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
-        lblDelArchived = new Label(Translation.Get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
-        lblDelFounds = new Label(Translation.Get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
+        lblDelFilter = new Label(Translation.get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
+        lblDelArchived = new Label(Translation.get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
+        lblDelFounds = new Label(Translation.get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 
         Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
         box.initRow(BOTTOMUP);
@@ -70,7 +70,7 @@ public class DeleteDialog extends ButtonDialog {
         btDelFilter.setOnClickListener((v, x, y, pointer, button) -> {
             close();
 
-            wd = CancelWaitDialog.ShowWait(Translation.Get("DelActFilter"), () -> {
+            wd = CancelWaitDialog.ShowWait(Translation.get("DelActFilter"), () -> {
 
             }, new ICancelRunnable() {
 
@@ -87,7 +87,7 @@ public class DeleteDialog extends ButtonDialog {
                     FilterInstances.setLastFilter(new FilterProperties());
                     EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());// all Caches
 
-                    String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
+                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
                     GL.that.Toast(msg);
                 }
 
@@ -106,7 +106,7 @@ public class DeleteDialog extends ButtonDialog {
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 close();
 
-                wd = CancelWaitDialog.ShowWait(Translation.Get("DelArchived"), new IcancelListener() {
+                wd = CancelWaitDialog.ShowWait(Translation.get("DelArchived"), new IcancelListener() {
 
                     @Override
                     public void isCanceled() {
@@ -125,7 +125,7 @@ public class DeleteDialog extends ButtonDialog {
 
                         EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
 
-                        String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
+                        String msg = Translation.get("DeletedCaches", String.valueOf(nun));
                         GL.that.Toast(msg);
                     }
 
@@ -145,7 +145,7 @@ public class DeleteDialog extends ButtonDialog {
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 close();
 
-                wd = CancelWaitDialog.ShowWait(Translation.Get("DelFound"), new IcancelListener() {
+                wd = CancelWaitDialog.ShowWait(Translation.get("DelFound"), new IcancelListener() {
 
                     @Override
                     public void isCanceled() {
@@ -163,7 +163,7 @@ public class DeleteDialog extends ButtonDialog {
 
                         EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
 
-                        String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
+                        String msg = Translation.get("DeletedCaches", String.valueOf(nun));
                         GL.that.Toast(msg);
                     }
 

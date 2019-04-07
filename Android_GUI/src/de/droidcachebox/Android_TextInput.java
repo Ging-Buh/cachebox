@@ -45,12 +45,12 @@ public class Android_TextInput implements TextInputInterface {
             // builder.setView(input);
             builder.setContentView(input);
             // Set up the buttons
-            builder.setPositiveButton(Translation.Get("ok"), (dialog, which) -> {
+            builder.setPositiveButton(Translation.get("ok"), (dialog, which) -> {
                         editTextField.setText(input.getText().toString());
                         editTextField.setFocus(false);
                     }
             );
-            builder.setNegativeButton(Translation.Get("cancel"), (dialog, which) -> {
+            builder.setNegativeButton(Translation.get("cancel"), (dialog, which) -> {
                 editTextField.setFocus(false);
                 dialog.cancel();
             });

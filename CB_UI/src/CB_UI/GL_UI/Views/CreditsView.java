@@ -165,7 +165,7 @@ public class CreditsView extends CB_View_Base {
     }
 
     private void captioned(String title) {
-        title = Translation.Get(title);
+        title = Translation.get(title);
         Box box = new Box(new CB_RectF(0, 0, this.getWidth(), lineHeight * 1.2f), "");
         Label label = new Label(this.name + " label", box, title + ":");
         label.setFont(Fonts.getBig());

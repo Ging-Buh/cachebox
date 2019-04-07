@@ -732,7 +732,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
         mLongitude = UnitFormatter.FormatLongitudeDM(location.getLongitude());
 
         String br = "\n";
-        String Text = Translation.Get("current") + " " + mLatitude + " " + mLongitude + br + Translation.Get("alt") + " " + mAlt + br + Translation.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + Translation.Get("sats") + " " + mSats;
+        String Text = Translation.get("current") + " " + mLatitude + " " + mLongitude + br + Translation.get("alt") + " " + mAlt + br + Translation.get("accuracy") + "  +/- " + mAccuracy + "m" + br + Translation.get("sats") + " " + mSats;
 
         if (GPSLayoutTextPaint == null) {
             GPSLayoutTextPaint = new TextPaint();

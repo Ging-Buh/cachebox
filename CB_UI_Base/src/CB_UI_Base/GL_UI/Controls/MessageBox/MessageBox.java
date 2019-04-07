@@ -19,7 +19,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.*;
@@ -31,11 +30,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class GL_MsgBox extends Dialog {
+public class MessageBox extends Dialog {
     public static final int BUTTON_POSITIVE = 1;
     public static final int BUTTON_NEUTRAL = 2;
     public static final int BUTTON_NEGATIVE = 3;
-    public static GL_MsgBox that;
+    public static MessageBox that;
     private OnMsgBoxClickListener mMsgBoxClickListener;
     public OnClickListener positiveButtonClickListener;
     public OnClickListener neutralButtonClickListener;
@@ -48,7 +47,7 @@ public class GL_MsgBox extends Dialog {
     protected ChkBox chkRemember;
     private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
-    public GL_MsgBox(Size size, String name) {
+    public MessageBox(Size size, String name) {
         super(size.getBounds().asFloat(), name);
         that = this;
     }
@@ -95,9 +94,9 @@ public class GL_MsgBox extends Dialog {
         initRow(BOTTOMUP, margin);
         setBorders(margin, margin);
         if (anzahl > 0 ) {
-             left = Translation.Get(left);
-             if (anzahl > 1 && !StringH.isEmpty(right)) right = Translation.Get(right);
-             if (anzahl > 2) middle = Translation.Get(middle);
+             left = Translation.get(left);
+             if (anzahl > 1 && !StringH.isEmpty(right)) right = Translation.get(right);
+             if (anzahl > 2) middle = Translation.get(middle);
         }
         else {
             anzahl = -1  * anzahl;
@@ -138,7 +137,7 @@ public class GL_MsgBox extends Dialog {
             addLast(lbl);
 
             chkRemember.setChecked(rememberSetting.getValue());
-            lbl.setText(Translation.Get("remember"));
+            lbl.setText(Translation.get("remember"));
         }
 
         setFooterHeight(getHeightFromBottom());
@@ -212,7 +211,7 @@ public class GL_MsgBox extends Dialog {
 
     @Override
     public void dispose() {
-        //Log.debug(log, "Dispose GL_MsgBox=> " + name);
+        //Log.debug(log, "Dispose MessageBox=> " + name);
 
         if (FooterItems != null) {
             for (CB_View_Base t : FooterItems) {
@@ -255,8 +254,8 @@ public class GL_MsgBox extends Dialog {
     // the class ends here
     //==========================================================================================================================================================================
 
-    public static GL_MsgBox Show(String msg) {
-        GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
+    public static MessageBox show(String msg) {
+        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
         msgBox.addButtons(MessageBoxButtons.OK);
         msgBox.label = new Label(msgBox.getContentSize().getBounds());
         msgBox.label.setZeroPos(); // .getTextHeight()
@@ -267,23 +266,23 @@ public class GL_MsgBox extends Dialog {
         return msgBox;
     }
 
-    public static GL_MsgBox Show(String msg, OnMsgBoxClickListener Listener) {
-        return Show(msg, "", Listener);
+    public static MessageBox show(String msg, OnMsgBoxClickListener Listener) {
+        return show(msg, "", Listener);
     }
 
-    public static GL_MsgBox Show(String msg, String title, OnMsgBoxClickListener Listener) {
-        return Show(msg, title, MessageBoxButtons.OK, Listener, null);
+    public static MessageBox show(String msg, String title, OnMsgBoxClickListener Listener) {
+        return show(msg, title, MessageBoxButtons.OK, Listener, null);
     }
 
-    public static GL_MsgBox Show(String msg, String title, MessageBoxIcon icon) {
-        return Show(msg, title, MessageBoxButtons.OK, icon, null, null);
+    public static MessageBox show(String msg, String title, MessageBoxIcon icon) {
+        return show(msg, title, MessageBoxButtons.OK, icon, null, null);
     }
 
-    public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
-        return Show(msg, title, buttons, icon, Listener, null);
+    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
+        return show(msg, title, buttons, icon, Listener, null);
     }
 
-    public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
+    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
             // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
@@ -294,7 +293,7 @@ public class GL_MsgBox extends Dialog {
             return null;
         }
 
-        GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)), "MsgBox" + title);
+        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)), "MsgBox" + title);
         msgBox.rememberSetting = remember;
         msgBox.mMsgBoxClickListener = Listener;
         msgBox.addButtons(buttons);
@@ -316,7 +315,7 @@ public class GL_MsgBox extends Dialog {
         return msgBox;
     }
 
-    public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
+    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
             // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
@@ -330,7 +329,7 @@ public class GL_MsgBox extends Dialog {
         // nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
         // !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
         Dialog.margin = 5;
-        final GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
+        final MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
 
         msgBox.rememberSetting = remember;
         msgBox.mMsgBoxClickListener = Listener;

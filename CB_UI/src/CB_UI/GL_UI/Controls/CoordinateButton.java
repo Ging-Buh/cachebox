@@ -169,7 +169,7 @@ public class CoordinateButton extends Button implements ICopyPaste {
                 }
                 return content;
             } else {
-                return Translation.Get("cantPaste") + GlobalCore.br + content;
+                return Translation.get("cantPaste") + GlobalCore.br + content;
             }
         } else
             return null;

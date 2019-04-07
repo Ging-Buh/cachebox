@@ -87,8 +87,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         // add to this
         // createHeaderLine();
-        bOK = new Button(Translation.Get("import"));
-        bCancel = new Button(Translation.Get("cancel"));
+        bOK = new Button(Translation.get("import"));
+        bCancel = new Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
         this.addNext(bOK);
         this.addLast(bCancel);
@@ -116,7 +116,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createHeaderLine() {
-        lblHeader = new Label(Translation.Get("importCachesOverPosition"));
+        lblHeader = new Label(Translation.get("importCachesOverPosition"));
         lblHeader.setFont(Fonts.getBig()).setHAlignment(Label.HAlignment.CENTER);
         float lineHeight = lblHeader.getHeight();
         gsLogo = new Image(0, 0, lineHeight, lineHeight, "", false);
@@ -128,7 +128,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createRadiusLine() {
-        String sRadius = Translation.Get("Radius");
+        String sRadius = Translation.get("Radius");
         String sEinheit = Config.ImperialUnits.getValue() ? "mi" : "km";
 
         float wRadius = Fonts.Measure(sRadius).width;
@@ -138,7 +138,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         lblRadius.setWidth(wRadius);
         box.addNext(lblRadius, FIXED);
 
-        Radius = new EditTextField(this, "*" + Translation.Get("Radius"));
+        Radius = new EditTextField(this, "*" + Translation.get("Radius"));
         Radius.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addNext(Radius);
 
@@ -155,45 +155,45 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createCategoryLine() {
-        lblCategory = new Label(Translation.Get("category"));
+        lblCategory = new Label(Translation.get("category"));
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
         box.addNext(lblCategory, FIXED);
-        edtCategory = new EditTextField(this, "*" + Translation.Get("category"));
+        edtCategory = new EditTextField(this, "*" + Translation.get("category"));
         box.addLast(edtCategory);
     }
 
     private void createImportLimitLine() {
-        lblImportLimit = new Label(Translation.Get("ImportLimit"));
+        lblImportLimit = new Label(Translation.get("ImportLimit"));
         lblImportLimit.setWidth(Fonts.Measure(lblImportLimit.getText()).width);
         box.addNext(lblImportLimit, FIXED);
-        edtImportLimit = new EditTextField(this, "*" + Translation.Get("ImportLimit"));
+        edtImportLimit = new EditTextField(this, "*" + Translation.get("ImportLimit"));
         edtImportLimit.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addLast(edtImportLimit);
     }
 
     private void createCacheNameLine() {
-        lblCacheName = new Label(Translation.Get("Title"));
+        lblCacheName = new Label(Translation.get("Title"));
         lblCacheName.setWidth(Fonts.Measure(lblCacheName.getText()).width);
         box.addNext(lblCacheName, FIXED);
-        edtCacheName = new EditTextField(this, "*" + Translation.Get("Title"));
+        edtCacheName = new EditTextField(this, "*" + Translation.get("Title"));
         box.addLast(edtCacheName);
     }
 
     private void createOwnerLine() {
-        lblOwner = new Label(Translation.Get("Owner"));
+        lblOwner = new Label(Translation.get("Owner"));
         lblOwner.setWidth(Fonts.Measure(lblOwner.getText()).width);
         box.addNext(lblOwner, FIXED);
-        edtOwner = new EditTextField(this, "*" + Translation.Get("Owner"));
+        edtOwner = new EditTextField(this, "*" + Translation.get("Owner"));
         box.addLast(edtOwner);
     }
 
     private void createPublishedLine() {
-        lblPublished = new Label(Translation.Get("published"));
+        lblPublished = new Label(Translation.get("published"));
         box.addNext(lblPublished);
         btnBeforeAfterEqual = new Button("<=");
         btnBeforeAfterEqual.setWidth(Fonts.Measure(". <= .").width);
         box.addNext(btnBeforeAfterEqual, FIXED);
-        edtDate = new EditTextField(this, "*" + Translation.Get("published"));
+        edtDate = new EditTextField(this, "*" + Translation.get("published"));
         edtDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         edtDate.setWidth(Fonts.Measure(". 2018-12-31 .").width);
         edtDate.setText(simpleDateFormat.format(new Date()));
@@ -204,17 +204,17 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         checkBoxOnlyAvailable = new ChkBox("");
         box.addNext(checkBoxOnlyAvailable, FIXED);
-        lblOnlyAvailable = new Label(Translation.Get("SearchOnlyAvailable"));
+        lblOnlyAvailable = new Label(Translation.get("SearchOnlyAvailable"));
         box.addLast(lblOnlyAvailable);
 
         checkBoxExcludeHides = new ChkBox("");
         box.addNext(checkBoxExcludeHides, FIXED);
-        lblExcludeHides = new Label(Translation.Get("SearchWithoutOwns"));
+        lblExcludeHides = new Label(Translation.get("SearchWithoutOwns"));
         box.addLast(lblExcludeHides);
 
         checkBoxExcludeFounds = new ChkBox("");
         box.addNext(checkBoxExcludeFounds, FIXED);
-        lblExcludeFounds = new Label(Translation.Get("SearchWithoutFounds"));
+        lblExcludeFounds = new Label(Translation.get("SearchWithoutFounds"));
         box.addLast(lblExcludeFounds);
 
     }
@@ -227,8 +227,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         tglBtnGPS.setFont(Fonts.getSmall());
         tglBtnMap.setFont(Fonts.getSmall());
 
-        tglBtnGPS.initialOn_Off_ToggleStates(Translation.Get("FromGps"), Translation.Get("FromGps"));
-        tglBtnMap.initialOn_Off_ToggleStates(Translation.Get("FromMap"), Translation.Get("FromMap"));
+        tglBtnGPS.initialOn_Off_ToggleStates(Translation.get("FromGps"), Translation.get("FromGps"));
+        tglBtnMap.initialOn_Off_ToggleStates(Translation.get("FromMap"), Translation.get("FromMap"));
 
         box.addNext(tglBtnGPS);
         box.addLast(tglBtnMap);

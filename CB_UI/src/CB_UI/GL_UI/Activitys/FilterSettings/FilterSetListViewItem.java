@@ -165,7 +165,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
                             valueString = String.valueOf(val);
                             valueOffsetX = MARGIN * 4;
                         } else {
-                            valueString = Translation.Get("DoesntMatter");
+                            valueString = Translation.get("DoesntMatter");
                             valueOffsetX = this.getHeight() * 2;
                         }
                     }
@@ -478,14 +478,14 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         if (DeselectAll == null) {
             DeselectAll = new BitmapFontCache(Fonts.getBig());
             DeselectAll.setColor(COLOR.getFontColor());
-            DeselectAll.setText(Translation.Get("untickAll"), 0, 0);
+            DeselectAll.setText(Translation.get("untickAll"), 0, 0);
             DeselectAll.setPosition(lBounds.getCenterPosX() - (DeselectAll.getLayouts().first().width / 2), lBounds.getCenterPosY() + (DeselectAll.getLayouts().first().height / 2));
         }
 
         if (SelectAll == null) {
             SelectAll = new BitmapFontCache(Fonts.getBig());
             SelectAll.setColor(COLOR.getFontColor());
-            SelectAll.setText(Translation.Get("tickAll"), 0, 0);
+            SelectAll.setText(Translation.get("tickAll"), 0, 0);
             SelectAll.setPosition(rBounds.getCenterPosX() - (SelectAll.getLayouts().first().width / 2), rBounds.getCenterPosY() + (SelectAll.getLayouts().first().height / 2));
         }
 

@@ -16,18 +16,18 @@ public class FunctionQuersumme extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncCrosstotal");
+        return Translation.get("solverFuncCrosstotal");
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescCrosstotal");
+        return Translation.get("solverDescCrosstotal");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount", "1", "$solverFuncCrosstotal");
+            return Translation.get("solverErrParamCount", "1", "$solverFuncCrosstotal");
         }
         String wert = parameter[0].trim();
         int result = 0;

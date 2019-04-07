@@ -57,7 +57,7 @@ public class API_Button extends Button {
     }
 
     private void setText() {
-        this.setText(Translation.Get("getApiKey"));
+        this.setText(Translation.get("getApiKey"));
     }
 
     public void setImage() {

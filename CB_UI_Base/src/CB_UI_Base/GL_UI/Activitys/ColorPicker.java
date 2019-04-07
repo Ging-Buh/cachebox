@@ -22,8 +22,6 @@ import CB_UI_Base.GL_UI.Controls.ColorPickerRec;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.GL_UI.utils.GradiantFill;
@@ -80,8 +78,8 @@ public class ColorPicker extends ActivityBase {
         bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
-        bOK.setText(Translation.Get("ok"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("ok"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
         bOK.setOnClickListener((v, x, y, pointer, button) -> {

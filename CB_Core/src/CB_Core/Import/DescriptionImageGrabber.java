@@ -270,7 +270,7 @@ public class DescriptionImageGrabber {
 
         if (!descriptionImagesUpdated) {
             Log.debug(log, "GrabImagesSelectedByCache -> grab description images");
-            ip.ProgressChangeMsg("importImages", Translation.Get("DescriptionImageImportForGC") + gcCode);
+            ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode);
 
             LinkedList<URI> imgUris = GetImageUris(description, url);
 
@@ -286,7 +286,7 @@ public class DescriptionImageGrabber {
 
                 String local = BuildDescriptionImageFilename(gcCode, uri);
 
-                ip.ProgressChangeMsg("importImages", Translation.Get("DescriptionImageImportForGC") + gcCode + Translation.Get("ImageDownloadFrom") + uri);
+                ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                 // direkt download
                 for (int j = 0; j < 1 /* && !parent.Cancel */; j++) {
@@ -323,7 +323,7 @@ public class DescriptionImageGrabber {
                 allSpoilers.add(file);
 
             {
-                ip.ProgressChangeMsg("importImages", Translation.Get("SpoilerImageImportForGC") + gcCode);
+                ip.ProgressChangeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode);
 
                 // todo always take from database. They are not downloaded yet
                 // todo else don't write them to database on fetch/update cache
@@ -345,7 +345,7 @@ public class DescriptionImageGrabber {
 
                     String uri = imageEntry.ImageUrl;
 
-                    ip.ProgressChangeMsg("importImages", Translation.Get("SpoilerImageImportForGC") + gcCode + Translation.Get("ImageDownloadFrom") + uri);
+                    ip.ProgressChangeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                     imageEntry = BuildAdditionalImageFilenameHashNew(gcCode, imageEntry);
                     if (imageEntry != null) {

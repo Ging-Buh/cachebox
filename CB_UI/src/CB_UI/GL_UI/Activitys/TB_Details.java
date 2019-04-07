@@ -66,13 +66,13 @@ public class TB_Details extends ActivityBase {
     private void createControls() {
         float innerHeight = 1000;
 
-        btnClose = new Button(Translation.Get("close"));
+        btnClose = new Button(Translation.get("close"));
         btnClose.setOnClickListener((v, x, y, pointer, button) -> {
             TB_Details.this.finish();
             return true;
         });
 
-        btnAction = new Button(Translation.Get("TB_Log"));
+        btnAction = new Button(Translation.get("TB_Log"));
         btnAction.setOnClickListener((v, x, y, pointer, button) -> {
             showLogMenu();
             return true;
@@ -84,17 +84,17 @@ public class TB_Details extends ActivityBase {
         title = new EditTextField(iconRec, this, "title");
         // on scrollbox
         image = new Image(iconRec, "Image", false);
-        lblDescription = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblDescription = new Label(Translation.get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         description = new EditTextField(this, "AboutDesc");
-        lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblGoal = new Label(Translation.get("GoalThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         currentGoal = new EditTextField(this, "GoalDesc");
 
-        lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
-        lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
-        lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblTypeName = new Label(Translation.get("TB_Type"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblTbCode = new Label(Translation.get("TB_Code"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblOwner = new Label(Translation.get("TB_Owner"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         // lbllastVisit = new Label("LastVisit");
         // lblHome = new Label("Home");
-        lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblBirth = new Label(Translation.get("TB_Birth"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         // lblTravelDistance = new Label("TravelDistance");
 
         TypeName = new EditTextField(this, "TypeName");

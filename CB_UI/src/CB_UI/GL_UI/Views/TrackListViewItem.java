@@ -104,7 +104,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
             CB_RectF rec = new CB_RectF(left, 0, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
             EntryLength = new Label(this.name + " EntryLength", rec, "");
-            EntryLength.setText(Translation.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
+            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
             this.addChild(EntryLength);
         }
@@ -188,7 +188,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     public void notifyTrackChanged(Track route) {
         mRoute = route;
         if (EntryLength != null)
-            EntryLength.setText(Translation.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
+            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
     }
 

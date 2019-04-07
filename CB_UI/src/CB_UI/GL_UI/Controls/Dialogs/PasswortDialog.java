@@ -6,8 +6,8 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Fonts;
@@ -29,7 +29,7 @@ public class PasswortDialog extends ButtonDialog {
     private IReturnListener mReturnListener;
 
     public PasswortDialog(IReturnListener listener) {
-        super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live, null);
+        super(Menu.getMenuRec(), "PW-Dialog", "", Translation.get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live, null);
         mReturnListener = listener;
 
         msgBoxContentSize = getContentSize();
@@ -40,19 +40,19 @@ public class PasswortDialog extends ButtonDialog {
         layout = new Linearlayout(msgBoxContentSize.width, "Layout");
 
         Label lblName = new Label(this.name + " lblName", 0, 0, msgBoxContentSize.width, LabelHeight);
-        lblName.setText(Translation.Get("LogIn"));
+        lblName.setText(Translation.get("LogIn"));
         layout.addChild(lblName);
 
         CB_RectF rec = new CB_RectF(0, 0, msgBoxContentSize.width, TextFieldHeight);
 
-        editTextUser = new EditTextField( rec, this,"*" + Translation.Get("LogIn"), WrapType.SINGLELINE);
+        editTextUser = new EditTextField( rec, this,"*" + Translation.get("LogIn"), WrapType.SINGLELINE);
         layout.addChild(editTextUser);
 
         Label lblPW = new Label(this.name + " lblPW", 0, 0, msgBoxContentSize.width, LabelHeight);
-        lblPW.setText(Translation.Get("GCPW"));
+        lblPW.setText(Translation.get("GCPW"));
         layout.addChild(lblPW);
 
-        editTextPW = new EditTextField( rec, this,"*" + Translation.Get("GCPW"), WrapType.SINGLELINE);
+        editTextPW = new EditTextField( rec, this,"*" + Translation.get("GCPW"), WrapType.SINGLELINE);
 
         // TODO set PW-Mode => hat noch einen Fehler
         // editTextPW.setPasswordMode();
@@ -62,7 +62,7 @@ public class PasswortDialog extends ButtonDialog {
 
         this.addChild(layout);
 
-        Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
+        Size msgBoxSize = MessageBox.calcMsgBoxSize("teste", true, true, false);
         msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight());
         this.setSize(msgBoxSize.asFloat());
 

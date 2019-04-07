@@ -12,7 +12,6 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
@@ -43,25 +42,25 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     public Import_GSAK() {
         super("Import_GSAK");
-        bOK = new Button(Translation.Get("import"));
-        bCancel = new Button(Translation.Get("cancel"));
+        bOK = new Button(Translation.get("import"));
+        bCancel = new Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
         this.addNext(bOK);
         this.addLast(bCancel);
         initRow(TOPDOWN);
         progressBar = new ProgressBar(UiSizes.that.getButtonRectF(), "ProgressBar");
         addLast(progressBar);
-        Label lblCategory = new Label(Translation.Get("category"));
+        Label lblCategory = new Label(Translation.get("category"));
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
         addNext(lblCategory, FIXED);
-        edtCategory = new EditTextField(this, "*" + Translation.Get("category"));
+        edtCategory = new EditTextField(this, "*" + Translation.get("category"));
         addLast(edtCategory);
-        Label lblDBName = new Label(Translation.Get("GSAKDatabase"));
+        Label lblDBName = new Label(Translation.get("GSAKDatabase"));
         lblDBName.setWidth(Fonts.Measure(lblDBName.getText()).width);
         addNext(lblDBName, FIXED);
-        edtDBName = new EditTextField(this, "*" + Translation.Get("GSAKDatabase"));
+        edtDBName = new EditTextField(this, "*" + Translation.get("GSAKDatabase"));
         addLast(edtDBName);
-        btnSelectDB = new Button(Translation.Get("GSAKButtonSelectDB"));
+        btnSelectDB = new Button(Translation.get("GSAKButtonSelectDB"));
         addLast(btnSelectDB);
         initClickHandlersAndContent();
         importRuns = false;
@@ -110,7 +109,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             if (mPath.length() == 0) {
                 mPath = Config.mWorkPath + "/User";
             }
-            PlatformConnector.getFile(mPath, "*.db3", Translation.Get("GSAKTitleSelectDB"), Translation.Get("GSAKButtonSelectDB"), PathAndName -> {
+            PlatformConnector.getFile(mPath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), PathAndName -> {
                 File file = FileFactory.createFile(PathAndName);
                 mPath = file.getParent();
                 mDatabaseName = file.getName();
@@ -252,7 +251,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 case "Caches.Code":
                     cache.setGcCode(reader.getString("Code"));
                     if (cache.getGcCode().length() == 0) {
-                        Log.err(sKlasse, "Get no GCCode");
+                        Log.err(sKlasse, "get no GCCode");
                         return null;
                     }
                     cache.setUrl("https://coord.info/" + cache.getGcCode());

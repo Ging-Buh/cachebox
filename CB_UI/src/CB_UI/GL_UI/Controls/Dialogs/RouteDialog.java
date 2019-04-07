@@ -4,8 +4,8 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -28,7 +28,7 @@ public class RouteDialog extends ButtonDialog {
     private IReturnListener mReturnListener;
 
     public RouteDialog(IReturnListener listener) {
-        super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
+        super(Menu.getMenuRec(), "PW-Dialog", "", Translation.get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
         mReturnListener = listener;
 
         msgBoxContentSize = getContentSize();
@@ -73,14 +73,14 @@ public class RouteDialog extends ButtonDialog {
 
         Label lblPW = new Label(this.name + " lblPW", chkTmc.getMaxX() + margin, 0, innerWidth - chkTmc.getWidth() - margin, chkTmc.getHeight());
         lblPW.setVAlignment(VAlignment.CENTER);
-        lblPW.setText(Translation.Get("UseTmc"));
+        lblPW.setText(Translation.get("UseTmc"));
         box2.addChild(lblPW);
 
         layout.addChild(box2);
 
         this.addChild(layout);
 
-        Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
+        Size msgBoxSize = MessageBox.calcMsgBoxSize("teste", true, true, false);
         msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 

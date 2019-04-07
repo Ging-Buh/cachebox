@@ -25,7 +25,7 @@ import CB_UI_Base.Math.Size;
 import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import static CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.calcMsgBoxSize;
+import static CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.calcMsgBoxSize;
 
 public class CB_Action_ShowHint extends CB_Action {
 

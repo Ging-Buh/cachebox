@@ -107,7 +107,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
                             s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-                            MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                            MessageBox.Show(s, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
                         }
                     }
 
@@ -128,12 +128,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 }
                 case 2: {
                     pd.dismiss();
-                    MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                    MessageBox.Show(message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
                     break;
                 }
                 case 3: {
                     pd.dismiss();
-                    MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
+                    MessageBox.Show(message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
                     break;
                 }
                 case 4: {
@@ -154,7 +154,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 int pos = url.indexOf("+"); // the Blank is converted to + in url
                 // 25 is the length of "fake://fake.de?GetAttInfo"
                 if (pos > 0)
-                    MessageBox.Show(Translation.Get(url.substring(25, pos)));
+                    MessageBox.Show(Translation.get(url.substring(25, pos)));
                 return true;
             } else if (url.contains("fake://fake.de/download")) {
 
@@ -287,8 +287,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 html += "</br></br>";
             } else {
                 // a IS_LITE has no description. a NOT_LIVE ?
-                String nodesc = Translation.Get("GC_NoDescription");
-                html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";
+                String nodesc = Translation.get("GC_NoDescription");
+                html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.get("GC_DownloadDescription") + " \"></form>";
             }
 
             final String FinalHtml = html;

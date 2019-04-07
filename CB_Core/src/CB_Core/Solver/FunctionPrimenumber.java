@@ -14,25 +14,25 @@ public class FunctionPrimenumber extends FunctionPrimeBase {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncPrimenumber");
+        return Translation.get("solverFuncPrimenumber");
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescPrimenumber");
+        return Translation.get("solverDescPrimenumber");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount", "1", "$solverFuncPrimenumber");
+            return Translation.get("solverErrParamCount", "1", "$solverFuncPrimenumber");
         }
         String wert = parameter[0].trim();
         int number = 0;
         try {
             number = Integer.valueOf(wert);
         } catch (Exception ex) {
-            return Translation.Get("solverErrParamType", "$solverFuncPrimenumber", "1", "$value", "$number", parameter[0]);
+            return Translation.get("solverErrParamType", "$solverFuncPrimenumber", "1", "$value", "$number", parameter[0]);
         }
         int anz = 0;
         int akt = 0;

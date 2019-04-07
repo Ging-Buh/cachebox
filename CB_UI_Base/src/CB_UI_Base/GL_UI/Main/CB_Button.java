@@ -142,7 +142,7 @@ public class CB_Button extends Button {
     private final OnClickListener longClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            // GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
+            // MessageBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
             // Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
             // Actions gewählt werden kann
 
@@ -212,7 +212,7 @@ public class CB_Button extends Button {
         if (useDescriptiveCB_Buttons) {
             mButtonImage.setDrawable(new SpriteDrawable(icon));
             if (name != null) {
-                name = Translation.Get(name);
+                name = Translation.get(name);
                 setText(name.substring(0, Math.min(5, name.length())), Fonts.getSmall(), null);
             } else
                 setText("", Fonts.getSmall(), null);
@@ -297,18 +297,18 @@ public class CB_Button extends Button {
                 String direction;
                 switch (ba.getGestureDirection()) {
                     case Up:
-                        direction = Translation.Get("up");
+                        direction = Translation.get("up");
                         break;
                     case Down:
-                        direction = Translation.Get("down");
+                        direction = Translation.get("down");
                         break;
                     case Left:
-                        direction = Translation.Get("left");
+                        direction = Translation.get("left");
                         break;
                     default:
-                        direction = Translation.Get("right");
+                        direction = Translation.get("right");
                 }
-                mi.setTitle(mi.getTitle() + " (" + Translation.Get("wipe") + " " + direction  + ")");
+                mi.setTitle(mi.getTitle() + " (" + Translation.get("wipe") + " " + direction  + ")");
             }
             mi.setEnabled(action.getEnabled());
             mi.setCheckable(action.getIsCheckable());

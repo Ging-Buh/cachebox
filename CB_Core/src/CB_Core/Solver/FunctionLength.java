@@ -16,18 +16,18 @@ public class FunctionLength extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncLength".hashCode());
+        return Translation.get("solverFuncLength".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescLength".hashCode());
+        return Translation.get("solverDescLength".hashCode());
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncLength");
+            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncLength");
         }
         return String.valueOf(parameter[0].length());
     }

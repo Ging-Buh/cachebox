@@ -172,7 +172,7 @@ public class Waypoint implements Serializable {
 
     public String getTitleForGui() {
         if (isCorrectedFinal())
-            return Translation.Get("coordinatesAreCorrected");
+            return Translation.get("coordinatesAreCorrected");
         else
             return getTitle();
     }

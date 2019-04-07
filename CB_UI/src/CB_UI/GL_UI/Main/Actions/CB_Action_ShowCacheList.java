@@ -15,7 +15,7 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -36,7 +36,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
     private static final int MI_FAVORIT = 164;
     private static CB_Action_ShowCacheList that;
     private EditCache editCache;
-    private GL_MsgBox gL_MsgBox;
+    private MessageBox gL_MsgBox;
 
     private CB_Action_ShowCacheList() {
         super("cacheList", "  (" + Database.Data.cacheList.size() + ")", MenuID.AID_SHOW_CACHELIST);
@@ -113,9 +113,9 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     else {
                         msgText = "askResetFavorites";
                     }
-                    gL_MsgBox = GL_MsgBox.Show(Translation.Get(msgText), Translation.Get("Favorites"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question, (which, data) -> {
+                    gL_MsgBox = MessageBox.show(Translation.get(msgText), Translation.get("Favorites"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question, (which, data) -> {
                         gL_MsgBox_close();
-                        if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                        if (which == MessageBox.BUTTON_POSITIVE) {
                             Database.Data.sql.beginTransaction();
                             Database_Core.Parameters args = new Database_Core.Parameters();
                             args.put("Favorit", finalchecked ? 1 : 0);

@@ -17,30 +17,30 @@ public class FunctionIntersection extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncIntersection".hashCode());
+        return Translation.get("solverFuncIntersection".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescIntersection".hashCode());
+        return Translation.get("solverDescIntersection".hashCode());
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 4) {
-            return Translation.Get("solverErrParamCount".hashCode(), "4", "$solverFuncIntersection");
+            return Translation.get("solverErrParamCount".hashCode(), "4", "$solverFuncIntersection");
         }
         Coordinate[] coord = new Coordinate[4];
         for (int i = 0; i < 4; i++) {
             coord[i] = new CoordinateGPS(parameter[i]);
             if (!coord[i].isValid())
-                return Translation.Get("solverErrParamType".hashCode(), "$solverFuncIntersection", String.valueOf(i + 1), "$coordinate", "$coordinate", parameter[i]);
+                return Translation.get("solverErrParamType".hashCode(), "$solverFuncIntersection", String.valueOf(i + 1), "$coordinate", "$coordinate", parameter[i]);
         }
         try {
             return CoordinateGPS.Intersection(coord[0], coord[1], coord[2], coord[3]).FormatCoordinate();
         } catch (Exception ex) {
             String s = coord[0].FormatCoordinate() + " / " + coord[1].FormatCoordinate() + " -> " + coord[2].FormatCoordinate() + " / " + coord[3].FormatCoordinate();
-            return Translation.Get("StdError".hashCode(), "$solverFuncIntersection", ex.getMessage(), s);
+            return Translation.get("StdError".hashCode(), "$solverFuncIntersection", ex.getMessage(), s);
         }
     }
 

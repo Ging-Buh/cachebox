@@ -27,7 +27,7 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Fonts;
@@ -73,7 +73,7 @@ public class DescriptionView extends CB_View_Base {
     private static DescriptionView that;
     private DescriptionView() {
         super(TabMainView.leftTab.getContentRec(), "DescriptionView");
-        STRING_POWERD_BY = Translation.Get("GC_title");
+        STRING_POWERD_BY = Translation.get("GC_title");
     }
     public static DescriptionView getInstance() {
         if (that == null) that = new DescriptionView();
@@ -216,10 +216,10 @@ public class DescriptionView extends CB_View_Base {
             fetchMyCacheLimits();
             if (fetchMyUserInfos().remaining <= 0) {
                 if (isPremiumMember()) {
-                    GL_MsgBox.Show(Translation.Get("LiveDescLimit"), Translation.Get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                    MessageBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                 }
                 else {
-                    GL_MsgBox.Show(Translation.Get("LiveDescLimitBasic"), Translation.Get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                    MessageBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                 }
                 return;
             }
@@ -248,7 +248,7 @@ public class DescriptionView extends CB_View_Base {
         MessageLabel.setWrappedText(getMessage());
         this.addChild(MessageLabel);
 
-        downloadButton = new Button(Translation.Get("DownloadDetails"));
+        downloadButton = new Button(Translation.get("DownloadDetails"));
         downloadButton.setWidth(this.getWidth() * 0.8f);
 
         this.addChild(downloadButton);
@@ -298,16 +298,16 @@ public class DescriptionView extends CB_View_Base {
             actLimit = "?";
         }
 
-        sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
+        sb.append(Translation.get("LiveDescMessage", MemberType, limit));
         sb.append(Global.br);
         if (GroundspeakAPI.fetchMyUserInfos().remaining > 0)
-            sb.append(Translation.Get("LiveDescAfter", actLimit)); // "
+            sb.append(Translation.get("LiveDescAfter", actLimit)); // "
 
         if (GroundspeakAPI.fetchMyUserInfos().remaining == 0) {
-            sb.append(Translation.Get("LiveDescLimit"));
+            sb.append(Translation.get("LiveDescLimit"));
             sb.append(Global.br);
             if (!premium)
-                sb.append(Translation.Get("LiveDescLimitBasic"));
+                sb.append(Translation.get("LiveDescLimitBasic"));
         }
 
         return sb.toString();

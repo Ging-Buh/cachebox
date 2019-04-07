@@ -103,8 +103,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         bCancel = new Button(bImport.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
-        bImport.setText(Translation.Get("import"));
-        bCancel.setText(Translation.Get("cancel"));
+        bImport.setText(Translation.get("import"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bImport);
         bImport.setOnClickListener((v, x, y, pointer, button) -> {
@@ -157,7 +157,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 
         lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
         lblTitle.setFont(Fonts.getBig());
-        lblTitle.setWrappedText(Translation.Get("API_IMPORT_NAME_OWNER_CODE"));
+        lblTitle.setWrappedText(Translation.get("API_IMPORT_NAME_OWNER_CODE"));
         this.addChild(lblTitle);
 
     }
@@ -175,17 +175,17 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
         box.addChild(checkBoxExcludeFounds);
 
-        lblOnlyAvailable = new Label(this.name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.Get("SearchOnlyAvailable"));
+        lblOnlyAvailable = new Label(this.name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.get("SearchOnlyAvailable"));
         lblOnlyAvailable.setX(checkBoxOnlyAvailable.getMaxX() + margin);
         lblOnlyAvailable.setWidth(this.getWidth() - margin - checkBoxOnlyAvailable.getMaxX() - margin);
         box.addChild(lblOnlyAvailable);
 
-        lblExcludeHides = new Label(this.name + " lblExcludeHides", checkBoxExcludeHides, Translation.Get("SearchWithoutOwns"));
+        lblExcludeHides = new Label(this.name + " lblExcludeHides", checkBoxExcludeHides, Translation.get("SearchWithoutOwns"));
         lblExcludeHides.setX(checkBoxOnlyAvailable.getMaxX() + margin);
         lblExcludeHides.setWidth(this.getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
         box.addChild(lblExcludeHides);
 
-        lblExcludeFounds = new Label(this.name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.Get("SearchWithoutFounds"));
+        lblExcludeFounds = new Label(this.name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.get("SearchWithoutFounds"));
         lblExcludeFounds.setX(checkBoxOnlyAvailable.getMaxX() + margin);
         lblExcludeFounds.setWidth(this.getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
         box.addChild(lblExcludeFounds);
@@ -203,9 +203,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");
         mTglBtnOwner = new MultiToggleButton(rec, "mTglBtnOwner");
 
-        mTglBtnTitle.initialOn_Off_ToggleStates(Translation.Get("Title"), Translation.Get("Title"));
-        mTglBtnGc.initialOn_Off_ToggleStates(Translation.Get("GCCode"), Translation.Get("GCCode"));
-        mTglBtnOwner.initialOn_Off_ToggleStates(Translation.Get("Owner"), Translation.Get("Owner"));
+        mTglBtnTitle.initialOn_Off_ToggleStates(Translation.get("Title"), Translation.get("Title"));
+        mTglBtnGc.initialOn_Off_ToggleStates(Translation.get("GCCode"), Translation.get("GCCode"));
+        mTglBtnOwner.initialOn_Off_ToggleStates(Translation.get("Owner"), Translation.get("Owner"));
 
         line.initRow(true);
         line.addNext(mTglBtnTitle);

@@ -672,7 +672,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             else
                 directionToTarget = bearing;
 
-            String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
+            String sBearing = Translation.get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
             lblBearing.setText(sBearing);
         }
 
@@ -701,7 +701,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         }
 
         if (showSatInfos && lblAlt != null && !lblAlt.isDisposed()) {
-            lblAlt.setText(Translation.Get("alt") + Locator.getAltString());
+            lblAlt.setText(Translation.get("alt") + Locator.getAltString());
         }
 
         if (showSunMoon) {

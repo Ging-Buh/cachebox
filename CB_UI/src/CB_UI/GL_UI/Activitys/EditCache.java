@@ -58,8 +58,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     public EditCache() {
         super(ActivityBase.ActivityRec(), "EditCache");
         // das übliche
-        btnOK = new Button(Translation.Get("ok"));
-        btnCancel = new Button(Translation.Get("cancel"));
+        btnOK = new Button(Translation.get("ok"));
+        btnCancel = new Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
         this.addNext(btnOK);
         this.addLast(btnCancel);

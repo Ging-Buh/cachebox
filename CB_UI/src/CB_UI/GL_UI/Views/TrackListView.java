@@ -27,7 +27,7 @@ public class TrackListView extends V_ListView {
 
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 
-        this.setEmptyMsg(Translation.Get("EmptyTrackList"));
+        this.setEmptyMsg(Translation.get("EmptyTrackList"));
 
         setBackground(Sprites.ListBack);
 

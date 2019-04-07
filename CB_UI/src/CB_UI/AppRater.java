@@ -2,7 +2,7 @@ package CB_UI;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -20,7 +20,7 @@ public class AppRater {
     private final static int DAYS_UNTIL_PROMPT = 30;// 30;
     private final static int LAUNCHES_UNTIL_PROMPT = 15;// 15;
     private final static int MINIMUM_RUN = 10 * 60 * 1000;// 10 min
-    private static GL_MsgBox msgBox;
+    private static MessageBox msgBox;
 
     public static void app_launched() {
         if (Config.AppRaterDontShowAgain.getValue())
@@ -58,13 +58,13 @@ public class AppRater {
     }
 
     private static void showRateDialog() {
-        String message = Translation.Get("Rate_Message", APP_TITLE);
-        String title = Translation.Get("Rate_Title", APP_TITLE);
-        String now = Translation.Get("Rate_now");
-        String later = Translation.Get("Rate_later");
-        String never = Translation.Get("Rate_never");
+        String message = Translation.get("Rate_Message", APP_TITLE);
+        String title = Translation.get("Rate_Title", APP_TITLE);
+        String now = Translation.get("Rate_now");
+        String later = Translation.get("Rate_later");
+        String never = Translation.get("Rate_never");
 
-        msgBox = GL_MsgBox.Show(message, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, (which, data) -> {
+        msgBox = MessageBox.show(message, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
                 case 1:
                     // Rate

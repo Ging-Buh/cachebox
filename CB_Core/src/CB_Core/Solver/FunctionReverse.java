@@ -13,18 +13,18 @@ public class FunctionReverse extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncReverse");
+        return Translation.get("solverFuncReverse");
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescReverse");
+        return Translation.get("solverDescReverse");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount", "1", "$solverFuncReverse");
+            return Translation.get("solverErrParamCount", "1", "$solverFuncReverse");
         }
         String result = "";
         for (char c : parameter[0].toCharArray())

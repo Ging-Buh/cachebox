@@ -26,8 +26,8 @@ import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.TrackRecorder;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -206,16 +206,16 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-                GL_MsgBox msgBox = GL_MsgBox.Show(Translation.Get("AddOrChangeMap"), Translation.Get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+                MessageBox msgBox = MessageBox.show(Translation.get("AddOrChangeMap"), Translation.get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
                     @Override
                     public boolean onClick(int which, Object data) {
                         Layer layer = (Layer) data;
                         switch (which) {
-                            case GL_MsgBox.BUTTON_POSITIVE:
+                            case MessageBox.BUTTON_POSITIVE:
                                 // add the selected map to the curent layer
                                 normalMapView.addAdditionalLayer(layer);
                                 break;
-                            case GL_MsgBox.BUTTON_NEUTRAL:
+                            case MessageBox.BUTTON_NEUTRAL:
                                 // switch curent layer to selected
                                 normalMapView.setCurrentLayer(layer);
                                 break;
@@ -707,7 +707,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
             for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
                 if (styleLayer.isVisible()) {
-                    styles.put(styleLayer.getTitle(Translation.Get("Language2Chars").toLowerCase()), styleLayer.getId());
+                    styles.put(styleLayer.getTitle(Translation.get("Language2Chars").toLowerCase()), styleLayer.getId());
                 }
             }
 
@@ -732,9 +732,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             XmlRenderThemeStyleLayer selected_Layer = style.getLayer(selectedLayer);
             for (XmlRenderThemeStyleLayer overlay : selected_Layer.getOverlays()) {
                 if (overlay.isEnabled()) {
-                    overlays.put(overlay.getTitle(Translation.Get("Language2Chars")), "+" + overlay.getId());
+                    overlays.put(overlay.getTitle(Translation.get("Language2Chars")), "+" + overlay.getId());
                 } else {
-                    overlays.put(overlay.getTitle(Translation.Get("Language2Chars")), "-" + overlay.getId());
+                    overlays.put(overlay.getTitle(Translation.get("Language2Chars")), "-" + overlay.getId());
                 }
             }
 

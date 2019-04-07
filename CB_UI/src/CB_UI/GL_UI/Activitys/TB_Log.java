@@ -31,7 +31,7 @@ import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -76,7 +76,7 @@ public class TB_Log extends ActivityBase {
     private void createControls() {
 
         btnClose = new Button("Close");
-        btnClose.setText(Translation.Get("close"));
+        btnClose.setText(Translation.get("close"));
         btnClose.setOnClickListener((v, x, y, pointer, button) -> {
             TB_Log.this.finish();
             return true;
@@ -108,8 +108,8 @@ public class TB_Log extends ActivityBase {
         rbDirectLog = new RadioButton("direct_Log");
         rbOnlyFieldNote = new RadioButton("only_FieldNote");
 
-        rbDirectLog.setText(Translation.Get("directLog"));
-        rbOnlyFieldNote.setText(Translation.Get("onlyFieldNote"));
+        rbDirectLog.setText(Translation.get("directLog"));
+        rbOnlyFieldNote.setText(Translation.get("onlyFieldNote"));
 
         RadioGroup Group = new RadioGroup();
         Group.add(rbOnlyFieldNote);
@@ -140,25 +140,25 @@ public class TB_Log extends ActivityBase {
             Cache c = GlobalCore.getSelectedCache();
             if (c == null) {
                 // Log Inposible, close Activity and give a Message
-                final String errorMsg = Translation.Get("NoCacheSelect");
+                final String errorMsg = Translation.get("NoCacheSelect");
                 this.finish();
 
-                GL.that.RunOnGL(() -> GL_MsgBox.Show(errorMsg, "", MessageBoxIcon.Error));
+                GL.that.RunOnGL(() -> MessageBox.show(errorMsg, "", MessageBoxIcon.Error));
                 return;
             }
 
             String msg = "";
             if (LT == LogTypes.discovered) {
-                msg = Translation.Get("discoveredAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("discoveredAt") + ": " + GlobalCore.br + c.getName();
             }
             if (LT == LogTypes.visited) {
-                msg = Translation.Get("visitedAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("visitedAt") + ": " + GlobalCore.br + c.getName();
             }
             if (LT == LogTypes.dropped_off) {
-                msg = Translation.Get("dropped_offAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("dropped_offAt") + ": " + GlobalCore.br + c.getName();
             }
             if (LT == LogTypes.retrieve) {
-                msg = Translation.Get("retrieveAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("retrieveAt") + ": " + GlobalCore.br + c.getName();
             }
 
             CacheIcon.setSprite(Sprites.getSprite("big" + c.Type.name()), false);
@@ -238,16 +238,16 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateFieldnoteInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
-                            case GL_MsgBox.BUTTON_NEGATIVE:
+                            case MessageBox.BUTTON_NEGATIVE:
                                 logOnline();
                                 return true;
 
-                            case GL_MsgBox.BUTTON_NEUTRAL:
+                            case MessageBox.BUTTON_NEUTRAL:
                                 return true;
 
-                            case GL_MsgBox.BUTTON_POSITIVE:
+                            case MessageBox.BUTTON_POSITIVE:
                                 createFieldNote();
                                 return true;
                         }
@@ -259,16 +259,16 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateFieldnoteInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
-                            case GL_MsgBox.BUTTON_NEGATIVE:
+                            case MessageBox.BUTTON_NEGATIVE:
                                 logOnline();
                                 return true;
 
-                            case GL_MsgBox.BUTTON_NEUTRAL:
+                            case MessageBox.BUTTON_NEUTRAL:
                                 return true;
 
-                            case GL_MsgBox.BUTTON_POSITIVE:
+                            case MessageBox.BUTTON_POSITIVE:
                                 createFieldNote();
                                 return true;
                         }
@@ -278,7 +278,7 @@ public class TB_Log extends ActivityBase {
                 }
 
                 if (LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(() -> GL_MsgBox.Show(LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error));
+                    GL.that.RunOnGL(() -> MessageBox.show(LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
                 }
 
                 if (wd != null)

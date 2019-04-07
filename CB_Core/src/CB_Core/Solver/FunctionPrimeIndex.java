@@ -14,24 +14,24 @@ public class FunctionPrimeIndex extends FunctionPrimeBase {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncPrimeIndex");
+        return Translation.get("solverFuncPrimeIndex");
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescPrimeIndex");
+        return Translation.get("solverDescPrimeIndex");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount", "1", "$solverFuncPrimeIndex");
+            return Translation.get("solverErrParamCount", "1", "$solverFuncPrimeIndex");
         }
         int number = 0;
         try {
             number = Integer.valueOf(parameter[0].trim());
         } catch (Exception ex) {
-            return Translation.Get("solverErrParamType", "$solverFuncPrimeIndex", "1", "$value", "$number", parameter[0]);
+            return Translation.get("solverErrParamType", "$solverFuncPrimeIndex", "1", "$value", "$number", parameter[0]);
         }
         if (!IsPrimeNumber(number))
             return "0";

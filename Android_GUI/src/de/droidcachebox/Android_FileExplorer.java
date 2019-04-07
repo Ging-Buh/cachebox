@@ -103,7 +103,7 @@ public class Android_FileExplorer {
         currentPath = initialPath;
         this.TitleText = TitleText;
         if (ButtonText == null || ButtonText.length() == 0) {
-            this.ButtonText = Translation.Get("ok");
+            this.ButtonText = Translation.get("ok");
         } else {
             this.ButtonText = ButtonText;
         }

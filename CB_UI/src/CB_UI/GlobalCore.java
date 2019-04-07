@@ -33,7 +33,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -234,7 +234,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     public static CancelWaitDialog ImportSpoiler() {
-        wd = CancelWaitDialog.ShowWait(Translation.Get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
+        wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
             // canceled
         }, new ICancelRunnable() {
 
@@ -261,7 +261,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     public static void MsgDownloadLimit() {
-        GL.that.RunOnGLWithThreadCheck(() -> GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null));
+        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null));
 
     }
 

@@ -311,7 +311,7 @@ public class splash extends Activity {
                 dialog.setContentView(R.layout.sdselectdialog);
 
                 TextView title = dialog.findViewById(R.id.select_sd_title);
-                title.setText(Translation.Get("selectWorkSpace") + "\n\n");
+                title.setText(Translation.get("selectWorkSpace") + "\n\n");
 
                 Button btnInternal_SD = dialog.findViewById(R.id.button1);
                 btnInternal_SD.setText("Internal SD\n\n" + workPath);
@@ -355,7 +355,7 @@ public class splash extends Activity {
                             alertDialogBuilder.setTitle("KitKat Sandbox");
 
                             // set dialog message
-                            alertDialogBuilder.setMessage(Translation.Get("Desc_Sandbox")).setCancelable(false).setPositiveButton(Translation.Get("yes"), new DialogInterface.OnClickListener() {
+                            alertDialogBuilder.setMessage(Translation.get("Desc_Sandbox")).setCancelable(false).setPositiveButton(Translation.get("yes"), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
                                     // if this button is clicked, run Sandbox Path
@@ -383,7 +383,7 @@ public class splash extends Activity {
                                     };
                                     thread.start();
                                 }
-                            }).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener() {
+                            }).setNegativeButton(Translation.get("no"), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
                                     // if this button is clicked, just close
@@ -455,7 +455,7 @@ public class splash extends Activity {
                         MessageBox.Builder.ButtonHeight = (int) (50 * scale);
 
                         // Ask before delete
-                        msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name), Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
+                        msg = (MessageBox) MessageBox.Show(Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog1, int which) {
@@ -501,18 +501,18 @@ public class splash extends Activity {
 
                 // with the changed (own) folder  get, the workspace can not be created, only selected
                 Button btnCreateWorkpath = (Button) dialog.findViewById(R.id.buttonCreateWorkspace);
-                btnCreateWorkpath.setText(Translation.Get("createWorkSpace"));
+                btnCreateWorkpath.setText(Translation.get("createWorkSpace"));
                 btnCreateWorkpath.setOnClickListener(v -> {
                     // close select dialog
                     dialog.dismiss();
-                    PlatformConnector.getFolder("", Translation.Get("select_folder"), Translation.Get("select"), Path -> {
+                    PlatformConnector.getFolder("", Translation.get("select_folder"), Translation.get("select"), Path -> {
                         if (FileIO.canWrite(Path)) {
                             AdditionalWorkPathArray.add(Path);
                             writeAdditionalWorkPathArray(AdditionalWorkPathArray);
                             // Start again to include the new Folder
                             onStart();
                         } else {
-                            String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+                            String WriteProtectionMsg = Translation.get("NoWriteAcces");
                             Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
                         }
                     });

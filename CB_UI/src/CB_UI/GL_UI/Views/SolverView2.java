@@ -36,7 +36,7 @@ import CB_UI.WaypointListChangedEventList;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -251,7 +251,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     }
 
     private void DeleteLine() {
-        GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             if (which == 1) {
                 solver.remove(mSelectedIndex);
                 solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());

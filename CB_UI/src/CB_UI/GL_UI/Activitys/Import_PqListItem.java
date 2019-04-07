@@ -27,10 +27,10 @@ public class Import_PqListItem extends ListViewItemBackground {
         lblName.setText(pq.Name);
 
         SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        String dateString = Translation.Get("PQcreationDate") + ": " + postFormater.format(pq.DateLastGenerated);
+        String dateString = Translation.get("PQcreationDate") + ": " + postFormater.format(pq.DateLastGenerated);
         //DecimalFormat df = new DecimalFormat("###.##");
         //String FileSize = df.format(pq.SizeMB) + " MB";
-        String Count = "\n" + Translation.Get("Count") + ": " + String.valueOf(pq.PQCount);
+        String Count = "\n" + Translation.get("Count") + ": " + String.valueOf(pq.PQCount);
         lblInfo.setText(dateString + Count); // + "  " + FileSize
 
         chk = new ChkBox("");

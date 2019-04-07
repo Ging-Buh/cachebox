@@ -418,8 +418,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
-        bOK.setText(Translation.Get("ok"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("ok"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
         bOK.setOnClickListener(new OnClickListener() {
@@ -467,7 +467,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
         lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
-        lblTitle.setText(Translation.Get("solver_formula")).getTextWidth();
+        lblTitle.setText(Translation.get("solver_formula")).getTextWidth();
         this.addChild(lblTitle);
 
     }
@@ -888,7 +888,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private void addFunctionParamLine(final Function function, int i, String string) {
         String paramName = "Parameter " + i;
         if (function != null) {
-            paramName = Translation.Get(function.getParamName(i));
+            paramName = Translation.get(function.getParamName(i));
         }
         // Eingabefelder für die Parameter einfügen
         lFunctionParam[i] = new Label();

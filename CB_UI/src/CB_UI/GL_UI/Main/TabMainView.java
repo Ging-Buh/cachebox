@@ -31,12 +31,11 @@ import CB_UI.*;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.*;
 import CB_UI.GL_UI.Views.CompassView;
-import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -137,11 +136,11 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.Get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
-                        Msg += Translation.Get("wantApi");
+                        String Msg = Translation.get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
+                        Msg += Translation.get("wantApi");
 
-                        GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE)
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                            if (which == MessageBox.BUTTON_POSITIVE)
                                 PlatformConnector.callGetApiKey();
                             return true;
                         });
@@ -157,11 +156,11 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.Get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
-                        Msg += Translation.Get("wantApi");
+                        String Msg = Translation.get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
+                        Msg += Translation.get("wantApi");
 
-                        GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE)
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                            if (which == MessageBox.BUTTON_POSITIVE)
                                 PlatformConnector.callGetApiKey();
                             return true;
                         });
@@ -178,11 +177,11 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.Get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
-                        Msg += Translation.Get("wantApi");
+                        String Msg = Translation.get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
+                        Msg += Translation.get("wantApi");
 
-                        GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == GL_MsgBox.BUTTON_POSITIVE)
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                            if (which == MessageBox.BUTTON_POSITIVE)
                                 PlatformConnector.callGetApiKey();
                             return true;
                         }, Config.RememberAsk_Get_API_Key);

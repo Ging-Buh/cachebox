@@ -374,7 +374,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         infoBubble.setInvisible();
         infoBubble.setOnClickListener((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
-                wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
+                wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
 
                 }, new ICancelRunnable() {
 

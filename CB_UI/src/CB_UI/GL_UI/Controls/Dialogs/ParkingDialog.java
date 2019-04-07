@@ -13,7 +13,7 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -33,7 +33,7 @@ public class ParkingDialog extends ButtonDialog {
     private Label lblSetGPS, lblSelectWP, lblDeleteP;
 
     public ParkingDialog() {
-        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
+        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation.get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
 
         msgBoxContentSize = getContentSize();
         // initial VariableField
@@ -77,9 +77,9 @@ public class ParkingDialog extends ButtonDialog {
         lblSelectWP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
         lblDeleteP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
-        lblSelectWP.setWrappedText(Translation.Get("My_Parking_Area_select"));
-        lblSetGPS.setWrappedText(Translation.Get("My_Parking_Area_Add"));
-        lblDeleteP.setWrappedText(Translation.Get("My_Parking_Area_Del"));
+        lblSelectWP.setWrappedText(Translation.get("My_Parking_Area_select"));
+        lblSetGPS.setWrappedText(Translation.get("My_Parking_Area_Add"));
+        lblDeleteP.setWrappedText(Translation.get("My_Parking_Area_Del"));
 
         box2.addChild(lblSetGPS);
         box2.addChild(lblSelectWP);
@@ -98,7 +98,7 @@ public class ParkingDialog extends ButtonDialog {
             }
         }
 
-        Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
+        Size msgBoxSize = MessageBox.calcMsgBoxSize("teste", true, true, false);
         msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 

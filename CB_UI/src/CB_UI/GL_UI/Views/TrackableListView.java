@@ -78,7 +78,7 @@ public class TrackableListView extends CB_View_Base {
     protected void Initial() {
 
         listView = new V_ListView(new CB_RectF(0, 0, getWidth(), 0), "listView");
-        listView.setEmptyMsg(Translation.Get("TB_List_Empty"));
+        listView.setEmptyMsg(Translation.get("TB_List_Empty"));
         listView.setBaseAdapter(lvAdapter);
 
         Layout();
@@ -93,7 +93,7 @@ public class TrackableListView extends CB_View_Base {
 
     private boolean fetchTB(final String TBCode) {
         if (TBCode.length() > 0) {
-            wd = CancelWaitDialog.ShowWait(Translation.Get("Search"), DownloadAnimation.GetINSTANCE(), () -> {
+            wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), () -> {
             }, new ICancelRunnable() {
                 @Override
                 public void run() {
@@ -101,7 +101,7 @@ public class TrackableListView extends CB_View_Base {
                     wd.close();
                     if (tb == null) {
                         if (APIError == 404) {
-                            GL.that.Toast(Translation.Get("NoTbFound"));
+                            GL.that.Toast(Translation.get("NoTbFound"));
                         } else {
                             // GL.that.Toast(ConnectionError.INSTANCE);
                             // GL.that.Toast(ApiUnavailable.INSTANCE);
@@ -133,7 +133,7 @@ public class TrackableListView extends CB_View_Base {
 
     // Inventar neu laden
     public void RefreshTbList() {
-        wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), () -> {
+        wd = CancelWaitDialog.ShowWait(Translation.get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), () -> {
 
         }, new ICancelRunnable() {
 
@@ -188,7 +188,7 @@ public class TrackableListView extends CB_View_Base {
     }
 
     private void searchTB() {
-        StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("InputTB_Code"), Translation.Get("SearchTB"), "", (which, data) -> {
+        StringInputBox.Show(WrapType.SINGLELINE, Translation.get("InputTB_Code"), Translation.get("SearchTB"), "", (which, data) -> {
             switch (which) {
                 case 1: // ok
                     return fetchTB(StringInputBox.editText.getText());

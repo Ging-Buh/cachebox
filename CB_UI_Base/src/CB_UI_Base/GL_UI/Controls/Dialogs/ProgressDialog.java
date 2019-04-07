@@ -3,13 +3,12 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
@@ -20,7 +19,7 @@ import CB_Utils.Events.ProgresssChangedEventList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
+public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
     private static RunnableReadyHandler ProgressThread;
     private static String titleText;
     private static ProgressDialog that;
@@ -44,7 +43,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 ProgressThread.Cancel();
                 button3.disable();
-                button3.setText(Translation.Get("waitForCancel"));
+                button3.setText(Translation.get("waitForCancel"));
                 isCanceld = true;
                 if (mCancelListener != null)
                     mCancelListener.isCanceled();

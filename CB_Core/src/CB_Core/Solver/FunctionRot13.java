@@ -14,18 +14,18 @@ public class FunctionRot13 extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncRot13");
+        return Translation.get("solverFuncRot13");
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescRot13");
+        return Translation.get("solverDescRot13");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount", "1", "$solverFuncRot13");
+            return Translation.get("solverErrParamCount", "1", "$solverFuncRot13");
         }
         return UnitFormatter.Rot13(parameter[0]);
     }

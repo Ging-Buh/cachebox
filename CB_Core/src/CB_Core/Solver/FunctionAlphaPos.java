@@ -14,20 +14,20 @@ public class FunctionAlphaPos extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncAlphaPos".hashCode());
+        return Translation.get("solverFuncAlphaPos".hashCode());
         // return "AlphaPos";
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescAlphaPos".hashCode());
+        return Translation.get("solverDescAlphaPos".hashCode());
         // return "Position des ersten Zeichens im Alphabet";
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaPos");
+            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaPos");
             // return "Diese Funktion benötigt %s Parameter".replace("%s", "1");
         }
         String wert = parameter[0].trim().toLowerCase();

@@ -32,8 +32,8 @@ import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Fonts;
@@ -98,8 +98,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void initLayoutWithValues() {
         initRow(BOTTOMUP);
-        btnOK = new Button(Translation.Get("ok"));
-        btnCancel = new Button(Translation.Get("cancel"));
+        btnOK = new Button(Translation.get("ok"));
+        btnCancel = new Button(Translation.get("cancel"));
         addNext(btnOK);
         addLast(btnCancel);
         scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
@@ -188,7 +188,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
                     fieldNote.timestamp = timestamp;
                 } catch (ParseException e) {
-                    final GL_MsgBox msg = GL_MsgBox.Show(Translation.Get("wrongDate"), Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
+                    final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
 
                         @Override
                         public boolean onClick(int which, Object data) {
@@ -268,13 +268,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         tvFounds.setWidth(tvFounds.getTextWidth());
         scrollBoxContent.addNext(tvFounds, FIXED);
 
-        tvDate = new EditTextField(this, "*" + Translation.Get("date"));
+        tvDate = new EditTextField(this, "*" + Translation.get("date"));
         tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         scrollBoxContent.addNext(tvDate, 0.4f);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
         String sDate = iso8601Format.format(fieldNote.timestamp);
         tvDate.setText(sDate);
-        tvTime = new EditTextField(this, "*" + Translation.Get("time"));
+        tvTime = new EditTextField(this, "*" + Translation.get("time"));
         tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
         scrollBoxContent.addLast(tvTime, 0.4f);
         String sTime = new SimpleDateFormat("HH:mm").format(fieldNote.timestamp);
@@ -284,7 +284,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     private void iniGC_VoteItem() {
         if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             if (!fieldNote.isTbFieldNote) {
-                FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), Sprites.Stars.toArray(), FilterSetListView.NUMERIC_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
+                FilterSetEntry tmp = new FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), FilterSetListView.NUMERIC_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
                 GcVote = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 1.1f), 0, tmp);
                 scrollBoxContent.addLast(GcVote);
             }
@@ -308,7 +308,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         });
         scrollBoxContent.addNext(btnHow, FIXED);
 
-        Button btnFromNotes = new Button(Translation.Get("fromNotes"));
+        Button btnFromNotes = new Button(Translation.get("fromNotes"));
         btnFromNotes.setOnClickListener((v, x, y, pointer, button) -> {
             String text = Database.GetNote(fieldNote.CacheId);
             if (text.length() > 0) {
@@ -332,14 +332,14 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         });
         scrollBoxContent.addNext(btnFromNotes);
 
-        Button btnFromFile = new Button(Translation.Get("fromFile"));
+        Button btnFromFile = new Button(Translation.get("fromFile"));
         btnFromFile.setOnClickListener((v, x, y, pointer, button) -> {
             String mPath = Config.TemplateLastUsedPath.getValue();
             if (mPath.length() == 0) {
                 mPath = Config.mWorkPath + "/User";
             }
             mPath = mPath + "/" + Config.TemplateLastUsedName.getValue();
-            PlatformConnector.getFile(mPath, "*.txt", Translation.Get("TemplateTitleSelect"), Translation.Get("TemplateButtonSelect"), PathAndName -> {
+            PlatformConnector.getFile(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), PathAndName -> {
                 File file = FileFactory.createFile(PathAndName);
                 BufferedReader br = null;
                 String strLine;
@@ -389,8 +389,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         rbDirectLog = new RadioButton("direct_Log");
         rbOnlyFieldNote = new RadioButton("only_FieldNote");
 
-        rbDirectLog.setText(Translation.Get("directLog"));
-        rbOnlyFieldNote.setText(Translation.Get("onlyFieldNote"));
+        rbDirectLog.setText(Translation.get("directLog"));
+        rbOnlyFieldNote.setText(Translation.get("onlyFieldNote"));
 
         RadioGroup Group = new RadioGroup();
         Group.add(rbOnlyFieldNote);

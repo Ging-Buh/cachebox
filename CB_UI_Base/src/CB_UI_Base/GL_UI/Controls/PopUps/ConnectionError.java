@@ -51,7 +51,7 @@ public class ConnectionError extends Toast {
         this.mTextField.setX(this.getHalfWidth() - mTextField.getHalfWidth());
         this.mTextField.setY(this.getHeight() - (mTextField.getHeight() + Dialog.margin));
 
-        this.setWrappedText(Translation.Get("ConnectionError") + Global.br + msg);
+        this.setWrappedText(Translation.get("ConnectionError") + Global.br + msg);
 
         this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon", false);
         this.mIcon.setSprite(Sprites.getSprite("connection-error"), false);

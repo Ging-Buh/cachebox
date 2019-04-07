@@ -77,7 +77,7 @@ public class CoordinateEntity extends Entity {
             // gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
             coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
         if (coord == null)
-            return Translation.Get("CacheOrWaypointNotFound".hashCode(), gcCode);
+            return Translation.get("CacheOrWaypointNotFound".hashCode(), gcCode);
         else
             return coord.FormatCoordinate();
     }
@@ -89,10 +89,10 @@ public class CoordinateEntity extends Entity {
         try {
             coord = new CoordinateGPS(sCoord);
         } catch (Exception e) {
-            return Translation.Get("InvalidCoordinate".hashCode(), "SetCoordinate", sCoord);
+            return Translation.get("InvalidCoordinate".hashCode(), "SetCoordinate", sCoord);
         }
         if (!coord.isValid())
-            return Translation.Get("InvalidCoordinate".hashCode(), "SetCoordinate", sCoord);
+            return Translation.get("InvalidCoordinate".hashCode(), "SetCoordinate", sCoord);
         WaypointDAO waypointDAO = new WaypointDAO();
         Waypoint dbWaypoint = null;
         // Suchen, ob dieser Waypoint bereits vorhanden ist.
@@ -100,7 +100,7 @@ public class CoordinateEntity extends Entity {
         try {
             reader.moveToFirst();
             if (reader.isAfterLast())
-                return Translation.Get("CacheOrWaypointNotFound".hashCode(), this.gcCode);
+                return Translation.get("CacheOrWaypointNotFound".hashCode(), this.gcCode);
             dbWaypoint = (Waypoint) waypointDAO.getWaypoint(reader, true);
         } finally {
             reader.close();
@@ -117,7 +117,7 @@ public class CoordinateEntity extends Entity {
                     // sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
                     // String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
                     // MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
-                    return Translation.Get("solverErrDiffCache".hashCode(), coord.FormatCoordinate(), dbWaypoint.getTitle(), cache.getName());
+                    return Translation.get("solverErrDiffCache".hashCode(), coord.FormatCoordinate(), dbWaypoint.getTitle(), cache.getName());
                 }
             }
             dbWaypoint.Pos = new Coordinate(coord);
@@ -149,7 +149,7 @@ public class CoordinateEntity extends Entity {
                 }
             }
         } catch (Exception e) {
-            return Translation.Get("CacheOrWaypointNotFound".hashCode(), this.gcCode);
+            return Translation.get("CacheOrWaypointNotFound".hashCode(), this.gcCode);
         }
         return gcCode + "=" + coord.FormatCoordinate();
     }

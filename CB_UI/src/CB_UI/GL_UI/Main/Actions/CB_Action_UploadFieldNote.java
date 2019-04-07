@@ -11,12 +11,10 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
@@ -133,9 +131,9 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 
                     if (!UploadMeldung.equals("")) {
                         if (!API_Key_error)
-                            GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                            MessageBox.show(UploadMeldung, Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
                     } else {
-                        GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+                        MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
                     }
                 }
                 FieldNotesView.getInstance().notifyDataSetChanged();

@@ -5,13 +5,13 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 
-public class NewDB_InputBox extends GL_MsgBox {
+public class NewDB_InputBox extends MessageBox {
     public static EditTextField editText;
 
     public NewDB_InputBox(Size size, String name) {
@@ -40,7 +40,7 @@ public class NewDB_InputBox extends GL_MsgBox {
         Label lbl = new Label(LabelRec);
         lbl.setX(chk.getMaxX() + margin);
         lbl.setY(chk.getY());
-        lbl.setText(Translation.Get("UseDefaultRep"));
+        lbl.setText(Translation.get("UseDefaultRep"));
 
         editText = new EditTextField(textFieldRec, msgBox, "editText", type);
         editText.setZeroPos();

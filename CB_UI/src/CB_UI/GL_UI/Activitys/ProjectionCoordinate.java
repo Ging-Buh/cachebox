@@ -91,7 +91,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
         CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth, MeasuredLabelHeight);
 
-        Label lblP2P = new Label(this.name + " lblP2P", labelRec, Translation.Get("toPoint"));
+        Label lblP2P = new Label(this.name + " lblP2P", labelRec, Translation.get("toPoint"));
         this.addChild(lblP2P);
 
         CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
@@ -107,8 +107,8 @@ public class ProjectionCoordinate extends ActivityBase {
 
     private void iniTextFields() {
         // measure label width
-        String sBearing = Translation.Get("Bearing");
-        String sDistance = radius ? "Radius" : Translation.Get("Distance");
+        String sBearing = Translation.get("Bearing");
+        String sDistance = radius ? "Radius" : Translation.get("Distance");
         String sUnit = ImperialUnits ? "yd" : "m";
 
         float wB = Fonts.Measure(sBearing).width;
@@ -175,8 +175,8 @@ public class ProjectionCoordinate extends ActivityBase {
         btnRec.setX(bOK.getMaxX());
         Button bCancel = new Button(btnRec, "CancelButton");
 
-        bOK.setText(Translation.Get("ok"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("ok"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
         this.addChild(bCancel);

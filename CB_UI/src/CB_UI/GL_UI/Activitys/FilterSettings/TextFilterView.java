@@ -105,7 +105,7 @@ public class TextFilterView extends CB_View_Base {
         mBtnClear = new Button("clear");
         mBtnClear.setY(mEingabe.getY() - margin - mBtnClear.getHeight());
         mBtnClear.setX(this.getWidth() - margin - mBtnClear.getWidth());
-        mBtnClear.setText(Translation.Get("clear"));
+        mBtnClear.setText(Translation.get("clear"));
         mBtnClear.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -121,9 +121,9 @@ public class TextFilterView extends CB_View_Base {
         this.addChild(mEingabe);
         this.addChild(mBtnClear);
 
-        mTglBtnTitle.initialOn_Off_ToggleStates(Translation.Get("Title"), Translation.Get("Title"));
-        mTglBtnGc.initialOn_Off_ToggleStates(Translation.Get("GCCode"), Translation.Get("GCCode"));
-        mTglBtnOwner.initialOn_Off_ToggleStates(Translation.Get("Owner"), Translation.Get("Owner"));
+        mTglBtnTitle.initialOn_Off_ToggleStates(Translation.get("Title"), Translation.get("Title"));
+        mTglBtnGc.initialOn_Off_ToggleStates(Translation.get("GCCode"), Translation.get("GCCode"));
+        mTglBtnOwner.initialOn_Off_ToggleStates(Translation.get("Owner"), Translation.get("Owner"));
 
         mTglBtnTitle.setOnClickListener(new OnClickListener() {
 

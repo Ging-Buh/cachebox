@@ -95,16 +95,16 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         btnCancel = new Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
 
         // translations
-        btnOk.setText(Translation.Get("ok".hashCode()));
-        btnAdd.setText(Translation.Get("addWP"));
-        btnCancel.setText(Translation.Get("cancel".hashCode()));
+        btnOk.setText(Translation.get("ok".hashCode()));
+        btnAdd.setText(Translation.get("addWP"));
+        btnCancel.setText(Translation.get("cancel".hashCode()));
 
         this.addChild(btnOk);
         this.addChild(btnAdd);
         this.addChild(btnCancel);
 
-        lblName = new Label(Translation.Get("Name"));
-        editName = new EditTextField(this, "*" + Translation.Get("Name"));
+        lblName = new Label(Translation.get("Name"));
+        editName = new EditTextField(this, "*" + Translation.get("Name"));
         lblName.setRec(new CB_RectF(leftBorder, this.getHeight() - (lblName.getHeight() + margin), lblName.getWidth(), lblName.getHeight()));
         editName.setRec(new CB_RectF(lblName.getMaxX() + margin, lblName.getY(), innerWidth - (margin + lblName.getWidth()), lblName.getHeight()));
         this.addChild(lblName);
@@ -174,7 +174,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     }
 
     private void createNewTrack() {
-        GlobalCore.AktuelleRoute = new Track(Translation.Get("actualTrack"), Color.BLUE);
+        GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
         GlobalCore.AktuelleRoute.ShowRoute = true;
         GlobalCore.AktuelleRoute.IsActualTrack = true;
         GlobalCore.aktuelleRouteCount = 0;

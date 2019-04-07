@@ -2,21 +2,21 @@ package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_Utils.Util.UnitFormatter;
 
-public class HintDialog extends GL_MsgBox {
+public class HintDialog extends MessageBox {
 
     ScrollBox scrollBox;
 
     public HintDialog(Size size, String hint) {
         super(size, "");
-        setTitle(Translation.Get("hint"));
-        addButtons(Translation.Get("decode"), null, Translation.Get("close"));
+        setTitle(Translation.get("hint"));
+        addButtons(Translation.get("decode"), null, Translation.get("close"));
         CB_RectF rec = getContentSize().getBounds();
         scrollBox = new ScrollBox(rec);
         label = new Label("Hint"); // oder ohne Parameter aufrufen

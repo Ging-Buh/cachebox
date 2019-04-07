@@ -17,18 +17,18 @@ public class FunctionHandyCode extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncPhoneCode".hashCode());
+        return Translation.get("solverFuncPhoneCode".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescPhoneCode".hashCode());
+        return Translation.get("solverDescPhoneCode".hashCode());
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncPhoneCode");
+            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncPhoneCode");
         }
         String wert = parameter[0].trim().toLowerCase();
         if (wert.length() == 0)

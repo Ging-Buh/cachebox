@@ -110,7 +110,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             icm.addItem(menuIndex++, QuickActions.getName(item.ordinal()), new SpriteDrawable(QuickActions.getActionEnumById(item.ordinal()).getIcon()), true);
         }
 
-        icm.setPrompt(Translation.Get("selectQuickButtemItem"));
+        icm.setPrompt(Translation.get("selectQuickButtemItem"));
 
         icm.Show();
 

@@ -85,8 +85,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         btnRec.setX(bOK.getMaxX());
         Button bCancel = new Button(btnRec, "CancelButton");
 
-        bOK.setText(Translation.Get("ok"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("ok"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
         this.addChild(bCancel);
@@ -113,18 +113,18 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
     private void iniLabels() {
         float y = bOK.getMaxY() + innerWidth + (margin * 3);
-        float w = Math.max(Fonts.Measure(Translation.Get("MeasureCoord")).width, Fonts.Measure(Translation.Get("MeasureCount")).width);
+        float w = Math.max(Fonts.Measure(Translation.get("MeasureCoord")).width, Fonts.Measure(Translation.get("MeasureCount")).width);
         CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
         CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
 
-        Label lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.Get("MeasureCount"));
+        Label lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.get("MeasureCount"));
 
         lblMeasureCount = new Label(rec2);
 
         rec2.setY(lblMeasureCount.getMaxY() + margin);
         rec.setY(lblMeasureCount.getMaxY() + margin);
 
-        lblDescMeasureCoord = new Label(this.name + " lblDescMeasureCoord", rec, Translation.Get("MeasureCoord"));
+        lblDescMeasureCoord = new Label(this.name + " lblDescMeasureCoord", rec, Translation.get("MeasureCoord"));
 
         lblMeasureCoord = new Label(rec2);
 

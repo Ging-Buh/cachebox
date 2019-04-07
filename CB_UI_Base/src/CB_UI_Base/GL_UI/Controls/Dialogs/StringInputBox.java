@@ -3,12 +3,12 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.Size;
 
-public class StringInputBox extends GL_MsgBox {
+public class StringInputBox extends MessageBox {
     public static EditTextField editText;
 
     private StringInputBox(Size size) {

@@ -13,18 +13,18 @@ public class FunctionPi extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncPi");
+        return Translation.get("solverFuncPi");
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescPi");
+        return Translation.get("solverDescPi");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if ((parameter.length != 1) || (parameter[0].trim() != ""))
-            return Translation.Get("solverErrParamCount", "0", "$solverFuncPi");
+            return Translation.get("solverErrParamCount", "0", "$solverFuncPi");
         return String.valueOf(Math.PI);
     }
 

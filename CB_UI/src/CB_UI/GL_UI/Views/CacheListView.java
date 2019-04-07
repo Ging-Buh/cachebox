@@ -95,7 +95,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
             if (lvAdapter == null || lvAdapter.getCount() == 0) {
                 if (emptyMsg == null) {
                     emptyMsg = new BitmapFontCache(Fonts.getBig());
-                    GlyphLayout bounds = emptyMsg.setText(Translation.Get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
+                    GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
                     emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
                 }
                 if (emptyMsg != null)
@@ -106,7 +106,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
         } catch (Exception e) {
             if (emptyMsg == null) {
                 emptyMsg = new BitmapFontCache(Fonts.getBig());
-                GlyphLayout bounds = emptyMsg.setText(Translation.Get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
+                GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
                 emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
             }
             if (emptyMsg != null)

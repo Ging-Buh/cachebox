@@ -61,7 +61,7 @@ public class TrackRecorder {
 
     public static void StartRecording() {
 
-        GlobalCore.AktuelleRoute = new Track(Translation.Get("actualTrack"), Color.BLUE);
+        GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
         GlobalCore.AktuelleRoute.ShowRoute = true;
         GlobalCore.AktuelleRoute.IsActualTrack = true;
         GlobalCore.aktuelleRouteCount = 0;
@@ -278,7 +278,7 @@ public class TrackRecorder {
     public static void StopRecording() {
         if (GlobalCore.AktuelleRoute != null) {
             GlobalCore.AktuelleRoute.IsActualTrack = false;
-            GlobalCore.AktuelleRoute.Name = Translation.Get("recordetTrack");
+            GlobalCore.AktuelleRoute.Name = Translation.get("recordetTrack");
         }
         pauseRecording = false;
         recording = false;

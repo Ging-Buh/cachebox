@@ -21,10 +21,9 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
@@ -119,19 +118,19 @@ public class ButtonDialog extends Dialog {
             buttons = MessageBoxButtons.NOTHING;
 
         if (buttons == MessageBoxButtons.AbortRetryIgnore) {
-            createButtons(3, Translation.Get("abort"), Translation.Get("retry"), Translation.Get("ignore"));
+            createButtons(3, Translation.get("abort"), Translation.get("retry"), Translation.get("ignore"));
         } else if (buttons == MessageBoxButtons.OK) {
-            createButtons(1, Translation.Get("ok"), "", "");
+            createButtons(1, Translation.get("ok"), "", "");
         } else if (buttons == MessageBoxButtons.OKCancel) {
-            createButtons(2, Translation.Get("ok"), "", Translation.Get("cancel"));
+            createButtons(2, Translation.get("ok"), "", Translation.get("cancel"));
         } else if (buttons == MessageBoxButtons.RetryCancel) {
-            createButtons(2, Translation.Get("retry"), "", Translation.Get("cancel"));
+            createButtons(2, Translation.get("retry"), "", Translation.get("cancel"));
         } else if (buttons == MessageBoxButtons.YesNo) {
-            createButtons(2, Translation.Get("yes"), "", Translation.Get("no"));
+            createButtons(2, Translation.get("yes"), "", Translation.get("no"));
         } else if (buttons == MessageBoxButtons.YesNoCancel) {
-            createButtons(3, Translation.Get("yes"), Translation.Get("no"), Translation.Get("cancel"));
+            createButtons(3, Translation.get("yes"), Translation.get("no"), Translation.get("cancel"));
         } else if (buttons == MessageBoxButtons.Cancel) {
-            createButtons(3, "", "", Translation.Get("cancel"));
+            createButtons(3, "", "", Translation.get("cancel"));
             button1.setInvisible();
             button2.setInvisible();
         } else {

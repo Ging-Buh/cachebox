@@ -348,7 +348,7 @@ public class Menu extends ButtonDialog {
             if (withoutTranslation)
                 trans = StringId + anhang;
             else
-                trans = Translation.Get(StringId) + anhang;
+                trans = Translation.get(StringId) + anhang;
         }
 
         // layout();

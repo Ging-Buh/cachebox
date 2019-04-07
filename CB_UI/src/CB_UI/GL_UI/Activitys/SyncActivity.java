@@ -5,7 +5,7 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
@@ -64,8 +64,8 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
         Button bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
-        bOK.setText(Translation.Get("import"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("import"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
         bOK.setOnClickListener((v, x, y, pointer, button) -> {
@@ -79,8 +79,8 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
                 return true;
 
             if (importStarted) {
-                GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
-                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                    if (which == MessageBox.BUTTON_POSITIVE) {
                         // cancelImport();
                     }
                     return true;
@@ -99,7 +99,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
 
         Label lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
-        float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
+        float lblWidth = lblTitle.setText(Translation.get("import")).getTextWidth();
         this.addChild(lblTitle);
 
         CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);

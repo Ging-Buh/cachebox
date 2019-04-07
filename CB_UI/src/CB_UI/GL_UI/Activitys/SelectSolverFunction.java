@@ -63,7 +63,7 @@ public class SelectSolverFunction extends ButtonDialog {
 
     private void iniOkCancel() {
 
-        button1.setText(Translation.Get("ok"));
+        button1.setText(Translation.get("ok"));
         button1.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -78,7 +78,7 @@ public class SelectSolverFunction extends ButtonDialog {
                 return true;
             }
         });
-        button3.setText(Translation.Get("cancel"));
+        button3.setText(Translation.get("cancel"));
         button3.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -165,7 +165,7 @@ public class SelectSolverFunction extends ButtonDialog {
 
                 // erstelle Category Button
                 final Button categoryButton = new Button(categoryBtnRec, "Btn-" + cat.getName());
-                categoryButton.setText(Translation.Get(cat.getName()));
+                categoryButton.setText(Translation.get(cat.getName()));
 
                 // alle Buttons müssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
                 categoryButton.setDraggable();

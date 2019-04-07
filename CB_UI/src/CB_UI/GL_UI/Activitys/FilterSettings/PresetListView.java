@@ -5,12 +5,10 @@ import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowFilterSettings;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -144,7 +142,7 @@ public class PresetListView extends V_ListView {
             v.setOnLongClickListener((v1, x, y, pointer, button) -> {
                 final int delItemIndex = ((PresetListViewItem) v1).getIndex();
                 GL.that.closeActivity();
-                GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+                MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
                     switch (which) {
                         case 1: // ok Clicked
 
@@ -191,7 +189,7 @@ public class PresetListView extends V_ListView {
     }
 
     private void mPresetEntriesAdd(String name, String icon, FilterProperties PresetFilter) {
-        mPresetEntries.add(new PresetEntry(Translation.Get(name), Sprites.getSprite(icon), PresetFilter));
+        mPresetEntries.add(new PresetEntry(Translation.get(name), Sprites.getSprite(icon), PresetFilter));
     }
 
     @Override

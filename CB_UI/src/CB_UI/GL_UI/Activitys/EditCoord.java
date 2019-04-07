@@ -12,7 +12,6 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Converter.UTMConvert;
 import CB_Utils.Log.Log;
@@ -123,8 +122,8 @@ public class EditCoord extends ActivityBase {
         this.initRow(BOTTOMUP);
         this.addNext(btnOK);
         this.addLast(btnCancel);
-        btnCancel.setText(Translation.Get("cancel"));
-        btnOK.setText(Translation.Get("ok"));
+        btnCancel.setText(Translation.get("cancel"));
+        btnOK.setText(Translation.get("ok"));
 
         pnlNumPad = new Box(innerWidth, this.getAvailableHeight(), "pnlNumPad");
         this.createNumPad(pnlNumPad);

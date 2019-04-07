@@ -34,7 +34,7 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
@@ -218,7 +218,7 @@ public class SelectDB extends ActivityBase {
         // New Button
         bNew.setOnClickListener((v, x, y, pointer, button) -> {
             stopTimer();
-            NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB", mDialogListenerNewDB);
+            NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.get("NewDB"), Translation.get("InsNewDBName"), "NewDB", mDialogListenerNewDB);
             return true;
         });
 
@@ -253,14 +253,14 @@ public class SelectDB extends ActivityBase {
         });
 
         // Translations
-        bNew.setText(Translation.Get("NewDB"));
-        bSelect.setText(Translation.Get("confirm"));
-        bCancel.setText(Translation.Get("cancel"));
+        bNew.setText(Translation.get("NewDB"));
+        bSelect.setText(Translation.get("confirm"));
+        bCancel.setText(Translation.get("cancel"));
 
         autoStartTime = Config.MultiDBAutoStartTime.getValue();
         if (autoStartTime > 0) {
             autoStartCounter = autoStartTime;
-            bAutostart.setText(autoStartCounter + " " + Translation.Get("confirm"));
+            bAutostart.setText(autoStartCounter + " " + Translation.get("confirm"));
             if ((autoStartTime > 0) && (AktFile != null)) {
                 updateTimer = new Timer();
                 updateTimer.scheduleAtFixedRate(new TimerTask() {
@@ -272,7 +272,7 @@ public class SelectDB extends ActivityBase {
                         } else {
                             try {
                                 autoStartCounter--;
-                                bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
+                                bAutostart.setText(autoStartCounter + "    " + Translation.get("confirm"));
                             } catch (Exception e) {
                                 autoStartCounter = 0;
                                 stopTimer();
@@ -419,11 +419,11 @@ public class SelectDB extends ActivityBase {
 
     private void setAutoStartText() {
         if (autoStartTime < 0)
-            bAutostart.setText(Translation.Get("StartWithoutSelection"));
+            bAutostart.setText(Translation.get("StartWithoutSelection"));
         else if (autoStartTime == 0)
-            bAutostart.setText(Translation.Get("AutoStartDisabled"));
+            bAutostart.setText(Translation.get("AutoStartDisabled"));
         else
-            bAutostart.setText(Translation.Get("AutoStartTime", String.valueOf(autoStartTime)));
+            bAutostart.setText(Translation.get("AutoStartTime", String.valueOf(autoStartTime)));
     }
 
     private void stopTimer() {
@@ -438,12 +438,12 @@ public class SelectDB extends ActivityBase {
 
     private void showSelectionMenu() {
         final String[] cs = new String[6];
-        cs[0] = Translation.Get("StartWithoutSelection");
-        cs[1] = Translation.Get("AutoStartDisabled");
-        cs[2] = Translation.Get("AutoStartTime", "5");
-        cs[3] = Translation.Get("AutoStartTime", "10");
-        cs[4] = Translation.Get("AutoStartTime", "25");
-        cs[5] = Translation.Get("AutoStartTime", "60");
+        cs[0] = Translation.get("StartWithoutSelection");
+        cs[1] = Translation.get("AutoStartDisabled");
+        cs[2] = Translation.get("AutoStartTime", "5");
+        cs[3] = Translation.get("AutoStartTime", "10");
+        cs[4] = Translation.get("AutoStartTime", "25");
+        cs[5] = Translation.get("AutoStartTime", "60");
 
         Menu cm = new Menu("MiscContextMenu");
 

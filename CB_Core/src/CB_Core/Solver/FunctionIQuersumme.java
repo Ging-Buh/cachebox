@@ -19,12 +19,12 @@ public class FunctionIQuersumme extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncICrosstotal".hashCode());
+        return Translation.get("solverFuncICrosstotal".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescICrosstotal".hashCode());
+        return Translation.get("solverDescICrosstotal".hashCode());
     }
 
     private String Qs(String wert) {
@@ -40,7 +40,7 @@ public class FunctionIQuersumme extends Function {
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncICrosstotal");
+            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncICrosstotal");
         }
         String wert = parameter[0].trim();
         while (wert.length() > 1) {

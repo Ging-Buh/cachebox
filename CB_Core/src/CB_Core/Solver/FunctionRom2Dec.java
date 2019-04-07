@@ -13,18 +13,18 @@ public class FunctionRom2Dec extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncRom2Dec");
+        return Translation.get("solverFuncRom2Dec");
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescRom2Dec");
+        return Translation.get("solverDescRom2Dec");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount", "1", "$solverFuncRom2Dec");
+            return Translation.get("solverErrParamCount", "1", "$solverFuncRom2Dec");
         }
         String wert = parameter[0].trim();
         String ziffern = "IVXLCDM";
@@ -50,7 +50,7 @@ public class FunctionRom2Dec extends Function {
                 result = werte[ziffern.indexOf(wert.charAt(0), 0)];
             }
         } catch (Exception ex) {
-            return Translation.Get("$InvalidRomString", parameter[0]);
+            return Translation.get("$InvalidRomString", parameter[0]);
         }
         return String.valueOf(result);
     }

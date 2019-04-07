@@ -34,7 +34,7 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -193,9 +193,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                         else if (aktWaypoint.isCorrectedFinal())
                             GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
                         if (GroundspeakAPI.APIError == 0) {
-                            GL_MsgBox.Show(Translation.Get("ok"), Translation.Get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                            MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                         } else {
-                            GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                            MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                         }
 
                     });
@@ -304,9 +304,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     }
 
     private void deleteWP() {
-        GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
-                case GL_MsgBox.BUTTON_POSITIVE:
+                case MessageBox.BUTTON_POSITIVE:
                     // Yes button clicked
                     Database.DeleteFromDatabase(aktWaypoint);
                     GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
@@ -327,7 +327,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                     that.scrollToItem(0);
 
                     break;
-                case GL_MsgBox.BUTTON_NEGATIVE:
+                case MessageBox.BUTTON_NEGATIVE:
                     // No button clicked
                     break;
             }

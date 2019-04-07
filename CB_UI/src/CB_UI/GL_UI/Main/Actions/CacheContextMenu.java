@@ -16,7 +16,7 @@ import CB_UI.WriteIntoDB;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -118,9 +118,9 @@ public class CacheContextMenu {
                     if (GlobalCore.isSetSelectedCache()) {
                         GL.that.postAsync(() -> {
                             if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                                GL_MsgBox.Show(Translation.Get("ok"), Translation.Get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                             } else {
-                                GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                             }
                         });
                     }
@@ -129,9 +129,9 @@ public class CacheContextMenu {
                     if (GlobalCore.isSetSelectedCache()) {
                         GL.that.postAsync(() -> {
                             if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                                GL_MsgBox.Show(Translation.Get("ok"), Translation.Get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                             } else {
-                                GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                             }
                         });
                     }
@@ -150,7 +150,7 @@ public class CacheContextMenu {
     public static void ReloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
 
-            wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+            wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                 @Override
                 public void isCanceled() {
@@ -192,7 +192,7 @@ public class CacheContextMenu {
                 }
             });
         } else {
-            GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
+            MessageBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MessageBoxIcon.Error);
         }
     }
 

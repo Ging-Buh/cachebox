@@ -14,18 +14,18 @@ public class FunctionAlphaSum extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncAlphaSum".hashCode());
+        return Translation.get("solverFuncAlphaSum".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescAlphaSum".hashCode());
+        return Translation.get("solverDescAlphaSum".hashCode());
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaSum");
+            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaSum");
         }
         int result = 0;
         if (parameter[0].length() == 0)

@@ -32,8 +32,8 @@ import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
@@ -169,10 +169,10 @@ public class EditFilterSettings extends ActivityBase {
         this.addChild(btCat);
         this.addChild(btTxt);
 
-        String sPre = Translation.Get("preset");
-        String sSet = Translation.Get("setting");
-        String sCat = Translation.Get("category");
-        String sTxt = Translation.Get("text");
+        String sPre = Translation.get("preset");
+        String sSet = Translation.get("setting");
+        String sCat = Translation.get("category");
+        String sTxt = Translation.get("text");
 
         btPre.initialOn_Off_ToggleStates(sPre, sPre);
         btSet.initialOn_Off_ToggleStates(sSet, sSet);
@@ -236,8 +236,8 @@ public class EditFilterSettings extends ActivityBase {
         });
 
         // Translations
-        bOK.setText(Translation.Get("ok"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("ok"));
+        bCancel.setText(Translation.get("cancel"));
 
         ListViewRec = new CB_RectF(0, margin, this.getWidth(), btPre.getY() - bOK.getMaxY() - margin - margin);
 
@@ -254,7 +254,7 @@ public class EditFilterSettings extends ActivityBase {
     public static void ApplyFilter(final FilterProperties Props) {
 
         props = Props;
-        pd = WaitDialog.ShowWait(Translation.Get("FilterCaches"));
+        pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
 
         new Thread(() -> {
             try {
@@ -295,7 +295,7 @@ public class EditFilterSettings extends ActivityBase {
     private void initialPresets() {
         CB_RectF rec = new CB_RectF(leftBorder, margin, innerWidth, UI_Size_Base.that.getButtonHeight());
         btnAddPreset = new Button(rec, "AddPresetButon");
-        btnAddPreset.setText(Translation.Get("AddOwnFilterPreset"));
+        btnAddPreset.setText(Translation.get("AddOwnFilterPreset"));
         btnAddPreset.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -417,7 +417,7 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         if (exist) {
-            GL_MsgBox.Show(Translation.Get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener() {
+            MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener() {
 
                 @Override
                 public boolean onClick(int which, Object data) {
@@ -428,7 +428,7 @@ public class EditFilterSettings extends ActivityBase {
             return;
         }
 
-        StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("NewUserPreset"), Translation.Get("InsNewUserPreset"), "UserPreset", new OnMsgBoxClickListener() {
+        StringInputBox.Show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset", new OnMsgBoxClickListener() {
 
             @Override
             public boolean onClick(int which, Object data) {

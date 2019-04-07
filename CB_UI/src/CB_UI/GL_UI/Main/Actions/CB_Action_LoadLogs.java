@@ -9,7 +9,7 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
@@ -49,7 +49,7 @@ public class CB_Action_LoadLogs extends CB_Action {
 
     @Override
     public void Execute() {
-        pd = CancelWaitDialog.ShowWait(Translation.Get("LoadLogs"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+        pd = CancelWaitDialog.ShowWait(Translation.get("LoadLogs"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
             public void isCanceled() {
@@ -107,7 +107,7 @@ public class CB_Action_LoadLogs extends CB_Action {
 
             @Override
             public void RunnableIsReady(boolean canceled) {
-                String sCanceled = canceled ? Translation.Get("isCanceled") + GlobalCore.br : "";
+                String sCanceled = canceled ? Translation.get("isCanceled") + GlobalCore.br : "";
                 pd.close();
                 if (result != -1) {
                     /*
@@ -118,7 +118,7 @@ public class CB_Action_LoadLogs extends CB_Action {
                      * CachListChangedEventList.Call();
                      */
                     synchronized (Database.Data.cacheList) {
-                        GL_MsgBox.Show(sCanceled + Translation.Get("LogsLoaded") + " " + ChangedCount, Translation.Get("LoadLogs"), MessageBoxIcon.None);
+                        MessageBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None);
                     }
 
                 }

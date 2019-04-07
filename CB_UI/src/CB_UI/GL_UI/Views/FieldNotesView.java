@@ -37,7 +37,7 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
@@ -85,7 +85,7 @@ public class FieldNotesView extends V_ListView {
         lvAdapter = new CustomAdapter(lFieldNotes);
         this.setBaseAdapter(lvAdapter);
 
-        this.setEmptyMsg(Translation.Get("EmptyFieldNotes"));
+        this.setEmptyMsg(Translation.get("EmptyFieldNotes"));
         firstShow = true;
     }
 
@@ -102,7 +102,7 @@ public class FieldNotesView extends V_ListView {
         Cache cache = GlobalCore.getSelectedCache();
 
         if (cache == null) {
-            GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+            MessageBox.show(Translation.get("NoCacheSelect"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
             return;
         }
 
@@ -110,9 +110,9 @@ public class FieldNotesView extends V_ListView {
         if (cache.getGcCode().equalsIgnoreCase("CBPark")) {
 
             if (type == LogTypes.found) {
-                GL_MsgBox.Show(Translation.Get("My_Parking_Area_Found"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.show(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             } else if (type == LogTypes.didnt_find) {
-                GL_MsgBox.Show(Translation.Get("My_Parking_Area_DNF"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                MessageBox.show(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
             }
 
             return;
@@ -365,21 +365,21 @@ public class FieldNotesView extends V_ListView {
                     addOrChangeFieldNote(fieldNote, isNewFieldNote, false);
                 } else {
                     // Error handling
-                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateFieldnoteInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
-                            case GL_MsgBox.BUTTON_NEGATIVE:
+                            case MessageBox.BUTTON_NEGATIVE:
                                 addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
                                 break;
-                            case GL_MsgBox.BUTTON_NEUTRAL:
+                            case MessageBox.BUTTON_NEUTRAL:
                                 break;
-                            case GL_MsgBox.BUTTON_POSITIVE:
+                            case MessageBox.BUTTON_POSITIVE:
                                 addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
                         }
                         return true;
                     });
                 }
                 if (GroundspeakAPI.LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(() -> GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error));
+                    GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
                 }
                 if (wd != null)
                     wd.close();
@@ -507,7 +507,7 @@ public class FieldNotesView extends V_ListView {
         cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", Sprites.getSprite(IconName.DELETE.name()));
 
         if (cache != null) {
-            cm.addMoreMenu(getSecondMenu(), Translation.Get("defaultLogTypes"), Translation.Get("ownerLogTypes"));
+            cm.addMoreMenu(getSecondMenu(), Translation.get("defaultLogTypes"), Translation.get("ownerLogTypes"));
         }
 
         return cm;
@@ -580,24 +580,24 @@ public class FieldNotesView extends V_ListView {
         final Cache cache = tmpCache;
 
         if (cache == null && !aktFieldNote.isTbFieldNote) {
-            String message = Translation.Get("cacheOtherDb", aktFieldNote.CacheName);
-            message += "\n" + Translation.Get("fieldNoteNoDelete");
-            GL_MsgBox.Show(message);
+            String message = Translation.get("cacheOtherDb", aktFieldNote.CacheName);
+            message += "\n" + Translation.get("fieldNoteNoDelete");
+            MessageBox.show(message);
             return;
         }
 
         String message;
         if (aktFieldNote.isTbFieldNote) {
-            message = Translation.Get("confirmFieldnoteDeletionTB", aktFieldNote.typeString, aktFieldNote.TbName);
+            message = Translation.get("confirmFieldnoteDeletionTB", aktFieldNote.typeString, aktFieldNote.TbName);
         } else {
-            message = Translation.Get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
+            message = Translation.get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
             if (aktFieldNote.type == LogTypes.found || aktFieldNote.type == LogTypes.attended || aktFieldNote.type == LogTypes.webcam_photo_taken)
-                message += Translation.Get("confirmFieldnoteDeletionRst");
+                message += Translation.get("confirmFieldnoteDeletionRst");
         }
 
-        GL_MsgBox.Show(message, Translation.Get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show(message, Translation.get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
-                case GL_MsgBox.BUTTON_POSITIVE:
+                case MessageBox.BUTTON_POSITIVE:
                     // Yes button clicked
                     // delete aktFieldNote
                     if (cache != null) {
@@ -629,7 +629,7 @@ public class FieldNotesView extends V_ListView {
                     FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
 
                     break;
-                case GL_MsgBox.BUTTON_NEGATIVE:
+                case MessageBox.BUTTON_NEGATIVE:
                     // No button clicked
                     // do nothing
                     break;
@@ -640,9 +640,9 @@ public class FieldNotesView extends V_ListView {
     }
 
     private void deleteAllFieldNotes() {
-        final GL_MsgBox.OnMsgBoxClickListener dialogClickListener = (which, data) -> {
+        final MessageBox.OnMsgBoxClickListener dialogClickListener = (which, data) -> {
             switch (which) {
-                case GL_MsgBox.BUTTON_POSITIVE:
+                case MessageBox.BUTTON_POSITIVE:
                     // Yes button clicked
                     // delete all FieldNotes
                     // reload all Fieldnotes!
@@ -663,7 +663,7 @@ public class FieldNotesView extends V_ListView {
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
                     break;
 
-                case GL_MsgBox.BUTTON_NEGATIVE:
+                case MessageBox.BUTTON_NEGATIVE:
                     // No button clicked
                     // do nothing
                     break;
@@ -672,8 +672,8 @@ public class FieldNotesView extends V_ListView {
 
         };
 
-        final String message = Translation.Get("DeleteAllFieldNotesQuestion");
-        GL.that.RunOnGL(() -> GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener));
+        final String message = Translation.get("DeleteAllFieldNotesQuestion");
+        GL.that.RunOnGL(() -> MessageBox.show(message, Translation.get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener));
 
     }
 
@@ -692,9 +692,9 @@ public class FieldNotesView extends V_ListView {
         Cache cache = tmpCache;
 
         if (cache == null) {
-            String message = Translation.Get("cacheOtherDb", aktFieldNote.CacheName);
-            message += "\n" + Translation.Get("fieldNoteNoSelect");
-            GL_MsgBox.Show(message);
+            String message = Translation.get("cacheOtherDb", aktFieldNote.CacheName);
+            message += "\n" + Translation.get("fieldNoteNoSelect");
+            MessageBox.show(message);
             return;
         }
 

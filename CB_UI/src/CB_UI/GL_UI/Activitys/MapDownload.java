@@ -10,7 +10,7 @@ import CB_UI.GL_UI.Controls.MapDownloadItem;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
@@ -32,7 +32,6 @@ import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class MapDownload extends ActivityBase implements ProgressChangedEvent {
@@ -90,8 +89,8 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
-        bOK.setText(Translation.Get("import"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("import"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
         bOK.setOnClickListener((v, x, y, pointer, button) -> {
@@ -108,8 +107,8 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             }
 
             if (importStarted) {
-                GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
-                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                    if (which == MessageBox.BUTTON_POSITIVE) {
                         finishImport();
                     }
                     return true;
@@ -128,7 +127,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         Label lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
-        float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
+        float lblWidth = lblTitle.setText(Translation.get("import")).getTextWidth();
         this.addChild(lblTitle);
 
         CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
@@ -168,7 +167,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         // disable btn
         bOK.disable();
-        bCancel.setText(Translation.Get("cancel"));
+        bCancel.setText(Translation.get("cancel"));
 
         // disable UI
         dis = new ImportAnimation(scrollBox);
@@ -255,14 +254,14 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         if (DownloadIsCompleted) {
             lblProgressMsg.setText("");
-            bCancel.setText(Translation.Get("ok"));
+            bCancel.setText(Translation.get("ok"));
             // to prevent download again. On next start you must check again
             for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
                 MapDownloadItem item = mapInfoItemList.get(i);
                 item.enable();
             }
         } else
-            lblProgressMsg.setText(Translation.Get("DownloadCanceld"));
+            lblProgressMsg.setText(Translation.get("DownloadCanceld"));
 
         bOK.enable();
         if (ManagerBase.Manager != null)
@@ -276,7 +275,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             dis = new ImportAnimation(scrollBox);
             dis.setBackground(getBackground());
             dis.setAnimationType(AnimationType.Download);
-            lblProgressMsg.setText(Translation.Get("ChkAvailableMaps"));
+            lblProgressMsg.setText(Translation.get("ChkAvailableMaps"));
             this.addChild(dis, false);
             bOK.disable();
 

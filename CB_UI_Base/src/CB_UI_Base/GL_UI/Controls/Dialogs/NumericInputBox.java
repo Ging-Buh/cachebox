@@ -4,12 +4,11 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.NumPad;
 import CB_UI_Base.GL_UI.Controls.NumPad.IKeyPressedListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -30,14 +29,14 @@ public class NumericInputBox extends CB_View_Base {
     /**
      * * show msgbox for input of int
      **/
-    public static GL_MsgBox Show(String msg, String title, int initialValue, IReturnValueListener listener) {
+    public static MessageBox Show(String msg, String title, int initialValue, IReturnValueListener listener) {
         mReturnListener = listener;
         mType = type.intType;
 
-        Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
+        Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
         float margin = UI_Size_Base.that.getMargin();
-        GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
+        MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
 
         editText = new EditTextField(null, "NumerikInputBox editText");
         float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
@@ -81,13 +80,13 @@ public class NumericInputBox extends CB_View_Base {
     /**
      * * show msgbox for input of double
      **/
-    public static GL_MsgBox Show(String msg, String title, double initialValue, IReturnValueListenerDouble listener) {
+    public static MessageBox Show(String msg, String title, double initialValue, IReturnValueListenerDouble listener) {
         mReturnListenerDouble = listener;
         mType = type.doubleType;
-        Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
+        Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
         float margin = UI_Size_Base.that.getMargin();
-        GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
+        MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
         CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
@@ -139,14 +138,14 @@ public class NumericInputBox extends CB_View_Base {
     /**
      * * show msgbox for input of min + sec (int)
      **/
-    public static GL_MsgBox Show(String msg, String title, int initialMin, int initialSec, IReturnValueListenerTime listener) {
+    public static MessageBox Show(String msg, String title, int initialMin, int initialSec, IReturnValueListenerTime listener) {
         mReturnListenerTime = listener;
         mType = type.timeType;
 
-        Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
+        Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
         float margin = UI_Size_Base.that.getMargin();
-        GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
+        MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
         CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
@@ -197,7 +196,7 @@ public class NumericInputBox extends CB_View_Base {
         return msgBox;
     }
 
-    static IKeyPressedListener getKeyListener(final GL_MsgBox msgBox) {
+    static IKeyPressedListener getKeyListener(final MessageBox msgBox) {
 
         IKeyPressedListener keyListener = new IKeyPressedListener() {
 
@@ -251,7 +250,7 @@ public class NumericInputBox extends CB_View_Base {
                         }
 
                         if (ParseError) {
-                            GL.that.Toast(Translation.Get("wrongValue"));
+                            GL.that.Toast(Translation.get("wrongValue"));
                         } else {
                             close(msgBox);
                         }
@@ -299,7 +298,7 @@ public class NumericInputBox extends CB_View_Base {
         return keyListener;
     }
 
-    private static void close(final GL_MsgBox msgBox) {
+    private static void close(final MessageBox msgBox) {
         GL.that.RunOnGL(() -> GL.that.closeDialog(msgBox));
 
     }

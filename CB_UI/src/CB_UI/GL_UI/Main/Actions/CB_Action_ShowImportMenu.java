@@ -14,13 +14,10 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -148,7 +145,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                     MapDownload.getInstance().show();
                     return true;
                 case MI_EXPORT_RUN:
-                    StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
+                    StringInputBox.Show(WrapType.SINGLELINE, Translation.get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
                         @Override
                         public boolean onClick(int which, Object data) {
                             if (which == 1) {
@@ -186,7 +183,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     }
 
     private void ExportgetFolderStep(final String FileName) {
-        PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()), Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListener() {
+        PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()), Translation.get("selectExportFolder".hashCode()), Translation.get("select".hashCode()), new IgetFolderReturnListener() {
             @Override
             public void returnFolder(final String Path) {
                 GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path));
@@ -256,9 +253,9 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                     }
 
                     if (canceld) {
-                        GL_MsgBox.Show(Translation.Get("exportedCanceld".hashCode(), String.valueOf(actExportedCount), String.valueOf(count)), Translation.Get("export"), MessageBoxIcon.Stop);
+                        MessageBox.show(Translation.get("exportedCanceld".hashCode(), String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MessageBoxIcon.Stop);
                     } else {
-                        GL_MsgBox.Show(Translation.Get("exported".hashCode(), String.valueOf(actExportedCount)), Translation.Get("export"), MessageBoxIcon.Information);
+                        MessageBox.show(Translation.get("exported".hashCode(), String.valueOf(actExportedCount)), Translation.get("export"), MessageBoxIcon.Information);
                     }
 
                 }

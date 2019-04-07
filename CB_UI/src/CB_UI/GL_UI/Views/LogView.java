@@ -82,7 +82,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
         lvAdapter = new ListViewBaseAdapter();
         this.setBaseAdapter(lvAdapter);
 
-        this.setEmptyMsg(Translation.Get("EmptyLogList"));
+        this.setEmptyMsg(Translation.get("EmptyLogList"));
 
         this.scrollTo(0);
     }
@@ -117,7 +117,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 
             v.setOnLongClickListener((view, x, y, pointer, button) -> {
                 v.copyToClipboard();
-                GL.that.Toast(Translation.Get("CopyToClipboard"));
+                GL.that.Toast(Translation.get("CopyToClipboard"));
                 return true;
             });
 

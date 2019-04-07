@@ -489,7 +489,7 @@ public class GroundspeakAPI {
         try {
             if (directLog) {
                 if (note.length() == 0) {
-                    LastAPIError = Translation.Get("emptyLog");
+                    LastAPIError = Translation.get("emptyLog");
                     return ERROR;
                 }
                 Log.debug(log, "is Log");

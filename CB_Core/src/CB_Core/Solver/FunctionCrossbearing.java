@@ -18,36 +18,36 @@ public class FunctionCrossbearing extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncCrossbearing".hashCode());
+        return Translation.get("solverFuncCrossbearing".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescCrossbearing".hashCode());
+        return Translation.get("solverDescCrossbearing".hashCode());
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 4) {
-            return Translation.Get("solverErrParamCount".hashCode(), "4", "$solverFuncBearing");
+            return Translation.get("solverErrParamCount".hashCode(), "4", "$solverFuncBearing");
         }
         Coordinate[] coord = new Coordinate[2];
         double[] angle = new double[2];
         for (int i = 0; i < 2; i++) {
             coord[i] = new CoordinateGPS(parameter[i * 2]);
             if (!coord[i].isValid())
-                return Translation.Get("solverErrParamType".hashCode(), "$solverFuncCrossbearing", String.valueOf(i * 2 + 1), "$coordinate", "$coordinate", parameter[i * 2]);
+                return Translation.get("solverErrParamType".hashCode(), "$solverFuncCrossbearing", String.valueOf(i * 2 + 1), "$coordinate", "$coordinate", parameter[i * 2]);
             try {
                 angle[i] = Double.valueOf(parameter[i * 2 + 1]);
             } catch (Exception ex) {
-                return Translation.Get("solverErrParamType".hashCode(), "$solverFuncCrossbearing", String.valueOf(i * 2 + 2), "$angle", "$number", parameter[i * 2 + 1]);
+                return Translation.get("solverErrParamType".hashCode(), "$solverFuncCrossbearing", String.valueOf(i * 2 + 2), "$angle", "$number", parameter[i * 2 + 1]);
             }
         }
 
         try {
             return CoordinateGPS.Crossbearing(CalculationType.ACCURATE, coord[0], angle[0], coord[1], angle[1]).FormatCoordinate();
         } catch (Exception ex) {
-            return Translation.Get("StdError".hashCode(), "$solverFuncCrossbearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+            return Translation.get("StdError".hashCode(), "$solverFuncCrossbearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
         }
     }
 

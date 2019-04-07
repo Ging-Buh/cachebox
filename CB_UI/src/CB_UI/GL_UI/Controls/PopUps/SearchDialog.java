@@ -42,8 +42,8 @@ import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
@@ -78,7 +78,7 @@ public class SearchDialog extends PopUp_Base {
     };
 
     CancelWaitDialog wd = null;
-    GL_MsgBox MSB;
+    MessageBox MSB;
     /**
      * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
      */
@@ -292,7 +292,7 @@ public class SearchDialog extends PopUp_Base {
     private void setFilterBtnState() {
         if (mTglBtnOnline.getState() == 0) {
             mBtnFilter.clearImage();
-            mBtnFilter.setText(Translation.Get("Filter"));
+            mBtnFilter.setText(Translation.get("Filter"));
         } else {
 
             mBtnFilter.setImage(new SpriteDrawable(Sprites.getSprite(IconName.targetDay.name())));
@@ -304,19 +304,19 @@ public class SearchDialog extends PopUp_Base {
      * Setzt die übersetzten Texte auf die Buttons
      */
     private void setLang() {
-        mTglBtnTitle.initialOn_Off_ToggleStates(Translation.Get("Title"), Translation.Get("Title"));
-        mTglBtnGc.initialOn_Off_ToggleStates(Translation.Get("GCCode"), Translation.Get("GCCode"));
-        mTglBtnOwner.initialOn_Off_ToggleStates(Translation.Get("Owner"), Translation.Get("Owner"));
+        mTglBtnTitle.initialOn_Off_ToggleStates(Translation.get("Title"), Translation.get("Title"));
+        mTglBtnGc.initialOn_Off_ToggleStates(Translation.get("GCCode"), Translation.get("GCCode"));
+        mTglBtnOwner.initialOn_Off_ToggleStates(Translation.get("Owner"), Translation.get("Owner"));
         mTglBtnOnline.initialOn_Off_ToggleStates("Online", "Online");
 
         // der State muss erstmal gesetzt werden, damit die Anzeige
         // Aktuallisiert wird
         mTglBtnOnline.setState(0);
 
-        mBtnFilter.setText(Translation.Get("Filter"));
-        mBtnSearch.setText(Translation.Get("Search"));
-        mBtnNext.setText(Translation.Get("Next"));
-        mBtnCancel.setText(Translation.Get("abort"));
+        mBtnFilter.setText(Translation.get("Filter"));
+        mBtnSearch.setText(Translation.get("Search"));
+        mBtnNext.setText(Translation.get("Next"));
+        mBtnCancel.setText(Translation.get("abort"));
 
     }
 
@@ -412,7 +412,7 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchAktive = false;
-                    GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
+                    MessageBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
                 } else {
                     if (tmp != null) {
                         Waypoint finalWp = tmp.getCorrectedFinal();
@@ -445,10 +445,10 @@ public class SearchDialog extends PopUp_Base {
             public void checkReady(boolean invalidAccessToken) {
 
                 if (invalidAccessToken) {
-                    GL.that.RunOnGL(() -> GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+                    GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
                 } else {
 
-                    wd = CancelWaitDialog.ShowWait(Translation.Get("Search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+                    wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                         @Override
                         public void isCanceled() {
@@ -461,11 +461,11 @@ public class SearchDialog extends PopUp_Base {
                             if (isPremiumMember()) {
                                 searchOnlineNow();
                             } else {
-                                GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                                MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
                                         new OnMsgBoxClickListener() {
                                             @Override
                                             public boolean onClick(int which, Object data) {
-                                                if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                                                if (which == MessageBox.BUTTON_POSITIVE) {
                                                     searchOnlineNow();
                                                 } else
                                                     closeWaitDialog();
@@ -496,7 +496,7 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
         Log.debug(log, "searchOnlineNow");
-        wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), () -> closeWaitDialog(), new ICancelRunnable() {
+        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), () -> closeWaitDialog(), new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -693,18 +693,18 @@ public class SearchDialog extends PopUp_Base {
             @Override
             public void checkReady(boolean invalidAccessToken) {
                 if (invalidAccessToken) {
-                    GL.that.RunOnGL(() -> GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+                    GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
                 } else {
                     closeWD();
                     GL.that.RunOnGL(() -> {
                         if (isPremiumMember()) {
                             showTargetApiDialog();
                         } else {
-                            MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
+                            MSB = MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
                                 @Override
                                 public boolean onClick(int which, Object data) {
                                     closeMsgBox();
-                                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                                    if (which == MessageBox.BUTTON_POSITIVE) {
                                         showTargetApiDialog();
                                     }
                                     return true;

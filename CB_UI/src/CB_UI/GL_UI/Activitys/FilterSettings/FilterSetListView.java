@@ -121,30 +121,30 @@ public class FilterSetListView extends V_ListView {
     private void fillFilterSetList() {
 
         // add General
-        general = addFilterSetCollapseItem(null, Translation.Get("General"), COLLAPSE_BUTTON_ITEM);
-        NotAvailable = general.addChild(addFilterSetItem(Sprites.getSprite("disabled"), Translation.Get("disabled"), THREE_STATE_ITEM));
-        Archived = general.addChild(addFilterSetItem(Sprites.getSprite("not-available"), Translation.Get("archived"), THREE_STATE_ITEM));
-        Finds = general.addChild(addFilterSetItem(Sprites.getSprite("log0icon"), Translation.Get("myfinds"), THREE_STATE_ITEM));
-        Own = general.addChild(addFilterSetItem(Sprites.getSprite("star"), Translation.Get("myowncaches"), THREE_STATE_ITEM));
-        ContainsTravelBugs = general.addChild(addFilterSetItem(Sprites.getSprite("tb"), Translation.Get("withtrackables"), THREE_STATE_ITEM));
-        Favorites = general.addChild(addFilterSetItem(Sprites.getSprite("favorit"), Translation.Get("Favorites"), THREE_STATE_ITEM));
-        HasUserData = general.addChild(addFilterSetItem(Sprites.getSprite("userdata"), Translation.Get("hasuserdata"), THREE_STATE_ITEM));
-        ListingChanged = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.warningIcon.name()), Translation.Get("ListingChanged"), THREE_STATE_ITEM));
-        WithManualWaypoint = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.manualWayPoint.name()), Translation.Get("manualWayPoint"), THREE_STATE_ITEM));
-        hasCorrectedCoordinates = general.addChild(addFilterSetItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.Get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
+        general = addFilterSetCollapseItem(null, Translation.get("General"), COLLAPSE_BUTTON_ITEM);
+        NotAvailable = general.addChild(addFilterSetItem(Sprites.getSprite("disabled"), Translation.get("disabled"), THREE_STATE_ITEM));
+        Archived = general.addChild(addFilterSetItem(Sprites.getSprite("not-available"), Translation.get("archived"), THREE_STATE_ITEM));
+        Finds = general.addChild(addFilterSetItem(Sprites.getSprite("log0icon"), Translation.get("myfinds"), THREE_STATE_ITEM));
+        Own = general.addChild(addFilterSetItem(Sprites.getSprite("star"), Translation.get("myowncaches"), THREE_STATE_ITEM));
+        ContainsTravelBugs = general.addChild(addFilterSetItem(Sprites.getSprite("tb"), Translation.get("withtrackables"), THREE_STATE_ITEM));
+        Favorites = general.addChild(addFilterSetItem(Sprites.getSprite("favorit"), Translation.get("Favorites"), THREE_STATE_ITEM));
+        HasUserData = general.addChild(addFilterSetItem(Sprites.getSprite("userdata"), Translation.get("hasuserdata"), THREE_STATE_ITEM));
+        ListingChanged = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.warningIcon.name()), Translation.get("ListingChanged"), THREE_STATE_ITEM));
+        WithManualWaypoint = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.manualWayPoint.name()), Translation.get("manualWayPoint"), THREE_STATE_ITEM));
+        hasCorrectedCoordinates = general.addChild(addFilterSetItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
         // add D/T
         dt = addFilterSetCollapseItem(null, "D / T" + "\n" + "GC-Vote", COLLAPSE_BUTTON_ITEM);
-        minDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minDifficulty"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
-        maxDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
-        minTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minTerrain"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
-        maxTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxTerrain"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
-        minContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.Get("minContainerSize"), NUMERIC_ITEM, 0, 4, 0, 1));
-        maxContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.Get("maxContainerSize"), NUMERIC_ITEM, 0, 4, 4, 1));
-        minRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minRating"), NUMERIC_ITEM, 0, 5, 0, 0.5f));
-        maxRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxRating"), NUMERIC_ITEM, 0, 5, 5, 0.5f));
-        minFavPoints = dt.addChild(addFilterSetItem(Sprites.getSprite(IconName.FavPoi), Translation.Get("minFavPoints"), NUMERIC_INT_ITEM, -1, 10000, 0, 1.0f));
-        maxFavPoints = dt.addChild(addFilterSetItem(Sprites.getSprite(IconName.FavPoi), Translation.Get("maxFavPoints"), NUMERIC_INT_ITEM, -1, 10000, 0, 1.0f));
+        minDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("minDifficulty"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
+        maxDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("maxDifficulty"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
+        minTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("minTerrain"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
+        maxTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("maxTerrain"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
+        minContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.get("minContainerSize"), NUMERIC_ITEM, 0, 4, 0, 1));
+        maxContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.get("maxContainerSize"), NUMERIC_ITEM, 0, 4, 4, 1));
+        minRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("minRating"), NUMERIC_ITEM, 0, 5, 0, 0.5f));
+        maxRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("maxRating"), NUMERIC_ITEM, 0, 5, 5, 0.5f));
+        minFavPoints = dt.addChild(addFilterSetItem(Sprites.getSprite(IconName.FavPoi), Translation.get("minFavPoints"), NUMERIC_INT_ITEM, -1, 10000, 0, 1.0f));
+        maxFavPoints = dt.addChild(addFilterSetItem(Sprites.getSprite(IconName.FavPoi), Translation.get("maxFavPoints"), NUMERIC_INT_ITEM, -1, 10000, 0, 1.0f));
 
 
         // add CacheTypes
@@ -184,7 +184,7 @@ public class FilterSetListView extends V_ListView {
         // add Attributes
         attribs = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
         for (int i = 1; i < Attributes.values().length; i++) {
-            attribs.addChild(addFilterSetItem(Sprites.getSprite("att-" + i + "-1Icon"), Translation.Get("att_" + i + "_1"), THREE_STATE_ITEM));
+            attribs.addChild(addFilterSetItem(Sprites.getSprite("att-" + i + "-1Icon"), Translation.get("att_" + i + "_1"), THREE_STATE_ITEM));
         }
 
     }

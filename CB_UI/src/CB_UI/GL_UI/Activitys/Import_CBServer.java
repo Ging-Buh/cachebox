@@ -36,7 +36,7 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
@@ -104,8 +104,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
         this.initRow(BOTTOMUP);
         // Translations
-        bOK.setText(Translation.Get("export"));
-        bCancel.setText(Translation.Get("cancel"));
+        bOK.setText(Translation.get("export"));
+        bCancel.setText(Translation.get("cancel"));
 
         this.addNext(bOK);
         bOK.setOnClickListener((v, x, y, pointer, button) -> {
@@ -122,8 +122,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             }
 
             if (importStarted) {
-                GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
-                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                    if (which == MessageBox.BUTTON_POSITIVE) {
                         cancelImport();
                     }
                     return true;
@@ -134,7 +134,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         });
 
         refreshExportList = new Button(name);
-        refreshExportList.setText(Translation.Get("refreshExportList"));
+        refreshExportList.setText(Translation.get("refreshExportList"));
         refreshExportList.setOnClickListener((v, x, y, pointer, button) -> {
             refreshExportList();
             return true;
@@ -144,7 +144,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     }
 
     private void createTitleLine() {
-        Label lblTitle = new Label(Translation.Get("export"), Fonts.getBig(), null, null);
+        Label lblTitle = new Label(Translation.get("export"), Fonts.getBig(), null, null);
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
         CB_RectF rec = new CB_RectF(0, 0, 0, lineHeight);
@@ -169,7 +169,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         scrollBox.initRow(TOPDOWN);
         lvExport = new V_ListView(new CB_RectF(0, 0, scrollBox.getWidth(), scrollBox.getHeight()), "");
         scrollBox.addLast(lvExport);
-        lvExport.setEmptyMsg(Translation.Get("EmptyExportList"));
+        lvExport.setEmptyMsg(Translation.get("EmptyExportList"));
 
     }
 
@@ -195,7 +195,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             lvExport.notifyDataSetChanged();
 
             stopTimer();
-            lvExport.setEmptyMsg(Translation.Get("EmptyExportCBServerList"));
+            lvExport.setEmptyMsg(Translation.get("EmptyExportCBServerList"));
 
             refreshExportList.enable();
         }).start();
@@ -219,7 +219,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
                     s.append(".");
                 }
 
-                lvExport.setEmptyMsg(Translation.Get("LoadExportCBServerList") + s);
+                lvExport.setEmptyMsg(Translation.get("LoadExportCBServerList") + s);
 
             }
 

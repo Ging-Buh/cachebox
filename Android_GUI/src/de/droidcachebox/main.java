@@ -418,7 +418,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                     e1.printStackTrace();
                                 }
 
-                                MessageBox.Show(Welcome, Translation.Get("welcome"), MessageBoxIcon.None);
+                                MessageBox.Show(Welcome, Translation.get("welcome"), MessageBoxIcon.None);
                             }
                         });
 
@@ -451,7 +451,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     private void askToGetApiKey() {
-        MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
+        MessageBox.Show(Translation.get("wantApi"), Translation.get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int button) {
                 // Behandle das ergebniss
@@ -748,7 +748,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         if (pWaitD == null) {
 
-            pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
+            pWaitD = PleaseWaitMessageBox.Show(Translation.get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
             stopped = false;
 
             waitForGL.set(true);
@@ -1562,7 +1562,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        MessageBox.Show(Translation.Get("GPSon?"), Translation.Get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
+                        MessageBox.Show(Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int button) {
                                 // Behandle das ergebniss
@@ -2030,10 +2030,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         mainActivity.startActivity(intent);
                     } else {
                         Log.err(sKlasse, "Activity for " + url + " not installed.");
-                        Toast.makeText(mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
+                        Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception exc) {
-                    Log.err(sKlasse, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
+                    Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
                 }
             }
         });
@@ -2129,7 +2129,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListener() {
+                        wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), new IcancelListener() {
                             @Override
                             public void isCanceled() {
                                 wd.close();

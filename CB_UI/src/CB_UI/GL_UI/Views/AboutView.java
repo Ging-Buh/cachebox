@@ -42,7 +42,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -143,25 +143,25 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         CachesFoundLabel.setWidth(getWidth());
 
         CachesFoundLabel.setOnClickListener(new OnClickListener() {
-            GL_MsgBox ms;
+            MessageBox ms;
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-                ms = GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                ms = MessageBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                     // Behandle das ergebniss
                     switch (which) {
                         case 1:
                             ms.close();
-                            pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
+                            pd = CancelWaitDialog.ShowWait(Translation.get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
                                 @Override
                                 public void run() {
                                     result = GroundspeakAPI.fetchMyUserInfos().findCount;
                                     pd.close();
 
                                     if (result > -1) {
-                                        String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
-                                        GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+                                        String Text = Translation.get("FoundsSetTo", String.valueOf(result));
+                                        MessageBox.show(Text, Translation.get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
 
                                         Config.FoundOffset.setValue(result);
                                         Config.AcceptChanges();
@@ -179,7 +179,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
                             break;
                         case 3:
                             ms.close();
-                            GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), Config.FoundOffset.getValue(), new IReturnValueListener() {
+                            GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Config.FoundOffset.getValue(), new IReturnValueListener() {
                                 @Override
                                 public void returnValue(int value) {
                                     Config.FoundOffset.setValue(value);
@@ -216,19 +216,19 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         CB_RectF lblRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight() / 2.5f);
 
         lblGPS = new Label(lblRec);
-        leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.Get("gps")).getTextWidth());
+        leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.get("gps")).getTextWidth());
 
         lblAccuracy = new Label(lblRec);
-        leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(Translation.Get("accuracy")).getTextWidth());
+        leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(Translation.get("accuracy")).getTextWidth());
 
         lblWP = new Label(lblRec);
-        leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.Get("waypoint")).getTextWidth());
+        leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.get("waypoint")).getTextWidth());
 
         lblCoord = new Label(lblRec);
-        leftMaxWidth = Math.max(leftMaxWidth, lblCoord.setText(Translation.Get("coordinate")).getTextWidth());
+        leftMaxWidth = Math.max(leftMaxWidth, lblCoord.setText(Translation.get("coordinate")).getTextWidth());
 
         lblCurrent = new Label(lblRec);
-        leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.Get("current")).getTextWidth());
+        leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.get("current")).getTextWidth());
 
         // set all lbl to the same max width + margin
         leftMaxWidth += margin;
@@ -325,7 +325,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null)
             return;
         try {
-            CachesFoundLabel.setText(Translation.Get("caches_found") + " " + Config.FoundOffset.getValue());
+            CachesFoundLabel.setText(Translation.get("caches_found") + " " + Config.FoundOffset.getValue());
 
             Cache selectedCache = GlobalCore.getSelectedCache();
             Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
@@ -363,10 +363,10 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
             if (Current != null)
                 Current.setText(UnitFormatter.FormatLatitudeDM(Locator.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(Locator.getLongitude()));
             if (Gps != null)
-                Gps.setText(GPS.getSatAndFix() + "   " + Translation.Get("alt") + " " + Locator.getAltStringWithCorection());
+                Gps.setText(GPS.getSatAndFix() + "   " + Translation.get("alt") + " " + Locator.getAltStringWithCorection());
         } else {
             if (Gps != null)
-                Gps.setText(Translation.Get("not_detected"));
+                Gps.setText(Translation.get("not_detected"));
         }
     }
 

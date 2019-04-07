@@ -17,8 +17,8 @@ package CB_UI_Base.GL_UI.Main.Actions;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -28,7 +28,7 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowQuit extends CB_Action {
-    static GL_MsgBox msg;
+    static MessageBox msg;
     private static CB_Action_ShowQuit that;
     String OverrideAppName = null;
 
@@ -52,8 +52,8 @@ public class CB_Action_ShowQuit extends CB_Action {
         if (msg != null && GL.that.getCurrentDialog() == msg)
             return;
 
-        String Msg = Translation.Get("QuitReally");
-        String Title = Translation.Get("Quit?");
+        String Msg = Translation.get("QuitReally");
+        String Title = Translation.get("Quit?");
 
         if (OverrideAppName != null) {
             Msg = Msg.replace("Cachebox", OverrideAppName);
@@ -61,11 +61,11 @@ public class CB_Action_ShowQuit extends CB_Action {
         }
 
         try {
-            msg = GL_MsgBox.Show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
+            msg = MessageBox.show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
 
                 @Override
                 public boolean onClick(int which, Object data) {
-                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                    if (which == MessageBox.BUTTON_POSITIVE) {
 
                         //Log.debug(log, "\r\n Quit");
                         PlatformConnector.callQuit();

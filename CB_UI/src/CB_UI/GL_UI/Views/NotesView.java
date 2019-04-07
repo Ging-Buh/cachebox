@@ -54,10 +54,10 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
         mustLoadNotes = true;
 
         initRow(BOTTOMUP);
-        Button getSolverButton = new Button(Translation.Get("getSolver"));
+        Button getSolverButton = new Button(Translation.get("getSolver"));
         // getSolverButton.disable();
         addNext(getSolverButton);
-        uploadButton = new Button(Translation.Get("Upload"));
+        uploadButton = new Button(Translation.get("Upload"));
         addLast(uploadButton);
         notesHeight = getAvailableHeight();
         notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
@@ -75,9 +75,9 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
                     int result = GroundspeakAPI.uploadCacheNote(aktCache.getGcCode(), UploadText);
                     b.disable();
                     if (result == 0) {
-                        b.setText(Translation.Get("successful"));
+                        b.setText(Translation.get("successful"));
                     } else {
-                        b.setText(Translation.Get("Error"));
+                        b.setText(Translation.get("Error"));
                     }
                 });
             }
@@ -124,7 +124,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
 
     @Override
     public void KeyboardFocusChanged(EditTextField editTextField) {
-        uploadButton.setText(Translation.Get("Upload"));
+        uploadButton.setText(Translation.get("Upload"));
         uploadButton.enable();
         if (editTextField == notes) {
             notes.setHeight(this.getHalfHeight());

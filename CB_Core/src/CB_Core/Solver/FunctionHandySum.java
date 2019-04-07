@@ -16,18 +16,18 @@ public class FunctionHandySum extends Function {
 
     @Override
     public String getName() {
-        return Translation.Get("solverFuncPhoneSum".hashCode());
+        return Translation.get("solverFuncPhoneSum".hashCode());
     }
 
     @Override
     public String getDescription() {
-        return Translation.Get("solverDescPhoneSum".hashCode());
+        return Translation.get("solverDescPhoneSum".hashCode());
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncPhoneSum");
+            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncPhoneSum");
         }
         int result = 0;
         String wert = parameter[0].toLowerCase();

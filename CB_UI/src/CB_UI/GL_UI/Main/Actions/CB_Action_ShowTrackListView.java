@@ -35,7 +35,7 @@ import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -105,7 +105,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
                 case MenuID.MI_RENAME:
                     final TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
 
-                    StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.Get("RenameTrack"), selectedTrackItem.getRoute().Name, (which, data) -> {
+                    StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.get("RenameTrack"), selectedTrackItem.getRoute().Name, (which, data) -> {
                         String text = StringInputBox.editText.getText();
                         // Behandle das ergebniss
                         switch (which) {
@@ -126,7 +126,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
                     return true;
 
                 case MenuID.MI_LOAD:
-                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"), Translation.Get("load"), Path -> {
+                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
                         if (Path != null) {
                             TrackColor = RouteOverlay.getNextColor();
                             RouteOverlay.MultiLoadRoute(Path, TrackColor);
@@ -138,7 +138,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
                     return true;
 
                 case MenuID.MI_SAVE:
-                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"), Translation.Get("save"), new IgetFileReturnListener() {
+                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("SaveTrack"), Translation.get("save"), new IgetFileReturnListener() {
                         TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
 
                         @Override
@@ -158,7 +158,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
                     if (mTrackItem == null) {
                         Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "NoTrackSelected");
-                        GL_MsgBox.Show(Translation.Get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, (which, data) -> {
+                        MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, (which, data) -> {
                             // hier brauchen wir nichts machen!
                             return true;
                         });
@@ -167,7 +167,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
                     if (mTrackItem.getRoute().IsActualTrack) {
                         Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "IsActualTrack");
-                        GL_MsgBox.Show(Translation.Get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                        MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
                         return false;
                     }
 
@@ -221,7 +221,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         if (coord == null)
             coord = Locator.getCoordinate();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.get("fromPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -250,7 +250,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         if (coord == null)
             coord = Locator.getCoordinate();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.get("Projection"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -280,7 +280,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         if (coord == null)
             coord = Locator.getCoordinate();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.get("centerPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;

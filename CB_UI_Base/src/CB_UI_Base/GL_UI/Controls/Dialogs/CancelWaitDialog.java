@@ -20,7 +20,7 @@ import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
@@ -66,14 +66,14 @@ public class CancelWaitDialog extends WaitDialog {
         Animation.setRec(animationRec);
         wd.animation = Animation;
         wd.setButtonCaptions(MessageBoxButtons.Cancel);
-        wd.mMsgBoxClickListener = new GL_MsgBox.OnMsgBoxClickListener() {
+        wd.mMsgBoxClickListener = new MessageBox.OnMsgBoxClickListener() {
 
             @Override
             public boolean onClick(int which, Object data) {
                 if (wd.mRunnThread != null)
                     wd.mRunnThread.Cancel();
                 wd.button3.disable();
-                wd.button3.setText(Translation.Get("waitForCancel"));
+                wd.button3.setText(Translation.get("waitForCancel"));
                 return false;
             }
         };
