@@ -349,7 +349,7 @@ public class Importer {
                             }
                             else additionalImagesUpdated = false;
                         }
-                        ret = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri);
+                        ret = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false);
                         if (ret < 0 ) break;
                     }
                 } catch (Exception e) {

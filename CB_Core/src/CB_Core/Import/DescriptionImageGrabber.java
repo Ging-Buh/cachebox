@@ -265,7 +265,7 @@ public class DescriptionImageGrabber {
         return images;
     }
 
-    public static int GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url) {
+    public static int GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url, boolean withLogImages) {
         boolean imageLoadError = false;
 
         if (!descriptionImagesUpdated) {
@@ -327,7 +327,7 @@ public class DescriptionImageGrabber {
 
                 // todo always take from database. They are not downloaded yet
                 // todo else don't write them to database on fetch/update cache
-                ArrayList<ImageEntry> imageEntries = downloadImageListForGeocache(gcCode);
+                ArrayList<ImageEntry> imageEntries = downloadImageListForGeocache(gcCode, withLogImages);
                 if (APIError != OK) {
                     return ERROR;
                 }

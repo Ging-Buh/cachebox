@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_Core.CB_Core_Settings;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.LogView;
+import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -19,6 +20,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CB_Action_ShowLogView extends CB_Action_ShowView {
+    private static final int MI_LOAD_FRIENDS_LOGS = 201;
+    private static final int MI_FILTERLOGS = 202;
+    private static final int MI_RELOADLOGS = 203;
+    private static final int MI_LoadLogImages = 204;
 
     private static CB_Action_ShowLogView that;
 
@@ -63,28 +68,38 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
         cm.addOnClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_LOAD_FRIENDS_LOGS:
+                case MI_LOAD_FRIENDS_LOGS:
                     reloadLogs(false);
                     return true;
-                case MenuID.MI_RELOADLOGS:
+                case MI_RELOADLOGS:
                     reloadLogs(true);
                     return true;
-                case MenuID.MI_FILTERLOGS:
+                case MI_FILTERLOGS:
                     GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
                     LogView.getInstance().resetInitial();
-                    break;
+                    return true;
+                case MI_LoadLogImages:
+                    GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
+                        // do after import
+                        if (GlobalCore.isSetSelectedCache()) {
+                            GlobalCore.getSelectedCache().loadSpoilerRessources();
+                            SpoilerView.getInstance().ForceReload();
+                        }
+                    });
+                    return true;
             }
             return false;
         });
 
         MenuItem mi;
-        cm.addItem(MenuID.MI_RELOADLOGS, "ReloadLogs", Sprites.getSprite(IconName.importIcon.name()));
+        cm.addItem(MI_RELOADLOGS, "ReloadLogs", Sprites.getSprite(IconName.importIcon.name()));
         if (CB_Core_Settings.Friends.getValue().length() > 0) {
-            cm.addItem(MenuID.MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", Sprites.getSprite(IconName.importIcon.name()));
-            mi = cm.addItem(MenuID.MI_FILTERLOGS, "FilterLogsOfFriends", Sprites.getSprite(IconName.filter.name()));
+            cm.addItem(MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", Sprites.getSprite(IconName.importIcon.name()));
+            mi = cm.addItem(MI_FILTERLOGS, "FilterLogsOfFriends", Sprites.getSprite(IconName.filter.name()));
             mi.setCheckable(true);
             mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
+        cm.addItem(MI_LoadLogImages,"LoadLogImages", Sprites.getSprite(IconName.LoadLogImages.name()));
         return cm;
     }
 

@@ -73,7 +73,9 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
 
     @Override
     public void onShow() {
+        // view must be refilled with values
         KeyboardFocusChangedEventList.Add(this);
+        // todo you are possibly comparing the same objects, but the values could have changed
         if (aktCache != GlobalCore.getSelectedCache()) {
             mustLoadSolver = true;
             aktCache = GlobalCore.getSelectedCache();

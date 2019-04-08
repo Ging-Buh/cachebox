@@ -84,6 +84,7 @@ public class Solver extends ArrayList<SolverZeile> {
         }
         if (!parseZeilen())
             return false;
+
         return true;
     }
 

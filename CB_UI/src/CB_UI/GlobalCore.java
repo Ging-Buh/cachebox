@@ -233,7 +233,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
         GlobalCore.autoResort = value;
     }
 
-    public static CancelWaitDialog ImportSpoiler() {
+    public static CancelWaitDialog ImportSpoiler(boolean withLogImages) {
         wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
             // canceled
         }, new ICancelRunnable() {
@@ -244,7 +244,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
                 ImporterProgress ip = new ImporterProgress();
                 int result = GroundspeakAPI.ERROR;
                 if (GlobalCore.getSelectedCache() != null)
-                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().Id, GlobalCore.getSelectedCache().getGcCode(), "", "");
+                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().Id, GlobalCore.getSelectedCache().getGcCode(), "", "", withLogImages);
                 wd.close();
                 if (result != OK) {
                     GL.that.Toast(LastAPIError);

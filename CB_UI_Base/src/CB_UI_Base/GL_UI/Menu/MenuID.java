@@ -191,9 +191,6 @@ public class MenuID {
     public static final int MI_MAP_DOWNOAD = 199;
 
     public static final int AID_LOADLOGS = 200;
-    public static final int MI_LOAD_FRIENDS_LOGS = 201;
-    public static final int MI_FILTERLOGS = 202;
-    public static final int MI_RELOADLOGS = 203;
 
     public static final int AID_TORCH = 204;
     public static final int MI_ADD_MISSING_VARIABLES = 205;

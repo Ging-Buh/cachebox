@@ -164,6 +164,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
 
     @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+        // view must be refilled with values
         aktCache = cache;
         mustLoadNotes = true;
     }

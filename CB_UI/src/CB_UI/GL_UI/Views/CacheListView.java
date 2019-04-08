@@ -270,6 +270,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
     @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+        // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
             CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
             if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id) {

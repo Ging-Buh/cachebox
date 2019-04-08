@@ -1,5 +1,6 @@
 package de.CB_Utils.fileProvider;
 
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -78,6 +79,7 @@ public class DesktopFileFactory extends FileFactory {
                 return ThumbPath;
             }
         } catch (IOException e) {
+            Log.err("DesktopFileFactory:createPlatformThumb"," for " + Path);
             e.printStackTrace();
             return null;
         }

@@ -371,7 +371,7 @@ public class GroundspeakAPI {
             Cache cache = createGeoCache(fetchedCache, fields, originalCache);
             if (cache != null) {
                 ArrayList<LogEntry> logs = createLogs(cache, fetchedCache.optJSONArray("geocacheLogs"));
-                ArrayList<ImageEntry> images = createImageList(fetchedCache.optJSONArray("images"), cache.getGcCode());
+                ArrayList<ImageEntry> images = createImageList(fetchedCache.optJSONArray("images"), cache.getGcCode(), false);
                 images = addDescriptionImageList(images, cache);
                 fetchResults.add(new GeoCacheRelated(cache, logs, images));
             }
@@ -600,7 +600,7 @@ public class GroundspeakAPI {
         return (logList);
     }
 
-    public static ArrayList<ImageEntry> downloadImageListForGeocache(String cacheCode) {
+    public static ArrayList<ImageEntry> downloadImageListForGeocache(String cacheCode, boolean withLogImages) {
 
         ArrayList<ImageEntry> imageEntries = new ArrayList<>();
         LastAPIError = "";
@@ -626,7 +626,7 @@ public class GroundspeakAPI {
 
                 retryCount = 0;
                 // is only, if implemented fetch of more than 50 images (loop)
-                imageEntries.addAll(createImageList(r.getBody(), cacheCode));
+                imageEntries.addAll(createImageList(r.getBody(), cacheCode, withLogImages));
 
                 return imageEntries;
 
@@ -1342,7 +1342,7 @@ public class GroundspeakAPI {
         return r;
     }
 
-    private static ArrayList<ImageEntry> createImageList(JSONArray jImages, String GcCode) {
+    private static ArrayList<ImageEntry> createImageList(JSONArray jImages, String GcCode, boolean withLogImages) {
         ArrayList<ImageEntry> imageEntries = new ArrayList<>();
 
         if (jImages != null) {
@@ -1355,7 +1355,7 @@ public class GroundspeakAPI {
                 boolean isCacheImage = referenceCode.startsWith("GC");
 
                 if (uri.length() > 0) {
-                    if (isCacheImage) {
+                    if (isCacheImage || withLogImages) {
                         ImageEntry imageEntry = new ImageEntry();
                         imageEntry.CacheId = Cache.GenerateCacheId(GcCode);
                         imageEntry.Description = Description;

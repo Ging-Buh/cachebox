@@ -75,7 +75,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
         icm.addOnClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_RELOAD_SPOILER:
-                    GlobalCore.ImportSpoiler().setReadyListener(() -> {
+                    GlobalCore.ImportSpoiler(false).setReadyListener(() -> {
                         // erst die Lokalen Images für den Cache neu laden
                         if (GlobalCore.isSetSelectedCache()) {
                             GlobalCore.getSelectedCache().loadSpoilerRessources();

@@ -77,7 +77,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
     @Override
     public void onShow() {
-
         SetSelectedCache(aktCache);
         chkSlideBack();
 
@@ -152,6 +151,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
     @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+        // view must be refilled with values
+        // cache and aktCache are the same objects so ==, but content has changed, thus setting aktCache to null
+        aktCache = null;
         SetSelectedCache(cache);
     }
 

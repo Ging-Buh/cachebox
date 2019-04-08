@@ -731,6 +731,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         if (cache == null)
             return;
         try {
+            // remember, we are dealing with objects
             if ((cache == lastSelectedCache) && (waypoint == lastSelectedWaypoint)) {
                 return;
             }

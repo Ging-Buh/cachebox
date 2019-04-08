@@ -198,12 +198,9 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     public void SelectedCacheChanged(final Cache cache, Waypoint waypoint) {
-
-        if (actCache == cache && actWaypoint == waypoint)
-            return;
-
-        actCache = cache;
-        actWaypoint = waypoint;
+        // view must be refilled with values
+        actCache = cache; // normally these are the same objects
+        actWaypoint = waypoint; // normally these are the same objects
 
         GL.that.RunOnGL(() -> {
             if (cache != null) {
