@@ -55,8 +55,6 @@ public class ImageEntry implements Serializable {
 
     /**
      * @param reader
-     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
-     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
      */
     public ImageEntry(CoreCursor reader) {
         CacheId = reader.getLong(0);

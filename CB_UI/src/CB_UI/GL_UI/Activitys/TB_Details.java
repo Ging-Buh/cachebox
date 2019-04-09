@@ -166,7 +166,7 @@ public class TB_Details extends ActivityBase {
     private void showLogMenu() {
 
         final Menu cm = new Menu("TBLogContextMenu");
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             if (TB_Log.that == null)
                 new TB_Log();
             switch (((MenuItem) v).getMenuItemId()) {

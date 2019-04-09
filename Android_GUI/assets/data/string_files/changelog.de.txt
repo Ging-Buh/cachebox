@@ -4,6 +4,19 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 
+Aktuelle Änderungen:
+    + Bei einigen Einstellungsänderungen erscheint jetzt eine Aufforderung zum Neustart
+	+ Import Logbilder im Kontextmenü des Logbuchs
+    ~ Die TB-Liste wird wieder als Ansicht dargestellt
+	~ Die Aurufe externer Apps werden als Aktion behandelt
+	    Navigation, Fotos aufnehmen, ...
+	~ Die Informationen zu einem TB (TB-Details) haben eine neue Darstellung
+	* Kein Import von Logbildern beim Import der Spoiler (API 1.0 Anpassung)
+	* Keine Anzeige von Text über das Eingabefeld hinaus
+	* Automatische Cacheauswahl
+	* Schliessen der Trackliste
+	- Hauptschaltflächen drücken (Langklick) entfällt
+
 Änderungen bis Version 3346:
     + Cachetype Filter Schaltflächen Alle / Keine hinzugefügt
 	+ Solver um Buchstabenquersummensumme erweitert (AlphaCrossTotalSum)

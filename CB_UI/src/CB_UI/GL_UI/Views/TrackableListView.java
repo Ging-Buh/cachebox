@@ -201,7 +201,7 @@ public class TrackableListView extends CB_View_Base {
 
     public Menu getContextMenu() {
         final Menu cm = new Menu("TBLogContextMenu");
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_SEARCH:
                     searchTB();

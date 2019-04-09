@@ -80,7 +80,7 @@ public class CacheContextMenu {
         cacheContextMenu.addItem(MI_EDIT_CACHE, "MI_EDIT_CACHE").setEnabled(selectedCacheIsSet);
         cacheContextMenu.addItem(MI_DELETE_CACHE, "MI_DELETE_CACHE").setEnabled(selectedCacheIsSet);
 
-        cacheContextMenu.addOnClickListener((v, x, y, pointer, button) -> {
+        cacheContextMenu.addOnItemClickListener((v, x, y, pointer, button) -> {
             // todo CB_UI_Base.GL_UI.Menu.MenuItemDivider cannot be cast to CB_UI_Base.GL_UI.Menu.MenuItem
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_HINT:

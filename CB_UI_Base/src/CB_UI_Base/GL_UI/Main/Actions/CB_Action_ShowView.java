@@ -5,20 +5,16 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 
 public abstract class CB_Action_ShowView extends CB_Action {
 
-    protected Menu contextMenu;
-
     public CB_Action_ShowView(String translationId, int id) {
         super(translationId, id);
     }
 
     public CB_Action_ShowView(String translationId, String translationExtension, int id) {
         super(translationId, translationExtension, id);
-        contextMenu = null;
     }
 
     /**
-     * returns the instance of the view (from TabMainView)<br>
-     * TabMainView.<view><br>
+     * returns the instance of the view<br>
      *
      * @return CB_View_Base
      */
@@ -28,7 +24,7 @@ public abstract class CB_Action_ShowView extends CB_Action {
      * @return if has
      */
     public boolean hasContextMenu() {
-        return contextMenu != null;
+        return false;
     }
 
     /**
@@ -37,6 +33,6 @@ public abstract class CB_Action_ShowView extends CB_Action {
      * @return the Menu
      */
     public Menu getContextMenu() {
-        return contextMenu;
+        return null;
     }
 }

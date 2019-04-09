@@ -184,7 +184,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     public Menu getContextMenu() {
         Menu cm = new Menu("SolverViewItemContextMenu");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_CHANGE_LINE:
                     ChangeLine();

@@ -99,7 +99,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu icm = new Menu("CacheListShowImportMenu");
 
-        icm.addOnClickListener((v, x, y, pointer, button) -> {
+        icm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_CHK_STATE_API:
                     GL.that.postAsync(() -> {

@@ -442,13 +442,13 @@ public class Menu extends ButtonDialog {
         return item;
     }
 
-    public void addOnClickListener(OnClickListener onItemClickListener) {
+    public void addOnItemClickListener(OnClickListener onItemClickListener) {
         if (this.mOnItemClickListeners == null)
             this.mOnItemClickListeners = new ArrayList<>();
         this.mOnItemClickListeners.add(onItemClickListener);
     }
 
-    public void addOnClickListeners(ArrayList<OnClickListener> onItemClickListeners) {
+    public void addOnItemClickListeners(ArrayList<OnClickListener> onItemClickListeners) {
         if (this.mOnItemClickListeners == null)
             this.mOnItemClickListeners = new ArrayList<>();
         this.mOnItemClickListeners.addAll(onItemClickListeners);

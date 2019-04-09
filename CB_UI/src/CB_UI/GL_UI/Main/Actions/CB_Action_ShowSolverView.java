@@ -13,7 +13,7 @@ public class CB_Action_ShowSolverView extends CB_Action_ShowView {
 
     private static CB_Action_ShowSolverView that;
 
-    public CB_Action_ShowSolverView() {
+    private CB_Action_ShowSolverView() {
         super("Solver", MenuID.AID_SHOW_SOLVER);
     }
 

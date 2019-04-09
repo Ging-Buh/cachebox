@@ -95,7 +95,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListContextMenu");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             Log.info(log, "[TrackListContextMenu] clicked " + ((MenuItem) v).getMenuItemId());
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_GENERATE:
@@ -194,7 +194,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
     private void showMenuCreate() {
         Menu cm2 = new Menu("TrackListCreateContextMenu");
-        cm2.addOnClickListener((v, x, y, pointer, button) -> {
+        cm2.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_P2P:
                     GenTrackP2P();

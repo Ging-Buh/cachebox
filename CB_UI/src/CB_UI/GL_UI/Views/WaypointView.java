@@ -168,7 +168,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     public Menu getContextMenu() {
         Menu cm = new Menu("WayPointContextMenu");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_ADD:
                     addWP();

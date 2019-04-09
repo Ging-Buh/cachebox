@@ -67,7 +67,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
             String cachehtml = Database.GetShortDescription(cache) + Database.GetDescription(cache);
-            String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
+            String html = DescriptionImageGrabber.resolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
             String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
             html = header + html;
 

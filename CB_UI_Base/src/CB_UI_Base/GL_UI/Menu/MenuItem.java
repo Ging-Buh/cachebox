@@ -228,6 +228,10 @@ public class MenuItem extends MenuItemBase {
 
         if (!mIsEnabled) {
             // lösche ClickListener
+            // these are the defaults, but they are never used
+            // used is the menus onItemClickedListener,
+            // who handles item clicks independant of isEnabled
+            // what is not bad ex. for spoilers
             setOnClickListener(null);
             setOnLongClickListener(null);
         }

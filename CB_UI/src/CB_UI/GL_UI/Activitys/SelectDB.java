@@ -447,7 +447,7 @@ public class SelectDB extends ActivityBase {
 
         Menu cm = new Menu("MiscContextMenu");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
 
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_START_WITHOUT_SELECTION:

@@ -281,7 +281,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             String html = Database.GetShortDescription(cache) + Database.GetDescription(cache);
             // cache.getApiStatus() == Cache.IS_FULL
             if (html.length() > 0) {
-                html = DescriptionImageGrabber.ResolveImages(cache, html, false, NonLocalImages, NonLocalImagesUrl);
+                html = DescriptionImageGrabber.resolveImages(cache, html, false, NonLocalImages, NonLocalImagesUrl);
                 html = getAttributesHtml(cache) + html;
                 // add 2 empty lines so that the last line of description can be selected with the markers
                 html += "</br></br>";

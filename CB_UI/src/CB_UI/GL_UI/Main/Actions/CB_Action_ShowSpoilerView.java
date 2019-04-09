@@ -72,7 +72,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     private Menu createContextMenu() {
         Menu icm = new Menu("menu_compassView");
-        icm.addOnClickListener((v, x, y, pointer, button) -> {
+        icm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_RELOAD_SPOILER:
                     GlobalCore.ImportSpoiler(false).setReadyListener(() -> {

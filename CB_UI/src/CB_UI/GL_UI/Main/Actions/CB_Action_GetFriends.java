@@ -8,6 +8,8 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Sprites;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import static CB_UI_Base.GL_UI.Menu.MenuID.AID_GetFriends;
 
@@ -21,6 +23,11 @@ public class CB_Action_GetFriends extends CB_Action {
     public static CB_Action_GetFriends getInstance() {
         if (that == null) that = new CB_Action_GetFriends();
         return that;
+    }
+
+    @Override
+    public Sprite getIcon() {
+        return Sprites.getSprite(Sprites.IconName.friends.name());
     }
 
     @Override

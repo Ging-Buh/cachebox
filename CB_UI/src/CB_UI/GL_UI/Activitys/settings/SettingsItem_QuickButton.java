@@ -82,7 +82,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         }
 
         Menu icm = new Menu("Select QuickButtonItem");
-        icm.addOnClickListener(new OnClickListener() {
+        icm.addOnItemClickListener(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

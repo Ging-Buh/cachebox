@@ -77,7 +77,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu cm = new Menu("CacheListContextMenu");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             boolean checked;
             final boolean finalchecked;
             String msgText;

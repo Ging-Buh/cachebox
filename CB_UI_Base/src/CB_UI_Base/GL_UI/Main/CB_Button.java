@@ -33,7 +33,7 @@ import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
  * this is the class for the lower 5 buttons, the main buttons
  * it handles the menu shown by clicking/longclicking and the actions executed on clicking the menu point
  * <p>
- * a LongClicks menu points shows the "actions" (mButtonActions) that can be selected/executed for this button.
+ * a LongClicks menu points shows the "actions" (cb_actionButtons) that can be selected/executed for this button.
  * also shows a hint picture for the defined gestures, if gestures are enabled by configuration
  * <p>
  * the first click on the button executes the "default" action (if defined), or the last action depends on configuration "rememberLastAction".
@@ -47,7 +47,7 @@ public class CB_Button extends Button {
 
     private static Sprite mContextMenuSprite;
     private static Sprite mFilteredContextMenuSprite;
-    private final ArrayList<CB_ActionButton> mButtonActions;
+    private final ArrayList<CB_ActionButton> cb_actionButtons;
     private CB_Action_ShowView aktActionView = null;
     private GestureHelp help;
     private Point downPos = null;
@@ -70,7 +70,7 @@ public class CB_Button extends Button {
                         Menu viewContextMenu = aktActionView.getContextMenu();
                         if (viewContextMenu != null) {
                             compoundMenu.addItems(viewContextMenu.getItems());
-                            compoundMenu.addOnClickListeners(viewContextMenu.getOnItemClickListeners());
+                            compoundMenu.addOnItemClickListeners(viewContextMenu.getOnItemClickListeners());
                             // add divider
                             compoundMenu.addDivider();
                             // add MoreMenu ! oh ups, what is this
@@ -81,7 +81,7 @@ public class CB_Button extends Button {
                     Menu LongClickMenu = getLongClickMenu();
                     if (LongClickMenu != null) {
                         compoundMenu.addItems(LongClickMenu.getItems());
-                        compoundMenu.addOnClickListeners(LongClickMenu.getOnItemClickListeners());
+                        compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
                     }
                     // and show
                     if (compoundMenu.reorganizeIndexes() > 0) {
@@ -96,7 +96,7 @@ public class CB_Button extends Button {
 
             boolean actionExecuted = false;
             if (aktActionView != null && rememberLastAction) {
-                for (CB_ActionButton ba : mButtonActions) {
+                for (CB_ActionButton ba : cb_actionButtons) {
                     CB_Action action = ba.getAction();
                     if (aktActionView.getName().equals(action.getName())) {
                         action.Execute();
@@ -110,7 +110,7 @@ public class CB_Button extends Button {
             else {
                 // if the (last) action of this button is not visible,
                 // the default action is executed
-                for (CB_ActionButton ba : mButtonActions) {
+                for (CB_ActionButton ba : cb_actionButtons) {
                     if (ba.isDefault()) {
                         CB_Action action = ba.getAction();
                         if (action != null) {
@@ -146,11 +146,11 @@ public class CB_Button extends Button {
             // Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
             // Actions gewählt werden kann
 
-            if (mButtonActions.size() > 1) {
+            if (cb_actionButtons.size() > 1) {
                 getLongClickMenu().Show();
-            } else if (mButtonActions.size() == 1) {
+            } else if (cb_actionButtons.size() == 1) {
                 // nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
-                CB_ActionButton ba = mButtonActions.get(0);
+                CB_ActionButton ba = cb_actionButtons.get(0);
                 CB_Action action = ba.getAction();
                 if (action != null) {
                     action.Execute();
@@ -180,7 +180,7 @@ public class CB_Button extends Button {
         super(rec, Name);
         useDescriptiveCB_Buttons = true;
         this.rememberLastAction = rememberLastAction;
-        mButtonActions = new ArrayList<>();
+        cb_actionButtons = new ArrayList<>();
         setOnClickListener(onClickListener);
         // setOnLongClickListener(longClickListener);
         drawableNormal = new SpriteDrawable(getSprite("button"));
@@ -195,7 +195,7 @@ public class CB_Button extends Button {
         super(rec, Name);
         useDescriptiveCB_Buttons = false;
         this.rememberLastAction = rememberLastAction;
-        mButtonActions = new ArrayList<>();
+        cb_actionButtons = new ArrayList<>();
         setOnClickListener(onClickListener);
         // setOnLongClickListener(longClickListener);
         setButtonSprites(sprites);
@@ -232,7 +232,7 @@ public class CB_Button extends Button {
             }
         }
 
-        mButtonActions.add(Action);
+        cb_actionButtons.add(Action);
 
         // disable Gesture ?
         if (!CB_UI_Base_Settings.GestureOn.getValue())
@@ -271,11 +271,11 @@ public class CB_Button extends Button {
     private Menu getLongClickMenu() {
         Menu cm = new Menu("Name");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             int mId = ((MenuItem) v).getMenuItemId();
-            for (CB_ActionButton ba : mButtonActions) {
-                if (ba.getAction().getId() == mId) {
-                    CB_Action action = ba.getAction();
+            for (CB_ActionButton cb_actionButton : cb_actionButtons) {
+                if (cb_actionButton.getAction().getId() == mId) {
+                    CB_Action action = cb_actionButton.getAction();
                     action.Execute();
                     if (action instanceof CB_Action_ShowView) {
                         aktActionView = (CB_Action_ShowView) action;
@@ -288,14 +288,14 @@ public class CB_Button extends Button {
             return true;
         });
 
-        for (CB_ActionButton ba : mButtonActions) {
-            CB_Action action = ba.getAction();
+        for (CB_ActionButton cb_actionButton : cb_actionButtons) {
+            CB_Action action = cb_actionButton.getAction();
             if (action == null)
                 continue;
             MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtension());
-            if (ba.getGestureDirection() != GestureDirection.None) {
+            if (cb_actionButton.getGestureDirection() != GestureDirection.None) {
                 String direction;
-                switch (ba.getGestureDirection()) {
+                switch (cb_actionButton.getGestureDirection()) {
                     case Up:
                         direction = Translation.get("up");
                         break;
@@ -310,7 +310,8 @@ public class CB_Button extends Button {
                 }
                 mi.setTitle(mi.getTitle() + " (" + Translation.get("wipe") + " " + direction  + ")");
             }
-            mi.setEnabled(action.getEnabled());
+            mi.setEnabled(action.getEnabled() && aktActionView != action);
+            // mi.setVisible(aktActionView != action); // there will be a hole
             mi.setCheckable(action.getIsCheckable());
             mi.setChecked(action.getIsChecked());
             Sprite icon = action.getIcon();
@@ -413,7 +414,7 @@ public class CB_Button extends Button {
             else
                 direction = GestureDirection.Down;
         }
-        for (CB_ActionButton ba : mButtonActions) {
+        for (CB_ActionButton ba : cb_actionButtons) {
             if (ba.getGestureDirection() == direction) {
                 CB_Action action = ba.getAction();
                 if (action != null) {
@@ -432,7 +433,7 @@ public class CB_Button extends Button {
     }
 
     public void setActView(CB_View_Base View) {
-        for (CB_ActionButton ba : mButtonActions) {
+        for (CB_ActionButton ba : cb_actionButtons) {
             CB_Action action = ba.getAction();
             CB_Action_ShowView ActionView = null;
             if (action != null) {

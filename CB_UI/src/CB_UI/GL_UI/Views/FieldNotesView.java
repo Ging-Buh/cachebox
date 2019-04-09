@@ -429,7 +429,7 @@ public class FieldNotesView extends V_ListView {
 
         final Menu cm = new Menu("FieldNoteContextMenu");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             cm.close();
 
             switch (((MenuItem) v).getMenuItemId()) {
@@ -518,7 +518,7 @@ public class FieldNotesView extends V_ListView {
         Menu sm = new Menu("FieldNoteContextMenu/2");
         MenuItem mi;
         boolean IM_owner = GlobalCore.getSelectedCache().ImTheOwner();
-        sm.addOnClickListener((v, x, y, pointer, button) -> {
+        sm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_ENABLED:
                     addNewFieldNote(LogTypes.enabled);
@@ -787,7 +787,7 @@ public class FieldNotesView extends V_ListView {
                     int index = ((ListViewItemBase) v13).getIndex();
                     aktFieldNote = lFieldNotes.get(index);
                     Menu cm = new Menu("FieldNotesContextMenu");
-                    cm.addOnClickListener((v1, x1, y1, pointer1, button1) -> {
+                    cm.addOnItemClickListener((v1, x1, y1, pointer1, button1) -> {
                         switch (((MenuItem) v1).getMenuItemId()) {
                             case MenuID.MI_SELECT_CACHE:
                                 selectCacheFromFieldNote();

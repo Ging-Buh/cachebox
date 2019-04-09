@@ -142,7 +142,7 @@ public class DescriptionImageGrabber {
      * @param NonLocalImagesUrl
      * @return
      */
-    public static String ResolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages, LinkedList<String> NonLocalImagesUrl) {
+    public static String resolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages, LinkedList<String> NonLocalImagesUrl) {
         /*
          * NonLocalImages = new List<string>(); NonLocalImagesUrl = new List<string>();
          */
@@ -152,7 +152,7 @@ public class DescriptionImageGrabber {
             baseUri = URI.create(Cache.getUrl());
         } catch (Exception exc) {
             /*
-             * #if DEBUG Global.AddLog( "DescriptionImageGrabber.ResolveImages: failed to resolve '" + Cache.Url + "': " + exc.ToString());
+             * #if DEBUG Global.AddLog( "DescriptionImageGrabber.resolveImages: failed to resolve '" + Cache.Url + "': " + exc.ToString());
              * #endif
              */
             baseUri = null;
@@ -164,7 +164,7 @@ public class DescriptionImageGrabber {
                 baseUri = URI.create(Cache.getUrl());
             } catch (Exception exc) {
                 /*
-                 * #if DEBUG Global.AddLog( "DescriptionImageGrabber.ResolveImages: failed to resolve '" + Cache.Url + "': " +
+                 * #if DEBUG Global.AddLog( "DescriptionImageGrabber.resolveImages: failed to resolve '" + Cache.Url + "': " +
                  * exc.ToString()); #endif
                  */
                 return html;
@@ -217,7 +217,7 @@ public class DescriptionImageGrabber {
                     }
                 } catch (Exception exc) {
                     /*
-                     * #if DEBUG Global.AddLog( "DescriptionImageGrabber.ResolveImages: failed to resolve relative uri. Base '" + baseUri +
+                     * #if DEBUG Global.AddLog( "DescriptionImageGrabber.resolveImages: failed to resolve relative uri. Base '" + baseUri +
                      * "', relative '" + src + "': " + exc.ToString()); #endif
                      */
                 }

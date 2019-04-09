@@ -59,7 +59,7 @@ public class CB_Action_QuickFieldNote extends CB_Action {
     public void Execute() {
         Menu cm = new Menu("QuickFieldNote");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             boolean found = true;
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_WEBCAM_FOTO_TAKEN:

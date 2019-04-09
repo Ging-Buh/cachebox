@@ -138,7 +138,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 Menu icm = new Menu("Settings");
-                icm.addOnClickListener(new OnClickListener() {
+                icm.addOnItemClickListener(new OnClickListener() {
 
                     @Override
                     public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -901,7 +901,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 final String ApsolutePath = (file != null) ? file.getAbsolutePath() : "";
 
                 Menu icm = new Menu("FileactionMenu");
-                icm.addOnClickListener(new OnClickListener() {
+                icm.addOnItemClickListener(new OnClickListener() {
 
                     @Override
                     public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -975,7 +975,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 final String Path = (file.getParent() != null) ? file.getParent() : "";
 
                 Menu icm = new Menu("FileactionMenu");
-                icm.addOnClickListener(new OnClickListener() {
+                icm.addOnItemClickListener(new OnClickListener() {
 
                     @Override
                     public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

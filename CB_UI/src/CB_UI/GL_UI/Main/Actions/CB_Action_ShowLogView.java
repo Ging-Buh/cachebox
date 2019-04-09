@@ -66,7 +66,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu cm = new Menu("LogListContextMenu");
 
-        cm.addOnClickListener((v, x, y, pointer, button) -> {
+        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_LOAD_FRIENDS_LOGS:
                     reloadLogs(false);
@@ -95,11 +95,11 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
         cm.addItem(MI_RELOADLOGS, "ReloadLogs", Sprites.getSprite(IconName.importIcon.name()));
         if (CB_Core_Settings.Friends.getValue().length() > 0) {
             cm.addItem(MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", Sprites.getSprite(IconName.importIcon.name()));
-            mi = cm.addItem(MI_FILTERLOGS, "FilterLogsOfFriends", Sprites.getSprite(IconName.filter.name()));
+            mi = cm.addItem(MI_FILTERLOGS, "FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()));
             mi.setCheckable(true);
             mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
-        cm.addItem(MI_LoadLogImages,"LoadLogImages", Sprites.getSprite(IconName.LoadLogImages.name()));
+        cm.addItem(MI_LoadLogImages,"LoadLogImages", Sprites.getSprite(IconName.imagesIcon.name())); // todo LoadLogImages Icon
         return cm;
     }
 

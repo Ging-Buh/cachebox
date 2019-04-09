@@ -114,7 +114,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", normalMapView.GetAlignToCompass());
         icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
         icm.addItem(MenuID.MI_TREC_REC, "RecTrack");
-        icm.addOnClickListener((v, x, y, pointer, button) -> {
+        icm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_LAYER:
                     showMapLayerMenu();
@@ -190,7 +190,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
 
-        icm.addOnClickListener((v, x, y, pointer, button) -> {
+        icm.addOnItemClickListener((v, x, y, pointer, button) -> {
             Layer layer = (Layer) v.getData();
             selectLayer(layer);
             showLanguageSelectionMenu(layer);
@@ -248,7 +248,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         lsm.addItem(menuID++, "", lang); // ohne Translation
                         //mi.setData(which);
                     }
-                    lsm.addOnClickListener((v, x, y, pointer, button) -> {
+                    lsm.addOnItemClickListener((v, x, y, pointer, button) -> {
                         String selectedLanguage = ((MenuItem) v).getTitle();
                         Config.PreferredMapLanguage.setValue(selectedLanguage);
                         Config.AcceptChanges();
@@ -272,7 +272,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
 
-        icm.addOnClickListener(new OnClickListener() {
+        icm.addOnItemClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 Layer layer = (Layer) ((MenuItem) v).getData();
@@ -306,7 +306,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         icm.addCheckableItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "MenuTextShowAccuracyCircle", Config.ShowAccuracyCircle.getValue());
         icm.addCheckableItem(MenuID.MI_SHOW_CENTERCROSS, "ShowCenterCross", Config.ShowMapCenterCross.getValue());
 
-        icm.addOnClickListener( (v, x, y, pointer, button) -> {
+        icm.addOnItemClickListener( (v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_SHOW_AT_ORIGINAL_POSITION:
                     toggleSettingWithReload(Config.ShowAtOriginalPosition);
@@ -348,7 +348,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void showMenuTrackRecording() {
         MenuItem mi;
         Menu cm2 = new Menu("TrackRecordContextMenu");
-        cm2.addOnClickListener(new OnClickListener() {
+        cm2.addOnItemClickListener(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -430,7 +430,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         lRenderThemesMenu.addItem(2, "RenderThemesCarDay");
         lRenderThemesMenu.addItem(3, "RenderThemesCarNight");
 
-        lRenderThemesMenu.addOnClickListener(new OnClickListener() {
+        lRenderThemesMenu.addOnItemClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 return showRenderThemesSelectionMenu(((MenuItem) v).getMenuItemId());
@@ -490,7 +490,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
         RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
 
-        mRenderThemesSelectionMenu.addOnClickListener(new OnClickListener() {
+        mRenderThemesSelectionMenu.addOnItemClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 showStyleSelection((int) ((MenuItem) v).getData(), RenderThemes.get(((MenuItem) v).getTitle()));
@@ -517,7 +517,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             //mi.setCheckable(true);
         }
 
-        lStyle.addOnClickListener(new OnClickListener() {
+        lStyle.addOnItemClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 MenuItem mi = (MenuItem) v;
@@ -591,7 +591,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             mi.setChecked(overlayEnabled);
         }
 
-        lOverlay.addOnClickListener(new OnClickListener() {
+        lOverlay.addOnItemClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 MenuItem mi = (MenuItem) v;
