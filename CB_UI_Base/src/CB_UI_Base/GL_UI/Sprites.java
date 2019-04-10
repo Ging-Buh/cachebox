@@ -741,9 +741,11 @@ public class Sprites {
         live, // 4
         liveSelected, // 5
         FavPoi,
-        LoadLogImages,
+        downloadLogImages,
         friends,
         friendsLogs,
+        downloadFriendsLogs,
+        downloadLogs,
     }
 
     public static enum DialogElement {

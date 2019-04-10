@@ -92,14 +92,14 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
         });
 
         MenuItem mi;
-        cm.addItem(MI_RELOADLOGS, "ReloadLogs", Sprites.getSprite(IconName.importIcon.name()));
+        cm.addItem(MI_RELOADLOGS, "ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()));
         if (CB_Core_Settings.Friends.getValue().length() > 0) {
-            cm.addItem(MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", Sprites.getSprite(IconName.importIcon.name()));
+            cm.addItem(MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()));
             mi = cm.addItem(MI_FILTERLOGS, "FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()));
             mi.setCheckable(true);
             mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
-        cm.addItem(MI_LoadLogImages,"LoadLogImages", Sprites.getSprite(IconName.imagesIcon.name())); // todo LoadLogImages Icon
+        cm.addItem(MI_LoadLogImages,"LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()));
         return cm;
     }
 
