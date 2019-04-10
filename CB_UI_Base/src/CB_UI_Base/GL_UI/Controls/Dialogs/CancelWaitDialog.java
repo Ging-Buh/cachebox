@@ -20,7 +20,6 @@ import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
@@ -66,16 +65,12 @@ public class CancelWaitDialog extends WaitDialog {
         Animation.setRec(animationRec);
         wd.animation = Animation;
         wd.setButtonCaptions(MessageBoxButtons.Cancel);
-        wd.mMsgBoxClickListener = new MessageBox.OnMsgBoxClickListener() {
-
-            @Override
-            public boolean onClick(int which, Object data) {
-                if (wd.mRunnThread != null)
-                    wd.mRunnThread.Cancel();
-                wd.button3.disable();
-                wd.button3.setText(Translation.get("waitForCancel"));
-                return false;
-            }
+        wd.mMsgBoxClickListener = (which, data) -> {
+            if (wd.mRunnThread != null)
+                wd.mRunnThread.Cancel();
+            wd.button3.disable();
+            wd.button3.setText(Translation.get("waitForCancel"));
+            return false;
         };
 
         SizeF contentSize = wd.getContentSize();
@@ -174,10 +169,10 @@ public class CancelWaitDialog extends WaitDialog {
     }
 
     public interface IcancelListener {
-        public void isCanceled();
+        void isCanceled();
     }
 
     public interface IReadyListener {
-        public void isReady();
+        void isReady();
     }
 }

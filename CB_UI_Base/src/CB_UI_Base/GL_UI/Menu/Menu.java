@@ -63,19 +63,19 @@ public class Menu extends ButtonDialog {
                 GL.that.closeDialog(mParentMenu);
             if (mOnItemClickListeners != null) {
                 for (OnClickListener tmp : mOnItemClickListeners) {
-                    if (tmp.onClick(v, x, y, pointer, button))
-                        break;
+                    if (tmp.onClick(v, x, y, pointer, button)) {
+                        return true; // break;
+                    }
                 }
             }
-
-            return true;
+            return false;
         }
     };
     private boolean mMoreMenuIsInitial = false;
     private int Level = 0;
 
     public Menu(String Name) {
-        super(getMenuRec() , Name);
+        super(getMenuRec(), Name);
 
         if (ItemHeight == -1f)
             ItemHeight = UI_Size_Base.that.getButtonHeight();
@@ -360,6 +360,17 @@ public class Menu extends ButtonDialog {
         return item;
     }
 
+    public MenuItem addMenuItem(String title, Sprite icon, OnClickListener onClickListener) {
+        MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, title);
+        item.setTitle(Translation.get(title));
+        if (icon != null)
+            item.setIcon(new SpriteDrawable(icon));
+        item.setOnClickListener(onClickListener);
+        mItems.add(item);
+        mListView.notifyDataSetChanged();
+        return item;
+    }
+
     public MenuItem addCheckableItem(int ID, String StringId, boolean checked) {
         MenuItem item = addItem(ID, StringId, "", false);
         item.setCheckable(true);
@@ -477,7 +488,8 @@ public class Menu extends ButtonDialog {
 
     public void addItems(ArrayList<MenuItemBase> items) {
         for (MenuItemBase menuItem : items) {
-            menuItem.setOnClickListener(menuItemClickListener);
+            if (menuItem.getOnClickListener() == null)
+                menuItem.setOnClickListener(menuItemClickListener);
             mItems.add(menuItem);
             mListView.notifyDataSetChanged();
         }

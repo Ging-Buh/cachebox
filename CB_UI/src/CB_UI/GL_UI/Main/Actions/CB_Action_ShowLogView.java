@@ -5,7 +5,6 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.LogView;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
-import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -20,15 +19,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CB_Action_ShowLogView extends CB_Action_ShowView {
-    private static final int MI_LOAD_FRIENDS_LOGS = 201;
-    private static final int MI_FILTERLOGS = 202;
-    private static final int MI_RELOADLOGS = 203;
-    private static final int MI_LoadLogImages = 204;
 
     private static CB_Action_ShowLogView that;
 
     private CB_Action_ShowLogView() {
         super("ShowLogs", MenuID.AID_SHOW_LOGS);
+        createContextMenu();
     }
 
     public static CB_Action_ShowLogView getInstance() {
@@ -64,68 +60,64 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        Menu cm = new Menu("LogListContextMenu");
+        // if depends on something: call createContextMenu() again
+        return contextMenu;
+    }
 
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MI_LOAD_FRIENDS_LOGS:
-                    reloadLogs(false);
-                    return true;
-                case MI_RELOADLOGS:
-                    reloadLogs(true);
-                    return true;
-                case MI_FILTERLOGS:
-                    GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
-                    LogView.getInstance().resetInitial();
-                    return true;
-                case MI_LoadLogImages:
-                    GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
-                        // do after import
-                        if (GlobalCore.isSetSelectedCache()) {
-                            GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            SpoilerView.getInstance().ForceReload();
-                        }
-                    });
-                    return true;
-            }
-            return false;
-        });
+    private Menu contextMenu;
+    private void createContextMenu() {
+        contextMenu = new Menu("LogbookContextMenu");
 
         MenuItem mi;
-        cm.addItem(MI_RELOADLOGS, "ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()));
+        contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), (v, x, y, pointer, button) -> {
+            reloadLogs(true);
+            return true;
+        });
         if (CB_Core_Settings.Friends.getValue().length() > 0) {
-            cm.addItem(MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()));
-            mi = cm.addItem(MI_FILTERLOGS, "FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()));
+            contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), (v, x, y, pointer, button) -> {
+                reloadLogs(false);
+                return true;
+            });
+            mi = contextMenu.addMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), (v, x, y, pointer, button) -> {
+                GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
+                LogView.getInstance().resetInitial();
+                return true;
+            });
             mi.setCheckable(true);
             mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
-        cm.addItem(MI_LoadLogImages,"LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()));
-        return cm;
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), (v, x, y, pointer, button) -> {
+            GL.that.closeDialog(contextMenu);
+            GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
+                // do after import
+                if (GlobalCore.isSetSelectedCache()) {
+                    GlobalCore.getSelectedCache().loadSpoilerRessources();
+                    SpoilerView.getInstance().ForceReload();
+                }
+            });
+            return true;
+        });
+
     }
 
     private void reloadLogs(final boolean all) {
-        GL.that.postAsync(() -> {
-            GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
-                @Override
-                public void checkReady(boolean MemberType) {
-                    TimerTask tt = new TimerTask() {
+        GL.that.postAsync(() -> GlobalCore.chkAPiLogInWithWaitDialog(MemberType -> {
+            TimerTask tt = new TimerTask() {
 
-                        @Override
-                        public void run() {
-                            GL.that.postAsync(() -> {
-                                if (all) {
-                                    new CB_Action_LoadLogs(true).Execute();
-                                } else {
-                                    new CB_Action_LoadLogs(false).Execute();
-                                }
-                            });
+                @Override
+                public void run() {
+                    GL.that.postAsync(() -> {
+                        if (all) {
+                            new CB_Action_LoadLogs(true).Execute();
+                        } else {
+                            new CB_Action_LoadLogs(false).Execute();
                         }
-                    };
-                    Timer t = new Timer();
-                    t.schedule(tt, 100);
+                    });
                 }
-            });
-        });
+            };
+            Timer t = new Timer();
+            t.schedule(tt, 100);
+        }));
     }
 
 }

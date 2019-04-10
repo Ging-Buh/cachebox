@@ -70,10 +70,10 @@ public class CB_Button extends Button {
                         Menu viewContextMenu = aktActionView.getContextMenu();
                         if (viewContextMenu != null) {
                             compoundMenu.addItems(viewContextMenu.getItems());
-                            compoundMenu.addOnItemClickListeners(viewContextMenu.getOnItemClickListeners());
+                            // compoundMenu.addOnItemClickListeners(viewContextMenu.getOnItemClickListeners());
                             // add divider
                             compoundMenu.addDivider();
-                            // add MoreMenu ! oh ups, what is this
+                            // add MoreMenu
                             compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
                         }
                     }
@@ -81,7 +81,7 @@ public class CB_Button extends Button {
                     Menu LongClickMenu = getLongClickMenu();
                     if (LongClickMenu != null) {
                         compoundMenu.addItems(LongClickMenu.getItems());
-                        compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
+                        // compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
                     }
                     // and show
                     if (compoundMenu.reorganizeIndexes() > 0) {
@@ -282,10 +282,10 @@ public class CB_Button extends Button {
                         setButton(aktActionView.getIcon(), aktActionView.getName());
                     }
                     GL.that.closeToast();
-                    break;
+                    return true; // break;
                 }
             }
-            return true;
+            return false;
         });
 
         for (CB_ActionButton cb_actionButton : cb_actionButtons) {

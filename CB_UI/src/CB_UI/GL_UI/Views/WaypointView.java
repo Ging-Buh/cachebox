@@ -461,7 +461,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         public ListViewItemBase getView(int position) {
             if (cache != null) {
                 if (position == 0) {
-
+                    // the cache
                     if (items.get(position) == null || items.get(position).isDisposed()) {
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, null);
                         waypointViewItem.setClickable(true);
