@@ -21,10 +21,11 @@ import java.util.TimerTask;
 public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
     private static CB_Action_ShowLogView that;
+    private Menu contextMenu;
 
     private CB_Action_ShowLogView() {
         super("ShowLogs", MenuID.AID_SHOW_LOGS);
-        createContextMenu();
+        // createContextMenu(); todo see getContextMenu
     }
 
     public static CB_Action_ShowLogView getInstance() {
@@ -61,10 +62,12 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
         // if depends on something: call createContextMenu() again
+        // todo why are the clickhandlers of the items gone on following calls? temp solution createContextMenu() again
+        // has to do with the disposing of the compoundMenu in CB_Button after the Show
+        createContextMenu();
         return contextMenu;
     }
 
-    private Menu contextMenu;
     private void createContextMenu() {
         contextMenu = new Menu("LogbookContextMenu");
 
