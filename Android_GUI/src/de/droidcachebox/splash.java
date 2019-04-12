@@ -246,7 +246,7 @@ public class splash extends Activity {
         androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
         workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
-        boolean askAgain = androidSetting.getBoolean("AskAgain", true);
+        boolean askAgain = androidSetting.getBoolean("AskAgain", false);
         showSandbox = androidSetting.getBoolean("showSandbox", false);
 
         Global.initTheme(this);

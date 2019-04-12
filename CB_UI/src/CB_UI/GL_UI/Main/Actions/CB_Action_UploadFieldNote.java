@@ -47,11 +47,6 @@ public class CB_Action_UploadFieldNote extends CB_Action {
     }
 
     @Override
-    public boolean getEnabled() {
-        return true;
-    }
-
-    @Override
     public Sprite getIcon() {
         return Sprites.getSprite(IconName.UPLOADFIELDNOTE.name());
     }

@@ -6,16 +6,16 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_add_WP extends CB_Action {
+public class CB_Action_Add_WP extends CB_Action {
 
-    private static CB_Action_add_WP that;
+    private static CB_Action_Add_WP that;
 
-    private CB_Action_add_WP() {
+    private CB_Action_Add_WP() {
         super("addWP", MenuID.AID_ADD_WP);
     }
 
-    public static CB_Action_add_WP getInstance() {
-        if (that == null) that = new CB_Action_add_WP();
+    public static CB_Action_Add_WP getInstance() {
+        if (that == null) that = new CB_Action_Add_WP();
         return that;
     }
 

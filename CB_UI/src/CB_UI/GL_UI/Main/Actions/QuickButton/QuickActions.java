@@ -142,9 +142,9 @@ public enum QuickActions {
             case 9:
                 return actionRecordVoice;
             case 10:
-                return CB_Action_Show_Search.getInstance();
+                return CB_Action_SearchDialog.getInstance();
             case 11:
-                return CB_Action_ShowFilterSettings.getInstance();
+                return CB_Action_EditFilterSettings.getInstance();
             case 12:
                 return CB_Action_switch_Autoresort.getInstance();
             case 13:
@@ -152,9 +152,9 @@ public enum QuickActions {
             case 14:
                 return CB_Action_ShowSpoilerView.getInstance();
             case 15:
-                return CB_Action_ShowHint.getInstance();
+                return CB_Action_HintDialog.getInstance();
             case 16:
-                return CB_Action_Show_Parking_Dialog.getInstance();
+                return CB_Action_ParkingDialog.getInstance();
             case 17:
                 return CB_Action_switch_DayNight.getInstance();
             case 18:
@@ -164,7 +164,7 @@ public enum QuickActions {
             case 20:
                 return CB_Action_ShowTrackableListView.getInstance();
             case 21:
-                return CB_Action_add_WP.getInstance();
+                return CB_Action_Add_WP.getInstance();
             case 22:
                 return CB_Action_ShowSolverView2.getInstance();
             case 23:

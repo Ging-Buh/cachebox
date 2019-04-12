@@ -360,9 +360,9 @@ public class Menu extends ButtonDialog {
         return item;
     }
 
-    public MenuItem addMenuItem(String title, Sprite icon, OnClickListener onClickListener) {
-        MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, title);
-        item.setTitle(Translation.get(title));
+    public MenuItem addMenuItem(String titleTranlationId, Sprite icon, OnClickListener onClickListener) {
+        MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, titleTranlationId);
+        item.setTitle(Translation.get(titleTranlationId));
         if (icon != null)
             item.setIcon(new SpriteDrawable(icon));
         item.setOnClickListener(onClickListener);

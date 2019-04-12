@@ -21,8 +21,10 @@ import CB_Utils.Settings.*;
 
 import static CB_Utils.Settings.SettingCategory.*;
 import static CB_Utils.Settings.SettingModus.*;
-import static CB_Utils.Settings.SettingStoreType.*;
-import static CB_Utils.Settings.SettingUsage.*;
+import static CB_Utils.Settings.SettingStoreType.Global;
+import static CB_Utils.Settings.SettingStoreType.Platform;
+import static CB_Utils.Settings.SettingUsage.ACB;
+import static CB_Utils.Settings.SettingUsage.ALL;
 
 public interface CB_Core_Settings {
 
@@ -61,7 +63,7 @@ public interface CB_Core_Settings {
     SettingBool RunOverLockScreen = new SettingBool("RunOverLockScreen", Misc, NORMAL, true, Global, ACB);
 
     // base settings, read directly from Platform, before the database can be accessed
-    SettingBool AskAgain = new SettingBool("AskAgain", RememberAsk, NORMAL, true, Platform, ALL);
+    SettingBool AskAgain = new SettingBool("AskAgain", Folder, NORMAL, false, Platform, ALL);
     SettingBool showSandbox = new SettingBool("showSandbox", RememberAsk, NORMAL, false, Platform, ACB);
     SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Folder, NEVER, "data/lang/en-GB/strings.ini", Platform, ALL, "lan");
 

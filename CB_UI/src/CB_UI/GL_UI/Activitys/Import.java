@@ -65,7 +65,8 @@ import java.io.IOException;
 import java.util.*;
 
 import static CB_Core.Api.GroundspeakAPI.*;
-import static CB_UI.GL_UI.Main.Actions.CB_Action_ShowImportMenu.*;
+import static CB_UI.GL_UI.Main.Actions.CB_Action_ShowImportMenu.MI_IMPORT_CBS;
+import static CB_UI.GL_UI.Main.Actions.CB_Action_ShowImportMenu.MI_IMPORT_GCV;
 
 public class Import extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "Import";
@@ -128,7 +129,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
         @Override
         public void onCheckedChanged(ChkBox view, boolean isChecked) {
-            if ((importType == MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked())) {
+            if (checkImportPQfromGC.isChecked()) {
                 checkBoxImportGPX.setChecked(true);
                 checkBoxImportGPX.setEnabled(false);
                 PQ_ListCollapseBox.expand();
@@ -168,26 +169,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
         IMAGE_LINE_ACTIVE = true;
         switch (importType) {
-            case MI_IMPORT_GS_PQ:
-                PQ_LINE_ACTIVE = true;
-                CBS_LINE_ACTIVE = false;
-                GPX_LINE_ACTIVE = false;
-                GCV_LINE_ACTIVE = false;
-                LOG_LINE_ACTIVE = true;
-                DB_LINE_ACTIVE = true;
-                break;
             case MI_IMPORT_CBS:
                 PQ_LINE_ACTIVE = false;
                 CBS_LINE_ACTIVE = true;
                 GPX_LINE_ACTIVE = false;
-                GCV_LINE_ACTIVE = false;
-                LOG_LINE_ACTIVE = true;
-                DB_LINE_ACTIVE = true;
-                break;
-            case MI_IMPORT_GPX:
-                PQ_LINE_ACTIVE = false;
-                CBS_LINE_ACTIVE = false;
-                GPX_LINE_ACTIVE = true;
                 GCV_LINE_ACTIVE = false;
                 LOG_LINE_ACTIVE = true;
                 DB_LINE_ACTIVE = true;
@@ -237,19 +222,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         Layout();
 
-        if (importType == MI_IMPORT_GS_PQ) {
-            checkImportPQfromGC.setChecked(true);
-            checkImportPQfromGC.setVisible(true);
-            refreshPqList();
-            PQ_ListCollapseBox.expand();
-        } else if (importType == MI_IMPORT_CBS) {
+        if (importType == MI_IMPORT_CBS) {
             checkImportFromCBServer.setChecked(true);
             checkImportFromCBServer.setVisible(true);
             refreshCBServerList();
             CBServerCollapseBox.expand();
-        } else if (importType == MI_IMPORT_GPX) {
-            checkBoxImportGPX.setChecked(true);
-            checkBoxImportGPX.setVisible(true);
         } else if (importType == MI_IMPORT_GCV) {
             checkBoxGcVote.setChecked(true);
             checkBoxGcVote.setVisible(true);
@@ -710,11 +687,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         }
         checkBoxCompactDB.setChecked(DB_LINE_ACTIVE ? Config.CompactDB.getValue() : false);
 
-        /*
-         * if (importType == MenuID.MI_IMPORT_GS_PQ) { // alles andere als den PQ Import deaktivieren checkImportPQfromGC.setChecked(true);
-         * checkImportFromCBServer.setChecked(false); checkBoxGcVote.setChecked(false); checkBoxCleanLogs.setChecked(false);
-         * checkBoxCompactDB.setChecked(false); }
-         */
         checkBoxPreloadSpoiler.setEnable(true);
         lblSpoiler.setTextColor(COLOR.getFontColor());
         if (checkImportPQfromGC.isChecked()) {

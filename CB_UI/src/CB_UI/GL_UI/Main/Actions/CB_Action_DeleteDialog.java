@@ -7,16 +7,16 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_Show_Delete_Dialog extends CB_Action {
+public class CB_Action_DeleteDialog extends CB_Action {
 
-    private static CB_Action_Show_Delete_Dialog that;
+    private static CB_Action_DeleteDialog that;
 
-    private CB_Action_Show_Delete_Dialog() {
+    private CB_Action_DeleteDialog() {
         super("DeleteCaches", MenuID.AID_SHOW_DELETE_DIALOG);
     }
 
-    public static CB_Action_Show_Delete_Dialog getInstance() {
-        if (that == null) that = new CB_Action_Show_Delete_Dialog();
+    public static CB_Action_DeleteDialog getInstance() {
+        if (that == null) that = new CB_Action_DeleteDialog();
         return that;
     }
 

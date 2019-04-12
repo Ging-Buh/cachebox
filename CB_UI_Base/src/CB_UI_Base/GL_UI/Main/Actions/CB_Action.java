@@ -17,33 +17,34 @@ package CB_UI_Base.GL_UI.Main.Actions;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action {
+public abstract class CB_Action {
 
-    protected String name;
+    protected String titleTranlationId;
     protected int id;
-    protected String nameExtension = "";
+    protected String titleExtension;
 
-    public CB_Action(String name, int id) {
-        this.name = name;
+    public CB_Action(String titleTranlationId, int id) {
+        this.titleTranlationId = titleTranlationId;
         this.id = id;
+        titleExtension = "";
     }
 
-    public CB_Action(String name, String nameExtension, int id) {
-        this.name = name;
+    public CB_Action(String titleTranlationId, String titleExtension, int id) {
+        this.titleTranlationId = titleTranlationId;
         this.id = id;
-        this.nameExtension = nameExtension;
+        this.titleExtension = titleExtension;
     }
 
-    public void Execute() {
-        return;
+    public abstract void Execute();
+
+    public abstract Sprite getIcon();
+
+    public String getTitleTranlationId() {
+        return titleTranlationId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getNameExtension() {
-        return nameExtension;
+    public String getTitleExtension() {
+        return titleExtension;
     }
 
     public int getId() {
@@ -52,10 +53,6 @@ public class CB_Action {
 
     public boolean getEnabled() {
         return true;
-    }
-
-    public Sprite getIcon() {
-        return null;
     }
 
     public boolean getIsCheckable() {

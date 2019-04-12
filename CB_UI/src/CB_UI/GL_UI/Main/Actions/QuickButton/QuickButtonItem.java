@@ -58,7 +58,7 @@ public class QuickButtonItem extends ListViewItemBase {
      * @param Desc   Action Beschreibung
      */
     public QuickButtonItem(CB_RectF rec, int Index, CB_Action action, String Desc, QuickActions type) {
-        super(rec, Index, action.getName());
+        super(rec, Index, action.getTitleTranlationId());
         quickActionsEnum = type;
         mAction = action;
         mButtonIcon = new Image(rec.ScaleCenter(0.7f), "QuickListItemImage", false);

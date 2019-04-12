@@ -5,11 +5,9 @@ import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.Color;
@@ -20,6 +18,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
     private int spoilerState = -1;
     private Sprite SpoilerIcon;
+    private Menu contextMenu;
 
     private CB_Action_ShowSpoilerView() {
         super("spoiler", MenuID.AID_SHOW_SPOILER);
@@ -67,40 +66,49 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        return createContextMenu();
+        // if depends on something: call createContextMenu() again
+        // todo why are the clickhandlers of the items gone on following calls? temp solution createContextMenu() again
+        // has to do with the disposing of the compoundMenu in CB_Button after the Show
+        createContextMenu();
+        return contextMenu;
     }
 
-    private Menu createContextMenu() {
-        Menu icm = new Menu("menu_compassView");
-        icm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_RELOAD_SPOILER:
-                    GlobalCore.ImportSpoiler(false).setReadyListener(() -> {
-                        // erst die Lokalen Images für den Cache neu laden
-                        if (GlobalCore.isSetSelectedCache()) {
-                            GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            GL.that.RunOnGL(() -> {
-                                SpoilerView.getInstance().ForceReload();
-                                Execute();
-                                SpoilerView.getInstance().onShow();
-                            });
+    private void createContextMenu() {
+        contextMenu = new Menu("SpoilerContextMenu");
 
-                        }
-
-                    });
-                    return true;
-                case MenuID.MI_START_PICTUREAPP:
-                    String file = SpoilerView.getInstance().getSelectedFilePath();
-                    if (file == null)
-                        return true;
-                    PlatformConnector.StartPictureApp(file);
-                    return true;
-            }
-            return false;
+        contextMenu.addMenuItem("reloadSpoiler", null, (v, x, y, pointer, button) -> {
+            GlobalCore.ImportSpoiler(false).setReadyListener(() -> {
+                // do after import
+                if (GlobalCore.isSetSelectedCache()) {
+                    GlobalCore.getSelectedCache().loadSpoilerRessources();
+                    SpoilerView.getInstance().ForceReload();
+                    TabMainView.leftTab.ShowView(SpoilerView.getInstance());
+                    SpoilerView.getInstance().onShow();
+                }
+            });
+            return true;
         });
-        icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
-        icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp", Sprites.getSprite("image-export"));
 
-        return icm;
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), (v, x, y, pointer, button) -> {
+            GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
+                // do after import
+                if (GlobalCore.isSetSelectedCache()) {
+                    GlobalCore.getSelectedCache().loadSpoilerRessources();
+                    SpoilerView.getInstance().ForceReload();
+                    TabMainView.leftTab.ShowView(SpoilerView.getInstance());
+                    SpoilerView.getInstance().onShow();
+                }
+            });
+            return true;
+        });
+
+        contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), (v, x, y, pointer, button) -> {
+            String file = SpoilerView.getInstance().getSelectedFilePath();
+            if (file == null)
+                return true;
+            PlatformConnector.StartPictureApp(file);
+            return true;
+        });
     }
+
 }

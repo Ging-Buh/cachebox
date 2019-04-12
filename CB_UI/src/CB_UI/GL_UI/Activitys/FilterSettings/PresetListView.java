@@ -4,7 +4,7 @@ import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.Actions.CB_Action_ShowFilterSettings;
+import CB_UI.GL_UI.Main.Actions.CB_Action_EditFilterSettings;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -17,7 +17,6 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Settings.SettingString;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
@@ -167,13 +166,13 @@ public class PresetListView extends V_ListView {
                                 }
 
                             }
-                            CB_Action_ShowFilterSettings.getInstance().Execute();
+                            CB_Action_EditFilterSettings.getInstance().Execute();
                             break;
                         case 2: // cancel clicked
-                            CB_Action_ShowFilterSettings.getInstance().Execute();
+                            CB_Action_EditFilterSettings.getInstance().Execute();
                             break;
                         case 3:
-                            CB_Action_ShowFilterSettings.getInstance().Execute();
+                            CB_Action_EditFilterSettings.getInstance().Execute();
                             break;
                     }
 

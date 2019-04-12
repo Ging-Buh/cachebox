@@ -8,17 +8,17 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_Show_Settings extends CB_Action {
+public class CB_Action_SettingsActivity extends CB_Action {
 
-    private static CB_Action_Show_Settings that;
+    private static CB_Action_SettingsActivity that;
     boolean lastNightValue;
 
-    private CB_Action_Show_Settings() {
+    private CB_Action_SettingsActivity() {
         super("settings", MenuID.AID_SHOW_SETTINGS);
     }
 
-    public static CB_Action_Show_Settings getInstance() {
-        if (that == null) that = new CB_Action_Show_Settings();
+    public static CB_Action_SettingsActivity getInstance() {
+        if (that == null) that = new CB_Action_SettingsActivity();
         return that;
     }
 
@@ -35,10 +35,10 @@ public class CB_Action_Show_Settings extends CB_Action {
     @Override
     public void Execute() {
 
-        SettingsActivity settingsDialog = new SettingsActivity();
+        SettingsActivity settingsActivity = new SettingsActivity();
         lastNightValue = CB_UI_Base_Settings.nightMode.getValue();
 
-        settingsDialog.show();
+        settingsActivity.show();
     }
 
 }

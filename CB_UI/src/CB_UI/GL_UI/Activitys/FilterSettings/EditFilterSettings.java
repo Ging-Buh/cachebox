@@ -22,7 +22,7 @@ import CB_Core.FilterProperties;
 import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.Actions.CB_Action_ShowFilterSettings;
+import CB_UI.GL_UI.Main.Actions.CB_Action_EditFilterSettings;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
@@ -421,7 +421,7 @@ public class EditFilterSettings extends ActivityBase {
 
                 @Override
                 public boolean onClick(int which, Object data) {
-                    CB_Action_ShowFilterSettings.getInstance().Execute();
+                    CB_Action_EditFilterSettings.getInstance().Execute();
                     return true;
                 }
             });
@@ -450,13 +450,13 @@ public class EditFilterSettings extends ActivityBase {
                         Config.AcceptChanges();
                         mPresetListView.fillPresetList();
                         mPresetListView.notifyDataSetChanged();
-                        CB_Action_ShowFilterSettings.getInstance().Execute();
+                        CB_Action_EditFilterSettings.getInstance().Execute();
                         break;
                     case 2: // cancel clicked
-                        CB_Action_ShowFilterSettings.getInstance().Execute();
+                        CB_Action_EditFilterSettings.getInstance().Execute();
                         break;
                     case 3:
-                        CB_Action_ShowFilterSettings.getInstance().Execute();
+                        CB_Action_EditFilterSettings.getInstance().Execute();
                         break;
                 }
 

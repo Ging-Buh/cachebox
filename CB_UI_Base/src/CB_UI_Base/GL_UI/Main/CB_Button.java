@@ -98,10 +98,10 @@ public class CB_Button extends Button {
             if (aktActionView != null && rememberLastAction) {
                 for (CB_ActionButton ba : cb_actionButtons) {
                     CB_Action action = ba.getAction();
-                    if (aktActionView.getName().equals(action.getName())) {
+                    if (aktActionView.getTitleTranlationId().equals(action.getTitleTranlationId())) {
                         action.Execute();
                         aktActionView = (CB_Action_ShowView) action;
-                        setButton(aktActionView.getIcon(), aktActionView.getName());
+                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                         actionExecuted = true;
                         break;
                     }
@@ -118,7 +118,7 @@ public class CB_Button extends Button {
                             // ?
                             if (action instanceof CB_Action_ShowView) {
                                 aktActionView = (CB_Action_ShowView) action;
-                                setButton(aktActionView.getIcon(), aktActionView.getName());
+                                setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                             }
                             actionExecuted = true;
                             break;
@@ -155,7 +155,7 @@ public class CB_Button extends Button {
                 if (action != null) {
                     action.Execute();
                     aktActionView = (CB_Action_ShowView) action;
-                    setButton(aktActionView.getIcon(), aktActionView.getName());
+                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                 }
             }
 
@@ -227,7 +227,7 @@ public class CB_Button extends Button {
                 mButtonImage.setDrawable(new SpriteDrawable(Action.getIcon()));
                 addChild(mButtonImage);
                 if (Action.getAction() instanceof CB_Action_ShowView) {
-                    setButton(Action.getAction().getIcon(), Action.getAction().getName());
+                    setButton(Action.getAction().getIcon(), Action.getAction().getTitleTranlationId());
                 }
             }
         }
@@ -279,7 +279,7 @@ public class CB_Button extends Button {
                     action.Execute();
                     if (action instanceof CB_Action_ShowView) {
                         aktActionView = (CB_Action_ShowView) action;
-                        setButton(aktActionView.getIcon(), aktActionView.getName());
+                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                     }
                     GL.that.closeToast();
                     return true; // break;
@@ -292,7 +292,7 @@ public class CB_Button extends Button {
             CB_Action action = cb_actionButton.getAction();
             if (action == null)
                 continue;
-            MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtension());
+            MenuItem mi = cm.addItem(action.getId(), action.getTitleTranlationId(), action.getTitleExtension());
             if (cb_actionButton.getGestureDirection() != GestureDirection.None) {
                 String direction;
                 switch (cb_actionButton.getGestureDirection()) {
@@ -421,7 +421,7 @@ public class CB_Button extends Button {
                     action.Execute();
                     if (action instanceof CB_Action_ShowView) {
                         aktActionView = (CB_Action_ShowView) action;
-                        setButton(aktActionView.getIcon(), aktActionView.getName());
+                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                     }
                     break;
                 }
@@ -441,7 +441,7 @@ public class CB_Button extends Button {
                     ActionView = (CB_Action_ShowView) action;
                 if (ActionView != null && ActionView.getView() == View) {
                     aktActionView = ActionView;
-                    setButton(aktActionView.getIcon(), aktActionView.getName());
+                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                     break;
                 }
             }

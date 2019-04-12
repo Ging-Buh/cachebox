@@ -37,21 +37,21 @@ import java.util.LinkedList;
 /**
  * @author Longri
  */
-public class CB_Action_ShowDescExt extends CB_Action {
+public class CB_Action_StartExternalDescription extends CB_Action {
 
-    private static final String log = "CB_Action_ShowDescExt";
+    private static final String log = "CB_Action_StartExternalDescription";
     private final String TEMP_CACHE_HTML_FILE = "temp.html";
 
     private final LinkedList<String> NonLocalImages = new LinkedList<String>();
     private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
 
-    private static CB_Action_ShowDescExt that;
-    private CB_Action_ShowDescExt() {
+    private static CB_Action_StartExternalDescription that;
+    private CB_Action_StartExternalDescription() {
         super("descExt", MenuID.AID_SHOW_DescExt);
     }
 
-    public static CB_Action_ShowDescExt getInstance() {
-        if (that == null) that = new CB_Action_ShowDescExt();
+    public static CB_Action_StartExternalDescription getInstance() {
+        if (that == null) that = new CB_Action_StartExternalDescription();
         return that;
     }
 

@@ -7,15 +7,15 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_Show_Parking_Dialog extends CB_Action {
+public class CB_Action_ParkingDialog extends CB_Action {
 
-    private static CB_Action_Show_Parking_Dialog that;
-    private CB_Action_Show_Parking_Dialog() {
+    private static CB_Action_ParkingDialog that;
+    private CB_Action_ParkingDialog() {
         super("MyParking", MenuID.AID_SHOW_PARKING_DIALOG);
     }
 
-    public static CB_Action_Show_Parking_Dialog getInstance() {
-        if (that == null) that = new CB_Action_Show_Parking_Dialog();
+    public static CB_Action_ParkingDialog getInstance() {
+        if (that == null) that = new CB_Action_ParkingDialog();
         return that;
     }
 

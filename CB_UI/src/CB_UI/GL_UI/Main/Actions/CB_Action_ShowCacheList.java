@@ -96,7 +96,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     if (((MenuItem) v).isCheckboxClicked(x))
                         checked = !checked;
                     if (checked) {
-                        CB_Action_ShowFilterSettings.getInstance().Execute();
+                        CB_Action_EditFilterSettings.getInstance().Execute();
                     } else {
                         FilterInstances.setLastFilter(new FilterProperties());
                         EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
@@ -145,7 +145,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     sync.show();
                     return true;
                 case MenuID.MI_MANAGE_DB:
-                    CB_Action_Show_SelectDB_Dialog.getInstance().Execute();
+                    CB_Action_SelectDBDialog.getInstance().Execute();
                     return true;
                 case MenuID.MI_AUTO_RESORT:
                     GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
@@ -182,7 +182,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     return true;
 
                 case MenuID.AID_SHOW_DELETE_DIALOG:
-                    CB_Action_Show_Delete_Dialog.getInstance().Execute();
+                    CB_Action_DeleteDialog.getInstance().Execute();
                     return true;
             }
             return false;
@@ -225,11 +225,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         gL_MsgBox.close();
     }
 
-    public void setName(String newName) {
-        this.name = newName;
-    }
-
     public void setNameExtension(String newExtension) {
-        this.nameExtension = newExtension;
+        this.titleExtension = newExtension;
     }
 }

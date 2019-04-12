@@ -8,16 +8,16 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowFilterSettings extends CB_Action {
+public class CB_Action_EditFilterSettings extends CB_Action {
 
-    private static CB_Action_ShowFilterSettings that;
+    private static CB_Action_EditFilterSettings that;
 
-    private CB_Action_ShowFilterSettings() {
+    private CB_Action_EditFilterSettings() {
         super("Filter", MenuID.AID_SHOW_FILTER_DIALOG);
     }
 
-    public static CB_Action_ShowFilterSettings getInstance() {
-        if (that == null) that = new CB_Action_ShowFilterSettings();
+    public static CB_Action_EditFilterSettings getInstance() {
+        if (that == null) that = new CB_Action_EditFilterSettings();
         return that;
     }
 
