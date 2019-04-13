@@ -74,19 +74,19 @@ public class CreditsView extends CB_View_Base {
         ArrayList<Person> list = new ArrayList<>();
 
         list.add(new Person("hannes!", Job.idea, "2009-2011"));
+
         list.add(new Person("Stonefinger", Job.designer));
         list.add(new Person("KoiMuggele", Job.designer));
 
         list.add(new Person("Groundspeak API", Job.service, Sprites.getSprite("api-Logo-vCOMP2")));
+
         list.add(new Person("", Job.library, Sprites.getSprite("libgdx")));// Name at Logo image Mario Zechner
         list.add(new Person("Mapsforge", Job.library, Sprites.getSprite("mapsforge_logo")));
-        // list.add(new Person("OpenRouteService.org", Job.service, Sprites.getSprite("openrouteservice_logo")));
         list.add(new Person("OpenStreetMap", Job.service, Sprites.getSprite("osm_logo")));
 
         list.add(new Person("arbor95", Job.developer));
         list.add(new Person("Longri", Job.developer));
         list.add(new Person("Ging-Buh", Job.developer));
-        // list.add(new Person("ersthelfer", Job.developer));
 
         list.add(new Person("Koblenzer", Job.tester));
         list.add(new Person("GeoLemmi", Job.tester));
@@ -98,17 +98,11 @@ public class CreditsView extends CB_View_Base {
         list.add(new Person("Nothelfer", Job.tester));
         list.add(new Person("Lady-in-blue", Job.tester));
 
-        // list.add(new Person("GeoSilverio", Job.tester));
-        // list.add(new Person("millimeterfuchser", Job.tester));
-        // list.add(new Person("droogi", Job.tester));
-
         list.add(new Person("Larsie", Job.developmentAdvice));
 
         list.add(new Person("kia71 (Hungarian)", Job.localization)); // Attila Jáborszki (kia71) Hungarian
-        // list.add(new Person("droogi", Job.localization)); // ? de
-        // list.add(new Person("jGda", Job.localization)); // ? de
-        list.add(new Person("hulkman (Portuguese)", Job.localization)); // ?
-        // list.add(new Person("Globalcaching (Dutch)", Job.localization)); // nl
+        list.add(new Person("Crowdin (Czech, Dutch)", Job.localization)); // ?
+        list.add(new Person("Crowdin (French, Polish, Portuguese)", Job.localization)); // ?
 
         Collections.sort(list);
 
