@@ -503,6 +503,8 @@ public class FieldNotesView extends V_ListView {
             cm.addItem(MenuID.MI_NOTE, "writenote", Sprites.getSprite("log2icon"));
         }
 
+        cm.addDivider();
+
         cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", Sprites.getSprite(IconName.UPLOADFIELDNOTE.name()));
         cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", Sprites.getSprite(IconName.DELETE.name()));
 

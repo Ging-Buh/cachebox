@@ -219,7 +219,17 @@ public class CB_Button extends Button {
         }
     }
 
-    public void addAction(CB_ActionButton Action) {
+    public void addAction(CB_Action action, boolean defaultAction) {
+        CB_ActionButton Action = new CB_ActionButton(action, defaultAction);
+        addAction(Action);
+    }
+
+    public void addAction(CB_Action action, boolean defaultAction, GestureDirection gestureDirection) {
+        CB_ActionButton Action = new CB_ActionButton(action, defaultAction, gestureDirection);
+        addAction(Action);
+    }
+
+    private void addAction(CB_ActionButton Action) {
         if (useDescriptiveCB_Buttons) {
             if (mButtonImage == null) {
                 mButtonImage = new Image(this.ScaleCenter(0.6f), "mButtonImage", false);

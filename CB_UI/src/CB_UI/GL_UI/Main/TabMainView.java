@@ -41,8 +41,11 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
-import CB_UI_Base.GL_UI.Main.*;
 import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
+import CB_UI_Base.GL_UI.Main.CB_Button;
+import CB_UI_Base.GL_UI.Main.CB_ButtonList;
+import CB_UI_Base.GL_UI.Main.CB_TabView;
+import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.Sprites;
@@ -265,45 +268,44 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         addChild(leftTab);
 
         // Actions den Buttons zuweisen
-        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowCacheList.getInstance(), true, GestureDirection.Up));
-        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ParkingDialog.getInstance(), false));
-        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackableListView.getInstance(), false, GestureDirection.Right));
-        //mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Down));
+        mCacheListButtonOnLeftTab.addAction(CB_Action_ShowCacheList.getInstance(), true, GestureDirection.Up);
+        mCacheListButtonOnLeftTab.addAction(CB_Action_ParkingDialog.getInstance(), false);
+        mCacheListButtonOnLeftTab.addAction(CB_Action_ShowTrackableListView.getInstance(), false, GestureDirection.Right);
 
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowDescriptionView.getInstance(), true, GestureDirection.Up));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowWaypointView.getInstance(), false, GestureDirection.Right));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_HintDialog.getInstance(), false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSpoilerView.getInstance(), false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowLogView.getInstance(), false, GestureDirection.Down));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowNotesView.getInstance(), false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_StartExternalDescription.getInstance(), false));
+        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowDescriptionView.getInstance(), true, GestureDirection.Up);
+        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowWaypointView.getInstance(), false, GestureDirection.Right);
+        mDescriptionButtonOnLeftTab.addAction(CB_Action_HintDialog.getInstance(), false);
+        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowSpoilerView.getInstance(), false);
+        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowLogView.getInstance(), false, GestureDirection.Down);
+        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowNotesView.getInstance(), false);
+        mDescriptionButtonOnLeftTab.addAction(CB_Action_StartExternalDescription.getInstance(), false);
 
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowMap.getInstance(), true, GestureDirection.Up));
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowCompassView.getInstance(), false, GestureDirection.Right));
+        mMapButtonOnLeftTab.addAction(CB_Action_ShowMap.getInstance(), true, GestureDirection.Up);
+        mMapButtonOnLeftTab.addAction(CB_Action_ShowCompassView.getInstance(), false, GestureDirection.Right);
         CB_Action_PlatformActivity actionNavigateTo = new CB_Action_PlatformActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionNavigateTo, false, GestureDirection.Down));
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left));
-        mMapButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_MapDownload.getInstance(), false));
+        mMapButtonOnLeftTab.addAction(actionNavigateTo, false, GestureDirection.Down);
+        mMapButtonOnLeftTab.addAction(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left);
+        mMapButtonOnLeftTab.addAction(CB_Action_MapDownload.getInstance(), false);
 
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowFieldNotesView.getInstance(), Config.ShowFieldnotesAsDefaultView.getValue(), GestureDirection.Up));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowSolverView2.getInstance(), false, GestureDirection.Right));
+        mToolsButtonOnLeftTab.addAction(CB_Action_ShowFieldNotesView.getInstance(), Config.ShowFieldnotesAsDefaultView.getValue(), GestureDirection.Up);
+        mToolsButtonOnLeftTab.addAction(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left);
+        mToolsButtonOnLeftTab.addAction(CB_Action_ShowSolverView2.getInstance(), false, GestureDirection.Right);
         actionTakePicture = new CB_Action_PlatformActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionTakePicture, false, GestureDirection.Down));
+        mToolsButtonOnLeftTab.addAction(actionTakePicture, false, GestureDirection.Down);
         actionRecordVideo = new CB_Action_PlatformActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecordVideo, false));
+        mToolsButtonOnLeftTab.addAction(actionRecordVideo, false);
         actionRecordVoice = new CB_Action_PlatformActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecordVoice, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ParkingDialog.getInstance(), false));
+        mToolsButtonOnLeftTab.addAction(actionRecordVoice, false);
+        mToolsButtonOnLeftTab.addAction(CB_Action_ParkingDialog.getInstance(), false);
 
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowCreditsView.getInstance(), false));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_SettingsActivity.getInstance(), false, GestureDirection.Left));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_switch_DayNight.getInstance(), false));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Help.getInstance(), false));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_Mail.getInstance(), false));
-        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(CB_Action_switch_Torch.getInstance(), false)));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up));
-        mAboutButtonOnLeftTab.addAction(new CB_ActionButton(CB_Action_ShowQuit.getInstance(), false, GestureDirection.Down));
+        mAboutButtonOnLeftTab.addAction(CB_Action_ShowCreditsView.getInstance(), false);
+        mAboutButtonOnLeftTab.addAction(CB_Action_SettingsActivity.getInstance(), false, GestureDirection.Left);
+        mAboutButtonOnLeftTab.addAction(CB_Action_switch_DayNight.getInstance(), false);
+        mAboutButtonOnLeftTab.addAction(CB_Action_Help.getInstance(), false);
+        mAboutButtonOnLeftTab.addAction(CB_Action_Mail.getInstance(), false);
+        mAboutButtonOnLeftTab.addAction(CB_Action_switch_Torch.getInstance(), false);
+        mAboutButtonOnLeftTab.addAction(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up);
+        mAboutButtonOnLeftTab.addAction(CB_Action_ShowQuit.getInstance(), false, GestureDirection.Down);
 
         CB_Action_ShowAbout.getInstance().Execute();
     }

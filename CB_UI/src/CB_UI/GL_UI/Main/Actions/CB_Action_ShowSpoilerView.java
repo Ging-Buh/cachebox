@@ -16,13 +16,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     private static CB_Action_ShowSpoilerView that;
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-    private int spoilerState = -1;
-    private Sprite SpoilerIcon;
+    private Sprite SpoilerExistsIcon;
+    private Sprite NoSpoilerIcon;
     private Menu contextMenu;
 
     private CB_Action_ShowSpoilerView() {
         super("spoiler", MenuID.AID_SHOW_SPOILER);
         // contextMenu = createContextMenu();
+        SpoilerExistsIcon = Sprites.getSprite(IconName.imagesIcon.name());
+        NoSpoilerIcon = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));
+        NoSpoilerIcon.setColor(DISABLE_COLOR);
+
     }
 
     public static CB_Action_ShowSpoilerView getInstance() {
@@ -37,21 +41,17 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     @Override
     public boolean getEnabled() {
-        return GlobalCore.selectedCachehasSpoiler();
+        return true; // GlobalCore.selectedCachehasSpoiler();
     }
 
     @Override
     public Sprite getIcon() {
         boolean hasSpoiler = GlobalCore.selectedCachehasSpoiler();
-        if (hasSpoiler && spoilerState != 1) {
-            SpoilerIcon = Sprites.getSprite(IconName.imagesIcon.name());
-            spoilerState = 1;
-        } else if (!hasSpoiler && spoilerState != 0) {
-            SpoilerIcon = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));
-            SpoilerIcon.setColor(DISABLE_COLOR);
-            spoilerState = 0;
+        if (hasSpoiler) {
+            return SpoilerExistsIcon;
+        } else {
+            return NoSpoilerIcon;
         }
-        return SpoilerIcon;
     }
 
     @Override
