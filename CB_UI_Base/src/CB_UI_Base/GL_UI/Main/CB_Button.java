@@ -127,12 +127,31 @@ public class CB_Button extends Button {
                 }
             }
 
-            // if no default action defined, perform a LongClick
+            // if no default action defined, show LongClickMenu
             if (!actionExecuted) {
+                /*
+                // if no default action defined, perform a LongClick
                 OnClickListener listener = getOnLongClickListener();
                 if (listener != null) {
                     return listener.onClick(v, x, y, pointer, button);
                 }
+                 */
+                Menu compoundMenu = new Menu("compoundMenu");
+                // then the Long Click menu
+                Menu LongClickMenu = getLongClickMenu();
+                if (LongClickMenu != null) {
+                    compoundMenu.addItems(LongClickMenu.getItems());
+                    // compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
+                }
+                // and show
+                if (compoundMenu.reorganizeIndexes() > 0) {
+                    compoundMenu.Show();
+                }
+                else {
+                    // what a problem on reorganizing
+                }
+                return true; // only show the menu
+
             }
 
             return true;
