@@ -20,7 +20,7 @@ import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -48,7 +48,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
     private Cache aktCache;
 
     private NotesView() {
-        super(TabMainView.leftTab.getContentRec(), "NotesView");
+        super(ViewManager.leftTab.getContentRec(), "NotesView");
 
         aktCache = GlobalCore.getSelectedCache();
         mustLoadNotes = true;

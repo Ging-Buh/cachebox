@@ -23,7 +23,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -56,7 +56,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
     private EditTextField edInput, edResult;
 
     private SolverView() {
-        super(TabMainView.leftTab.getContentRec(), "SolverView");
+        super(ViewManager.leftTab.getContentRec(), "SolverView");
         addControls();
         layout();
     }

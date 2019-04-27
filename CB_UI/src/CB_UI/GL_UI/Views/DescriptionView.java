@@ -19,7 +19,7 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -72,7 +72,7 @@ public class DescriptionView extends CB_View_Base {
 
     private static DescriptionView that;
     private DescriptionView() {
-        super(TabMainView.leftTab.getContentRec(), "DescriptionView");
+        super(ViewManager.leftTab.getContentRec(), "DescriptionView");
         STRING_POWERD_BY = Translation.get("GC_title");
     }
     public static DescriptionView getInstance() {

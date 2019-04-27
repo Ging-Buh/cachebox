@@ -27,17 +27,17 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowQuit extends CB_Action {
+public class Action_ShowQuit extends AbstractAction {
     static MessageBox msg;
-    private static CB_Action_ShowQuit that;
+    private static Action_ShowQuit that;
     String OverrideAppName = null;
 
-    private CB_Action_ShowQuit() {
+    private Action_ShowQuit() {
         super("quit", MenuID.AID_SHOW_QUIT);
     }
 
-    public static CB_Action_ShowQuit getInstance() {
-        if (that == null) that = new CB_Action_ShowQuit();
+    public static Action_ShowQuit getInstance() {
+        if (that == null) that = new Action_ShowQuit();
         return that;
     }
 

@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
@@ -36,7 +36,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        TabMainView.leftTab.ShowView(SpoilerView.getInstance());
+        ViewManager.leftTab.ShowView(SpoilerView.getInstance());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
                 if (GlobalCore.isSetSelectedCache()) {
                     GlobalCore.getSelectedCache().loadSpoilerRessources();
                     SpoilerView.getInstance().ForceReload();
-                    TabMainView.leftTab.ShowView(SpoilerView.getInstance());
+                    ViewManager.leftTab.ShowView(SpoilerView.getInstance());
                     SpoilerView.getInstance().onShow();
                 }
             });
@@ -95,7 +95,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
                 if (GlobalCore.isSetSelectedCache()) {
                     GlobalCore.getSelectedCache().loadSpoilerRessources();
                     SpoilerView.getInstance().ForceReload();
-                    TabMainView.leftTab.ShowView(SpoilerView.getInstance());
+                    ViewManager.leftTab.ShowView(SpoilerView.getInstance());
                     SpoilerView.getInstance().onShow();
                 }
             });

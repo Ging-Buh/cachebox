@@ -1,21 +1,21 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Activitys.MapDownload;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Sprites;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import static CB_UI_Base.GL_UI.Menu.MenuID.MI_MAP_DOWNOAD;
 
-public class CB_Action_MapDownload extends CB_Action {
-    private static CB_Action_MapDownload that;
+public class Action_MapDownload extends AbstractAction {
+    private static Action_MapDownload that;
 
-    private CB_Action_MapDownload() {
+    private Action_MapDownload() {
         super("MapDownload", MI_MAP_DOWNOAD);
     }
 
-    public static CB_Action_MapDownload getInstance() {
-        if (that == null) that = new CB_Action_MapDownload();
+    public static Action_MapDownload getInstance() {
+        if (that == null) that = new Action_MapDownload();
         return that;
     }
 

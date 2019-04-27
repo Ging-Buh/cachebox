@@ -22,7 +22,7 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class QuickButtonItem extends ListViewItemBase {
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
-    private CB_Action mAction;
+    private AbstractAction mAction;
     private Image mButtonIcon;
     private String mActionDesc;
     private Button mButton;
@@ -57,7 +57,7 @@ public class QuickButtonItem extends ListViewItemBase {
      * @param Icon   Action icon
      * @param Desc   Action Beschreibung
      */
-    public QuickButtonItem(CB_RectF rec, int Index, CB_Action action, String Desc, QuickActions type) {
+    public QuickButtonItem(CB_RectF rec, int Index, AbstractAction action, String Desc, QuickActions type) {
         super(rec, Index, action.getTitleTranlationId());
         quickActionsEnum = type;
         mAction = action;

@@ -84,7 +84,7 @@ public class CacheContextMenu {
             // todo CB_UI_Base.GL_UI.Menu.MenuItemDivider cannot be cast to CB_UI_Base.GL_UI.Menu.MenuItem
             switch (((MenuItem) v).getMenuItemId()) {
                 case MI_HINT:
-                    CB_Action_HintDialog.getInstance().showHint();
+                    Action_HintDialog.getInstance().showHint();
                     return true;
                 case MI_RELOAD_CACHE:
                     ReloadSelectedCache();

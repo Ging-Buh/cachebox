@@ -24,7 +24,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.CB_UI_Settings;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate.Type;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.GL_UI.Views.TrackListViewItem;
 import CB_UI.GlobalCore;
@@ -68,7 +68,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        TabMainView.leftTab.ShowView(TrackListView.getInstance());
+        ViewManager.leftTab.ShowView(TrackListView.getInstance());
     }
 
     @Override

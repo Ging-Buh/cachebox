@@ -7,7 +7,7 @@ import CB_Core.Database;
 import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.LogView;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
@@ -56,7 +56,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     @Override
     public void Execute() {
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
-        TabMainView.leftTab.ShowView(LogView.getInstance());
+        ViewManager.leftTab.ShowView(LogView.getInstance());
     }
 
     @Override

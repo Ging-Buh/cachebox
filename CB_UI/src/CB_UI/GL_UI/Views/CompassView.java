@@ -28,7 +28,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI.GL_UI.Controls.SatBarChart;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.SunMoonCalculator;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.GlobalCore;
@@ -91,7 +91,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     };
 
     private CompassView() {
-        super(TabMainView.leftTab.getContentRec(), "CompassView");
+        super(ViewManager.leftTab.getContentRec(), "CompassView");
         margin = GL_UISizes.margin;
         aktCache = GlobalCore.getSelectedCache();
         aktWaypoint = GlobalCore.getSelectedWaypoint();

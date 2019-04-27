@@ -8,7 +8,7 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -97,7 +97,7 @@ public class CB_Button extends Button {
             boolean actionExecuted = false;
             if (aktActionView != null && rememberLastAction) {
                 for (CB_ActionButton ba : cb_actionButtons) {
-                    CB_Action action = ba.getAction();
+                    AbstractAction action = ba.getAction();
                     if (aktActionView.getTitleTranlationId().equals(action.getTitleTranlationId())) {
                         action.Execute();
                         aktActionView = (CB_Action_ShowView) action;
@@ -112,7 +112,7 @@ public class CB_Button extends Button {
                 // the default action is executed
                 for (CB_ActionButton ba : cb_actionButtons) {
                     if (ba.isDefault()) {
-                        CB_Action action = ba.getAction();
+                        AbstractAction action = ba.getAction();
                         if (action != null) {
                             action.Execute();
                             // ?
@@ -170,7 +170,7 @@ public class CB_Button extends Button {
             } else if (cb_actionButtons.size() == 1) {
                 // nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
                 CB_ActionButton ba = cb_actionButtons.get(0);
-                CB_Action action = ba.getAction();
+                AbstractAction action = ba.getAction();
                 if (action != null) {
                     action.Execute();
                     aktActionView = (CB_Action_ShowView) action;
@@ -238,12 +238,12 @@ public class CB_Button extends Button {
         }
     }
 
-    public void addAction(CB_Action action, boolean defaultAction) {
+    public void addAction(AbstractAction action, boolean defaultAction) {
         CB_ActionButton Action = new CB_ActionButton(action, defaultAction);
         addAction(Action);
     }
 
-    public void addAction(CB_Action action, boolean defaultAction, GestureDirection gestureDirection) {
+    public void addAction(AbstractAction action, boolean defaultAction, GestureDirection gestureDirection) {
         CB_ActionButton Action = new CB_ActionButton(action, defaultAction, gestureDirection);
         addAction(Action);
     }
@@ -304,7 +304,7 @@ public class CB_Button extends Button {
             int mId = ((MenuItem) v).getMenuItemId();
             for (CB_ActionButton cb_actionButton : cb_actionButtons) {
                 if (cb_actionButton.getAction().getId() == mId) {
-                    CB_Action action = cb_actionButton.getAction();
+                    AbstractAction action = cb_actionButton.getAction();
                     action.Execute();
                     if (action instanceof CB_Action_ShowView) {
                         aktActionView = (CB_Action_ShowView) action;
@@ -318,7 +318,7 @@ public class CB_Button extends Button {
         });
 
         for (CB_ActionButton cb_actionButton : cb_actionButtons) {
-            CB_Action action = cb_actionButton.getAction();
+            AbstractAction action = cb_actionButton.getAction();
             if (action == null)
                 continue;
             MenuItem mi = cm.addItem(action.getId(), action.getTitleTranlationId(), action.getTitleExtension());
@@ -445,7 +445,7 @@ public class CB_Button extends Button {
         }
         for (CB_ActionButton ba : cb_actionButtons) {
             if (ba.getGestureDirection() == direction) {
-                CB_Action action = ba.getAction();
+                AbstractAction action = ba.getAction();
                 if (action != null) {
                     action.Execute();
                     if (action instanceof CB_Action_ShowView) {
@@ -463,7 +463,7 @@ public class CB_Button extends Button {
 
     public void setActView(CB_View_Base View) {
         for (CB_ActionButton ba : cb_actionButtons) {
-            CB_Action action = ba.getAction();
+            AbstractAction action = ba.getAction();
             CB_Action_ShowView ActionView = null;
             if (action != null) {
                 if (action instanceof CB_Action_ShowView)

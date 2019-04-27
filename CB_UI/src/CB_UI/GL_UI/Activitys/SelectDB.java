@@ -37,7 +37,7 @@ import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
+import CB_UI_Base.GL_UI.Main.Actions.Action_ShowQuit;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -237,7 +237,7 @@ public class SelectDB extends ActivityBase {
         bCancel.setOnClickListener((v, x, y, pointer, button) -> {
             stopTimer();
             if (MustSelect) {
-                CB_Action_ShowQuit.getInstance().Execute();
+                Action_ShowQuit.getInstance().Execute();
             } else {
                 finish();
             }

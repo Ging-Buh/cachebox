@@ -4,7 +4,7 @@ import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
 import CB_Locator.Location.ProviderType;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
@@ -110,7 +110,7 @@ public class DesktopMain {
         // Config.settings.ReadFromDB();
 
         CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
-        CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new TabMainView(rec));
+        CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new ViewManager(rec));
 
         GL_View_Base.debug = debug;
         GL_View_Base.disableScissor = scissor;

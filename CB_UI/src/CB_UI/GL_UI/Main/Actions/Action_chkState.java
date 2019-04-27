@@ -14,7 +14,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 import static CB_Core.Api.GroundspeakAPI.*;
 
-public class CB_Action_chkState extends CB_Action {
-    private static final String sKlasse = "CB_Action_chkState";
+public class Action_chkState extends AbstractAction {
+    private static final String sKlasse = "Action_chkState";
 
     int ChangedCount = 0;
     int result = 0;
@@ -139,7 +139,7 @@ public class CB_Action_chkState extends CB_Action {
         }
     };
 
-    public CB_Action_chkState() {
+    public Action_chkState() {
         super("chkState", MenuID.AID_CHK_STATE);
     }
 

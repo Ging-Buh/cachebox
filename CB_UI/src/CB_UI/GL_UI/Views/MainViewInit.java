@@ -424,7 +424,7 @@ public class MainViewInit extends MainViewBase {
 
     /**
      * Last Step <br>
-     * Show TabMainView
+     * Show ViewManager
      */
     private void ini_TabMainView() {
         Log.debug(log, "ini_TabMainView");

@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
 import CB_UI.GlobalCore;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -27,16 +27,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import static CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.calcMsgBoxSize;
 
-public class CB_Action_HintDialog extends CB_Action {
+public class Action_HintDialog extends AbstractAction {
 
-    private static CB_Action_HintDialog that;
+    private static Action_HintDialog that;
 
-    private CB_Action_HintDialog() {
+    private Action_HintDialog() {
         super("hint", MenuID.AID_SHOW_HINT);
     }
 
-    public static CB_Action_HintDialog getInstance() {
-        if (that == null) that = new CB_Action_HintDialog();
+    public static Action_HintDialog getInstance() {
+        if (that == null) that = new Action_HintDialog();
         return that;
     }
 

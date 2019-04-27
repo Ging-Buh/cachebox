@@ -21,7 +21,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -47,7 +47,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
     private CB_List<LogViewItem> itemList;
 
     private LogView() {
-        super(TabMainView.leftTab.getContentRec(), "LogView");
+        super(ViewManager.leftTab.getContentRec(), "LogView");
         setForceHandleTouchEvents(true);
         ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);

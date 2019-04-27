@@ -20,7 +20,7 @@ import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -37,21 +37,21 @@ import java.util.LinkedList;
 /**
  * @author Longri
  */
-public class CB_Action_StartExternalDescription extends CB_Action {
+public class Action_StartExternalDescription extends AbstractAction {
 
-    private static final String log = "CB_Action_StartExternalDescription";
+    private static final String log = "Action_StartExternalDescription";
     private final String TEMP_CACHE_HTML_FILE = "temp.html";
 
     private final LinkedList<String> NonLocalImages = new LinkedList<String>();
     private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
 
-    private static CB_Action_StartExternalDescription that;
-    private CB_Action_StartExternalDescription() {
+    private static Action_StartExternalDescription that;
+    private Action_StartExternalDescription() {
         super("descExt", MenuID.AID_SHOW_DescExt);
     }
 
-    public static CB_Action_StartExternalDescription getInstance() {
-        if (that == null) that = new CB_Action_StartExternalDescription();
+    public static Action_StartExternalDescription getInstance() {
+        if (that == null) that = new Action_StartExternalDescription();
         return that;
     }
 

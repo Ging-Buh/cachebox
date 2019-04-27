@@ -7,7 +7,7 @@ import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.TB_Details;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
@@ -47,7 +47,7 @@ public class TrackableListView extends CB_View_Base {
     private CancelWaitDialog wd;
 
     private TrackableListView() {
-        super(TabMainView.leftTab.getContentRec(), "TrackableListView");
+        super(ViewManager.leftTab.getContentRec(), "TrackableListView");
         that = this;
         setBackground(Sprites.ListBack);
         lvAdapter = new CustomAdapter();

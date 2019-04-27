@@ -8,8 +8,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
-import CB_UI_Base.GL_UI.Main.MainViewBase;
+import CB_UI_Base.GL_UI.Main.Actions.Action_ShowQuit;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Math.Point;
@@ -105,7 +104,7 @@ public class GL_Input implements InputProcessor {
         // InputProcessor Implementation keyUp
         if (value == Input.Keys.BACK) {
             if (!GL.that.closeCurrentDialogOrActivity()) {
-                CB_Action_ShowQuit.getInstance().Execute();
+                Action_ShowQuit.getInstance().Execute();
             }
             return true;
         }

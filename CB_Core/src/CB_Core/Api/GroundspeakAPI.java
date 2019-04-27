@@ -869,7 +869,7 @@ public class GroundspeakAPI {
     }
 
     public static boolean isDownloadLimitExceeded() {
-        // do'nt want to access Web for this info (GL.postAsync)
+        // do'nt want to access Web for this info (GL.that.postAsync)
         if (me == null) return false;
         return me.remaining <= 0 && me.remainingLite <= 0;
     }

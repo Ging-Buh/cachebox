@@ -1,24 +1,24 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_SettingsActivity extends CB_Action {
+public class Action_SettingsActivity extends AbstractAction {
 
-    private static CB_Action_SettingsActivity that;
+    private static Action_SettingsActivity that;
     boolean lastNightValue;
 
-    private CB_Action_SettingsActivity() {
+    private Action_SettingsActivity() {
         super("settings", MenuID.AID_SHOW_SETTINGS);
     }
 
-    public static CB_Action_SettingsActivity getInstance() {
-        if (that == null) that = new CB_Action_SettingsActivity();
+    public static Action_SettingsActivity getInstance() {
+        if (that == null) that = new Action_SettingsActivity();
         return that;
     }
 

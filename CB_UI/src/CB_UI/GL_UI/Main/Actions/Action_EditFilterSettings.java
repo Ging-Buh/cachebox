@@ -2,22 +2,22 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_EditFilterSettings extends CB_Action {
+public class Action_EditFilterSettings extends AbstractAction {
 
-    private static CB_Action_EditFilterSettings that;
+    private static Action_EditFilterSettings that;
 
-    private CB_Action_EditFilterSettings() {
+    private Action_EditFilterSettings() {
         super("Filter", MenuID.AID_SHOW_FILTER_DIALOG);
     }
 
-    public static CB_Action_EditFilterSettings getInstance() {
-        if (that == null) that = new CB_Action_EditFilterSettings();
+    public static Action_EditFilterSettings getInstance() {
+        if (that == null) that = new Action_EditFilterSettings();
         return that;
     }
 

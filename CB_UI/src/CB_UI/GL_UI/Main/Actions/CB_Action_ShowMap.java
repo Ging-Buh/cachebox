@@ -21,7 +21,7 @@ import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.TrackRecorder;
@@ -67,7 +67,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
-        normalMapView = new MapView(TabMainView.leftTab.getContentRec(), MapMode.Normal);
+        normalMapView = new MapView(ViewManager.leftTab.getContentRec(), MapMode.Normal);
         normalMapView.SetZoom(Config.lastZoomLevel.getValue());
     }
 
@@ -78,7 +78,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        TabMainView.leftTab.ShowView(normalMapView);
+        ViewManager.leftTab.ShowView(normalMapView);
     }
 
     @Override

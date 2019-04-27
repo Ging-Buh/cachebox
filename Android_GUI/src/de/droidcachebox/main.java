@@ -37,7 +37,7 @@ import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.SearchMode;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowCacheList;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI_Base.Energy;
@@ -344,7 +344,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
-        new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), new MainViewInit(rec), new TabMainView(rec));
+        new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), new MainViewInit(rec), new ViewManager(rec));
         GL.that.textInput = new Android_TextInput(mainActivity);
 
         SelectedCacheEventList.Add(this);
@@ -609,7 +609,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                             SpoilerView.getInstance().ForceReload();
                         }
 
-                        TabMainView.that.reloadSprites(false);
+                        ViewManager.that.reloadSprites(false);
 
                         // track annotation
                         String TrackFolder = Config.TrackFolder.getValue();
@@ -841,7 +841,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             ExtSearch_GpxPath = extras.getString("GpxPath");
             if (ExtSearch_GcCode != null || ExtSearch_GpxPath != null) {
                 mustRunSearch = true;
-                if (TabMainView.that.isInitial()) {
+                if (ViewManager.that.isInitial()) {
                     PlatformConnector.FirstShow();
                 }
             }
@@ -1776,8 +1776,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                     LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
                                     int versatz = 0;
-                                    if (TabMainView.leftTab != null) {
-                                        versatz = (int) (TabMainView.leftTab.getWidth() - frame.getWidth());
+                                    if (ViewManager.leftTab != null) {
+                                        versatz = (int) (ViewManager.leftTab.getWidth() - frame.getWidth());
                                     }
 
                                     params.setMargins(versatz + left, top, right, bottom);

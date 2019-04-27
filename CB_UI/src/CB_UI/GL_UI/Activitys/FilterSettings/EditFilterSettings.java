@@ -22,9 +22,9 @@ import CB_Core.FilterProperties;
 import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.Actions.CB_Action_EditFilterSettings;
+import CB_UI.GL_UI.Main.Actions.Action_EditFilterSettings;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -268,7 +268,7 @@ public class EditFilterSettings extends ActivityBase {
                 }
                 CacheListChangedEventList.Call();
                 pd.dismis();
-                TabMainView.that.filterSetChanged();
+                ViewManager.that.filterSetChanged();
 
                 // Notify Map
                 CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
@@ -421,7 +421,7 @@ public class EditFilterSettings extends ActivityBase {
 
                 @Override
                 public boolean onClick(int which, Object data) {
-                    CB_Action_EditFilterSettings.getInstance().Execute();
+                    Action_EditFilterSettings.getInstance().Execute();
                     return true;
                 }
             });
@@ -450,13 +450,13 @@ public class EditFilterSettings extends ActivityBase {
                         Config.AcceptChanges();
                         mPresetListView.fillPresetList();
                         mPresetListView.notifyDataSetChanged();
-                        CB_Action_EditFilterSettings.getInstance().Execute();
+                        Action_EditFilterSettings.getInstance().Execute();
                         break;
                     case 2: // cancel clicked
-                        CB_Action_EditFilterSettings.getInstance().Execute();
+                        Action_EditFilterSettings.getInstance().Execute();
                         break;
                     case 3:
-                        CB_Action_EditFilterSettings.getInstance().Execute();
+                        Action_EditFilterSettings.getInstance().Execute();
                         break;
                 }
 

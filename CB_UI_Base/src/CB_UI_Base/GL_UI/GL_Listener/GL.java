@@ -142,6 +142,13 @@ public class GL implements ApplicationListener {
         Log.debug("GL", "Constructor done");
     }
 
+    public AsyncExecutor getAsyncExecutor() {
+        if (asyncExecutor == null) {
+            asyncExecutor = new AsyncExecutor(8);
+        }
+        return asyncExecutor;
+    }
+
     public void postAsync(final Runnable runnable) {
         if (asyncExecutor == null) {
             asyncExecutor = new AsyncExecutor(8);

@@ -28,7 +28,7 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.SatBarChart;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -64,7 +64,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
     private int result = -1;
 
     private AboutView() {
-        super(TabMainView.leftTab.getContentRec(), "AboutView");
+        super(ViewManager.leftTab.getContentRec(), "AboutView");
         registerSkinChangedEvent();
         createControls();
     }

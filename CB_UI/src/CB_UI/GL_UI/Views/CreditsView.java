@@ -16,7 +16,7 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
@@ -41,7 +41,7 @@ public class CreditsView extends CB_View_Base {
     private float margin;
 
     private CreditsView() {
-        super(TabMainView.leftTab.getContentRec(), "CreditsView");
+        super(ViewManager.leftTab.getContentRec(), "CreditsView");
         CB_RectF rec = this;
         this.setBackground(Sprites.AboutBack);
         ref = UI_Size_Base.that.getWindowHeight() / 13f;

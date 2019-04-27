@@ -1,22 +1,22 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Controls.Dialogs.DeleteDialog;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_DeleteDialog extends CB_Action {
+public class Action_DeleteDialog extends AbstractAction {
 
-    private static CB_Action_DeleteDialog that;
+    private static Action_DeleteDialog that;
 
-    private CB_Action_DeleteDialog() {
+    private Action_DeleteDialog() {
         super("DeleteCaches", MenuID.AID_SHOW_DELETE_DIALOG);
     }
 
-    public static CB_Action_DeleteDialog getInstance() {
-        if (that == null) that = new CB_Action_DeleteDialog();
+    public static Action_DeleteDialog getInstance() {
+        if (that == null) that = new Action_DeleteDialog();
         return that;
     }
 

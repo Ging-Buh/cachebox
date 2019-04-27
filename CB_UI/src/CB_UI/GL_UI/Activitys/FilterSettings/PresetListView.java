@@ -4,7 +4,7 @@ import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.Actions.CB_Action_EditFilterSettings;
+import CB_UI.GL_UI.Main.Actions.Action_EditFilterSettings;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -166,13 +166,13 @@ public class PresetListView extends V_ListView {
                                 }
 
                             }
-                            CB_Action_EditFilterSettings.getInstance().Execute();
+                            Action_EditFilterSettings.getInstance().Execute();
                             break;
                         case 2: // cancel clicked
-                            CB_Action_EditFilterSettings.getInstance().Execute();
+                            Action_EditFilterSettings.getInstance().Execute();
                             break;
                         case 3:
-                            CB_Action_EditFilterSettings.getInstance().Execute();
+                            Action_EditFilterSettings.getInstance().Execute();
                             break;
                     }
 

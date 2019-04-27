@@ -6,7 +6,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.CB_UI_Settings;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.WaypointViewItem;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -249,7 +249,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
             quickButtonList.setHeight(0);
         }
 
-        TabMainView.that.setContentMaxY(this.getHeight() - quickButtonList.getHeight() - mSlideBox.getHeight());
+        ViewManager.that.setContentMaxY(this.getHeight() - quickButtonList.getHeight() - mSlideBox.getHeight());
     }
 
     @Override

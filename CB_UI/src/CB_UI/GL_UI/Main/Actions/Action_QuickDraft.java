@@ -24,7 +24,7 @@ import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEventList;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -32,16 +32,16 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_QuickFieldNote extends CB_Action {
+public class Action_QuickDraft extends AbstractAction {
 
-    private static CB_Action_QuickFieldNote that;
+    private static Action_QuickDraft that;
 
-    private CB_Action_QuickFieldNote() {
+    private Action_QuickDraft() {
         super("QuickFieldNote", MenuID.AID_QUICK_FIELDNOTE);
     }
 
-    public static CB_Action_QuickFieldNote getInstance() {
-        if (that == null) that = new CB_Action_QuickFieldNote();
+    public static Action_QuickDraft getInstance() {
+        if (that == null) that = new Action_QuickDraft();
         return that;
     }
 

@@ -107,7 +107,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                                 TimerTask tt = new TimerTask() {
                                     @Override
                                     public void run() {
-                                        GL.that.postAsync(() -> new CB_Action_chkState().Execute());
+                                        GL.that.postAsync(() -> new Action_chkState().Execute());
                                     }
                                 };
                                 Timer t = new Timer();

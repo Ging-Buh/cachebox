@@ -25,8 +25,8 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.EditFieldNotes;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
-import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.Actions.Action_UploadDrafts;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Events.PlatformConnector;
@@ -71,7 +71,7 @@ public class FieldNotesView extends V_ListView {
     private CustomAdapter lvAdapter;
 
     private FieldNotesView() {
-        super(TabMainView.leftTab.getContentRec(), "FieldNotesView");
+        super(ViewManager.leftTab.getContentRec(), "FieldNotesView");
         this.mCanDispose = false;
         this.setForceHandleTouchEvents(true);
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
@@ -403,7 +403,7 @@ public class FieldNotesView extends V_ListView {
             GL.that.closeAllDialogs();
 
             if (Config.ShowFieldnotesContextMenuWithFirstShow.getValue())
-                TabMainView.that.mToolsButtonOnLeftTabPerformClick();
+                ViewManager.that.mToolsButtonOnLeftTabPerformClick();
         }
 
     }
@@ -455,7 +455,7 @@ public class FieldNotesView extends V_ListView {
                     addNewFieldNote(LogTypes.note);
                     return true;
                 case MenuID.MI_UPLOAD_FIELDNOTE:
-                    CB_Action_UploadFieldNote.getInstance().Execute();
+                    Action_UploadDrafts.getInstance().Execute();
                     return true;
                 case MenuID.MI_DELETE_ALL_FIELDNOTES:
                     deleteAllFieldNotes();

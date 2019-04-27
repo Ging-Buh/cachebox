@@ -18,11 +18,11 @@ package CB_UI.GL_UI.Main.Actions.QuickButton;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.Actions.*;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
-import static CB_UI.GL_UI.Main.TabMainView.*;
+import static CB_UI.GL_UI.Main.ViewManager.*;
 
 /**
  * Enthält die Actions Möglichkeiten für die Quick Buttons
@@ -107,7 +107,7 @@ public enum QuickActions {
         }
         return retList;
     }
-    // private static CB_Action action_ScreenLock;
+    // private static AbstractAction action_ScreenLock;
 
     /**
      * Gibt die ID des übergebenen Enums zurück
@@ -119,7 +119,7 @@ public enum QuickActions {
         return attrib.ordinal();
     }
 
-    public static CB_Action getActionEnumById(int id) {
+    public static AbstractAction getActionEnumById(int id) {
         switch (id) {
             case 0:
                 return CB_Action_ShowDescriptionView.getInstance();
@@ -142,37 +142,37 @@ public enum QuickActions {
             case 9:
                 return actionRecordVoice;
             case 10:
-                return CB_Action_SearchDialog.getInstance();
+                return Action_SearchDialog.getInstance();
             case 11:
-                return CB_Action_EditFilterSettings.getInstance();
+                return Action_EditFilterSettings.getInstance();
             case 12:
-                return CB_Action_switch_Autoresort.getInstance();
+                return Action_switch_Autoresort.getInstance();
             case 13:
                 return CB_Action_ShowSolverView.getInstance();
             case 14:
                 return CB_Action_ShowSpoilerView.getInstance();
             case 15:
-                return CB_Action_HintDialog.getInstance();
+                return Action_HintDialog.getInstance();
             case 16:
-                return CB_Action_ParkingDialog.getInstance();
+                return Action_ParkingDialog.getInstance();
             case 17:
-                return CB_Action_switch_DayNight.getInstance();
+                return Action_switch_DayNight.getInstance();
             case 18:
                 return CB_Action_ShowFieldNotesView.getInstance();
             case 19:
-                return CB_Action_QuickFieldNote.getInstance();
+                return Action_QuickDraft.getInstance();
             case 20:
                 return CB_Action_ShowTrackableListView.getInstance();
             case 21:
-                return CB_Action_Add_WP.getInstance();
+                return Action_Add_WP.getInstance();
             case 22:
                 return CB_Action_ShowSolverView2.getInstance();
             case 23:
                 return CB_Action_ShowNotesView.getInstance();
             case 24:
-                return CB_Action_UploadFieldNote.getInstance();
+                return Action_UploadDrafts.getInstance();
             case 25:
-                return CB_Action_switch_Torch.getInstance();
+                return Action_switch_Torch.getInstance();
 
         }
         return null;

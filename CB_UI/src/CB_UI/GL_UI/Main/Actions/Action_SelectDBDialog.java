@@ -22,11 +22,11 @@ import CB_Core.Types.Categories;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.IReturnListener;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -34,17 +34,17 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_SelectDBDialog extends CB_Action {
-    private static final String log = "CB_Action_SelectDBDialog";
-    private static CB_Action_SelectDBDialog that;
+public class Action_SelectDBDialog extends AbstractAction {
+    private static final String log = "Action_SelectDBDialog";
+    private static Action_SelectDBDialog that;
     WaitDialog wd;
 
-    private CB_Action_SelectDBDialog() {
+    private Action_SelectDBDialog() {
         super("manageDB", MenuID.AID_SHOW_SELECT_DB_DIALOG);
     }
 
-    public static CB_Action_SelectDBDialog getInstance() {
-        if (that == null) that = new CB_Action_SelectDBDialog();
+    public static Action_SelectDBDialog getInstance() {
+        if (that == null) that = new Action_SelectDBDialog();
         return that;
     }
 
@@ -134,7 +134,7 @@ public class CB_Action_SelectDBDialog extends CB_Action {
 
                 CacheListChangedEventList.Call();
 
-                TabMainView.that.filterSetChanged();
+                ViewManager.that.filterSetChanged();
 
                 wd.dismis();
             }

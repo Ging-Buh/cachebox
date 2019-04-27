@@ -1,24 +1,24 @@
 package CB_UI_Base.GL_UI.Main;
 
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_ActionButton {
-    private final CB_Action action;
+    private final AbstractAction action;
     private final boolean defaultAction;
     private GestureDirection gestureDirection;
 
-    public CB_ActionButton(CB_Action action, boolean defaultAction, GestureDirection gestureDirection) {
+    public CB_ActionButton(AbstractAction action, boolean defaultAction, GestureDirection gestureDirection) {
         this.action = action;
         this.defaultAction = defaultAction;
         this.gestureDirection = gestureDirection;
     }
 
-    public CB_ActionButton(CB_Action action, boolean defaultAction) {
+    public CB_ActionButton(AbstractAction action, boolean defaultAction) {
         this(action, defaultAction, GestureDirection.None);
     }
 
-    public CB_Action getAction() {
+    public AbstractAction getAction() {
         return action;
     }
 

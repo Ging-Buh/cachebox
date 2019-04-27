@@ -3,7 +3,7 @@ package CB_UI_Base.GL_UI.Main.Actions;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
 
-public abstract class CB_Action_ShowView extends CB_Action {
+public abstract class CB_Action_ShowView extends AbstractAction {
 
     public CB_Action_ShowView(String translationId, int id) {
         super(translationId, id);

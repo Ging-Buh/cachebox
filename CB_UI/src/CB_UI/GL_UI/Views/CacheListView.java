@@ -26,7 +26,7 @@ import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -61,11 +61,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     private float searchPlaceholder = 0;
 
     private CacheListView() {
-        super(TabMainView.leftTab.getContentRec(), "CacheListView");
+        super(ViewManager.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
         CacheListChangedEventList.Add(this);
         SelectedCacheEventList.Add(this);
-        listView = new V_ListView(TabMainView.leftTab.getContentRec(), "CacheListView");
+        listView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
         listView.setZeroPos();
 
         listView.addListPosChangedEventHandler(() -> scrollBar.ScrollPositionChanged());

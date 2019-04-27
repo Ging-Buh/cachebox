@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.RouteOverlay;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -23,7 +23,7 @@ public class TrackListView extends V_ListView {
     private TrackListViewItem aktRouteItem;
 
     private TrackListView() {
-        super(TabMainView.leftTab.getContentRec(), "TrackListView");
+        super(ViewManager.leftTab.getContentRec(), "TrackListView");
 
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 

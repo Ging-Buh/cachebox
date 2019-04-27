@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.SolverView2;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -24,7 +24,7 @@ public class CB_Action_ShowSolverView2 extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-            TabMainView.leftTab.ShowView(SolverView2.getInstance());
+            ViewManager.leftTab.ShowView(SolverView2.getInstance());
     }
 
     @Override

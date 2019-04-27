@@ -11,7 +11,7 @@ import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.SyncActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -50,7 +50,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        TabMainView.leftTab.ShowView(CacheListView.getInstance());
+        ViewManager.leftTab.ShowView(CacheListView.getInstance());
     }
 
     @Override
@@ -96,7 +96,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     if (((MenuItem) v).isCheckboxClicked(x))
                         checked = !checked;
                     if (checked) {
-                        CB_Action_EditFilterSettings.getInstance().Execute();
+                        Action_EditFilterSettings.getInstance().Execute();
                     } else {
                         FilterInstances.setLastFilter(new FilterProperties());
                         EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
@@ -122,7 +122,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                             Database.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
                             Database.Data.sql.setTransactionSuccessful();
                             Database.Data.sql.endTransaction();
-                            TabMainView.reloadCacheList();
+                            ViewManager.reloadCacheList();
                             GlobalCore.checkSelectedCacheValid();
                         }
                         return true;
@@ -145,7 +145,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     sync.show();
                     return true;
                 case MenuID.MI_MANAGE_DB:
-                    CB_Action_SelectDBDialog.getInstance().Execute();
+                    Action_SelectDBDialog.getInstance().Execute();
                     return true;
                 case MenuID.MI_AUTO_RESORT:
                     GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
@@ -166,7 +166,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                                 TimerTask tt = new TimerTask() {
                                     @Override
                                     public void run() {
-                                        GL.that.postAsync(() -> new CB_Action_chkState().Execute());
+                                        GL.that.postAsync(() -> new Action_chkState().Execute());
                                     }
                                 };
                                 Timer t = new Timer();
@@ -182,7 +182,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                     return true;
 
                 case MenuID.AID_SHOW_DELETE_DIALOG:
-                    CB_Action_DeleteDialog.getInstance().Execute();
+                    Action_DeleteDialog.getInstance().Execute();
                     return true;
             }
             return false;

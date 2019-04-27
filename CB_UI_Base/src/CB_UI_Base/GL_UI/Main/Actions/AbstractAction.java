@@ -17,19 +17,19 @@ package CB_UI_Base.GL_UI.Main.Actions;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public abstract class CB_Action {
+public abstract class AbstractAction {
 
     protected String titleTranlationId;
     protected int id;
     protected String titleExtension;
 
-    public CB_Action(String titleTranlationId, int id) {
+    public AbstractAction(String titleTranlationId, int id) {
         this.titleTranlationId = titleTranlationId;
         this.id = id;
         titleExtension = "";
     }
 
-    public CB_Action(String titleTranlationId, String titleExtension, int id) {
+    public AbstractAction(String titleTranlationId, String titleExtension, int id) {
         this.titleTranlationId = titleTranlationId;
         this.id = id;
         this.titleExtension = titleExtension;

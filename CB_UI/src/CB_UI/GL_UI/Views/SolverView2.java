@@ -28,7 +28,7 @@ import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.ISolverBackStringListener;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -57,7 +57,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     private Cache cache;
 
     private SolverView2() {
-        super(TabMainView.leftTab.getContentRec(), "SolverView2");
+        super(ViewManager.leftTab.getContentRec(), "SolverView2");
         // Log.debug(log, "Create SolverView2 => " + this.toString());
         cache = null;
         neu = false;

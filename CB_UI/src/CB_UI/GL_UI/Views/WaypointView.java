@@ -28,7 +28,7 @@ import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.MeasureCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate.Type;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.*;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -62,7 +62,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     private boolean createNewWaypoint = false;
 
     private WaypointView() {
-        super(TabMainView.leftTab.getContentRec(), "WaypointView");
+        super(ViewManager.leftTab.getContentRec(), "WaypointView");
         setBackground(Sprites.ListBack);
         SetSelectedCache(GlobalCore.getSelectedCache());
         SelectedCacheEventList.Add(this);

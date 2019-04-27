@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Views;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
-import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Activitys.ImageActivity;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -45,7 +45,7 @@ public class SpoilerView extends CB_View_Base {
     private ImageDAO imageDAO = new ImageDAO();
 
     private SpoilerView() {
-        super(TabMainView.leftTab.getContentRec(), "SpoilerView");
+        super(ViewManager.leftTab.getContentRec(), "SpoilerView");
 
         CB_RectF gr = this.copy();
         gr.setHeight(this.getHeight() * 0.85f);
