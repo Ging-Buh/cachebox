@@ -132,7 +132,7 @@ public class Action_chkState extends AbstractAction {
 
                 CacheListChangedEventList.Call();
                 synchronized (Database.Data.cacheList) {
-                    MessageBox.show(sCanceld + Translation.get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.get("chkState"), MessageBoxIcon.None);
+                    MessageBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.get("chkState"), MessageBoxIcon.None);
                 }
 
             }

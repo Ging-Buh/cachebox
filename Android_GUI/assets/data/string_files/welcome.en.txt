@@ -12,3 +12,5 @@ Or you visit us at our forum http://www.geoclub.de/viewforum.php?f=114.
 Some developers and forums user also speak English, so that you can get help in English.
 
 Do not use Cachebox during the drive in the car!
+
+Powered by the Geocaching API. Made possible through the support of Geocaching Premium Memberships, the API program gives third-party developers the opportunity to work with Geocaching HQ on a full suite of integrated products and services for the community. API developer applications are designed to work with the core services of geocaching.com and provide additional features to the geocaching community.

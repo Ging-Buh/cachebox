@@ -21,12 +21,9 @@ public abstract class RunnableReadyHandler implements ICancelRunnable {
     public void start() {
         if (!isRunning) {
             isRunning = true;
-            mRunThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    RunnableReadyHandler.this.run();
-                    RunnableIsReady(isCanceled);
-                }
+            mRunThread = new Thread(() -> {
+                this.run();
+                RunnableIsReady(isCanceled);
             });
             mRunThread.start();
         }

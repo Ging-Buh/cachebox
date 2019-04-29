@@ -1042,17 +1042,16 @@ public class GroundspeakAPI {
     private static Cache createGeoCache(JSONObject API1Cache, ArrayList<String> fields, Cache cache) {
         // see https://api.groundspeak.com/documentation#geocache
         // see https://api.groundspeak.com/documentation#lite-geocache
-        if (cache == null)
+        if (cache == null) {
             cache = new Cache(true);
+            cache.setApiStatus(IS_LITE);
+        }
         if (cache.waypoints != null) {
             cache.waypoints.clear();
             // no merging of waypoints here
         } else {
             cache.waypoints = new CB_List<>();
         }
-        cache.setAttributesPositive(new DLong(0, 0));
-        cache.setAttributesNegative(new DLong(0, 0));
-        cache.setApiStatus(IS_LITE);
         String tmp;
         try {
             for (String field : fields) {
@@ -1184,6 +1183,8 @@ public class GroundspeakAPI {
                     case "attributes":
                         JSONArray attributes = API1Cache.optJSONArray(switchValue);
                         if (attributes != null) {
+                            cache.setAttributesPositive(new DLong(0, 0));
+                            cache.setAttributesNegative(new DLong(0, 0));
                             for (int j = 0; j < attributes.length(); j++) {
                                 JSONObject attribute = attributes.optJSONObject(j);
                                 if (attribute != null) {
