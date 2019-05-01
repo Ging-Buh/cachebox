@@ -31,15 +31,15 @@ public class PocketqueryDAO {
 
     public int writeToDatabase(PQ pq) {
         Parameters args = new Parameters();
-        args.put("PQName", pq.Name);
+        args.put("PQName", pq.name);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String stimestamp = iso8601Format.format(pq.DateLastGenerated);
+        String stimestamp = iso8601Format.format(pq.lastGenerated);
         args.put("CreationTimeOfPQ", stimestamp);
 
         try {
             Database.Data.sql.insertWithConflictReplace("PocketQueries", args);
         } catch (Exception exc) {
-            Log.err(log, "Write Pocketquery to DB", pq.Name, exc);
+            Log.err(log, "Write Pocketquery to DB", pq.name, exc);
             return -1;
         }
 

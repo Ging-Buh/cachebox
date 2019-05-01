@@ -24,13 +24,13 @@ public class Import_PqListItem extends ListViewItemBackground {
         lblName.setFont(Fonts.getSmall());
         lblInfo.setFont(Fonts.getBubbleSmall());
 
-        lblName.setText(pq.Name);
+        lblName.setText(pq.name);
 
         SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        String dateString = Translation.get("PQcreationDate") + ": " + postFormater.format(pq.DateLastGenerated);
+        String dateString = Translation.get("PQcreationDate") + ": " + postFormater.format(pq.lastGenerated);
         //DecimalFormat df = new DecimalFormat("###.##");
-        //String FileSize = df.format(pq.SizeMB) + " MB";
-        String Count = "\n" + Translation.get("Count") + ": " + String.valueOf(pq.PQCount);
+        //String FileSize = df.format(pq.sizeMB) + " MB";
+        String Count = "\n" + Translation.get("Count") + ": " + String.valueOf(pq.cacheCount);
         lblInfo.setText(dateString + Count); // + "  " + FileSize
 
         chk = new ChkBox("");

@@ -413,16 +413,16 @@ public class GroundspeakAPI {
                             PQ pq = new PQ();
                             pq.GUID = jPQ.optString("referenceCode", "");
                             if (pq.GUID.length() > 0) {
-                                pq.Name = jPQ.optString("name", "");
+                                pq.name = jPQ.optString("name", "");
                                 try {
                                     String dateCreated = jPQ.optString("lastUpdatedDateUtc", "");
-                                    pq.DateLastGenerated = DateFromString(dateCreated);
+                                    pq.lastGenerated = DateFromString(dateCreated);
                                 } catch (Exception exc) {
-                                    Log.err(log, "fetchPocketQueryList/DateLastGenerated", exc);
-                                    pq.DateLastGenerated = new Date();
+                                    Log.err(log, "fetchPocketQueryList/lastGenerated", exc);
+                                    pq.lastGenerated = new Date();
                                 }
-                                pq.PQCount = jPQ.getInt("count");
-                                pq.SizeMB = -1;
+                                pq.cacheCount = jPQ.getInt("count");
+                                pq.sizeMB = -1;
                                 pq.doDownload = false;
                                 pqList.add(pq);
                             }
@@ -451,7 +451,7 @@ public class GroundspeakAPI {
         }
     }
 
-    public static void fetchPocketQuery(PQ pocketQuery, String PqFolder) {
+    public static void fetchPocketQuery(PQ pocketQuery, String pqFolder) {
         InputStream inStream = null;
         BufferedOutputStream outStream = null;
         try {
@@ -460,8 +460,8 @@ public class GroundspeakAPI {
                     .ensureSuccess()
                     .asStream()
                     .getBody();
-            String dateString = new SimpleDateFormat("yyyyMMddHHmmss").format(pocketQuery.DateLastGenerated);
-            String local = PqFolder + "/" + pocketQuery.GUID + ".zip";
+            String dateString = new SimpleDateFormat("yyyyMMddHHmmss").format(pocketQuery.lastGenerated);
+            String local = pqFolder + "/" + pocketQuery.GUID + ".zip";
             FileOutputStream localFile = new FileOutputStream(local);
             outStream = new BufferedOutputStream(localFile);
             WebbUtils.copyStream(inStream, outStream);
@@ -528,12 +528,6 @@ public class GroundspeakAPI {
 
     public static ArrayList<LogEntry> fetchGeoCacheLogs(Cache cache, boolean all, ICancelRunnable cancelRun) {
         ArrayList<LogEntry> logList = new ArrayList<>();
-
-        // let the calling thread run to an end
-        try {
-            sleep(1000);
-        } catch (InterruptedException ignored) {
-        }
 
         LinkedList<String> friendList = new LinkedList<>();
         if (!all) {
@@ -1558,10 +1552,10 @@ public class GroundspeakAPI {
 
     public static class PQ implements Serializable {
         private static final long serialVersionUID = 8308386638170255124L;
-        public String Name;
-        public int PQCount;
-        public Date DateLastGenerated;
-        public double SizeMB;
+        public String name;
+        public int cacheCount;
+        public Date lastGenerated;
+        public double sizeMB;
         public boolean doDownload = false;
         String GUID;
     }

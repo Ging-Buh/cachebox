@@ -25,9 +25,9 @@ public class ExportCBServerListItem extends ListViewItemBackground {
         lblName.setText(item.cacheName);
 
         // SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-        // String dateString = postFormater.format(pq.DateLastGenerated);
+        // String dateString = postFormater.format(pq.lastGenerated);
         // DecimalFormat df = new DecimalFormat("###.##");
-        // String FileSize = df.format(pq.SizeMB) + " MB";
+        // String FileSize = df.format(pq.sizeMB) + " MB";
         String type = String.valueOf(item.changeType);
         lblInfo.setText(type);
 

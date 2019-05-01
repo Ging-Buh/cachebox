@@ -738,7 +738,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 MessageBox.show(LastAPIError, Translation.get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             }
             // even if error: you can use PqList, may be empty
-            Collections.sort(PqList, (p1, p2) -> p1.Name.compareTo(p2.Name));
+            Collections.sort(PqList, (p1, p2) -> p1.name.compareTo(p2.name));
             lvPQs.setBaseAdapter(new PqListAdapter());
             lvPQs.notifyDataSetChanged();
 
@@ -936,7 +936,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                                     PQ pq = iterator.next();
 
                                     if (pq.doDownload) {
-                                        ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
+                                        ip.ProgressInkrement("importGC", "Download: " + pq.name, false);
                                         fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
                                         if (APIError != OK) {
                                             MessageBox.show(LastAPIError, Translation.get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);

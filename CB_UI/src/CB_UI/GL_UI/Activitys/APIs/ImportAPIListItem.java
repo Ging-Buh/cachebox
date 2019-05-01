@@ -25,9 +25,9 @@ public class ImportAPIListItem extends ListViewItemBackground {
         lblName.setText(item.getDescription());
 
         // SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-        // String dateString = postFormater.format(pq.DateLastGenerated);
+        // String dateString = postFormater.format(pq.lastGenerated);
         // DecimalFormat df = new DecimalFormat("###.##");
-        // String FileSize = df.format(pq.SizeMB) + " MB";
+        // String FileSize = df.format(pq.sizeMB) + " MB";
         String Count = "   Count=" + String.valueOf(item.getCacheCount());
         lblInfo.setText(Count);
 
