@@ -59,7 +59,6 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     private EditTextField Radius;
     private MultiToggleButton tglBtnGPS, tglBtnMap;
     private Coordinate actSearchPos;
-    private volatile Thread thread;
     private ImportAnimation dis;
     private Box box;
     private ScrollBox scrollBox;
@@ -402,16 +401,6 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
         Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
-
-        int radius = 0;
-        try {
-            radius = Integer.parseInt(Radius.getText());
-        } catch (NumberFormatException ignore) {
-        }
-
-        if (radius != 0)
-            Config.lastSearchRadius.setValue(radius);
-
         Config.AcceptChanges();
 
         bOK.disable();
@@ -420,7 +409,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         dis = new ImportAnimation(box);
         dis.setBackground(getBackground());
 
-        this.addChild(dis, false);
+        box.addChild(dis, false);
 
         Date tmpDate;
         try {
@@ -431,7 +420,11 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         final Date publishDate = tmpDate;
 
         importRuns = true;
-        thread = new Thread(() -> {
+        // category.GpxFilename == edtCategory.getText()
+        //.resultWithImages(30)
+        // Thread abgebrochen!
+        // Notify Map
+        Thread thread = new Thread(() -> {
             boolean threadCanceled = false;
 
             try {
@@ -444,15 +437,24 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                                 .resultWithLogs(30)
                                 //.resultWithImages(30)
                                 .publishedDate(publishDate, btnBeforeAfterEqual.getText());
-                        if (Radius.getText().trim().length() > 0)
-                            q.searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
+                        if (Radius.getText().trim().length() > 0) {
+
+                            int radius;
+                            try {
+                                radius = Integer.parseInt(Radius.getText());
+                                Config.lastSearchRadius.setValue(radius);
+                                Config.AcceptChanges();
+                                q.searchInCircle(actSearchPos, radius * 1000);
+                            } catch (NumberFormatException nex) {
+                                q.searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
+                            }
+                        }
                         if (edtOwner.getText().trim().length() > 0) q.searchForOwner(edtOwner.getText().trim());
                         if (edtCacheName.getText().trim().length() > 0) q.searchForTitle(edtCacheName.getText().trim());
 
                         if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                         if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
                         if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
-
 
                         int importLimit;
                         try {
@@ -490,7 +492,6 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                 bOK.enable();
                 finish();
             } else {
-
                 // Notify Map
                 CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
                 if (dis != null) {

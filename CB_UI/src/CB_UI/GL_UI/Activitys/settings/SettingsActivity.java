@@ -571,7 +571,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             @Override
             public String getText(int position) {
-                return String.valueOf(SB.getValues().get(position));
+                return Translation.get(SB.getValues().get(position));
             }
 
             @Override

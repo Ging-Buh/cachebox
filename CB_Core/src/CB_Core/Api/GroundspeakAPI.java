@@ -806,7 +806,10 @@ public class GroundspeakAPI {
                     if (jFriends.length() < take) ready = true;
                 }
                 while (!ready);
-                return friends.substring(0, friends.length() - 1);
+                if (friends.length() > 0)
+                    return friends.substring(0, friends.length() - 1);
+                else
+                    return "";
             } catch (Exception ex) {
                 retry(ex);
                 return "";
