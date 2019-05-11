@@ -88,7 +88,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     private CB_Button mCacheListButtonOnLeftTab; // default: show CacheList
     private CB_Button mDescriptionButtonOnLeftTab; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
     private CB_Button mMapButtonOnLeftTab; // default: show map on phone ( and show Compass on Tablet )
-    private CB_Button mToolsButtonOnLeftTab; // default: show ToolsMenu or Fieldnotes or Fieldnotes Context menu (depends on config)
+    private CB_Button mToolsButtonOnLeftTab; // default: show ToolsMenu or Drafts or Drafts Context menu (depends on config)
     private CB_Button mAboutButtonOnLeftTab; // default: show About View
 
     private boolean isInitial = false;
@@ -287,7 +287,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mMapButtonOnLeftTab.addAction(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left);
         mMapButtonOnLeftTab.addAction(Action_MapDownload.getInstance(), false);
 
-        mToolsButtonOnLeftTab.addAction(CB_Action_ShowFieldNotesView.getInstance(), Config.ShowFieldnotesAsDefaultView.getValue(), GestureDirection.Up);
+        mToolsButtonOnLeftTab.addAction(CB_Action_ShowDraftsView.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         mToolsButtonOnLeftTab.addAction(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left);
         mToolsButtonOnLeftTab.addAction(CB_Action_ShowSolverView2.getInstance(), false, GestureDirection.Right);
         actionTakePicture = new Action_PlatformActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));

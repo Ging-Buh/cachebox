@@ -116,7 +116,7 @@ public interface CB_UI_Settings {
     SettingInt ImportLimit = new SettingInt("ImportLimit", API, NEVER, 50, Global, ACB);
 
     SettingFolder TrackFolder = new SettingFolder("TrackFolder", Folder, EXPERT, Config_Core.mWorkPath + "/User/Tracks", Global, ACB, true);
-    SettingFile FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", Folder, DEVELOPER, Config_Core.mWorkPath + "/User/geocache_visits.txt", Global, ACB);
+    SettingFile DraftsGarminPath = new SettingFile("DraftsGarminPath", Folder, DEVELOPER, Config_Core.mWorkPath + "/User/geocache_visits.txt", Global, ACB);
     SettingFile gpxExportFileName = new SettingFile("gpxExportFileName", Folder, NEVER, Config_Core.mWorkPath + "/User/export.gpx", Global, ACB, "gpx");
 
     SettingString FoundTemplate = new SettingLongString("FoundTemplate", Templates, NORMAL, FOUND, Global, ACB);
@@ -131,8 +131,8 @@ public interface CB_UI_Settings {
     SettingString GrabbedTemplate = new SettingLongString("GrabbedTemplate", Templates, NORMAL, GRABED, Global, ACB);
     SettingString PickedTemplate = new SettingLongString("PickedTemplate", Templates, NORMAL, PICKED, Global, ACB);
 
-    SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView", Skin, EXPERT, false, Global, ACB, true);
-    SettingBool ShowFieldnotesContextMenuWithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow", Skin, EXPERT, false, Global, ACB, false);
+    SettingBool ShowDraftsAsDefaultView = new SettingBool("ShowDraftsAsDefaultView", Skin, EXPERT, false, Global, ACB, true);
+    SettingBool ShowDraftsContextMenuWithFirstShow = new SettingBool("ShowDraftsCMwithFirstShow", Skin, EXPERT, false, Global, ACB, false);
 
     SettingBool MultiDBAsk = new SettingBool("MultiDBAsk", Internal, NEVER, true, Global, ACB);
     SettingString DatabaseName = new SettingString("DatabaseName", Internal, NEVER, "cachebox.db3", Global, ACB);

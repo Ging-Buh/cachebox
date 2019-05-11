@@ -29,16 +29,16 @@ public class MenuID {
     public static final int MI_SET_AS_WAYPOINT = 8;
     public static final int MI_SET_AS_MAPCENTER = 9;
 
-    // FieldNotesView
+    // DraftsView
     public static final int MI_FOUND = 10;
     public static final int MI_NOT_FOUND = 11;
     public static final int MI_MAINTANCE = 12;
     public static final int MI_NOTE = 13;
     // public static final int MI_MANAGE = 14;
-    public static final int MI_UPLOAD_FIELDNOTE = 15;
-    public static final int MI_DELETE_ALL_FIELDNOTES = 16;
-    public static final int MI_DELETE_FIELDNOTE = 17;
-    public static final int MI_EDIT_FIELDNOTE = 18;
+    public static final int MI_UPLOAD_DRAFT = 15;
+    public static final int MI_DELETE_ALL_DRAFTS = 16;
+    public static final int MI_DELETE_DRAFT = 17;
+    public static final int MI_EDIT_DRAFT = 18;
     public static final int MI_SELECT_CACHE = 19;
 
     public static final int MI_ALIGN_TO_COMPSS = 35;
@@ -74,7 +74,7 @@ public class MenuID {
     public static final int MI_PAUSE = 65;
     public static final int MI_STOP = 66;
 
-    // CB_Action_QuickFieldNote
+    // CB_Action_QuickDraft
     public static final int MI_QUICK_FOUND = 67;
     public static final int MI_QUICK_NOT_FOUND = 68;
 
@@ -107,7 +107,7 @@ public class MenuID {
     public static final int AID_SHOW_CACHELIST = 102;
     public static final int AID_SHOW_COMPASS = 103;
     public static final int AID_SHOW_CREDITS = 104;
-    public static final int AID_SHOW_FIELDNOTES = 106;
+    public static final int AID_SHOW_DRAFTS = 106;
     public static final int AID_SHOW_LOGS = 108;
     public static final int AID_SHOW_NOTES = 109;
     public static final int AID_SHOW_SOLVER = 110;
@@ -128,7 +128,7 @@ public class MenuID {
     public static final int AID_SHOW_SELECT_DB_DIALOG = 134;
     public static final int AID_SHOW_TRACK_MENU = 135;
     public static final int AID_SHOW_QUIT = 136;
-    public static final int AID_QUICK_FIELDNOTE = 137;
+    public static final int AID_QUICK_DRAFT = 137;
     public static final int AID_CHK_STATE = 138;
     public static final int AID_SHOW_PARKING_DIALOG = 140;
     public static final int AID_SHOW_DELETE_DIALOG = 141;
@@ -171,7 +171,7 @@ public class MenuID {
     public static final int MI_START_PICTUREAPP = 175;
 
     public static final int AID_ADD_WP = 176;
-    public static final int AID_UPLOAD_FIELD_NOTE = 177;
+    public static final int AID_UPLOAD_DRAFT = 177;
 
     public static final int MI_ENABLED = 178;
     public static final int MI_TEMPORARILY_DISABLED = 179;

@@ -435,8 +435,8 @@ public class DesktopMain {
         Database.Settings = new DesktopDB(DatabaseType.Settings);
         Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
         Database.Data = new DesktopDB(DatabaseType.CacheBox);
-        Database.FieldNotes = new DesktopDB(DatabaseType.FieldNotes);
-        Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
+        Database.Drafts = new DesktopDB(DatabaseType.Drafts);
+        Database.Drafts.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
     }
 
     /**

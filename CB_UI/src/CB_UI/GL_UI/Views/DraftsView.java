@@ -20,11 +20,11 @@ import CB_Core.CB_Core_Settings;
 import CB_Core.GCVote.GCVote;
 import CB_Core.LogTypes;
 import CB_Core.Types.*;
-import CB_Core.Types.FieldNoteList.LoadingType;
+import CB_Core.Types.Drafts.LoadingType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Activitys.EditFieldNotes;
-import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
+import CB_UI.GL_UI.Activitys.EditDraft;
+import CB_UI.GL_UI.Controls.PopUps.QuickDraftFeedbackPopUp;
 import CB_UI.GL_UI.Main.Actions.Action_UploadDrafts;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
@@ -58,47 +58,47 @@ import java.util.Date;
 
 import static CB_Core.Database.Data;
 
-public class FieldNotesView extends V_ListView {
-    private static final String log = "FieldNotesView";
-    private static FieldNotesView that;
-    private static FieldNoteEntry aktFieldNote;
+public class DraftsView extends V_ListView {
+    private static final String log = "DraftsView";
+    private static DraftsView that;
+    private static Draft aktDraft;
     private static boolean firstShow = true;
     private static CB_RectF ItemRec;
-    private static FieldNoteList lFieldNotes;
+    private static Drafts lDrafts;
     private static WaitDialog wd;
-    private static EditFieldNotes.IReturnListener returnListener = FieldNotesView::addOrChangeFieldNote;
-    private static EditFieldNotes efnActivity;
+    private static EditDraft.IReturnListener returnListener = DraftsView::addOrChangeDraft;
+    private static EditDraft editDraft;
     private CustomAdapter lvAdapter;
 
-    private FieldNotesView() {
-        super(ViewManager.leftTab.getContentRec(), "FieldNotesView");
+    private DraftsView() {
+        super(ViewManager.leftTab.getContentRec(), "DraftsView");
         this.mCanDispose = false;
         this.setForceHandleTouchEvents(true);
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 
         setBackground(Sprites.ListBack);
 
-        if (lFieldNotes == null)
-            lFieldNotes = new FieldNoteList();
+        if (lDrafts == null)
+            lDrafts = new Drafts();
         this.setHasInvisibleItems(true);
         this.setBaseAdapter(null);
-        lvAdapter = new CustomAdapter(lFieldNotes);
+        lvAdapter = new CustomAdapter(lDrafts);
         this.setBaseAdapter(lvAdapter);
 
-        this.setEmptyMsg(Translation.get("EmptyFieldNotes"));
+        this.setEmptyMsg(Translation.get("EmptyDrafts"));
         firstShow = true;
     }
 
-    public static FieldNotesView getInstance() {
-        if (that == null) that = new FieldNotesView();
+    public static DraftsView getInstance() {
+        if (that == null) that = new DraftsView();
         return that;
     }
 
-    private static void addNewFieldNote(LogTypes type) {
-        addNewFieldNote(type, "", false);
+    private static void addNewDraft(LogTypes type) {
+        addNewDraft(type, "", false);
     }
 
-    public static void addNewFieldNote(LogTypes type, String templateText, boolean withoutShowEdit) {
+    public static void addNewDraft(LogTypes type, String templateText, boolean withoutShowEdit) {
         Cache cache = GlobalCore.getSelectedCache();
 
         if (cache == null) {
@@ -127,7 +127,7 @@ public class FieldNotesView extends V_ListView {
                     GlobalCore.getSelectedCache().setFound(true);
                     CacheDAO cacheDAO = new CacheDAO();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                    QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
+                    QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(true);
                     pop.show(PopUp_Base.SHOW_TIME_SHORT);
                     PlatformConnector.vibrate();
                 }
@@ -137,7 +137,7 @@ public class FieldNotesView extends V_ListView {
                     GlobalCore.getSelectedCache().setFound(false);
                     CacheDAO cacheDAO = new CacheDAO();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                    QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
+                    QuickDraftFeedbackPopUp pop2 = new QuickDraftFeedbackPopUp(false);
                     pop2.show(PopUp_Base.SHOW_TIME_SHORT);
                     PlatformConnector.vibrate();
                 }
@@ -148,104 +148,103 @@ public class FieldNotesView extends V_ListView {
             return;
         }
 
-        FieldNoteList tmpFieldNotes = new FieldNoteList();
-        tmpFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
+        Drafts tmpDrafts = new Drafts();
+        tmpDrafts.loadDrafts("", LoadingType.Loadall);
 
-        FieldNoteEntry newFieldNote = null;
+        Draft newDraft = null;
         if ((type == LogTypes.found) //
                 || (type == LogTypes.attended) //
                 || (type == LogTypes.webcam_photo_taken) //
                 || (type == LogTypes.didnt_find)) {
-            // Is there already a FieldNote of this type for this cache
+            // Is there already a Draft of this type for this cache
             // then change else new
-            for (FieldNoteEntry nfne : tmpFieldNotes) {
-                if ((nfne.CacheId == cache.Id) && (nfne.type == type)) {
-                    newFieldNote = nfne;
-                    newFieldNote.DeleteFromDatabase();
-                    newFieldNote.timestamp = new Date();
-                    aktFieldNote = newFieldNote;
+            for (Draft tmpDraft : tmpDrafts) {
+                if ((tmpDraft.CacheId == cache.Id) && (tmpDraft.type == type)) {
+                    newDraft = tmpDraft;
+                    newDraft.DeleteFromDatabase();
+                    newDraft.timestamp = new Date();
+                    aktDraft = newDraft;
                 }
             }
         }
 
-        if (newFieldNote == null) {
-            newFieldNote = new FieldNoteEntry(type);
-            newFieldNote.CacheName = cache.getName();
-            newFieldNote.gcCode = cache.getGcCode();
-            newFieldNote.foundNumber = Config.FoundOffset.getValue();
-            newFieldNote.timestamp = new Date();
-            newFieldNote.CacheId = cache.Id;
-            newFieldNote.comment = templateText;
-            newFieldNote.CacheUrl = cache.getUrl();
-            newFieldNote.cacheType = cache.Type.ordinal();
-            newFieldNote.fillType();
-            // aktFieldNoteIndex = -1;
-            aktFieldNote = newFieldNote;
+        if (newDraft == null) {
+            newDraft = new Draft(type);
+            newDraft.CacheName = cache.getName();
+            newDraft.gcCode = cache.getGcCode();
+            newDraft.foundNumber = Config.FoundOffset.getValue();
+            newDraft.timestamp = new Date();
+            newDraft.CacheId = cache.Id;
+            newDraft.comment = templateText;
+            newDraft.CacheUrl = cache.getUrl();
+            newDraft.cacheType = cache.Type.ordinal();
+            newDraft.fillType();
+            aktDraft = newDraft;
         } else {
-            tmpFieldNotes.remove(newFieldNote);
+            tmpDrafts.remove(newDraft);
 
         }
 
         switch (type) {
             case found:
-                // wenn eine FieldNote Found erzeugt werden soll und der Cache noch nicht gefunden war -> foundNumber um 1 erhöhen
+                // wenn eine Draft Found erzeugt werden soll und der Cache noch nicht gefunden war -> foundNumber um 1 erhöhen
                 if (!cache.isFound())
-                    newFieldNote.foundNumber++;
-                newFieldNote.fillType();
-                if (newFieldNote.comment.length() == 0)
-                    newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newFieldNote);
+                    newDraft.foundNumber++;
+                newDraft.fillType();
+                if (newDraft.comment.length() == 0)
+                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newDraft);
                 break;
             case attended:
                 if (!cache.isFound())
-                    newFieldNote.foundNumber++; //
-                newFieldNote.fillType();
-                if (newFieldNote.comment.length() == 0)
-                    newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.AttendedTemplate.getValue(), newFieldNote);
-                // wenn eine FieldNote Found erzeugt werden soll und der Cache noch
+                    newDraft.foundNumber++; //
+                newDraft.fillType();
+                if (newDraft.comment.length() == 0)
+                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.AttendedTemplate.getValue(), newDraft);
+                // wenn eine Draft Found erzeugt werden soll und der Cache noch
                 // nicht gefunden war -> foundNumber um 1 erhöhen
                 break;
             case webcam_photo_taken:
                 if (!cache.isFound())
-                    newFieldNote.foundNumber++; //
-                newFieldNote.fillType();
-                if (newFieldNote.comment.length() == 0)
-                    newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.WebcamTemplate.getValue(), newFieldNote);
-                // wenn eine FieldNote Found erzeugt werden soll und der Cache noch
+                    newDraft.foundNumber++; //
+                newDraft.fillType();
+                if (newDraft.comment.length() == 0)
+                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.WebcamTemplate.getValue(), newDraft);
+                // wenn eine Draft Found erzeugt werden soll und der Cache noch
                 // nicht gefunden war -> foundNumber um 1 erhöhen
                 break;
             case didnt_find:
-                if (newFieldNote.comment.length() == 0)
-                    newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.DNFTemplate.getValue(), newFieldNote);
+                if (newDraft.comment.length() == 0)
+                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.DNFTemplate.getValue(), newDraft);
                 break;
             case needs_maintenance:
-                if (newFieldNote.comment.length() == 0)
-                    newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.NeedsMaintenanceTemplate.getValue(), newFieldNote);
+                if (newDraft.comment.length() == 0)
+                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.NeedsMaintenanceTemplate.getValue(), newDraft);
                 break;
             case note:
-                if (newFieldNote.comment.length() == 0)
-                    newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), newFieldNote);
+                if (newDraft.comment.length() == 0)
+                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), newDraft);
                 break;
             default:
                 break;
         }
 
         if (withoutShowEdit) {
-            // neue FieldNote
-            tmpFieldNotes.add(0, newFieldNote);
-            newFieldNote.WriteToDatabase();
-            aktFieldNote = newFieldNote;
-            if (newFieldNote.type == LogTypes.found || newFieldNote.type == LogTypes.attended || newFieldNote.type == LogTypes.webcam_photo_taken) {
+            // neue Draft
+            tmpDrafts.add(0, newDraft);
+            newDraft.WriteToDatabase();
+            aktDraft = newDraft;
+            if (newDraft.type == LogTypes.found || newDraft.type == LogTypes.attended || newDraft.type == LogTypes.webcam_photo_taken) {
                 // Found it! -> Cache als gefunden markieren
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
                     CacheDAO cacheDAO = new CacheDAO();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                    Config.FoundOffset.setValue(aktFieldNote.foundNumber);
+                    Config.FoundOffset.setValue(aktDraft.foundNumber);
                     Config.AcceptChanges();
                 }
-                // und eine evtl. vorhandene FieldNote DNF löschen
-                tmpFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.didnt_find);
-            } else if (newFieldNote.type == LogTypes.didnt_find) {
+                // und eine evtl. vorhandene Draft DNF löschen
+                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.didnt_find);
+            } else if (newDraft.type == LogTypes.didnt_find) {
                 // DidNotFound -> Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
@@ -254,90 +253,90 @@ public class FieldNotesView extends V_ListView {
                     Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
                     Config.AcceptChanges();
                 }
-                // und eine evtl. vorhandene FieldNote FoundIt löschen
-                tmpFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
+                // und eine evtl. vorhandene Draft FoundIt löschen
+                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
             }
 
-            FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
+            Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
 
             if (that != null)
                 that.notifyDataSetChanged();
 
         } else {
-            efnActivity = new EditFieldNotes(newFieldNote, returnListener, true);
-            efnActivity.show();
+            editDraft = new EditDraft(newDraft, returnListener, true);
+            editDraft.show();
         }
     }
 
-    private static void addOrChangeFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote, boolean directLog) {
+    private static void addOrChangeDraft(Draft draft, boolean isNewDraft, boolean directLog) {
 
         if (directLog) {
             // try to direct upload
-            logOnline(fieldNote, isNewFieldNote);
+            logOnline(draft, isNewDraft);
             return;
         }
 
-        FieldNotesView.firstShow = false;
+        DraftsView.firstShow = false;
 
-        if (fieldNote != null) {
+        if (draft != null) {
 
-            if (isNewFieldNote) {
+            if (isNewDraft) {
 
-                lFieldNotes.add(0, fieldNote);
+                lDrafts.add(0, draft);
 
-                // eine evtl. vorhandene FieldNote /DNF löschen
-                if (fieldNote.type == LogTypes.attended //
-                        || fieldNote.type == LogTypes.found //
-                        || fieldNote.type == LogTypes.webcam_photo_taken //
-                        || fieldNote.type == LogTypes.didnt_find) {
-                    lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.found);
-                    lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.didnt_find);
+                // eine evtl. vorhandene Draft /DNF löschen
+                if (draft.type == LogTypes.attended //
+                        || draft.type == LogTypes.found //
+                        || draft.type == LogTypes.webcam_photo_taken //
+                        || draft.type == LogTypes.didnt_find) {
+                    lDrafts.DeleteDraftByCacheId(draft.CacheId, LogTypes.found);
+                    lDrafts.DeleteDraftByCacheId(draft.CacheId, LogTypes.didnt_find);
                 }
             }
 
-            fieldNote.WriteToDatabase();
-            aktFieldNote = fieldNote;
+            draft.WriteToDatabase();
+            aktDraft = draft;
 
-            if (isNewFieldNote) {
-                // nur, wenn eine FieldNote neu angelegt wurde
-                // wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
-                // SelectedCache eine fieldNote angelegt wird
-                if (fieldNote.type == LogTypes.found //
-                        || fieldNote.type == LogTypes.attended //
-                        || fieldNote.type == LogTypes.webcam_photo_taken) {
+            if (isNewDraft) {
+                // nur, wenn eine Draft neu angelegt wurde
+                // wenn eine Draft neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
+                // SelectedCache eine Draft angelegt wird
+                if (draft.type == LogTypes.found //
+                        || draft.type == LogTypes.attended //
+                        || draft.type == LogTypes.webcam_photo_taken) {
                     // Found it! -> Cache als gefunden markieren
                     if (!GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(true);
                         CacheDAO cacheDAO = new CacheDAO();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                        Config.FoundOffset.setValue(aktFieldNote.foundNumber);
+                        Config.FoundOffset.setValue(aktDraft.foundNumber);
                         Config.AcceptChanges();
                     }
 
-                } else if (fieldNote.type == LogTypes.didnt_find) { // DidNotFound -> Cache als nicht gefunden markieren
+                } else if (draft.type == LogTypes.didnt_find) { // DidNotFound -> Cache als nicht gefunden markieren
                     if (GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(false);
                         CacheDAO cacheDAO = new CacheDAO();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                         Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
                         Config.AcceptChanges();
-                    } // und eine evtl. vorhandene FieldNote FoundIt löschen
-                    lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
+                    } // und eine evtl. vorhandene Draft FoundIt löschen
+                    lDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
                 }
             }
-            FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
+            Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
 
             // Reload List
-            if (isNewFieldNote) {
-                lFieldNotes.LoadFieldNotes("", LoadingType.LoadNew);
+            if (isNewDraft) {
+                lDrafts.loadDrafts("", LoadingType.LoadNew);
             } else {
-                lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
+                lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
             }
         }
         that.notifyDataSetChanged();
     }
 
-    private static void logOnline(final FieldNoteEntry fieldNote, final boolean isNewFieldNote) {
+    private static void logOnline(final Draft draft, final boolean isNewDraft) {
 
         wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
 
@@ -346,34 +345,34 @@ public class FieldNotesView extends V_ListView {
             @Override
             public void run() {
 
-                if (Config.GcVotePassword.getEncryptedValue().length() > 0 && !fieldNote.isTbFieldNote) {
-                    if (fieldNote.gc_Vote > 0) {
+                if (Config.GcVotePassword.getEncryptedValue().length() > 0 && !draft.isTbDraft) {
+                    if (draft.gc_Vote > 0) {
                         // Stimme abgeben
                         try {
-                            if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote, fieldNote.CacheUrl, fieldNote.gcCode)) {
-                                Log.err(log, fieldNote.gcCode + " GC-Vote");
+                            if (!GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
+                                Log.err(log, draft.gcCode + " GC-Vote");
                             }
                         } catch (Exception e) {
-                            Log.err(log, fieldNote.gcCode + " GC-Vote");
+                            Log.err(log, draft.gcCode + " GC-Vote");
                         }
                     }
                 }
 
-                if (GroundspeakAPI.OK == GroundspeakAPI.UploadDraftOrLog(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, fieldNote.isDirectLog)) {
+                if (GroundspeakAPI.OK == GroundspeakAPI.UploadDraftOrLog(draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment, draft.isDirectLog)) {
                     // after direct Log change state to uploaded
-                    fieldNote.uploaded = true;
-                    addOrChangeFieldNote(fieldNote, isNewFieldNote, false);
+                    draft.uploaded = true;
+                    addOrChangeDraft(draft, isNewDraft, false);
                 } else {
                     // Error handling
-                    MessageBox.show(Translation.get("CreateFieldnoteInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
                             case MessageBox.BUTTON_NEGATIVE:
-                                addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
+                                addOrChangeDraft(draft, isNewDraft, true);// try again
                                 break;
                             case MessageBox.BUTTON_NEUTRAL:
                                 break;
                             case MessageBox.BUTTON_POSITIVE:
-                                addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
+                                addOrChangeDraft(draft, isNewDraft, false);// create Draft
                         }
                         return true;
                     });
@@ -396,13 +395,13 @@ public class FieldNotesView extends V_ListView {
 
     @Override
     public void onShow() {
-        reloadFieldNotes();
+        reloadDrafts();
         if (firstShow) {
             firstShow = false;
 
             GL.that.closeAllDialogs();
 
-            if (Config.ShowFieldnotesContextMenuWithFirstShow.getValue())
+            if (Config.ShowDraftsContextMenuWithFirstShow.getValue())
                 ViewManager.that.mToolsButtonOnLeftTabPerformClick();
         }
 
@@ -413,13 +412,13 @@ public class FieldNotesView extends V_ListView {
         firstShow = true;
     }
 
-    private void reloadFieldNotes() {
-        if (lFieldNotes == null)
-            lFieldNotes = new FieldNoteList();
-        lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
+    private void reloadDrafts() {
+        if (lDrafts == null)
+            lDrafts = new Drafts();
+        lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
 
         that.setBaseAdapter(null);
-        lvAdapter = new CustomAdapter(lFieldNotes);
+        lvAdapter = new CustomAdapter(lDrafts);
         that.setBaseAdapter(lvAdapter);
     }
 
@@ -427,38 +426,38 @@ public class FieldNotesView extends V_ListView {
 
         Cache cache = GlobalCore.getSelectedCache();
 
-        final Menu cm = new Menu("FieldNoteContextMenu");
+        final Menu cm = new Menu("DraftsContextMenu");
 
         cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             cm.close();
 
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_FOUND:
-                    addNewFieldNote(LogTypes.found);
+                    addNewDraft(LogTypes.found);
                     return true;
                 case MenuID.MI_ATTENDED:
-                    addNewFieldNote(LogTypes.attended);
+                    addNewDraft(LogTypes.attended);
                     return true;
                 case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    addNewFieldNote(LogTypes.webcam_photo_taken);
+                    addNewDraft(LogTypes.webcam_photo_taken);
                     return true;
                 case MenuID.MI_WILL_ATTENDED:
-                    addNewFieldNote(LogTypes.will_attend);
+                    addNewDraft(LogTypes.will_attend);
                     return true;
                 case MenuID.MI_NOT_FOUND:
-                    addNewFieldNote(LogTypes.didnt_find);
+                    addNewDraft(LogTypes.didnt_find);
                     return true;
                 case MenuID.MI_MAINTANCE:
-                    addNewFieldNote(LogTypes.needs_maintenance);
+                    addNewDraft(LogTypes.needs_maintenance);
                     return true;
                 case MenuID.MI_NOTE:
-                    addNewFieldNote(LogTypes.note);
+                    addNewDraft(LogTypes.note);
                     return true;
-                case MenuID.MI_UPLOAD_FIELDNOTE:
+                case MenuID.MI_UPLOAD_DRAFT:
                     Action_UploadDrafts.getInstance().Execute();
                     return true;
-                case MenuID.MI_DELETE_ALL_FIELDNOTES:
-                    deleteAllFieldNotes();
+                case MenuID.MI_DELETE_ALL_DRAFTS:
+                    deleteAllDrafts();
                     return true;
             }
             return false;
@@ -470,19 +469,10 @@ public class FieldNotesView extends V_ListView {
             if (cache.Type == null)
                 return null;
             switch (cache.Type) {
-                case Giga:
-                    cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", Sprites.getSprite("log8icon"));
-                    cm.addItem(MenuID.MI_ATTENDED, "attended", Sprites.getSprite("log9icon"));
-                    break;
-                case MegaEvent:
-                    cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", Sprites.getSprite("log8icon"));
-                    cm.addItem(MenuID.MI_ATTENDED, "attended", Sprites.getSprite("log9icon"));
-                    break;
                 case Event:
-                    cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", Sprites.getSprite("log8icon"));
-                    cm.addItem(MenuID.MI_ATTENDED, "attended", Sprites.getSprite("log9icon"));
-                    break;
                 case CITO:
+                case MegaEvent:
+                case Giga:
                     cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", Sprites.getSprite("log8icon"));
                     cm.addItem(MenuID.MI_ATTENDED, "attended", Sprites.getSprite("log9icon"));
                     break;
@@ -505,8 +495,8 @@ public class FieldNotesView extends V_ListView {
 
         cm.addDivider();
 
-        cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", Sprites.getSprite(IconName.UPLOADFIELDNOTE.name()));
-        cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", Sprites.getSprite(IconName.DELETE.name()));
+        cm.addItem(MenuID.MI_UPLOAD_DRAFT, "uploadDrafts", Sprites.getSprite(IconName.UPLOADFIELDNOTE.name()));
+        cm.addItem(MenuID.MI_DELETE_ALL_DRAFTS, "DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()));
 
         if (cache != null) {
             cm.addMoreMenu(getSecondMenu(), Translation.get("defaultLogTypes"), Translation.get("ownerLogTypes"));
@@ -517,28 +507,28 @@ public class FieldNotesView extends V_ListView {
     }
 
     private Menu getSecondMenu() {
-        Menu sm = new Menu("FieldNoteContextMenu/2");
+        Menu sm = new Menu("DraftContextMenu/2");
         MenuItem mi;
         boolean IM_owner = GlobalCore.getSelectedCache().ImTheOwner();
         sm.addOnItemClickListener((v, x, y, pointer, button) -> {
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_ENABLED:
-                    addNewFieldNote(LogTypes.enabled);
+                    addNewDraft(LogTypes.enabled);
                     return true;
                 case MenuID.MI_TEMPORARILY_DISABLED:
-                    addNewFieldNote(LogTypes.temporarily_disabled);
+                    addNewDraft(LogTypes.temporarily_disabled);
                     return true;
                 case MenuID.MI_OWNER_MAINTENANCE:
-                    addNewFieldNote(LogTypes.owner_maintenance);
+                    addNewDraft(LogTypes.owner_maintenance);
                     return true;
                 case MenuID.MI_ATTENDED:
-                    addNewFieldNote(LogTypes.attended);
+                    addNewDraft(LogTypes.attended);
                     return true;
                 case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    addNewFieldNote(LogTypes.webcam_photo_taken);
+                    addNewDraft(LogTypes.webcam_photo_taken);
                     return true;
                 case MenuID.MI_REVIEWER_NOTE:
-                    addNewFieldNote(LogTypes.reviewer_note);
+                    addNewDraft(LogTypes.reviewer_note);
                     return true;
             }
             return false;
@@ -554,54 +544,54 @@ public class FieldNotesView extends V_ListView {
         return sm;
     }
 
-    private void editFieldNote() {
-        if (efnActivity != null && !efnActivity.isDisposed()) {
-            efnActivity.setFieldNote(aktFieldNote, returnListener, false);
+    private void editDraft() {
+        if (editDraft != null && !editDraft.isDisposed()) {
+            editDraft.setDraft(aktDraft, returnListener, false);
         } else {
-            efnActivity = new EditFieldNotes(aktFieldNote, returnListener, false);
+            editDraft = new EditDraft(aktDraft, returnListener, false);
         }
 
-        efnActivity.show();
+        editDraft.show();
     }
 
-    private void deleteFieldNote() {
-        // aktuell selectierte FieldNote löschen
-        if (aktFieldNote == null)
+    private void deleteDraft() {
+        // aktuell selectierte draft löschen
+        if (aktDraft == null)
             return;
         // final Cache cache =
-        // Database.Data.cacheList.GetCacheByGcCode(aktFieldNote.gcCode);
+        // Database.Data.cacheList.GetCacheByGcCode(aktDraft.gcCode);
 
         Cache tmpCache = null;
         // suche den Cache aus der DB.
         // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
         CacheList lCaches = new CacheList();
         CacheListDAO cacheListDAO = new CacheListDAO();
-        cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
+        cacheListDAO.ReadCacheList(lCaches, "Id = " + aktDraft.CacheId, false, false);
         if (lCaches.size() > 0)
             tmpCache = lCaches.get(0);
         final Cache cache = tmpCache;
 
-        if (cache == null && !aktFieldNote.isTbFieldNote) {
-            String message = Translation.get("cacheOtherDb", aktFieldNote.CacheName);
-            message += "\n" + Translation.get("fieldNoteNoDelete");
+        if (cache == null && !aktDraft.isTbDraft) {
+            String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
+            message += "\n" + Translation.get("draftNoDelete");
             MessageBox.show(message);
             return;
         }
 
         String message;
-        if (aktFieldNote.isTbFieldNote) {
-            message = Translation.get("confirmFieldnoteDeletionTB", aktFieldNote.typeString, aktFieldNote.TbName);
+        if (aktDraft.isTbDraft) {
+            message = Translation.get("confirmDraftDeletionTB", aktDraft.typeString, aktDraft.TbName);
         } else {
-            message = Translation.get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
-            if (aktFieldNote.type == LogTypes.found || aktFieldNote.type == LogTypes.attended || aktFieldNote.type == LogTypes.webcam_photo_taken)
-                message += Translation.get("confirmFieldnoteDeletionRst");
+            message = Translation.get("confirmDraftDeletion", aktDraft.typeString, aktDraft.CacheName);
+            if (aktDraft.type == LogTypes.found || aktDraft.type == LogTypes.attended || aktDraft.type == LogTypes.webcam_photo_taken)
+                message += Translation.get("confirmDraftDeletionRst");
         }
 
-        MessageBox.show(message, Translation.get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show(message, Translation.get("deleteDraft"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
                 case MessageBox.BUTTON_POSITIVE:
                     // Yes button clicked
-                    // delete aktFieldNote
+                    // delete aktDraft
                     if (cache != null) {
                         if (cache.isFound()) {
                             cache.setFound(false);
@@ -619,16 +609,16 @@ public class FieldNotesView extends V_ListView {
                             }
                         }
                     }
-                    lFieldNotes.DeleteFieldNote(aktFieldNote);
-                    aktFieldNote = null;
+                    lDrafts.deleteDraft(aktDraft);
+                    aktDraft = null;
 
-                    lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
+                    lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
 
                     that.setBaseAdapter(null);
-                    lvAdapter = new CustomAdapter(lFieldNotes);
+                    lvAdapter = new CustomAdapter(lDrafts);
                     that.setBaseAdapter(lvAdapter);
 
-                    FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
+                    Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
 
                     break;
                 case MessageBox.BUTTON_NEGATIVE:
@@ -641,25 +631,25 @@ public class FieldNotesView extends V_ListView {
 
     }
 
-    private void deleteAllFieldNotes() {
+    private void deleteAllDrafts() {
         final MessageBox.OnMsgBoxClickListener dialogClickListener = (which, data) -> {
             switch (which) {
                 case MessageBox.BUTTON_POSITIVE:
                     // Yes button clicked
-                    // delete all FieldNotes
-                    // reload all Fieldnotes!
-                    lFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
+                    // delete all Drafts
+                    // reload all Drafts!
+                    lDrafts.loadDrafts("", LoadingType.Loadall);
 
-                    for (FieldNoteEntry entry : lFieldNotes) {
+                    for (Draft entry : lDrafts) {
                         entry.DeleteFromDatabase();
 
                     }
 
-                    lFieldNotes.clear();
-                    aktFieldNote = null;
+                    lDrafts.clear();
+                    aktDraft = null;
 
                     that.setBaseAdapter(null);
-                    lvAdapter = new CustomAdapter(lFieldNotes);
+                    lvAdapter = new CustomAdapter(lDrafts);
                     that.setBaseAdapter(lvAdapter);
 
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
@@ -674,39 +664,39 @@ public class FieldNotesView extends V_ListView {
 
         };
 
-        final String message = Translation.get("DeleteAllFieldNotesQuestion");
-        GL.that.RunOnGL(() -> MessageBox.show(message, Translation.get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener));
+        final String message = Translation.get("DelDrafts?");
+        GL.that.RunOnGL(() -> MessageBox.show(message, Translation.get("DeleteAllDrafts"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener));
 
     }
 
-    private void selectCacheFromFieldNote() {
-        if (aktFieldNote == null)
+    private void selectCacheFromDraft() {
+        if (aktDraft == null)
             return;
 
         // suche den Cache aus der DB.
         // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
         CacheList lCaches = new CacheList();
         CacheListDAO cacheListDAO = new CacheListDAO();
-        cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
+        cacheListDAO.ReadCacheList(lCaches, "Id = " + aktDraft.CacheId, false, false);
         Cache tmpCache = null;
         if (lCaches.size() > 0)
             tmpCache = lCaches.get(0);
         Cache cache = tmpCache;
 
         if (cache == null) {
-            String message = Translation.get("cacheOtherDb", aktFieldNote.CacheName);
-            message += "\n" + Translation.get("fieldNoteNoSelect");
+            String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
+            message += "\n" + Translation.get("DraftNoSelect");
             MessageBox.show(message);
             return;
         }
 
         synchronized (Data.cacheList) {
-            cache = Data.cacheList.GetCacheByGcCode(aktFieldNote.gcCode);
+            cache = Data.cacheList.GetCacheByGcCode(aktDraft.gcCode);
         }
 
         if (cache == null) {
             Data.cacheList.add(tmpCache);
-            cache = Data.cacheList.GetCacheByGcCode(aktFieldNote.gcCode);
+            cache = Data.cacheList.GetCacheByGcCode(aktDraft.gcCode);
         }
 
         Waypoint finalWp = null;
@@ -720,7 +710,7 @@ public class FieldNotesView extends V_ListView {
 
     @Override
     public void notifyDataSetChanged() {
-        reloadFieldNotes();
+        reloadDrafts();
         super.notifyDataSetChanged();
     }
 
@@ -732,22 +722,22 @@ public class FieldNotesView extends V_ListView {
         lvAdapter = null;
         that = null;
         super.dispose();
-        Log.debug(log, "FieldNotesView disposed");
+        Log.debug(log, "DraftsView disposed");
     }
 
     public class CustomAdapter implements Adapter {
 
-        private final CB_FixSizeList<FieldNoteViewItem> fixViewList = new CB_FixSizeList<>(20);
-        private FieldNoteList fieldNoteList;
+        private final CB_FixSizeList<DraftViewItem> fixViewList = new CB_FixSizeList<>(20);
+        private Drafts drafts;
 
-        public CustomAdapter(FieldNoteList fieldNoteList) {
-            this.fieldNoteList = fieldNoteList;
+        public CustomAdapter(Drafts drafts) {
+            this.drafts = drafts;
         }
 
         @Override
         public int getCount() {
-            int count = fieldNoteList.size();
-            if (fieldNoteList.isCropped())
+            int count = drafts.size();
+            if (drafts.isCropped())
                 count++;
             return count;
         }
@@ -755,57 +745,57 @@ public class FieldNotesView extends V_ListView {
         @Override
         public ListViewItemBase getView(int position) {
 
-            // check if the FieldNoteViewItem in the buffer list
-            for (FieldNoteViewItem item : fixViewList) {
+            // check if the DraftViewItem in the buffer list
+            for (DraftViewItem item : fixViewList) {
                 if (item.getIndex() == position)
                     return item;
             }
 
-            FieldNoteEntry fne = null;
+            Draft fne = null;
 
-            if (position < fieldNoteList.size()) {
-                fne = fieldNoteList.get(position);
+            if (position < drafts.size()) {
+                fne = drafts.get(position);
             }
 
             CB_RectF rec = ItemRec.copy().ScaleCenter(0.97f);
             rec.setHeight(MeasureItemHeight(fne));
-            FieldNoteViewItem v = new FieldNoteViewItem(rec, position, fne);
+            DraftViewItem v = new DraftViewItem(rec, position, fne);
 
             if (fne == null) {
                 v.setOnClickListener((v14, x, y, pointer, button) -> {
                     // Load More
-                    lFieldNotes.LoadFieldNotes("", LoadingType.loadMore);
-                    FieldNotesView.this.notifyDataSetChanged();
+                    lDrafts.loadDrafts("", LoadingType.loadMore);
+                    DraftsView.this.notifyDataSetChanged();
                     return true;
                 });
             } else {
                 v.setOnClickListener((v12, x, y, pointer, button) -> {
                     int index = ((ListViewItemBase) v12).getIndex();
-                    aktFieldNote = lFieldNotes.get(index);
-                    editFieldNote();
+                    aktDraft = lDrafts.get(index);
+                    editDraft();
                     return true;
                 });
                 v.setOnLongClickListener((v13, x, y, pointer, button) -> {
                     int index = ((ListViewItemBase) v13).getIndex();
-                    aktFieldNote = lFieldNotes.get(index);
-                    Menu cm = new Menu("FieldNotesContextMenu");
+                    aktDraft = lDrafts.get(index);
+                    Menu cm = new Menu("DraftsContextMenu");
                     cm.addOnItemClickListener((v1, x1, y1, pointer1, button1) -> {
                         switch (((MenuItem) v1).getMenuItemId()) {
                             case MenuID.MI_SELECT_CACHE:
-                                selectCacheFromFieldNote();
+                                selectCacheFromDraft();
                                 return true;
-                            case MenuID.MI_EDIT_FIELDNOTE:
-                                editFieldNote();
+                            case MenuID.MI_EDIT_DRAFT:
+                                editDraft();
                                 return true;
-                            case MenuID.MI_DELETE_FIELDNOTE:
-                                deleteFieldNote();
+                            case MenuID.MI_DELETE_DRAFT:
+                                deleteDraft();
                                 return true;
                         }
                         return false;
                     });
                     cm.addItem(MenuID.MI_SELECT_CACHE, "SelectCache");
-                    cm.addItem(MenuID.MI_EDIT_FIELDNOTE, "edit");
-                    cm.addItem(MenuID.MI_DELETE_FIELDNOTE, "delete");
+                    cm.addItem(MenuID.MI_EDIT_DRAFT, "edit");
+                    cm.addItem(MenuID.MI_DELETE_DRAFT, "delete");
                     cm.Show();
                     return true;
                 });
@@ -819,19 +809,19 @@ public class FieldNotesView extends V_ListView {
 
         @Override
         public float getItemSize(int position) {
-            if (position > fieldNoteList.size() || fieldNoteList.size() == 0)
+            if (position > drafts.size() || drafts.size() == 0)
                 return 0;
 
-            FieldNoteEntry fne = null;
+            Draft fne = null;
 
-            if (position < fieldNoteList.size()) {
-                fne = fieldNoteList.get(position);
+            if (position < drafts.size()) {
+                fne = drafts.get(position);
             }
 
             return MeasureItemHeight(fne);
         }
 
-        private float MeasureItemHeight(FieldNoteEntry fne) {
+        private float MeasureItemHeight(Draft fne) {
             float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (UI_Size_Base.that.getMargin());
             float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + UI_Size_Base.that.getMargin() + Fonts.Measure("T").height;
             float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2);
@@ -853,7 +843,7 @@ public class FieldNotesView extends V_ListView {
         }
 
         private void dispose() {
-            fieldNoteList = null;
+            drafts = null;
         }
     }
 }

@@ -49,12 +49,12 @@ public enum QuickActions {
     Parking, // 16
     Day_Night, // 17
     FieldNotes, // 18
-    QuickFieldNotes, // 19
+    QuickDraft, // 19
     TrackableListView, // 20
     addWP, // 21
     Solver2, // 22
     Notesview, // 23
-    uploadFieldNote, // 24
+    uploadDrafts, // 24
     torch, // 25
 
     // ScreenLock, // 21
@@ -158,7 +158,7 @@ public enum QuickActions {
             case 17:
                 return Action_switch_DayNight.getInstance();
             case 18:
-                return CB_Action_ShowFieldNotesView.getInstance();
+                return CB_Action_ShowDraftsView.getInstance();
             case 19:
                 return Action_QuickDraft.getInstance();
             case 20:
@@ -217,9 +217,9 @@ public enum QuickActions {
             case 17:
                 return Translation.get("DayNight");
             case 18:
-                return Translation.get("Fieldnotes");
+                return Translation.get("Drafts");
             case 19:
-                return Translation.get("QuickFieldNote");
+                return Translation.get("QuickDraft");
             case 20:
                 return Translation.get("TBList");
             case 21:
@@ -229,7 +229,7 @@ public enum QuickActions {
             case 23:
                 return Translation.get("Notes");
             case 24:
-                return Translation.get("uploadFieldNotes");
+                return Translation.get("uploadDrafts");
             case 25:
                 return Translation.get("torch");
 

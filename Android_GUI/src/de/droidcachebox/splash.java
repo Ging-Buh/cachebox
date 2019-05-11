@@ -976,7 +976,7 @@ public class splash extends Activity {
         }
 
         Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-        Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
+        Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
 
         Config.AcceptChanges();
 

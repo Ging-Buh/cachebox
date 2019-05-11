@@ -4,12 +4,12 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CB_Core_Settings;
 import CB_Core.GCVote.GCVote;
 import CB_Core.LogTypes;
-import CB_Core.Types.FieldNoteEntry;
-import CB_Core.Types.FieldNoteList;
-import CB_Core.Types.FieldNoteList.LoadingType;
+import CB_Core.Types.Draft;
+import CB_Core.Types.Drafts;
+import CB_Core.Types.Drafts.LoadingType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Views.FieldNotesView;
+import CB_UI.GL_UI.Views.DraftsView;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -33,7 +33,7 @@ public class Action_UploadDrafts extends AbstractAction {
     private ProgressDialog PD;
 
     private Action_UploadDrafts() {
-        super("uploadFieldNotes", MenuID.AID_UPLOAD_FIELD_NOTE);
+        super("uploadDrafts", MenuID.AID_UPLOAD_DRAFT);
     }
 
     public static Action_UploadDrafts getInstance() {
@@ -54,20 +54,20 @@ public class Action_UploadDrafts extends AbstractAction {
     private void UploadDrafts() {
         final AtomicBoolean cancel = new AtomicBoolean(false);
 
-        final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler() {
+        final RunnableReadyHandler uploadDrafts = new RunnableReadyHandler() {
 
             @Override
             public void run() {
                 ProgresssChangedEventList.Call("Upload", "", 0);
 
-                FieldNoteList lFieldNotes = new FieldNoteList();
+                Drafts drafts = new Drafts();
 
-                lFieldNotes.LoadFieldNotes("(Uploaded=0 or Uploaded is null)", LoadingType.Loadall);
+                drafts.loadDrafts("(Uploaded=0 or Uploaded is null)", LoadingType.Loadall);
 
                 int count = 0;
                 int anzahl = 0;
-                for (FieldNoteEntry fieldNote : lFieldNotes) {
-                    if (!fieldNote.uploaded)
+                for (Draft draft : drafts) {
+                    if (!draft.uploaded)
                         anzahl++;
                 }
 
@@ -76,38 +76,38 @@ public class Action_UploadDrafts extends AbstractAction {
                 if (anzahl > 0) {
                     UploadMeldung = "";
                     API_Key_error = false;
-                    for (FieldNoteEntry fieldNote : lFieldNotes) {
+                    for (Draft draft : drafts) {
                         if (cancel.get())
                             break;
 
-                        if (fieldNote.uploaded)
+                        if (draft.uploaded)
                             continue;
                         if (ThreadCancel) // wenn im ProgressDialog Cancel gedrückt
                             // wurde.
                             break;
                         // Progress status Melden
-                        ProgresssChangedEventList.Call(fieldNote.CacheName, (100 * count) / anzahl);
+                        ProgresssChangedEventList.Call(draft.CacheName, (100 * count) / anzahl);
 
                         int result;
 
-                        if (fieldNote.isTbFieldNote) {
+                        if (draft.isTbDraft) {
                             // there is no TB draft. we have to log direct
-                            result = GroundspeakAPI.uploadTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
+                            result = GroundspeakAPI.uploadTrackableLog(draft.TravelBugCode, draft.TrackingNumber, draft.gcCode, LogTypes.CB_LogType2GC(draft.type), draft.timestamp, draft.comment);
                         } else {
                             if (sendGCVote) {
-                                if (fieldNote.gc_Vote > 0)
-                                    sendCacheVote(fieldNote);
+                                if (draft.gc_Vote > 0)
+                                    sendCacheVote(draft);
                             }
-                            result = GroundspeakAPI.UploadDraftOrLog(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, fieldNote.isDirectLog);
+                            result = GroundspeakAPI.UploadDraftOrLog(draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment, draft.isDirectLog);
                         }
 
                         if (result == GroundspeakAPI.ERROR) {
                             GL.that.Toast(GroundspeakAPI.LastAPIError);
-                            UploadMeldung += fieldNote.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
+                            UploadMeldung += draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
-                            // set fieldnote as uploaded only when upload was working
-                            fieldNote.uploaded = true;
-                            fieldNote.UpdateDatabase();
+                            // set draft as uploaded only when upload was working
+                            draft.uploaded = true;
+                            draft.UpdateDatabase();
                         }
                         count++;
                     }
@@ -128,31 +128,31 @@ public class Action_UploadDrafts extends AbstractAction {
                         if (!API_Key_error)
                             MessageBox.show(UploadMeldung, Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
                     } else {
-                        MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+                        MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live);
                     }
                 }
-                FieldNotesView.getInstance().notifyDataSetChanged();
+                DraftsView.getInstance().notifyDataSetChanged();
             }
         };
 
         // ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
 
         GL.that.RunOnGL(() -> {
-            PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
+            PD = ProgressDialog.Show("uploadDrafts", uploadDrafts);
             PD.setCancelListener(() -> cancel.set(true));
         });
 
     }
 
-    void sendCacheVote(FieldNoteEntry fieldNote) {
+    void sendCacheVote(Draft draft) {
 
         // Stimme abgeben
         try {
-            if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote, fieldNote.CacheUrl, fieldNote.gcCode)) {
-                UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
+            if (!GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
+                UploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
             }
         } catch (Exception e) {
-            UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
+            UploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
         }
     }
 

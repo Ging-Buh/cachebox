@@ -48,9 +48,9 @@ public interface CB_Core_Settings {
     SettingDouble ParkingLatitude = new SettingDouble("ParkingLatitude", Positions, NEVER, 0, Global, ACB);
     SettingDouble ParkingLongitude = new SettingDouble("ParkingLongitude", Positions, NEVER, 0, Global, ACB);
 
-    SettingBool DirectOnlineLog = new SettingBool("DirectOnlineLog", Fieldnotes, NORMAL, true, Global, ACB, false);
-    SettingBool FieldNotesLoadAll = new SettingBool("FieldNotesLoadAll", Fieldnotes, DEVELOPER, false, Global, ACB, false);
-    SettingInt FieldNotesLoadLength = new SettingInt("FieldNotesLoadLength", Fieldnotes, DEVELOPER, 10, Global, ACB);
+    SettingBool DirectOnlineLog = new SettingBool("DirectOnlineLog", Drafts, NORMAL, true, Global, ACB, false);
+    SettingBool DraftsLoadAll = new SettingBool("DraftsLoadAll", Drafts, DEVELOPER, false, Global, ACB, false);
+    SettingInt DraftsLoadLength = new SettingInt("DraftsLoadLength", Drafts, DEVELOPER, 10, Global, ACB);
 
     SettingEnum<LiveMapQue.Live_Radius> LiveRadius = new SettingEnum<>("LiveRadius", LiveMap, NORMAL, LiveMapQue.Live_Radius.Zoom_14, Global, ACB, LiveMapQue.Live_Radius.Zoom_14);
     SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", LiveMap, NORMAL, false, Global, ACB);

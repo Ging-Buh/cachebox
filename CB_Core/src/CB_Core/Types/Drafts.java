@@ -29,30 +29,30 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class FieldNoteList extends ArrayList<FieldNoteEntry> {
-    private static final String log = "FieldNoteList";
+public class Drafts extends ArrayList<Draft> {
+    private static final String log = "Drafts";
     private static final long serialVersionUID = 1L;
     private boolean croppedList = false;
     private int actCroppedLength = -1;
 
-    public FieldNoteList() {
+    public Drafts() {
         IChanged settingsChangedListener = () -> {
-            synchronized (FieldNoteList.this) {
-                FieldNoteList.this.clear();
+            synchronized (Drafts.this) {
+                Drafts.this.clear();
                 croppedList = false;
                 actCroppedLength = -1;
             }
         };
-        CB_Core_Settings.FieldNotesLoadAll.addSettingChangedListener(settingsChangedListener);
-        CB_Core_Settings.FieldNotesLoadLength.addSettingChangedListener(settingsChangedListener);
+        CB_Core_Settings.DraftsLoadAll.addSettingChangedListener(settingsChangedListener);
+        CB_Core_Settings.DraftsLoadLength.addSettingChangedListener(settingsChangedListener);
     }
 
     /**
-     * @param dirFileName Config.settings.FieldNotesGarminPath.getValue()
+     * @param dirFileName Config.settings.DraftsGarminPath.getValue()
      */
-    public static void CreateVisitsTxt(String dirFileName) {
-        FieldNoteList lFieldNotes = new FieldNoteList();
-        lFieldNotes.LoadFieldNotes("", "Timestamp ASC", LoadingType.Loadall);
+    public static void CreateGeoCacheVisits(String dirFileName) {
+        Drafts drafts = new Drafts();
+        drafts.loadDrafts("", "Timestamp ASC", LoadingType.Loadall);
 
         File txtFile = FileFactory.createFile(dirFileName);
         FileOutputStream writer;
@@ -63,8 +63,8 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
             byte[] bom = {(byte) 239, (byte) 187, (byte) 191};
             writer.write(bom);
 
-            for (FieldNoteEntry fieldNote : lFieldNotes) {
-                String log = fieldNote.gcCode + "," + fieldNote.GetDateTimeString() + "," + fieldNote.type.toString() + ",\"" + fieldNote.comment + "\"\n";
+            for (Draft draft : drafts) {
+                String log = draft.gcCode + "," + draft.GetDateTimeString() + "," + draft.type.toString() + ",\"" + draft.comment + "\"\n";
                 writer.write((log + "\n").getBytes(StandardCharsets.UTF_8));
             }
             writer.flush();
@@ -78,13 +78,13 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         return croppedList;
     }
 
-    public void LoadFieldNotes(String where, LoadingType loadingType) {
+    public void loadDrafts(String where, LoadingType loadingType) {
         synchronized (this) {
-            LoadFieldNotes(where, "", loadingType);
+            loadDrafts(where, "", loadingType);
         }
     }
 
-    private void LoadFieldNotes(String where, String order, LoadingType loadingType) {
+    private void loadDrafts(String where, String order, LoadingType loadingType) {
         synchronized (this) {
             // List clear?
             if (loadingType == LoadingType.Loadall || loadingType == LoadingType.LoadNew || loadingType == LoadingType.loadNewLastLength) {
@@ -102,33 +102,33 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
             }
 
             // SQLite Limit ?
-            boolean maybeCropped = !CB_Core_Settings.FieldNotesLoadAll.getValue() && loadingType != LoadingType.Loadall;
+            boolean maybeCropped = !CB_Core_Settings.DraftsLoadAll.getValue() && loadingType != LoadingType.Loadall;
 
             if (maybeCropped) {
                 switch (loadingType) {
                     case LoadNew:
-                        actCroppedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+                        actCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (actCroppedLength + 1);
                         break;
                     case loadNewLastLength:
                         if (actCroppedLength == -1)
-                            actCroppedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+                            actCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (actCroppedLength + 1);
                         break;
                     case loadMore:
                         int Offset = actCroppedLength;
-                        actCroppedLength += CB_Core_Settings.FieldNotesLoadLength.getValue();
-                        sql += " LIMIT " + (CB_Core_Settings.FieldNotesLoadLength.getValue() + 1);
+                        actCroppedLength += CB_Core_Settings.DraftsLoadLength.getValue();
+                        sql += " LIMIT " + (CB_Core_Settings.DraftsLoadLength.getValue() + 1);
                         sql += " OFFSET " + Offset;
                 }
             }
 
             try {
-                CoreCursor reader = Database.FieldNotes.sql.rawQuery(sql, null);
+                CoreCursor reader = Database.Drafts.sql.rawQuery(sql, null);
                 if (reader != null) {
                     reader.moveToFirst();
                     while (!reader.isAfterLast()) {
-                        FieldNoteEntry fne = new FieldNoteEntry(reader);
+                        Draft fne = new Draft(reader);
                         if (!this.contains(fne)) {
                             this.add(fne);
                         }
@@ -137,7 +137,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
                     reader.close();
                 }
             } catch (Exception exc) {
-                Log.err(log, "FieldNoteList", "LoadFieldNotes", exc);
+                Log.err(log, "Drafts", "loadDrafts", exc);
             }
 
             // check Cropped
@@ -153,12 +153,12 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         }
     }
 
-    public void DeleteFieldNoteByCacheId(long cacheId, LogTypes type) {
+    public void DeleteDraftByCacheId(long cacheId, LogTypes type) {
         synchronized (this) {
             int foundNumber = 0;
-            FieldNoteEntry fne = null;
-            // löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
-            for (FieldNoteEntry fn : this) {
+            Draft fne = null;
+            // löscht eine evtl. vorhandene draft vom type für den Cache cacheId
+            for (Draft fn : this) {
                 if ((fn.CacheId == cacheId) && (fn.type == type)) {
                     fne = fn;
                 }
@@ -173,11 +173,11 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         }
     }
 
-    public void DeleteFieldNote(FieldNoteEntry fnToDelete) {
+    public void deleteDraft(Draft fnToDelete) {
         synchronized (this) {
             int foundNumber = 0;
-            FieldNoteEntry fne = null;
-            for (FieldNoteEntry fn : this) {
+            Draft fne = null;
+            for (Draft fn : this) {
                 if (fn.Id == fnToDelete.Id) {
                     fne = fn;
                 }
@@ -195,7 +195,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
     private void decreaseFoundNumber(int deletedFoundNumber) {
         if (deletedFoundNumber > 0) {
             // alle FoundNumbers anpassen, die größer sind
-            for (FieldNoteEntry fn : this) {
+            for (Draft fn : this) {
                 if ((fn.type == LogTypes.found) && (fn.foundNumber > deletedFoundNumber)) {
                     int oldFoundNumber = fn.foundNumber;
                     fn.foundNumber--;
@@ -207,9 +207,9 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         }
     }
 
-    public boolean contains(FieldNoteEntry fne) {
+    public boolean contains(Draft fne) {
         synchronized (this) {
-            for (FieldNoteEntry item : this) {
+            for (Draft item : this) {
                 if (fne.equals(item))
                     return true;
             }

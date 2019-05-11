@@ -328,7 +328,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             for (SettingBase settingItem : CatList) {
                 final CB_View_Base view = getView(settingItem, position++);
 
-                if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
+                if (Config.DraftsLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("DraftsLoadLength")) {
                     ((SettingsItemBase) view).disable();
                 }
 
@@ -1386,7 +1386,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             @Override
             public void onCheckedChanged(ChkBox view, boolean isChecked) {
                 SB.setValue(isChecked);
-                if (SB.getName().equalsIgnoreCase("FieldNotesLoadAll")) {
+                if (SB.getName().equalsIgnoreCase("DraftsLoadAll")) {
                     resortList();
                 }
             }

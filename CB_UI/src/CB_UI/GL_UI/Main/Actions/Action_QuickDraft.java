@@ -18,8 +18,8 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.LogTypes;
 import CB_Core.Types.Cache;
-import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
-import CB_UI.GL_UI.Views.FieldNotesView;
+import CB_UI.GL_UI.Controls.PopUps.QuickDraftFeedbackPopUp;
+import CB_UI.GL_UI.Views.DraftsView;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEventList;
 import CB_UI_Base.Events.PlatformConnector;
@@ -37,7 +37,7 @@ public class Action_QuickDraft extends AbstractAction {
     private static Action_QuickDraft that;
 
     private Action_QuickDraft() {
-        super("QuickFieldNote", MenuID.AID_QUICK_FIELDNOTE);
+        super("QuickDraft", MenuID.AID_QUICK_DRAFT);
     }
 
     public static Action_QuickDraft getInstance() {
@@ -57,33 +57,33 @@ public class Action_QuickDraft extends AbstractAction {
 
     @Override
     public void Execute() {
-        Menu cm = new Menu("QuickFieldNote");
+        Menu cm = new Menu("QuickDraft");
 
         cm.addOnItemClickListener((v, x, y, pointer, button) -> {
             boolean found = true;
             switch (((MenuItem) v).getMenuItemId()) {
                 case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    FieldNotesView.addNewFieldNote(LogTypes.webcam_photo_taken, "", true);
+                    DraftsView.addNewDraft(LogTypes.webcam_photo_taken, "", true);
                     break;
                 case MenuID.MI_ATTENDED:
-                    FieldNotesView.addNewFieldNote(LogTypes.attended, "", true);
+                    DraftsView.addNewDraft(LogTypes.attended, "", true);
                     break;
                 case MenuID.MI_QUICK_FOUND:
-                    FieldNotesView.addNewFieldNote(LogTypes.found, "", true);
+                    DraftsView.addNewDraft(LogTypes.found, "", true);
                     break;
                 case MenuID.MI_QUICK_NOT_FOUND:
-                    FieldNotesView.addNewFieldNote(LogTypes.didnt_find, "", true);
+                    DraftsView.addNewDraft(LogTypes.didnt_find, "", true);
                     found = false;
                     break;
                 default:
                     return false;
             }
-            FieldNotesView.getInstance().notifyDataSetChanged();
+            DraftsView.getInstance().notifyDataSetChanged();
             // damit der Status geändert wird
             // damit die Icons in der Map aktualisiert werden
             CacheListChangedEventList.Call();
             SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-            QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(found);
+            QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(found);
             pop.show(PopUp_Base.SHOW_TIME_SHORT);
             PlatformConnector.vibrate();
             return true;

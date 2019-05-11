@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class FieldNoteEntry implements Serializable {
+public class Draft implements Serializable {
 
     /**
      *
@@ -34,14 +34,14 @@ public class FieldNoteEntry implements Serializable {
     public int typeIcon;
     public boolean uploaded;
     public int gc_Vote;
-    public boolean isTbFieldNote = false;
+    public boolean isTbDraft = false;
     public String TbName = "";
     public String TbIconUrl = "";
     public String TravelBugCode = "";
     public String TrackingNumber = "";
     public boolean isDirectLog = false;
 
-    private FieldNoteEntry(FieldNoteEntry fne) {
+    private Draft(Draft fne) {
         this.Id = fne.Id;
         this.CacheId = fne.CacheId;
         this.gcCode = fne.gcCode;
@@ -56,7 +56,7 @@ public class FieldNoteEntry implements Serializable {
         this.typeIcon = fne.typeIcon;
         this.uploaded = fne.uploaded;
         this.gc_Vote = fne.gc_Vote;
-        this.isTbFieldNote = fne.isTbFieldNote;
+        this.isTbDraft = fne.isTbDraft;
         this.TbName = fne.TbName;
         this.TbIconUrl = fne.TbIconUrl;
         this.TravelBugCode = fne.TravelBugCode;
@@ -64,13 +64,13 @@ public class FieldNoteEntry implements Serializable {
         this.isDirectLog = fne.isDirectLog;
     }
 
-    public FieldNoteEntry(LogTypes Type) {
+    public Draft(LogTypes Type) {
         Id = -1;
         this.type = Type;
         fillType();
     }
 
-    FieldNoteEntry(CoreCursor reader) {
+    Draft(CoreCursor reader) {
         CacheId = reader.getLong(0);
         gcCode = reader.getString(1).trim();
         CacheName = reader.getString(2);
@@ -90,7 +90,7 @@ public class FieldNoteEntry implements Serializable {
         CacheUrl = reader.getString(9);
         uploaded = reader.getInt(10) != 0;
         gc_Vote = reader.getInt(11);
-        isTbFieldNote = reader.getInt(12) != 0;
+        isTbDraft = reader.getInt(12) != 0;
         TbName = reader.getString(13);
         TbIconUrl = reader.getString(14);
         TravelBugCode = reader.getString(15);
@@ -156,24 +156,24 @@ public class FieldNoteEntry implements Serializable {
         args.put("url", CacheUrl);
         args.put("Uploaded", uploaded);
         args.put("gc_Vote", gc_Vote);
-        args.put("TbFieldNote", isTbFieldNote);
+        args.put("TbFieldNote", isTbDraft);
         args.put("TbName", TbName);
         args.put("TbIconUrl", TbIconUrl);
         args.put("TravelBugCode", TravelBugCode);
         args.put("TrackingNumber", TrackingNumber);
         args.put("directLog", isDirectLog);
         try {
-            Database.FieldNotes.sql.insertWithConflictReplace("Fieldnotes", args);
+            Database.Drafts.sql.insertWithConflictReplace("Fieldnotes", args);
         } catch (Exception exc) {
             return;
         }
         // search FieldNote Id
-        CoreCursor reader = Database.FieldNotes
+        CoreCursor reader = Database.Drafts
                 .sql.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode
                         + "' and type=" + type.getGcLogTypeId(), null);
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
-            FieldNoteEntry fne = new FieldNoteEntry(reader);
+            Draft fne = new Draft(reader);
             this.Id = fne.Id;
             reader.moveToNext();
         }
@@ -197,14 +197,14 @@ public class FieldNoteEntry implements Serializable {
         args.put("url", CacheUrl);
         args.put("Uploaded", uploaded);
         args.put("gc_Vote", gc_Vote);
-        args.put("TbFieldNote", isTbFieldNote);
+        args.put("TbFieldNote", isTbDraft);
         args.put("TbName", TbName);
         args.put("TbIconUrl", TbIconUrl);
         args.put("TravelBugCode", TravelBugCode);
         args.put("TrackingNumber", TrackingNumber);
         args.put("directLog", isDirectLog);
         try {
-            long count = Database.FieldNotes.sql.update("FieldNotes", args, "id=" + Id, null);
+            long count = Database.Drafts.sql.update("FieldNotes", args, "id=" + Id, null);
             if (count > 0)
                 return;
         } catch (Exception exc) {
@@ -214,13 +214,13 @@ public class FieldNoteEntry implements Serializable {
 
     public void DeleteFromDatabase() {
         try {
-            Database.FieldNotes.sql.delete("FieldNotes", "id=" + Id, null);
+            Database.Drafts.sql.delete("FieldNotes", "id=" + Id, null);
         } catch (Exception exc) {
             return;
         }
     }
 
-    public boolean equals(FieldNoteEntry fne) {
+    public boolean equals(Draft fne) {
         boolean ret = true;
 
         if (this.Id != fne.Id)
@@ -251,7 +251,7 @@ public class FieldNoteEntry implements Serializable {
             ret = false;
         if (this.gc_Vote != fne.gc_Vote)
             ret = false;
-        if (this.isTbFieldNote != fne.isTbFieldNote)
+        if (this.isTbDraft != fne.isTbDraft)
             ret = false;
         if (this.TravelBugCode != fne.TravelBugCode)
             ret = false;
@@ -263,8 +263,8 @@ public class FieldNoteEntry implements Serializable {
         return ret;
     }
 
-    public FieldNoteEntry copy() {
-        return new FieldNoteEntry(this);
+    public Draft copy() {
+        return new Draft(this);
     }
 
 }

@@ -207,7 +207,7 @@ public class Importer {
 
                 ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")", false);
 
-                Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
+                Boolean ret = GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
 
                 if (ret) {
                     gcVoteDAO.updatePendingVote(info.Id);

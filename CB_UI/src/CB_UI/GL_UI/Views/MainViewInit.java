@@ -389,7 +389,7 @@ public class MainViewInit extends MainViewBase {
 
         CacheListChangedEventList.Call();
 
-        Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
+        Database.Drafts.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
 
     }
 

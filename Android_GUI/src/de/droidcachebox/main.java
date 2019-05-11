@@ -291,7 +291,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 return;
             Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
             Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-            Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
+            Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
 
             Config.AcceptChanges();
 
@@ -884,7 +884,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     public void onDestroy() {
         try {
             Log.debug(sKlasse, "main => onDestroy");
-            PlatformConnector.addToMediaScannerList(Config.FieldNotesGarminPath.getValue());
+            PlatformConnector.addToMediaScannerList(Config.DraftsGarminPath.getValue());
             PlatformConnector.addToMediaScannerList(CB_SLF4J.logfile);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             for (String fn : PlatformConnector.getMediaScannerList()) {
@@ -958,7 +958,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     Config.AcceptChanges();
 
                     Database.Data.sql.close();
-                    Database.FieldNotes.sql.close();
+                    Database.Drafts.sql.close();
 
                     Sprites.destroyCache();
 
@@ -979,7 +979,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                 Database.Settings.sql.close();
                 Database.Data.sql.close();
-                Database.FieldNotes.sql.close();
+                Database.Drafts.sql.close();
 
                 super.onDestroy();
             }

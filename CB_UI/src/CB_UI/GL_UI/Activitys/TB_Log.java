@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Activitys;
 import CB_Core.CacheTypes;
 import CB_Core.LogTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.FieldNoteEntry;
+import CB_Core.Types.Draft;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -58,7 +58,7 @@ public class TB_Log extends ActivityBase {
     private LogTypes LT;
     private EditTextField edit;
     private RadioButton rbDirectLog;
-    private RadioButton rbOnlyFieldNote;
+    private RadioButton rbOnlyDraft;
 
     public TB_Log() {
         super(ActivityRec(), "TB_Log_Activity");
@@ -106,18 +106,18 @@ public class TB_Log extends ActivityBase {
         edit.setHeight(contentBox.getHalfHeight());
 
         rbDirectLog = new RadioButton("direct_Log");
-        rbOnlyFieldNote = new RadioButton("only_FieldNote");
+        rbOnlyDraft = new RadioButton("onlyDraft");
 
         rbDirectLog.setText(Translation.get("directLog"));
-        rbOnlyFieldNote.setText(Translation.get("onlyFieldNote"));
+        rbOnlyDraft.setText(Translation.get("onlyDraft"));
 
         RadioGroup Group = new RadioGroup();
-        Group.add(rbOnlyFieldNote);
+        Group.add(rbOnlyDraft);
         Group.add(rbDirectLog);
         if (Config.TB_DirectLog.getValue()) {
             rbDirectLog.setChecked(true);
         } else {
-            rbOnlyFieldNote.setChecked(true);
+            rbOnlyDraft.setChecked(true);
         }
     }
 
@@ -132,7 +132,7 @@ public class TB_Log extends ActivityBase {
         contentBox.setMargins(0, 0);
         contentBox.addLast(edit);
         contentBox.addLast(rbDirectLog);
-        contentBox.addLast(rbOnlyFieldNote);
+        contentBox.addLast(rbOnlyDraft);
 
         // Show Selected Cache for LogTypes discovered/visited/dropped_off/retrieve
         if (LT == LogTypes.discovered || LT == LogTypes.visited || LT == LogTypes.dropped_off || LT == LogTypes.retrieve) {
@@ -220,7 +220,7 @@ public class TB_Log extends ActivityBase {
         if (rbDirectLog.isChecked())
             logOnline();
         else
-            createFieldNote();
+            createTBDraft();
 
     }
 
@@ -238,7 +238,7 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateFieldnoteInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
                             case MessageBox.BUTTON_NEGATIVE:
                                 logOnline();
@@ -248,7 +248,7 @@ public class TB_Log extends ActivityBase {
                                 return true;
 
                             case MessageBox.BUTTON_POSITIVE:
-                                createFieldNote();
+                                createTBDraft();
                                 return true;
                         }
                         return true;
@@ -259,7 +259,7 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateFieldnoteInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
                             case MessageBox.BUTTON_NEGATIVE:
                                 logOnline();
@@ -269,7 +269,7 @@ public class TB_Log extends ActivityBase {
                                 return true;
 
                             case MessageBox.BUTTON_POSITIVE:
-                                createFieldNote();
+                                createTBDraft();
                                 return true;
                         }
                         return true;
@@ -301,9 +301,9 @@ public class TB_Log extends ActivityBase {
 
     }
 
-    private void createFieldNote() {
-        FieldNoteEntry newFieldNote;
-        newFieldNote = new FieldNoteEntry(LT);
+    private void createTBDraft() {
+        Draft newFieldNote;
+        newFieldNote = new Draft(LT);
         newFieldNote.CacheName = getCache_Name();
         newFieldNote.gcCode = getCache_GcCode();
         newFieldNote.foundNumber = Config.FoundOffset.getValue();
@@ -312,7 +312,7 @@ public class TB_Log extends ActivityBase {
         newFieldNote.comment = edit.getText();
         newFieldNote.CacheUrl = getCache_URL();
         newFieldNote.cacheType = getCache_Type();
-        newFieldNote.isTbFieldNote = true;
+        newFieldNote.isTbDraft = true;
         newFieldNote.TbName = TB.getName();
         newFieldNote.TbIconUrl = TB.getIconUrl();
         newFieldNote.TravelBugCode = TB.getTBCode();

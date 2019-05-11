@@ -156,7 +156,7 @@ public class SelectDB extends ActivityBase {
 
                 if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
                     return true;
-                Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
+                Database.Drafts.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
 
                 Config.AcceptChanges();
                 AktFile = FileFactory.createFile(database);

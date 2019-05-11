@@ -1,6 +1,6 @@
 package CB_UI;
 
-import CB_Core.Types.FieldNoteEntry;
+import CB_Core.Types.Draft;
 import CB_Core.Types.Trackable;
 
 import java.text.DateFormat;
@@ -8,17 +8,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TemplateFormatter {
-    public static String ReplaceTemplate(String template, FieldNoteEntry fieldNote) {
-        template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
+    public static String ReplaceTemplate(String template, Draft draft) {
+        template = template.replace("##finds##", String.valueOf(draft.foundNumber));
         DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
-        String stime = iso8601Format.format(fieldNote.timestamp);
+        String stime = iso8601Format.format(draft.timestamp);
         iso8601Format = new SimpleDateFormat("dd-MM-yyyy");
-        String sdate = iso8601Format.format(fieldNote.timestamp);
+        String sdate = iso8601Format.format(draft.timestamp);
 
         template = template.replace("<br>", "\n");
         template = template.replace("##date##", sdate);
         template = template.replace("##time##", stime);
-        if (GlobalCore.isSetSelectedCache() && fieldNote.gcCode.equals(GlobalCore.getSelectedCache().getGcCode())) {
+        if (GlobalCore.isSetSelectedCache() && draft.gcCode.equals(GlobalCore.getSelectedCache().getGcCode())) {
             template = template.replace("##owner##", GlobalCore.getSelectedCache().getOwner());
         } else {
             template = template.replace("##owner##", "????????");

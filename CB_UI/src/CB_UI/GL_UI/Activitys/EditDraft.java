@@ -17,14 +17,14 @@ package CB_UI.GL_UI.Activitys;
 
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
-import CB_Core.Types.FieldNoteEntry;
-import CB_Core.Types.FieldNoteList;
+import CB_Core.Types.Draft;
+import CB_Core.Types.Drafts;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
-import CB_UI.GL_UI.Views.FieldNoteViewItem;
+import CB_UI.GL_UI.Views.DraftViewItem;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
@@ -57,11 +57,11 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EditFieldNotes extends ActivityBase implements KeyboardFocusChangedEvent {
+public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent {
     private FilterSetListViewItem GcVote;
     private Label title;
-    private FieldNoteEntry altfieldNote;
-    private FieldNoteEntry fieldNote;
+    private Draft altfieldNote;
+    private Draft draft;
     private Button btnOK = null;
     private Button btnCancel = null;
     private EditTextField etComment = null;
@@ -71,17 +71,17 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     private EditTextField tvTime = null;
     private ScrollBox scrollBox = null;
     private Box scrollBoxContent;
-    private boolean isNewFieldNote;
+    private boolean isNewDraft;
     private RadioButton rbDirectLog;
-    private RadioButton rbOnlyFieldNote;
+    private RadioButton rbOnlyDraft;
     private IReturnListener mReturnListener;
     private Button btnHow;
 
-    public EditFieldNotes(FieldNoteEntry note, IReturnListener listener, boolean isNewFieldNote) {
+    public EditDraft(Draft note, IReturnListener listener, boolean isNewDraft) {
         super(ActivityBase.ActivityRec(), "");
-        this.isNewFieldNote = isNewFieldNote;
+        this.isNewDraft = isNewDraft;
         mReturnListener = listener;
-        fieldNote = note;
+        draft = note;
         altfieldNote = note.copy();
         initLayoutWithValues();
     }
@@ -107,7 +107,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
         scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
         scrollBoxContent.initRow(BOTTOMUP);
-        if (fieldNote.type.isDirectLogType())
+        if (draft.type.isDirectLogType())
             iniOptions();
         iniGC_VoteItem();
         initLogText();
@@ -125,52 +125,52 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void setValuesToLayout() {
         // initLogText
-        etComment.setText(fieldNote.comment);
+        etComment.setText(draft.comment);
         // Date
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
-        String sDate = iso8601Format.format(fieldNote.timestamp);
+        String sDate = iso8601Format.format(draft.timestamp);
         tvDate.setText(sDate);
         // Time
         iso8601Format = new SimpleDateFormat("HH:mm");
-        String sTime = iso8601Format.format(fieldNote.timestamp);
+        String sTime = iso8601Format.format(draft.timestamp);
         tvTime.setText(sTime);
         // iniOptions();
-        if (fieldNote.type.isDirectLogType()) {
-            if (isNewFieldNote) {
-                rbOnlyFieldNote.setChecked(true);
+        if (draft.type.isDirectLogType()) {
+            if (isNewDraft) {
+                rbOnlyDraft.setChecked(true);
             } else {
-                if (fieldNote.isDirectLog) {
+                if (draft.isDirectLog) {
                     rbDirectLog.setChecked(true);
                 } else {
-                    rbOnlyFieldNote.setChecked(true);
+                    rbOnlyDraft.setChecked(true);
                 }
             }
             rbDirectLog.setChecked(true);
         } else {
-            rbOnlyFieldNote.setChecked(true);
+            rbOnlyDraft.setChecked(true);
         }
-        tvFounds.setText("#" + fieldNote.foundNumber);
-        if (fieldNote.isTbFieldNote)
+        tvFounds.setText("#" + draft.foundNumber);
+        if (draft.isTbDraft)
             tvFounds.setText("");
         //
-        title.setText(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
+        title.setText(draft.isTbDraft ? draft.TbName : draft.CacheName);
     }
 
     private void setOkAndCancelClickHandlers() {
         btnOK.setOnClickListener((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
 
-                if (fieldNote.type.isDirectLogType()) {
-                    fieldNote.isDirectLog = rbDirectLog.isChecked();
+                if (draft.type.isDirectLogType()) {
+                    draft.isDirectLog = rbDirectLog.isChecked();
                 } else {
-                    fieldNote.isDirectLog = false;
+                    draft.isDirectLog = false;
                 }
 
-                fieldNote.comment = etComment.getText();
+                draft.comment = etComment.getText();
 
                 if (GcVote != null) {
-                    fieldNote.gc_Vote = (int) (GcVote.getValue() * 100);
-                } else fieldNote.gc_Vote = 0;
+                    draft.gc_Vote = (int) (GcVote.getValue() * 100);
+                } else draft.gc_Vote = 0;
 
                 // parse Date and Time
                 String date = tvDate.getText();
@@ -186,7 +186,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
                     formatter = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
                     timestamp = formatter.parse(date + "." + time + ".00");
 
-                    fieldNote.timestamp = timestamp;
+                    draft.timestamp = timestamp;
                 } catch (ParseException e) {
                     final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
 
@@ -221,17 +221,17 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
                 }
 
                 // check of changes
-                if (!altfieldNote.equals(fieldNote)) {
-                    fieldNote.uploaded = false;
-                    fieldNote.UpdateDatabase();
-                    FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
+                if (!altfieldNote.equals(draft)) {
+                    draft.uploaded = false;
+                    draft.UpdateDatabase();
+                    Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
                 }
 
                 boolean dl = false;
-                if (fieldNote.isDirectLog)
+                if (draft.isDirectLog)
                     dl = true;
 
-                mReturnListener.returnedFieldNote(fieldNote, isNewFieldNote, dl);
+                mReturnListener.returnedFieldNote(draft, isNewDraft, dl);
             }
             finish();
             return true;
@@ -248,21 +248,21 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void iniTitle() {
         ivTyp = new Image(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "", false);
-        if (fieldNote.isTbFieldNote) {
-            ivTyp.setImageURL(fieldNote.TbIconUrl);
+        if (draft.isTbDraft) {
+            ivTyp.setImageURL(draft.TbIconUrl);
         } else {
-            ivTyp.setDrawable(FieldNoteViewItem.getTypeIcon(fieldNote));
+            ivTyp.setDrawable(DraftViewItem.getTypeIcon(draft));
         }
         scrollBoxContent.addNext(ivTyp, FIXED);
 
-        title = new Label(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
+        title = new Label(draft.isTbDraft ? draft.TbName : draft.CacheName);
         title.setFont(Fonts.getBig());
         scrollBoxContent.addLast(title);
     }
 
     private void iniDate() {
-        tvFounds = new Label("#" + fieldNote.foundNumber);
-        if (fieldNote.isTbFieldNote)
+        tvFounds = new Label("#" + draft.foundNumber);
+        if (draft.isTbDraft)
             tvFounds.setText("");
         tvFounds.setFont(Fonts.getBig());
         tvFounds.setWidth(tvFounds.getTextWidth());
@@ -272,19 +272,19 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         scrollBoxContent.addNext(tvDate, 0.4f);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
-        String sDate = iso8601Format.format(fieldNote.timestamp);
+        String sDate = iso8601Format.format(draft.timestamp);
         tvDate.setText(sDate);
         tvTime = new EditTextField(this, "*" + Translation.get("time"));
         tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
         scrollBoxContent.addLast(tvTime, 0.4f);
-        String sTime = new SimpleDateFormat("HH:mm").format(fieldNote.timestamp);
+        String sTime = new SimpleDateFormat("HH:mm").format(draft.timestamp);
         tvTime.setText(sTime);
     }
 
     private void iniGC_VoteItem() {
         if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
-            if (!fieldNote.isTbFieldNote) {
-                FilterSetEntry tmp = new FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), FilterSetListView.NUMERIC_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
+            if (!draft.isTbDraft) {
+                FilterSetEntry tmp = new FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), FilterSetListView.NUMERIC_ITEM, 0, 5, draft.gc_Vote / 100.0, 0.5f);
                 GcVote = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 1.1f), 0, tmp);
                 scrollBoxContent.addLast(GcVote);
             }
@@ -295,7 +295,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         etComment = new EditTextField(this, "etComment").setWrapType(WrapType.WRAPPED);
         etComment.setHeight(getHeight() / 2.5f);
         scrollBoxContent.addLast(etComment);
-        etComment.setText(fieldNote.comment);
+        etComment.setText(draft.comment);
 
         btnHow = new Button("=");
         btnHow.setOnClickListener((v, x, y, pointer, button) -> {
@@ -310,7 +310,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
         Button btnFromNotes = new Button(Translation.get("fromNotes"));
         btnFromNotes.setOnClickListener((v, x, y, pointer, button) -> {
-            String text = Database.GetNote(fieldNote.CacheId);
+            String text = Database.GetNote(draft.CacheId);
             if (text.length() > 0) {
                 String sBegin = "<Import from Geocaching.com>";
                 String sEnd = "</Import from Geocaching.com>";
@@ -367,7 +367,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void setupLogText(String text) {
         // todo for ##owner## the cache must be selected (if not first log)
-        text = TemplateFormatter.ReplaceTemplate(text, fieldNote);
+        text = TemplateFormatter.ReplaceTemplate(text, draft);
         switch (btnHow.getText()) {
             case "=":
                 etComment.setText(text);
@@ -387,29 +387,29 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void iniOptions() {
         rbDirectLog = new RadioButton("direct_Log");
-        rbOnlyFieldNote = new RadioButton("only_FieldNote");
+        rbOnlyDraft = new RadioButton("only_FieldNote");
 
         rbDirectLog.setText(Translation.get("directLog"));
-        rbOnlyFieldNote.setText(Translation.get("onlyFieldNote"));
+        rbOnlyDraft.setText(Translation.get("onlyDraft"));
 
         RadioGroup Group = new RadioGroup();
-        Group.add(rbOnlyFieldNote);
+        Group.add(rbOnlyDraft);
         Group.add(rbDirectLog);
 
         scrollBoxContent.addLast(rbDirectLog);
-        scrollBoxContent.addLast(rbOnlyFieldNote);
+        scrollBoxContent.addLast(rbOnlyDraft);
 
-        if (isNewFieldNote) {
-            rbOnlyFieldNote.setChecked(true);
+        if (isNewDraft) {
+            rbOnlyDraft.setChecked(true);
         } else {
-            if (fieldNote.isDirectLog) {
+            if (draft.isDirectLog) {
                 rbDirectLog.setChecked(true);
             } else {
-                rbOnlyFieldNote.setChecked(true);
+                rbOnlyDraft.setChecked(true);
             }
         }
         rbDirectLog.setChecked(true);
-        rbOnlyFieldNote.setChecked(false);
+        rbOnlyDraft.setChecked(false);
     }
 
     @Override
@@ -438,7 +438,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     public void dispose() {
         super.dispose();
         mReturnListener = null;
-        fieldNote = null;
+        draft = null;
         btnOK = null;
         btnCancel = null;
         etComment = null;
@@ -470,15 +470,15 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         }
     }
 
-    public void setFieldNote(FieldNoteEntry note, IReturnListener listener, boolean isNewFieldNote) {
-        this.isNewFieldNote = isNewFieldNote;
+    public void setDraft(Draft note, IReturnListener listener, boolean isNewFieldNote) {
+        this.isNewDraft = isNewFieldNote;
         mReturnListener = listener;
-        fieldNote = note;
+        draft = note;
         setValuesToLayout();
         altfieldNote = note.copy();
     }
 
     public interface IReturnListener {
-        void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote, boolean directlog);
+        void returnedFieldNote(Draft fn, boolean isNewFieldNote, boolean directlog);
     }
 }

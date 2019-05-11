@@ -75,7 +75,7 @@ public class GCVote {
 
     }
 
-    public static Boolean SendVotes(String User, String password, int vote, String url, String waypoint) {
+    public static Boolean sendVote(String User, String password, int vote, String url, String waypoint) {
         url = url.replace("http:", "https:"); // automatic redirect doesn't work from http to https
         int pos = url.indexOf("guid=");
         String guid = "";
