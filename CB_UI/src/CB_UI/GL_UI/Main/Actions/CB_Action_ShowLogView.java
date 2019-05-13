@@ -92,37 +92,24 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
         contextMenu = new Menu("LogbookContextMenu");
 
         MenuItem mi;
-        contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), (v, x, y, pointer, button) -> {
-            loadLogs(true);
-            return true;
-        });
+        contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), () -> loadLogs(true));
         if (CB_Core_Settings.Friends.getValue().length() > 0) {
-            contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), (v, x, y, pointer, button) -> {
-                loadLogs(false);
-                return true;
-            });
-            mi = contextMenu.addMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), (v, x, y, pointer, button) -> {
+            contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
+            mi = contextMenu.addMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
                 LogView.getInstance().resetInitial();
-                return true;
             });
             mi.setCheckable(true);
             mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
-        contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), (v, x, y, pointer, button) -> {
-            getFriends();
-            return true;
-        });
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), (v, x, y, pointer, button) -> {
-            GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
-                // do after import
-                if (GlobalCore.isSetSelectedCache()) {
-                    GlobalCore.getSelectedCache().loadSpoilerRessources();
-                    SpoilerView.getInstance().ForceReload();
-                }
-            });
-            return true;
-        });
+        contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
+            // do after import
+            if (GlobalCore.isSetSelectedCache()) {
+                GlobalCore.getSelectedCache().loadSpoilerRessources();
+                SpoilerView.getInstance().ForceReload();
+            }
+        }));
 
     }
 
@@ -132,71 +119,69 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
                 @Override
                 public void run() {
-                    GL.that.postAsync(() -> {
-                        pd = CancelWaitDialog.ShowWait(Translation.get("LoadLogs"), DownloadAnimation.GetINSTANCE(),
-                                () -> doCancelThread = true, new RunnableReadyHandler() {
+                    GL.that.postAsync(() -> pd = CancelWaitDialog.ShowWait(Translation.get("LoadLogs"), DownloadAnimation.GetINSTANCE(),
+                            () -> doCancelThread = true, new RunnableReadyHandler() {
 
-                                    @Override
-                                    public boolean doCancel() {
-                                        return doCancelThread;
+                                @Override
+                                public boolean doCancel() {
+                                    return doCancelThread;
+                                }
+
+                                @Override
+                                public void run() {
+                                    result = 0;
+                                    doCancelThread = false;
+                                    ArrayList<LogEntry> logList;
+
+                                    try {
+                                        Thread.sleep(10);
+                                        logList = fetchGeoCacheLogs(GlobalCore.getSelectedCache(), loadAllLogs, this);
+                                        if (result == ERROR) {
+                                            GL.that.Toast(LastAPIError);
+                                        }
+                                        if (logList.size() > 0) {
+                                            Database.Data.sql.beginTransaction();
+
+                                            Iterator<LogEntry> iterator = logList.iterator();
+                                            LogDAO dao = new LogDAO();
+                                            if (loadAllLogs)
+                                                dao.deleteLogs(GlobalCore.getSelectedCache().Id);
+                                            do {
+                                                ChangedCount++;
+                                                try {
+                                                    Thread.sleep(10);
+                                                    LogEntry writeTmp = iterator.next();
+                                                    dao.WriteToDatabase(writeTmp);
+                                                } catch (InterruptedException e) {
+                                                    doCancelThread = true;
+                                                }
+                                            } while (iterator.hasNext() && !doCancelThread);
+
+                                            Database.Data.sql.setTransactionSuccessful();
+                                            Database.Data.sql.endTransaction();
+
+                                            LogView.getInstance().resetInitial();
+
+                                        }
+
+                                    } catch (InterruptedException e) {
+                                        doCancelThread = true;
                                     }
 
-                                    @Override
-                                    public void run() {
-                                        result = 0;
-                                        doCancelThread = false;
-                                        ArrayList<LogEntry> logList;
+                                }
 
-                                        try {
-                                            Thread.sleep(10);
-                                            logList = fetchGeoCacheLogs(GlobalCore.getSelectedCache(), loadAllLogs, this);
-                                            if (result == ERROR) {
-                                                GL.that.Toast(LastAPIError);
-                                            }
-                                            if (logList.size() > 0) {
-                                                Database.Data.sql.beginTransaction();
-
-                                                Iterator<LogEntry> iterator = logList.iterator();
-                                                LogDAO dao = new LogDAO();
-                                                if (loadAllLogs)
-                                                    dao.deleteLogs(GlobalCore.getSelectedCache().Id);
-                                                do {
-                                                    ChangedCount++;
-                                                    try {
-                                                        Thread.sleep(10);
-                                                        LogEntry writeTmp = iterator.next();
-                                                        dao.WriteToDatabase(writeTmp);
-                                                    } catch (InterruptedException e) {
-                                                        doCancelThread = true;
-                                                    }
-                                                } while (iterator.hasNext() && !doCancelThread);
-
-                                                Database.Data.sql.setTransactionSuccessful();
-                                                Database.Data.sql.endTransaction();
-
-                                                LogView.getInstance().resetInitial();
-
-                                            }
-
-                                        } catch (InterruptedException e) {
-                                            doCancelThread = true;
+                                @Override
+                                public void RunnableIsReady(boolean canceled) {
+                                    String sCanceled = canceled ? Translation.get("isCanceled") + GlobalCore.br : "";
+                                    pd.close();
+                                    if (result != -1) {
+                                        synchronized (Database.Data.cacheList) {
+                                            MessageBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None);
                                         }
 
                                     }
-
-                                    @Override
-                                    public void RunnableIsReady(boolean canceled) {
-                                        String sCanceled = canceled ? Translation.get("isCanceled") + GlobalCore.br : "";
-                                        pd.close();
-                                        if (result != -1) {
-                                            synchronized (Database.Data.cacheList) {
-                                                MessageBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None);
-                                            }
-
-                                        }
-                                    }
-                                });
-                    });
+                                }
+                            }));
                 }
             };
             Timer t = new Timer();

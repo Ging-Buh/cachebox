@@ -49,7 +49,7 @@ public class CB_Api {
                     .post(url)
                     .ensureSuccess()
                     .asJsonObject();
-            return response.getBody().getString(resultKey);
+            return response.getBody().getString(resultKey).trim();
         } catch (Exception ex) {
             Log.err("CB_Api", "getGcAuthUrl", ex);
             return "";

@@ -360,19 +360,51 @@ public class Menu extends ButtonDialog {
         return item;
     }
 
-    public MenuItem addMenuItem(String titleTranlationId, Sprite icon, OnClickListener onClickListener) {
+    public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Object icon, OnClickListener onClickListener) {
         MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, titleTranlationId);
-        item.setTitle(Translation.get(titleTranlationId));
-        if (icon != null)
-            item.setIcon(new SpriteDrawable(icon));
+        item.setTitle(((titleTranlationId.length() == 0)  ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart);
+        if (icon != null) {
+            if (icon instanceof Sprite) {
+                item.setIcon(new SpriteDrawable((Sprite) icon));
+            }
+            else
+                item.setIcon((Drawable) icon);
+        }
         item.setOnClickListener(onClickListener);
         mItems.add(item);
         mListView.notifyDataSetChanged();
         return item;
     }
 
-    public MenuItem addCheckableItem(int ID, String StringId, boolean checked) {
-        MenuItem item = addItem(ID, StringId, "", false);
+    public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Sprite icon, Runnable runnable) {
+        return addMenuItem(titleTranlationId, addUnTranslatedPart, icon,
+                (v, x, y, pointer, button) -> {
+                    runnable.run();
+                    return true;
+                });
+    }
+
+    public MenuItem addMenuItem(String titleTranlationId, Sprite icon, OnClickListener onClickListener) {
+        return addMenuItem(titleTranlationId, "", icon, onClickListener);
+    }
+
+    public MenuItem addMenuItem(String titleTranlationId, Sprite icon, Runnable runnable) {
+        return addMenuItem(titleTranlationId, "", icon,
+                (v, x, y, pointer, button) -> {
+                    runnable.run();
+                    return true;
+                });
+    }
+
+    public MenuItem addCheckableMenuItem(String titleTranlationId, boolean checked, OnClickListener onClickListener) {
+        MenuItem item = addMenuItem(titleTranlationId, "", null, onClickListener);
+        item.setCheckable(true);
+        item.setChecked(checked);
+        return item;
+    }
+
+    public MenuItem addCheckableMenuItem(String titleTranlationId, boolean checked, Runnable runnable) {
+        MenuItem item = addMenuItem(titleTranlationId, null, runnable);
         item.setCheckable(true);
         item.setChecked(checked);
         return item;
@@ -412,9 +444,9 @@ public class Menu extends ButtonDialog {
                         this.setWidth(getLeve0_Width());
                         mMoreMenu.setWidth(getLeve0_Width());
                         mMoreMenu.setX(-this.getLeftWidth() - this.getRightWidth() - 2.5f);
-                        // TODO die -2,5f m�ssen auf meinem S3 sein,
+                        // TODO die -2,5f müssen auf meinem S3 sein,
                         // damit die linke Position passt auf dem desktop sind es 0 auf anderen?
-                        // ich habe hier den zusammen hang noch nicht finden k�nnen
+                        // ich habe hier den zusammen hang noch nicht finden können
                         mMoreMenuToggleButton.setX(getLevel0_x() - mMoreMenuToggleButton.getHalfWidth() + (margin * 2));
 
                         mMoreMenuLabel.setText(mMoreMenuTextLeft);
@@ -457,16 +489,6 @@ public class Menu extends ButtonDialog {
         if (this.mOnItemClickListeners == null)
             this.mOnItemClickListeners = new ArrayList<>();
         this.mOnItemClickListeners.add(onItemClickListener);
-    }
-
-    public void addOnItemClickListeners(ArrayList<OnClickListener> onItemClickListeners) {
-        if (this.mOnItemClickListeners == null)
-            this.mOnItemClickListeners = new ArrayList<>();
-        this.mOnItemClickListeners.addAll(onItemClickListeners);
-    }
-
-    public ArrayList<OnClickListener> getOnItemClickListeners() {
-        return this.mOnItemClickListeners;
     }
 
     public void setPrompt(String Prompt) {

@@ -27,7 +27,6 @@ import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -58,57 +57,49 @@ public class Action_QuickDraft extends AbstractAction {
     @Override
     public void Execute() {
         Menu cm = new Menu("QuickDraft");
-
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            boolean found = true;
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    DraftsView.addNewDraft(LogTypes.webcam_photo_taken, "", true);
-                    break;
-                case MenuID.MI_ATTENDED:
-                    DraftsView.addNewDraft(LogTypes.attended, "", true);
-                    break;
-                case MenuID.MI_QUICK_FOUND:
-                    DraftsView.addNewDraft(LogTypes.found, "", true);
-                    break;
-                case MenuID.MI_QUICK_NOT_FOUND:
-                    DraftsView.addNewDraft(LogTypes.didnt_find, "", true);
-                    found = false;
-                    break;
-                default:
-                    return false;
-            }
-            DraftsView.getInstance().notifyDataSetChanged();
-            // damit der Status geändert wird
-            // damit die Icons in der Map aktualisiert werden
-            CacheListChangedEventList.Call();
-            SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-            QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(found);
-            pop.show(PopUp_Base.SHOW_TIME_SHORT);
-            PlatformConnector.vibrate();
-            return true;
-        });
-
         Cache cache = GlobalCore.getSelectedCache();
         switch (cache.Type) {
             case Event:
             case MegaEvent:
             case Giga:
             case CITO:
-                cm.addItem(MenuID.MI_ATTENDED, "attended", Sprites.getSprite("log9icon"));
+                cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> {
+                    DraftsView.addNewDraft(LogTypes.attended, "", true);
+                    finalHandling(true);
+                });
                 break;
             case Camera:
-                cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", Sprites.getSprite("log10icon"));
-                cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", Sprites.getSprite("log1icon"));
+                cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> {
+                    DraftsView.addNewDraft(LogTypes.webcam_photo_taken, "", true);
+                    finalHandling(true);
+                });
+                cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> {
+                    finalHandling(false);
+                });
                 break;
             default:
-                cm.addItem(MenuID.MI_QUICK_FOUND, "found", Sprites.getSprite("log0icon"));
-                cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", Sprites.getSprite("log1icon"));
+                cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> {
+                    DraftsView.addNewDraft(LogTypes.found, "", true);
+                    finalHandling(true);
+                });
+                cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> {
+                    DraftsView.addNewDraft(LogTypes.didnt_find, "", true);
+                    finalHandling(false);
+                });
                 break;
         }
-
         cm.Show();
+    }
 
+    private void finalHandling(boolean found) {
+        DraftsView.getInstance().notifyDataSetChanged();
+        // damit der Status geändert wird
+        // damit die Icons in der Map aktualisiert werden
+        CacheListChangedEventList.Call();
+        SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+        QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(found);
+        pop.show(PopUp_Base.SHOW_TIME_SHORT);
+        PlatformConnector.vibrate();
     }
 
 }

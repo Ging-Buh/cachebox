@@ -76,7 +76,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     private void createContextMenu() {
         contextMenu = new Menu("SpoilerContextMenu");
 
-        contextMenu.addMenuItem("reloadSpoiler", null, (v, x, y, pointer, button) -> {
+        contextMenu.addMenuItem("reloadSpoiler", null, () -> {
             GlobalCore.ImportSpoiler(false).setReadyListener(() -> {
                 // do after import
                 if (GlobalCore.isSetSelectedCache()) {
@@ -86,10 +86,9 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
                     SpoilerView.getInstance().onShow();
                 }
             });
-            return true;
         });
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), (v, x, y, pointer, button) -> {
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> {
             GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
                 // do after import
                 if (GlobalCore.isSetSelectedCache()) {
@@ -99,15 +98,11 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
                     SpoilerView.getInstance().onShow();
                 }
             });
-            return true;
         });
 
-        contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), (v, x, y, pointer, button) -> {
+        contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), () -> {
             String file = SpoilerView.getInstance().getSelectedFilePath();
-            if (file == null)
-                return true;
-            PlatformConnector.StartPictureApp(file);
-            return true;
+            if (file != null) PlatformConnector.StartPictureApp(file);
         });
     }
 

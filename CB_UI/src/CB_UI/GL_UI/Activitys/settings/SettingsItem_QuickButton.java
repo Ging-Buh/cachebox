@@ -6,11 +6,11 @@ import CB_UI.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.*;
+import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
@@ -28,24 +28,16 @@ import java.util.ArrayList;
 public class SettingsItem_QuickButton extends CB_View_Base {
 
     public static MoveableList<QuickButtonItem> tmpQuickList = null;
-    ChkBox chkOnOff;
-    Label lblChkOnOff;
-    Spinner invisibleSelectSpinner;
-    SpinnerAdapter selectAdapter;
-    ImageButton up, down, del, add;
-    V_ListView listView;
-    Box boxForListView;
+    private ImageButton up, down, del, add;
+    private V_ListView listView;
+    private Box boxForListView;
 
     public SettingsItem_QuickButton(CB_RectF rec, String Name) {
         super(rec, Name);
 
-        this.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                showSelect();
-                return true;
-            }
+        this.setOnClickListener((v, x, y, pointer, button) -> {
+            showSelect();
+            return true;
         });
 
         initialButtons();
@@ -54,14 +46,14 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         layout();
         reloadListViewItems();
 
-        tmpQuickList = new MoveableList<QuickButtonItem>(QuickButtonList.quickButtonList);
+        tmpQuickList = new MoveableList<>(QuickButtonList.quickButtonList);
         reloadListViewItems();
     }
 
     private void showSelect() {
         // erstelle Menu mit allen Actions, die noch nicht in der QuickButton List enthalten sind.
 
-        final ArrayList<QuickActions> AllActionList = new ArrayList<QuickActions>();
+        final ArrayList<QuickActions> AllActionList = new ArrayList<>();
         QuickActions[] tmp = QuickActions.values();
 
         for (QuickActions item : tmp) {
@@ -82,38 +74,24 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         }
 
         Menu icm = new Menu("Select QuickButtonItem");
-        icm.addOnItemClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                int selected = (((MenuItem) v).getMenuItemId());
-
-                QuickActions type = AllActionList.get(selected);
-
-                float itemHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
-
-                QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight), tmpQuickList.size(), QuickActions.getActionEnumById(type.ordinal()), QuickActions.getName(type.ordinal()), type);
-
-                tmpQuickList.add(tmp);
-
-                reloadListViewItems();
-
-                return true;
-            }
-        });
-
-        int menuIndex = 0;
         for (QuickActions item : AllActionList) {
             if (item == QuickActions.empty)
                 continue;
-
-            icm.addItem(menuIndex++, QuickActions.getName(item.ordinal()), new SpriteDrawable(QuickActions.getActionEnumById(item.ordinal()).getIcon()), true);
+            icm.addMenuItem("", QuickActions.getName(item.ordinal()),
+                    new SpriteDrawable(QuickActions.getActionEnumById(item.ordinal()).getIcon()),
+                    (v, x, y, pointer, button) -> {
+                        QuickActions type = (QuickActions) v.getData();
+                        float itemHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
+                        QuickButtonItem tmp1 = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight),
+                                tmpQuickList.size(), QuickActions.getActionEnumById(type.ordinal()), QuickActions.getName(type.ordinal()), type);
+                        tmpQuickList.add(tmp1);
+                        reloadListViewItems();
+                        icm.close();
+                        return true;
+                    }).setData(item);
         }
-
         icm.setPrompt(Translation.get("selectQuickButtemItem"));
-
         icm.Show();
-
     }
 
     private void initialButtons() {
@@ -146,72 +124,56 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         this.addChild(del);
         this.addChild(add);
 
-        add.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                showSelect();
-                return true;
-            }
+        add.setOnClickListener((v, x, y, pointer, button) -> {
+            showSelect();
+            return true;
         });
 
-        del.setOnClickListener(new OnClickListener() {
+        del.setOnClickListener((v, x, y, pointer, button) -> {
+            int index = listView.getSelectedIndex();
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                int index = listView.getSelectedIndex();
+            if (index >= 0 && index < tmpQuickList.size()) {
+                tmpQuickList.remove(index);
 
-                if (index >= 0 && index < tmpQuickList.size()) {
-                    tmpQuickList.remove(index);
-
-                    reloadListViewItems();
-                }
-
-                return true;
+                reloadListViewItems();
             }
+
+            return true;
         });
 
-        down.setOnClickListener(new OnClickListener() {
+        down.setOnClickListener((v, x, y, pointer, button) -> {
+            int index = listView.getSelectedIndex();
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                int index = listView.getSelectedIndex();
+            if (index >= 0 && index < tmpQuickList.size()) {
+                tmpQuickList.MoveItem(index, 1);
 
-                if (index >= 0 && index < tmpQuickList.size()) {
-                    tmpQuickList.MoveItem(index, 1);
+                reloadListViewItems();
+                int newIndex = index + 1;
+                if (newIndex >= tmpQuickList.size())
+                    newIndex = 0;
 
-                    reloadListViewItems();
-                    int newIndex = index + 1;
-                    if (newIndex >= tmpQuickList.size())
-                        newIndex = 0;
-
-                    listView.setSelection(newIndex);
-                }
-
-                return true;
+                listView.setSelection(newIndex);
             }
+
+            return true;
         });
 
-        up.setOnClickListener(new OnClickListener() {
+        up.setOnClickListener((v, x, y, pointer, button) -> {
+            int index = listView.getSelectedIndex();
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                int index = listView.getSelectedIndex();
+            if (index >= 0 && index < tmpQuickList.size()) {
+                tmpQuickList.MoveItem(index, -1);
 
-                if (index >= 0 && index < tmpQuickList.size()) {
-                    tmpQuickList.MoveItem(index, -1);
+                reloadListViewItems();
 
-                    reloadListViewItems();
+                int newIndex = index - 1;
+                if (newIndex < 0)
+                    newIndex = tmpQuickList.size() - 1;
 
-                    int newIndex = index - 1;
-                    if (newIndex < 0)
-                        newIndex = tmpQuickList.size() - 1;
-
-                    listView.setSelection(newIndex);
-                }
-
-                return true;
+                listView.setSelection(newIndex);
             }
+
+            return true;
         });
 
     }
@@ -278,29 +240,18 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         public ListViewItemBase getView(int position) {
             if (tmpQuickList == null)
                 return null;
-
             Menu icm = new Menu("virtuell");
-
             QuickButtonItem item = tmpQuickList.get(position);
-
             QuickActions action = item.getAction();
-
-            MenuItem mi = icm.addItem(position, QuickActions.getName(action.ordinal()), new SpriteDrawable(QuickActions.getActionEnumById(action.ordinal()).getIcon()), true);
-
+            MenuItem mi = icm.addMenuItem("", QuickActions.getName(action.ordinal()),
+                    new SpriteDrawable(QuickActions.getActionEnumById(action.ordinal()).getIcon()),
+                    (v, x, y, pointer, button) -> {
+                        listView.setSelection(((ListViewItemBase) v).getIndex());
+                        return false;
+                    });
             mi.setIndex(position);
             mi.setWidth(listView.getWidth() - (listView.getBackground().getLeftWidth() * 2));
             mi.setClickable(true);
-            mi.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    listView.setSelection(((ListViewItemBase) v).getIndex());
-                    return false;
-                }
-            });
-
-            // mi.setIndex(position);
-
             return mi;
         }
 

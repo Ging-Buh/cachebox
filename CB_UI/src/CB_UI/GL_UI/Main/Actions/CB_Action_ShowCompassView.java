@@ -5,7 +5,6 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.CompassView;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -18,59 +17,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowCompassView extends CB_Action_ShowView {
     private static CB_Action_ShowCompassView that;
-    private final OnClickListener onItemClickListener = (v, x, y, pointer, button) -> {
-        switch (((MenuItem) v).getMenuItemId()) {
-            case MenuID.MI_COMPASS_SHOW:
-                showOptionMenu();
-                return true;
-            case MenuID.MI_COMPASS_SHOW_MAP:
-                toggleSetting(CB_UI_Settings.CompassShowMap);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_NAME:
-                toggleSetting(CB_UI_Settings.CompassShowWP_Name);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_ICON:
-                toggleSetting(CB_UI_Settings.CompassShowWP_Icon);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_ATTRIBUTES:
-                toggleSetting(CB_UI_Settings.CompassShowAttributes);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_GC_CODE:
-                toggleSetting(CB_UI_Settings.CompassShowGcCode);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_COORDS:
-                toggleSetting(CB_UI_Settings.CompassShowCoords);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_WP_DESC:
-                toggleSetting(CB_UI_Settings.CompassShowWpDesc);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_SAT_INFO:
-                toggleSetting(CB_UI_Settings.CompassShowSatInfos);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_SUN_MOON:
-                toggleSetting(CB_UI_Settings.CompassShowSunMoon);
-                return true;
-
-            case MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION:
-                toggleSetting(CB_UI_Settings.CompassShowTargetDirection);
-                return true;
-            case MenuID.MI_COMPASS_SHOW_S_D_T:
-                toggleSetting(CB_UI_Settings.CompassShowSDT);
-                return true;
-            case MenuID.MI_COMPASS_SHOW_LAST_FOUND:
-                toggleSetting(CB_UI_Settings.CompassShowLastFound);
-                return true;
-        }
-        return false;
-    };
 
     private CB_Action_ShowCompassView() {
         super("Compass", MenuID.AID_SHOW_COMPASS);
@@ -109,73 +55,44 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
         Menu icm = new Menu("menu_compassView");
-        icm.addOnItemClickListener(onItemClickListener);
-
-        icm.addItem(MenuID.MI_COMPASS_SHOW, "view");
-
+        icm.addMenuItem("view", null, this::showOptionMenu);
         return icm;
     }
 
     private void showOptionMenu() {
-        OptionMenu icm = new OptionMenu("menu_compassView");
-        icm.addOnItemClickListener(onItemClickListener);
-        MenuItem mi;
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_MAP, "CompassShowMap");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowMap.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_NAME, "CompassShowWP_Name");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowWP_Name.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_ICON, "CompassShowWP_Icon");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowWP_Icon.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_ATTRIBUTES, "CompassShowAttributes");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowAttributes.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_GC_CODE, "CompassShowGcCode");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowGcCode.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_COORDS, "CompassShowCoords");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowCoords.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_WP_DESC, "CompassShowWpDesc");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowWpDesc.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_SAT_INFO, "CompassShowSatInfos");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowSatInfos.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_SUN_MOON, "CompassShowSunMoon");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowSunMoon.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION, "CompassShowTargetDirection");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowTargetDirection.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_S_D_T, "CompassShowSDT");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowSDT.getValue());
-
-        mi = icm.addItem(MenuID.MI_COMPASS_SHOW_LAST_FOUND, "CompassShowLastFound");
-        mi.setCheckable(true);
-        mi.setChecked(CB_UI_Settings.CompassShowLastFound.getValue());
-
-        icm.Show();
-
+        OptionMenu menuCompassElements = new OptionMenu("menu_compassView");
+        menuCompassElements.addCheckableMenuItem("CompassShowMap", CB_UI_Settings.CompassShowMap.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowMap));
+        menuCompassElements.addCheckableMenuItem("CompassShowWP_Name", CB_UI_Settings.CompassShowWP_Name.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowWP_Name));
+        menuCompassElements.addCheckableMenuItem("CompassShowWP_Icon", CB_UI_Settings.CompassShowWP_Icon.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowWP_Icon));
+        menuCompassElements.addCheckableMenuItem("CompassShowAttributes", CB_UI_Settings.CompassShowAttributes.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowAttributes));
+        menuCompassElements.addCheckableMenuItem("CompassShowGcCode", CB_UI_Settings.CompassShowGcCode.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowGcCode));
+        menuCompassElements.addCheckableMenuItem("CompassShowCoords", CB_UI_Settings.CompassShowCoords.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowCoords));
+        menuCompassElements.addCheckableMenuItem("CompassShowWpDesc", CB_UI_Settings.CompassShowWpDesc.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowWpDesc));
+        menuCompassElements.addCheckableMenuItem("CompassShowSatInfos", CB_UI_Settings.CompassShowSatInfos.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowSatInfos));
+        menuCompassElements.addCheckableMenuItem("CompassShowSunMoon", CB_UI_Settings.CompassShowSunMoon.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowSunMoon));
+        menuCompassElements.addCheckableMenuItem("CompassShowTargetDirection", CB_UI_Settings.CompassShowTargetDirection.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowTargetDirection));
+        menuCompassElements.addCheckableMenuItem("CompassShowSDT", CB_UI_Settings.CompassShowSDT.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v,CB_UI_Settings.CompassShowSDT));
+        menuCompassElements.addCheckableMenuItem("CompassShowLastFound", CB_UI_Settings.CompassShowLastFound.getValue(),
+                (v, x, y, pointer, button) -> toggleSetting((MenuItem) v, CB_UI_Settings.CompassShowLastFound));
+        menuCompassElements.Show();
     }
 
-    private void toggleSetting(SettingBool setting) {
+    private boolean toggleSetting(MenuItem v, SettingBool setting) {
         setting.setValue(!setting.getValue());
+        v.setChecked(setting.getValue());
         Config.AcceptChanges();
+        return true;
     }
 
 }

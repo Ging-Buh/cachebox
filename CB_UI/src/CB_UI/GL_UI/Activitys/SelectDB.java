@@ -39,8 +39,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.Action_ShowQuit;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -437,56 +435,37 @@ public class SelectDB extends ActivityBase {
     }
 
     private void showSelectionMenu() {
-        final String[] cs = new String[6];
-        cs[0] = Translation.get("StartWithoutSelection");
-        cs[1] = Translation.get("AutoStartDisabled");
-        cs[2] = Translation.get("AutoStartTime", "5");
-        cs[3] = Translation.get("AutoStartTime", "10");
-        cs[4] = Translation.get("AutoStartTime", "25");
-        cs[5] = Translation.get("AutoStartTime", "60");
-
         Menu cm = new Menu("MiscContextMenu");
-
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_START_WITHOUT_SELECTION:
-                    autoStartTime = -1;
-                    setAutoStartText();
-                    break;
-                case MenuID.MI_AUTO_START_DISABLED:
-                    autoStartTime = 0;
-                    setAutoStartText();
-                    break;
-                case MenuID.MI_5:
-                    autoStartTime = 5;
-                    setAutoStartText();
-                    break;
-                case MenuID.MI_10:
-                    autoStartTime = 10;
-                    setAutoStartText();
-                    break;
-                case MenuID.MI_25:
-                    autoStartTime = 25;
-                    setAutoStartText();
-                    break;
-                case MenuID.MI_60:
-                    autoStartTime = 60;
-                    setAutoStartText();
-                    break;
-
-            }
-            SelectDB.this.show();
-            return true;
+        cm.addMenuItem("StartWithoutSelection", null, () -> {
+            autoStartTime = -1;
+            setAutoStartText();
+            cm.close();
         });
-
-        cm.addItem(MenuID.MI_START_WITHOUT_SELECTION, cs[0], true);
-        cm.addItem(MenuID.MI_AUTO_START_DISABLED, cs[1], true);
-        cm.addItem(MenuID.MI_5, cs[2], true);
-        cm.addItem(MenuID.MI_10, cs[3], true);
-        cm.addItem(MenuID.MI_25, cs[4], true);
-        cm.addItem(MenuID.MI_60, cs[5], true);
-
+        cm.addMenuItem("AutoStartDisabled", null, () -> {
+            autoStartTime = 0;
+            setAutoStartText();
+            cm.close();
+        });
+        cm.addMenuItem("", Translation.get("AutoStartTime", "5"), null, () -> {
+            autoStartTime = 5;
+            setAutoStartText();
+            cm.close();
+        });
+        cm.addMenuItem("", Translation.get("AutoStartTime", "10"), null, () -> {
+            autoStartTime = 10;
+            setAutoStartText();
+            cm.close();
+        });
+        cm.addMenuItem("", Translation.get("AutoStartTime", "25"), null, () -> {
+            autoStartTime = 25;
+            setAutoStartText();
+            cm.close();
+        });
+        cm.addMenuItem("", Translation.get("AutoStartTime", "60"), null, () -> {
+            autoStartTime = 60;
+            setAutoStartText();
+            cm.close();
+        });
         cm.Show();
     }
 

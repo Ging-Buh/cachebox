@@ -34,17 +34,6 @@ import static CB_Core.Api.GroundspeakAPI.updateGeoCache;
 
 public class CacheContextMenu {
     private static final String ClassName = "CacheContextMenu";
-    private static final int MI_RELOAD_CACHE = 1;
-    private static final int MI_WAYPOINTS = 2;
-    private static final int MI_SHOW_LOGS = 3;
-    private static final int MI_HINT = 4;
-    private static final int MI_SPOILER = 5;
-    private static final int MI_SOLVER = 6;
-    private static final int MI_FAVORIT = 7;
-    private static final int MI_EDIT_CACHE = 8;
-    private static final int MI_DELETE_CACHE = 9;
-    private static final int AddToWatchList = 10;
-    private static final int RemoveFromWatchList = 11;
     private static Menu cacheContextMenu;
     private static CancelWaitDialog wd;
 
@@ -59,91 +48,58 @@ public class CacheContextMenu {
         }
         if (forCacheList) {
             // todo description
-            cacheContextMenu.addItem(MI_WAYPOINTS, "Waypoints", Sprites.getSprite("big" + CacheTypes.Trailhead.name())).setEnabled(selectedCacheIsGC);
-            cacheContextMenu.addItem(MI_HINT, "hint", Sprites.getSprite(IconName.hintIcon.name())).setEnabled(selectedCacheIsGC && GlobalCore.getSelectedCache().hasHint());
-            cacheContextMenu.addItem(MI_SPOILER, "spoiler", Sprites.getSprite(IconName.imagesIcon.name())).setEnabled(GlobalCore.selectedCachehasSpoiler());
-            cacheContextMenu.addItem(MI_SHOW_LOGS, "ShowLogs", Sprites.getSprite(IconName.listIcon.name())).setEnabled(selectedCacheIsGC);
+            cacheContextMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + CacheTypes.Trailhead.name()), () -> CB_Action_ShowWaypointView.getInstance().Execute()).setEnabled(selectedCacheIsGC);
+            cacheContextMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> Action_HintDialog.getInstance().showHint()).setEnabled(selectedCacheIsGC && GlobalCore.getSelectedCache().hasHint());
+            cacheContextMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> CB_Action_ShowSpoilerView.getInstance().Execute()).setEnabled(GlobalCore.selectedCachehasSpoiler());
+            cacheContextMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> CB_Action_ShowLogView.getInstance().Execute()).setEnabled(selectedCacheIsGC);
             // todo notes
             // todo TBList
             // todo external description
         }
-        cacheContextMenu.addItem(MI_RELOAD_CACHE, "ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name())).setEnabled(selectedCacheIsGC);
+        cacheContextMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), CacheContextMenu::ReloadSelectedCache).setEnabled(selectedCacheIsGC);
         MenuItem mi;
-        mi = cacheContextMenu.addItem(MI_FAVORIT, "Favorite", Sprites.getSprite(IconName.favorit.name()));
+        mi = cacheContextMenu.addMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), () -> {
+            GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
+            CacheDAO dao = new CacheDAO();
+            dao.UpdateDatabase(GlobalCore.getSelectedCache());
+            // Update cacheList
+            Database.Data.cacheList.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+            // Update View
+            CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
+            CacheListChangedEventList.Call();
+        });
         mi.setCheckable(true);
         mi.setEnabled(selectedCacheIsSet);
         mi.setChecked(selectedCacheIsSet && GlobalCore.getSelectedCache().isFavorite());
-        cacheContextMenu.addItem(AddToWatchList, "AddToWatchList").setEnabled(selectedCacheIsGC);
-        cacheContextMenu.addItem(RemoveFromWatchList, "RemoveFromWatchList").setEnabled(selectedCacheIsGC);
-        cacheContextMenu.addItem(MI_SOLVER, "Solver", Sprites.getSprite(IconName.solverIcon.name())).setEnabled(selectedCacheIsGC);
-        // todo solver2
-        cacheContextMenu.addItem(MI_EDIT_CACHE, "MI_EDIT_CACHE").setEnabled(selectedCacheIsSet);
-        cacheContextMenu.addItem(MI_DELETE_CACHE, "MI_DELETE_CACHE").setEnabled(selectedCacheIsSet);
-
-        cacheContextMenu.addOnItemClickListener((v, x, y, pointer, button) -> {
-            // todo CB_UI_Base.GL_UI.Menu.MenuItemDivider cannot be cast to CB_UI_Base.GL_UI.Menu.MenuItem
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MI_HINT:
-                    Action_HintDialog.getInstance().showHint();
-                    return true;
-                case MI_RELOAD_CACHE:
-                    ReloadSelectedCache();
-                    return true;
-                case MI_WAYPOINTS:
-                    CB_Action_ShowWaypointView.getInstance().Execute();
-                    return true;
-                case MI_SHOW_LOGS:
-                        CB_Action_ShowLogView.getInstance().Execute();
-                    return true;
-                case MI_SPOILER:
-                        CB_Action_ShowSpoilerView.getInstance().Execute();
-                    return true;
-                case MI_SOLVER:
-                        CB_Action_ShowSolverView.getInstance().Execute();
-                    return true;
-                case MI_EDIT_CACHE:
-                    new EditCache().update(GlobalCore.getSelectedCache());
-                    return true;
-                case MI_FAVORIT:
-                    GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
-                    CacheDAO dao = new CacheDAO();
-                    dao.UpdateDatabase(GlobalCore.getSelectedCache());
-                    // Update cacheList
-                    Database.Data.cacheList.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
-                    // Update View
-                    CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
-                    CacheListChangedEventList.Call();
-                    return true;
-                case AddToWatchList:
-                    if (GlobalCore.isSetSelectedCache()) {
-                        GL.that.postAsync(() -> {
-                            if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                                MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                            } else {
-                                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                            }
-                        });
+        cacheContextMenu.addMenuItem("AddToWatchList", null, () -> {
+            if (GlobalCore.isSetSelectedCache()) {
+                GL.that.postAsync(() -> {
+                    if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
+                        MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    } else {
+                        MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                     }
-                    return true;
-                case RemoveFromWatchList:
-                    if (GlobalCore.isSetSelectedCache()) {
-                        GL.that.postAsync(() -> {
-                            if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                                MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                            } else {
-                                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                            }
-                        });
-                    }
-                    return true;
-                case MI_DELETE_CACHE:
-                    DeleteSelectedCache.Execute();
-                    GlobalCore.setSelectedWaypoint(null, null, true);
-                    return true;
-                default:
-                    return false;
+                });
             }
-        });
+        }).setEnabled(selectedCacheIsGC);
+        cacheContextMenu.addMenuItem("RemoveFromWatchList", null, () -> {
+            if (GlobalCore.isSetSelectedCache()) {
+                GL.that.postAsync(() -> {
+                    if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
+                        MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    } else {
+                        MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    }
+                });
+            }
+        }).setEnabled(selectedCacheIsGC);
+        cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> CB_Action_ShowSolverView.getInstance().Execute()).setEnabled(selectedCacheIsGC);
+        // todo solver2
+        cacheContextMenu.addMenuItem("MI_EDIT_CACHE", null, () -> new EditCache().update(GlobalCore.getSelectedCache())).setEnabled(selectedCacheIsSet);
+        cacheContextMenu.addMenuItem("MI_DELETE_CACHE", null, () -> {
+            DeleteSelectedCache.Execute();
+            GlobalCore.setSelectedWaypoint(null, null, true);
+        }).setEnabled(selectedCacheIsSet);
         return cacheContextMenu;
     }
 

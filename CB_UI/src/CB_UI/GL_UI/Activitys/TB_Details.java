@@ -26,8 +26,6 @@ import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
@@ -37,9 +35,6 @@ import CB_UI_Base.Math.UI_Size_Base;
  * TODO Visit,Home und Distance müssen noch angezeigt werden!
  */
 public class TB_Details extends ActivityBase {
-    private static final int MI_TB_DROPPED = 167;
-    private static final int MI_TB_VISIT = 169;
-    private static final int MI_TB_NOTE = 171;
     public static TB_Details that;
     private ScrollBox scrollBox;
     private Box scrollBoxContent;
@@ -98,10 +93,10 @@ public class TB_Details extends ActivityBase {
         // lblTravelDistance = new Label("TravelDistance");
 
         TypeName = new EditTextField(this, "TypeName");
-        TbCode = new EditTextField(this,"TbCode");
-        Owner = new EditTextField(this,"Owner");
+        TbCode = new EditTextField(this, "TbCode");
+        Owner = new EditTextField(this, "Owner");
 
-        Birth = new EditTextField(this,"Birth");
+        Birth = new EditTextField(this, "Birth");
 
         scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
         scrollBox.setBackground(this.getBackground());
@@ -128,7 +123,7 @@ public class TB_Details extends ActivityBase {
         scrollBox.setHeight(getAvailableHeight());
         scrollBox.addChild(scrollBoxContent);
 
-        addScrollBoxContent(lblTbCode,TbCode,TB.getTBCode());
+        addScrollBoxContent(lblTbCode, TbCode, TB.getTBCode());
         String ImgUrl = TB.getImageUrl();
         if (ImgUrl != null && ImgUrl.length() > 0) {
             image.setHeight(this.getWidth() / 3);
@@ -136,9 +131,9 @@ public class TB_Details extends ActivityBase {
         } else {
             image.setHeight(0);
         }
-        scrollBoxContent.addLast(image,FIXED);
+        scrollBoxContent.addLast(image, FIXED);
         addScrollBoxContent(lblTypeName, TypeName, TB.getTypeName());
-        addScrollBoxContent(lblOwner,Owner,TB.getOwner());
+        addScrollBoxContent(lblOwner, Owner, TB.getOwner());
         addScrollBoxContent(lblBirth, Birth, TB.getBirth());
         addScrollBoxContent(lblGoal, currentGoal, TB.getCurrentGoal());
         addScrollBoxContent(lblDescription, description, TB.getDescription());
@@ -164,57 +159,18 @@ public class TB_Details extends ActivityBase {
     }
 
     private void showLogMenu() {
-
         final Menu cm = new Menu("TBLogContextMenu");
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            if (TB_Log.that == null)
-                new TB_Log();
-            switch (((MenuItem) v).getMenuItemId()) {
-
-                case MenuID.MI_TB_DISCOVERED:
-                    TB_Log.that.Show(TB, LogTypes.discovered);
-                    break;
-
-                case MI_TB_VISIT:
-                    TB_Log.that.Show(TB, LogTypes.visited);
-                    break;
-
-                case MI_TB_DROPPED:
-                    TB_Log.that.Show(TB, LogTypes.dropped_off);
-                    break;
-
-                case MenuID.MI_TB_GRABBED:
-                    TB_Log.that.Show(TB, LogTypes.grab_it);
-                    break;
-
-                case MenuID.MI_TB_PICKED:
-                    TB_Log.that.Show(TB, LogTypes.retrieve);
-                    break;
-
-                case MI_TB_NOTE:
-                    TB_Log.that.Show(TB, LogTypes.note);
-                    break;
-            }
-            return true;
-        });
-
-        cm.addItem(MI_TB_NOTE, "note", Sprites.getSprite(IconName.TBNOTE.name()));
-
+        cm.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.that.Show(TB, LogTypes.note));
         if (TB.isLogTypePossible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue()))
-            cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", Sprites.getSprite(IconName.TBDISCOVER.name()));
-
+            cm.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.that.Show(TB, LogTypes.discovered));
         if (TB.isLogTypePossible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue()))
-            cm.addItem(MI_TB_VISIT, "visit", Sprites.getSprite(IconName.TBVISIT.name()));
-
+            cm.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.that.Show(TB, LogTypes.visited));
         if (TB.isLogTypePossible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue()))
-            cm.addItem(MI_TB_DROPPED, "dropped", Sprites.getSprite(IconName.TBDROP.name()));
-
+            cm.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.that.Show(TB, LogTypes.dropped_off));
         if (TB.isLogTypePossible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue()))
-            cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", Sprites.getSprite(IconName.TBGRAB.name()));
-
+            cm.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.that.Show(TB, LogTypes.grab_it));
         if (TB.isLogTypePossible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue()))
-            cm.addItem(MenuID.MI_TB_PICKED, "picked", Sprites.getSprite(IconName.TBPICKED.name()));
-
+            cm.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.that.Show(TB, LogTypes.retrieve));
         cm.Show();
     }
 

@@ -16,7 +16,6 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
@@ -68,40 +67,27 @@ public class Spinner extends Button {
             triangle = new NinePatch(tr, 0, patch, patch, 0);
         }
 
-        this.setOnClickListener(new OnClickListener() {
+        this.setOnClickListener((v, x, y, pointer, button) -> {
+            if (mAdapter == null)
+                return true; // kann nix anzeigen
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mAdapter == null)
-                    return true; // kann nix anzeigen
-
-                // show Menu to select
-                Menu icm = new Menu("SpinnerSelection" + that.name);
-                icm.addOnItemClickListener(new OnClickListener() {
-                    @Override
-                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                        int sel = ((MenuItem) v).getIndex();
-                        setSelection(sel);
-                        if (mListener != null)
-                            mListener.selectionChanged(sel);
-                        return false;
-                    }
-                });
-
-                for (int index = 0; index < mAdapter.getCount(); index++) {
-                    String text = mAdapter.getText(index);
-                    Drawable drawable = mAdapter.getIcon(index);
-
-                    icm.addItem(index, text, drawable, true);
-                }
-
-                if (prompt != null && !prompt.equalsIgnoreCase("")) {
-                    icm.setPrompt(prompt);
-                }
-
-                icm.Show();
-                return true;
+            // show Menu to select
+            Menu icm = new Menu("SpinnerSelection" + that.name);
+            for (int index = 0; index < mAdapter.getCount(); index++) {
+                icm.addMenuItem(mAdapter.getText(index), "", mAdapter.getIcon(index),
+                        (v1, x1, y1, pointer1, button1) -> {
+                            int sel = ((MenuItem) v1).getIndex();
+                            setSelection(sel);
+                            if (mListener != null)
+                                mListener.selectionChanged(sel);
+                            return false;
+                        });
             }
+            if (prompt != null && !prompt.equalsIgnoreCase("")) {
+                icm.setPrompt(prompt);
+            }
+            icm.Show();
+            return true;
         });
 
     }

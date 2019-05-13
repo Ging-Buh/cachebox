@@ -20,8 +20,6 @@ import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
@@ -41,8 +39,6 @@ import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -133,84 +129,65 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         this.addChild(btnMenu);
         btnMenu.setText("...");
-        btnMenu.setOnClickListener(new OnClickListener() {
+        btnMenu.setOnClickListener((v, x, y, pointer, button) -> {
+            Menu icm = new Menu("Settings");
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Menu icm = new Menu("Settings");
-                icm.addOnItemClickListener(new OnClickListener() {
+            if (Config.SettingsShowAll.getValue())
+                Config.SettingsShowExpert.setValue(false);
 
-                    @Override
-                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                        switch (((MenuItem) v).getMenuItemId()) {
-                            case MenuID.MI_SHOW_EXPERT:
-                                Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
-                                Config.SettingsShowAll.setValue(false);
-                                resortList();
-                                return true;
+            icm.addCheckableMenuItem("Settings_Expert", Config.SettingsShowExpert.getValue(), () -> {
+                Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
+                Config.SettingsShowAll.setValue(false);
+                resortList();
+                icm.close();
+            });
 
-                            case MenuID.MI_SHOW_ALL:
-                                Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
-                                Config.SettingsShowExpert.setValue(false);
-                                resortList();
-                                return true;
-                        }
+            icm.addCheckableMenuItem("Settings_All", Config.SettingsShowAll.getValue(), () -> {
+                Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
+                Config.SettingsShowExpert.setValue(false);
+                resortList();
+                icm.close();
+            });
 
-                        return false;
-                    }
-                });
+            icm.setPrompt(Translation.get("SettingsLevelTitle"));
 
-                if (Config.SettingsShowAll.getValue())
-                    Config.SettingsShowExpert.setValue(false);
-                icm.addCheckableItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert", Config.SettingsShowExpert.getValue());
-                icm.addCheckableItem(MenuID.MI_SHOW_ALL, "Settings_All", Config.SettingsShowAll.getValue());
-
-                icm.setPrompt(Translation.get("changeSettingsVisibility"));
-
-                icm.Show();
-                return true;
-            }
+            icm.Show();
+            return true;
         });
 
         this.addChild(btnOk);
-        btnOk.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        btnOk.setOnClickListener((v, x, y, pointer, button) -> {
 
-                String ActionsString = "";
-                int counter = 0;
-                for (int i = 0, n = SettingsItem_QuickButton.tmpQuickList.size(); i < n; i++) {
-                    QuickButtonItem tmp = SettingsItem_QuickButton.tmpQuickList.get(i);
-                    ActionsString += String.valueOf(tmp.getAction().ordinal());
-                    if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1) {
-                        ActionsString += ",";
-                    }
-                    counter++;
+            StringBuilder ActionsString = new StringBuilder();
+            int counter = 0;
+            for (int i = 0, n = SettingsItem_QuickButton.tmpQuickList.size(); i < n; i++) {
+                QuickButtonItem tmp = SettingsItem_QuickButton.tmpQuickList.get(i);
+                ActionsString.append(tmp.getAction().ordinal());
+                if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1) {
+                    ActionsString.append(",");
                 }
-                Config.quickButtonList.setValue(ActionsString);
-
-                Config.settings.SaveToLastValue();
-                Config.AcceptChanges();
-
-                // Notify QuickButtonList
-                QuickButtonList.that.notifyDataSetChanged();
-
-                CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
-
-                finish();
-                return true;
+                counter++;
             }
+            Config.quickButtonList.setValue(ActionsString.toString());
+
+            Config.settings.SaveToLastValue();
+            Config.AcceptChanges();
+
+            // Notify QuickButtonList
+            QuickButtonList.that.notifyDataSetChanged();
+
+            CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
+
+            finish();
+            return true;
         });
 
         this.addChild(btnCancel);
-        btnCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Config.settings.LoadFromLastValue();
+        btnCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            Config.settings.LoadFromLastValue();
 
-                finish();
-                return true;
-            }
+            finish();
+            return true;
         });
 
     }
@@ -879,145 +856,81 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     }
 
-    private CB_View_Base getFolderView(final SettingFolder SB, int backgroundChanger) {
+    private CB_View_Base getFolderView(final SettingFolder settingFolder, int backgroundChanger) {
 
-        final boolean needWritePermission = SB.needWritePermission();
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+        final boolean needWritePermission = settingFolder.needWritePermission();
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, settingFolder.getName());
 
-        item.setName(Translation.get(SB.getName()));
-        if (SB.isDefault()) {
+        item.setName(Translation.get(settingFolder.getName()));
+        if (settingFolder.isDefault()) {
             item.setDefault(Translation.get("default"));
         } else {
-            item.setDefault(SB.getValue());
+            item.setDefault(settingFolder.getValue());
         }
 
-        item.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
-                File file = FileFactory.createFile(SB.getValue());
-
-                final String ApsolutePath = (file != null) ? file.getAbsolutePath() : "";
-
-                Menu icm = new Menu("FileactionMenu");
-                icm.addOnItemClickListener(new OnClickListener() {
-
-                    @Override
-                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                        switch (((MenuItem) v).getMenuItemId()) {
-                            case MenuID.MI_SELECT_PATH:
-                                PlatformConnector.getFolder(ApsolutePath, Translation.get("select_folder"), Translation.get("select"), new IgetFolderReturnListener() {
-
-                                    @Override
-                                    public void returnFolder(String Path) {
-                                        // check WriteProtection
-                                        if (needWritePermission && !FileIO.canWrite(Path)) {
-                                            String WriteProtectionMsg = Translation.get("NoWriteAcces");
-                                            GL.that.Toast(WriteProtectionMsg, 8000);
-                                        } else {
-                                            SB.setValue(Path);
-                                            resortList();
-                                        }
-
-                                    }
-                                });
-                                return true;
-
-                            case MenuID.MI_CLEAR_PATH:
-                                SB.setValue(SB.getDefaultValue());
-                                resortList();
-                                return true;
+        item.setOnClickListener((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(settingFolder);
+            File file = FileFactory.createFile(settingFolder.getValue());
+            final String absolutePath = (file != null) ? file.getAbsolutePath() : "";
+            Menu icm = new Menu("FileactionMenu");
+            icm.addMenuItem("select_folder", null,
+                    () -> PlatformConnector.getFolder(absolutePath, Translation.get("select_folder"), Translation.get("select"), Path -> {
+                        // check WriteProtection
+                        if (needWritePermission && !FileIO.canWrite(Path)) {
+                            String WriteProtectionMsg = Translation.get("NoWriteAcces");
+                            GL.that.Toast(WriteProtectionMsg, 8000);
+                        } else {
+                            settingFolder.setValue(Path);
+                            resortList();
                         }
-                        return true;
-                    }
-                });
-
-                icm.addItem(MenuID.MI_SELECT_PATH, "select_folder");
-                icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
-                icm.Show();
-
-                return true;
-            }
-
+                    }));
+            icm.addMenuItem("ClearPath", null, () -> {
+                settingFolder.setValue(settingFolder.getDefaultValue());
+                resortList();
+            });
+            icm.Show();
+            return true;
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
-
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            MessageBox.show(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener);
+            return false;
         });
 
         return item;
 
     }
 
-    private CB_View_Base getFileView(final SettingFile SB, int backgroundChanger) {
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+    private CB_View_Base getFileView(final SettingFile settingFile, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, settingFile.getName());
 
-        item.setName(Translation.get(SB.getName()));
-        item.setDefault(SB.getValue());
+        item.setName(Translation.get(settingFile.getName()));
+        item.setDefault(settingFile.getValue());
 
-        item.setOnClickListener(new OnClickListener() {
+        item.setOnClickListener((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(settingFile);
+            File file = FileFactory.createFile(settingFile.getValue());
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
-                File file = FileFactory.createFile(SB.getValue());
+            final String Path = (file.getParent() != null) ? file.getParent() : "";
 
-                final String Path = (file.getParent() != null) ? file.getParent() : "";
+            Menu icm = new Menu("FileactionMenu");
 
-                Menu icm = new Menu("FileactionMenu");
-                icm.addOnItemClickListener(new OnClickListener() {
-
-                    @Override
-                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                        switch (((MenuItem) v).getMenuItemId()) {
-                            case MenuID.MI_SELECT_PATH:
-                                PlatformConnector.getFile(Path, SB.getExt(), Translation.get("select_file"), Translation.get("select"), new IgetFileReturnListener() {
-                                    @Override
-                                    public void returnFile(String Path) {
-                                        SB.setValue(Path);
-                                        resortList();
-                                    }
-                                });
-                                return true;
-
-                            case MenuID.MI_CLEAR_PATH:
-                                SB.setValue("");
-                                resortList();
-                                return true;
-                        }
-                        return true;
-                    }
-                });
-
-                icm.addItem(MenuID.MI_SELECT_PATH, "select_file");
-                icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
-                icm.Show();
-                return true;
-            }
-
+            icm.addMenuItem("select_file", null,
+                    () -> PlatformConnector.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), Path1 -> {
+                        settingFile.setValue(Path1);
+                        resortList();
+                    }));
+            icm.addMenuItem("ClearPath", null, () -> {
+                settingFile.setValue("");
+                resortList();
+            });
+            icm.Show();
+            return true;
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
-
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            MessageBox.show(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener);
+            return false;
         });
 
         return item;

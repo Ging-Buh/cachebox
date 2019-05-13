@@ -9,19 +9,16 @@ import CB_UI.GL_UI.Activitys.*;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
@@ -94,80 +91,53 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
         Menu icm = new Menu("CacheListShowImportMenu");
-
-        icm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MI_CHK_STATE_API:
-                    GL.that.postAsync(() -> {
-                        // First check API-Key with visual Feedback
-                        Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
-                        GlobalCore.chkAPiLogInWithWaitDialog(isAccessTokenInvalid -> {
-                            Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
-                            if (!isAccessTokenInvalid) {
-                                TimerTask tt = new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        GL.that.postAsync(() -> new Action_chkState().Execute());
-                                    }
-                                };
-                                Timer t = new Timer();
-                                t.schedule(tt, 100);
-                            }
-                        });
-                    });
-                    return true;
-                case MI_IMPORT:
-                    GL.that.postAsync(() -> new Import().show());
-                    return true;
-                case MI_IMPORT_GS_API_POSITION:
-                    new SearchOverPosition().show();
-                    return true;
-                case MI_IMPORT_GS_API_SEARCH:
-                    SearchOverNameOwnerGcCode.ShowInstanz();
-                    return true;
-                case MI_IMPORT_GCV:
-                    new Import(MI_IMPORT_GCV).show();
-                    return true;
-                case MI_EXPORT_CBS:
-                    new Import_CBServer().show();
-                    return true;
-                case MI_EXPORT_RUN:
-                    StringInputBox.Show(WrapType.SINGLELINE, Translation.get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
+        icm.addMenuItem("chkState", null, () -> GL.that.postAsync(() -> {
+            // Sprites.getSprite(IconName.dayGcLiveIcon.name())
+            // First check API-Key with visual Feedback
+            Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
+            GlobalCore.chkAPiLogInWithWaitDialog(isAccessTokenInvalid -> {
+                Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
+                if (!isAccessTokenInvalid) {
+                    TimerTask tt = new TimerTask() {
                         @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == 1) {
-                                final String FileName = StringInputBox.editText.getText();
-                                GL.that.RunOnGL(() -> ExportgetFolderStep(FileName));
-                            }
-                            return true;
+                        public void run() {
+                            GL.that.postAsync(() -> new Action_chkState().Execute());
                         }
-                    });
-                    return true;
-                case MI_IMPORT_GSAK:
-                    new Import_GSAK().show();
-                    return true;
-            }
-            return true;
-        });
-        icm.addItem(MI_CHK_STATE_API, "chkState"); // , Sprites.getSprite(IconName.dayGcLiveIcon.name())
-        icm.addItem(MI_IMPORT, "moreImport");
-        icm.addItem(MI_IMPORT_GS_API_POSITION, "importCachesOverPosition"); // "import"
-        icm.addItem(MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
-        icm.addItem(MI_IMPORT_GCV, "GCVoteRatings");
-        icm.addItem(MI_IMPORT_GSAK, "GSAKMenuImport");
+                    };
+                    Timer t = new Timer();
+                    t.schedule(tt, 100);
+                }
+            });
+        }));
+        icm.addMenuItem("moreImport", null, () -> GL.that.postAsync(() -> new Import().show()));
+        icm.addMenuItem("importCachesOverPosition", null, () -> new SearchOverPosition().show()); // "import"
+        icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", null, SearchOverNameOwnerGcCode::ShowInstanz);
+        icm.addMenuItem("GCVoteRatings", null, () -> new Import(MI_IMPORT_GCV).show());
+        icm.addMenuItem("GSAKMenuImport", null, () -> new Import_GSAK().show());
         icm.addDivider();
-        icm.addItem(MI_EXPORT_RUN, "GPX_EXPORT");
-        if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MI_EXPORT_CBS, "ToCBServer");
+        icm.addMenuItem("GPX_EXPORT", null, () -> {
+            StringInputBox.Show(WrapType.SINGLELINE,
+                    Translation.get("enterFileName"),
+                    Translation.get("GPX_EXPORT"),
+                    FileIO.GetFileName(Config.gpxExportFileName.getValue()),
+                    (which, data) -> {
+                        if (which == 1) {
+                            final String FileName = StringInputBox.editText.getText();
+                            GL.that.RunOnGL(() -> ExportgetFolderStep(FileName));
+                        }
+                        return true;
+                    });
+        });
+        if (Config.CBS_IP.getValue().length() > 0)
+            icm.addMenuItem("ToCBServer", null, () -> new Import_CBServer().show());
         return icm;
     }
 
     private void ExportgetFolderStep(final String FileName) {
-        PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()), Translation.get("selectExportFolder".hashCode()), Translation.get("select".hashCode()), new IgetFolderReturnListener() {
-            @Override
-            public void returnFolder(final String Path) {
-                GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path));
-            }
-        });
+        PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()),
+                Translation.get("selectExportFolder".hashCode()),
+                Translation.get("select".hashCode()),
+                Path -> GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path)));
     }
 
     private void ausgebenDatei(final String FileName, String Path) {
