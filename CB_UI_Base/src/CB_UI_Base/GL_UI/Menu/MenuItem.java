@@ -244,7 +244,6 @@ public class MenuItem extends MenuItemBase {
     }
 
     public void setChecked(boolean checked) {
-        mIsCheckable = true;
         mIsChecked = checked;
         this.resetInitial();
     }

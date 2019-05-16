@@ -336,8 +336,8 @@ public class CB_Button extends Button {
             }
             mi.setEnabled(action.getEnabled() && aktActionView != action);
             // mi.setVisible(aktActionView != action); // there will be a hole
-            mi.setChecked(action.getIsChecked());
             mi.setCheckable(action.getIsCheckable());
+            mi.setChecked(action.getIsChecked());
             Sprite icon = action.getIcon();
             if (icon != null)
                 mi.setIcon(new SpriteDrawable(action.getIcon()));

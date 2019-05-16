@@ -100,6 +100,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
             }
             return true;
         });
+        mi.setCheckable(true);
         mi.setChecked(true);
         if (!FilterInstances.isLastFilterSet())
             mi.setCheckable(false);
@@ -138,6 +139,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
             });
             return true;
         });
+        mi.setCheckable(true);
         mi.setChecked(true); // default is to mark as Favorite
         cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> Action_SelectDBDialog.getInstance().Execute());
         mi = cm.addMenuItem("AutoResort", null, () -> {
@@ -148,6 +150,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                 }
             }
         });
+        mi.setCheckable(true);
         mi.setChecked(GlobalCore.getAutoResort());
         cm.addMenuItem("MI_NEW_CACHE", Sprites.getSprite(IconName.addCacheIcon.name()), () -> {
             if (editCache == null) editCache = new EditCache();

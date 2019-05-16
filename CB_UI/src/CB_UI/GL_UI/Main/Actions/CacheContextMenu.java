@@ -69,6 +69,7 @@ public class CacheContextMenu {
             CacheListChangedEventList.Call();
         });
         mi.setEnabled(selectedCacheIsSet);
+        mi.setCheckable(true);
         mi.setChecked(selectedCacheIsSet && GlobalCore.getSelectedCache().isFavorite());
         cacheContextMenu.addMenuItem("AddToWatchList", null, () -> {
             if (GlobalCore.isSetSelectedCache()) {

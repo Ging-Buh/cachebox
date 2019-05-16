@@ -59,7 +59,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private static final int STOP = 3;
     private static CB_Action_ShowMap that;
     public MapView normalMapView;
-    private int menuID;
     private Menu mRenderThemesSelectionMenu;
     private OptionMenu menuMapElements;
     private HashMap<String, String> RenderThemes;
@@ -241,6 +240,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             icm.tickCheckBoxes((MenuItem) v);
                             return true;
                         });
+                mi.setCheckable(true);
                 mi.setChecked(layer == MapView.mapTileLoader.getCurrentOverlayLayer());
                 mi.setData(layer);
             }
@@ -316,13 +316,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private boolean showModusSelectionMenu() {
-        final OptionMenu lRenderThemesMenu = new OptionMenu("MapViewThemeMenuTitle");
-        lRenderThemesMenu.setSingleSelection();
-        lRenderThemesMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(0));
-        lRenderThemesMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(1));
-        lRenderThemesMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(2));
-        lRenderThemesMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(3));
-        lRenderThemesMenu.Show();
+        final OptionMenu menuRenderThemes = new OptionMenu("MapViewThemeMenuTitle");
+        menuRenderThemes.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(0));
+        menuRenderThemes.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(1));
+        menuRenderThemes.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(2));
+        menuRenderThemes.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(3));
+        menuRenderThemes.Show();
         return true;
     }
 
@@ -386,9 +385,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     private void showStyleSelection(int which, String selected) {
         String theTheme = RenderThemes.get(selected);
-        final Menu menuStyle = new Menu("Style");
+        final Menu menuStyle = new Menu("Styles");
 
-        int menuID = 0;
         // getThemeStyles works only for External Themes
         // Internal Themes have no XmlRenderThemeMenuCallback
         HashMap<String, String> ThemeStyles = getThemeStyles(theTheme);
@@ -462,6 +460,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 }
                 clickedItem.setData(clickedValues[0] + "|" + clickedValues[1] + "|" + clickedValues[2] + "|" + clickedValues[3]);
                 menuStyleOverlay.setData(concatValues(clickedValues, menuStyleOverlay));
+                menuStyleOverlay.tickCheckBoxes(clickedItem);
                 menuStyleOverlay.Show();
                 return true;
             }); // ohne Translation
@@ -477,6 +476,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             else
                 overlayID = "-" + overlayID.substring(1);
             mi.setData(values + "|" + overlayID);
+            mi.setCheckable(true);
             mi.setChecked(overlayEnabled);
         }
 

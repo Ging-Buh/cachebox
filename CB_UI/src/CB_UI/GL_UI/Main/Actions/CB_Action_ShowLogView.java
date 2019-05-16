@@ -99,6 +99,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
                 LogView.getInstance().resetInitial();
             });
+            mi.setCheckable(true);
             mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);

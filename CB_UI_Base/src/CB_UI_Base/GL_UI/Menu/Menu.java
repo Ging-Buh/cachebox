@@ -199,8 +199,8 @@ public class Menu extends ButtonDialog {
                 for (MenuItemBase item : mItems) {
                     higherValue += item.getHeight() + mListView.getDividerHeight();
                 }
-                if (higherValue > UI_Size_Base.that.getWindowHeight() - 2 * UI_Size_Base.that.getButtonHeight()) {
-                    higherValue = UI_Size_Base.that.getWindowHeight() - 2 * UI_Size_Base.that.getButtonHeight();
+                if (higherValue > UI_Size_Base.that.getWindowHeight() - UI_Size_Base.that.getButtonHeight()) {
+                    higherValue = UI_Size_Base.that.getWindowHeight() - UI_Size_Base.that.getButtonHeight();
                 }
                 float MenuWidth = GL_UISizes.UI_Left.getWidth();
                 this.setSize(MenuWidth, higherValue);
@@ -332,21 +332,23 @@ public class Menu extends ButtonDialog {
     }
 
     public void tickCheckBoxes(MenuItem clickedItem) {
-        // for update the presentation (without recreating the menu)
-        if (singleSelection) {
-            boolean newCheck = !clickedItem.isChecked();
-            // only one item can be checked : remove all checks
-            for (MenuItemBase smi : this.mItems) {
-                if (smi instanceof MenuItem) {
-                    MenuItem tmi = (MenuItem) smi;
-                    if (tmi.isChecked()) {
-                        tmi.setChecked(false);
+        if (clickedItem.mIsCheckable) {
+            // for update the presentation (without recreating the menu)
+            if (singleSelection) {
+                boolean newCheck = !clickedItem.isChecked();
+                // only one item can be checked : remove all checks
+                for (MenuItemBase smi : this.mItems) {
+                    if (smi instanceof MenuItem) {
+                        MenuItem tmi = (MenuItem) smi;
+                        if (tmi.isChecked()) {
+                            tmi.setChecked(false);
+                        }
                     }
                 }
+                clickedItem.setChecked(newCheck); // toggle clicked item
+            } else {
+                clickedItem.toggleCheck();
             }
-            clickedItem.setChecked(newCheck); // toggle clicked item
-        } else {
-            clickedItem.toggleCheck();
         }
     }
 
@@ -354,8 +356,8 @@ public class Menu extends ButtonDialog {
         return addMenuItem(titleTranlationId, addUnTranslatedPart, icon,
                 (v, x, y, pointer, button) -> {
                     if (autoClose) close();
-                    runnable.run();
                     tickCheckBoxes((MenuItem) v);
+                    runnable.run();
                     return true;
                 });
     }
@@ -366,6 +368,7 @@ public class Menu extends ButtonDialog {
 
     public MenuItem addCheckableMenuItem(String titleTranlationId, boolean checked, Runnable runnable) {
         MenuItem item = addMenuItem(titleTranlationId, null, runnable);
+        item.setCheckable(true);
         item.setChecked(checked);
         return item;
     }
