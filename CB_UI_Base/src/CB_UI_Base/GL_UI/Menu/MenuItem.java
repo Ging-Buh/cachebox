@@ -53,7 +53,7 @@ public class MenuItem extends MenuItemBase {
     }
 
     public void toggleCheck() {
-        if (isCheckable()) {
+        if (mIsCheckable) {
             mIsChecked = !mIsChecked;
 
             Drawable drawable = null;
@@ -244,12 +244,9 @@ public class MenuItem extends MenuItemBase {
     }
 
     public void setChecked(boolean checked) {
+        mIsCheckable = true;
         mIsChecked = checked;
         this.resetInitial();
-    }
-
-    public boolean isCheckable() {
-        return mIsCheckable;
     }
 
     public void setCheckable(boolean isCheckable) {

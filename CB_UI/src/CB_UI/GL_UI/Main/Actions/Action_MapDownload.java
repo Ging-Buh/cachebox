@@ -5,13 +5,13 @@ import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Sprites;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import static CB_UI_Base.GL_UI.Menu.MenuID.MI_MAP_DOWNOAD;
+import static CB_UI_Base.GL_UI.Menu.MenuID.AID_MAP_DOWNOAD;
 
 public class Action_MapDownload extends AbstractAction {
     private static Action_MapDownload that;
 
     private Action_MapDownload() {
-        super("MapDownload", MI_MAP_DOWNOAD);
+        super("MapDownload", AID_MAP_DOWNOAD);
     }
 
     public static Action_MapDownload getInstance() {

@@ -89,7 +89,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     }
 
     private void createContextMenu() {
-        contextMenu = new Menu("LogbookContextMenu");
+        contextMenu = new Menu("LogListViewContextMenuTitle");
 
         MenuItem mi;
         contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), () -> loadLogs(true));
@@ -99,7 +99,6 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
                 LogView.getInstance().resetInitial();
             });
-            mi.setCheckable(true);
             mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);

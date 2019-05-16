@@ -68,7 +68,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        Menu cm = new Menu("CacheListContextMenu");
+        Menu cm = new Menu("CacheListViewTitle");
 
         String DBName = Config.DatabaseName.getValue();
         try {
@@ -87,7 +87,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                 CacheListView.getInstance().setSelectedCacheVisible();
             }
         });
-        mi = cm.addMenuItem("setOrResetFilter", Sprites.getSprite(IconName.filter.name()), (v, x, y, pointer, button) -> {
+        mi = cm.addMenuItem("setOrResetFilter", "", Sprites.getSprite(IconName.filter.name()), (v, x, y, pointer, button) -> {
+            cm.close();
             boolean checked = ((MenuItem) v).isChecked();
             if (((MenuItem) v).isCheckboxClicked(x))
                 checked = !checked;
@@ -99,7 +100,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
             }
             return true;
         });
-        mi.setCheckable(true);
         mi.setChecked(true);
         if (!FilterInstances.isLastFilterSet())
             mi.setCheckable(false);
@@ -111,6 +111,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         });
         cm.addMenuItem("importExport", Sprites.getSprite(IconName.importIcon.name()), () -> CB_Action_ShowImportMenu.getInstance().Execute());
         mi = cm.addMenuItem("setOrResetFavorites", "", Sprites.getSprite(IconName.favorit.name()), (v, x, y, pointer, button) -> {
+            cm.close();
             boolean checked = ((MenuItem) v).isChecked();
             if (((MenuItem) v).isCheckboxClicked(x))
                 checked = !checked;
@@ -137,7 +138,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
             });
             return true;
         });
-        mi.setCheckable(true);
         mi.setChecked(true); // default is to mark as Favorite
         cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> Action_SelectDBDialog.getInstance().Execute());
         mi = cm.addMenuItem("AutoResort", null, () -> {
@@ -148,7 +148,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                 }
             }
         });
-        mi.setCheckable(true);
         mi.setChecked(GlobalCore.getAutoResort());
         cm.addMenuItem("MI_NEW_CACHE", Sprites.getSprite(IconName.addCacheIcon.name()), () -> {
             if (editCache == null) editCache = new EditCache();

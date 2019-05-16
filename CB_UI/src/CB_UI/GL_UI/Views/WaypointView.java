@@ -48,13 +48,6 @@ import CB_Utils.Math.Point;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent {
     private static final String log = "WaypointView";
-    private static final int MI_EDIT = 0;
-    private static final int MI_ADD = 1;
-    private static final int MI_DELETE = 2;
-    private static final int MI_PROJECTION = 3;
-    private static final int MI_FROM_GPS = 4;
-    private static final int MI_WP_SHOW = 5;
-    private static final int MI_UploadCorrectedCoordinates = 6;
     private static WaypointView that;
     private Waypoint aktWaypoint = null;
     private Cache aktCache = null;
@@ -166,58 +159,31 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     }
 
     public Menu getContextMenu() {
-        Menu cm = new Menu("WayPointContextMenu");
-
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MI_ADD:
-                    addWP();
-                    return true;
-                case MI_WP_SHOW:
-                    editWP(false);
-                    return true;
-                case MI_EDIT:
-                    editWP(true);
-                    return true;
-                case MI_DELETE:
-                    deleteWP();
-                    return true;
-                case MI_PROJECTION:
-                    addProjection();
-                    return true;
-                case MI_FROM_GPS:
-                    addMeasure();
-                    return true;
-                case MI_UploadCorrectedCoordinates:
-                    GL.that.postAsync(() -> {
-                        if (aktCache.hasCorrectedCoordinates())
-                            GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.Pos);
-                        else if (aktWaypoint.isCorrectedFinal())
-                            GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
-                        if (GroundspeakAPI.APIError == 0) {
-                            MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                        } else {
-                            MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                        }
-
-                    });
-                    return true;
-            }
-            return false;
-        });
-
+        Menu cm = new Menu("WaypointViewContextMenuTitle");
         if (aktWaypoint != null)
-            cm.addItem(MI_WP_SHOW, "show");
+            cm.addMenuItem("show", null, () -> editWP(false));
         if (aktWaypoint != null)
-            cm.addItem(MI_EDIT, "edit");
-        cm.addItem(MI_ADD, "AddWaypoint");
+            cm.addMenuItem("edit", null, () -> editWP(true));
+        cm.addMenuItem("AddWaypoint", null, this::addWP);
         if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint))
-            cm.addItem(MI_DELETE, "delete");
+            cm.addMenuItem("delete", null, this::deleteWP);
         if (aktWaypoint != null || aktCache != null)
-            cm.addItem(MI_PROJECTION, "Projection");
-        MenuItem mi = cm.addItem(MI_UploadCorrectedCoordinates, "UploadCorrectedCoordinates");
+            cm.addMenuItem("Projection", null, this::addProjection);
+        MenuItem mi = cm.addMenuItem("UploadCorrectedCoordinates", null, () -> {
+            GL.that.postAsync(() -> {
+                if (aktCache.hasCorrectedCoordinates())
+                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.Pos);
+                else if (aktWaypoint.isCorrectedFinal())
+                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
+                if (GroundspeakAPI.APIError == 0) {
+                    MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                } else {
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                }
+            });
+        });
         mi.setEnabled(aktCache.hasCorrectedCoordinates() || (aktWaypoint != null && aktWaypoint.isCorrectedFinal()));
-        cm.addItem(MI_FROM_GPS, "FromGps");
+        cm.addMenuItem("FromGps", null, this::addMeasure);
 
         return cm;
     }

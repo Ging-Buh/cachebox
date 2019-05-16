@@ -22,86 +22,6 @@ package CB_UI_Base.GL_UI.Menu;
  * @author Longri
  */
 public class MenuID {
-    // SolverView2
-    public static final int MI_CHANGE_LINE = 5;
-    public static final int MI_DELETE_LINE = 6;
-    public static final int MI_INSERT_LINE = 7;
-    public static final int MI_SET_AS_WAYPOINT = 8;
-    public static final int MI_SET_AS_MAPCENTER = 9;
-
-    // DraftsView
-    public static final int MI_FOUND = 10;
-    public static final int MI_NOT_FOUND = 11;
-    public static final int MI_MAINTANCE = 12;
-    public static final int MI_NOTE = 13;
-    // public static final int MI_MANAGE = 14;
-    public static final int MI_UPLOAD_DRAFT = 15;
-    public static final int MI_DELETE_ALL_DRAFTS = 16;
-    public static final int MI_DELETE_DRAFT = 17;
-    public static final int MI_EDIT_DRAFT = 18;
-    public static final int MI_SELECT_CACHE = 19;
-
-    public static final int MI_ALIGN_TO_COMPSS = 35;
-
-    public static final int MI_TREC_REC = 38;
-    public static final int MI_HIDE_FINDS = 39;
-    public static final int MI_SHOW_RATINGS = 40;
-    public static final int MI_SHOW_DT = 41;
-    public static final int MI_SHOW_TITLE = 42;
-    public static final int MI_SHOW_DIRECT_LINE = 43;
-    public static final int MI_MAPVIEW_VIEW = 44;
-
-    // CB_Action_ShowTrackListView
-    public static final int MI_GENERATE = 46;
-    public static final int MI_RENAME = 47;
-    public static final int MI_LOAD = 48;
-    public static final int MI_SAVE = 49;
-    public static final int MI_DELETE_TRACK = 50;
-    public static final int MI_P2P = 51;
-    public static final int MI_PROJECT = 52;
-    public static final int MI_CIRCLE = 53;
-
-    // CB_Action_ShowCacheList
-    public static final int MI_MANAGE_DB = 57;
-    public static final int MI_AUTO_RESORT = 58;
-    public static final int MI_RESORT = 59;
-    public static final int MI_FilterSet = 60;
-    public static final int MI_SEARCH_LIST = 61;
-    public static final int MI_CB_Action_chkState = 63;
-
-    // CB_Action_RecTrack
-    public static final int MI_START = 64;
-    public static final int MI_PAUSE = 65;
-    public static final int MI_STOP = 66;
-
-    // CB_Action_QuickDraft
-    public static final int MI_QUICK_FOUND = 67;
-    public static final int MI_QUICK_NOT_FOUND = 68;
-
-    // SettingsActivity
-    public static final int MI_SHOW_EXPERT = 69;
-    public static final int MI_SHOW_ALL = 70;
-
-    //
-    public static final int MI_START_WITHOUT_SELECTION = 71;
-    public static final int MI_AUTO_START_DISABLED = 72;
-    public static final int MI_5 = 73;
-    public static final int MI_10 = 74;
-    public static final int MI_25 = 75;
-    public static final int MI_60 = 76;
-
-    //
-    public static final int MI_LAYER = 77;
-    public static final int MI_SETTINGS_MAP = 78;
-    public static final int MI_ROTATE = 79;
-    public static final int MI_CENTER_WP = 80;
-
-    public static final int MI_SHOW_ALL_WAYPOINTS = 81;
-
-    // Action IDs
-
-    public static final int AID_TEST_VIEW = -1;
-
     public static final int AID_SHOW_MAP = 100;
     public static final int AID_SHOW_HINT = 101;
     public static final int AID_SHOW_CACHELIST = 102;
@@ -126,77 +46,18 @@ public class MenuID {
     public static final int AID_SEARCH = 132;
     public static final int AID_AUTO_RESORT = 133;
     public static final int AID_SHOW_SELECT_DB_DIALOG = 134;
-    public static final int AID_SHOW_TRACK_MENU = 135;
     public static final int AID_SHOW_QUIT = 136;
     public static final int AID_QUICK_DRAFT = 137;
     public static final int AID_CHK_STATE = 138;
     public static final int AID_SHOW_PARKING_DIALOG = 140;
     public static final int AID_SHOW_DELETE_DIALOG = 141;
-
     public static final int AID_HELP = 209;
-    public static final int MI_RENDERTHEMES = 210;
-    public static final int AID_GetFriends = 211;
     public static final int AID_MAIL = 212;
-
-    // Compass
-    public static final int MI_COMPASS_SHOW_MAP = 142;
-    public static final int MI_COMPASS_SHOW_NAME = 143;
-    public static final int MI_COMPASS_SHOW_ICON = 144;
-    public static final int MI_COMPASS_SHOW_ATTRIBUTES = 145;
-    public static final int MI_COMPASS_SHOW_GC_CODE = 146;
-    public static final int MI_COMPASS_SHOW_COORDS = 147;
-    public static final int MI_COMPASS_SHOW_WP_DESC = 148;
-    public static final int MI_COMPASS_SHOW_SAT_INFO = 149;
-    public static final int MI_COMPASS_SHOW_SUN_MOON = 150;
-    public static final int MI_COMPASS_SHOW_TARGET_DIRECTION = 151;
-    public static final int MI_COMPASS_SHOW_S_D_T = 152;
-    public static final int MI_COMPASS_SHOW_LAST_FOUND = 153;
-
-    public static final int MI_COMPASS_SHOW = 155;
-    public static final int MI_RELOAD_SPOILER = 156;
-    public static final int MI_SHOW_ACCURACY_CIRCLE = 157;
-    public static final int MI_MAP_SHOW_INFO = 158;
-
     public static final int AID_SHOW_FILTER_DIALOG = 159;
-
-    public static final int MI_NEW_CACHE = 161;
-    public static final int MI_MAPVIEW_OVERLAY_VIEW = 162;
-
-    public static final int MI_TB_DISCOVERED = 166;
-    public static final int MI_TB_PICKED = 168;
-    public static final int MI_TB_GRABBED = 170;
-    public static final int MI_SELECT_PATH = 172;
-    public static final int MI_CLEAR_PATH = 173;
-    public static final int MI_SHOW_CENTERCROSS = 174;
-    public static final int MI_START_PICTUREAPP = 175;
-
     public static final int AID_ADD_WP = 176;
     public static final int AID_UPLOAD_DRAFT = 177;
-
-    public static final int MI_ENABLED = 178;
-    public static final int MI_TEMPORARILY_DISABLED = 179;
-    public static final int MI_OWNER_MAINTENANCE = 180;
-    public static final int MI_ATTENDED = 181;
-    public static final int MI_WEBCAM_FOTO_TAKEN = 182;
-    public static final int MI_REVIEWER_NOTE = 183;
-    public static final int MI_WILL_ATTENDED = 184;
-    public static final int MI_SYNC = 186;
-
-    // Rpc
-    public static final int MI_RpcGetExportList = 187;
-
     public static final int AID_SHOW_IMPORT_MENU = 188;
-
-    // CB_Action_ShowMap
-    public static final int MI_MAP_DOWNOAD = 199;
-
-    public static final int AID_LOADLOGS = 200;
-
+    public static final int AID_MAP_DOWNOAD = 199;
     public static final int AID_TORCH = 204;
-    public static final int MI_ADD_MISSING_VARIABLES = 205;
-
-    public static final int AID_SWITCH_DESCRIPTION = 206;
     public static final int AID_SHOW_DescExt = 207;
-
-    public static final int MI_SHOW_AT_ORIGINAL_POSITION = 208;
 }

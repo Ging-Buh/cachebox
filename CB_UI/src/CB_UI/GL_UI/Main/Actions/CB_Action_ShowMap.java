@@ -30,8 +30,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.*;
 import CB_UI_Base.GL_UI.Sprites;
@@ -63,7 +61,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     public MapView normalMapView;
     private int menuID;
     private Menu mRenderThemesSelectionMenu;
-    private OptionMenu mapElementsMenu;
+    private OptionMenu menuMapElements;
+    private HashMap<String, String> RenderThemes;
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -103,7 +102,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        Menu icm = new Menu("menu_mapviewgl");
+        Menu icm = new Menu("MapViewContextMenuTitle");
         icm.addMenuItem("Layer", null, this::showMapLayerMenu);
         MenuItem mi = icm.addMenuItem("Renderthemes", null, this::showModusSelectionMenu);
         if (LocatorSettings.RenderThemesFolder.getValue().length() == 0) {
@@ -118,12 +117,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private void showMapLayerMenu() {
-        Menu icm = new Menu("MapViewShowLayerContextMenu");
+        Menu icm = new Menu("MapViewLayerMenuTitle");
 
         // Sorting (perhaps use an arraylist of layers without the overlay layers)
         Collections.sort(ManagerBase.Manager.getLayers(), (layer1, layer2) -> layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase()));
 
-        int menuID = 0;
         String[] curentLayerNames = MapView.mapTileLoader.getCurrentLayer().getNames();
         for (Layer layer : ManagerBase.Manager.getLayers()) {
             if (!layer.isOverlay()) {
@@ -145,9 +143,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         break;
                 }
 
-                MenuItem mi = icm.addMenuItem(layer.Name, "",
+                MenuItem mi = icm.addMenuItem("", layer.Name,
                         (sprite == null) ? null : new SpriteDrawable(sprite),
                         (v, x, y, pointer, button) -> {
+                            icm.close();
                             Layer layer1 = (Layer) v.getData();
                             selectLayer(layer1);
                             showLanguageSelectionMenu(layer1);
@@ -155,7 +154,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         }); // == friendlyName == FileName !!! ohne Translation
                 mi.setData(layer);
                 mi.setCheckable(true);
-
                 for (String str : curentLayerNames) {
                     if (str.equals(layer.Name)) {
                         mi.setChecked(true);
@@ -212,6 +210,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                     lsm.setTitle("Sprachauswahl");
                     for (String lang : layer.languages) {
                         lsm.addMenuItem("", lang, null, (v, x, y, pointer, button) -> {
+                            lsm.close();
                             String selectedLanguage = ((MenuItem) v).getTitle();
                             Config.PreferredMapLanguage.setValue(selectedLanguage);
                             Config.AcceptChanges();
@@ -226,10 +225,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private void showMapOverlayMenu() {
-        final OptionMenu icm = new OptionMenu("icm");
+        final OptionMenu icm = new OptionMenu("MapViewOverlayMenuTitle");
+        icm.setSingleSelection();
         for (Layer layer : ManagerBase.Manager.getLayers()) {
             if (layer.isOverlay()) {
-                MenuItem mi = icm.addCheckableMenuItem(layer.FriendlyName, layer == MapView.mapTileLoader.getCurrentOverlayLayer(),
+                MenuItem mi = icm.addMenuItem(layer.FriendlyName, "", null,
                         (v, x, y, pointer, button) -> {
                             Layer layer1 = (Layer) v.getData();
                             if (layer1 == MapView.mapTileLoader.getCurrentOverlayLayer()) {
@@ -238,11 +238,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             } else {
                                 normalMapView.SetCurrentOverlayLayer(layer1);
                             }
-                            // Refresh menu
-                            icm.close();
-                            showMapOverlayMenu();
+                            icm.tickCheckBoxes((MenuItem) v);
                             return true;
                         });
+                mi.setChecked(layer == MapView.mapTileLoader.getCurrentOverlayLayer());
                 mi.setData(layer);
             }
         }
@@ -250,38 +249,34 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private void showMapViewLayerMenu() {
-        mapElementsMenu = new OptionMenu("MapViewShowLayerContextMenu");
-        mapElementsMenu.addCheckableMenuItem("ShowAtOriginalPosition", Config.ShowAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Config.ShowAtOriginalPosition));
-        mapElementsMenu.addCheckableMenuItem("HideFinds", Config.MapHideMyFinds.getValue(), () -> toggleSettingWithReload(Config.MapHideMyFinds));
-        mapElementsMenu.addCheckableMenuItem("MapShowInfoBar", Config.MapShowInfo.getValue(), () -> toggleSetting(Config.MapShowInfo));
-        mapElementsMenu.addCheckableMenuItem("ShowAllWaypoints", Config.ShowAllWaypoints.getValue(), () -> toggleSetting(Config.ShowAllWaypoints));
-        mapElementsMenu.addCheckableMenuItem("ShowRatings", Config.MapShowRating.getValue(), () -> toggleSetting(Config.MapShowRating));
-        mapElementsMenu.addCheckableMenuItem("ShowDT", Config.MapShowDT.getValue(), () -> toggleSetting(Config.MapShowDT));
-        mapElementsMenu.addCheckableMenuItem("ShowTitle", Config.MapShowTitles.getValue(), () -> toggleSetting(Config.MapShowTitles));
-        mapElementsMenu.addCheckableMenuItem("ShowDirectLine", Config.ShowDirektLine.getValue(), () -> toggleSetting(Config.ShowDirektLine));
-        mapElementsMenu.addCheckableMenuItem("MenuTextShowAccuracyCircle", Config.ShowAccuracyCircle.getValue(), () -> toggleSetting(Config.ShowAccuracyCircle));
-        mapElementsMenu.addCheckableMenuItem("ShowCenterCross", Config.ShowMapCenterCross.getValue(), () -> toggleSetting(Config.ShowMapCenterCross));
-        mapElementsMenu.Show();
+        menuMapElements = new OptionMenu("MapViewLayerMenuTitle");
+        menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Config.ShowAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Config.ShowAtOriginalPosition));
+        menuMapElements.addCheckableMenuItem("HideFinds", Config.MapHideMyFinds.getValue(), () -> toggleSettingWithReload(Config.MapHideMyFinds));
+        menuMapElements.addCheckableMenuItem("MapShowInfoBar", Config.MapShowInfo.getValue(), () -> toggleSetting(Config.MapShowInfo));
+        menuMapElements.addCheckableMenuItem("ShowAllWaypoints", Config.ShowAllWaypoints.getValue(), () -> toggleSetting(Config.ShowAllWaypoints));
+        menuMapElements.addCheckableMenuItem("ShowRatings", Config.MapShowRating.getValue(), () -> toggleSetting(Config.MapShowRating));
+        menuMapElements.addCheckableMenuItem("ShowDT", Config.MapShowDT.getValue(), () -> toggleSetting(Config.MapShowDT));
+        menuMapElements.addCheckableMenuItem("ShowTitle", Config.MapShowTitles.getValue(), () -> toggleSetting(Config.MapShowTitles));
+        menuMapElements.addCheckableMenuItem("ShowDirectLine", Config.ShowDirektLine.getValue(), () -> toggleSetting(Config.ShowDirektLine));
+        menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Config.ShowAccuracyCircle.getValue(), () -> toggleSetting(Config.ShowAccuracyCircle));
+        menuMapElements.addCheckableMenuItem("ShowCenterCross", Config.ShowMapCenterCross.getValue(), () -> toggleSetting(Config.ShowMapCenterCross));
+        menuMapElements.Show();
     }
 
     private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
         Config.AcceptChanges();
         normalMapView.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
-        mapElementsMenu.close();
-        showMapViewLayerMenu();
     }
 
     private void toggleSettingWithReload(SettingBool setting) {
         setting.setValue(!setting.getValue());
         Config.AcceptChanges();
         normalMapView.setNewSettings(INITIAL_WP_LIST);
-        mapElementsMenu.close();
-        showMapViewLayerMenu();
     }
 
     private void showMenuTrackRecording() {
-        Menu cm2 = new Menu("TrackRecordContextMenu");
+        Menu cm2 = new Menu("TrackRecordMenuTitle");
         cm2.addMenuItem("start", null, TrackRecorder::StartRecording).setEnabled(!TrackRecorder.recording);
         if (TrackRecorder.pauseRecording)
             cm2.addMenuItem("continue", null, TrackRecorder::PauseRecording).setEnabled(TrackRecorder.recording);
@@ -321,50 +316,23 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private boolean showModusSelectionMenu() {
-        final Menu lRenderThemesMenu = new OptionMenu("RenderThemesMenu");
-        lRenderThemesMenu.addMenuItem("RenderThemesDay", null,
-                (v, x, y, pointer, button) -> showRenderThemesSelectionMenu(((MenuItem) v).getMenuItemId()));
-        lRenderThemesMenu.addMenuItem("RenderThemesNight", null,
-                (v, x, y, pointer, button) -> showRenderThemesSelectionMenu(((MenuItem) v).getMenuItemId()));
-        lRenderThemesMenu.addMenuItem("RenderThemesCarDay", null, (
-                v, x, y, pointer, button) -> showRenderThemesSelectionMenu(((MenuItem) v).getMenuItemId()));
-        lRenderThemesMenu.addMenuItem("RenderThemesCarNight", null,
-                (v, x, y, pointer, button) -> showRenderThemesSelectionMenu(((MenuItem) v).getMenuItemId()));
+        final OptionMenu lRenderThemesMenu = new OptionMenu("MapViewThemeMenuTitle");
+        lRenderThemesMenu.setSingleSelection();
+        lRenderThemesMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(0));
+        lRenderThemesMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(1));
+        lRenderThemesMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(2));
+        lRenderThemesMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(3));
         lRenderThemesMenu.Show();
         return true;
     }
 
-    private void addRenderTheme(String theme, String PaN, int which) {
-        MenuItem mi = mRenderThemesSelectionMenu.addItem(menuID++, "", theme); // ohne Translation
-        mi.setData(which);
-        mi.setCheckable(true);
-        String compare = ""; // Theme is saved with path
-        switch (which) {
-            case 0:
-                compare = Config.MapsforgeDayTheme.getValue();
-                break;
-            case 1:
-                compare = Config.MapsforgeNightTheme.getValue();
-                break;
-            case 2:
-                compare = Config.MapsforgeCarDayTheme.getValue();
-                break;
-            case 3:
-                compare = Config.MapsforgeCarNightTheme.getValue();
-                break;
-        }
-        if (compare.equals(PaN)) {
-            mi.setChecked(true);
-        }
-    }
-
     private boolean showRenderThemesSelectionMenu(int which) {
 
-        mRenderThemesSelectionMenu = new Menu("RenderThemesSubMenu");
-        final HashMap<String, String> RenderThemes = getRenderThemes();
-        int menuID = 0;
+        mRenderThemesSelectionMenu = new Menu("MapViewThemeMenuTitle");
+        RenderThemes = getRenderThemes();
+
         addRenderTheme(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT, which);
-        ArrayList<String> themes = new ArrayList<String>();
+        ArrayList<String> themes = new ArrayList<>();
         for (String theme : RenderThemes.keySet()) themes.add(theme);
         Collections.sort(themes, new Comparator<String>() {
             @Override
@@ -383,63 +351,82 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
         RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
 
-        mRenderThemesSelectionMenu.addOnItemClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                showStyleSelection((int) ((MenuItem) v).getData(), RenderThemes.get(((MenuItem) v).getTitle()));
-                return true;
-            }
-        });
-
         mRenderThemesSelectionMenu.Show();
         return true;
     }
 
-    private void showStyleSelection(int which, String selectedTheme) {
-        final Menu lStyle = new Menu("Style");
+    private void addRenderTheme(String theme, String PaN, int which) {
+        MenuItem mi = mRenderThemesSelectionMenu.addMenuItem("", theme, null,
+                (v, x, y, pointer, button) -> {
+                    mRenderThemesSelectionMenu.close();
+                    showStyleSelection((int) v.getData(), ((MenuItem) v).getTitle());
+                    return true;
+                }); // ohne Translation
+        mi.setData(which);
+        String compare = ""; // Theme is saved with path
+        switch (which) {
+            case 0:
+                compare = Config.MapsforgeDayTheme.getValue();
+                break;
+            case 1:
+                compare = Config.MapsforgeNightTheme.getValue();
+                break;
+            case 2:
+                compare = Config.MapsforgeCarDayTheme.getValue();
+                break;
+            case 3:
+                compare = Config.MapsforgeCarNightTheme.getValue();
+                break;
+        }
+        mi.setCheckable(true);
+        if (compare.equals(PaN)) {
+            mi.setChecked(true);
+        }
+    }
+
+    private void showStyleSelection(int which, String selected) {
+        String theTheme = RenderThemes.get(selected);
+        final Menu menuStyle = new Menu("Style");
 
         int menuID = 0;
         // getThemeStyles works only for External Themes
         // Internal Themes have no XmlRenderThemeMenuCallback
-        HashMap<String, String> ThemeStyles = getThemeStyles(selectedTheme);
+        HashMap<String, String> ThemeStyles = getThemeStyles(theTheme);
         String ThemeStyle = "";
         for (String style : ThemeStyles.keySet()) {
-            MenuItem mi = lStyle.addItem(menuID++, "", style); // ohne Translation
-            ThemeStyle = ThemeStyles.get(style);
-            mi.setData(ThemeStyle + "|" + which + "|" + selectedTheme);
-            //mi.setCheckable(true);
-        }
-
-        lStyle.addOnItemClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                MenuItem mi = (MenuItem) v;
-                String values[] = ((String) mi.getData()).split("\\|");
+            // todo addMenuItem
+            MenuItem mi = menuStyle.addMenuItem("", style, null, (v, x, y, pointer, button) -> {
+                menuStyle.close();
+                MenuItem clickedItem = (MenuItem) v;
+                String values[] = ((String) clickedItem.getData()).split("\\|");
                 HashMap<String, String> StyleOverlays = getStyleOverlays(values[2], values[0]);
                 String ConfigStyle = getStyleFromConfig(values[1]);
                 if (!ConfigStyle.startsWith(values[0])) {
                     // Config one is not for this layer
                     ConfigStyle = "";
                 }
-                showOverlaySelection((String) mi.getData(), StyleOverlays, ConfigStyle);
+                showOverlaySelection((String) clickedItem.getData(), StyleOverlays, ConfigStyle);
                 return true;
-            }
-        });
+            }); // ohne Translation
+            ThemeStyle = ThemeStyles.get(style);
+            mi.setData(ThemeStyle + "|" + which + "|" + theTheme);
+            //mi.setCheckable(true);
+        }
 
         if (ThemeStyles.size() > 1) {
-            lStyle.Show();
+            menuStyle.Show();
         } else if (ThemeStyles.size() == 1) {
-            HashMap<String, String> StyleOverlays = getStyleOverlays(selectedTheme, ThemeStyle);
+            HashMap<String, String> StyleOverlays = getStyleOverlays(theTheme, ThemeStyle);
             String ConfigStyle = getStyleFromConfig("" + which);
             if (!ConfigStyle.startsWith(ThemeStyle)) {
                 // Config one is not for this layer
                 ConfigStyle = "";
             }
-            showOverlaySelection(ThemeStyle + "|" + which + "|" + selectedTheme, StyleOverlays, ConfigStyle);
+            showOverlaySelection(ThemeStyle + "|" + which + "|" + theTheme, StyleOverlays, ConfigStyle);
         } else {
             // there is no style (p.ex. internal Theme)
             // style of Config will be ignored while setting of Theme
-            setConfig("|" + which + "|" + selectedTheme);
+            setConfig("|" + which + "|" + theTheme);
             Config.AcceptChanges();
         }
     }
@@ -463,11 +450,21 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private void showOverlaySelection(String values, HashMap<String, String> StyleOverlays, String ConfigStyle) {
-        final Menu lOverlay = new OptionMenu("StyleOverlay");
-
-        int menuID = 0;
+        final Menu menuStyleOverlay = new OptionMenu("MapViewThemeStyleMenuTitle");
         for (String overlay : StyleOverlays.keySet()) {
-            MenuItem mi = lOverlay.addItem(menuID++, "", overlay); // ohne Translation
+            MenuItem mi = menuStyleOverlay.addMenuItem( "", overlay, null, (v, x, y, pointer, button) -> {
+                MenuItem clickedItem = (MenuItem) v;
+                String clickedValues[] = ((String) clickedItem.getData()).split("\\|");
+                if (clickedItem.isChecked()) {
+                    clickedValues[3] = "+" + clickedValues[3].substring(1);
+                } else {
+                    clickedValues[3] = "-" + clickedValues[3].substring(1);
+                }
+                clickedItem.setData(clickedValues[0] + "|" + clickedValues[1] + "|" + clickedValues[2] + "|" + clickedValues[3]);
+                menuStyleOverlay.setData(concatValues(clickedValues, menuStyleOverlay));
+                menuStyleOverlay.Show();
+                return true;
+            }); // ohne Translation
             String overlayID = StyleOverlays.get(overlay);
             boolean overlayEnabled = overlayID.startsWith("+");
             if (!(ConfigStyle.indexOf(overlayID) > -1)) {
@@ -480,39 +477,18 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             else
                 overlayID = "-" + overlayID.substring(1);
             mi.setData(values + "|" + overlayID);
-            mi.setCheckable(true);
             mi.setChecked(overlayEnabled);
         }
 
-        lOverlay.addOnItemClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                MenuItem mi = (MenuItem) v;
-                String values[] = ((String) mi.getData()).split("\\|");
-                if (mi.isChecked()) {
-                    values[3] = "+" + values[3].substring(1);
-                } else {
-                    values[3] = "-" + values[3].substring(1);
-                }
-                mi.setData(values[0] + "|" + values[1] + "|" + values[2] + "|" + values[3]);
-                lOverlay.setData(concatValues(values, lOverlay));
-                lOverlay.Show();
-                return true;
-            }
-        });
-
-        lOverlay.mMsgBoxClickListener = new OnMsgBoxClickListener() {
-            @Override
-            public boolean onClick(int which, Object data) {
-                setConfig((String) data);
-                Config.AcceptChanges();
-                return true;
-            }
+        menuStyleOverlay.mMsgBoxClickListener = (which, data) -> {
+            setConfig((String) data);
+            Config.AcceptChanges();
+            return true;
         };
 
         if (StyleOverlays.size() > 0) {
-            lOverlay.setData(concatValues(values.split("\\|"), lOverlay));
-            lOverlay.Show();
+            menuStyleOverlay.setData(concatValues(values.split("\\|"), menuStyleOverlay));
+            menuStyleOverlay.Show();
         } else {
             // save the values, there is perhaps no overlay
             setConfig(values);

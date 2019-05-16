@@ -435,36 +435,30 @@ public class SelectDB extends ActivityBase {
     }
 
     private void showSelectionMenu() {
-        Menu cm = new Menu("MiscContextMenu");
+        Menu cm = new Menu("SelectDBContextMenuTitle");
         cm.addMenuItem("StartWithoutSelection", null, () -> {
             autoStartTime = -1;
             setAutoStartText();
-            cm.close();
         });
         cm.addMenuItem("AutoStartDisabled", null, () -> {
             autoStartTime = 0;
             setAutoStartText();
-            cm.close();
         });
         cm.addMenuItem("", Translation.get("AutoStartTime", "5"), null, () -> {
             autoStartTime = 5;
             setAutoStartText();
-            cm.close();
         });
         cm.addMenuItem("", Translation.get("AutoStartTime", "10"), null, () -> {
             autoStartTime = 10;
             setAutoStartText();
-            cm.close();
         });
         cm.addMenuItem("", Translation.get("AutoStartTime", "25"), null, () -> {
             autoStartTime = 25;
             setAutoStartText();
-            cm.close();
         });
         cm.addMenuItem("", Translation.get("AutoStartTime", "60"), null, () -> {
             autoStartTime = 60;
             setAutoStartText();
-            cm.close();
         });
         cm.Show();
     }

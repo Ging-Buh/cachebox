@@ -41,8 +41,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
@@ -183,45 +181,22 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
     public Menu getContextMenu() {
         Menu cm = new Menu("SolverViewItemContextMenu");
-
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_CHANGE_LINE:
-                    ChangeLine();
-                    return true;
-                case MenuID.MI_INSERT_LINE:
-                    InsertLine();
-                    return true;
-                case MenuID.MI_DELETE_LINE:
-                    DeleteLine();
-                    return true;
-                case MenuID.MI_SET_AS_WAYPOINT:
-                    SetAsWaypoint();
-                    break;
-                case MenuID.MI_SET_AS_MAPCENTER:
-                    SetAsMapCenter();
-                    break;
-                case MenuID.MI_ADD_MISSING_VARIABLES:
-                    int ii = 0;
-                    for (String s : solver.MissingVariables.keySet()) {
-                        solver.add(ii++, new SolverZeile(solver, s + "="));
-                    }
-                    for (SolverZeile zeile2 : solver) {
-                        zeile2.setText(zeile2.getOrgText());
-                        zeile2.Parse();
-                    }
-                    reloadList();
-                    break;
+        cm.addMenuItem("editLine", null, this::ChangeLine);
+        cm.addMenuItem("addLine", null, this::InsertLine);
+        cm.addMenuItem("delLine", null, this::DeleteLine);
+        cm.addMenuItem("AddWaypoint", null, this::SetAsWaypoint);
+        cm.addMenuItem("setMapCenter", null, this::SetAsMapCenter);
+        cm.addMenuItem("addMissingVariables", null, () -> {
+            int ii = 0;
+            for (String s : solver.MissingVariables.keySet()) {
+                solver.add(ii++, new SolverZeile(solver, s + "="));
             }
-            return false;
+            for (SolverZeile zeile2 : solver) {
+                zeile2.setText(zeile2.getOrgText());
+                zeile2.Parse();
+            }
+            reloadList();
         });
-
-        cm.addItem(MenuID.MI_CHANGE_LINE, "editLine");
-        cm.addItem(MenuID.MI_INSERT_LINE, "addLine");
-        cm.addItem(MenuID.MI_DELETE_LINE, "delLine");
-        cm.addItem(MenuID.MI_SET_AS_WAYPOINT, "AddWaypoint");
-        cm.addItem(MenuID.MI_SET_AS_MAPCENTER, "setMapCenter");
-        cm.addItem(MenuID.MI_ADD_MISSING_VARIABLES, "addMissingVariables");
         return cm;
     }
 

@@ -80,13 +80,13 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             icm.addMenuItem("", QuickActions.getName(item.ordinal()),
                     new SpriteDrawable(QuickActions.getActionEnumById(item.ordinal()).getIcon()),
                     (v, x, y, pointer, button) -> {
+                        icm.close();
                         QuickActions type = (QuickActions) v.getData();
                         float itemHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
                         QuickButtonItem tmp1 = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight),
                                 tmpQuickList.size(), QuickActions.getActionEnumById(type.ordinal()), QuickActions.getName(type.ordinal()), type);
                         tmpQuickList.add(tmp1);
                         reloadListViewItems();
-                        icm.close();
                         return true;
                     }).setData(item);
         }

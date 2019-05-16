@@ -41,7 +41,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_Utils.Log.Log;
@@ -94,51 +93,43 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListContextMenu");
-
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            Log.info(log, "[TrackListContextMenu] clicked " + ((MenuItem) v).getMenuItemId());
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_GENERATE:
-                    showMenuCreate();
-                    return true;
-
-                case MenuID.MI_RENAME:
-                    final TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
-
-                    StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.get("RenameTrack"), selectedTrackItem.getRoute().Name, (which, data) -> {
-                        String text = StringInputBox.editText.getText();
-                        // Behandle das ergebniss
-                        switch (which) {
-                            case 1: // ok Clicket
-                                selectedTrackItem.getRoute().Name = text;
-                                TrackListView.getInstance().notifyDataSetChanged();
-                                break;
-                            case 2: // cancel clicket
-                                break;
-                            case 3:
-                                break;
-                        }
-
-                        return true;
-                    });
-
+        cm.addMenuItem("load", null, () -> {
+            PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
+                if (Path != null) {
+                    TrackColor = RouteOverlay.getNextColor();
+                    RouteOverlay.MultiLoadRoute(Path, TrackColor);
+                    Log.debug(log, "Load Track :" + Path);
                     TrackListView.getInstance().notifyDataSetChanged();
-                    return true;
-
-                case MenuID.MI_LOAD:
-                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
-                        if (Path != null) {
-                            TrackColor = RouteOverlay.getNextColor();
-                            RouteOverlay.MultiLoadRoute(Path, TrackColor);
-                            Log.debug(log, "Load Track :" + Path);
+                }
+            });
+        });
+        cm.addMenuItem("generate", null, () -> showMenuCreate());
+        // rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
+        TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
+        if (selectedTrackItem != null && !selectedTrackItem.getRoute().IsActualTrack) {
+            cm.addMenuItem("rename", null, () -> {
+                StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.get("RenameTrack"), selectedTrackItem.getRoute().Name, (which, data) -> {
+                    String text = StringInputBox.editText.getText();
+                    switch (which) {
+                        case 1: // ok Clicket
+                            selectedTrackItem.getRoute().Name = text;
                             TrackListView.getInstance().notifyDataSetChanged();
-                        }
-                    });
+                            break;
+                        case 2: // cancel clicket
+                            break;
+                        case 3:
+                            break;
+                    }
 
                     return true;
-
-                case MenuID.MI_SAVE:
-                    PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("SaveTrack"), Translation.get("save"), new IgetFileReturnListener() {
+                });
+                TrackListView.getInstance().notifyDataSetChanged();
+            });
+            cm.addMenuItem("save", null, () -> PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(),
+                    "*.gpx",
+                    Translation.get("SaveTrack"),
+                    Translation.get("save"),
+                    new IgetFileReturnListener() {
                         TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
 
                         @Override
@@ -149,69 +140,28 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
                                 TrackListView.getInstance().notifyDataSetChanged();
                             }
                         }
-                    });
+                    }));
+            cm.addMenuItem("delete", null, () -> {
+                TrackListViewItem mTrackItem = TrackListView.getInstance().getSelectedItem();
 
-                    return true;
-
-                case MenuID.MI_DELETE_TRACK:
-                    TrackListViewItem mTrackItem = TrackListView.getInstance().getSelectedItem();
-
-                    if (mTrackItem == null) {
-                        Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "NoTrackSelected");
-                        MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, (which, data) -> {
-                            // hier brauchen wir nichts machen!
-                            return true;
-                        });
-                        return true;
-                    }
-
-                    if (mTrackItem.getRoute().IsActualTrack) {
-                        Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "IsActualTrack");
-                        MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
-                        return false;
-                    }
-
-                    Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " remove " + "selectedTrackItem");
+                if (mTrackItem == null) {
+                    MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                } else if (mTrackItem.getRoute().IsActualTrack) {
+                    MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                } else {
                     RouteOverlay.remove(mTrackItem.getRoute());
                     TrackListView.getInstance().notifyDataSetChanged();
-                    return true;
-            }
-            return false;
-        });
-
-        cm.addItem(MenuID.MI_LOAD, "load");
-        cm.addItem(MenuID.MI_GENERATE, "generate");
-        // rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
-        TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
-        if (selectedTrackItem != null && !selectedTrackItem.getRoute().IsActualTrack) {
-            cm.addItem(MenuID.MI_RENAME, "rename");
-            cm.addItem(MenuID.MI_SAVE, "save");
-            cm.addItem(MenuID.MI_DELETE_TRACK, "delete");
+                }
+            });
         }
-
         return cm;
     }
 
     private void showMenuCreate() {
         Menu cm2 = new Menu("TrackListCreateContextMenu");
-        cm2.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_P2P:
-                    GenTrackP2P();
-                    return true;
-                case MenuID.MI_PROJECT:
-                    GenTrackProjection();
-                    return true;
-                case MenuID.MI_CIRCLE:
-                    GenTrackCircle();
-                    return true;
-            }
-            return false;
-        });
-        cm2.addItem(MenuID.MI_P2P, "Point2Point");
-        cm2.addItem(MenuID.MI_PROJECT, "Projection");
-        cm2.addItem(MenuID.MI_CIRCLE, "Circle");
-
+        cm2.addMenuItem( "Point2Point",null, this::GenTrackP2P);
+        cm2.addMenuItem("Projection",null, this::GenTrackProjection);
+        cm2.addMenuItem("Circle",null, this::GenTrackCircle);
         cm2.Show();
     }
 

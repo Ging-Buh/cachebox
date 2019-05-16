@@ -683,7 +683,7 @@ public class Sprites {
         log10icon, //
         videoIcon, // QuickActions/CB_Action_ShowActivity/RecVideo, TabMainView/CB_Action_ShowActivity/RecVideo
         voiceRecIcon, // QuickActions/CB_Action_ShowActivity/VoiceRec, TabMainView/CB_Action_ShowActivity/VoiceRec
-        lupe, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_SEARCH_LIST
+        lupe, // CB_Action_ShowCacheList/getContextMenu
         filter, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_FilterSet MI_RESET_FILTER, CB_Action_ShowFilterSettings
         lockIcon, // not used
         autoSortOnIcon, // QuickButtonItem

@@ -109,8 +109,7 @@ public class ButtonDialog extends Dialog {
     }
 
     public void close() {
-        GL.that.RunOnGL(() -> GL.that.closeDialog(ButtonDialog.this));
-
+        GL.that.RunOnGL(() -> GL.that.closeDialog(this));
     }
 
     public void setButtonCaptions(MessageBoxButtons buttons) {

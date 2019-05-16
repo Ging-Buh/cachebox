@@ -35,11 +35,6 @@ import static CB_Core.Api.GroundspeakAPI.*;
 
 public class TrackableListView extends CB_View_Base {
     private static final String log = "TrackableListView";
-    private static final int MI_SEARCH = 37;
-    private static final int MI_REFRESH_TB_LIST = 165;
-    private static final int MI_TB_DROPPED = 167;
-    private static final int MI_TB_VISIT = 169;
-    private static final int MI_TB_NOTE = 171;
     public static TrackableListView that;
     private V_ListView listView;
     private CustomAdapter lvAdapter;
@@ -201,34 +196,24 @@ public class TrackableListView extends CB_View_Base {
 
     public Menu getContextMenu() {
         final Menu cm = new Menu("TBLogContextMenu");
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MI_SEARCH:
-                    searchTB();
-                    break;
-                case MI_REFRESH_TB_LIST:
-                    RefreshTbList();
-                    break;
-                case MI_TB_VISIT:
-                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
-                    break;
-                case MI_TB_DROPPED:
-                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
-                    RefreshTbList();
-                    break;
-                case MI_TB_NOTE:
-                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
-                    break;
-                default:
-                    return false;
-            }
+        cm.addMenuItem("SearchTB", Sprites.getSprite(IconName.lupe.name()), this::searchTB);
+        cm.addMenuItem( "RefreshInventory",null, this::RefreshTbList);
+        cm.addMenuItem( "all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button)->{
+            cm.close();
+            LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
             return true;
         });
-        cm.addItem(MI_SEARCH, "SearchTB", Sprites.getSprite(IconName.lupe.name()));
-        cm.addItem(MI_REFRESH_TB_LIST, "RefreshInventory");
-        cm.addItem(MI_TB_NOTE, "all_note", Sprites.getSprite(IconName.TBNOTE.name()));
-        cm.addItem(MI_TB_VISIT, "all_visit", Sprites.getSprite(IconName.TBVISIT.name()));
-        cm.addItem(MI_TB_DROPPED, "all_dropped", Sprites.getSprite(IconName.TBDROP.name()));
+        cm.addMenuItem( "all_visit", "", Sprites.getSprite(IconName.TBVISIT.name()),(v, x, y, pointer, button)->{
+            cm.close();
+            LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
+            return true;
+        });
+        cm.addMenuItem( "all_dropped", "", Sprites.getSprite(IconName.TBDROP.name()),(v, x, y, pointer, button)->{
+            cm.close();
+            LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
+            RefreshTbList();
+            return true;
+        });
         return cm;
     }
 

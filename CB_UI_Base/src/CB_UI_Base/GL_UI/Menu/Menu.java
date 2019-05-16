@@ -35,6 +35,8 @@ public class Menu extends ButtonDialog {
     public float ItemHeight = -1f;
     public ArrayList<MenuItemBase> mItems = new ArrayList<>();
     protected ArrayList<OnClickListener> mOnItemClickListeners;
+    protected boolean autoClose;
+    protected boolean singleSelection; // true: only one option can be selected
     private V_ListView mListView;
     private Menu mMoreMenu = null;
     private boolean mMoreMenuVisible = false;
@@ -55,7 +57,6 @@ public class Menu extends ButtonDialog {
     private String mMoreMenuTextLeft = "";
     private Menu mParentMenu;
     protected OnClickListener menuItemClickListener = new OnClickListener() {
-
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
             GL.that.closeDialog(Menu.this);
@@ -74,8 +75,11 @@ public class Menu extends ButtonDialog {
     private boolean mMoreMenuIsInitial = false;
     private int Level = 0;
 
-    public Menu(String Name) {
-        super(getMenuRec(), Name);
+    public Menu(String titleTranlationId) {
+        super(getMenuRec(), titleTranlationId);
+        setTitle(Translation.get(titleTranlationId));
+        autoClose = true;
+        singleSelection = false;
 
         if (ItemHeight == -1f)
             ItemHeight = UI_Size_Base.that.getButtonHeight();
@@ -85,6 +89,7 @@ public class Menu extends ButtonDialog {
         mListView.setDisposeFlag(false);
         this.addChild(mMoreMenu);
         initialDialog();
+        // setOnClickListener(...); // auf titel geklickt
     }
 
     public static CB_RectF getMenuRec() {
@@ -96,6 +101,17 @@ public class Menu extends ButtonDialog {
             MENU_REC_IsInitial = true;
         }
         return sMenuRec;
+    }
+
+    @Override
+    public void close() {
+        GL.that.closeDialog(this);
+        if (isMoreMenu)
+            GL.that.closeDialog(mParentMenu);
+    }
+
+    public void setAutoClose(boolean value) {
+        autoClose = value;
     }
 
     public void addMoreMenu(Menu menu, String TextLeft, String TextRight) {
@@ -300,74 +316,13 @@ public class Menu extends ButtonDialog {
 
     }
 
-    public void addItem(MenuItemBase menuItem) {
-        menuItem.setOnClickListener(menuItemClickListener);
-        mItems.add(menuItem);
-        mListView.notifyDataSetChanged();
-        //resetInitial();
-    }
-
-    public MenuItem addItem(int ID, String StringId) {
-        return addItem(ID, StringId, "", false);
-    }
-
-    public MenuItem addItem(int ID, String StringId, boolean withoutTranslation) {
-        return addItem(ID, StringId, "", withoutTranslation);
-    }
-
-    public MenuItem addItem(int ID, String StringId, String anhang, Sprite icon) {
-        MenuItem item = addItem(ID, StringId, anhang);
-        if (icon != null)
-            item.setIcon(new SpriteDrawable(icon));
-        return item;
-    }
-
-    public MenuItem addItem(int ID, String StringId, String anhang, Drawable icon) {
-        MenuItem item = addItem(ID, StringId, anhang);
-        if (icon != null)
-            item.setIcon(icon);
-        return item;
-    }
-
-    public MenuItem addItem(int ID, String StringId, String anhang) {
-        return addItem(ID, StringId, anhang, false);
-    }
-
-    public MenuItem addItem(int index, String text, Drawable drawable, boolean withoutTranslation) {
-        MenuItem item = addItem(index, text, "", withoutTranslation);
-        if (drawable != null)
-            item.setIcon(drawable);
-        return item;
-    }
-
-    public MenuItem addItem(int ID, String StringId, String anhang, boolean withoutTranslation) {
-        String trans;
-        if (StringId == null || StringId.equals("")) {
-            trans = anhang;
-        } else {
-            if (withoutTranslation)
-                trans = StringId + anhang;
-            else
-                trans = Translation.get(StringId) + anhang;
-        }
-
-        // layout();
-        MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
-
-        item.setTitle(trans);
-        addItem(item);
-
-        return item;
-    }
-
     public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Object icon, OnClickListener onClickListener) {
         MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, titleTranlationId);
-        item.setTitle(((titleTranlationId.length() == 0)  ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart);
+        item.setTitle(((titleTranlationId.length() == 0) ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart);
         if (icon != null) {
             if (icon instanceof Sprite) {
                 item.setIcon(new SpriteDrawable((Sprite) icon));
-            }
-            else
+            } else
                 item.setIcon((Drawable) icon);
         }
         item.setOnClickListener(onClickListener);
@@ -376,36 +331,41 @@ public class Menu extends ButtonDialog {
         return item;
     }
 
+    public void tickCheckBoxes(MenuItem clickedItem) {
+        // for update the presentation (without recreating the menu)
+        if (singleSelection) {
+            boolean newCheck = !clickedItem.isChecked();
+            // only one item can be checked : remove all checks
+            for (MenuItemBase smi : this.mItems) {
+                if (smi instanceof MenuItem) {
+                    MenuItem tmi = (MenuItem) smi;
+                    if (tmi.isChecked()) {
+                        tmi.setChecked(false);
+                    }
+                }
+            }
+            clickedItem.setChecked(newCheck); // toggle clicked item
+        } else {
+            clickedItem.toggleCheck();
+        }
+    }
+
     public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Sprite icon, Runnable runnable) {
         return addMenuItem(titleTranlationId, addUnTranslatedPart, icon,
                 (v, x, y, pointer, button) -> {
+                    if (autoClose) close();
                     runnable.run();
+                    tickCheckBoxes((MenuItem) v);
                     return true;
                 });
-    }
-
-    public MenuItem addMenuItem(String titleTranlationId, Sprite icon, OnClickListener onClickListener) {
-        return addMenuItem(titleTranlationId, "", icon, onClickListener);
     }
 
     public MenuItem addMenuItem(String titleTranlationId, Sprite icon, Runnable runnable) {
-        return addMenuItem(titleTranlationId, "", icon,
-                (v, x, y, pointer, button) -> {
-                    runnable.run();
-                    return true;
-                });
-    }
-
-    public MenuItem addCheckableMenuItem(String titleTranlationId, boolean checked, OnClickListener onClickListener) {
-        MenuItem item = addMenuItem(titleTranlationId, "", null, onClickListener);
-        item.setCheckable(true);
-        item.setChecked(checked);
-        return item;
+        return addMenuItem(titleTranlationId, "", icon, runnable);
     }
 
     public MenuItem addCheckableMenuItem(String titleTranlationId, boolean checked, Runnable runnable) {
         MenuItem item = addMenuItem(titleTranlationId, null, runnable);
-        item.setCheckable(true);
         item.setChecked(checked);
         return item;
     }
@@ -478,13 +438,6 @@ public class Menu extends ButtonDialog {
 
     }
 
-    public MenuItem addItem(int ID, String StringId, Sprite icon) {
-        MenuItem item = addItem(ID, StringId);
-        if (icon != null)
-            item.setIcon(new SpriteDrawable(icon));
-        return item;
-    }
-
     public void addOnItemClickListener(OnClickListener onItemClickListener) {
         if (this.mOnItemClickListeners == null)
             this.mOnItemClickListeners = new ArrayList<>();
@@ -520,7 +473,8 @@ public class Menu extends ButtonDialog {
     public void addDivider() {
         MenuItemDivider item = new MenuItemDivider(new SizeF(mListView.getWidth(), ItemHeight / 5), mItems.size(), "Menu Devider");
         item.setEnabled(false);
-        addItem(item);
+        mItems.add(item);
+        mListView.notifyDataSetChanged();
     }
 
     /**

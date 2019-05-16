@@ -39,7 +39,7 @@ public class CacheContextMenu {
 
     public static Menu getCacheContextMenu(boolean forCacheList) {
 
-        cacheContextMenu = new Menu(ClassName);
+        cacheContextMenu = new Menu("DescriptionViewTitle");
 
         boolean selectedCacheIsSet = GlobalCore.isSetSelectedCache();
         boolean selectedCacheIsGC = false;
@@ -68,7 +68,6 @@ public class CacheContextMenu {
             CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
             CacheListChangedEventList.Call();
         });
-        mi.setCheckable(true);
         mi.setEnabled(selectedCacheIsSet);
         mi.setChecked(selectedCacheIsSet && GlobalCore.getSelectedCache().isFavorite());
         cacheContextMenu.addMenuItem("AddToWatchList", null, () -> {

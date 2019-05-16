@@ -44,7 +44,6 @@ import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -426,42 +425,7 @@ public class DraftsView extends V_ListView {
 
         Cache cache = GlobalCore.getSelectedCache();
 
-        final Menu cm = new Menu("DraftsContextMenu");
-
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            cm.close();
-
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_FOUND:
-                    addNewDraft(LogTypes.found);
-                    return true;
-                case MenuID.MI_ATTENDED:
-                    addNewDraft(LogTypes.attended);
-                    return true;
-                case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    addNewDraft(LogTypes.webcam_photo_taken);
-                    return true;
-                case MenuID.MI_WILL_ATTENDED:
-                    addNewDraft(LogTypes.will_attend);
-                    return true;
-                case MenuID.MI_NOT_FOUND:
-                    addNewDraft(LogTypes.didnt_find);
-                    return true;
-                case MenuID.MI_MAINTANCE:
-                    addNewDraft(LogTypes.needs_maintenance);
-                    return true;
-                case MenuID.MI_NOTE:
-                    addNewDraft(LogTypes.note);
-                    return true;
-                case MenuID.MI_UPLOAD_DRAFT:
-                    Action_UploadDrafts.getInstance().Execute();
-                    return true;
-                case MenuID.MI_DELETE_ALL_DRAFTS:
-                    deleteAllDrafts();
-                    return true;
-            }
-            return false;
-        });
+        final Menu cm = new Menu("DraftsContextMenuTitle");
 
         if (cache != null) {
 
@@ -473,30 +437,30 @@ public class DraftsView extends V_ListView {
                 case CITO:
                 case MegaEvent:
                 case Giga:
-                    cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", Sprites.getSprite("log8icon"));
-                    cm.addItem(MenuID.MI_ATTENDED, "attended", Sprites.getSprite("log9icon"));
+                    cm.addMenuItem("will-attended", Sprites.getSprite("log8icon"),()-> addNewDraft(LogTypes.will_attend));
+                    cm.addMenuItem("attended", Sprites.getSprite("log9icon"),()->addNewDraft(LogTypes.attended));
                     break;
                 case Camera:
-                    cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", Sprites.getSprite("log10icon"));
+                    cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"),()->addNewDraft(LogTypes.webcam_photo_taken));
                     break;
                 default:
-                    cm.addItem(MenuID.MI_FOUND, "found", Sprites.getSprite("log0icon"));
+                    cm.addMenuItem("found", Sprites.getSprite("log0icon"),()->addNewDraft(LogTypes.found));
                     break;
             }
 
-            cm.addItem(MenuID.MI_NOT_FOUND, "DNF", Sprites.getSprite("log1icon"));
+            cm.addMenuItem("DNF", Sprites.getSprite("log1icon"),()->addNewDraft(LogTypes.didnt_find));
         }
 
         // Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
         if (cache != null && cache.getGcCode().toLowerCase().startsWith("gc")) {
-            cm.addItem(MenuID.MI_MAINTANCE, "maintenance", Sprites.getSprite("log5icon"));
-            cm.addItem(MenuID.MI_NOTE, "writenote", Sprites.getSprite("log2icon"));
+            cm.addMenuItem("maintenance", Sprites.getSprite("log5icon"),()->addNewDraft(LogTypes.needs_maintenance));
+            cm.addMenuItem("writenote", Sprites.getSprite("log2icon"),()->addNewDraft(LogTypes.note));
         }
 
         cm.addDivider();
 
-        cm.addItem(MenuID.MI_UPLOAD_DRAFT, "uploadDrafts", Sprites.getSprite(IconName.UPLOADFIELDNOTE.name()));
-        cm.addItem(MenuID.MI_DELETE_ALL_DRAFTS, "DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()));
+        cm.addMenuItem("uploadDrafts", Sprites.getSprite(IconName.UPLOADFIELDNOTE.name()),()->Action_UploadDrafts.getInstance().Execute());
+        cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
         if (cache != null) {
             cm.addMoreMenu(getSecondMenu(), Translation.get("defaultLogTypes"), Translation.get("ownerLogTypes"));
@@ -507,40 +471,18 @@ public class DraftsView extends V_ListView {
     }
 
     private Menu getSecondMenu() {
-        Menu sm = new Menu("DraftContextMenu/2");
+        Menu sm = new Menu("OwnerLogTypesTitle");
         MenuItem mi;
         boolean IM_owner = GlobalCore.getSelectedCache().ImTheOwner();
-        sm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_ENABLED:
-                    addNewDraft(LogTypes.enabled);
-                    return true;
-                case MenuID.MI_TEMPORARILY_DISABLED:
-                    addNewDraft(LogTypes.temporarily_disabled);
-                    return true;
-                case MenuID.MI_OWNER_MAINTENANCE:
-                    addNewDraft(LogTypes.owner_maintenance);
-                    return true;
-                case MenuID.MI_ATTENDED:
-                    addNewDraft(LogTypes.attended);
-                    return true;
-                case MenuID.MI_WEBCAM_FOTO_TAKEN:
-                    addNewDraft(LogTypes.webcam_photo_taken);
-                    return true;
-                case MenuID.MI_REVIEWER_NOTE:
-                    addNewDraft(LogTypes.reviewer_note);
-                    return true;
-            }
-            return false;
-        });
-
-        mi = sm.addItem(MenuID.MI_ENABLED, "enabled", Sprites.getSprite("log4icon"));
+        mi = sm.addMenuItem( "enabled", Sprites.getSprite("log4icon"),()->addNewDraft(LogTypes.enabled));
         mi.setEnabled(IM_owner);
-        mi = sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", Sprites.getSprite("log6icon"));
+        mi = sm.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"),()->addNewDraft(LogTypes.temporarily_disabled));
         mi.setEnabled(IM_owner);
-        mi = sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", Sprites.getSprite("log7icon"));
+        mi = sm.addMenuItem("ownerMaintenance", Sprites.getSprite("log7icon"),()->addNewDraft(LogTypes.owner_maintenance));
         mi.setEnabled(IM_owner);
-
+        // addNewDraft(LogTypes.attended);
+        // addNewDraft(LogTypes.webcam_photo_taken);
+        // addNewDraft(LogTypes.reviewer_note);
         return sm;
     }
 
@@ -779,23 +721,9 @@ public class DraftsView extends V_ListView {
                     int index = ((ListViewItemBase) v13).getIndex();
                     aktDraft = lDrafts.get(index);
                     Menu cm = new Menu("DraftsContextMenu");
-                    cm.addOnItemClickListener((v1, x1, y1, pointer1, button1) -> {
-                        switch (((MenuItem) v1).getMenuItemId()) {
-                            case MenuID.MI_SELECT_CACHE:
-                                selectCacheFromDraft();
-                                return true;
-                            case MenuID.MI_EDIT_DRAFT:
-                                editDraft();
-                                return true;
-                            case MenuID.MI_DELETE_DRAFT:
-                                deleteDraft();
-                                return true;
-                        }
-                        return false;
-                    });
-                    cm.addItem(MenuID.MI_SELECT_CACHE, "SelectCache");
-                    cm.addItem(MenuID.MI_EDIT_DRAFT, "edit");
-                    cm.addItem(MenuID.MI_DELETE_DRAFT, "delete");
+                    cm.addMenuItem("SelectCache", null, () -> selectCacheFromDraft());
+                    cm.addMenuItem( "edit",null,()-> editDraft());
+                    cm.addMenuItem( "delete",null,()-> deleteDraft());
                     cm.Show();
                     return true;
                 });

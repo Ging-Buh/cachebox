@@ -38,13 +38,6 @@ import java.util.TimerTask;
 public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     public static final int MI_IMPORT_CBS = 189;
     public static final int MI_IMPORT_GCV = 192;
-    private static final int MI_CHK_STATE_API = 63;
-    private static final int MI_IMPORT = 62;
-    private static final int MI_IMPORT_GS_API_POSITION = 194;
-    private static final int MI_IMPORT_GS_API_SEARCH = 195;
-    private static final int MI_EXPORT_CBS = 190;
-    private static final int MI_EXPORT_RUN = 196;
-    private static final int MI_IMPORT_GSAK = 7;
     private static CB_Action_ShowImportMenu that;
     int actExportedCount = 0;
     private ProgressDialog pD;
@@ -90,11 +83,11 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        Menu icm = new Menu("CacheListShowImportMenu");
+        Menu icm = new Menu("ImportMenuTitle");
         icm.addMenuItem("chkState", null, () -> GL.that.postAsync(() -> {
             // Sprites.getSprite(IconName.dayGcLiveIcon.name())
             // First check API-Key with visual Feedback
-            Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
+            Log.debug("ImportMenuTitle", "chkAPiLogInWithWaitDialog");
             GlobalCore.chkAPiLogInWithWaitDialog(isAccessTokenInvalid -> {
                 Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
                 if (!isAccessTokenInvalid) {

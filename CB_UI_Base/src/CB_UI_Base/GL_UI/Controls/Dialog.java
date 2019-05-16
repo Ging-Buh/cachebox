@@ -361,6 +361,10 @@ public abstract class Dialog extends CB_View_Base {
         return mContent.getSize();
     }
 
+    public String getTitle(){
+        return mTitle;
+    }
+
     public void setTitle(String title) {
         mTitle = title;
         reziseContentBox();

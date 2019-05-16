@@ -74,7 +74,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     }
 
     private void createContextMenu() {
-        contextMenu = new Menu("SpoilerContextMenu");
+        contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
         contextMenu.addMenuItem("reloadSpoiler", null, () -> {
             GlobalCore.ImportSpoiler(false).setReadyListener(() -> {

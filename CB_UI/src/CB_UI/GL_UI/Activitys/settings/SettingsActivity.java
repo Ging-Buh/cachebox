@@ -130,7 +130,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         this.addChild(btnMenu);
         btnMenu.setText("...");
         btnMenu.setOnClickListener((v, x, y, pointer, button) -> {
-            Menu icm = new Menu("Settings");
+            Menu icm = new Menu("SettingsLevelTitle");
 
             if (Config.SettingsShowAll.getValue())
                 Config.SettingsShowExpert.setValue(false);
@@ -139,14 +139,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
                 Config.SettingsShowAll.setValue(false);
                 resortList();
-                icm.close();
             });
 
             icm.addCheckableMenuItem("Settings_All", Config.SettingsShowAll.getValue(), () -> {
                 Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
                 Config.SettingsShowExpert.setValue(false);
                 resortList();
-                icm.close();
             });
 
             icm.setPrompt(Translation.get("SettingsLevelTitle"));
@@ -872,7 +870,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             EditKey = Config.settings.indexOf(settingFolder);
             File file = FileFactory.createFile(settingFolder.getValue());
             final String absolutePath = (file != null) ? file.getAbsolutePath() : "";
-            Menu icm = new Menu("FileactionMenu");
+            Menu icm = new Menu("SelectPathTitle");
             icm.addMenuItem("select_folder", null,
                     () -> PlatformConnector.getFolder(absolutePath, Translation.get("select_folder"), Translation.get("select"), Path -> {
                         // check WriteProtection
@@ -913,7 +911,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             final String Path = (file.getParent() != null) ? file.getParent() : "";
 
-            Menu icm = new Menu("FileactionMenu");
+            Menu icm = new Menu("FileactionMenu"); // todo Translation
 
             icm.addMenuItem("select_file", null,
                     () -> PlatformConnector.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), Path1 -> {

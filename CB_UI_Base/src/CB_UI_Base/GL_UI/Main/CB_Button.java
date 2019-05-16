@@ -68,6 +68,7 @@ public class CB_Button extends Button {
                     if (aktActionView.hasContextMenu()) {
                         // first the context menu, if exists
                         Menu viewContextMenu = aktActionView.getContextMenu();
+                        compoundMenu.setTitle(viewContextMenu.getTitle());
                         if (viewContextMenu != null) {
                             compoundMenu.addItems(viewContextMenu.getItems());
                             // compoundMenu.addOnItemClickListeners(viewContextMenu.getOnItemClickListeners());
@@ -299,29 +300,23 @@ public class CB_Button extends Button {
 
     private Menu getLongClickMenu() {
         Menu cm = new Menu("Name");
-
-        cm.addOnItemClickListener((v, x, y, pointer, button) -> {
-            int mId = ((MenuItem) v).getMenuItemId();
-            for (CB_ActionButton cb_actionButton : cb_actionButtons) {
-                if (cb_actionButton.getAction().getId() == mId) {
-                    AbstractAction action = cb_actionButton.getAction();
-                    action.Execute();
-                    if (action instanceof CB_Action_ShowView) {
-                        aktActionView = (CB_Action_ShowView) action;
-                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
-                    }
-                    GL.that.closeToast();
-                    return true; // break;
-                }
-            }
-            return false;
-        });
-
         for (CB_ActionButton cb_actionButton : cb_actionButtons) {
             AbstractAction action = cb_actionButton.getAction();
             if (action == null)
                 continue;
-            MenuItem mi = cm.addItem(action.getId(), action.getTitleTranlationId(), action.getTitleExtension());
+            MenuItem mi = cm.addMenuItem(action.getTitleTranlationId(), action.getTitleExtension(), null, (v, x, y, pointer, button)->{
+                cm.close();
+                MenuItem clickedItem = (MenuItem) v;
+                AbstractAction btnAction = (AbstractAction) clickedItem.getData();
+                btnAction.Execute();
+                if (btnAction instanceof CB_Action_ShowView) {
+                    aktActionView = (CB_Action_ShowView) btnAction;
+                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
+                }
+                GL.that.closeToast();
+                return true;
+            });
+            mi.setData(action);
             if (cb_actionButton.getGestureDirection() != GestureDirection.None) {
                 String direction;
                 switch (cb_actionButton.getGestureDirection()) {
@@ -341,8 +336,8 @@ public class CB_Button extends Button {
             }
             mi.setEnabled(action.getEnabled() && aktActionView != action);
             // mi.setVisible(aktActionView != action); // there will be a hole
-            mi.setCheckable(action.getIsCheckable());
             mi.setChecked(action.getIsChecked());
+            mi.setCheckable(action.getIsCheckable());
             Sprite icon = action.getIcon();
             if (icon != null)
                 mi.setIcon(new SpriteDrawable(action.getIcon()));
