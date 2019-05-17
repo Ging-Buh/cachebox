@@ -541,13 +541,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         // ################################
 
         values.clear();
-        values.add(Translation.get("comboBoxLogLifeItem_0"));
-        values.add(Translation.get("comboBoxLogLifeItem_1"));
-        values.add(Translation.get("comboBoxLogLifeItem_2"));
-        values.add(Translation.get("comboBoxLogLifeItem_3"));
-        values.add(Translation.get("comboBoxLogLifeItem_4"));
-        values.add(Translation.get("comboBoxLogLifeItem_5"));
-        values.add(Translation.get("comboBoxLogLifeItem_6"));
+        values.add(Translation.get("ImportLogAgeIndex_0"));
+        values.add(Translation.get("ImportLogAgeIndex_1"));
+        values.add(Translation.get("ImportLogAgeIndex_2"));
+        values.add(Translation.get("ImportLogAgeIndex_3"));
+        values.add(Translation.get("ImportLogAgeIndex_4"));
+        values.add(Translation.get("ImportLogAgeIndex_5"));
+        values.add(Translation.get("ImportLogAgeIndex_6"));
 
         final SpinnerAdapter adapter = new SpinnerAdapter() {
 
@@ -567,7 +567,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
         };
 
-        spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, index -> {
+        spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "ImportDeleteLogsTitle", adapter, index -> {
             Config.LogMaxMonthAge.setValue(index);
             Config.AcceptChanges();
         });

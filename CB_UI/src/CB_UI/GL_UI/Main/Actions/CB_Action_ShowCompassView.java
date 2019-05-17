@@ -53,7 +53,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        Menu icm = new Menu("menu_compassView");
+        Menu icm = new Menu("CompassViewContextMenuTitle");
         icm.addMenuItem("view", null, this::showOptionMenu);
         return icm;
     }

@@ -27,7 +27,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Spinner extends Button {
-    private final Spinner that;
     private NinePatch triangle;
     private int mSelectedIndex = -1;
     private String prompt;
@@ -36,24 +35,21 @@ public class Spinner extends Button {
     private SpinnerAdapter mAdapter;
     private ISelectionChangedListener mListener;
 
-    public Spinner(String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-        super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), Name);
+    public Spinner(String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+        super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), TranslationId);
         mAdapter = adapter;
-        that = this;
         mListener = listener;
     }
 
-    public Spinner(float X, float Y, float Width, float Height, String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-        super(X, Y, Width, Height, Name);
+    public Spinner(float X, float Y, float Width, float Height, String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+        super(X, Y, Width, Height, TranslationId);
         mAdapter = adapter;
-        that = this;
         mListener = listener;
     }
 
-    public Spinner(CB_RectF rec, String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-        super(rec, Name);
+    public Spinner(CB_RectF rec, String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+        super(rec, TranslationId);
         mAdapter = adapter;
-        that = this;
         mListener = listener;
     }
 
@@ -72,10 +68,11 @@ public class Spinner extends Button {
                 return true; // kann nix anzeigen
 
             // show Menu to select
-            Menu icm = new Menu("SpinnerSelection" + that.name);
+            Menu icm = new Menu(getName());
             for (int index = 0; index < mAdapter.getCount(); index++) {
-                icm.addMenuItem(mAdapter.getText(index), "", mAdapter.getIcon(index),
+                icm.addMenuItem("", mAdapter.getText(index), mAdapter.getIcon(index),
                         (v1, x1, y1, pointer1, button1) -> {
+                            icm.close();
                             int sel = ((MenuItem) v1).getIndex();
                             setSelection(sel);
                             if (mListener != null)

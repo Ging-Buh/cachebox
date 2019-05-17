@@ -205,8 +205,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         if (layer.isMapsForge()) {
             if (layer.languages != null)
                 if (layer.languages.length > 1) {
-                    final Menu lsm = new Menu("lsm");
-                    lsm.setTitle("Sprachauswahl");
+                    final Menu lsm = new Menu("MapViewLayerSelectLanguageTitle");
                     for (String lang : layer.languages) {
                         lsm.addMenuItem("", lang, null, (v, x, y, pointer, button) -> {
                             lsm.close();

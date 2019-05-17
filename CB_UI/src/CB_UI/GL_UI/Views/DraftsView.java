@@ -720,7 +720,7 @@ public class DraftsView extends V_ListView {
                 v.setOnLongClickListener((v13, x, y, pointer, button) -> {
                     int index = ((ListViewItemBase) v13).getIndex();
                     aktDraft = lDrafts.get(index);
-                    Menu cm = new Menu("DraftsContextMenu");
+                    Menu cm = new Menu("DraftItemMenuTitle");
                     cm.addMenuItem("SelectCache", null, () -> selectCacheFromDraft());
                     cm.addMenuItem( "edit",null,()-> editDraft());
                     cm.addMenuItem( "delete",null,()-> deleteDraft());

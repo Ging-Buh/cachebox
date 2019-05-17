@@ -911,7 +911,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             final String Path = (file.getParent() != null) ? file.getParent() : "";
 
-            Menu icm = new Menu("FileactionMenu"); // todo Translation
+            Menu icm = new Menu("SelectFileTitle");
 
             icm.addMenuItem("select_file", null,
                     () -> PlatformConnector.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), Path1 -> {
@@ -1183,7 +1183,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         };
 
-        Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, index1 -> {
+        Spinner spinner = new Spinner(ButtonRec, "SelectLanguage", adapter, index1 -> {
             String selected = items[index1];
             for (Lang tmp : Sprachen) {
                 if (selected.equals(tmp.Name)) {
@@ -1204,7 +1204,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         spinner.setSelection(selection);
 
-        spinner.setPrompt(Translation.get("SelectLanguage"));
+        // spinner.setPrompt(Translation.get("SelectLanguage")); since 17.5.2019 within constructor
 
         spinner.setDraggable();
 
@@ -1260,23 +1260,20 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         };
 
-        final Spinner spinner = new Spinner(itemRec, "SkinSpinner", adapter, new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                String selected = items[index];
-                if (selected.equals("default")) {
-                    Config.SkinFolder.setValue("default");
-                } else if (selected.equals("small")) {
-                    Config.SkinFolder.setValue("small");
-                } else {
-                    Config.SkinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
-                }
+        final Spinner spinner = new Spinner(itemRec, "SelectSkin", adapter, index1 -> {
+            String selected = items[index1];
+            if (selected.equals("default")) {
+                Config.SkinFolder.setValue("default");
+            } else if (selected.equals("small")) {
+                Config.SkinFolder.setValue("small");
+            } else {
+                Config.SkinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
             }
         });
 
         spinner.setSelection(selection);
 
-        spinner.setPrompt(Translation.get("SelectSkin"));
+        // spinner.setPrompt(Translation.get("SelectSkin"));
 
         spinner.setDraggable();
 

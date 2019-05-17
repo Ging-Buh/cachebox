@@ -67,7 +67,7 @@ public class TB_Details extends ActivityBase {
             return true;
         });
 
-        btnAction = new Button(Translation.get("TB_Log"));
+        btnAction = new Button(Translation.get("TB_LogButton"));
         btnAction.setOnClickListener((v, x, y, pointer, button) -> {
             showLogMenu();
             return true;
@@ -159,19 +159,19 @@ public class TB_Details extends ActivityBase {
     }
 
     private void showLogMenu() {
-        final Menu cm = new Menu("TBLogContextMenu");
-        cm.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.that.Show(TB, LogTypes.note));
+        final Menu menuLog = new Menu("TB_DetailsLogMenuTitle");
+        menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.that.Show(TB, LogTypes.note));
         if (TB.isLogTypePossible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue()))
-            cm.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.that.Show(TB, LogTypes.discovered));
+            menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.that.Show(TB, LogTypes.discovered));
         if (TB.isLogTypePossible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue()))
-            cm.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.that.Show(TB, LogTypes.visited));
+            menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.that.Show(TB, LogTypes.visited));
         if (TB.isLogTypePossible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue()))
-            cm.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.that.Show(TB, LogTypes.dropped_off));
+            menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.that.Show(TB, LogTypes.dropped_off));
         if (TB.isLogTypePossible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue()))
-            cm.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.that.Show(TB, LogTypes.grab_it));
+            menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.that.Show(TB, LogTypes.grab_it));
         if (TB.isLogTypePossible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue()))
-            cm.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.that.Show(TB, LogTypes.retrieve));
-        cm.Show();
+            menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.that.Show(TB, LogTypes.retrieve));
+        menuLog.Show();
     }
 
     @Override

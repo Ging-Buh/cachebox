@@ -125,7 +125,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTypeSpinner() {
         CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth - cbStartPointWidth, UI_Size_Base.that.getButtonHeight());
-        sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), index -> {
+        sType = new Spinner(rec, "WaypointType", getSpinerAdapter(), index -> {
             EditWaypoint.this.show();
             showCbStartPoint(false);
             switch (index) {

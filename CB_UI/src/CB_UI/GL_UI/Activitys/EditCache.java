@@ -76,10 +76,10 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         cacheCode = new EditTextField(this, "cacheCode");
         s.font = Fonts.getCompass();
         cacheCode.setStyle(s);
-        cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
-        cacheTyp = new Spinner("cacheTyp", cacheTypList(), cacheTypSelection());
-        cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
-        cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
+        cacheDifficulty = new Spinner("EditCacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
+        cacheTyp = new Spinner("EditCacheType", cacheTypList(), cacheTypSelection());
+        cacheTerrain = new Spinner("EditCacheTerrain", cacheTerrainList(), cacheTerrainSelection());
+        cacheSize = new Spinner("EditCacheSize", cacheSizeList(), cacheSizeSelection());
         cacheCoords = new CoordinateButton("cacheCoords");
         cacheOwner = new EditTextField(this, "cacheOwner");
         cacheState = new EditTextField(this, "cacheState");

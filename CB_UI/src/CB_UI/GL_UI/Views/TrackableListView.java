@@ -195,7 +195,7 @@ public class TrackableListView extends CB_View_Base {
     }
 
     public Menu getContextMenu() {
-        final Menu cm = new Menu("TBLogContextMenu");
+        final Menu cm = new Menu("TrackableListViewContextMenuTitle");
         cm.addMenuItem("SearchTB", Sprites.getSprite(IconName.lupe.name()), this::searchTB);
         cm.addMenuItem( "RefreshInventory",null, this::RefreshTbList);
         cm.addMenuItem( "all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button)->{

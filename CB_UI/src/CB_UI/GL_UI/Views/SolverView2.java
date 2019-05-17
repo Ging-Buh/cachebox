@@ -180,7 +180,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     }
 
     public Menu getContextMenu() {
-        Menu cm = new Menu("SolverViewItemContextMenu");
+        Menu cm = new Menu("SolverView2ContextMenuTitle");
         cm.addMenuItem("editLine", null, this::ChangeLine);
         cm.addMenuItem("addLine", null, this::InsertLine);
         cm.addMenuItem("delLine", null, this::DeleteLine);

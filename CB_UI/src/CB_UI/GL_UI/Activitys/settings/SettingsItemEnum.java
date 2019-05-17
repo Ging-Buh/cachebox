@@ -11,7 +11,7 @@ public class SettingsItemEnum extends SettingsItemBase {
     public SettingsItemEnum(CB_RectF rec, int Index, String Name) {
         super(rec, Index, Name);
 
-        spinner = new Spinner(lblDefault, "", null, null);
+        spinner = new Spinner(lblDefault, Name, null, null);
 
         spinner.setHeight(UI_Size_Base.that.getButtonHeight());
 

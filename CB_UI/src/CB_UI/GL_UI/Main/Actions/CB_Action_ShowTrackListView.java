@@ -92,7 +92,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        Menu cm = new Menu("TrackListContextMenu");
+        Menu cm = new Menu("TrackListViewContextMenuTitle");
         cm.addMenuItem("load", null, () -> {
             PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
                 if (Path != null) {
@@ -158,7 +158,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     }
 
     private void showMenuCreate() {
-        Menu cm2 = new Menu("TrackListCreateContextMenu");
+        Menu cm2 = new Menu("TrackListViewCreateTrackTitle");
         cm2.addMenuItem( "Point2Point",null, this::GenTrackP2P);
         cm2.addMenuItem("Projection",null, this::GenTrackProjection);
         cm2.addMenuItem("Circle",null, this::GenTrackCircle);
