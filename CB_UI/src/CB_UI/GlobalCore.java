@@ -334,6 +334,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             String[] sections = info.split("#");
             VersionPrefix = sections[1];
             String dat = sections[4];
+            // count only, if published or stable. So you can revert to a previous revision without saving data
+            dat = "2019-05-17";
             Date d = new SimpleDateFormat("yyyy-MM-dd").parse(dat);
             CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd")).format(d));
         } catch (Exception ex) {

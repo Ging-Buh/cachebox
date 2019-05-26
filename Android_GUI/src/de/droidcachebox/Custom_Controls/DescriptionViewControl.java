@@ -211,6 +211,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 PlatformConnector.callUrl(url);
                 return true;
             }
+            // never reached?
             view.loadUrl(url);
             return true;
         }
