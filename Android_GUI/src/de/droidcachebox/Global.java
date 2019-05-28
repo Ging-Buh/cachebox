@@ -300,7 +300,7 @@ public class Global {
     }
 
     // N = Nachtmodus! Wenn true werden andere Icons geladen!
-    public static void InitIcons(Context context) {
+    public static void initIcons(Context context) {
         Resources res = context.getResources();
 
         SmallStarIcons = new Drawable[]{getDrawable(R.drawable.smallstars_0, R.drawable.night_smallstars_0, res), getDrawable(R.drawable.smallstars_0_5, R.drawable.night_smallstars_0_5, res),

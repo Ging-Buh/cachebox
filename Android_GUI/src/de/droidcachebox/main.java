@@ -308,7 +308,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             UiSizes.that.initial(ui);
 
             Global.Paints.init(this);
-            Global.InitIcons(this);
+            Global.initIcons(this);
 
             GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
             GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
@@ -1902,7 +1902,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public void dayNightSwitched() {
 
-                Global.InitIcons(mainActivity);
+                Global.initIcons(mainActivity);
                 Global.initTheme(mainActivity);
                 if (aktViewId == ViewConst.DESCRIPTION_VIEW || aktTabViewId == ViewConst.DESCRIPTION_VIEW) {
                     if (descriptionView.getVisibility() == View.VISIBLE) {

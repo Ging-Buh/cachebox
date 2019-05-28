@@ -246,11 +246,13 @@ public class splash extends Activity {
         androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
         workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
+        // default must be true, for first selection or else check workPath to start with /data
         boolean askAgain = androidSetting.getBoolean("AskAgain", false);
+        if (workPath.toLowerCase().startsWith("/data/")) askAgain = true;
         showSandbox = androidSetting.getBoolean("showSandbox", false);
 
         Global.initTheme(this);
-        Global.InitIcons(this);
+        Global.initIcons(this);
 
         CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
         PlatformConnector.setGetFileListener(fileExplorer);
