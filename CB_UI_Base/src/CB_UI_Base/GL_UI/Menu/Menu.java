@@ -466,9 +466,15 @@ public class Menu extends ButtonDialog {
     }
 
     public void addItems(ArrayList<MenuItemBase> items) {
+        addItems(items, false);
+    }
+
+    public void addItems(ArrayList<MenuItemBase> items, boolean setEnabled) {
         for (MenuItemBase menuItem : items) {
             if (menuItem.getOnClickListener() == null)
                 menuItem.setOnClickListener(menuItemClickListener);
+            if (setEnabled)
+                menuItem.setEnabled(true);
             mItems.add(menuItem);
             mListView.notifyDataSetChanged();
         }

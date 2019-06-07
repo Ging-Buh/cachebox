@@ -222,6 +222,7 @@ public class MenuItem extends MenuItemBase {
         return mIsEnabled;
     }
 
+
     @Override
     public void setEnabled(boolean enabled) {
         mIsEnabled = enabled;
@@ -236,6 +237,12 @@ public class MenuItem extends MenuItemBase {
             setOnLongClickListener(null);
         }
 
+        this.resetInitial();
+    }
+
+    public void setDisabled(boolean enabled) {
+        // same as enabled but without deleting the click listeners
+        mIsEnabled = enabled;
         this.resetInitial();
     }
 

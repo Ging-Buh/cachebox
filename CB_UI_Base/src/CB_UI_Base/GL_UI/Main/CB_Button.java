@@ -130,19 +130,11 @@ public class CB_Button extends Button {
 
             // if no default action defined, show LongClickMenu
             if (!actionExecuted) {
-                /*
-                // if no default action defined, perform a LongClick
-                OnClickListener listener = getOnLongClickListener();
-                if (listener != null) {
-                    return listener.onClick(v, x, y, pointer, button);
-                }
-                 */
                 Menu compoundMenu = new Menu("compoundMenu");
                 // then the Long Click menu
                 Menu LongClickMenu = getLongClickMenu();
                 if (LongClickMenu != null) {
-                    compoundMenu.addItems(LongClickMenu.getItems());
-                    // compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
+                    compoundMenu.addItems(LongClickMenu.getItems(),true);
                 }
                 // and show
                 if (compoundMenu.reorganizeIndexes() > 0) {
@@ -334,7 +326,7 @@ public class CB_Button extends Button {
                 }
                 mi.setTitle(mi.getTitle() + " (" + Translation.get("wipe") + " " + direction  + ")");
             }
-            mi.setEnabled(action.getEnabled() && aktActionView != action);
+            mi.setDisabled(action.getEnabled() && aktActionView != action);
             // mi.setVisible(aktActionView != action); // there will be a hole
             mi.setCheckable(action.getIsCheckable());
             mi.setChecked(action.getIsChecked());
