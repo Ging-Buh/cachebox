@@ -18,7 +18,6 @@ package CB_Core.Api;
 
 import CB_Core.CB_Core_Settings;
 import CB_Utils.Log.Log;
-import CB_Utils.http.Response;
 import CB_Utils.http.Webb;
 import org.json.JSONObject;
 
@@ -38,18 +37,19 @@ public class CB_Api {
         try {
             String url, resultKey;
             if (CB_Core_Settings.UseTestUrl.getValue()) {
-                url = "http://team-cachebox.de/CB_API/index.php?get=url_ACB_Staging";
+                url = "https://longri.de/CB_API/index.php?get=url_ACB_Staging";
                 resultKey = "GcAuth_ACB_Staging";
             } else {
-                url = "http://team-cachebox.de/CB_API/index.php?get=url_ACB";
+                url = "https://longri.de/CB_API/index.php/?get=url_ACB";
                 resultKey = "GcAuth_ACB";
             }
             Webb httpClient = Webb.create();
-            Response<JSONObject> response = httpClient
+            JSONObject response = httpClient
                     .post(url)
                     .ensureSuccess()
-                    .asJsonObject();
-            return response.getBody().getString(resultKey).trim();
+                    .asJsonObject()
+                    .getBody();
+            return response.getString(resultKey).trim();
         } catch (Exception ex) {
             Log.err("CB_Api", "getGcAuthUrl", ex);
             return "";

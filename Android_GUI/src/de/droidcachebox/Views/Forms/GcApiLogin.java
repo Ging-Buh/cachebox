@@ -25,7 +25,6 @@ import static CB_Core.CB_Core_Settings.GcLogin;
 
 public class GcApiLogin extends Activity {
     private static final String sKlasse = "GcApiLogin";
-    private static GcApiLogin gcApiLogin;
     private static ProgressDialog pd;
     private static boolean pdIsShow = false;
     final String javaScript = "javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
@@ -36,7 +35,7 @@ public class GcApiLogin extends Activity {
             switch (msg.what) {
                 case 1: {
                     pd.dismiss();
-                    gcApiLogin.finish();
+                    finish();
                 }
             }
         }
@@ -49,8 +48,6 @@ public class GcApiLogin extends Activity {
         setContentView(R.layout.gcapilogin);
 
         webViewLayout = findViewById(R.id.gal_Layout);
-
-        gcApiLogin = this;
 
         new RetreiveFeedTask().execute();
 
@@ -68,7 +65,7 @@ public class GcApiLogin extends Activity {
     private void ShowWebsite(String GC_AuthUrl) {
         // Initial new VebView Instanz
 
-        WebControl = (WebView) gcApiLogin.findViewById(R.id.gal_WebView);
+        WebControl = findViewById(R.id.gal_WebView);
 
         webViewLayout.removeAllViews();
         if (WebControl != null) {
@@ -96,13 +93,9 @@ public class GcApiLogin extends Activity {
         webViewLayout.addView(WebControl);
 
         if (!pdIsShow) {
-            gcApiLogin.runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    pd = ProgressDialog.show(gcApiLogin, "", "Loading....", true);
-                    pdIsShow = true;
-                }
+            runOnUiThread(() -> {
+                pd = ProgressDialog.show(this, "", "Loading....", true);
+                pdIsShow = true;
             });
 
         }
@@ -120,16 +113,12 @@ public class GcApiLogin extends Activity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                gcApiLogin.setTitle("Loading...");
+                setTitle("Loading...");
 
                 if (!pdIsShow) {
-                    gcApiLogin.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            pd = ProgressDialog.show(GcApiLogin.this, "", "Loading....", true);
-                            pdIsShow = true;
-                        }
+                    runOnUiThread(() -> {
+                        pd = ProgressDialog.show(GcApiLogin.this, "", "Loading....", true);
+                        pdIsShow = true;
                     });
 
                 }
@@ -147,7 +136,7 @@ public class GcApiLogin extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
 
-                gcApiLogin.setTitle(R.string.app_name);
+                setTitle(R.string.app_name);
                 if (pd != null)
                     pd.dismiss();
                 pdIsShow = false;
@@ -263,12 +252,7 @@ public class GcApiLogin extends Activity {
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
             };
-            gcApiLogin.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    pd = ProgressDialog.show(gcApiLogin, "", "Download Username", true);
-                }
-            });
+            runOnUiThread(() -> pd = ProgressDialog.show(GcApiLogin.this, "", "Download Username", true));
 
             thread.start();
         }
