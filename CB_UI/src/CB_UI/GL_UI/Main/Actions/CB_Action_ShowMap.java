@@ -451,6 +451,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         for (String overlay : StyleOverlays.keySet()) {
             MenuItem mi = menuStyleOverlay.addMenuItem( "", overlay, null, (v, x, y, pointer, button) -> {
                 MenuItem clickedItem = (MenuItem) v;
+                menuStyleOverlay.tickCheckBoxes(clickedItem);
                 String clickedValues[] = ((String) clickedItem.getData()).split("\\|");
                 if (clickedItem.isChecked()) {
                     clickedValues[3] = "+" + clickedValues[3].substring(1);
@@ -459,7 +460,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 }
                 clickedItem.setData(clickedValues[0] + "|" + clickedValues[1] + "|" + clickedValues[2] + "|" + clickedValues[3]);
                 menuStyleOverlay.setData(concatValues(clickedValues, menuStyleOverlay));
-                menuStyleOverlay.tickCheckBoxes(clickedItem);
                 menuStyleOverlay.Show();
                 return true;
             }); // ohne Translation
