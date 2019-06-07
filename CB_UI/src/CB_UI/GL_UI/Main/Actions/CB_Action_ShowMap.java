@@ -451,7 +451,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         for (String overlay : StyleOverlays.keySet()) {
             MenuItem mi = menuStyleOverlay.addMenuItem( "", overlay, null, (v, x, y, pointer, button) -> {
                 MenuItem clickedItem = (MenuItem) v;
-                menuStyleOverlay.tickCheckBoxes(clickedItem);
+                menuStyleOverlay.tickCheckBoxes(clickedItem); // the new value of clickedItem must be set first
                 String clickedValues[] = ((String) clickedItem.getData()).split("\\|");
                 if (clickedItem.isChecked()) {
                     clickedValues[3] = "+" + clickedValues[3].substring(1);
