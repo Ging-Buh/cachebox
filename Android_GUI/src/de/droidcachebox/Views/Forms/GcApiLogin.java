@@ -25,16 +25,15 @@ import static CB_Core.CB_Core_Settings.GcLogin;
 
 public class GcApiLogin extends Activity {
     private static final String sKlasse = "GcApiLogin";
-    private static ProgressDialog pd;
-    private static boolean pdIsShow = false;
-    final String javaScript = "javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
+    private static ProgressDialog progressDialog;
+    private static boolean progressDialogIsShown = false;
     private LinearLayout webViewLayout;
-    private WebView WebControl;
+    private WebView webView;
     private Handler onlineSearchReadyHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1: {
-                    pd.dismiss();
+                    progressDialog.dismiss();
                     finish();
                 }
             }
@@ -56,27 +55,27 @@ public class GcApiLogin extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (pd != null && pd.isShowing()) {
-            pd.dismiss();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
-        pd = null;
+        progressDialog = null;
     }
 
     private void ShowWebsite(String GC_AuthUrl) {
         // Initial new VebView Instanz
 
-        WebControl = findViewById(R.id.gal_WebView);
+        webView = findViewById(R.id.gal_WebView);
 
         webViewLayout.removeAllViews();
-        if (WebControl != null) {
-            WebControl.destroy();
-            WebControl = null;
+        if (webView != null) {
+            webView.destroy();
+            webView = null;
         }
 
         // Instanz new WebView
-        WebControl = new WebView(main.mainActivity, null, android.R.attr.webViewStyle);
-        WebControl.requestFocus(View.FOCUS_DOWN);
-        WebControl.setOnTouchListener(new View.OnTouchListener() {
+        webView = new WebView(main.mainActivity, null, android.R.attr.webViewStyle);
+        webView.requestFocus(View.FOCUS_DOWN);
+        webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -90,12 +89,12 @@ public class GcApiLogin extends Activity {
                 return false;
             }
         });
-        webViewLayout.addView(WebControl);
+        webViewLayout.addView(webView);
 
-        if (!pdIsShow) {
+        if (!progressDialogIsShown) {
             runOnUiThread(() -> {
-                pd = ProgressDialog.show(this, "", "Loading....", true);
-                pdIsShow = true;
+                progressDialog = ProgressDialog.show(this, "", "Loading....", true);
+                progressDialogIsShown = true;
             });
 
         }
@@ -109,16 +108,16 @@ public class GcApiLogin extends Activity {
             }
         }
 
-        WebControl.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new WebViewClient() {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 setTitle("Loading...");
 
-                if (!pdIsShow) {
+                if (!progressDialogIsShown) {
                     runOnUiThread(() -> {
-                        pd = ProgressDialog.show(GcApiLogin.this, "", "Loading....", true);
-                        pdIsShow = true;
+                        progressDialog = ProgressDialog.show(GcApiLogin.this, "", "Loading....", true);
+                        progressDialogIsShown = true;
                     });
 
                 }
@@ -128,28 +127,39 @@ public class GcApiLogin extends Activity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
+                if (url.startsWith("http:"))
+                    url = url.replace("http:", "https:");
                 view.loadUrl(url);
                 return true;
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    String url = request.getUrl().toString();
+                    if (url.startsWith("http:"))
+                        url = url.replace("http:", "https:");
+                    view.loadUrl(url);
+                }
+                return true;
+            }
 
+            @Override
+            public void onPageFinished(WebView view, String url) {
                 setTitle(R.string.app_name);
-                if (pd != null)
-                    pd.dismiss();
-                pdIsShow = false;
+                if (progressDialog != null)
+                    progressDialog.dismiss();
+                progressDialogIsShown = false;
 
                 if (url.toLowerCase().contains("oauth_verifier=") && (url.toLowerCase().contains("oauth_token="))) {
-                    WebControl.loadUrl(javaScript);
+                    webView.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
                 } else
                     super.onPageFinished(view, url);
             }
 
         });
 
-        WebSettings settings = WebControl.getSettings();
+        WebSettings settings = webView.getSettings();
 
         // settings.setPluginsEnabled(true);
         settings.setJavaScriptEnabled(true);
@@ -159,8 +169,8 @@ public class GcApiLogin extends Activity {
 
 
         {//delete cookies and cache
-            WebControl.clearCache(true);
-            WebControl.clearHistory();
+            webView.clearCache(true);
+            webView.clearHistory();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 Log.debug("GcApiLogin", "Using clearCookies code for API >=" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
                 CookieManager.getInstance().removeAllCookies(null);
@@ -177,10 +187,10 @@ public class GcApiLogin extends Activity {
             }
         }
 
-        WebControl.getSettings().setJavaScriptEnabled(true);
-        WebControl.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
 
-        WebControl.loadUrl(GC_AuthUrl);
+        webView.loadUrl(GC_AuthUrl);
     }
 
     class RetreiveFeedTask extends AsyncTask<Void, Void, String> {
@@ -252,7 +262,7 @@ public class GcApiLogin extends Activity {
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
             };
-            runOnUiThread(() -> pd = ProgressDialog.show(GcApiLogin.this, "", "Download Username", true));
+            runOnUiThread(() -> progressDialog = ProgressDialog.show(GcApiLogin.this, "", "Download Username", true));
 
             thread.start();
         }
