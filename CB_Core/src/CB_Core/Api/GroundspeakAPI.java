@@ -253,9 +253,11 @@ public class GroundspeakAPI {
         // not .onlyActiveGeoCaches() : must be updated to the latest status
         Query query = new Query()
                 .resultWithFullFields()
-                .resultWithLogs(30)
                 //.resultWithImages(30) // todo maybe remove, cause not used from DB
                 ;
+        if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
+            query.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
+        }
         return updateGeoCaches(query, caches);
     }
 

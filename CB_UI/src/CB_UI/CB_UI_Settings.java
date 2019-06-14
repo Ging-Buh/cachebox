@@ -44,8 +44,8 @@ public interface CB_UI_Settings {
     String PICKED = "<br> ##time##, Picked it with Cachebox!";
     String GRABED = "<br> ##time##, Grabed it with Cachebox!";
 
-    Integer[] approach = new Integer[]{0, 2, 10, 25, 50, 100, 200, 500, 1000};
-    Integer[] TrackDistanceArray = new Integer[]{1, 3, 5, 10, 20};
+    Integer[] approachDistanceArray = new Integer[]{0, 2, 10, 25, 50, 100, 200, 500, 1000};
+    Integer[] trackDistanceArray = new Integer[]{1, 3, 5, 10, 20};
     String[] navis = new String[]{"Google", "OsmAnd", "OsmAnd2", "Waze", "Orux", "Sygic", "Navigon"};
 
     SettingString OverrideUrl = new SettingString("OverrideUrl", Login, DEVELOPER, "", Global, ACB);
@@ -91,8 +91,8 @@ public interface CB_UI_Settings {
     SettingString LastSelectedCache = new SettingString("LastSelectedCache", Misc, NEVER, "", SettingStoreType.Local, ALL);
     SettingStringArray Navis = new SettingStringArray("Navis", Misc, NORMAL, "Google", Global, ACB, navis);
     SettingBool TrackRecorderStartup = new SettingBool("TrackRecorderStartup", Misc, NORMAL, false, Global, ACB);
-    SettingIntArray SoundApproachDistance = new SettingIntArray("SoundApproachDistance", Misc, NORMAL, 50, Global, ACB, approach);
-    SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", Misc, NORMAL, 3, Global, ACB, TrackDistanceArray);
+    SettingIntArray SoundApproachDistance = new SettingIntArray("SoundApproachDistance", Misc, NORMAL, 50, Global, ACB, approachDistanceArray);
+    SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", Misc, NORMAL, 3, Global, ACB, trackDistanceArray);
     SettingLongString FilterNew = new SettingLongString("FilterNew", Misc, NEVER, "", SettingStoreType.Local, ALL);
     SettingLongString UserFilter = new SettingLongString("UserFilter", Misc, NEVER, "", Global, ACB);
     SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", Misc, EXPERT, true, Global, ACB);

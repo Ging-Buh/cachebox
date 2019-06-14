@@ -15,6 +15,7 @@
  */
 package CB_UI.GL_UI.Activitys;
 
+import CB_Core.CB_Core_Settings;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Types.Category;
@@ -309,9 +310,11 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             Query q = new Query()
                                     .setMaxToFetch(50)
                                     .resultWithFullFields()
-                                    .resultWithLogs(30)
                                     //.resultWithImages(30)
                                     ;
+                            if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
+                                q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
+                            }
                             if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                             if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
                             if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();

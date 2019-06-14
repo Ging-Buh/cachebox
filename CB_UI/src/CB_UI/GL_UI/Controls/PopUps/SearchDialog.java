@@ -16,13 +16,10 @@
 package CB_UI.GL_UI.Controls.PopUps;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.CacheListChangedEventList;
-import CB_Core.CoreSettingsForward;
+import CB_Core.*;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.Database;
-import CB_Core.FilterInstances;
 import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -522,9 +519,12 @@ public class SearchDialog extends PopUp_Base {
                 GroundspeakAPI.Query q = new GroundspeakAPI.Query()
                         .setMaxToFetch(50)
                         .resultWithFullFields()
-                        .resultWithLogs(30)
                         // .resultWithImages(30)
                         ;
+                if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
+                    q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
+                }
+
                 if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                 if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
                 if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();

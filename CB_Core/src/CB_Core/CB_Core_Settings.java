@@ -27,6 +27,7 @@ import static CB_Utils.Settings.SettingUsage.ACB;
 import static CB_Utils.Settings.SettingUsage.ALL;
 
 public interface CB_Core_Settings {
+    Integer[] numberOfLogsArray = new Integer[]{0, 5, 30};
 
     SettingEncryptedString AccessToken = new SettingEncryptedString("GcAPI", Login, DEVELOPER, "", Global, ALL);
     SettingString GcLogin = new SettingString("GcLogin", Login, DEVELOPER, "", Global, ALL);
@@ -44,6 +45,8 @@ public interface CB_Core_Settings {
 
     SettingInt connection_timeout = new SettingInt("conection_timeout", Internal, DEVELOPER, 10000, Global, ALL);
     SettingInt socket_timeout = new SettingInt("socket_timeout", Internal, DEVELOPER, 60000, Global, ALL);
+
+    SettingIntArray numberOfLogs = new SettingIntArray("NumberOfLogs", Misc, NORMAL, 5, Global, ACB, numberOfLogsArray);
 
     SettingDouble ParkingLatitude = new SettingDouble("ParkingLatitude", Positions, NEVER, 0, Global, ACB);
     SettingDouble ParkingLongitude = new SettingDouble("ParkingLongitude", Positions, NEVER, 0, Global, ACB);

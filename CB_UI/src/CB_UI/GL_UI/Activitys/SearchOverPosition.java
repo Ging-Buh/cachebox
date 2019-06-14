@@ -15,6 +15,7 @@
  */
 package CB_UI.GL_UI.Activitys;
 
+import CB_Core.CB_Core_Settings;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Types.Category;
@@ -281,11 +282,13 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         });
 
         btnBeforeAfterEqual.setOnClickListener((v, x, y, pointer, button) -> {
-            if (btnBeforeAfterEqual.getText().equals("<="))
+            if (btnBeforeAfterEqual.getText().equals("X"))
+                btnBeforeAfterEqual.setText("<=");
+            else if (btnBeforeAfterEqual.getText().equals("<="))
                 btnBeforeAfterEqual.setText("=");
             else if (btnBeforeAfterEqual.getText().equals("="))
                 btnBeforeAfterEqual.setText(">=");
-            else btnBeforeAfterEqual.setText("<=");
+            else btnBeforeAfterEqual.setText("X");
             return true;
         });
 
@@ -314,11 +317,13 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
         edtDate.setText(simpleDateFormat.format(category.LastImported()));
+        /*
         if (category.size() == 0)
             btnBeforeAfterEqual.setText("<=");
         else
             btnBeforeAfterEqual.setText(">=");
-
+         */
+        btnBeforeAfterEqual.setText("X");
         edtImportLimit.setText("" + Config.ImportLimit.getValue());
     }
 
@@ -331,10 +336,13 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             if (GL.that.getFocusedEditTextField().equals(edtCategory)) {
                 Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
                 edtDate.setText(simpleDateFormat.format(category.LastImported()));
+                /*
                 if (category.size() == 0)
                     btnBeforeAfterEqual.setText("<=");
                 else
                     btnBeforeAfterEqual.setText(">=");
+                */
+                btnBeforeAfterEqual.setText("X");
             }
         }
     }
@@ -434,9 +442,14 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                     if (gpxFilename != null) {
                         Query q = new Query()
                                 .resultWithFullFields()
-                                .resultWithLogs(30)
                                 //.resultWithImages(30)
-                                .publishedDate(publishDate, btnBeforeAfterEqual.getText());
+                        ;
+                        if (!btnBeforeAfterEqual.getText().equals("X")) {
+                                q.publishedDate(publishDate, btnBeforeAfterEqual.getText());
+                        }
+                        if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
+                            q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
+                        }
                         if (Radius.getText().trim().length() > 0) {
 
                             int radius;
