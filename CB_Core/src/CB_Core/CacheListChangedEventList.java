@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * @author Longri
  */
 public class CacheListChangedEventList {
-    public static ArrayList<CacheListChangedEventListener> list = new ArrayList<CacheListChangedEventListener>();
+    public static ArrayList<CacheListChangedEventListener> list = new ArrayList<>();
     private static Thread threadCall;
 
     public static void Add(CacheListChangedEventListener event) {
@@ -89,19 +89,15 @@ public class CacheListChangedEventList {
         }
 
         if (threadCall == null)
-            threadCall = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    synchronized (list) {
-                        for (CacheListChangedEventListener event : list) {
-                            if (event == null)
-                                continue;
-                            event.CacheListChangedEvent();
-                        }
+            threadCall = new Thread(() -> {
+                synchronized (list) {
+                    for (CacheListChangedEventListener event : list) {
+                        if (event == null)
+                            continue;
+                        event.CacheListChangedEvent();
                     }
-
                 }
+
             });
 
         threadCall.start();

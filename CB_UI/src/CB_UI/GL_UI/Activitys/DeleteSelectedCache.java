@@ -24,7 +24,6 @@ import CB_Core.Types.CacheListDAO;
 import CB_Core.Types.Waypoint;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GlobalCore;
-import CB_Utils.Log.Log;
 
 import java.util.ArrayList;
 
@@ -32,38 +31,25 @@ public class DeleteSelectedCache {
     private static final String log = "DeleteSelectedCache";
 
     public static void Execute() {
-        // Images
-        Log.debug(log, "Delete Images");
-        ArrayList<String> GcCodeList = new ArrayList<String>();
+        ArrayList<String> GcCodeList = new ArrayList<>();
         GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
         CacheListDAO dao = new CacheListDAO();
         dao.delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
-        GcCodeList = null;
-        dao = null;
-        // Waypoints
-        Log.debug(log, "Delete Waypoints");
+
         for (int i = 0, n = GlobalCore.getSelectedCache().waypoints.size(); i < n; i++) {
             Waypoint wp = GlobalCore.getSelectedCache().waypoints.get(i);
             Database.DeleteFromDatabase(wp);
         }
-        // Cache
-        Log.debug(log, "Delete Cache " + GlobalCore.getSelectedCache().getGcCode());
+
         Database.Data.sql.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
-        // Logs
-        Log.debug(log, "Delete Logs");
+
         LogDAO logdao = new LogDAO();
         //logdao.ClearOrphanedLogs(); // doit when you have more time
         logdao.deleteLogs(GlobalCore.getSelectedCache().Id);
-        logdao = null;
-        // compact DB hangs : commented out
-        // Log.debug(log, "Delete compact DB");
-        // Database.Data.execSQL("vacuum");
-        // Filter Liste neu aufbauen oder gibt es eine schnellere Möglichkeit?
-        Log.debug(log, "Execute LastFilter");
         EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
-        Log.debug(log, "unselect Cache");
+
         GlobalCore.setSelectedCache(null);
-        Log.debug(log, "Rebuild View");
+
         CacheListChangedEventList.Call();
     }
 }

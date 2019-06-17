@@ -262,7 +262,10 @@ public class CacheListDAO {
     public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
             delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            Database.Data.sql.beginTransaction();
             long ret = Database.Data.sql.delete("Caches", Where, null);
+            Database.Data.sql.setTransactionSuccessful();
+            Database.Data.sql.endTransaction();
             Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
             return ret;
         } catch (Exception e) {

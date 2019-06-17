@@ -282,13 +282,20 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         });
 
         btnBeforeAfterEqual.setOnClickListener((v, x, y, pointer, button) -> {
-            if (btnBeforeAfterEqual.getText().equals("X"))
-                btnBeforeAfterEqual.setText("<=");
-            else if (btnBeforeAfterEqual.getText().equals("<="))
-                btnBeforeAfterEqual.setText("=");
-            else if (btnBeforeAfterEqual.getText().equals("="))
-                btnBeforeAfterEqual.setText(">=");
-            else btnBeforeAfterEqual.setText("X");
+            switch (btnBeforeAfterEqual.getText()) {
+                case "X":
+                    btnBeforeAfterEqual.setText("<=");
+                    break;
+                case "<=":
+                    btnBeforeAfterEqual.setText("=");
+                    break;
+                case "=":
+                    btnBeforeAfterEqual.setText(">=");
+                    break;
+                default:
+                    btnBeforeAfterEqual.setText("X");
+                    break;
+            }
             return true;
         });
 
@@ -451,7 +458,6 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                             q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
                         }
                         if (Radius.getText().trim().length() > 0) {
-
                             int radius;
                             try {
                                 radius = Integer.parseInt(Radius.getText());

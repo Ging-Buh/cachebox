@@ -85,13 +85,13 @@ public class Action_chkState extends AbstractAction {
                     }
                     skip += BlockSize;
 
-                    // Database.Data.beginTransaction();
+                    Database.Data.sql.beginTransaction();
                     for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
                         if (dao.UpdateDatabaseCacheState(ci.cache))
                             ChangedCount++;
                     }
-                    // Database.Data.setTransactionSuccessful();
-                    // Database.Data.endTransaction();
+                    Database.Data.sql.setTransactionSuccessful();
+                    Database.Data.sql.endTransaction();
 
                     if (APIError != OK) {
                         GL.that.Toast(LastAPIError);
