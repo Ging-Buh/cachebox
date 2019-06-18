@@ -8,9 +8,9 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
@@ -30,7 +30,7 @@ public class ParkingDialog extends ButtonDialog {
     private float TextFieldHeight;
     private SizeF msgBoxContentSize;
     private ImageButton btSetGPS, btSelectWP, btDeleteP;
-    private Label lblSetGPS, lblSelectWP, lblDeleteP;
+    private CB_Label lblSetGPS, lblSelectWP, lblDeleteP;
 
     public ParkingDialog() {
         super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation.get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
@@ -69,9 +69,9 @@ public class ParkingDialog extends ButtonDialog {
 
         Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
-        lblSetGPS = new Label(btSetGPS.ScaleCenter(0.8f));
-        lblSelectWP = new Label(btSelectWP.ScaleCenter(0.8f));
-        lblDeleteP = new Label(btDeleteP.ScaleCenter(0.8f));
+        lblSetGPS = new CB_Label(btSetGPS.ScaleCenter(0.8f));
+        lblSelectWP = new CB_Label(btSelectWP.ScaleCenter(0.8f));
+        lblDeleteP = new CB_Label(btDeleteP.ScaleCenter(0.8f));
 
         lblSetGPS.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
         lblSelectWP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);

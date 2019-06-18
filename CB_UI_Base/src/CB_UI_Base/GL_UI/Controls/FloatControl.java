@@ -6,7 +6,7 @@ import CB_UI_Base.Math.CB_RectF;
 
 public class FloatControl extends CB_View_Base {
     ProgressBar progressbar;
-    Button slideButton;
+    CB_Button slideButton;
     iValueChanged changeListener;
 
     public FloatControl(CB_RectF rec, String Name, iValueChanged listener) {
@@ -18,7 +18,7 @@ public class FloatControl extends CB_View_Base {
         progressbar.setZeroPos();
         progressbar.setY(getHalfHeight() - progressbar.getHalfHeight());
         this.addChild(progressbar);
-        slideButton = new Button(rec, "");
+        slideButton = new CB_Button(rec, "");
         slideButton.setWidth(this.getHeight());
         slideButton.setZeroPos();
         slideButton.setDraggable();

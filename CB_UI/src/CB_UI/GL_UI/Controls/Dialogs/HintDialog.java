@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -19,7 +19,7 @@ public class HintDialog extends MessageBox {
         addButtons(Translation.get("decode"), null, Translation.get("close"));
         CB_RectF rec = getContentSize().getBounds();
         scrollBox = new ScrollBox(rec);
-        label = new Label("Hint"); // oder ohne Parameter aufrufen
+        label = new CB_Label("Hint"); // oder ohne Parameter aufrufen
         // damit label.Pos auf (leftBorder, bottomBorder) gesetzt wird (ev. 0,0)
         scrollBox.initRow(BOTTOMUP);
         // damit die Breite des Labels zur Bestimmung des Umbruchs gesetzt ist:

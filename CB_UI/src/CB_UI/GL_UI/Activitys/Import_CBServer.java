@@ -31,8 +31,8 @@ import CB_UI.GL_UI.Activitys.APIs.ExportCBServerListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -59,9 +59,9 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private static final String log = "Import_CBServer";
     private final ScrollBox scrollBox;
     private V_ListView lvExport;
-    private Button bOK;
-    private Button refreshExportList;
-    private Label lblProgressMsg;
+    private CB_Button bOK;
+    private CB_Button refreshExportList;
+    private CB_Label lblProgressMsg;
     private ProgressBar pgBar;
     private Timer mAnimationTimer;
     private int animationValue = 0;
@@ -99,8 +99,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     }
 
     private void createOkCancelBtn() {
-        bOK = new Button(0, 0, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        Button bCancel = new Button(0, 0, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+        CB_Button bCancel = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         this.initRow(BOTTOMUP);
         // Translations
@@ -133,7 +133,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             return true;
         });
 
-        refreshExportList = new Button(name);
+        refreshExportList = new CB_Button(name);
         refreshExportList.setText(Translation.get("refreshExportList"));
         refreshExportList.setOnClickListener((v, x, y, pointer, button) -> {
             refreshExportList();
@@ -144,7 +144,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     }
 
     private void createTitleLine() {
-        Label lblTitle = new Label(Translation.get("export"), Fonts.getBig(), null, null);
+        CB_Label lblTitle = new CB_Label(Translation.get("export"), Fonts.getBig(), null, null);
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
         CB_RectF rec = new CB_RectF(0, 0, 0, lineHeight);
@@ -152,7 +152,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         pgBar.setProgress(0, "");
 
         float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
-        lblProgressMsg = new Label("", Fonts.getSmall(), null, null);
+        lblProgressMsg = new CB_Label("", Fonts.getSmall(), null, null);
         lblProgressMsg.setHeight(SmallLineHeight);
 
         this.initRow(TOPDOWN);

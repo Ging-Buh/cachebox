@@ -20,10 +20,10 @@ import CB_Core.LogTypes;
 import CB_Core.Types.Draft;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -52,7 +52,7 @@ public class DraftViewItem extends ListViewItemBackground {
     private static float headHeight;
     private Draft draft;
     private Image ivTyp;
-    private Label lblDate;
+    private CB_Label lblDate;
     private Image ivCacheType;
     private EditTextField mCacheName;
     private EditTextField mGcCode;
@@ -74,7 +74,7 @@ public class DraftViewItem extends ListViewItemBackground {
         iniCommentLabel();
 
         if (this.draft == null) {
-            Button btnLoadMore = new Button(Translation.get("LoadMore"));
+            CB_Button btnLoadMore = new CB_Button(Translation.get("LoadMore"));
             btnLoadMore.setWidth(this.getWidth());
             btnLoadMore.setOnClickListener(new OnClickListener() {
 
@@ -143,7 +143,7 @@ public class DraftViewItem extends ListViewItemBackground {
             e.printStackTrace();
         }
 
-        lblDate = new Label(" lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight);
+        lblDate = new CB_Label(" lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight);
         lblDate.setFont(Fonts.getNormal());
         lblDate.setText(dateString);
         this.addChild(lblDate);

@@ -32,11 +32,11 @@ import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.*;
-import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.CB_CheckBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.CB_Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
-import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -85,24 +85,24 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private boolean IMAGE_LINE_ACTIVE;
     private int importType; // um direkt gleich den Import für eine bestimmte API starten zu können
     private V_ListView lvPQs, lvCBServer;
-    private Button bOK;
-    private Button refreshPqList;
-    private Button refreshCBServerList;
-    private Button btnSelectFile;
+    private CB_Button bOK;
+    private CB_Button refreshPqList;
+    private CB_Button refreshCBServerList;
+    private CB_Button btnSelectFile;
     private float innerLeft, innerHeight, CollapseBoxHeight;
     private float CollapseBoxLogsMaxHeight;
-    private Label lblPQ;
-    private Label lblCBServer;
-    private Label lblGPX;
-    private Label lblGcVote;
-    private Label lblImage;
-    private Label lblSpoiler;
-    private Label lblMaps;
-    private Label lblProgressMsg;
-    private Label lblLogs;
-    private Label lblCompact;
+    private CB_Label lblPQ;
+    private CB_Label lblCBServer;
+    private CB_Label lblGPX;
+    private CB_Label lblGcVote;
+    private CB_Label lblImage;
+    private CB_Label lblSpoiler;
+    private CB_Label lblMaps;
+    private CB_Label lblProgressMsg;
+    private CB_Label lblLogs;
+    private CB_Label lblCompact;
     private ProgressBar pgBar;
-    private ChkBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
+    private CB_CheckBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
     private CollapseBox PQ_ListCollapseBox, CBServerCollapseBox, LogCollapseBox;
     private IAnimatedHeightChangedListener mAnimationListener = height -> animatedHeightChanged();
     private Spinner spinner;
@@ -110,7 +110,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
         @Override
-        public void onCheckedChanged(ChkBox view, boolean isChecked) {
+        public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
             if (checkBoxCleanLogs.isChecked()) {
                 LogCollapseBox.expand();
                 spinner.setSelection(Config.LogMaxMonthAge.getValue());
@@ -128,7 +128,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private ArrayList<PQ> PqList;
     private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
         @Override
-        public void onCheckedChanged(ChkBox view, boolean isChecked) {
+        public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
             if (checkImportPQfromGC.isChecked()) {
                 checkBoxImportGPX.setChecked(true);
                 checkBoxImportGPX.setEnabled(false);
@@ -144,7 +144,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private ArrayList<RpcAnswer_GetExportList.ListItem> cbServerExportList;
     private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
         @Override
-        public void onCheckedChanged(ChkBox view, boolean isChecked) {
+        public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
             if (checkImportFromCBServer.isChecked()) {
                 refreshCBServerList();
                 CBServerCollapseBox.expand();
@@ -246,8 +246,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createOkCancelBtn() {
-        bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Import");
-        Button bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Import");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Import");
+        CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Import");
 
         // Translations
         bOK.setText(Translation.get("import"));
@@ -286,7 +286,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-        Label lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
+        CB_Label lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
         float lblWidth = lblTitle.setText(Translation.get("import")).getTextWidth();
         this.addChild(lblTitle);
@@ -299,7 +299,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         float progressLineHeight = Fonts.MeasureSmall("Tg").height * 3;
 
-        lblProgressMsg = new Label(this.name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - progressLineHeight, innerWidth - margin - margin, progressLineHeight);
+        lblProgressMsg = new CB_Label(this.name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - progressLineHeight, innerWidth - margin - margin, progressLineHeight);
         lblProgressMsg.setFont(Fonts.getBubbleSmall());
         lblProgressMsg.setVAlignment(VAlignment.TOP);
 
@@ -312,7 +312,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         innerLeft = margin;
 
-        checkImportPQfromGC = new ChkBox("PQ");
+        checkImportPQfromGC = new CB_CheckBox("PQ");
         checkImportPQfromGC.setX(innerLeft);
         checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
         if (!PQ_LINE_ACTIVE) {
@@ -320,7 +320,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             checkImportPQfromGC.setHeight(0);
             checkImportPQfromGC.setChecked(false);
         }
-        lblPQ = new Label("lblPQ", checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3 - checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight());
+        lblPQ = new CB_Label("lblPQ", checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3 - checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight());
         lblPQ.setFont(Fonts.getNormal());
         lblPQ.setText(Translation.get("PQfromGC"));
         if (!PQ_LINE_ACTIVE) {
@@ -336,14 +336,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         innerLeft = margin;
 
-        checkImportFromCBServer = new ChkBox("CBServer");
+        checkImportFromCBServer = new CB_CheckBox("CBServer");
         checkImportFromCBServer.setX(innerLeft);
         checkImportFromCBServer.setY(innerHeight - checkImportFromCBServer.getHeight());
         if (!CBS_LINE_ACTIVE)
             checkImportFromCBServer.setVisible(false);
         if (!CBS_LINE_ACTIVE)
             checkImportFromCBServer.setHeight(0);
-        lblCBServer = new Label(this.name + " lblCBServer", checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3 - checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight());
+        lblCBServer = new CB_Label(this.name + " lblCBServer", checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3 - checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight());
         lblCBServer.setFont(Fonts.getNormal());
         lblCBServer.setText(Translation.get("FromCBServer"));
         if (!CBS_LINE_ACTIVE)
@@ -360,7 +360,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         PQ_ListCollapseBox = new CollapseBox(rec, "PqCollapse");
         PQ_ListCollapseBox.setBackground(this.getBackground());
 
-        refreshPqList = new Button(name);
+        refreshPqList = new CB_Button(name);
         refreshPqList.setWidth(PQ_ListCollapseBox.getWidth() - margin - margin);
         refreshPqList.setX(margin);
         refreshPqList.setY(margin);
@@ -386,7 +386,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         CBServerCollapseBox = new CollapseBox(rec, "CBServerCollapse");
         CBServerCollapseBox.setBackground(this.getBackground());
 
-        refreshCBServerList = new Button(name);
+        refreshCBServerList = new CB_Button(name);
         refreshCBServerList.setWidth(PQ_ListCollapseBox.getWidth() - margin - margin);
         refreshCBServerList.setX(margin);
         refreshCBServerList.setY(margin);
@@ -407,18 +407,18 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createGpxLine() {
-        checkBoxImportGPX = new ChkBox("GPX");
+        checkBoxImportGPX = new CB_CheckBox("GPX");
         checkBoxImportGPX.setX(innerLeft);
         checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
 
-        btnSelectFile = new Button(Translation.get("selectFile"));
+        btnSelectFile = new CB_Button(Translation.get("selectFile"));
 
         if (!GPX_LINE_ACTIVE) {
             checkBoxImportGPX.setVisible(false);
             checkBoxImportGPX.setHeight(0);
             btnSelectFile.setVisible(false);
         }
-        lblGPX = new Label(this.name + " lblGPX", checkBoxImportGPX.getMaxX() + margin, checkBoxImportGPX.getY(), innerWidth - margin * 3 - checkBoxImportGPX.getWidth(), checkBoxImportGPX.getHeight());
+        lblGPX = new CB_Label(this.name + " lblGPX", checkBoxImportGPX.getMaxX() + margin, checkBoxImportGPX.getY(), innerWidth - margin * 3 - checkBoxImportGPX.getWidth(), checkBoxImportGPX.getHeight());
         lblGPX.setFont(Fonts.getNormal());
         lblGPX.setText(Translation.get("GPX"));
 
@@ -438,14 +438,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private void createGcVoteLine() {
         if (Config.GcVotePassword.getValue().length() == 0)
             GCV_LINE_ACTIVE = false;
-        checkBoxGcVote = new ChkBox("GcVote");
+        checkBoxGcVote = new CB_CheckBox("GcVote");
         checkBoxGcVote.setX(innerLeft);
         checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
         if (!GCV_LINE_ACTIVE) {
             checkBoxGcVote.setVisible(false);
             checkBoxGcVote.setHeight(0);
         }
-        lblGcVote = new Label(this.name + " lblGcVote", checkBoxGcVote.getMaxX() + margin, checkBoxGcVote.getY(), innerWidth - margin * 3 - checkBoxGcVote.getWidth(), checkBoxGcVote.getHeight());
+        lblGcVote = new CB_Label(this.name + " lblGcVote", checkBoxGcVote.getMaxX() + margin, checkBoxGcVote.getY(), innerWidth - margin * 3 - checkBoxGcVote.getWidth(), checkBoxGcVote.getHeight());
         lblGcVote.setFont(Fonts.getNormal());
         lblGcVote.setText(Translation.get("GCVoteRatings"));
         if (!GCV_LINE_ACTIVE) {
@@ -459,11 +459,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     private void createImageLine() {
         // Preload Description Images
-        checkBoxPreloadImages = new ChkBox("Image");
+        checkBoxPreloadImages = new CB_CheckBox("Image");
         checkBoxPreloadImages.setX(innerLeft);
         checkBoxPreloadImages.setY(checkBoxGcVote.getY() - margin - checkBoxPreloadImages.getHeight());
 
-        lblImage = new Label(this.name + " lblImage", checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3 - checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight());
+        lblImage = new CB_Label(this.name + " lblImage", checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3 - checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight());
         lblImage.setFont(Fonts.getNormal());
         lblImage.setText(Translation.get("PreloadImages"));
 
@@ -472,11 +472,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             scrollBox.addChild(lblImage);
         }
         // Preload Spoiler Images
-        checkBoxPreloadSpoiler = new ChkBox("Image");
+        checkBoxPreloadSpoiler = new CB_CheckBox("Image");
         checkBoxPreloadSpoiler.setX(innerLeft);
         checkBoxPreloadSpoiler.setY(checkBoxPreloadImages.getY() - margin - checkBoxPreloadSpoiler.getHeight());
 
-        lblSpoiler = new Label(this.name + " lblSpoiler", checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxPreloadSpoiler.getY(), innerWidth - margin * 3 - checkBoxPreloadSpoiler.getWidth(), checkBoxPreloadSpoiler.getHeight());
+        lblSpoiler = new CB_Label(this.name + " lblSpoiler", checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxPreloadSpoiler.getY(), innerWidth - margin * 3 - checkBoxPreloadSpoiler.getWidth(), checkBoxPreloadSpoiler.getHeight());
         lblSpoiler.setFont(Fonts.getNormal());
         lblSpoiler.setText(Translation.get("PreloadSpoiler"));
 
@@ -491,11 +491,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createMapLine() {
-        checkBoxImportMaps = new ChkBox("Image");
+        checkBoxImportMaps = new CB_CheckBox("Image");
         checkBoxImportMaps.setX(innerLeft);
         checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
 
-        lblMaps = new Label(this.name + " lblMaps", checkBoxImportMaps.getMaxX() + margin, checkBoxImportMaps.getY(), innerWidth - margin * 3 - checkBoxImportMaps.getWidth(), checkBoxImportMaps.getHeight());
+        lblMaps = new CB_Label(this.name + " lblMaps", checkBoxImportMaps.getMaxX() + margin, checkBoxImportMaps.getY(), innerWidth - margin * 3 - checkBoxImportMaps.getWidth(), checkBoxImportMaps.getHeight());
         lblMaps.setFont(Fonts.getNormal());
         lblMaps.setText(Translation.get("Maps"));
 
@@ -505,7 +505,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createLogLine() {
-        checkBoxCleanLogs = new ChkBox("Image");
+        checkBoxCleanLogs = new CB_CheckBox("Image");
         checkBoxCleanLogs.setX(innerLeft);
 
         float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
@@ -515,7 +515,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             checkBoxCleanLogs.setVisible(false);
             checkBoxCleanLogs.setHeight(0);
         }
-        lblLogs = new Label(this.name + " lblLogs", checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3 - checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight());
+        lblLogs = new CB_Label(this.name + " lblLogs", checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3 - checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight());
         lblLogs.setFont(Fonts.getNormal());
         lblLogs.setText(Translation.get("DeleteLogs"));
 
@@ -574,7 +574,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         LogCollapseBox.addChild(spinner);
 
-        Label lblButKeepLeast = new Label(this.name + " lblButKeepLeast", margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(), SmallLineHeight);
+        CB_Label lblButKeepLeast = new CB_Label(this.name + " lblButKeepLeast", margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(), SmallLineHeight);
         lblButKeepLeast.setText(Translation.get("ButKeepLeast"));
         LogCollapseBox.addChild(lblButKeepLeast);
 
@@ -604,7 +604,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createCompactDBLine() {
-        checkBoxCompactDB = new ChkBox("Compact");
+        checkBoxCompactDB = new CB_CheckBox("Compact");
         checkBoxCompactDB.setX(innerLeft);
         checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
@@ -612,7 +612,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             checkBoxCompactDB.setVisible(false);
             checkBoxCompactDB.setHeight(0);
         }
-        lblCompact = new Label(this.name + " lblCompact", checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight());
+        lblCompact = new CB_Label(this.name + " lblCompact", checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight());
         lblCompact.setFont(Fonts.getNormal());
         lblCompact.setText(Translation.get("CompactDB"));
 

@@ -36,12 +36,12 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -56,7 +56,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent {
     private static AboutView that;
-    private Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
+    private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
     private Image CB_Logo;
     private float margin;
     private CancelWaitDialog pd;
@@ -133,13 +133,13 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         GlyphLayout layout = new GlyphLayout();
         layout.setText(Fonts.getSmall(), VersionString);
 
-        descTextView = new Label(this.name + " descTextView", 0, CB_Logo.getY() - margin - margin - margin - layout.height, this.getWidth(), layout.height + margin);
+        descTextView = new CB_Label(this.name + " descTextView", 0, CB_Logo.getY() - margin - margin - margin - layout.height, this.getWidth(), layout.height + margin);
         descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
         descTextView.setWrappedText(VersionString);
         this.addChild(descTextView);
 
-        CachesFoundLabel = new Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
+        CachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
         CachesFoundLabel.setWidth(getWidth());
 
         CachesFoundLabel.setOnClickListener(new OnClickListener() {
@@ -215,19 +215,19 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         float leftMaxWidth = 0;
         CB_RectF lblRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight() / 2.5f);
 
-        lblGPS = new Label(lblRec);
+        lblGPS = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.get("gps")).getTextWidth());
 
-        lblAccuracy = new Label(lblRec);
+        lblAccuracy = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(Translation.get("accuracy")).getTextWidth());
 
-        lblWP = new Label(lblRec);
+        lblWP = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.get("waypoint")).getTextWidth());
 
-        lblCoord = new Label(lblRec);
+        lblCoord = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblCoord.setText(Translation.get("coordinate")).getTextWidth());
 
-        lblCurrent = new Label(lblRec);
+        lblCurrent = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.get("current")).getTextWidth());
 
         // set all lbl to the same max width + margin
@@ -257,12 +257,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         lblRec.setX(lblGPS.getMaxX() + margin);
         lblRec.setWidth(this.getWidth() - margin - lblGPS.getMaxX());
 
-        Gps = new Label(lblRec);
-        Accuracy = new Label(lblRec);
-        WaypointLabel = new Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
+        Gps = new CB_Label(lblRec);
+        Accuracy = new CB_Label(lblRec);
+        WaypointLabel = new CB_Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
         WaypointLabel.setRec(lblRec);
-        CoordLabel = new Label(lblRec);
-        Current = new Label(lblRec);
+        CoordLabel = new CB_Label(lblRec);
+        Current = new CB_Label(lblRec);
 
         // set Y Pos
         Gps.setY(lblGPS.getY());

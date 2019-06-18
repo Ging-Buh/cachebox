@@ -2,7 +2,7 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
@@ -24,8 +24,8 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
     private static String titleText;
     private static ProgressDialog that;
     public float measuredLabelHeight = 0;
-    private Label messageTextView;
-    private Label progressMessageTextView;
+    private CB_Label messageTextView;
+    private CB_Label progressMessageTextView;
     private ProgressBar progressBar;
     private AnimationBase animation;
     private boolean isCanceld = false;
@@ -53,7 +53,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
 
         measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 
-        progressMessageTextView = new Label(this.name + " progressMessageTextView", leftBorder, margin, innerWidth, measuredLabelHeight);
+        progressMessageTextView = new CB_Label(this.name + " progressMessageTextView", leftBorder, margin, innerWidth, measuredLabelHeight);
         this.addChild(progressMessageTextView);
 
         CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width, UI_Size_Base.that.getButtonHeight() * 0.75f);
@@ -62,7 +62,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         progressBar.setProgress(0);
         this.addChild(progressBar);
 
-        messageTextView = new Label(this.name + " messageTextView", leftBorder, progressBar.getMaxY() + margin, innerWidth, measuredLabelHeight);
+        messageTextView = new CB_Label(this.name + " messageTextView", leftBorder, progressBar.getMaxY() + margin, innerWidth, measuredLabelHeight);
         this.addChild(messageTextView);
 
     }

@@ -49,10 +49,10 @@ public class TB_Log extends ActivityBase {
     public static TB_Log that;
     static WaitDialog wd;
     private Trackable TB;
-    private Button btnClose;
+    private CB_Button btnClose;
     private ImageButton btnAction;
     private Image icon, CacheIcon;
-    private Label lblPlaced;
+    private CB_Label lblPlaced;
     private EditTextField lblName;
     private Box contentBox;
     private LogTypes LT;
@@ -75,7 +75,7 @@ public class TB_Log extends ActivityBase {
 
     private void createControls() {
 
-        btnClose = new Button("Close");
+        btnClose = new CB_Button("Close");
         btnClose.setText(Translation.get("close"));
         btnClose.setOnClickListener((v, x, y, pointer, button) -> {
             TB_Log.this.finish();
@@ -99,7 +99,7 @@ public class TB_Log extends ActivityBase {
         lblName = new EditTextField(iconRec, this, "lblName");
 
         CacheIcon = new Image(iconRec, "CacheIcon", false);
-        lblPlaced = new Label(iconRec);
+        lblPlaced = new CB_Label(iconRec);
 
         edit = new EditTextField(this, "edit").setWrapType(WrapType.WRAPPED);
         edit.setWidth(contentBox.getInnerWidth());

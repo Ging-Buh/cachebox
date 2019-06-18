@@ -28,9 +28,9 @@ import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.IReturnListener;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
@@ -62,7 +62,7 @@ public class MainViewInit extends MainViewBase {
     TextureAtlas atlas;
     ProgressBar progress;
     Image CB_Logo, OSM_Logo, Route_Logo, Mapsforge_Logo, LibGdx_Logo, GC_Logo;
-    Label descTextView;
+    CB_Label descTextView;
     int step = 0;
     boolean switcher = false;
     boolean breakForWait = false;
@@ -138,7 +138,7 @@ public class MainViewInit extends MainViewBase {
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
         CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
         CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
-        Label dummy = new Label();
+        CB_Label dummy = new CB_Label();
         this.initRow();
         this.addLast(dummy);
         this.addNext(dummy);
@@ -146,7 +146,7 @@ public class MainViewInit extends MainViewBase {
         this.addLast(dummy);
 
         String VersionString = GlobalCore.getInstance().getVersionString();
-        descTextView = new Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
+        descTextView = new CB_Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
         descTextView.setHeight(descTextView.getTextHeight());
         this.addLast(descTextView);
 

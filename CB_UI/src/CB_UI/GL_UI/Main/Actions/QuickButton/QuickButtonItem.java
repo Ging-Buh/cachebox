@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -43,7 +43,7 @@ public class QuickButtonItem extends ListViewItemBase {
     private AbstractAction mAction;
     private Image mButtonIcon;
     private String mActionDesc;
-    private Button mButton;
+    private CB_Button mButton;
     private QuickActions quickActionsEnum;
     private int autoResortState = -1;
     private int spoilerState = -1;
@@ -67,7 +67,7 @@ public class QuickButtonItem extends ListViewItemBase {
 
         mActionDesc = Desc;
 
-        mButton = new Button(rec, "QuickListItemButton");
+        mButton = new CB_Button(rec, "QuickListItemButton");
         mButton.setButtonSprites(Sprites.QuickButton);
         mButton.setDraggable();
         this.addChild(mButton);

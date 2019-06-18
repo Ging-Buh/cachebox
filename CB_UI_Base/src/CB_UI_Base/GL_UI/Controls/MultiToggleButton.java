@@ -32,7 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 import java.util.ArrayList;
 
-public class MultiToggleButton extends Button {
+public class MultiToggleButton extends CB_Button {
 
     private final ArrayList<States> State = new ArrayList<MultiToggleButton.States>();
     boolean wasLongClicked = false;

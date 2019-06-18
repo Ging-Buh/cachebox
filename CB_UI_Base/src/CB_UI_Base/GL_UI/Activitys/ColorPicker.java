@@ -17,7 +17,7 @@ package CB_UI_Base.GL_UI.Activitys;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Box;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.ColorPickerRec;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Fonts;
@@ -35,8 +35,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class ColorPicker extends ActivityBase {
     private HSV_Color InitialColor;
     private HSV_Color actColor;
-    private Button bOK;
-    private Button bCancel;
+    private CB_Button bOK;
+    private CB_Button bCancel;
 
     private IReturnListener mReturnListener;
 
@@ -74,8 +74,8 @@ public class ColorPicker extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("ok"));

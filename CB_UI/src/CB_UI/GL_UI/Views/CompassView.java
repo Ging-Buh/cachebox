@@ -38,10 +38,10 @@ import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.CB_Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -75,7 +75,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     private Box topContentBox, leftBox, rightBox, rightBoxMask, distanceBack;
     private ScrollBox topBox;
     private SatBarChart chart;
-    private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblOwnCoords, lblBearing;
+    private CB_Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblOwnCoords, lblBearing;
     private CacheInfo cacheInfo;
     private Cache aktCache;
     private Waypoint aktWaypoint;
@@ -396,7 +396,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             mCompassMapView.setZeroPos();
             rightBox.addChild(mCompassMapView);
 
-            lblDistance = new Label("Distance", margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f));
+            lblDistance = new CB_Label("Distance", margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f));
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.CENTER);
@@ -407,7 +407,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             rightBox.addChild(lblDistance);
         } else {
             float h = Fonts.MeasureBig("T").height * 2.5f;
-            lblDistance = new Label("Distance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
+            lblDistance = new CB_Label("Distance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.LEFT);
@@ -418,7 +418,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             lblDistance.setX(margin);
             lblDistance.setVAlignment(VAlignment.BOTTOM);
 
-            lblAccuracy = new Label(lblDistance);
+            lblAccuracy = new CB_Label(lblDistance);
             lblAccuracy.setHAlignment(HAlignment.RIGHT);
             lblAccuracy.setZeroPos();
             lblAccuracy.setVAlignment(VAlignment.CENTER);
@@ -476,7 +476,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                 }
             }
             if (showName) {
-                lbl_Name = new Label("");
+                lbl_Name = new CB_Label("");
                 lbl_Name.setHeight(lblHeight);
                 topContentBox.addLast(lbl_Name);
             }
@@ -484,7 +484,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
         // add WP description line
         if (showWpDesc) {
-            lblDesc = new Label("");
+            lblDesc = new CB_Label("");
             lblDesc.setHeight(descHeight);
             topContentBox.addLast(lblDesc);
         }
@@ -493,7 +493,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         float mesuredCoorWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
         if (showGcCode || showCoords) {
             if (showCoords) {
-                lblCoords = new Label("");
+                lblCoords = new CB_Label("");
                 lblCoords.setHeight(lblHeight);
                 lblCoords.setWidth(mesuredCoorWidth);
                 if (showGcCode) {
@@ -503,7 +503,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                 }
             }
             if (showGcCode) {
-                lblGcCode = new Label("");
+                lblGcCode = new CB_Label("");
                 lblGcCode.setHeight(lblHeight);
                 topContentBox.addLast(lblGcCode);
             }
@@ -513,16 +513,16 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         if (showSatInfos) {
             if (showMap)//
             {
-                lblAlt = new Label("");
+                lblAlt = new CB_Label("");
                 lblAlt.setHeight(lblHeight);
                 topContentBox.addNext(lblAlt, 0.9f);
 
-                lblAccuracy = new Label("");
+                lblAccuracy = new CB_Label("");
                 lblAccuracy.setHeight(lblHeight);
                 topContentBox.addNext(lblAccuracy, 0.7f);
 
             } else {
-                lblAlt = new Label("");
+                lblAlt = new CB_Label("");
                 lblAlt.setHeight(lblHeight);
                 topContentBox.addNext(lblAlt);
             }
@@ -534,7 +534,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             chart.setWidth(chartWidth);
             topContentBox.addLast(chart, CB_View_Base.FIXED);
 
-            lblOwnCoords = new Label("");
+            lblOwnCoords = new CB_Label("");
             lblOwnCoords.setHeight(lblHeight);
             lblOwnCoords.setWidth(chart.getX() - margin);
             lblOwnCoords.setPos(0, lblAlt.getMaxY() + margin);
@@ -544,7 +544,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
         // add Target direction
         if (showTargetDirection) {
-            lblBearing = new Label("");
+            lblBearing = new CB_Label("");
             lblBearing.setHeight(lblHeight);
 
             topContentBox.addLast(lblBearing);

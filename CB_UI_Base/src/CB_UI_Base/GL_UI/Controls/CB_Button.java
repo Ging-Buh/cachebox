@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 /**
  * @author Longri
  */
-public class Button extends CB_View_Base {
+public class CB_Button extends CB_View_Base {
     protected BitmapFont mFont;
 
     protected Drawable drawableNormal;
@@ -43,40 +43,40 @@ public class Button extends CB_View_Base {
     protected boolean isFocused = false;
     protected boolean isPressed = false;
     protected boolean isDisabled = false;
-    protected Label lblTxt;
+    protected CB_Label lblTxt;
     protected boolean dragableButton = false;
-    protected Label.HAlignment hAlignment = Label.HAlignment.CENTER;
-    protected Label.VAlignment vAlignment = Label.VAlignment.CENTER;
+    protected CB_Label.HAlignment hAlignment = CB_Label.HAlignment.CENTER;
+    protected CB_Label.VAlignment vAlignment = CB_Label.VAlignment.CENTER;
 
     private Object tag = null; // sometimes also referred as data, for to attach an arbitrary object
 
-    public Button(float X, float Y, float Width, float Height, String Name) {
+    public CB_Button(float X, float Y, float Width, float Height, String Name) {
         super(X, Y, Width, Height, Name);
         this.setClickable(true);
     }
 
-    public Button(CB_RectF rec, GL_View_Base parent, String name) {
+    public CB_Button(CB_RectF rec, GL_View_Base parent, String name) {
         super(rec, parent, name);
         this.setClickable(true);
     }
 
-    public Button(GL_View_Base parent, String name) {
+    public CB_Button(GL_View_Base parent, String name) {
         super(UiSizes.that.getButtonRectF(), parent, name);
         this.setClickable(true);
     }
 
-    public Button(String text) {
+    public CB_Button(String text) {
         super(UiSizes.that.getButtonRectF(), text);
         this.setText(text);
         this.setClickable(true);
     }
 
-    public Button(CB_RectF rec, String name) {
+    public CB_Button(CB_RectF rec, String name) {
         super(rec, name);
         this.setClickable(true);
     }
 
-    public Button(CB_RectF rec, OnClickListener onClick) {
+    public CB_Button(CB_RectF rec, OnClickListener onClick) {
         super(rec, "");
         this.setOnClickListener(onClick);
     }
@@ -246,7 +246,7 @@ public class Button extends CB_View_Base {
             mFont = font;
         if (mFont == null)
             mFont = Fonts.getBig();
-        lblTxt = new Label(Text, mFont, color, WrapType.WRAPPED).setHAlignment(hAlignment).setVAlignment(vAlignment);
+        lblTxt = new CB_Label(Text, mFont, color, WrapType.WRAPPED).setHAlignment(hAlignment).setVAlignment(vAlignment);
         this.initRow(BOTTOMUP);
         this.addLast(lblTxt);
 
@@ -303,7 +303,7 @@ public class Button extends CB_View_Base {
         setText(Text, null, null);
     }
 
-    public void setVAlignment(Label.VAlignment alignment) {
+    public void setVAlignment(CB_Label.VAlignment alignment) {
         lblTxt.setVAlignment(alignment);
         //GL.that.renderOnce();
     }

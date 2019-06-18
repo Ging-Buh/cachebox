@@ -12,8 +12,8 @@ import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Box;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
@@ -36,7 +36,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private static Box mSlideBox, mSlideBoxContent;
     private final int ANIMATION_TIME = 50;// 50;
     private final QuickButtonList quickButtonList;
-    private final Label mLblCacheName;
+    private final CB_Label mLblCacheName;
     private final int QuickButtonMaxHeight;
     private final Handler handler = new Handler();
     private final ArrayList<YPositionChanged> eventList = new ArrayList<>();
@@ -127,7 +127,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
         mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
         mSlideBox.setBackground(Sprites.ProgressBack);
-        mLblCacheName = new Label(new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
+        mLblCacheName = new CB_Label(new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
         mLblCacheName.setPos(30, 0);
         mLblCacheName.setHAlignment(HAlignment.SCROLL_CENTER);
         mSlideBox.addChild(mLblCacheName);

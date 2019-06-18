@@ -26,7 +26,7 @@ public class EditCoord extends ActivityBase {
     private final UTMConvert convert = new UTMConvert();
     private final EditTextField invisibleTextField = new EditTextField(this, "invisibleTextField");
     private final String utmTest = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-    Button Leertaste; // additional to numeric input (for "deleting" input)
+    CB_Button Leertaste; // additional to numeric input (for "deleting" input)
     private int aktPage = -1; // Deg-Min
 
     // Allgemein
@@ -43,21 +43,21 @@ public class EditCoord extends ActivityBase {
     private Box pnlNumPad;
     // Deg : N_48.46270° E009.28468°
     private Box pnlD;
-    private Button[] btnDLat;
-    private Button[] btnDLon;
+    private CB_Button[] btnDLat;
+    private CB_Button[] btnDLon;
     // Deg - Min : N_48°27.762' E009°17.081'
     private Box pnlDM;
-    private Button[] btnDMLat;
-    private Button[] btnDMLon;
+    private CB_Button[] btnDMLat;
+    private CB_Button[] btnDMLon;
     // Deg - Min - Sec : N_48°28'56.16" E009°19'40.14"
     private Box pnlDMS;
-    private Button[] btnDMSLat;
-    private Button[] btnDMSLon;
+    private CB_Button[] btnDMSLat;
+    private CB_Button[] btnDMSLon;
     // Utm
     private Box pnlUTM;
-    private Button[] btnUTMLat;
-    private Button[] btnUTMLon;
-    private Button[] btnUTMZone;
+    private CB_Button[] btnUTMLat;
+    private CB_Button[] btnUTMLon;
+    private CB_Button[] btnUTMZone;
     OnClickListener mtbClicked = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -117,8 +117,8 @@ public class EditCoord extends ActivityBase {
         bSec.initialOn_Off_ToggleStates("Sec", "Sec");
         bUtm.initialOn_Off_ToggleStates("UTM", "UTM");
 
-        Button btnOK = new Button("btnOK");
-        Button btnCancel = new Button("btnCancel");
+        CB_Button btnOK = new CB_Button("btnOK");
+        CB_Button btnCancel = new CB_Button("btnCancel");
         this.initRow(BOTTOMUP);
         this.addNext(btnOK);
         this.addLast(btnCancel);
@@ -197,51 +197,51 @@ public class EditCoord extends ActivityBase {
 
     private void createD(Box panel) {
 
-        this.btnDLat = new Button[9]; // N_48[.]46270[°]
-        this.btnDLon = new Button[9]; // E009[.]28468[°]
+        this.btnDLat = new CB_Button[9]; // N_48[.]46270[°]
+        this.btnDLon = new CB_Button[9]; // E009[.]28468[°]
         for (int i = 0; i < 9; i++) {
-            this.btnDLat[i] = new Button(this, "btnDLat" + i);
-            this.btnDLon[i] = new Button(this, "btnDLon" + i);
+            this.btnDLat[i] = new CB_Button(this, "btnDLat" + i);
+            this.btnDLon[i] = new CB_Button(this, "btnDLon" + i);
         }
 
         // Lat
         for (int i = 0; i < 4; i++) {
             panel.addNext(this.btnDLat[i]);
         }
-        panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f); // [.]
+        panel.addNext(new CB_Label(".").setFont(Fonts.getBig()), 0.5f); // [.]
         for (int i = 4; i < 9; i++) {
             panel.addNext(this.btnDLat[i]);
         }
-        panel.addLast(new Label("°").setFont(Fonts.getBig()), 0.5f);
+        panel.addLast(new CB_Label("°").setFont(Fonts.getBig()), 0.5f);
         // Lon
         for (int i = 0; i < 4; i++) {
             panel.addNext(this.btnDLon[i]);
         }
-        panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label(".").setFont(Fonts.getBig()), 0.5f);
         for (int i = 4; i < 9; i++) {
             panel.addNext(this.btnDLon[i]);
         }
-        panel.addLast(new Label("°").setFont(Fonts.getBig()), 0.5f);
+        panel.addLast(new CB_Label("°").setFont(Fonts.getBig()), 0.5f);
         this.setClickHandlers(this.btnDLat, this.btnDLon);
     }
 
     private void createDM(Box panel) {
 
-        this.btnDMLat = new Button[9]; // N_48[°]29[.]369
-        this.btnDMLon = new Button[9]; // E__9[°]15[.]807
+        this.btnDMLat = new CB_Button[9]; // N_48[°]29[.]369
+        this.btnDMLon = new CB_Button[9]; // E__9[°]15[.]807
         for (int i = 0; i < 9; i++) {
-            this.btnDMLat[i] = new Button(this, "btnDMLat" + i);
-            this.btnDMLon[i] = new Button(this, "btnDMLon" + i);
+            this.btnDMLat[i] = new CB_Button(this, "btnDMLat" + i);
+            this.btnDMLon[i] = new CB_Button(this, "btnDMLon" + i);
         }
 
         // Lat
         for (int i = 0; i < 4; i++) {
             panel.addNext(this.btnDMLat[i]);
         }
-        panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label("°").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMLat[4]);
         panel.addNext(this.btnDMLat[5]);
-        panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label(".").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMLat[6]);
         panel.addNext(this.btnDMLat[7]);
         panel.addLast(this.btnDMLat[8]);
@@ -249,10 +249,10 @@ public class EditCoord extends ActivityBase {
         for (int i = 0; i < 4; i++) {
             panel.addNext(this.btnDMLon[i]);
         }
-        panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label("°").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMLon[4]);
         panel.addNext(this.btnDMLon[5]);
-        panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label(".").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMLon[6]);
         panel.addNext(this.btnDMLon[7]);
         panel.addLast(this.btnDMLon[8]);
@@ -262,24 +262,24 @@ public class EditCoord extends ActivityBase {
 
     private void createDMS(Box panel) {
 
-        this.btnDMSLat = new Button[10]; // N_48[°]28[']56[.]16["]
-        this.btnDMSLon = new Button[10]; // E__9[°]19[']40[.]14["]
+        this.btnDMSLat = new CB_Button[10]; // N_48[°]28[']56[.]16["]
+        this.btnDMSLon = new CB_Button[10]; // E__9[°]19[']40[.]14["]
         for (int i = 0; i < 10; i++) {
-            this.btnDMSLat[i] = new Button(this, "btnDMSLat" + i);
-            this.btnDMSLon[i] = new Button(this, "btnDMSLon" + i);
+            this.btnDMSLat[i] = new CB_Button(this, "btnDMSLat" + i);
+            this.btnDMSLon[i] = new CB_Button(this, "btnDMSLon" + i);
         }
 
         // Lat
         for (int i = 0; i < 4; i++) {
             panel.addNext(this.btnDMSLat[i]);
         }
-        panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label("°").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMSLat[4]);
         panel.addNext(this.btnDMSLat[5]);
-        panel.addNext(new Label("'").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label("'").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMSLat[6]);
         panel.addNext(this.btnDMSLat[7]);
-        panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label(".").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMSLat[8]);
         panel.addLast(this.btnDMSLat[9]);
         // leave it because of small screen size
@@ -289,13 +289,13 @@ public class EditCoord extends ActivityBase {
         for (int i = 0; i < 4; i++) {
             panel.addNext(this.btnDMSLon[i]);
         }
-        panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label("°").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMSLon[4]);
         panel.addNext(this.btnDMSLon[5]);
-        panel.addNext(new Label("'").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label("'").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMSLon[6]);
         panel.addNext(this.btnDMSLon[7]);
-        panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
+        panel.addNext(new CB_Label(".").setFont(Fonts.getBig()), 0.5f);
         panel.addNext(this.btnDMSLon[8]);
         panel.addLast(this.btnDMSLon[9]);
         // leave it because of small screen size
@@ -306,21 +306,21 @@ public class EditCoord extends ActivityBase {
 
     private void createUTM(Box panel) {
 
-        this.btnUTMLat = new Button[8]; // N < 10,000,000
-        this.btnUTMLon = new Button[8]; // E > 160,000 and < 834,000 (2 unsichtbar)
-        this.btnUTMZone = new Button[4]; // Zone 2stellig + 1 unsichtbar
+        this.btnUTMLat = new CB_Button[8]; // N < 10,000,000
+        this.btnUTMLon = new CB_Button[8]; // E > 160,000 and < 834,000 (2 unsichtbar)
+        this.btnUTMZone = new CB_Button[4]; // Zone 2stellig + 1 unsichtbar
 
         for (int i = 0; i < 8; i++) {
-            this.btnUTMLat[i] = new Button(this, "btnUTMLat" + i);
-            this.btnUTMLon[i] = new Button(this, "btnUTMLon" + i);
+            this.btnUTMLat[i] = new CB_Button(this, "btnUTMLat" + i);
+            this.btnUTMLon[i] = new CB_Button(this, "btnUTMLon" + i);
         }
         for (int i = 0; i < 4; i++) {
-            this.btnUTMZone[i] = new Button(this, "btnUTMZone" + i);
+            this.btnUTMZone[i] = new CB_Button(this, "btnUTMZone" + i);
         }
 
         // Lon
         Box pnlOstwert = new Box(panel.getInnerWidth(), this.btnUTMLon[0].getHeight(), "pnlOstwert");
-        panel.addNext(new Label("OstW"), -0.2f);// no Translation
+        panel.addNext(new CB_Label("OstW"), -0.2f);// no Translation
         panel.addLast(pnlOstwert); // erst die Breite bestimmen und dann darauf verteilen
         for (int i = 0; i < 7; i++) {
             pnlOstwert.addNext(this.btnUTMLon[i]);
@@ -330,7 +330,7 @@ public class EditCoord extends ActivityBase {
         // Lat
         Box pnlNordwert = new Box(panel.getInnerWidth(), this.btnUTMLat[0].getHeight(), "pnlNordwert");
         pnlNordwert.adjustHeight();
-        panel.addNext(new Label("NordW"), -0.2f);// no Translation
+        panel.addNext(new CB_Label("NordW"), -0.2f);// no Translation
         panel.addLast(pnlNordwert); // erst die Breite bestimmen und dann darauf verteilen
         for (int i = 0; i < 7; i++) {
             pnlNordwert.addNext(this.btnUTMLat[i]);
@@ -339,7 +339,7 @@ public class EditCoord extends ActivityBase {
 
         // Zone
         Box pnlZone = new Box(panel.getInnerWidth(), btnUTMZone[0].getHeight(), "pnlZone");
-        panel.addNext(new Label("Zone"), -0.2f);// no Translation
+        panel.addNext(new CB_Label("Zone"), -0.2f);// no Translation
         panel.addLast(pnlZone); // erst die Breite bestimmen und dann darauf verteilen
         pnlZone.addNext(btnUTMZone[0]);
         pnlZone.addNext(btnUTMZone[1]);
@@ -353,12 +353,12 @@ public class EditCoord extends ActivityBase {
         this.setUTMClickHandlers(this.btnUTMLat, this.btnUTMLon, this.btnUTMZone);
     }
 
-    private void setClickHandlers(Button[] bLat, Button[] bLon) {
+    private void setClickHandlers(CB_Button[] bLat, CB_Button[] bLon) {
         // N/S
         bLat[0].setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Button btn = (Button) v;
+                CB_Button btn = (CB_Button) v;
                 if (btn.getText().equals("N"))
                     btn.setText("S");
                 else
@@ -370,7 +370,7 @@ public class EditCoord extends ActivityBase {
         bLon[0].setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Button btn = (Button) v;
+                CB_Button btn = (CB_Button) v;
                 if (btn.getText().equals("E"))
                     btn.setText("W");
                 else
@@ -384,7 +384,7 @@ public class EditCoord extends ActivityBase {
             bLat[i].setOnClickListener(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    Button btn = (Button) v;
+                    CB_Button btn = (CB_Button) v;
                     // Focus setzen;
                     EditCoord parent = (EditCoord) btn.getParent();
                     // Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
@@ -407,7 +407,7 @@ public class EditCoord extends ActivityBase {
             bLon[i].setOnClickListener(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    Button btn = (Button) v;
+                    CB_Button btn = (CB_Button) v;
                     // Focus setzen;
                     EditCoord parent = (EditCoord) btn.getParent();
                     // Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
@@ -430,14 +430,14 @@ public class EditCoord extends ActivityBase {
         }
     }
 
-    private void setUTMClickHandlers(Button[] bLat, Button[] bLon, Button[] bZone) {
+    private void setUTMClickHandlers(CB_Button[] bLat, CB_Button[] bLon, CB_Button[] bZone) {
         // the clicked button accepts the next input from Numpad
 
         for (int i = 0; i < bLat.length; i++) {
             bLat[i].setOnClickListener(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    Button btn = (Button) v;
+                    CB_Button btn = (CB_Button) v;
                     // Focus setzen;
                     EditCoord parent = (EditCoord) btn.getParent();
                     // Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
@@ -453,7 +453,7 @@ public class EditCoord extends ActivityBase {
             bLon[i].setOnClickListener(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    Button btn = (Button) v;
+                    CB_Button btn = (CB_Button) v;
                     // Focus setzen;
                     EditCoord parent = (EditCoord) btn.getParent();
                     // Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
@@ -469,7 +469,7 @@ public class EditCoord extends ActivityBase {
             bZone[i].setOnClickListener(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    Button btn = (Button) v;
+                    CB_Button btn = (CB_Button) v;
                     // Focus setzen;
                     EditCoord parent = (EditCoord) btn.getParent();
                     // Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
@@ -485,19 +485,19 @@ public class EditCoord extends ActivityBase {
 
     private void createNumPad(Box panel) {
         // NumPad for edit of the Lat- / Lon- Buttons
-        Button[] btnNumpad;
-        btnNumpad = new Button[10];
-        Button dummy1 = new Button("dummy1");
+        CB_Button[] btnNumpad;
+        btnNumpad = new CB_Button[10];
+        CB_Button dummy1 = new CB_Button("dummy1");
         dummy1.setInvisible();
-        Leertaste = new Button(this, "Leertaste");
+        Leertaste = new CB_Button(this, "Leertaste");
         Leertaste.setInvisible();
 
         for (int i = 0; i < 10; i++) {
-            btnNumpad[i] = new Button(this, "btnNumpad" + i);
+            btnNumpad[i] = new CB_Button(this, "btnNumpad" + i);
             btnNumpad[i].setOnClickListener(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    Button btn = (Button) v;
+                    CB_Button btn = (CB_Button) v;
                     EditCoord parent = (EditCoord) btn.getParent();
                     switch (parent.aktPage) {
                         case 0:
@@ -537,7 +537,7 @@ public class EditCoord extends ActivityBase {
         Leertaste.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Button btn = (Button) v;
+                CB_Button btn = (CB_Button) v;
                 EditCoord parent = (EditCoord) btn.getParent();
                 numPadtoUTMButton(parent, "");
                 return true;
@@ -775,7 +775,7 @@ public class EditCoord extends ActivityBase {
 
     }
 
-    private int setFocus(Button[] bLat, Button[] bLon, int newFocus) {
+    private int setFocus(CB_Button[] bLat, CB_Button[] bLon, int newFocus) {
         int nrOfButtons = bLat.length;
         // highlighted to normal
         if (this.focus < nrOfButtons) {
@@ -792,7 +792,7 @@ public class EditCoord extends ActivityBase {
         return newFocus;
     }
 
-    private void setNextFocus(Button[] bLat, Button[] bLon) {
+    private void setNextFocus(CB_Button[] bLat, CB_Button[] bLon) {
         int nextFocus = this.focus + 1;
         if (nextFocus == bLat.length)
             nextFocus = this.focusStartLon; // jump

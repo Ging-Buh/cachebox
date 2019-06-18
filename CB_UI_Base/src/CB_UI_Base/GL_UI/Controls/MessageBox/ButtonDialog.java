@@ -17,10 +17,10 @@ package CB_UI_Base.GL_UI.Controls.MessageBox;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -43,11 +43,11 @@ public class ButtonDialog extends Dialog {
 
     private final ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
-    public Button button1;
-    public Button button2;
-    public Button button3;
+    public CB_Button button1;
+    public CB_Button button2;
+    public CB_Button button3;
     public OnMsgBoxClickListener mMsgBoxClickListener;
-    protected Label label;
+    protected CB_Label label;
     protected Object data;
     protected OnClickListener positiveButtonClickListener;
     protected OnClickListener neutralButtonClickListener;
@@ -71,7 +71,7 @@ public class ButtonDialog extends Dialog {
             addChild(iconImage);
         }
 
-        label = new Label(contentSize.getBounds());
+        label = new CB_Label(contentSize.getBounds());
         label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
         label.setX(imageRec.getMaxX() + 5);
         label.setY(-margin);
@@ -147,14 +147,14 @@ public class ButtonDialog extends Dialog {
 
         switch (anzahl) {
             case 1:
-                button1 = new Button(t1);
+                button1 = new CB_Button(t1);
                 this.addLast(button1);
                 button1.setOnClickListener(positiveButtonClickListener);
                 // addFooterChild(button1);
                 break;
             case 2:
-                button1 = new Button(t1);
-                button3 = new Button(t3);
+                button1 = new CB_Button(t1);
+                button3 = new CB_Button(t3);
                 this.addNext(button1);
                 this.addLast(button3);
                 button1.setOnClickListener(positiveButtonClickListener);
@@ -163,9 +163,9 @@ public class ButtonDialog extends Dialog {
                 // addFooterChild(button3);
                 break;
             case 3:
-                button1 = new Button(t1);
-                button2 = new Button(t2);
-                button3 = new Button(t3);
+                button1 = new CB_Button(t1);
+                button2 = new CB_Button(t2);
+                button3 = new CB_Button(t3);
                 this.addNext(button1);
                 this.addNext(button2);
                 this.addLast(button3);

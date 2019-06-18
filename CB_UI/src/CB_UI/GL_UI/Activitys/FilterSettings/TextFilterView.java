@@ -19,7 +19,7 @@ package CB_UI.GL_UI.Activitys.FilterSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
@@ -37,7 +37,7 @@ public class TextFilterView extends CB_View_Base {
     /**
      * Clear button, for clearing text input
      */
-    private Button mBtnClear;
+    private CB_Button mBtnClear;
     /**
      * Option Title, der drei Optionen Title/GC-Code/Owner
      */
@@ -102,7 +102,7 @@ public class TextFilterView extends CB_View_Base {
         mEingabe.setText("");
         mEingabe.setPos(margin, mTglBtnTitle.getY() - margin - mEingabe.getHeight());
 
-        mBtnClear = new Button("clear");
+        mBtnClear = new CB_Button("clear");
         mBtnClear.setY(mEingabe.getY() - margin - mBtnClear.getHeight());
         mBtnClear.setX(this.getWidth() - margin - mBtnClear.getWidth());
         mBtnClear.setText(Translation.get("clear"));

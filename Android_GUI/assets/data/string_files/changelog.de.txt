@@ -5,6 +5,11 @@
 • Streichungen = -
 
 Aktuelle Änderungen:
+    + Einstellungen/Mehr: Anzahl zu importierender Logs beim Erstimport kann auf 0/5/30 eingestellt werden. (Geschwindigkeit).
+    + Datum der Veröffentlichung wird nur bei explizitem Anklicken in die Suche über Position einbezogen.
+    + Menüs haben jetzt einen Reiter mit Überschrift. Duch Anklicken der Überschrift kann die Menüauswahl abgebrochen werden.
+
+Änderungen bis Version 3356:
     + Bei einigen Einstellungsänderungen erscheint jetzt eine Aufforderung zum Neustart
 	+ Import Logbilder im Kontextmenü des Logbuchs
     ~ Die TB-Liste wird wieder als Ansicht dargestellt

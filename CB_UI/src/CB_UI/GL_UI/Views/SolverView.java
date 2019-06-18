@@ -31,7 +31,7 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
@@ -52,7 +52,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
     private Solver solver = new Solver("", GlobalCore.getInstance());
     private boolean mustLoadSolver;
     private Cache aktCache;
-    private Button btnSolve, btnFunct, btnSelect, btnInputWindow, btnBothWindow, btnResultWindow;
+    private CB_Button btnSolve, btnFunct, btnSelect, btnInputWindow, btnBothWindow, btnResultWindow;
     private EditTextField edInput, edResult;
 
     private SolverView() {
@@ -117,14 +117,14 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
     }
 
     private void addControls() {
-        btnSolve = new Button(Translation.get("Solve"));
+        btnSolve = new CB_Button(Translation.get("Solve"));
         btnSolve.setOnClickListener((v, x, y, pointer, button) -> {
             solve();
             return true;
         });
         this.addChild(btnSolve);
 
-        btnFunct = new Button(Translation.get("Funct."));
+        btnFunct = new CB_Button(Translation.get("Funct."));
         btnFunct.setOnClickListener((v, x, y, pointer, button) -> {
             SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, function -> {
                 // ausgewählte Funktion verarbeiten!
@@ -166,7 +166,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
         });
         this.addChild(btnFunct);
 
-        btnSelect = new Button(Translation.get("Select."));
+        btnSelect = new CB_Button(Translation.get("Select."));
         btnSelect.setOnClickListener((v, x, y, pointer, button) -> {
             GL.that.setFocusedEditTextField(null);
             return true;
@@ -175,11 +175,11 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
         btnSelect.setVisible(false);
         this.addChild(btnSelect);
 
-        btnInputWindow = new Button(Translation.get("LeftWindow"));
+        btnInputWindow = new CB_Button(Translation.get("LeftWindow"));
         this.addChild(btnInputWindow);
-        btnBothWindow = new Button(Translation.get("BothWindow"));
+        btnBothWindow = new CB_Button(Translation.get("BothWindow"));
         this.addChild(btnBothWindow);
-        btnResultWindow = new Button(Translation.get("RightWindow"));
+        btnResultWindow = new CB_Button(Translation.get("RightWindow"));
         this.addChild(btnResultWindow);
 
         edInput = new EditTextField(this, "edInput");

@@ -29,7 +29,7 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
@@ -66,7 +66,7 @@ public class EditFilterSettings extends ActivityBase {
     private FilterSetListView mFilterSetListView;
     private CategorieListView mCategorieListView;
     private TextFilterView mTextFilterView;
-    private Button btnAddPreset;
+    private CB_Button btnAddPreset;
     private CB_RectF ListViewRec;
 
     public EditFilterSettings(CB_RectF rec, String Name) {
@@ -78,7 +78,7 @@ public class EditFilterSettings extends ActivityBase {
 
         float myWidth = this.getWidth() - leftBorder;
 
-        Button bOK = new Button(leftBorder / 2, leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+        CB_Button bOK = new CB_Button(leftBorder / 2, leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
 
         bOK.setOnClickListener(new OnClickListener() {
             @Override
@@ -134,7 +134,7 @@ public class EditFilterSettings extends ActivityBase {
 
         this.addChild(bOK);
 
-        Button bCancel = new Button(bOK.getMaxX(), leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         bCancel.setOnClickListener(new OnClickListener() {
             @Override
@@ -294,7 +294,7 @@ public class EditFilterSettings extends ActivityBase {
 
     private void initialPresets() {
         CB_RectF rec = new CB_RectF(leftBorder, margin, innerWidth, UI_Size_Base.that.getButtonHeight());
-        btnAddPreset = new Button(rec, "AddPresetButon");
+        btnAddPreset = new CB_Button(rec, "AddPresetButon");
         btnAddPreset.setText(Translation.get("AddOwnFilterPreset"));
         btnAddPreset.setOnClickListener(new OnClickListener() {
 

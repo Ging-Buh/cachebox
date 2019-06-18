@@ -48,10 +48,10 @@ import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 public class SearchOverNameOwnerGcCode extends ActivityBase {
     private static final String log = "SearchOverNameOwnerGcCode";
     private final float lineHeight;
-    private Button bImport, bCancel;
-    private Label lblTitle, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
+    private CB_Button bImport, bCancel;
+    private CB_Label lblTitle, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
-    private ChkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
+    private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
     /**
      * Such Eingabe Feld
      */
@@ -100,8 +100,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bImport = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new Button(bImport.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bImport = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bImport.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
         bImport.setText(Translation.get("import"));
@@ -156,7 +156,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.dayGcLiveIcon.name())));
         this.addChild(gsLogo);
 
-        lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
+        lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
         lblTitle.setFont(Fonts.getBig());
         lblTitle.setWrappedText(Translation.get("API_IMPORT_NAME_OWNER_CODE"));
         this.addChild(lblTitle);
@@ -164,29 +164,29 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void createChkBoxLines() {
-        checkBoxOnlyAvailable = new ChkBox("");
+        checkBoxOnlyAvailable = new CB_CheckBox("");
         checkBoxOnlyAvailable.setPos(margin, box.getHeight() - margin - checkBoxOnlyAvailable.getHeight());
         box.addChild(checkBoxOnlyAvailable);
 
-        checkBoxExcludeHides = new ChkBox("");
+        checkBoxExcludeHides = new CB_CheckBox("");
         checkBoxExcludeHides.setPos(margin, checkBoxOnlyAvailable.getY() - margin - checkBoxExcludeHides.getHeight());
         box.addChild(checkBoxExcludeHides);
 
-        checkBoxExcludeFounds = new ChkBox("");
+        checkBoxExcludeFounds = new CB_CheckBox("");
         checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
         box.addChild(checkBoxExcludeFounds);
 
-        lblOnlyAvailable = new Label(this.name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.get("SearchOnlyAvailable"));
+        lblOnlyAvailable = new CB_Label(this.name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.get("SearchOnlyAvailable"));
         lblOnlyAvailable.setX(checkBoxOnlyAvailable.getMaxX() + margin);
         lblOnlyAvailable.setWidth(this.getWidth() - margin - checkBoxOnlyAvailable.getMaxX() - margin);
         box.addChild(lblOnlyAvailable);
 
-        lblExcludeHides = new Label(this.name + " lblExcludeHides", checkBoxExcludeHides, Translation.get("SearchWithoutOwns"));
+        lblExcludeHides = new CB_Label(this.name + " lblExcludeHides", checkBoxExcludeHides, Translation.get("SearchWithoutOwns"));
         lblExcludeHides.setX(checkBoxOnlyAvailable.getMaxX() + margin);
         lblExcludeHides.setWidth(this.getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
         box.addChild(lblExcludeHides);
 
-        lblExcludeFounds = new Label(this.name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.get("SearchWithoutFounds"));
+        lblExcludeFounds = new CB_Label(this.name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.get("SearchWithoutFounds"));
         lblExcludeFounds.setX(checkBoxOnlyAvailable.getMaxX() + margin);
         lblExcludeFounds.setWidth(this.getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
         box.addChild(lblExcludeFounds);

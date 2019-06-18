@@ -1,5 +1,7 @@
 # Cachebox Karten
-## Mapsforge kompatible Provider (siehe Tabelle) 
+## Mapsforge kompatible Provider (siehe Tabelle)
+!!!Achtung: Karten der mapsforge Version 5 können noch nicht dargestellt werden. Daher nur Karten mit kleineren Versionsnummern verwenden.
+ 
 ### Installation der Karten:
 Kopiere die Dateien mit der Erweiterung map auf dein Smartphone
 
@@ -9,7 +11,7 @@ c) in das globale Kartenverzeichnis, das du in den Einstellungen für Fortgeschr
 
 ### Installation der Renderthemes:
 Entpacke die heruntergeldene zip-Datei in ein beliebiges Verzeichnis auf deinem Smartphone.  
-Wähle dieses Verzeichnis unter Einstellungen/Karte/Ordner für Renderthemen/ aus.
+Wähle dieses Verzeichnis unter .../Fortgeschrittene/Einstellungen/Karte/Ordner für Renderthemen/ aus.
 
 ### Verwendung:
 Karten und Renderthema im Kontextmenü der Karte auswählen. (Button Mitte nochmal klicken).   

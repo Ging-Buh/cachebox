@@ -52,11 +52,11 @@ import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 
 public class SearchOverPosition extends ActivityBase implements KeyboardFocusChangedEvent {
     private static final String log = "SearchOverPosition";
-    private Button bOK, bCancel, btnPlus, btnMinus;
-    private Label lblHeader, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
+    private CB_Button bOK, bCancel, btnPlus, btnMinus;
+    private CB_Label lblHeader, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
     private CoordinateButton coordBtn;
-    private ChkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
+    private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
     private EditTextField Radius;
     private MultiToggleButton tglBtnGPS, tglBtnMap;
     private Coordinate actSearchPos;
@@ -67,16 +67,16 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     private int searcheState = 0; // 0=GPS, 1= Map, 2= Manuell
     private boolean isCanceld = false;
     ICancel icancel = () -> isCanceld;
-    private Label lblPublished;
-    private Button btnBeforeAfterEqual;
+    private CB_Label lblPublished;
+    private CB_Button btnBeforeAfterEqual;
     private EditTextField edtDate;
-    private Label lblImportLimit;
+    private CB_Label lblImportLimit;
     private EditTextField edtImportLimit;
-    private Label lblCacheName;
+    private CB_Label lblCacheName;
     private EditTextField edtCacheName;
-    private Label lblOwner;
+    private CB_Label lblOwner;
     private EditTextField edtOwner;
-    private Label lblCategory;
+    private CB_Label lblCategory;
     private EditTextField edtCategory;
     private SimpleDateFormat simpleDateFormat;
 
@@ -87,8 +87,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         // add to this
         // createHeaderLine();
-        bOK = new Button(Translation.get("import"));
-        bCancel = new Button(Translation.get("cancel"));
+        bOK = new CB_Button(Translation.get("import"));
+        bCancel = new CB_Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
         this.addNext(bOK);
         this.addLast(bCancel);
@@ -116,8 +116,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createHeaderLine() {
-        lblHeader = new Label(Translation.get("importCachesOverPosition"));
-        lblHeader.setFont(Fonts.getBig()).setHAlignment(Label.HAlignment.CENTER);
+        lblHeader = new CB_Label(Translation.get("importCachesOverPosition"));
+        lblHeader.setFont(Fonts.getBig()).setHAlignment(CB_Label.HAlignment.CENTER);
         float lineHeight = lblHeader.getHeight();
         gsLogo = new Image(0, 0, lineHeight, lineHeight, "", false);
         gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(Sprites.IconName.dayGcLiveIcon.name())));
@@ -134,7 +134,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         float wRadius = Fonts.Measure(sRadius).width;
         float wEinheit = Fonts.Measure(sEinheit).width;
 
-        lblRadius = new Label(sRadius);
+        lblRadius = new CB_Label(sRadius);
         lblRadius.setWidth(wRadius);
         box.addNext(lblRadius, FIXED);
 
@@ -142,20 +142,20 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         Radius.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addNext(Radius);
 
-        lblRadiusEinheit = new Label(sEinheit);
+        lblRadiusEinheit = new CB_Label(sEinheit);
         lblRadiusEinheit.setWidth(wEinheit);
         box.addNext(lblRadiusEinheit, FIXED);
 
-        btnMinus = new Button("-");
+        btnMinus = new CB_Button("-");
         box.addNext(btnMinus);
 
-        btnPlus = new Button("+");
+        btnPlus = new CB_Button("+");
         box.addLast(btnPlus);
 
     }
 
     private void createCategoryLine() {
-        lblCategory = new Label(Translation.get("category"));
+        lblCategory = new CB_Label(Translation.get("category"));
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
         box.addNext(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.get("category"));
@@ -163,7 +163,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createImportLimitLine() {
-        lblImportLimit = new Label(Translation.get("ImportLimit"));
+        lblImportLimit = new CB_Label(Translation.get("ImportLimit"));
         lblImportLimit.setWidth(Fonts.Measure(lblImportLimit.getText()).width);
         box.addNext(lblImportLimit, FIXED);
         edtImportLimit = new EditTextField(this, "*" + Translation.get("ImportLimit"));
@@ -172,7 +172,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createCacheNameLine() {
-        lblCacheName = new Label(Translation.get("Title"));
+        lblCacheName = new CB_Label(Translation.get("Title"));
         lblCacheName.setWidth(Fonts.Measure(lblCacheName.getText()).width);
         box.addNext(lblCacheName, FIXED);
         edtCacheName = new EditTextField(this, "*" + Translation.get("Title"));
@@ -180,7 +180,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createOwnerLine() {
-        lblOwner = new Label(Translation.get("Owner"));
+        lblOwner = new CB_Label(Translation.get("Owner"));
         lblOwner.setWidth(Fonts.Measure(lblOwner.getText()).width);
         box.addNext(lblOwner, FIXED);
         edtOwner = new EditTextField(this, "*" + Translation.get("Owner"));
@@ -188,9 +188,9 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     }
 
     private void createPublishedLine() {
-        lblPublished = new Label(Translation.get("published"));
+        lblPublished = new CB_Label(Translation.get("published"));
         box.addNext(lblPublished);
-        btnBeforeAfterEqual = new Button("<=");
+        btnBeforeAfterEqual = new CB_Button("<=");
         btnBeforeAfterEqual.setWidth(Fonts.Measure(". <= .").width);
         box.addNext(btnBeforeAfterEqual, FIXED);
         edtDate = new EditTextField(this, "*" + Translation.get("published"));
@@ -202,19 +202,19 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
     private void createChkBoxLines() {
 
-        checkBoxOnlyAvailable = new ChkBox("");
+        checkBoxOnlyAvailable = new CB_CheckBox("");
         box.addNext(checkBoxOnlyAvailable, FIXED);
-        lblOnlyAvailable = new Label(Translation.get("SearchOnlyAvailable"));
+        lblOnlyAvailable = new CB_Label(Translation.get("SearchOnlyAvailable"));
         box.addLast(lblOnlyAvailable);
 
-        checkBoxExcludeHides = new ChkBox("");
+        checkBoxExcludeHides = new CB_CheckBox("");
         box.addNext(checkBoxExcludeHides, FIXED);
-        lblExcludeHides = new Label(Translation.get("SearchWithoutOwns"));
+        lblExcludeHides = new CB_Label(Translation.get("SearchWithoutOwns"));
         box.addLast(lblExcludeHides);
 
-        checkBoxExcludeFounds = new ChkBox("");
+        checkBoxExcludeFounds = new CB_CheckBox("");
         box.addNext(checkBoxExcludeFounds, FIXED);
-        lblExcludeFounds = new Label(Translation.get("SearchWithoutFounds"));
+        lblExcludeFounds = new CB_Label(Translation.get("SearchWithoutFounds"));
         box.addLast(lblExcludeFounds);
 
     }

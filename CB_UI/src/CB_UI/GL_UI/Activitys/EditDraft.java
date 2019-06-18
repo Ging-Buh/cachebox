@@ -59,14 +59,14 @@ import java.util.TimerTask;
 
 public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent {
     private FilterSetListViewItem GcVote;
-    private Label title;
+    private CB_Label title;
     private Draft altfieldNote;
     private Draft draft;
-    private Button btnOK = null;
-    private Button btnCancel = null;
+    private CB_Button btnOK = null;
+    private CB_Button btnCancel = null;
     private EditTextField etComment = null;
     private Image ivTyp = null;
-    private Label tvFounds = null;
+    private CB_Label tvFounds = null;
     private EditTextField tvDate = null;
     private EditTextField tvTime = null;
     private ScrollBox scrollBox = null;
@@ -75,7 +75,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyDraft;
     private IReturnListener mReturnListener;
-    private Button btnHow;
+    private CB_Button btnHow;
 
     public EditDraft(Draft note, IReturnListener listener, boolean isNewDraft) {
         super(ActivityBase.ActivityRec(), "");
@@ -98,8 +98,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     private void initLayoutWithValues() {
         initRow(BOTTOMUP);
-        btnOK = new Button(Translation.get("ok"));
-        btnCancel = new Button(Translation.get("cancel"));
+        btnOK = new CB_Button(Translation.get("ok"));
+        btnCancel = new CB_Button(Translation.get("cancel"));
         addNext(btnOK);
         addLast(btnCancel);
         scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
@@ -255,13 +255,13 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         }
         scrollBoxContent.addNext(ivTyp, FIXED);
 
-        title = new Label(draft.isTbDraft ? draft.TbName : draft.CacheName);
+        title = new CB_Label(draft.isTbDraft ? draft.TbName : draft.CacheName);
         title.setFont(Fonts.getBig());
         scrollBoxContent.addLast(title);
     }
 
     private void iniDate() {
-        tvFounds = new Label("#" + draft.foundNumber);
+        tvFounds = new CB_Label("#" + draft.foundNumber);
         if (draft.isTbDraft)
             tvFounds.setText("");
         tvFounds.setFont(Fonts.getBig());
@@ -297,7 +297,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         scrollBoxContent.addLast(etComment);
         etComment.setText(draft.comment);
 
-        btnHow = new Button("=");
+        btnHow = new CB_Button("=");
         btnHow.setOnClickListener((v, x, y, pointer, button) -> {
             if (btnHow.getText().equals("="))
                 btnHow.setText("+");
@@ -308,7 +308,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         });
         scrollBoxContent.addNext(btnHow, FIXED);
 
-        Button btnFromNotes = new Button(Translation.get("fromNotes"));
+        CB_Button btnFromNotes = new CB_Button(Translation.get("fromNotes"));
         btnFromNotes.setOnClickListener((v, x, y, pointer, button) -> {
             String text = Database.GetNote(draft.CacheId);
             if (text.length() > 0) {
@@ -332,7 +332,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         });
         scrollBoxContent.addNext(btnFromNotes);
 
-        Button btnFromFile = new Button(Translation.get("fromFile"));
+        CB_Button btnFromFile = new CB_Button(Translation.get("fromFile"));
         btnFromFile.setOnClickListener((v, x, y, pointer, button) -> {
             String mPath = Config.TemplateLastUsedPath.getValue();
             if (mPath.length() == 0) {

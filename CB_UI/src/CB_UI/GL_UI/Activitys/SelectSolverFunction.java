@@ -25,7 +25,7 @@ public class SelectSolverFunction extends ButtonDialog {
     private final CB_RectF categoryBtnRec, itemBtnRec;
     private final DataType dataType;
     private final Solver solver;
-    private Label desc;
+    private CB_Label desc;
     private ScrollBox scrollBox;
     private Linearlayout mLinearLayout;
     private Function selectedFunction;
@@ -98,7 +98,7 @@ public class SelectSolverFunction extends ButtonDialog {
         // rechteck für Label erstellen
         CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.5f);
 
-        desc = new Label(rec);
+        desc = new CB_Label(rec);
 
         // das Beschreibungs Label erhällt auch den BackGround der Activity.
         // Damit haben alle Bereiche der Activity den Selben Rahmen, dies Wirkt aufgeräumter
@@ -155,7 +155,7 @@ public class SelectSolverFunction extends ButtonDialog {
          * in dieser liste sind alle Function Buttons enthalten! diese wird benötigt, um hier den Zustand der Buttons ändern zu können. wenn
          * ein Button selectiert wurde müssen alle anderen deselectiert werden.
          */
-        final ArrayList<Button> functBtnList = new ArrayList<Button>();
+        final ArrayList<CB_Button> functBtnList = new ArrayList<CB_Button>();
 
         Iterator<Functions> iteratorCat = solver.functions.values().iterator();
 
@@ -164,7 +164,7 @@ public class SelectSolverFunction extends ButtonDialog {
                 Functions cat = iteratorCat.next();
 
                 // erstelle Category Button
-                final Button categoryButton = new Button(categoryBtnRec, "Btn-" + cat.getName());
+                final CB_Button categoryButton = new CB_Button(categoryBtnRec, "Btn-" + cat.getName());
                 categoryButton.setText(Translation.get(cat.getName()));
 
                 // alle Buttons müssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
@@ -195,7 +195,7 @@ public class SelectSolverFunction extends ButtonDialog {
                         if (!fct.returnsDataType(dataType)) {
                             continue;
                         }
-                        final Button btnFct = new Button(itemBtnRec, "FunctionBtn-" + fct.getName());
+                        final CB_Button btnFct = new CB_Button(itemBtnRec, "FunctionBtn-" + fct.getName());
 
                         // den Function Button der algemeinen Liste hinzufügen
                         functBtnList.add(btnFct);
@@ -212,7 +212,7 @@ public class SelectSolverFunction extends ButtonDialog {
                             @Override
                             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                                 // ColorFilter aller Buttons zurück setzen
-                                Iterator<Button> btnIterator = functBtnList.iterator();
+                                Iterator<CB_Button> btnIterator = functBtnList.iterator();
                                 do {
                                     btnIterator.next().clearColorFilter();
                                 } while (btnIterator.hasNext());

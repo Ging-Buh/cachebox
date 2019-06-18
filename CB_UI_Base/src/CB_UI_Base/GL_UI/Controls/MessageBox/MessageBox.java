@@ -21,7 +21,10 @@ import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
-import CB_UI_Base.Math.*;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.SizeF;
+import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.StringH;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -39,12 +42,12 @@ public class MessageBox extends Dialog {
     public OnClickListener positiveButtonClickListener;
     public OnClickListener neutralButtonClickListener;
     public OnClickListener negativeButtonClickListener;
-    protected Label label;
-    protected Button button1;
-    protected Button button2;
-    protected Button button3;
+    protected CB_Label label;
+    protected CB_Button button1;
+    protected CB_Button button2;
+    protected CB_Button button3;
     protected SettingBool rememberSetting = null;
-    protected ChkBox chkRemember;
+    protected CB_CheckBox chkRemember;
     private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
     public MessageBox(Size size, String name) {
@@ -103,24 +106,24 @@ public class MessageBox extends Dialog {
         }
         switch (anzahl) {
             case 1:
-                button1 = new Button(left);
+                button1 = new CB_Button(left);
                 button1.setOnClickListener(positiveButtonClickListener);
                 addLast(button1);
                 break;
             case 2:
-                button1 = new Button(left);
+                button1 = new CB_Button(left);
                 button1.setOnClickListener(positiveButtonClickListener);
-                button3 = new Button(right);
+                button3 = new CB_Button(right);
                 button3.setOnClickListener(negativeButtonClickListener);
                 addNext(button1);
                 addLast(button3);
                 break;
             case 3:
-                button1 = new Button(left);
+                button1 = new CB_Button(left);
                 button1.setOnClickListener(positiveButtonClickListener);
-                button2 = new Button(middle);
+                button2 = new CB_Button(middle);
                 button2.setOnClickListener(neutralButtonClickListener);
-                button3 = new Button(right);
+                button3 = new CB_Button(right);
                 button3.setOnClickListener(negativeButtonClickListener);
                 addNext(button1);
                 addNext(button2);
@@ -129,11 +132,11 @@ public class MessageBox extends Dialog {
         }
 
         if (rememberSetting != null) {
-            chkRemember = new ChkBox("remember");
+            chkRemember = new CB_CheckBox("remember");
             setBorders(chkRemember.getHeight() / 2f, 0);
             setMargins(chkRemember.getHeight() / 2f, 0);
             addNext(chkRemember, chkRemember.getHeight() * 2f / getWidth());
-            Label lbl = new Label("lbl");
+            CB_Label lbl = new CB_Label("lbl");
             addLast(lbl);
 
             chkRemember.setChecked(rememberSetting.getValue());
@@ -179,7 +182,7 @@ public class MessageBox extends Dialog {
         }
     }
 
-    public Button getButton(int number) {
+    public CB_Button getButton(int number) {
         switch (number) {
             case 1:
                 return button1;
@@ -257,7 +260,7 @@ public class MessageBox extends Dialog {
     public static MessageBox show(String msg) {
         MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
         msgBox.addButtons(MessageBoxButtons.OK);
-        msgBox.label = new Label(msgBox.getContentSize().getBounds());
+        msgBox.label = new CB_Label(msgBox.getContentSize().getBounds());
         msgBox.label.setZeroPos(); // .getTextHeight()
         msgBox.label.setWrappedText(msg);
         msgBox.addChild(msgBox.label);
@@ -299,7 +302,7 @@ public class MessageBox extends Dialog {
         msgBox.addButtons(buttons);
         msgBox.setTitle(title);
 
-        msgBox.label = new Label();
+        msgBox.label = new CB_Label();
         msgBox.label.setWrappedText(msg);
         float labelHeight = msgBox.label.getTextHeight();
         msgBox.label.setHeight(labelHeight);
@@ -346,7 +349,7 @@ public class MessageBox extends Dialog {
             iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
         msgBox.addChild(iconImage);
 
-        msgBox.label = new Label(contentSize.getBounds());
+        msgBox.label = new CB_Label(contentSize.getBounds());
         msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
         msgBox.label.setPos(imageRec.getMaxX() + 5, 0);
         msgBox.label.setWrappedText(msg);

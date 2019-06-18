@@ -21,8 +21,8 @@ import CB_Locator.Locator;
 import CB_Locator.Map.MapViewBase;
 import CB_UI.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
@@ -41,10 +41,10 @@ public class MapInfoPanel extends CB_View_Base {
     private Image compas_scale;
     private Image arrow;
     private Image CoordSymbol;
-    private Label lblSpeed;
-    private Label lblDistance;
-    private Label lblLatitude;
-    private Label lblLongitude;
+    private CB_Label lblSpeed;
+    private CB_Label lblDistance;
+    private CB_Label lblLatitude;
+    private CB_Label lblLongitude;
     private Coordinate aktCoord;
     private CoordType lastCoordType = CoordType.NULL;
     private float aktDistance = -1;
@@ -178,25 +178,25 @@ public class MapInfoPanel extends CB_View_Base {
 
         float margin = GL_UISizes.margin;
 
-        lblSpeed = new Label(ScaleCenter(0.4f));
+        lblSpeed = new CB_Label(ScaleCenter(0.4f));
         lblSpeed.setFont(Fonts.getSmall());
         lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.getHeight() * 0.1f));
         lblSpeed.setText("---");
         this.addChild(lblSpeed);
 
-        lblDistance = new Label(ScaleCenter(0.4f));
+        lblDistance = new CB_Label(ScaleCenter(0.4f));
         lblDistance.setFont(Fonts.getBig());
         lblDistance.setPos(new Vector2(CompassRec.getWidth() + margin, CompassRec.getWidth() / 2));
         lblDistance.setText("---");
         this.addChild(lblDistance);
 
-        lblLatitude = new Label(ScaleCenter(0.4f));
+        lblLatitude = new CB_Label(ScaleCenter(0.4f));
         lblLatitude.setFont(Fonts.getSmall());
         lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
         lblLatitude.setText("---");
         this.addChild(lblLatitude);
 
-        lblLongitude = new Label(ScaleCenter(0.4f));
+        lblLongitude = new CB_Label(ScaleCenter(0.4f));
         lblLongitude.setFont(Fonts.getSmall());
         lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth() - rightBorder, this.getHeight() * 0.1f));
         lblLongitude.setText("---");

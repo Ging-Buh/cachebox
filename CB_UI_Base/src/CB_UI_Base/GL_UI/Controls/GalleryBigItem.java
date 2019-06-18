@@ -16,7 +16,7 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.Sprites;
@@ -40,7 +40,7 @@ public class GalleryBigItem extends ListViewItemBackground {
         iloader = loader;
 
         this.initRow(BOTTOMUP);
-        Label lbl = new Label(label);
+        CB_Label lbl = new CB_Label(label);
         lbl.setWidth(this.getWidth());
         lbl.setWrapType(WrapType.WRAPPED);
         lbl.setHeight(lbl.getTextHeight());

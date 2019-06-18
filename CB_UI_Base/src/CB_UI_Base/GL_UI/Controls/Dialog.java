@@ -52,7 +52,7 @@ public abstract class Dialog extends CB_View_Base {
     protected float mFooterHeight = 10f;
     // protected Object data;
     private String mTitle;
-    private Label titleLabel;
+    private CB_Label titleLabel;
     private Box mContent;
     private CB_List<GL_View_Base> contentChilds = new CB_List<GL_View_Base>();
     /**
@@ -254,7 +254,7 @@ public abstract class Dialog extends CB_View_Base {
             mHasTitle = true;
 
             if (titleLabel == null) {
-                titleLabel = new Label(mTitle);
+                titleLabel = new CB_Label(mTitle);
             } else {
                 if (!titleLabel.getText().equals(mTitle)) {
                     titleLabel.setText(mTitle);

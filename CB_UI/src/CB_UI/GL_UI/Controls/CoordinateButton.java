@@ -8,7 +8,7 @@ import CB_UI.GL_UI.Activitys.EditCoord;
 import CB_UI.GL_UI.Activitys.EditCoord.ReturnListener;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -18,7 +18,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 
-public class CoordinateButton extends Button implements ICopyPaste {
+public class CoordinateButton extends CB_Button implements ICopyPaste {
     protected Coordinate mActCoord;
     protected String mwpName;
     protected CopyPastePopUp popUp;

@@ -14,8 +14,8 @@ import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
@@ -32,17 +32,17 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private Waypoint waypoint;
     private CoordinateButton bCoord;
     private Spinner sType;
-    private ChkBox cbStartPoint;
+    private CB_CheckBox cbStartPoint;
     private float cbStartPointWidth;
-    private Button bOK;
-    private Label tvCacheName;
-    private Label tvTyp;
-    private Label tvStartPoint;
-    private Label tvTitle;
+    private CB_Button bOK;
+    private CB_Label tvCacheName;
+    private CB_Label tvTyp;
+    private CB_Label tvStartPoint;
+    private CB_Label tvTitle;
     private EditTextField etTitle;
-    private Label tvDescription;
+    private CB_Label tvDescription;
     private EditTextField etDescription;
-    private Label tvClue;
+    private CB_Label tvClue;
     private EditTextField etClue;
     private Boolean firstShow;
     // damit kann festgelegt werden, ob beim Start des WaypointDialogs gleich der Coordinaten-Dialog gezeigt werden soll oder nicht.
@@ -84,7 +84,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniCacheNameLabel() {
-        tvCacheName = new Label(this.name + " tvCacheName", leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvCacheName = new CB_Label(this.name + " tvCacheName", leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
         tvCacheName.setFont(Fonts.getBubbleNormal());
         tvCacheName.setText(GlobalCore.getSelectedCache().getName());
         scrollBox.addChild(tvCacheName);
@@ -110,12 +110,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniLabelTyp() {
         cbStartPointWidth = UI_Size_Base.that.getButtonHeight() * 1.5f;
-        tvTyp = new Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight);
+        tvTyp = new CB_Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight);
         tvTyp.setFont(Fonts.getBubbleNormal());
         tvTyp.setText(Translation.get("type"));
         scrollBox.addChild(tvTyp);
 
-        tvStartPoint = new Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth, MeasuredLabelHeight);
+        tvStartPoint = new CB_Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth, MeasuredLabelHeight);
         tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
         tvStartPoint.setText(Translation.get("start"));
         tvStartPoint.setVisible(false);
@@ -154,7 +154,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
         // CheckBox for the selection whether this WP is the startpoint of the cache
         rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.that.getButtonHeight() / 2.0f), tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
-        cbStartPoint = new ChkBox(rec, "CheckBoxStartPoint");
+        cbStartPoint = new CB_CheckBox(rec, "CheckBoxStartPoint");
         cbStartPoint.setVisible(false);
 
         // Spinner initialisieren
@@ -228,7 +228,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelTitle() {
-        tvTitle = new Label(this.name + " tvTitle", leftBorder + margin, sType.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvTitle = new CB_Label(this.name + " tvTitle", leftBorder + margin, sType.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
         tvTitle.setFont(Fonts.getBubbleNormal());
         tvTitle.setText(Translation.get("Title"));
         scrollBox.addChild(tvTitle);
@@ -245,7 +245,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelDesc() {
-        tvDescription = new Label(this.name + " tvDescription", leftBorder + margin, etTitle.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvDescription = new CB_Label(this.name + " tvDescription", leftBorder + margin, etTitle.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
         tvDescription.setFont(Fonts.getBubbleNormal());
         tvDescription.setText(Translation.get("Description"));
         scrollBox.addChild(tvDescription);
@@ -276,7 +276,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelClue() {
-        tvClue = new Label(this.name + " tvClue", leftBorder + margin, etDescription.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvClue = new CB_Label(this.name + " tvClue", leftBorder + margin, etDescription.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
         tvClue.setFont(Fonts.getBubbleNormal());
         tvClue.setText(Translation.get("Clue"));
         scrollBox.addChild(tvClue);
@@ -307,14 +307,14 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniOkCancel() {
         CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
-        bOK = new Button(btnRec, "OkButton");
+        bOK = new CB_Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());
-        Button bHelp = new Button(btnRec, "HelpButton");
+        CB_Button bHelp = new CB_Button(btnRec, "HelpButton");
         bHelp.setText(Translation.get("help"));
 
         btnRec.setX(bOK.getMaxX());
-        Button bCancel = new Button(btnRec, "CancelButton");
+        CB_Button bCancel = new CB_Button(btnRec, "CancelButton");
 
         bOK.setText(Translation.get("ok"));
         bCancel.setText(Translation.get("cancel"));

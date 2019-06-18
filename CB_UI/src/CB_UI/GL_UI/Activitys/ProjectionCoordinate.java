@@ -5,9 +5,9 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.CB_UI_Settings;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.NumPad;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -24,10 +24,10 @@ public class ProjectionCoordinate extends ActivityBase {
     private double Distance;
     private EditTextField valueBearing = null;
     private EditTextField valueDistance = null;
-    private Label lblDistance = null;
-    private Label Title = null;
+    private CB_Label lblDistance = null;
+    private CB_Label Title = null;
     private CoordinateButton bCoord = null;
-    private Button bOK = null;
+    private CB_Button bOK = null;
     private Boolean radius;
     private Boolean p2p;
     private boolean ImperialUnits;
@@ -58,7 +58,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
     private void iniCacheNameLabel() {
         CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
-        Title = new Label(rec);
+        Title = new CB_Label(rec);
         this.addChild(Title);
     }
 
@@ -91,7 +91,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
         CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth, MeasuredLabelHeight);
 
-        Label lblP2P = new Label(this.name + " lblP2P", labelRec, Translation.get("toPoint"));
+        CB_Label lblP2P = new CB_Label(this.name + " lblP2P", labelRec, Translation.get("toPoint"));
         this.addChild(lblP2P);
 
         CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
@@ -121,19 +121,19 @@ public class ProjectionCoordinate extends ActivityBase {
         CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2), ButtonHeight);
         CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
-        Label lblBearing = new Label(this.name + " lblBearing", labelRec, sBearing);
+        CB_Label lblBearing = new CB_Label(this.name + " lblBearing", labelRec, sBearing);
         valueBearing = new EditTextField(textFieldRec, this, "*" + sBearing);
         valueBearing.disableKeyboardPopup();
-        Label lblBearingUnit = new Label(this.name + " lblBearingUnit", UnitRec, "°");
+        CB_Label lblBearingUnit = new CB_Label(this.name + " lblBearingUnit", UnitRec, "°");
 
         labelRec.setY(lblBearing.getY() - ButtonHeight);
         textFieldRec.setY(lblBearing.getY() - ButtonHeight);
         UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
-        lblDistance = new Label(this.name + " lblDistance", labelRec, sDistance);
+        lblDistance = new CB_Label(this.name + " lblDistance", labelRec, sDistance);
         valueDistance = new EditTextField(textFieldRec, this, "*" + sDistance);
         valueDistance.disableKeyboardPopup();
-        Label lblDistanceUnit = new Label(this.name + " lblDistanceUnit", UnitRec, sUnit);
+        CB_Label lblDistanceUnit = new CB_Label(this.name + " lblDistanceUnit", UnitRec, sUnit);
 
         valueDistance.setText("0");
         valueBearing.setText("0");
@@ -170,10 +170,10 @@ public class ProjectionCoordinate extends ActivityBase {
 
     private void iniOkCancel() {
         CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
-        bOK = new Button(btnRec, "OkButton");
+        bOK = new CB_Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());
-        Button bCancel = new Button(btnRec, "CancelButton");
+        CB_Button bCancel = new CB_Button(btnRec, "CancelButton");
 
         bOK.setText(Translation.get("ok"));
         bCancel.setText(Translation.get("cancel"));

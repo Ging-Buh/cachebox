@@ -32,7 +32,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
     EditTextField edtCategory, edtDBName;
-    private Button bOK, bCancel, btnSelectDB;
+    private CB_Button bOK, bCancel, btnSelectDB;
     private ProgressBar progressBar;
     private String mPath;
     private String mDatabaseName;
@@ -42,25 +42,25 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     public Import_GSAK() {
         super("Import_GSAK");
-        bOK = new Button(Translation.get("import"));
-        bCancel = new Button(Translation.get("cancel"));
+        bOK = new CB_Button(Translation.get("import"));
+        bCancel = new CB_Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
         this.addNext(bOK);
         this.addLast(bCancel);
         initRow(TOPDOWN);
         progressBar = new ProgressBar(UiSizes.that.getButtonRectF(), "ProgressBar");
         addLast(progressBar);
-        Label lblCategory = new Label(Translation.get("category"));
+        CB_Label lblCategory = new CB_Label(Translation.get("category"));
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
         addNext(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.get("category"));
         addLast(edtCategory);
-        Label lblDBName = new Label(Translation.get("GSAKDatabase"));
+        CB_Label lblDBName = new CB_Label(Translation.get("GSAKDatabase"));
         lblDBName.setWidth(Fonts.Measure(lblDBName.getText()).width);
         addNext(lblDBName, FIXED);
         edtDBName = new EditTextField(this, "*" + Translation.get("GSAKDatabase"));
         addLast(edtDBName);
-        btnSelectDB = new Button(Translation.get("GSAKButtonSelectDB"));
+        btnSelectDB = new CB_Button(Translation.get("GSAKButtonSelectDB"));
         addLast(btnSelectDB);
         initClickHandlersAndContent();
         importRuns = false;

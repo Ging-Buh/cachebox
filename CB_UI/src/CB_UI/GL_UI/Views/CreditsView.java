@@ -19,7 +19,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
@@ -161,7 +161,7 @@ public class CreditsView extends CB_View_Base {
     private void captioned(String title) {
         title = Translation.get(title);
         Box box = new Box(new CB_RectF(0, 0, this.getWidth(), lineHeight * 1.2f), "");
-        Label label = new Label(this.name + " label", box, title + ":");
+        CB_Label label = new CB_Label(this.name + " label", box, title + ":");
         label.setFont(Fonts.getBig());
         label.setHAlignment(HAlignment.CENTER);
         box.addChild(label);
@@ -179,7 +179,7 @@ public class CreditsView extends CB_View_Base {
                 Box box = new Box(new CB_RectF(0, 0, this.getWidth(), itemHeight), "");
 
                 if (entry != null) {
-                    box.addChild(new Label(this.name + " boxLabel", box, entry).setHAlignment(HAlignment.CENTER));
+                    box.addChild(new CB_Label(this.name + " boxLabel", box, entry).setHAlignment(HAlignment.CENTER));
                 }
 
                 layout.addChild(box);

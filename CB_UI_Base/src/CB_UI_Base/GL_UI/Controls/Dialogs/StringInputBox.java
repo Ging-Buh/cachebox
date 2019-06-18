@@ -1,8 +1,8 @@
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -31,7 +31,7 @@ public class StringInputBox extends MessageBox {
             editText.setHeight(topBottom + editText.getFont().getLineHeight() * 5 + editText.getFont().getAscent() - editText.getFont().getDescent());
         }
 
-        Label label = new Label(msg, null, null, WrapType.WRAPPED);
+        CB_Label label = new CB_Label(msg, null, null, WrapType.WRAPPED);
         label.setWidth(msgBox.getWidth());
         label.setHeight(label.getTextHeight());
 

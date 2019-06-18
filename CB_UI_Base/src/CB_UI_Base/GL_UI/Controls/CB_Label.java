@@ -21,7 +21,6 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.graphics.GL_Paint;
@@ -46,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Longri
  */
-public class Label extends CB_View_Base {
+public class CB_Label extends CB_View_Base {
     private static final String log = "Label";
 
     private static final float DEFAULTSCROLLSTEP = 0.7f;
@@ -73,7 +72,7 @@ public class Label extends CB_View_Base {
     /**
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
-    public Label() {
+    public CB_Label() {
         super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
         setText();
     }
@@ -81,7 +80,7 @@ public class Label extends CB_View_Base {
     /**
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
-    public Label(String Text) {
+    public CB_Label(String Text) {
         super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
         mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
@@ -91,7 +90,7 @@ public class Label extends CB_View_Base {
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight
      * from UI_Size_Base
      **/
-    public Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType) {
+    public CB_Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType) {
         super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
         mText = (Text == null ? "" : Text.replace("\r\n", "\n"));
         if (Font != null)
@@ -103,25 +102,25 @@ public class Label extends CB_View_Base {
         setText();
     }
 
-    public Label(String Name, float X, float Y, float Width, float Height, String Text) {
+    public CB_Label(String Name, float X, float Y, float Width, float Height, String Text) {
         super(X, Y, Width, Height, Name);
         mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
     }
 
-    public Label(String Name, float X, float Y, float Width, float Height) {
+    public CB_Label(String Name, float X, float Y, float Width, float Height) {
         super(X, Y, Width, Height, Name);
         mText = "";
         setText();
     }
 
-    public Label(String Name, CB_RectF rec, String Text) {
+    public CB_Label(String Name, CB_RectF rec, String Text) {
         super(rec, Name);
         mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
     }
 
-    public Label(CB_RectF rec) {
+    public CB_Label(CB_RectF rec) {
         super(rec, "");
         mText = "";
         setText();
@@ -420,7 +419,7 @@ public class Label extends CB_View_Base {
     /**
      * setting the Text. new line is GlobalCore.br
      **/
-    public Label setMultiLineText(String text) {
+    public CB_Label setMultiLineText(String text) {
         if (text == null)
             text = "";
         mText = text.replace("\r\n", "\n");
@@ -433,7 +432,7 @@ public class Label extends CB_View_Base {
     /**
      * setting the Text. new Line wrap determined by width
      **/
-    public Label setWrappedText(String text) {
+    public CB_Label setWrappedText(String text) {
         if (text == null)
             text = "";
         mText = text.replace("\r\n", "\n");
@@ -451,7 +450,7 @@ public class Label extends CB_View_Base {
         strikeout = value;
     }
 
-    public Label setWrapType(WrapType WrapType) {
+    public CB_Label setWrapType(WrapType WrapType) {
         // layout depends on the width and text
         if (WrapType != mWrapType) {
             mWrapType = WrapType;
@@ -472,7 +471,7 @@ public class Label extends CB_View_Base {
         }
     }
 
-    public Label setHAlignment(HAlignment HAlignment) {
+    public CB_Label setHAlignment(HAlignment HAlignment) {
         if (HAlignment != null) {
             if (mHAlignment != HAlignment) {
                 mHAlignment = HAlignment;
@@ -482,7 +481,7 @@ public class Label extends CB_View_Base {
         return this;
     }
 
-    public Label setVAlignment(VAlignment VAlignment) {
+    public CB_Label setVAlignment(VAlignment VAlignment) {
         if (VAlignment != null) {
             if (mVAlignment != VAlignment) {
                 mVAlignment = VAlignment;
@@ -492,7 +491,7 @@ public class Label extends CB_View_Base {
         return this;
     }
 
-    public Label setTextColor(Color color) {
+    public CB_Label setTextColor(Color color) {
         if (color != null) {
             if (!mColor.equals(color)) {
                 mColor = color;
@@ -509,7 +508,7 @@ public class Label extends CB_View_Base {
     /**
      * setting the Text
      **/
-    public Label setText(String text) {
+    public CB_Label setText(String text) {
         if (text == null)
             text = "";
         mText = text.replace("\r\n", "\n");
@@ -533,7 +532,7 @@ public class Label extends CB_View_Base {
         return mFont;
     }
 
-    public Label setFont(BitmapFont Font) {
+    public CB_Label setFont(BitmapFont Font) {
         if (Font != null) {
             if (Font != mFont) {
                 mFont = Font;

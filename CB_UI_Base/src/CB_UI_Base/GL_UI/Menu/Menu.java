@@ -3,9 +3,9 @@ package CB_UI_Base.GL_UI.Menu;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -40,8 +40,8 @@ public class Menu extends ButtonDialog {
     private V_ListView mListView;
     private Menu mMoreMenu = null;
     private boolean mMoreMenuVisible = false;
-    private Button mMoreMenuToggleButton;
-    private Label mMoreMenuLabel;
+    private CB_Button mMoreMenuToggleButton;
+    private CB_Label mMoreMenuLabel;
     /**
      * -1=not initial<br>
      * 0=left<br>
@@ -237,7 +237,7 @@ public class Menu extends ButtonDialog {
 
             this.addChild(mMoreMenu);
 
-            mMoreMenuToggleButton = new Button("");
+            mMoreMenuToggleButton = new CB_Button("");
             mMoreMenuToggleButton.setWidth(mMoreMenuToggleButtonWidth);
             mMoreMenuToggleButton.setHeight(this.getContentSize().height);
             float MenuY = mParentMenu != null ? mParentMenu.getY() : this.getY();
@@ -252,7 +252,7 @@ public class Menu extends ButtonDialog {
                 }
             });
 
-            mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
+            mMoreMenuLabel = new CB_Label(mMoreMenuTextRight, Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
             // mMoreMenuLabel.setRec(mMoreMenuToggleButton);
             mMoreMenuLabel.setWidth(mMoreMenuToggleButton.getHeight());
             mMoreMenuLabel.setHeight(mMoreMenuToggleButton.getWidth());

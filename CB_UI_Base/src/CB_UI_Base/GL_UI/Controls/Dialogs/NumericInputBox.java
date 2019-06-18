@@ -2,8 +2,8 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.NumPad;
 import CB_UI_Base.GL_UI.Controls.NumPad.IKeyPressedListener;
@@ -43,7 +43,7 @@ public class NumericInputBox extends CB_View_Base {
         float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
         editText.setHeight(topBottom + SingleLineHeight);
 
-        Label label = new Label("MsgBoxLabel");
+        CB_Label label = new CB_Label("MsgBoxLabel");
 
         CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
         msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
@@ -111,7 +111,7 @@ public class NumericInputBox extends CB_View_Base {
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();
         LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
 
-        Label label = new Label(LabelRec);
+        CB_Label label = new CB_Label(LabelRec);
         label.setZeroPos();
         label.setY(editText.getMaxY() + margin);
         label.setWrappedText(msg);
@@ -172,7 +172,7 @@ public class NumericInputBox extends CB_View_Base {
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();
         LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
 
-        Label label = new Label(LabelRec);
+        CB_Label label = new CB_Label(LabelRec);
         label.setZeroPos();
         label.setY(editText.getMaxY() + margin);
         label.setWrappedText(msg);

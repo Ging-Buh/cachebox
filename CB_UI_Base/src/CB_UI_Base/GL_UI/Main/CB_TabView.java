@@ -70,7 +70,7 @@ public class CB_TabView extends CB_View_Base {
         // Das Button Seitenverh�ltniss ist 88x76!
         // H�he der Buttons einstellen und diese Zentrieren!
         float buttonHeight = MainBtnSize.getHeight() * 0.863f;
-        for (CB_Button btn : mButtonList.Buttons) {
+        for (CB_CB_Button btn : mButtonList.Buttons) {
             btn.setHeight(buttonHeight);
         }
 
@@ -147,7 +147,7 @@ public class CB_TabView extends CB_View_Base {
             if (mButtonList == null || mButtonList.Buttons == null)
                 return null;
 
-            CB_Button btn = mButtonList.Buttons.get(position);
+            CB_CB_Button btn = mButtonList.Buttons.get(position);
 
             btn.setActView(aktView);
 

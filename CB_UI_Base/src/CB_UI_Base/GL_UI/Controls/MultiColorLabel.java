@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * @author Longri
  */
-public class MultiColorLabel extends Label {
+public class MultiColorLabel extends CB_Label {
 
     private final CB_List<MultiColor> colorList = new CB_List<MultiColorLabel.MultiColor>();
 

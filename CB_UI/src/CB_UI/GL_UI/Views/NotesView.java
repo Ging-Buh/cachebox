@@ -28,7 +28,7 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -44,7 +44,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
     private EditTextField notes;
     private float notesDefaultYPos;
     private float notesHeight;
-    private Button uploadButton;
+    private CB_Button uploadButton;
     private Cache aktCache;
 
     private NotesView() {
@@ -54,10 +54,10 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
         mustLoadNotes = true;
 
         initRow(BOTTOMUP);
-        Button getSolverButton = new Button(Translation.get("getSolver"));
+        CB_Button getSolverButton = new CB_Button(Translation.get("getSolver"));
         // getSolverButton.disable();
         addNext(getSolverButton);
-        uploadButton = new Button(Translation.get("Upload"));
+        uploadButton = new CB_Button(Translation.get("Upload"));
         addLast(uploadButton);
         notesHeight = getAvailableHeight();
         notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
@@ -67,7 +67,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
         SelectedCacheEventList.Add(this);
 
         uploadButton.setOnClickListener((v, x, y, pointer, button) -> {
-            final Button b = (Button) v;
+            final CB_Button b = (CB_Button) v;
             if (notes.getText().length() > 0) {
                 b.setText("Cancel");
                 GL.that.RunOnGL(() -> {

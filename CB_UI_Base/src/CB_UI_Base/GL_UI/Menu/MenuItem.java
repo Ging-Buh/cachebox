@@ -16,8 +16,8 @@
 package CB_UI_Base.GL_UI.Menu;
 
 import CB_UI_Base.GL_UI.COLOR;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
@@ -31,7 +31,7 @@ public class MenuItem extends MenuItemBase {
     protected boolean mIsChecked = false;
     protected boolean mLeft = false;
     protected boolean isPressed = false;
-    private Label mLabel;
+    private CB_Label mLabel;
     private Image checkImage;
     private Drawable mIcon;
     private String mTitle;
@@ -79,7 +79,7 @@ public class MenuItem extends MenuItemBase {
         super.Initial();
         this.removeChilds();
 
-        mLabel = new Label(this);
+        mLabel = new CB_Label(this);
 
         boolean hasIcon = (mIcon != null);
         if (hasIcon) {
@@ -176,7 +176,7 @@ public class MenuItem extends MenuItemBase {
     public MenuItem setTitle(String title) {
         mTitle = title;
         if (mLabel == null)
-            mLabel = new Label(this.name + " mLabel", this, title);
+            mLabel = new CB_Label(this.name + " mLabel", this, title);
         else
             mLabel.setText(title);
         return this;

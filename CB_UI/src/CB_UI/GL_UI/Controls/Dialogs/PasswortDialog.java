@@ -2,8 +2,8 @@ package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
@@ -39,7 +39,7 @@ public class PasswortDialog extends ButtonDialog {
 
         layout = new Linearlayout(msgBoxContentSize.width, "Layout");
 
-        Label lblName = new Label(this.name + " lblName", 0, 0, msgBoxContentSize.width, LabelHeight);
+        CB_Label lblName = new CB_Label(this.name + " lblName", 0, 0, msgBoxContentSize.width, LabelHeight);
         lblName.setText(Translation.get("LogIn"));
         layout.addChild(lblName);
 
@@ -48,7 +48,7 @@ public class PasswortDialog extends ButtonDialog {
         editTextUser = new EditTextField( rec, this,"*" + Translation.get("LogIn"), WrapType.SINGLELINE);
         layout.addChild(editTextUser);
 
-        Label lblPW = new Label(this.name + " lblPW", 0, 0, msgBoxContentSize.width, LabelHeight);
+        CB_Label lblPW = new CB_Label(this.name + " lblPW", 0, 0, msgBoxContentSize.width, LabelHeight);
         lblPW.setText(Translation.get("GCPW"));
         layout.addChild(lblPW);
 

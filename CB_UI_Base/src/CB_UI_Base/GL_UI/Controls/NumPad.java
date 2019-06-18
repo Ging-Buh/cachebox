@@ -21,14 +21,14 @@ public class NumPad extends CB_View_Base {
     private final NumPadType mNumPadType;
     private final IKeyPressedListener mKeyPressedListener;
     private EditTextField textField;
-    private Button btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9, btn_Dot, btn_left, btn_right;
+    private CB_Button btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9, btn_Dot, btn_left, btn_right;
     OnClickListener onBtnClick = new OnClickListener() {
         @Override
         public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
-            if (v instanceof Button) {
+            if (v instanceof CB_Button) {
                 Thread t = new Thread(() -> {
                     if (mKeyPressedListener != null) {
-                        mKeyPressedListener.KeyPressed(((Button) v).getText());
+                        mKeyPressedListener.KeyPressed(((CB_Button) v).getText());
                     }
                 });
                 t.start();
@@ -36,8 +36,8 @@ public class NumPad extends CB_View_Base {
             return true;
         }
     };
-    private Button btn_Del, btn_Bck;
-    private Button btn_OK, btn_Cancel;
+    private CB_Button btn_Del, btn_Bck;
+    private CB_Button btn_OK, btn_Cancel;
 
     private CB_RectF btnRec;
     private CB_RectF btnRecWide;
@@ -160,26 +160,26 @@ public class NumPad extends CB_View_Base {
         btnRecWide = new CB_RectF(0, 0, minValue * 2, minValue);
         btnRecHalfWide = new CB_RectF(0, 0, minValue * 1.5f, minValue);
 
-        btn_0 = new Button(btnRec, "btn 0");
-        btn_1 = new Button(btnRec, "btn 1");
-        btn_2 = new Button(btnRec, "btn 2");
-        btn_3 = new Button(btnRec, "btn 3");
-        btn_4 = new Button(btnRec, "btn 4");
-        btn_5 = new Button(btnRec, "btn 5");
-        btn_6 = new Button(btnRec, "btn 6");
-        btn_7 = new Button(btnRec, "btn 7");
-        btn_8 = new Button(btnRec, "btn 8");
-        btn_9 = new Button(btnRec, "btn 9");
+        btn_0 = new CB_Button(btnRec, "btn 0");
+        btn_1 = new CB_Button(btnRec, "btn 1");
+        btn_2 = new CB_Button(btnRec, "btn 2");
+        btn_3 = new CB_Button(btnRec, "btn 3");
+        btn_4 = new CB_Button(btnRec, "btn 4");
+        btn_5 = new CB_Button(btnRec, "btn 5");
+        btn_6 = new CB_Button(btnRec, "btn 6");
+        btn_7 = new CB_Button(btnRec, "btn 7");
+        btn_8 = new CB_Button(btnRec, "btn 8");
+        btn_9 = new CB_Button(btnRec, "btn 9");
 
-        btn_Dot = new Button(btnRec, "btn Dot");
-        btn_Del = new Button(btnRec, "btn Del");
-        btn_Bck = new Button(btnRec, "btn_Bck");
+        btn_Dot = new CB_Button(btnRec, "btn Dot");
+        btn_Del = new CB_Button(btnRec, "btn Del");
+        btn_Bck = new CB_Button(btnRec, "btn_Bck");
 
-        btn_left = new Button(btnRecHalfWide, "btn left");
-        btn_right = new Button(btnRecHalfWide, "btn right");
+        btn_left = new CB_Button(btnRecHalfWide, "btn left");
+        btn_right = new CB_Button(btnRecHalfWide, "btn right");
 
-        btn_OK = new Button(btnRecWide, "btn OK");
-        btn_Cancel = new Button(btnRecWide, "btn Cancel");
+        btn_OK = new CB_Button(btnRecWide, "btn OK");
+        btn_Cancel = new CB_Button(btnRecWide, "btn Cancel");
 
         // set captions
         btn_0.setText("0");

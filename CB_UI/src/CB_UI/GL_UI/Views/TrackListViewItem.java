@@ -4,7 +4,7 @@ import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
@@ -27,8 +27,8 @@ public class TrackListViewItem extends ListViewItemBackground {
     public Vector2 lastItemTouchPos;
     private Track mRoute;
     private float left;
-    private Label EntryName;
-    private Label EntryLength;
+    private CB_Label EntryName;
+    private CB_Label EntryLength;
     private Sprite colorReck;
     private boolean Clicked = false;
 
@@ -92,7 +92,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (EntryName == null) {
 
             CB_RectF rec = new CB_RectF(left, this.getHeight() / 2, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
-            EntryName = new Label(rec);
+            EntryName = new CB_Label(rec);
 
             EntryName.setText(mRoute.Name);
 
@@ -103,7 +103,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (EntryLength == null) {
 
             CB_RectF rec = new CB_RectF(left, 0, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
-            EntryLength = new Label(this.name + " EntryLength", rec, "");
+            EntryLength = new CB_Label(this.name + " EntryLength", rec, "");
             EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
             this.addChild(EntryLength);

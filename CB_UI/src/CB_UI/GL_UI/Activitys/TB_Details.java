@@ -38,12 +38,12 @@ public class TB_Details extends ActivityBase {
     public static TB_Details that;
     private ScrollBox scrollBox;
     private Box scrollBoxContent;
-    private Button btnClose, btnAction;
+    private CB_Button btnClose, btnAction;
     private Trackable TB;
     private Image icon, image;
-    private Label lblDescription, lblGoal;
+    private CB_Label lblDescription, lblGoal;
     private EditTextField title, description, currentGoal;
-    private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
+    private CB_Label lblTypeName, lblTbCode, lblOwner, lblBirth;
     private EditTextField TypeName, TbCode, Owner, Birth;
 
     public TB_Details() {
@@ -61,13 +61,13 @@ public class TB_Details extends ActivityBase {
     private void createControls() {
         float innerHeight = 1000;
 
-        btnClose = new Button(Translation.get("close"));
+        btnClose = new CB_Button(Translation.get("close"));
         btnClose.setOnClickListener((v, x, y, pointer, button) -> {
             TB_Details.this.finish();
             return true;
         });
 
-        btnAction = new Button(Translation.get("TB_LogButton"));
+        btnAction = new CB_Button(Translation.get("TB_LogButton"));
         btnAction.setOnClickListener((v, x, y, pointer, button) -> {
             showLogMenu();
             return true;
@@ -79,17 +79,17 @@ public class TB_Details extends ActivityBase {
         title = new EditTextField(iconRec, this, "title");
         // on scrollbox
         image = new Image(iconRec, "Image", false);
-        lblDescription = new Label(Translation.get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblDescription = new CB_Label(Translation.get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         description = new EditTextField(this, "AboutDesc");
-        lblGoal = new Label(Translation.get("GoalThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblGoal = new CB_Label(Translation.get("GoalThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         currentGoal = new EditTextField(this, "GoalDesc");
 
-        lblTypeName = new Label(Translation.get("TB_Type"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
-        lblTbCode = new Label(Translation.get("TB_Code"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
-        lblOwner = new Label(Translation.get("TB_Owner"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblTypeName = new CB_Label(Translation.get("TB_Type"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblTbCode = new CB_Label(Translation.get("TB_Code"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblOwner = new CB_Label(Translation.get("TB_Owner"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         // lbllastVisit = new Label("LastVisit");
         // lblHome = new Label("Home");
-        lblBirth = new Label(Translation.get("TB_Birth"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
+        lblBirth = new CB_Label(Translation.get("TB_Birth"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
         // lblTravelDistance = new Label("TravelDistance");
 
         TypeName = new EditTextField(this, "TypeName");
@@ -146,7 +146,7 @@ public class TB_Details extends ActivityBase {
         GL.that.addRenderView(this, GL.FRAME_RATE_FAST_ACTION);
     }
 
-    private void addScrollBoxContent(Label lbl, EditTextField edt, String text) {
+    private void addScrollBoxContent(CB_Label lbl, EditTextField edt, String text) {
         lbl.setHeight(lbl.getTextHeight());
         scrollBoxContent.addLast(lbl);
         edt.setEditable(false);

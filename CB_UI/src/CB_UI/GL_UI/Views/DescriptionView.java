@@ -23,10 +23,10 @@ import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -63,8 +63,8 @@ public class DescriptionView extends CB_View_Base {
     };
     private String STRING_POWERD_BY;
     private CacheListViewItem cacheInfo;
-    private Button downloadButton;
-    private Label MessageLabel, PowerdBy;
+    private CB_Button downloadButton;
+    private CB_Label MessageLabel, PowerdBy;
     private Image LiveIcon;
     private PolygonDrawable Line;
     private float margin;
@@ -232,7 +232,7 @@ public class DescriptionView extends CB_View_Base {
 
         this.addChild(LiveIcon);
 
-        PowerdBy = new Label("");
+        PowerdBy = new CB_Label("");
 
         PowerdBy.setHeight(Fonts.Measure(STRING_POWERD_BY).height + (margin * 2));
         PowerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
@@ -240,7 +240,7 @@ public class DescriptionView extends CB_View_Base {
         PowerdBy.setWrappedText(STRING_POWERD_BY);
         this.addChild(PowerdBy);
 
-        MessageLabel = new Label("");
+        MessageLabel = new CB_Label("");
         MessageLabel.setWidth(contentWidth);
         MessageLabel.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
         MessageLabel.setHeight(this.getHalfHeight());
@@ -248,7 +248,7 @@ public class DescriptionView extends CB_View_Base {
         MessageLabel.setWrappedText(getMessage());
         this.addChild(MessageLabel);
 
-        downloadButton = new Button(Translation.get("DownloadDetails"));
+        downloadButton = new CB_Button(Translation.get("DownloadDetails"));
         downloadButton.setWidth(this.getWidth() * 0.8f);
 
         this.addChild(downloadButton);

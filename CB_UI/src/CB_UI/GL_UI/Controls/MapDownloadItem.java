@@ -3,9 +3,9 @@ package CB_UI.GL_UI.Controls;
 import CB_Core.Import.UnZip;
 import CB_UI.GL_UI.Activitys.MapDownload.MapRepositoryInfo;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.ChkBox;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.CB_CheckBox;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -25,9 +25,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MapDownloadItem extends CB_View_Base {
     private static final String log = "MapDownloadItem";
     private final MapRepositoryInfo mapInfo;
-    private final ChkBox checkBoxMap;
+    private final CB_CheckBox checkBoxMap;
     private final float margin;
-    private final Label lblName, lblSize;
+    private final CB_Label lblName, lblSize;
     private final String workPath;
     private final AtomicBoolean DownloadRuns = new AtomicBoolean(false);
     private int lastProgress = 0;
@@ -40,21 +40,21 @@ public class MapDownloadItem extends CB_View_Base {
         this.workPath = workPath;
         margin = UI_Size_Base.that.getMargin();
 
-        checkBoxMap = new ChkBox("Image");
+        checkBoxMap = new CB_CheckBox("Image");
         this.setHeight(checkBoxMap.getHeight() + (margin * 2));
         this.setWidth(ItemWidth);
         checkBoxMap.setX(margin);
 
         checkBoxMap.setY(margin);
 
-        lblName = new Label(this.name + " lblName", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
+        lblName = new CB_Label(this.name + " lblName", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
         lblName.setFont(Fonts.getNormal());
 
         // Cut "Freizeitkarte"
         String Name = mapInfo.Description.replace("Freizeitkarte ", "");
         lblName.setText(Name);
 
-        lblSize = new Label(this.name + " lblSize", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
+        lblSize = new CB_Label(this.name + " lblSize", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
         lblSize.setFont(Fonts.getNormal());
 
         // Format Size

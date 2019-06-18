@@ -3,7 +3,7 @@ package CB_UI_Base.GL_UI.GL_Listener;
 import CB_UI_Base.Events.KeyCodes;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker;
@@ -151,7 +151,7 @@ public class GL_Input implements InputProcessor {
 
         // wenn dieser TouchDown ausserhalb einer TextView war, dann reset TextFieldFocus
         if (GL.that.getFocusedEditTextField() != null) {
-            if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !(view instanceof Button) && !GL.that.PopUpIsShown()) {
+            if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !(view instanceof CB_Button) && !GL.that.PopUpIsShown()) {
                 GL.that.setFocusedEditTextField(null);
             }
         }

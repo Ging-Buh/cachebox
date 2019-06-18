@@ -30,9 +30,9 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI.GlobalCore;
 import CB_UI.RouteOverlay;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.Math.CB_RectF;
@@ -59,9 +59,9 @@ import static CB_UI_Base.GL_UI.Sprites.*;
 public class CreateTrackOverMapActivity extends ActivityBase {
     private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
     public MapView mTrackMapView;
-    private Label lblName;
+    private CB_Label lblName;
     private EditTextField editName;
-    private Button btnOk, btnAdd, btnCancel;
+    private CB_Button btnOk, btnAdd, btnCancel;
     private CB_List<Waypoint> waypoints;
     private Waypoint selectedWP;
     private OnClickListener onOkClick = (v, x, y, pointer, button) -> false;
@@ -90,9 +90,9 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     private void createControls() {
         float btWidth = innerWidth / 3;
 
-        btnOk = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onOkClick);
-        btnAdd = new Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClick);
-        btnCancel = new Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
+        btnOk = new CB_Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onOkClick);
+        btnAdd = new CB_Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClick);
+        btnCancel = new CB_Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
 
         // translations
         btnOk.setText(Translation.get("ok".hashCode()));
@@ -103,7 +103,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         this.addChild(btnAdd);
         this.addChild(btnCancel);
 
-        lblName = new Label(Translation.get("Name"));
+        lblName = new CB_Label(Translation.get("Name"));
         editName = new EditTextField(this, "*" + Translation.get("Name"));
         lblName.setRec(new CB_RectF(leftBorder, this.getHeight() - (lblName.getHeight() + margin), lblName.getWidth(), lblName.getHeight()));
         editName.setRec(new CB_RectF(lblName.getMaxX() + margin, lblName.getY(), innerWidth - (margin + lblName.getWidth()), lblName.getHeight()));

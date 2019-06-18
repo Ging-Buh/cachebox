@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ImageButton extends Button {
+public class ImageButton extends CB_Button {
     protected final Image image;
     float mScale = 1f;
     float mAngle = 0;

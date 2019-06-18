@@ -1,14 +1,14 @@
 package CB_UI.GL_UI.Activitys.settings;
 
 import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.Math.CB_RectF;
 
 public class SettingsItemBase extends ListViewItemBackground {
     private static float MeasuredLabelHeight = -1;
-    protected Label lblName, lblDefault;
+    protected CB_Label lblName, lblDefault;
     protected boolean isDisabled = false;
 
     public SettingsItemBase(CB_RectF rec, int Index, String Name) {
@@ -20,14 +20,14 @@ public class SettingsItemBase extends ListViewItemBackground {
 
         CB_RectF LblRec = new CB_RectF(leftBorder, 0, innerWidth, this.getHalfHeight());
 
-        lblDefault = new Label(LblRec);
+        lblDefault = new CB_Label(LblRec);
         lblDefault.setFont(Fonts.getSmall());
         this.addChild(lblDefault);
 
         LblRec.setY(MeasuredLabelHeight);
         LblRec.setHeight(this.getHeight() - MeasuredLabelHeight);
 
-        lblName = new Label(LblRec);
+        lblName = new CB_Label(LblRec);
         lblName.setFont(Fonts.getNormal());
         this.addChild(lblName);
 

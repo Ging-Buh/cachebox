@@ -8,8 +8,8 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.MapDownloadItem;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -21,10 +21,10 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
-import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.http.Webb;
+import com.badlogic.gdx.utils.Array;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
@@ -40,11 +40,11 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     private final String URL_FREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
     private boolean DownloadIsCompleted = false;
     private int AllProgress = 0;
-    private CB_List<MapRepositoryInfo> mapInfoList = new CB_List<>();
-    private CB_List<MapDownloadItem> mapInfoItemList = new CB_List<>();
+    private Array<MapRepositoryInfo> mapInfoList = new Array<>();
+    private Array<MapDownloadItem> mapInfoItemList = new Array<>();
     private MapRepositoryInfo actMapRepositoryInfo;
-    private Button bOK, bCancel;
-    private Label lblProgressMsg;
+    private CB_Button bOK, bCancel;
+    private CB_Label lblProgressMsg;
     private ProgressBar pgBar;
     private Boolean importStarted = false;
     private ScrollBox scrollBox;
@@ -85,8 +85,8 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createOkCancelBtn() {
-        bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("import"));
@@ -125,7 +125,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-        Label lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
+        CB_Label lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
         float lblWidth = lblTitle.setText(Translation.get("import")).getTextWidth();
         this.addChild(lblTitle);
@@ -138,7 +138,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
 
-        lblProgressMsg = new Label(this.name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight);
+        lblProgressMsg = new CB_Label(this.name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight);
 
         lblProgressMsg.setFont(Fonts.getSmall());
 
@@ -177,7 +177,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         canceld = false;
         importStarted = true;
-        for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+        for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
             MapDownloadItem item = mapInfoItemList.get(i);
             item.beginDownload();
         }
@@ -186,7 +186,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
             while (!DownloadIsCompleted) {
                 if (canceld) {
-                    for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+                    for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
                         MapDownloadItem item = mapInfoItemList.get(i);
                         item.cancelDownload();
                     }
@@ -194,7 +194,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
                 int calcAll = 0;
                 int downloadCount = 0;
-                for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+                for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
                     MapDownloadItem item = mapInfoItemList.get(i);
                     int actPro = item.getDownloadProgress();
                     if (actPro > -1) {
@@ -220,7 +220,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
                 // chk download ready
                 boolean chk = true;
-                for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+                for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
                     MapDownloadItem item = mapInfoItemList.get(i);
                     if (!item.isFinished()) {
                         chk = false;
@@ -256,7 +256,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             lblProgressMsg.setText("");
             bCancel.setText(Translation.get("ok"));
             // to prevent download again. On next start you must check again
-            for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+            for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
                 MapDownloadItem item = mapInfoItemList.get(i);
                 item.enable();
             }
@@ -348,7 +348,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         }
 
         // Create possible download List
-        for (int i = 0, n = mapInfoList.size(); i < n; i++) {
+        for (int i = 0, n = mapInfoList.size; i < n; i++) {
             MapRepositoryInfo map = mapInfoList.get(i);
 
             MapDownloadItem item = new MapDownloadItem(map, workPath, MapDownload.this.innerWidth);

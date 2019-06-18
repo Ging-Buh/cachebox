@@ -103,15 +103,15 @@ public class SearchDialog extends PopUp_Base {
     /**
      * Button, der eine Suche Startet
      */
-    private Button mBtnSearch;
+    private CB_Button mBtnSearch;
     /**
      * Button, der den nächsten Treffer einer gestarteten Suche findet
      */
-    private Button mBtnNext;
+    private CB_Button mBtnNext;
     /**
      * Button, der den Search Dialog schliesst
      */
-    private Button mBtnCancel;
+    private CB_Button mBtnCancel;
     /**
      * Such Eingabe Feld
      */
@@ -150,9 +150,9 @@ public class SearchDialog extends PopUp_Base {
         rec.setWidth(btnWidth = (this.getWidth() - (margin * 5)) / 4);
 
         mBtnFilter = new ImageButton(rec, "mBtnFilter");
-        mBtnSearch = new Button(rec, "mBtnSearch");
-        mBtnNext = new Button(rec, "mBtnNext");
-        mBtnCancel = new Button(rec, "mBtnCancel");
+        mBtnSearch = new CB_Button(rec, "mBtnSearch");
+        mBtnNext = new CB_Button(rec, "mBtnNext");
+        mBtnCancel = new CB_Button(rec, "mBtnCancel");
 
         rec.setWidth(this.getWidth() - (margin * 2));
 

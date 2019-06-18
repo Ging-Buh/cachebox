@@ -1,16 +1,15 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ProgressBar extends CB_View_Base {
-    private final Label label;
+    private final CB_Label label;
     protected float progressDrawWidth = 0;
     private int progress = 0;
     private Drawable progressFill, progressFillDisabled;
@@ -19,7 +18,7 @@ public class ProgressBar extends CB_View_Base {
 
     public ProgressBar(CB_RectF rec, String Name) {
         super(rec, Name);
-        label = new Label(this);
+        label = new CB_Label(this);
         label.setHAlignment(HAlignment.CENTER);
         this.addChild(label);
     }

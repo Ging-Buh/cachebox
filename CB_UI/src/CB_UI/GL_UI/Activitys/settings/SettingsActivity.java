@@ -25,14 +25,14 @@ import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
-import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.CB_CheckBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListenerDouble;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListenerTime;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
@@ -68,7 +68,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return true;
     };
     private CB_List<SettingCategory> Categorys = new CB_List<>();
-    private Button btnOk, btnCancel, btnMenu;
+    private CB_Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
     private CB_RectF ButtonRec, itemRec;
     private API_Button apiBtn;
@@ -120,9 +120,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private void createButtons() {
         float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
 
-        btnOk = new Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), "Menu Button");
-        btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        btnOk = new CB_Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
+        btnMenu = new CB_Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), "Menu Button");
+        btnCancel = new CB_Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
         btnOk.setText(Translation.get("save"));
         btnCancel.setText(Translation.get("cancel"));
@@ -281,8 +281,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
                     rec2.setHeight(rec.getHalfHeight());
 
-                    Label lblVolume = new Label(this.name + " lblVolume", itemRec, Translation.get("Volume"));
-                    Label lblMute = new Label(this.name + " lblMute", itemRec, Translation.get("Mute"));
+                    CB_Label lblVolume = new CB_Label(this.name + " lblVolume", itemRec, Translation.get("Volume"));
+                    CB_Label lblMute = new CB_Label(this.name + " lblMute", itemRec, Translation.get("Mute"));
 
                     lblVolume.setZeroPos();
                     lblMute.setZeroPos();
@@ -307,7 +307,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     ((SettingsItemBase) view).disable();
                 }
 
-                if (view instanceof Button) {
+                if (view instanceof CB_Button) {
                     view.setSize(itemRec);
                 }
 
@@ -936,7 +936,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB, int backgroundChanger) {
-        Button btn = new Button(ButtonRec, "Button");
+        CB_Button btn = new CB_Button(ButtonRec, "Button");
 
         btn.setDraggable();
 
@@ -1021,7 +1021,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(Translation.get(SB.getName()));
         item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
         item.setVolume((int) (SB.getValue().Volume * 100));
-        ChkBox chk = item.getCheckBox();
+        CB_CheckBox chk = item.getCheckBox();
 
         if (!AudioName.contains("Global")) {
             if (audioSettingsList == null)
@@ -1032,7 +1032,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         chk.setChecked(SB.getValue().Mute);
         chk.setOnCheckChangedListener(new OnCheckChangedListener() {
             @Override
-            public void onCheckedChanged(ChkBox view, boolean isChecked) {
+            public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
                 Audio aud = new Audio(SB.getValue());
                 aud.Mute = isChecked;
                 SB.setValue(aud);
@@ -1287,12 +1287,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(Translation.get(SB.getName()));
         item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
 
-        ChkBox chk = item.getCheckBox();
+        CB_CheckBox chk = item.getCheckBox();
 
         chk.setChecked(SB.getValue());
         chk.setOnCheckChangedListener(new OnCheckChangedListener() {
             @Override
-            public void onCheckedChanged(ChkBox view, boolean isChecked) {
+            public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
                 SB.setValue(isChecked);
                 if (SB.getName().equalsIgnoreCase("DraftsLoadAll")) {
                     resortList();

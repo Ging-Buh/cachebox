@@ -2,9 +2,9 @@ package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.CB_CheckBox;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -25,7 +25,7 @@ public class NewDB_InputBox extends MessageBox {
         NewDB_InputBox msgBox = new NewDB_InputBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
-        final ChkBox chk = new ChkBox("");
+        final CB_CheckBox chk = new CB_CheckBox("");
         msgBox.setMsgBoxClickListener((which, data) -> {
             Listener.onClick(which, chk.isChecked());
             return true;
@@ -37,7 +37,7 @@ public class NewDB_InputBox extends MessageBox {
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();
         LabelRec.setHeight(LabelRec.getHeight() - chk.getHeight());
 
-        Label lbl = new Label(LabelRec);
+        CB_Label lbl = new CB_Label(LabelRec);
         lbl.setX(chk.getMaxX() + margin);
         lbl.setY(chk.getY());
         lbl.setText(Translation.get("UseDefaultRep"));
@@ -61,7 +61,7 @@ public class NewDB_InputBox extends MessageBox {
 
         LabelRec.setHeight(LabelRec.getHeight() - editText.getHeight());
 
-        Label label = new Label(LabelRec);
+        CB_Label label = new CB_Label(LabelRec);
         label.setZeroPos();
         label.setY(editText.getMaxY());
         label.setWrappedText(msg);

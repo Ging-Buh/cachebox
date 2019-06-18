@@ -5,9 +5,9 @@ import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.math.Vector2;
 
 public class CB_ButtonListItem extends ListViewItemBase {
-    CB_Button mCB_Button;
+    CB_CB_Button mCB_Button;
 
-    public CB_ButtonListItem(int Index, CB_Button Button, String Name) {
+    public CB_ButtonListItem(int Index, CB_CB_Button Button, String Name) {
         super(new CB_RectF(Button), Index, Name);
         mCB_Button = Button;
         mCB_Button.setPos(new Vector2(0, 0));

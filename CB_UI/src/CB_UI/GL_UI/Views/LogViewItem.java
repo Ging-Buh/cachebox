@@ -18,9 +18,9 @@ package CB_UI.GL_UI.Views;
 import CB_Core.Types.LogEntry;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
@@ -42,8 +42,8 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     private static float headHeight;
     private LogEntry logEntry;
     private Image ivTyp;
-    private Label lblFinder;
-    private Label lblDate;
+    private CB_Label lblFinder;
+    private CB_Label lblDate;
     private EditTextField mComment;
     private float secondTab = 0;
     private Clipboard clipboard = GlobalCore.getDefaultClipboard();
@@ -70,7 +70,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     }
 
     private void iniFoundLabel() {
-        lblFinder = new Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, logEntry.Finder);
+        lblFinder = new CB_Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, logEntry.Finder);
         this.addChild(lblFinder);
     }
 
@@ -80,7 +80,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         String dateString = postFormater.format(logEntry.Timestamp);
         float DateLength = Fonts.Measure(dateString).width;
 
-        lblDate = new Label(this.name + " lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, dateString);
+        lblDate = new CB_Label(this.name + " lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, dateString);
         this.addChild(lblDate);
     }
 

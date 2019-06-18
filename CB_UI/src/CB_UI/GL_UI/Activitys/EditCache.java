@@ -40,8 +40,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private Cache cache;
     private Cache newValues;
     private ScrollBox mainPanel;
-    private Button btnOK;
-    private Button btnCancel;
+    private CB_Button btnOK;
+    private CB_Button btnCancel;
     private Spinner cacheTyp;
     private Spinner cacheSize;
     private Spinner cacheDifficulty;
@@ -58,8 +58,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     public EditCache() {
         super(ActivityBase.ActivityRec(), "EditCache");
         // das übliche
-        btnOK = new Button(Translation.get("ok"));
-        btnCancel = new Button(Translation.get("cancel"));
+        btnOK = new CB_Button(Translation.get("ok"));
+        btnCancel = new CB_Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
         this.addNext(btnOK);
         this.addLast(btnCancel);

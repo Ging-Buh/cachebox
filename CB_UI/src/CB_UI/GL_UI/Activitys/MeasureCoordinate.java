@@ -28,8 +28,8 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.SatBarChart;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -48,10 +48,10 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     // Erdradius / anzahl Kacheln = Meter pro Kachel
     private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
     private final MeasuredCoordList mMeasureList = new MeasuredCoordList();
-    private Button bOK = null;
-    private Label lblMeasureCount;
-    private Label lblMeasureCoord;
-    private Label lblDescMeasureCoord;
+    private CB_Button bOK = null;
+    private CB_Label lblMeasureCount;
+    private CB_Label lblMeasureCoord;
+    private CB_Label lblDescMeasureCoord;
     private int MeasureCount = 0;
     private Sprite drawing = null;
     private Pixmap drawingPixmap = null;
@@ -80,10 +80,10 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
     private void iniOkCancel() {
         CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
-        bOK = new Button(btnRec, "OkButton");
+        bOK = new CB_Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());
-        Button bCancel = new Button(btnRec, "CancelButton");
+        CB_Button bCancel = new CB_Button(btnRec, "CancelButton");
 
         bOK.setText(Translation.get("ok"));
         bCancel.setText(Translation.get("cancel"));
@@ -117,16 +117,16 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
         CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
 
-        Label lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.get("MeasureCount"));
+        CB_Label lblDescMeasureCount = new CB_Label(this.name + " lblDescMeasureCount", rec, Translation.get("MeasureCount"));
 
-        lblMeasureCount = new Label(rec2);
+        lblMeasureCount = new CB_Label(rec2);
 
         rec2.setY(lblMeasureCount.getMaxY() + margin);
         rec.setY(lblMeasureCount.getMaxY() + margin);
 
-        lblDescMeasureCoord = new Label(this.name + " lblDescMeasureCoord", rec, Translation.get("MeasureCoord"));
+        lblDescMeasureCoord = new CB_Label(this.name + " lblDescMeasureCoord", rec, Translation.get("MeasureCoord"));
 
-        lblMeasureCoord = new Label(rec2);
+        lblMeasureCoord = new CB_Label(rec2);
 
         this.addChild(lblDescMeasureCount);
         this.addChild(lblMeasureCount);

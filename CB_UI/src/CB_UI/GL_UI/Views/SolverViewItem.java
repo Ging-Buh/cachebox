@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Views;
 import CB_Core.Solver.SolverZeile;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.Math.CB_RectF;
@@ -27,7 +27,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 public class SolverViewItem extends ListViewItemBackground {
     protected boolean isPressed = false;
     protected SolverZeile solverZeile;
-    Label lblSolverZeile;
+    CB_Label lblSolverZeile;
 
     public SolverViewItem(CB_RectF rec, int Index, SolverZeile solverZeile) {
         super(rec, Index, "");
@@ -37,7 +37,7 @@ public class SolverViewItem extends ListViewItemBackground {
     @Override
     protected void Initial() {
         super.Initial();
-        lblSolverZeile = new Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
+        lblSolverZeile = new CB_Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
         lblSolverZeile.setHeight(this.getHeight()); // todo ob das immer passt?
         this.setBorders(UI_Size_Base.that.getMargin(), UI_Size_Base.that.getMargin());
         this.addLast(lblSolverZeile);

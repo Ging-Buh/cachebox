@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.CB_CheckBox;
 import CB_UI_Base.GL_UI.Controls.FloatControl;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
@@ -8,7 +8,7 @@ import CB_UI_Base.Math.UiSizes;
 
 public class SettingsItem_Audio extends SettingsItemBase {
 
-    ChkBox Check;
+    CB_CheckBox Check;
     FloatControl volumeControl;
 
     /**
@@ -23,7 +23,7 @@ public class SettingsItem_Audio extends SettingsItemBase {
         // TODO add option for load SoundFile
         // if (full) this.setHeight(rec.getHeight() * 2);
 
-        Check = new ChkBox("");
+        Check = new CB_CheckBox("");
         Check.setX(this.getWidth() - rightBorder - Check.getWidth());
         Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 
@@ -52,7 +52,7 @@ public class SettingsItem_Audio extends SettingsItemBase {
 
     }
 
-    public ChkBox getCheckBox() {
+    public CB_CheckBox getCheckBox() {
         return Check;
     }
 

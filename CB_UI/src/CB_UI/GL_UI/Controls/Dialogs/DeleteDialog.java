@@ -11,11 +11,11 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
+import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Fonts;
@@ -30,7 +30,7 @@ import CB_Utils.Interfaces.ICancelRunnable;
 public class DeleteDialog extends ButtonDialog {
     private SizeF msgBoxContentSize;
     private ImageButton btDelFilter, btDelArchived, btDelFounds;
-    private Label lblDelFilter, lblDelArchived, lblDelFounds;
+    private CB_Label lblDelFilter, lblDelArchived, lblDelFounds;
     private CancelWaitDialog wd;
 
     public DeleteDialog() {
@@ -50,9 +50,9 @@ public class DeleteDialog extends ButtonDialog {
         btDelArchived.setImage(Sprites.getSpriteDrawable("delete-archived"));
         btDelFounds.setImage(Sprites.getSpriteDrawable("delete-founds"));
 
-        lblDelFilter = new Label(Translation.get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
-        lblDelArchived = new Label(Translation.get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
-        lblDelFounds = new Label(Translation.get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
+        lblDelFilter = new CB_Label(Translation.get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
+        lblDelArchived = new CB_Label(Translation.get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
+        lblDelFounds = new CB_Label(Translation.get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 
         Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
         box.initRow(BOTTOMUP);
