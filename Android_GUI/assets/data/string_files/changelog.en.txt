@@ -4,6 +4,11 @@
 • Deletions = -
 
 Current changes:
+    + Settings / More: The number of logs to be imported during the first import can be set to 0/5/30. (Importspeed).
+    + Published Date will only be included in the search of "Import by position", if explicitly clicked.
+    + Menus now have a tab with headline. By clicking on the heading, the menu selection can be canceled.
+
+Changes up to version 3356:
     + Some setting changes will now prompt you to restart
     + Import log pictures in the context menu of the logbook
     ~ The TB list is again displayed as a view
