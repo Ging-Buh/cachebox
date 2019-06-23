@@ -62,7 +62,6 @@ public class Action_ShowQuit extends AbstractAction {
 
         try {
             msg = MessageBox.show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
-
                 @Override
                 public boolean onClick(int which, Object data) {
                     if (which == MessageBox.BUTTON_POSITIVE) {

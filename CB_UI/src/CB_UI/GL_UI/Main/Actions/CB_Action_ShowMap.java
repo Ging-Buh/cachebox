@@ -16,6 +16,7 @@
 
 package CB_UI.GL_UI.Main.Actions;
 
+import CB_Core.Import.UnZip;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
@@ -30,6 +31,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.*;
 import CB_UI_Base.GL_UI.Sprites;
@@ -39,12 +41,20 @@ import CB_Utils.Settings.SettingBool;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.http.Download;
+import CB_Utils.http.Webb;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Array;
+import com.thebuzzmedia.sjxp.XMLParser;
+import com.thebuzzmedia.sjxp.rule.DefaultRule;
+import com.thebuzzmedia.sjxp.rule.IRule;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 
+import java.io.ByteArrayInputStream;
 import java.util.*;
 
 import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
@@ -62,6 +72,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private Menu mRenderThemesSelectionMenu;
     private OptionMenu menuMapElements;
     private HashMap<String, String> RenderThemes;
+    private OptionMenu mapViewThemeMenu;
+    private String themesPath;
+    private FZKThemesInfo fzkThemesInfo;
+    private Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -315,13 +329,153 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private boolean showModusSelectionMenu() {
-        final OptionMenu menuRenderThemes = new OptionMenu("MapViewThemeMenuTitle");
-        menuRenderThemes.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(0));
-        menuRenderThemes.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(1));
-        menuRenderThemes.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(2));
-        menuRenderThemes.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(3));
-        menuRenderThemes.Show();
+        mapViewThemeMenu = new OptionMenu("MapViewThemeMenuTitle");
+        mapViewThemeMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(0));
+        mapViewThemeMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(1));
+        mapViewThemeMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(2));
+        mapViewThemeMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(3));
+
+        themesPath = LocatorSettings.RenderThemesFolder.getValue();
+        // only download, if writable
+        boolean isWritable = false;
+        if (themesPath.length() > 0)
+            isWritable = FileIO.canWrite(themesPath);
+        if (isWritable) {
+            mapViewThemeMenu.addDivider();
+
+            final String target = themesPath + "/Elevate4.zip";
+            if (themesPath.length() > 0) {
+                mapViewThemeMenu.addMenuItem("Download", "\n OpenAndroMaps", Sprites.getSprite(IconName.mapsforge_logo.name()),
+                        (v, x, y, pointer, button) -> {
+                            GL.that.postAsync(() -> {
+                                ((MenuItem) v).setDisabled(false);
+                                GL.that.renderOnce();
+                                Download.Download("http://download.openandromaps.org/themes/Elevate4.zip", target);
+                                try {
+                                    UnZip.extractFolder(target, false);
+                                } catch (Exception ex) {
+                                    MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                                }
+                                Gdx.files.absolute(target).delete();
+                                ((MenuItem) v).setDisabled(true);
+                                GL.that.renderOnce();
+                            });
+                            return true;
+                        });
+            }
+
+            addDownloadFZKRenderThemes();
+        } else {
+            if (!Config.RememberAsk_RenderThemePathWritable.getValue()) {
+                mapViewThemeMenu.addDivider();
+                mapViewThemeMenu.addMenuItem("MakeRenderThemePathWritable", null, () -> {
+                    Config.RememberAsk_RenderThemePathWritable.setValue(true);
+                    Config.AcceptChanges();
+                });
+            }
+        }
+
+        mapViewThemeMenu.Show();
         return true;
+    }
+
+    private void addDownloadFZKRenderThemes() {
+        GL.that.postAsync(() -> {
+            if (fzkThemesInfoList.size == 0) {
+                String repository_freizeitkarte_android = Webb.create()
+                        .get("http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml")
+                        .readTimeout(Config.socket_timeout.getValue())
+                        .ensureSuccess()
+                        .asString()
+                        .getBody();
+                java.util.Map<String, String> values = new HashMap<>();
+                System.setProperty("sjxp.namespaces", "false");
+                Array<IRule<Map<String, String>>> ruleList = createRepositoryRules(new Array<>());
+                XMLParser<Map<String, String>> parserCache = new XMLParser<>(ruleList.toArray(IRule.class));
+                parserCache.parse(new ByteArrayInputStream(repository_freizeitkarte_android.getBytes()), values);
+            }
+
+            for (FZKThemesInfo fzkThemesInfo : fzkThemesInfoList) {
+                mapViewThemeMenu.addMenuItem("Download", "\n" + fzkThemesInfo.Description, Sprites.getSprite(Sprites.IconName.freizeit.name()),
+                        (v, x, y, pointer, button) -> {
+                            GL.that.postAsync(() -> {
+                                ((MenuItem) v).setDisabled(false);
+                                GL.that.renderOnce();
+                                String zipFile = fzkThemesInfo.Url.substring(fzkThemesInfo.Url.lastIndexOf("/") + 1);
+                                String target = themesPath + "/" + zipFile;
+
+                                Download.Download(fzkThemesInfo.Url, target);
+                                try {
+                                    UnZip.extractFolder(target);
+                                } catch (Exception ex) {
+                                    MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                                }
+                                Gdx.files.absolute(target).delete();
+                                ((MenuItem) v).setDisabled(true);
+                                GL.that.renderOnce();
+                            });
+                            return true;
+                        });
+            }
+        });
+    }
+
+    private Array<IRule<java.util.Map<String, String>>> createRepositoryRules(Array<IRule<java.util.Map<String, String>>> ruleList) {
+        ruleList.add(new DefaultRule<Map<String, String>>(IRule.Type.CHARACTER, "/Freizeitkarte/Theme/Name") {
+            @Override
+            public void handleParsedCharacters(XMLParser<java.util.Map<String, String>> parser, String text, java.util.Map<String, String> values) {
+                fzkThemesInfo.Name = text;
+            }
+        });
+
+        if (Config.Sel_LanguagePath.getValue().contains("/de/")) {
+            ruleList.add(new DefaultRule<java.util.Map<String, String>>(IRule.Type.CHARACTER, "/Freizeitkarte/Theme/DescriptionGerman") {
+                @Override
+                public void handleParsedCharacters(XMLParser<java.util.Map<String, String>> parser, String text, java.util.Map<String, String> values) {
+                    fzkThemesInfo.Description = text;
+                }
+            });
+        } else {
+            ruleList.add(new DefaultRule<java.util.Map<String, String>>(IRule.Type.CHARACTER, "/Freizeitkarte/Theme/DescriptionEnglish") {
+                @Override
+                public void handleParsedCharacters(XMLParser<java.util.Map<String, String>> parser, String text, java.util.Map<String, String> values) {
+                    fzkThemesInfo.Description = text;
+                }
+            });
+        }
+
+        ruleList.add(new DefaultRule<java.util.Map<String, String>>(IRule.Type.CHARACTER, "/Freizeitkarte/Theme/Url") {
+            @Override
+            public void handleParsedCharacters(XMLParser<java.util.Map<String, String>> parser, String text, java.util.Map<String, String> values) {
+                fzkThemesInfo.Url = text;
+            }
+        });
+
+        ruleList.add(new DefaultRule<java.util.Map<String, String>>(IRule.Type.CHARACTER, "/Freizeitkarte/Theme/Size") {
+            @Override
+            public void handleParsedCharacters(XMLParser<java.util.Map<String, String>> parser, String text, java.util.Map<String, String> values) {
+                fzkThemesInfo.Size = Integer.parseInt(text);
+            }
+        });
+
+        ruleList.add(new DefaultRule<java.util.Map<String, String>>(IRule.Type.CHARACTER, "/Freizeitkarte/Theme/Checksum") {
+            @Override
+            public void handleParsedCharacters(XMLParser<java.util.Map<String, String>> parser, String text, java.util.Map<String, String> values) {
+                fzkThemesInfo.MD5 = text;
+            }
+        });
+
+        ruleList.add(new DefaultRule<java.util.Map<String, String>>(IRule.Type.TAG, "/Freizeitkarte/Theme") {
+            @Override
+            public void handleTag(XMLParser<java.util.Map<String, String>> parser, boolean isStartTag, java.util.Map<String, String> values) {
+                if (isStartTag) {
+                    fzkThemesInfo = new FZKThemesInfo();
+                } else {
+                    fzkThemesInfoList.add(fzkThemesInfo);
+                }
+            }
+        });
+        return ruleList;
     }
 
     private boolean showRenderThemesSelectionMenu(int which) {
@@ -449,7 +603,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void showOverlaySelection(String values, HashMap<String, String> StyleOverlays, String ConfigStyle) {
         final Menu menuStyleOverlay = new OptionMenu("MapViewThemeStyleMenuTitle");
         for (String overlay : StyleOverlays.keySet()) {
-            MenuItem mi = menuStyleOverlay.addMenuItem( "", overlay, null, (v, x, y, pointer, button) -> {
+            MenuItem mi = menuStyleOverlay.addMenuItem("", overlay, null, (v, x, y, pointer, button) -> {
                 MenuItem clickedItem = (MenuItem) v;
                 menuStyleOverlay.tickCheckBoxes(clickedItem); // the new value of clickedItem must be set first
                 String clickedValues[] = ((String) clickedItem.getData()).split("\\|");
@@ -618,6 +772,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         public void setLayer(String layer) {
             selectedLayer = layer;
         }
+    }
+
+    private class FZKThemesInfo {
+        public String Name;
+        public String Description;
+        public String Url;
+        public int Size;
+        public String MD5;
     }
 
 }

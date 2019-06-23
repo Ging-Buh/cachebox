@@ -20,6 +20,10 @@ import java.util.zip.ZipFile;
 public class UnZip {
     private static final String log = "UnZip";
 
+    static public String extractFolder(String zipFile) throws IOException {
+        return extractFolder(zipFile, true);
+    }
+
     /**
      * Extract the given ZIP-File
      *
@@ -28,8 +32,8 @@ public class UnZip {
      * @throws ZipException
      * @throws IOException
      */
-    static public String extractFolder(String zipFile) throws ZipException, IOException {
-        Log.info(log, "unzip from " + zipFile);
+    static public String extractFolder(String zipFile, boolean here) throws ZipException, IOException {
+        Log.debug(log, "unzip from " + zipFile);
         int BUFFER = 2048;
         File file = FileFactory.createFile(zipFile);
         ZipFile zip;
@@ -40,9 +44,13 @@ public class UnZip {
             zip = new ZipFile(file.getAbsolutePath());
         }
 
-        String newPath = file.getParentFile().getAbsolutePath(); //  zipFile.substring(0, zipFile.length() - 4);
+        String newPath = file.getParent(); //  zipFile.substring(0, zipFile.length() - 4);
 
-        FileFactory.createFile(newPath).mkdir();
+        if (!here) {
+            newPath = zipFile.substring(0, zipFile.length() - 4);
+            FileFactory.createFile(newPath).mkdir();
+        }
+
         Enumeration<?> zipFileEntries = zip.entries();
 
         // Process each entry
@@ -54,7 +62,7 @@ public class UnZip {
             if (destFile.exists()) {
                 destFile.delete();
             }
-            Log.info(log, "  zipEntry: " + destFile.getAbsolutePath());
+            Log.debug(log, "  zipEntry: " + destFile.getAbsolutePath());
 
             File destinationParent = destFile.getParentFile();
             destinationParent.mkdirs();
@@ -81,7 +89,7 @@ public class UnZip {
 
             }
             destFile.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
-            Log.info(log, "  done with size " + destFile.length());
+            Log.debug(log, "  done with size " + destFile.length());
 
             if (currentEntry.endsWith(".zip")) {
                 // found a zip file, try to open recursiv

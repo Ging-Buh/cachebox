@@ -159,5 +159,6 @@ public interface CB_UI_Settings {
 
     SettingBool AppRaterDontShowAgain = new SettingBool("AppRaterDontShowAgain", RememberAsk, NEVER, true, Global, ACB);
     SettingBool RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", RememberAsk, NORMAL, true, Global, ACB);
+    SettingBool RememberAsk_RenderThemePathWritable = new SettingBool("RememberAsk_RenderThemePathWritable", RememberAsk, NORMAL, false, Global, ACB);
 
 }

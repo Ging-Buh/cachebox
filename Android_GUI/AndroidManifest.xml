@@ -17,7 +17,14 @@
 	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"> </uses-feature>
 
 
-	<application android:label="@string/app_name" android:theme="@style/Theme_day" android:icon="@drawable/cb" android:vmSafeMode="false" android:allowBackup="true">
+	<application
+			android:label="@string/app_name"
+			android:theme="@style/Theme_day"
+			android:icon="@drawable/cb"
+			android:vmSafeMode="false"
+			android:allowBackup="true"
+			android:usesCleartextTraffic="true">
+
 		<activity android:name=".main"
 				  android:label="@string/app_name"
 				  android:screenOrientation="behind"
