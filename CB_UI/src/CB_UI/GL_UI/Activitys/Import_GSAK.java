@@ -443,6 +443,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             case "U":
                 return CacheTypes.Mystery;
         }
+        Log.err(sKlasse, "Undefined abbreviation:" + abbreviation);
         return CacheTypes.Undefined;
     }
 
