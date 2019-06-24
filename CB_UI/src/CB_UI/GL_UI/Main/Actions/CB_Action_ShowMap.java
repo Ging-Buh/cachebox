@@ -28,7 +28,6 @@ import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.TrackRecorder;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -64,13 +63,9 @@ import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
  */
 public class CB_Action_ShowMap extends CB_Action_ShowView {
     private static final String log = "CB_Action_ShowMap";
-    private static final int START = 1;
-    private static final int PAUSE = 2;
-    private static final int STOP = 3;
     private static CB_Action_ShowMap that;
     public MapView normalMapView;
     private Menu mRenderThemesSelectionMenu;
-    private OptionMenu menuMapElements;
     private HashMap<String, String> RenderThemes;
     private OptionMenu mapViewThemeMenu;
     private String themesPath;
@@ -141,8 +136,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 //set icon (Online, Mapsforge or Freizeitkarte)
                 Sprite sprite = null;
                 switch (layer.getMapType()) {
-                    case BITMAP:
-                        break;
                     case FREIZEITKARTE:
                         sprite = Sprites.getSprite(IconName.freizeit.name());
                         break;
@@ -153,6 +146,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         sprite = Sprites.getSprite(IconName.download.name());
                         break;
                     default:
+                        // case BITMAP:
                         break;
                 }
 
@@ -185,25 +179,27 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-                MessageBox msgBox = MessageBox.show(Translation.get("AddOrChangeMap"), Translation.get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
-                    @Override
-                    public boolean onClick(int which, Object data) {
-                        Layer layer = (Layer) data;
-                        switch (which) {
-                            case MessageBox.BUTTON_POSITIVE:
-                                // add the selected map to the curent layer
-                                normalMapView.addAdditionalLayer(layer);
-                                break;
-                            case MessageBox.BUTTON_NEUTRAL:
-                                // switch curent layer to selected
-                                normalMapView.setCurrentLayer(layer);
-                                break;
-                            default:
-                                normalMapView.removeAdditionalLayer();
-                        }
-                        return true;
-                    }
-                });
+                MessageBox msgBox = MessageBox.show(
+                        Translation.get("AddOrChangeMap"),
+                        Translation.get("Layer"),
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question,
+                        (which, data) -> {
+                            Layer layer1 = (Layer) data;
+                            switch (which) {
+                                case MessageBox.BUTTON_POSITIVE:
+                                    // add the selected map to the curent layer
+                                    normalMapView.addAdditionalLayer(layer1);
+                                    break;
+                                case MessageBox.BUTTON_NEUTRAL:
+                                    // switch curent layer to selected
+                                    normalMapView.setCurrentLayer(layer1);
+                                    break;
+                                default:
+                                    normalMapView.removeAdditionalLayer();
+                            }
+                            return true;
+                        });
                 msgBox.setButtonText(1, "+");
                 msgBox.setButtonText(2, "=");
                 msgBox.setButtonText(3, "-");
@@ -262,7 +258,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private void showMapViewLayerMenu() {
-        menuMapElements = new OptionMenu("MapViewLayerMenuTitle");
+        OptionMenu menuMapElements = new OptionMenu("MapViewLayerMenuTitle");
         menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Config.ShowAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Config.ShowAtOriginalPosition));
         menuMapElements.addCheckableMenuItem("HideFinds", Config.MapHideMyFinds.getValue(), () -> toggleSettingWithReload(Config.MapHideMyFinds));
         menuMapElements.addCheckableMenuItem("MapShowInfoBar", Config.MapShowInfo.getValue(), () -> toggleSetting(Config.MapShowInfo));
@@ -300,7 +296,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private HashMap<String, String> getRenderThemes() {
-        HashMap<String, String> files = new HashMap<String, String>();
+        HashMap<String, String> files = new HashMap<>();
         String directory = LocatorSettings.RenderThemesFolder.getValue();
         if (directory.length() > 0) {
             files.putAll(getDirsRenderThemes(directory));
@@ -371,10 +367,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 mapViewThemeMenu.addMenuItem("Download", null, () -> {
                     // MakeRenderThemePathWritable
                     MessageBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MessageBoxButtons.YesNo, MessageBoxIcon.Hand, (btnNumber, data) -> {
-                        switch (btnNumber) {
-                            case 1: // change path
-                                Config.RenderThemesFolder.setValue(Config.RenderThemesFolder.getDefaultValue());
-                                Config.AcceptChanges();
+                        if (btnNumber == 1) { // change path
+                            Config.RenderThemesFolder.setValue(Config.RenderThemesFolder.getDefaultValue());
+                            Config.AcceptChanges();
                         }
                         return true;
                     }, Config.RememberAsk_RenderThemePathWritable);
@@ -491,14 +486,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         RenderThemes = getRenderThemes();
 
         addRenderTheme(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT, which);
-        ArrayList<String> themes = new ArrayList<>();
-        for (String theme : RenderThemes.keySet()) themes.add(theme);
-        Collections.sort(themes, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                return s1.toLowerCase().compareTo(s2.toLowerCase());
-            }
-        });
+        ArrayList<String> themes = new ArrayList<>(RenderThemes.keySet());
+        Collections.sort(themes, (s1, s2) -> s1.toLowerCase().compareTo(s2.toLowerCase()));
         for (String theme : themes) {
             addRenderTheme(theme, RenderThemes.get(theme), which);
         }
@@ -556,7 +545,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             MenuItem mi = menuStyle.addMenuItem("", style, null, (v, x, y, pointer, button) -> {
                 menuStyle.close();
                 MenuItem clickedItem = (MenuItem) v;
-                String values[] = ((String) clickedItem.getData()).split("\\|");
+                String[] values = ((String) clickedItem.getData()).split("\\|");
                 HashMap<String, String> StyleOverlays = getStyleOverlays(values[2], values[0]);
                 String ConfigStyle = getStyleFromConfig(values[1]);
                 if (!ConfigStyle.startsWith(values[0])) {
@@ -592,7 +581,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private HashMap<String, String> getThemeStyles(String selectedTheme) {
         if (selectedTheme.length() > 0) {
             try {
-                XmlRenderThemeMenuCallback getStylesCallBack = new GetStylesCallback();
+                GetStylesCallback getStylesCallBack = new GetStylesCallback();
                 XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getStylesCallBack);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
@@ -600,11 +589,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
-                return ((GetStylesCallback) getStylesCallBack).getStyles();
-            } catch (Exception e) {
+                return getStylesCallBack.getStyles();
+            } catch (Exception ignored) {
             }
         }
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
     private void showOverlaySelection(String values, HashMap<String, String> StyleOverlays, String ConfigStyle) {
@@ -613,7 +602,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             MenuItem mi = menuStyleOverlay.addMenuItem("", overlay, null, (v, x, y, pointer, button) -> {
                 MenuItem clickedItem = (MenuItem) v;
                 menuStyleOverlay.tickCheckBoxes(clickedItem); // the new value of clickedItem must be set first
-                String clickedValues[] = ((String) clickedItem.getData()).split("\\|");
+                String[] clickedValues = ((String) clickedItem.getData()).split("\\|");
                 if (clickedItem.isChecked()) {
                     clickedValues[3] = "+" + clickedValues[3].substring(1);
                 } else {
@@ -626,8 +615,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }); // ohne Translation
             String overlayID = StyleOverlays.get(overlay);
             boolean overlayEnabled = overlayID.startsWith("+");
-            if (!(ConfigStyle.indexOf(overlayID) > -1)) {
-                if (ConfigStyle.indexOf(overlayID.substring(1)) > -1) {
+            if (!(ConfigStyle.contains(overlayID))) {
+                if (ConfigStyle.contains(overlayID.substring(1))) {
                     overlayEnabled = !overlayEnabled;
                 }
             }
@@ -656,11 +645,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         }
     }
 
-    private String concatValues(String values[], Menu lOverlay) {
-        String result = values[0];
+    private String concatValues(String[] values, Menu lOverlay) {
+        StringBuilder result = new StringBuilder(values[0]);
         for (MenuItemBase mitm : lOverlay.mItems) {
-            String data[] = ((String) mitm.getData()).split("\\|");
-            result = result + "\t" + data[3];
+            String[] data = ((String) mitm.getData()).split("\\|");
+            result.append("\t").append(data[3]);
         }
         return result + "|" + values[1] + "|" + values[2];
     }
@@ -673,14 +662,13 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 return Config.MapsforgeNightStyle.getValue();
             case "2":
                 return Config.MapsforgeCarDayStyle.getValue();
-            case "3":
+            default:
                 return Config.MapsforgeCarNightStyle.getValue();
         }
-        return "";
     }
 
     private void setConfig(String _StyleAndTheme) {
-        String values[] = ((String) _StyleAndTheme).split("\\|");
+        String[] values = _StyleAndTheme.split("\\|");
         switch (values[1]) {
             case "0":
                 Config.MapsforgeDayStyle.setValue(values[0]);
@@ -714,16 +702,16 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                     Log.err(log, e.getLocalizedMessage());
                 }
                 return getOverlaysCallback.getOverlays();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
     interface OverlaysCallback extends XmlRenderThemeMenuCallback {
-        public HashMap<String, String> getOverlays();
+        HashMap<String, String> getOverlays();
 
-        public void setLayer(String layer);
+        void setLayer(String layer);
     }
 
     private class GetStylesCallback implements XmlRenderThemeMenuCallback {
@@ -731,7 +719,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
         @Override
         public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
-            styles = new HashMap<String, String>();
+            styles = new HashMap<>();
             Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
 
             for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
@@ -745,19 +733,19 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
         public HashMap<String, String> getStyles() {
             if (styles == null) {
-                styles = new HashMap<String, String>();
+                styles = new HashMap<>();
             }
             return styles;
         }
     }
 
     private class GetOverlaysCallback implements OverlaysCallback {
-        public String selectedLayer;
+        String selectedLayer;
         private HashMap<String, String> overlays;
 
         @Override
         public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
-            overlays = new HashMap<String, String>();
+            overlays = new HashMap<>();
             XmlRenderThemeStyleLayer selected_Layer = style.getLayer(selectedLayer);
             for (XmlRenderThemeStyleLayer overlay : selected_Layer.getOverlays()) {
                 if (overlay.isEnabled()) {
