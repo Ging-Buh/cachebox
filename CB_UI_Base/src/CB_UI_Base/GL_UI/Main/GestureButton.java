@@ -2,6 +2,7 @@ package CB_UI_Base.GL_UI.Main;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.GestureHelp;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -42,7 +43,7 @@ import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
  *
  * @author Longri
  */
-public class CB_CB_Button extends CB_UI_Base.GL_UI.Controls.CB_Button {
+public class GestureButton extends CB_Button {
 
     private static Sprite mContextMenuSprite;
     private static Sprite mFilteredContextMenuSprite;
@@ -173,7 +174,7 @@ public class CB_CB_Button extends CB_UI_Base.GL_UI.Controls.CB_Button {
             // Show Gester Help
 
             if (help != null) {
-                CB_RectF rec = CB_CB_Button.this.thisWorldRec;
+                CB_RectF rec = GestureButton.this.thisWorldRec;
                 if (rec != null) {
                     help.setPos(rec.getX(), rec.getMaxY());
                     GL.that.Toast(help, 2000);
@@ -187,7 +188,7 @@ public class CB_CB_Button extends CB_UI_Base.GL_UI.Controls.CB_Button {
     private boolean GestureIsOn = true;
     private boolean isDragged = false;
 
-    public CB_CB_Button(CB_RectF rec, boolean rememberLastAction, String Name) {
+    public GestureButton(CB_RectF rec, boolean rememberLastAction, String Name) {
         super(rec, Name);
         useDescriptiveCB_Buttons = true;
         this.rememberLastAction = rememberLastAction;
@@ -202,7 +203,7 @@ public class CB_CB_Button extends CB_UI_Base.GL_UI.Controls.CB_Button {
         vAlignment = CB_Label.VAlignment.BOTTOM;
     }
 
-    public CB_CB_Button(CB_RectF rec, boolean rememberLastAction, String Name, ButtonSprites sprites) {
+    public GestureButton(CB_RectF rec, boolean rememberLastAction, String Name, ButtonSprites sprites) {
         super(rec, Name);
         useDescriptiveCB_Buttons = false;
         this.rememberLastAction = rememberLastAction;

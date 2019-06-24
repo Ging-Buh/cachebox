@@ -43,8 +43,8 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.Action_ShowQuit;
 import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Main.CB_ButtonList;
-import CB_UI_Base.GL_UI.Main.CB_CB_Button;
 import CB_UI_Base.GL_UI.Main.CB_TabView;
+import CB_UI_Base.GL_UI.Main.GestureButton;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.ParentInfo;
@@ -85,11 +85,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public static Action_PlatformActivity actionRecordVideo;
     public static Action_PlatformActivity actionRecordVoice;
 
-    private CB_CB_Button mCacheListButtonOnLeftTab; // default: show CacheList
-    private CB_CB_Button mDescriptionButtonOnLeftTab; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
-    private CB_CB_Button mMapButtonOnLeftTab; // default: show map on phone ( and show Compass on Tablet )
-    private CB_CB_Button mToolsButtonOnLeftTab; // default: show ToolsMenu or Drafts or Drafts Context menu (depends on config)
-    private CB_CB_Button mAboutButtonOnLeftTab; // default: show About View
+    private GestureButton mCacheListButtonOnLeftTab; // default: show CacheList
+    private GestureButton mDescriptionButtonOnLeftTab; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
+    private GestureButton mMapButtonOnLeftTab; // default: show map on phone ( and show Compass on Tablet )
+    private GestureButton mToolsButtonOnLeftTab; // default: show ToolsMenu or Drafts or Drafts Context menu (depends on config)
+    private GestureButton mAboutButtonOnLeftTab; // default: show About View
 
     private boolean isInitial = false;
     private boolean isFiltered = false;
@@ -245,17 +245,17 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         leftTab = new CB_TabView(rec, "leftTab");
 
         if (Config.useDescriptiveCB_Buttons.getValue()) {
-            mCacheListButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
-            mDescriptionButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Cache");
-            mMapButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Nav");
-            mToolsButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Tool");
-            mAboutButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Misc");
+            mCacheListButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
+            mDescriptionButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache");
+            mMapButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav");
+            mToolsButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool");
+            mAboutButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc");
         } else {
-            mCacheListButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mDescriptionButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mMapButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mToolsButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mAboutButtonOnLeftTab = new CB_CB_Button(MainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            mCacheListButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            mDescriptionButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            mMapButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            mToolsButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            mAboutButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
         CB_ButtonList btnList = new CB_ButtonList();
@@ -359,7 +359,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             this.removeChilds();
 
-            CB_CB_Button.refreshContextMenuSprite();
+            GestureButton.refreshContextMenuSprite();
             addPhoneTab();
 
             // add Slider as last
