@@ -414,34 +414,55 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     private CacheTypes CacheTypeFrom1CharAbbreviation(String abbreviation) {
-        // T=traditional, M=multi, B=letterbox hybrid, C=CITO, E=event, L=locationless, V=virtual, W=webcam, O=Other, G=Benchmark, R=Earth, I=Wherigo and U=mystery/Unknown
         switch (abbreviation) {
-            case "T":
-                return CacheTypes.Traditional;
-            case "M":
-                return CacheTypes.Multi;
+            case "A":
+                return CacheTypes.APE;
             case "B":
                 return CacheTypes.Letterbox;
             case "C":
                 return CacheTypes.CITO;
+            case "D":
+                return CacheTypes.Event; // Groundspeak Lost and Found Celebration
             case "E":
                 return CacheTypes.Event;
+            case "F":
+                return CacheTypes.Event; // Lost and Found Event
+            case "G":
+                return CacheTypes.Cache; // BenchMark
+            case "H":
+                return CacheTypes.Cache; // Groundspeak HQ Cache
+            case "I":
+                return CacheTypes.Wherigo;
+            case "J":
+                return CacheTypes.Giga;
             case "L":
-                return CacheTypes.Cache; // not in CB
+                return CacheTypes.Cache; // Locationless
+            case "M":
+                return CacheTypes.Multi;
+            case "N":
+                return CacheTypes.Cache; // BenchMark
+            case "O":
+                return CacheTypes.Cache; // Other
+            case "P":
+                return CacheTypes.Event; // Groundspeak Block Party
+            case "Q":
+                return CacheTypes.Lab;
+            case "R":
+                return CacheTypes.Earth;
+            case "T":
+                return CacheTypes.Traditional;
+            case "U":
+                return CacheTypes.Mystery;
             case "V":
                 return CacheTypes.Virtual;
             case "W":
                 return CacheTypes.Camera;
-            case "O":
-                return CacheTypes.Cache; // not in CB
-            case "G":
-                return CacheTypes.Cache; // not in CB
-            case "R":
-                return CacheTypes.Earth;
-            case "I":
-                return CacheTypes.Wherigo;
-            case "U":
-                return CacheTypes.Mystery;
+            case "X":
+                return CacheTypes.Cache; // Maze
+            case "Y":
+                return CacheTypes.Cache; // Waymark
+            case "Z":
+                return CacheTypes.MegaEvent;
         }
         Log.err(sKlasse, "Undefined abbreviation:" + abbreviation);
         return CacheTypes.Undefined;
