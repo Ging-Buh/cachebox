@@ -368,9 +368,16 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         } else {
             if (!Config.RememberAsk_RenderThemePathWritable.getValue()) {
                 mapViewThemeMenu.addDivider();
-                mapViewThemeMenu.addMenuItem("MakeRenderThemePathWritable", null, () -> {
-                    Config.RememberAsk_RenderThemePathWritable.setValue(true);
-                    Config.AcceptChanges();
+                mapViewThemeMenu.addMenuItem("Download", null, () -> {
+                    // MakeRenderThemePathWritable
+                    MessageBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MessageBoxButtons.YesNo, MessageBoxIcon.Hand, (btnNumber, data) -> {
+                        switch (btnNumber) {
+                            case 1: // change path
+                                Config.RenderThemesFolder.setValue(Config.RenderThemesFolder.getDefaultValue());
+                                Config.AcceptChanges();
+                        }
+                        return true;
+                    }, Config.RememberAsk_RenderThemePathWritable);
                 });
             }
         }
