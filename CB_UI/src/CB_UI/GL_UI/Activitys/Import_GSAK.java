@@ -18,6 +18,7 @@ import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import android.text.InputType;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.SQLiteInterface;
 
@@ -31,7 +32,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private static final String sKlasse = "Import_GSAK";
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
-    EditTextField edtCategory, edtDBName;
+    EditTextField edtCategory, edtDBName, edtNumberOfLogs;
     private CB_Button bOK, bCancel, btnSelectDB;
     private ProgressBar progressBar;
     private String mPath;
@@ -39,6 +40,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private SQLiteInterface sql;
     private String[] ResultFieldsArray;
     private boolean importRuns, isCanceled;
+    private int numberOfLogs = Integer.MAX_VALUE;
 
     public Import_GSAK() {
         super("Import_GSAK");
@@ -54,7 +56,15 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
         addNext(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.get("category"));
+        edtCategory.setInputType(InputType.TYPE_CLASS_NUMBER);
         addLast(edtCategory);
+        /*
+        CB_Label lblNumberOfLogs = new CB_Label(Translation.get("NumberOfLogs"));
+        lblNumberOfLogs.setWidth(Fonts.Measure(lblNumberOfLogs.getText()).width);
+        addNext(lblNumberOfLogs, FIXED);
+        edtNumberOfLogs = new EditTextField(this, "NumberOfLogs");
+        addLast(edtNumberOfLogs);
+        */
         CB_Label lblDBName = new CB_Label(Translation.get("GSAKDatabase"));
         lblDBName.setWidth(Fonts.Measure(lblDBName.getText()).width);
         addNext(lblDBName, FIXED);
@@ -134,6 +144,15 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
 
     public void doImport() {
+        /*
+        if (edtNumberOfLogs.getText().length() > 0) {
+            try {
+                numberOfLogs = Integer.parseInt(edtNumberOfLogs.getText().trim());
+            }
+            catch (Exception ignored) {
+            }
+        }
+         */
 
         GpxFilename gpxFilename = null;
         Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
@@ -153,6 +172,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
             Config.AcceptChanges();
             Database.Data.sql.beginTransaction();
+
             int count = 0;
             CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
             c.moveToFirst();
@@ -170,7 +190,8 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     if (cache != null && GcCode.length() > 0) {
                         cache = addAttributes(cache);
                         cache = addWayPoints(cache);
-                        GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
+                        // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
+                        GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
                         WriteIntoDB.CacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
                     }
                 } catch (Exception ex) {
@@ -179,6 +200,9 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 reader.moveToNext();
             }
             reader.close();
+
+            writeLogs();
+
             Database.Data.sql.setTransactionSuccessful();
         }
         PlatformConnector.freeSQLInstance(sql);
@@ -188,21 +212,54 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     private ArrayList<LogEntry> createLogs(Cache cache) {
         ArrayList<LogEntry> logList = new ArrayList<>();
-        CoreCursor LogsReader = sql.rawQuery("select Logs.lLogId,lType,lBy,lDate,LogMemo.lText as lText from Logs inner join LogMemo on LogMemo.lLogId = Logs.lLogId where Logs.lParent = ?", new String[]{cache.getGcCode()});
+        if (numberOfLogs > 0) {
+            String cmd = "select Logs.lLogId,lType,lBy,lDate,LogMemo.lText as lText from Logs inner join LogMemo on LogMemo.lLogId = Logs.lLogId where Logs.lParent = ?";
+            if (numberOfLogs < Integer.MAX_VALUE) cmd = cmd + " order by LogMemo.lLogId desc";
+            CoreCursor LogsReader = sql.rawQuery(cmd, new String[]{cache.getGcCode()});
+            LogsReader.moveToFirst();
+            int count = 0;
+            while (!LogsReader.isAfterLast() && count++ < numberOfLogs) {
+                LogEntry logEntry = new LogEntry();
+                logEntry.CacheId = cache.Id;
+                logEntry.Comment = LogsReader.getString("lText");
+                logEntry.Finder = LogsReader.getString("lBy");
+                logEntry.Timestamp = DateFromString(LogsReader.getString("lDate"));
+                logEntry.Type = LogTypes.parseString(LogsReader.getString("lType"));
+                logEntry.Id = LogsReader.getInt("lLogId");
+                logList.add(logEntry);
+                LogsReader.moveToNext();
+            }
+            LogsReader.close();
+        }
+        return logList;
+    }
+
+    private void writeLogs() {
+        CoreCursor c = sql.rawQuery("select count(*) from Logs", null);
+        c.moveToFirst();
+        int anz = c.getInt(0);
+        int count = 0;
+        progressBar.resetProgress("Wait for Logs query");
+        String cmd = "select Logs.lLogId,Logs.lParent,lType,lBy,lDate,LogMemo.lText as lText from Logs inner join LogMemo on LogMemo.lLogId = Logs.lLogId";
+        CoreCursor LogsReader = sql.rawQuery(cmd, null);
         LogsReader.moveToFirst();
-        while (!LogsReader.isAfterLast()) {
+        while (!LogsReader.isAfterLast() && !isCanceled) {
+            count++;
+            ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
             LogEntry logEntry = new LogEntry();
-            logEntry.CacheId = cache.Id;
+            logEntry.CacheId = Cache.GenerateCacheId(LogsReader.getString("lParent"));
             logEntry.Comment = LogsReader.getString("lText");
             logEntry.Finder = LogsReader.getString("lBy");
             logEntry.Timestamp = DateFromString(LogsReader.getString("lDate"));
             logEntry.Type = LogTypes.parseString(LogsReader.getString("lType"));
             logEntry.Id = LogsReader.getInt("lLogId");
-            logList.add(logEntry);
+
+            WriteIntoDB.logDAO.WriteToDatabase(logEntry);
+
             LogsReader.moveToNext();
         }
         LogsReader.close();
-        return logList;
+
     }
 
     private Cache addWayPoints(Cache cache) {

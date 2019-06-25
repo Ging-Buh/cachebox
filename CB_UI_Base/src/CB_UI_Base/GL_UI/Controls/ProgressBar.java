@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class ProgressBar extends CB_View_Base {
     private final CB_Label label;
     protected float progressDrawWidth = 0;
-    private int progress = 0;
+    private int progress;
     private Drawable progressFill, progressFillDisabled;
     private String msg = "";
     private boolean isDisabled = false;
@@ -21,6 +21,7 @@ public class ProgressBar extends CB_View_Base {
         label = new CB_Label(this);
         label.setHAlignment(HAlignment.CENTER);
         this.addChild(label);
+        progress = 0;
     }
 
     @Override
@@ -77,6 +78,11 @@ public class ProgressBar extends CB_View_Base {
                 }
             }
         }
+    }
+
+    public void resetProgress(final String Msg) {
+        progress = 0;
+        GL.that.RunOnGL(() -> label.setText(Msg));
     }
 
     public void setProgressFill(Drawable drawable) {

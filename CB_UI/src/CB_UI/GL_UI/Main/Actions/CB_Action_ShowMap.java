@@ -541,7 +541,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         HashMap<String, String> ThemeStyles = getThemeStyles(theTheme);
         String ThemeStyle = "";
         for (String style : ThemeStyles.keySet()) {
-            // todo addMenuItem
             MenuItem mi = menuStyle.addMenuItem("", style, null, (v, x, y, pointer, button) -> {
                 menuStyle.close();
                 MenuItem clickedItem = (MenuItem) v;
@@ -613,6 +612,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 menuStyleOverlay.Show();
                 return true;
             }); // ohne Translation
+
             String overlayID = StyleOverlays.get(overlay);
             boolean overlayEnabled = overlayID.startsWith("+");
             if (!(ConfigStyle.contains(overlayID))) {

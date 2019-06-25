@@ -51,6 +51,8 @@ public class Webb {
     Proxy proxy;
 
     protected Webb() {
+        setDefaultHeader("User-Agent", DEFAULT_USER_AGENT);
+        setDefaultHeader(HDR_ACCEPT_ENCODING, "gzip");
     }
 
     /**

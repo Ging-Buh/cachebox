@@ -14,7 +14,7 @@ import static CB_Core.Api.GroundspeakAPI.GeoCacheRelated;
 
 public class WriteIntoDB {
     static CacheDAO cacheDAO = new CacheDAO();
-    static LogDAO logDAO = new LogDAO();
+    static public LogDAO logDAO = new LogDAO();
     static ImageDAO imageDAO = new ImageDAO();
     static WaypointDAO waypointDAO = new WaypointDAO();
 
