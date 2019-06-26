@@ -18,15 +18,16 @@ package CB_UI_Base.GL_UI.Menu;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class MenuItem extends MenuItemBase {
+public class MenuItem extends ListViewItemBackground {
 
-    private final int mID;
+    protected Object data = null;
     protected boolean mIsCheckable = false;
     protected boolean mIsChecked = false;
     protected boolean mLeft = false;
@@ -38,18 +39,12 @@ public class MenuItem extends MenuItemBase {
     private boolean mIsEnabled = true;
     private Image iconImage;
 
-    public MenuItem(SizeF size, int Index, int ID, String Name) {
+    public MenuItem(SizeF size, int Index, String Name) {
         super(new CB_RectF(size), Index, Name);
-        mID = ID;
     }
 
-    public MenuItem(int Index, int ID, String Name) {
+    public MenuItem(int Index, String Name) {
         super(new CB_RectF(), Index, Name);
-        mID = ID;
-    }
-
-    public int getMenuItemId() {
-        return mID;
     }
 
     public void toggleCheck() {

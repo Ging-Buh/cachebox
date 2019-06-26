@@ -226,10 +226,12 @@ public class ButtonDialog extends Dialog {
 		}
 		*/
         Object _data = this.getData();
+        boolean ret = false;
+        if (mMsgBoxClickListener != null) {
+            ret = mMsgBoxClickListener.onClick(button, _data);
+        }
         GL.that.closeDialog(this);
-        if (mMsgBoxClickListener != null)
-            return mMsgBoxClickListener.onClick(button, _data);
-        return false;
+        return ret;
     }
 
     public void Show() {

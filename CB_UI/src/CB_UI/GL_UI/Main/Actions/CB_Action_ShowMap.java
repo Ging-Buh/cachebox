@@ -32,7 +32,10 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
-import CB_UI_Base.GL_UI.Menu.*;
+import CB_UI_Base.GL_UI.Menu.Menu;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_UI_Base.GL_UI.Menu.OptionMenu;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_Utils.Log.Log;
@@ -65,12 +68,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private static final String log = "CB_Action_ShowMap";
     private static CB_Action_ShowMap that;
     public MapView normalMapView;
-    private Menu mRenderThemesSelectionMenu;
     private HashMap<String, String> RenderThemes;
     private OptionMenu mapViewThemeMenu;
     private String themesPath;
     private FZKThemesInfo fzkThemesInfo;
     private Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
+    private themeIsFor whichCase;
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -326,10 +329,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     private boolean showModusSelectionMenu() {
         mapViewThemeMenu = new OptionMenu("MapViewThemeMenuTitle");
-        mapViewThemeMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(0));
-        mapViewThemeMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(1));
-        mapViewThemeMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(2));
-        mapViewThemeMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(3));
+        mapViewThemeMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(themeIsFor.day));
+        mapViewThemeMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(themeIsFor.night));
+        mapViewThemeMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(themeIsFor.carday));
+        mapViewThemeMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(themeIsFor.carnight));
 
         themesPath = LocatorSettings.RenderThemesFolder.getValue();
         // only download, if writable
@@ -480,104 +483,92 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return ruleList;
     }
 
-    private boolean showRenderThemesSelectionMenu(int which) {
-
-        mRenderThemesSelectionMenu = new Menu("MapViewThemeMenuTitle");
+    private boolean showRenderThemesSelectionMenu(themeIsFor whichCase) {
+        this.whichCase = whichCase;
+        Menu themeMenu = new Menu("MapViewThemeMenuTitle");
         RenderThemes = getRenderThemes();
 
-        addRenderTheme(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT, which);
+        addThemeMenuItem(themeMenu, ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT);
         ArrayList<String> themes = new ArrayList<>(RenderThemes.keySet());
         Collections.sort(themes, (s1, s2) -> s1.toLowerCase().compareTo(s2.toLowerCase()));
         for (String theme : themes) {
-            addRenderTheme(theme, RenderThemes.get(theme), which);
+            addThemeMenuItem(themeMenu, theme, RenderThemes.get(theme));
         }
-        addRenderTheme(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR, which);
-        addRenderTheme(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER, which);
+        addThemeMenuItem(themeMenu, ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
+        addThemeMenuItem(themeMenu, ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
 
-        // for showStyleSelection to work
+        // for showMapStyleSelection to work
         RenderThemes.put(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT);
         RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
         RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
 
-        mRenderThemesSelectionMenu.Show();
+        themeMenu.Show();
         return true;
     }
 
-    private void addRenderTheme(String theme, String PaN, int which) {
-        MenuItem mi = mRenderThemesSelectionMenu.addMenuItem("", theme, null,
+    private void addThemeMenuItem(Menu themeMenu, String theme, String themePaN) {
+        MenuItem mi = themeMenu.addMenuItem("", theme, null,
                 (v, x, y, pointer, button) -> {
-                    mRenderThemesSelectionMenu.close();
-                    showStyleSelection((int) v.getData(), ((MenuItem) v).getTitle());
+                    themeMenu.close();
+                    showMapStyleSelection(RenderThemes.get(((MenuItem) v).getTitle()));
                     return true;
                 }); // ohne Translation
-        mi.setData(which);
-        String compare = ""; // Theme is saved with path
-        switch (which) {
-            case 0:
-                compare = Config.MapsforgeDayTheme.getValue();
-                break;
-            case 1:
-                compare = Config.MapsforgeNightTheme.getValue();
-                break;
-            case 2:
-                compare = Config.MapsforgeCarDayTheme.getValue();
-                break;
-            case 3:
-                compare = Config.MapsforgeCarNightTheme.getValue();
-                break;
-        }
         mi.setCheckable(true);
-        if (compare.equals(PaN)) {
-            mi.setChecked(true);
+        switch (whichCase) {
+            case day:
+                mi.setChecked(Config.MapsforgeDayTheme.getValue().equals(themePaN));
+                break;
+            case night:
+                mi.setChecked(Config.MapsforgeNightTheme.getValue().equals(themePaN));
+                break;
+            case carday:
+                mi.setChecked(Config.MapsforgeCarDayTheme.getValue().equals(themePaN));
+                break;
+            case carnight:
+                mi.setChecked(Config.MapsforgeCarNightTheme.getValue().equals(themePaN));
+                break;
         }
     }
 
-    private void showStyleSelection(int which, String selected) {
-        String theTheme = RenderThemes.get(selected);
-        final Menu menuStyle = new Menu("Styles");
+    private void showMapStyleSelection(String selectedThemePaN) {
+        final Menu menuMapStyle = new Menu("Styles");
 
-        // getThemeStyles works only for External Themes
+        // getMapStyles works only for External Themes
         // Internal Themes have no XmlRenderThemeMenuCallback
-        HashMap<String, String> ThemeStyles = getThemeStyles(theTheme);
-        String ThemeStyle = "";
-        for (String style : ThemeStyles.keySet()) {
-            MenuItem mi = menuStyle.addMenuItem("", style, null, (v, x, y, pointer, button) -> {
-                menuStyle.close();
-                MenuItem clickedItem = (MenuItem) v;
-                String[] values = ((String) clickedItem.getData()).split("\\|");
-                HashMap<String, String> StyleOverlays = getStyleOverlays(values[2], values[0]);
-                String ConfigStyle = getStyleFromConfig(values[1]);
-                if (!ConfigStyle.startsWith(values[0])) {
-                    // Config one is not for this layer
-                    ConfigStyle = "";
-                }
-                showOverlaySelection((String) clickedItem.getData(), StyleOverlays, ConfigStyle);
-                return true;
-            }); // ohne Translation
-            ThemeStyle = ThemeStyles.get(style);
-            mi.setData(ThemeStyle + "|" + which + "|" + theTheme);
-            //mi.setCheckable(true);
-        }
+        HashMap<String, String> mapStyles = getMapStyles(selectedThemePaN);
 
-        if (ThemeStyles.size() > 1) {
-            menuStyle.Show();
-        } else if (ThemeStyles.size() == 1) {
-            HashMap<String, String> StyleOverlays = getStyleOverlays(theTheme, ThemeStyle);
-            String ConfigStyle = getStyleFromConfig("" + which);
-            if (!ConfigStyle.startsWith(ThemeStyle)) {
-                // Config one is not for this layer
-                ConfigStyle = "";
+        if (mapStyles.size() > 1) {
+            // ex.: oam
+            for (String mapStyle : mapStyles.keySet()) {
+                MenuItem mi = menuMapStyle.addMenuItem("", mapStyle, null, (v, x, y, pointer, button) -> {
+                    menuMapStyle.close();
+                    MenuItem clickedItem = (MenuItem) v;
+                    String mapStyleValue = (String) clickedItem.getData();
+                    HashMap<String, String> StyleOverlays = getStyleOverlays(selectedThemePaN, mapStyleValue);
+                    String ConfigStyle = getStyleFromConfig(mapStyleValue);
+                    showOverlaySelection(selectedThemePaN, mapStyleValue, StyleOverlays, ConfigStyle);
+                    return true;
+                }); // ohne Translation
+                mi.setData(mapStyles.get(mapStyle));
             }
-            showOverlaySelection(ThemeStyle + "|" + which + "|" + theTheme, StyleOverlays, ConfigStyle);
+            menuMapStyle.Show();
+        } else if (mapStyles.size() == 1) {
+            // ex.: fzk --> no need to show the mapstyle selection
+            for (String mapStyle : mapStyles.keySet()) {
+                String mapStyleValue = mapStyles.get(mapStyle);
+                HashMap<String, String> StyleOverlays = getStyleOverlays(selectedThemePaN, mapStyleValue);
+                String ConfigStyle = getStyleFromConfig(mapStyleValue);
+                showOverlaySelection(selectedThemePaN, mapStyleValue, StyleOverlays, ConfigStyle);
+            }
         } else {
-            // there is no style (p.ex. internal Theme)
+            // p.ex.: internal Theme -> there is no style
             // style of Config will be ignored while setting of Theme
-            setConfig("|" + which + "|" + theTheme);
+            setConfig(selectedThemePaN, "");
             Config.AcceptChanges();
         }
     }
 
-    private HashMap<String, String> getThemeStyles(String selectedTheme) {
+    private HashMap<String, String> getMapStyles(String selectedTheme) {
         if (selectedTheme.length() > 0) {
             try {
                 GetStylesCallback getStylesCallBack = new GetStylesCallback();
@@ -595,23 +586,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return new HashMap<>();
     }
 
-    private void showOverlaySelection(String values, HashMap<String, String> StyleOverlays, String ConfigStyle) {
-        final Menu menuStyleOverlay = new OptionMenu("MapViewThemeStyleMenuTitle");
+    private void showOverlaySelection(String selectedThemePaN, String mapStyleId, HashMap<String, String> StyleOverlays, String ConfigStyle) {
+        final Menu menuMapStyleOverlays = new OptionMenu("MapViewThemeStyleMenuTitle");
         for (String overlay : StyleOverlays.keySet()) {
-            MenuItem mi = menuStyleOverlay.addMenuItem("", overlay, null, (v, x, y, pointer, button) -> {
-                MenuItem clickedItem = (MenuItem) v;
-                menuStyleOverlay.tickCheckBoxes(clickedItem); // the new value of clickedItem must be set first
-                String[] clickedValues = ((String) clickedItem.getData()).split("\\|");
-                if (clickedItem.isChecked()) {
-                    clickedValues[3] = "+" + clickedValues[3].substring(1);
-                } else {
-                    clickedValues[3] = "-" + clickedValues[3].substring(1);
-                }
-                clickedItem.setData(clickedValues[0] + "|" + clickedValues[1] + "|" + clickedValues[2] + "|" + clickedValues[3]);
-                menuStyleOverlay.setData(concatValues(clickedValues, menuStyleOverlay));
-                menuStyleOverlay.Show();
-                return true;
-            }); // ohne Translation
+            MenuItem mi = menuMapStyleOverlays.addMenuItem("", overlay, null, () -> {
+            });
 
             String overlayID = StyleOverlays.get(overlay);
             boolean overlayEnabled = overlayID.startsWith("+");
@@ -620,80 +599,82 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                     overlayEnabled = !overlayEnabled;
                 }
             }
-            if (overlayEnabled)
-                overlayID = "+" + overlayID.substring(1);
-            else
-                overlayID = "-" + overlayID.substring(1);
-            mi.setData(values + "|" + overlayID);
+            mi.setData(overlayID.substring(1));
             mi.setCheckable(true);
             mi.setChecked(overlayEnabled);
         }
 
-        menuStyleOverlay.mMsgBoxClickListener = (which, data) -> {
-            setConfig((String) data);
+        menuMapStyleOverlays.mMsgBoxClickListener = (btnNumber, data) -> {
+            StringBuilder mapStyleValues = new StringBuilder(mapStyleId);
+            for (MenuItem mi : menuMapStyleOverlays.mItems) {
+                if (mi.isChecked())
+                    mapStyleValues.append("\t").append("+" + mi.getData());
+                else
+                    mapStyleValues.append("\t").append("-" + mi.getData());
+            }
+            setConfig(selectedThemePaN, mapStyleValues.toString());
             Config.AcceptChanges();
             return true;
         };
 
         if (StyleOverlays.size() > 0) {
-            menuStyleOverlay.setData(concatValues(values.split("\\|"), menuStyleOverlay));
-            menuStyleOverlay.Show();
+            menuMapStyleOverlays.Show();
         } else {
             // save the values, there is perhaps no overlay
-            setConfig(values);
+            setConfig(selectedThemePaN, mapStyleId);
             Config.AcceptChanges();
         }
     }
 
-    private String concatValues(String[] values, Menu lOverlay) {
-        StringBuilder result = new StringBuilder(values[0]);
-        for (MenuItemBase mitm : lOverlay.mItems) {
-            String[] data = ((String) mitm.getData()).split("\\|");
-            result.append("\t").append(data[3]);
-        }
-        return result + "|" + values[1] + "|" + values[2];
-    }
-
-    private String getStyleFromConfig(String which) {
-        switch (which) {
-            case "0":
-                return Config.MapsforgeDayStyle.getValue();
-            case "1":
-                return Config.MapsforgeNightStyle.getValue();
-            case "2":
-                return Config.MapsforgeCarDayStyle.getValue();
+    private String getStyleFromConfig(String mapStyleId) {
+        String configStyle;
+        switch (whichCase) {
+            case day:
+                configStyle = Config.MapsforgeDayStyle.getValue();
+                break;
+            case night:
+                configStyle = Config.MapsforgeNightStyle.getValue();
+                break;
+            case carday:
+                configStyle = Config.MapsforgeCarDayStyle.getValue();
+                break;
             default:
-                return Config.MapsforgeCarNightStyle.getValue();
+                configStyle = Config.MapsforgeCarNightStyle.getValue();
+        }
+        if (configStyle.startsWith(mapStyleId)) {
+            return configStyle;
+        } else {
+            // configStyle is not for this layer
+            return "";
         }
     }
 
-    private void setConfig(String _StyleAndTheme) {
-        String[] values = _StyleAndTheme.split("\\|");
-        switch (values[1]) {
-            case "0":
-                Config.MapsforgeDayStyle.setValue(values[0]);
-                Config.MapsforgeDayTheme.setValue(values[2]);
+    private void setConfig(String selectedThemePaN, String mapStyleValue) {
+        switch (whichCase) {
+            case day:
+                Config.MapsforgeDayStyle.setValue(mapStyleValue);
+                Config.MapsforgeDayTheme.setValue(selectedThemePaN);
                 break;
-            case "1":
-                Config.MapsforgeNightStyle.setValue(values[0]);
-                Config.MapsforgeNightTheme.setValue(values[2]);
+            case night:
+                Config.MapsforgeNightStyle.setValue(mapStyleValue);
+                Config.MapsforgeNightTheme.setValue(selectedThemePaN);
                 break;
-            case "2":
-                Config.MapsforgeCarDayStyle.setValue(values[0]);
-                Config.MapsforgeCarDayTheme.setValue(values[2]);
+            case carday:
+                Config.MapsforgeCarDayStyle.setValue(mapStyleValue);
+                Config.MapsforgeCarDayTheme.setValue(selectedThemePaN);
                 break;
-            case "3":
-                Config.MapsforgeCarNightStyle.setValue(values[0]);
-                Config.MapsforgeCarNightTheme.setValue(values[2]);
+            case carnight:
+                Config.MapsforgeCarNightStyle.setValue(mapStyleValue);
+                Config.MapsforgeCarNightTheme.setValue(selectedThemePaN);
                 break;
         }
     }
 
-    private HashMap<String, String> getStyleOverlays(String selectedTheme, String selectedLayer) {
-        if (selectedTheme.length() > 0) {
+    private HashMap<String, String> getStyleOverlays(String selectedThemePaN, String selectedLayer) {
+        if (selectedThemePaN.length() > 0) {
             try {
                 OverlaysCallback getOverlaysCallback = new GetOverlaysCallback();
-                XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getOverlaysCallback);
+                XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedThemePaN, getOverlaysCallback);
                 getOverlaysCallback.setLayer(selectedLayer);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
@@ -706,6 +687,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
         return new HashMap<>();
+    }
+
+    private enum themeIsFor {
+        day, night, carday, carnight
     }
 
     interface OverlaysCallback extends XmlRenderThemeMenuCallback {

@@ -20,7 +20,7 @@ public class CB_TabView extends CB_View_Base {
     private final static String sKlasse = "CB_TabView";
 
     private final CB_RectF mContentRec;
-    private CB_ButtonList mButtonList;
+    private CB_ButtonBar mButtonList;
     private H_ListView buttonListView;
     private CB_View_Base aktView;
 
@@ -30,7 +30,7 @@ public class CB_TabView extends CB_View_Base {
         layout();
     }
 
-    public void setButtonList(CB_ButtonList buttonList) {
+    public void setButtonList(CB_ButtonBar buttonList) {
         mButtonList = buttonList;
         if (mButtonList == null)
             return;

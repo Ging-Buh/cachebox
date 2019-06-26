@@ -2,11 +2,11 @@ package CB_UI_Base.GL_UI.Main;
 
 import java.util.ArrayList;
 
-public class CB_ButtonList {
+public class CB_ButtonBar {
 
     public ArrayList<GestureButton> Buttons;
 
-    public CB_ButtonList() {
+    public CB_ButtonBar() {
 
     }
 

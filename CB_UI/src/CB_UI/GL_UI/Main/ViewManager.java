@@ -42,7 +42,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.Action_ShowQuit;
 import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
-import CB_UI_Base.GL_UI.Main.CB_ButtonList;
+import CB_UI_Base.GL_UI.Main.CB_ButtonBar;
 import CB_UI_Base.GL_UI.Main.CB_TabView;
 import CB_UI_Base.GL_UI.Main.GestureButton;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
@@ -85,11 +85,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public static Action_PlatformActivity actionRecordVideo;
     public static Action_PlatformActivity actionRecordVoice;
 
-    private GestureButton mCacheListButtonOnLeftTab; // default: show CacheList
-    private GestureButton mDescriptionButtonOnLeftTab; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
-    private GestureButton mMapButtonOnLeftTab; // default: show map on phone ( and show Compass on Tablet )
-    private GestureButton mToolsButtonOnLeftTab; // default: show ToolsMenu or Drafts or Drafts Context menu (depends on config)
-    private GestureButton mAboutButtonOnLeftTab; // default: show About View
+    private GestureButton db_button; // default: show CacheList
+    private GestureButton cache_button; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
+    private GestureButton navButton; // default: show map on phone ( and show Compass on Tablet )
+    private GestureButton tool_button; // default: show ToolsMenu or Drafts or Drafts Context menu (depends on config)
+    private GestureButton misc_button; // default: show About View
 
     private boolean isInitial = false;
     private boolean isFiltered = false;
@@ -245,67 +245,67 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         leftTab = new CB_TabView(rec, "leftTab");
 
         if (Config.useDescriptiveCB_Buttons.getValue()) {
-            mCacheListButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
-            mDescriptionButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache");
-            mMapButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav");
-            mToolsButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool");
-            mAboutButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc");
+            db_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
+            cache_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache");
+            navButton = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav");
+            tool_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool");
+            misc_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc");
         } else {
-            mCacheListButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mDescriptionButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mMapButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mToolsButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mAboutButtonOnLeftTab = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            db_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            cache_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            navButton = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            tool_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            misc_button = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
-        CB_ButtonList btnList = new CB_ButtonList();
-        btnList.addButton(mCacheListButtonOnLeftTab);
-        btnList.addButton(mDescriptionButtonOnLeftTab);
-        btnList.addButton(mMapButtonOnLeftTab);
-        btnList.addButton(mToolsButtonOnLeftTab);
-        btnList.addButton(mAboutButtonOnLeftTab);
-        leftTab.setButtonList(btnList);
+        CB_ButtonBar mainButtonBar = new CB_ButtonBar();
+        mainButtonBar.addButton(db_button);
+        mainButtonBar.addButton(cache_button);
+        mainButtonBar.addButton(navButton);
+        mainButtonBar.addButton(tool_button);
+        mainButtonBar.addButton(misc_button);
+        leftTab.setButtonList(mainButtonBar);
         addChild(leftTab);
 
         // Actions den Buttons zuweisen
-        mCacheListButtonOnLeftTab.addAction(CB_Action_ShowCacheList.getInstance(), true, GestureDirection.Up);
-        mCacheListButtonOnLeftTab.addAction(Action_ParkingDialog.getInstance(), false);
-        mCacheListButtonOnLeftTab.addAction(CB_Action_ShowTrackableListView.getInstance(), false, GestureDirection.Right);
+        db_button.addAction(CB_Action_ShowCacheList.getInstance(), true, GestureDirection.Up);
+        db_button.addAction(Action_ParkingDialog.getInstance(), false);
+        db_button.addAction(CB_Action_ShowTrackableListView.getInstance(), false, GestureDirection.Right);
 
-        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowDescriptionView.getInstance(), true, GestureDirection.Up);
-        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowWaypointView.getInstance(), false, GestureDirection.Right);
-        mDescriptionButtonOnLeftTab.addAction(Action_HintDialog.getInstance(), false);
-        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowSpoilerView.getInstance(), false);
-        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowLogView.getInstance(), false, GestureDirection.Down);
-        mDescriptionButtonOnLeftTab.addAction(CB_Action_ShowNotesView.getInstance(), false);
-        mDescriptionButtonOnLeftTab.addAction(Action_StartExternalDescription.getInstance(), false);
+        cache_button.addAction(CB_Action_ShowDescriptionView.getInstance(), true, GestureDirection.Up);
+        cache_button.addAction(CB_Action_ShowWaypointView.getInstance(), false, GestureDirection.Right);
+        cache_button.addAction(Action_HintDialog.getInstance(), false);
+        cache_button.addAction(CB_Action_ShowSpoilerView.getInstance(), false);
+        cache_button.addAction(CB_Action_ShowLogView.getInstance(), false, GestureDirection.Down);
+        cache_button.addAction(CB_Action_ShowNotesView.getInstance(), false);
+        cache_button.addAction(Action_StartExternalDescription.getInstance(), false);
 
-        mMapButtonOnLeftTab.addAction(CB_Action_ShowMap.getInstance(), true, GestureDirection.Up);
-        mMapButtonOnLeftTab.addAction(CB_Action_ShowCompassView.getInstance(), false, GestureDirection.Right);
+        navButton.addAction(CB_Action_ShowMap.getInstance(), true, GestureDirection.Up);
+        navButton.addAction(CB_Action_ShowCompassView.getInstance(), false, GestureDirection.Right);
         Action_PlatformActivity actionNavigateTo = new Action_PlatformActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
-        mMapButtonOnLeftTab.addAction(actionNavigateTo, false, GestureDirection.Down);
-        mMapButtonOnLeftTab.addAction(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left);
-        mMapButtonOnLeftTab.addAction(Action_MapDownload.getInstance(), false);
+        navButton.addAction(actionNavigateTo, false, GestureDirection.Down);
+        navButton.addAction(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left);
+        navButton.addAction(Action_MapDownload.getInstance(), false);
 
-        mToolsButtonOnLeftTab.addAction(CB_Action_ShowDraftsView.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
-        mToolsButtonOnLeftTab.addAction(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left);
-        mToolsButtonOnLeftTab.addAction(CB_Action_ShowSolverView2.getInstance(), false, GestureDirection.Right);
+        tool_button.addAction(CB_Action_ShowDraftsView.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
+        tool_button.addAction(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left);
+        tool_button.addAction(CB_Action_ShowSolverView2.getInstance(), false, GestureDirection.Right);
         actionTakePicture = new Action_PlatformActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
-        mToolsButtonOnLeftTab.addAction(actionTakePicture, false, GestureDirection.Down);
+        tool_button.addAction(actionTakePicture, false, GestureDirection.Down);
         actionRecordVideo = new Action_PlatformActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
-        mToolsButtonOnLeftTab.addAction(actionRecordVideo, false);
+        tool_button.addAction(actionRecordVideo, false);
         actionRecordVoice = new Action_PlatformActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
-        mToolsButtonOnLeftTab.addAction(actionRecordVoice, false);
-        mToolsButtonOnLeftTab.addAction(Action_ParkingDialog.getInstance(), false);
+        tool_button.addAction(actionRecordVoice, false);
+        tool_button.addAction(Action_ParkingDialog.getInstance(), false);
 
-        mAboutButtonOnLeftTab.addAction(CB_Action_ShowCreditsView.getInstance(), false);
-        mAboutButtonOnLeftTab.addAction(Action_SettingsActivity.getInstance(), false, GestureDirection.Left);
-        mAboutButtonOnLeftTab.addAction(Action_switch_DayNight.getInstance(), false);
-        mAboutButtonOnLeftTab.addAction(Action_Help.getInstance(), false);
-        mAboutButtonOnLeftTab.addAction(Action_Mail.getInstance(), false);
-        mAboutButtonOnLeftTab.addAction(Action_switch_Torch.getInstance(), false);
-        mAboutButtonOnLeftTab.addAction(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up);
-        mAboutButtonOnLeftTab.addAction(Action_ShowQuit.getInstance(), false, GestureDirection.Down);
+        misc_button.addAction(CB_Action_ShowCreditsView.getInstance(), false);
+        misc_button.addAction(Action_SettingsActivity.getInstance(), false, GestureDirection.Left);
+        misc_button.addAction(Action_switch_DayNight.getInstance(), false);
+        misc_button.addAction(Action_Help.getInstance(), false);
+        misc_button.addAction(Action_Mail.getInstance(), false);
+        misc_button.addAction(Action_switch_Torch.getInstance(), false);
+        misc_button.addAction(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up);
+        misc_button.addAction(Action_ShowQuit.getInstance(), false, GestureDirection.Down);
 
         CB_Action_ShowAbout.getInstance().Execute();
     }
@@ -389,19 +389,19 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     public void mToolsButtonOnLeftTabPerformClick() {
-        mToolsButtonOnLeftTab.performClick();
+        tool_button.performClick();
     }
 
     public void filterSetChanged() {
         // change the icon
         isFiltered = FilterInstances.isLastFilterSet();
-        mCacheListButtonOnLeftTab.isFiltered(isFiltered);
+        db_button.isFiltered(isFiltered);
 
         if (!Config.useDescriptiveCB_Buttons.getValue()) {
             if (isFiltered) {
-                mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheListFilter);
+                db_button.setButtonSprites(Sprites.CacheListFilter);
             } else {
-                mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheList);
+                db_button.setButtonSprites(Sprites.CacheList);
             }
         }
 

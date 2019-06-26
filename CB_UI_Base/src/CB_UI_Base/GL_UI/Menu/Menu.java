@@ -33,7 +33,7 @@ public class Menu extends ButtonDialog {
     private static CB_RectF sMenuRec = null;
     private static boolean MENU_REC_IsInitial = false;
     public float ItemHeight = -1f;
-    public ArrayList<MenuItemBase> mItems = new ArrayList<>();
+    public ArrayList<MenuItem> mItems = new ArrayList<>();
     protected ArrayList<OnClickListener> mOnItemClickListeners;
     protected boolean autoClose;
     protected boolean singleSelection; // true: only one option can be selected
@@ -196,7 +196,7 @@ public class Menu extends ButtonDialog {
                 // new Hight calculation
                 itemsCount = mItems.size();
                 float higherValue = mTitleHeight + mHeaderHeight + mFooterHeight + (margin * 2);
-                for (MenuItemBase item : mItems) {
+                for (MenuItem item : mItems) {
                     higherValue += item.getHeight() + mListView.getDividerHeight();
                 }
                 float freiraumObenPlusUnten = 0; // x * UI_Size_Base.that.getButtonHeight();
@@ -318,7 +318,7 @@ public class Menu extends ButtonDialog {
     }
 
     public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Object icon, OnClickListener onClickListener) {
-        MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, titleTranlationId);
+        MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), titleTranlationId);
         item.setTitle(((titleTranlationId.length() == 0) ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart);
         if (icon != null) {
             if (icon instanceof Sprite) {
@@ -338,9 +338,9 @@ public class Menu extends ButtonDialog {
             if (singleSelection) {
                 boolean newCheck = !clickedItem.isChecked();
                 // only one item can be checked : remove all checks
-                for (MenuItemBase smi : this.mItems) {
+                for (MenuItem smi : this.mItems) {
                     if (smi instanceof MenuItem) {
-                        MenuItem tmi = (MenuItem) smi;
+                        MenuItem tmi = smi;
                         if (tmi.isChecked()) {
                             tmi.setChecked(false);
                         }
@@ -356,9 +356,10 @@ public class Menu extends ButtonDialog {
     public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Sprite icon, Runnable runnable) {
         return addMenuItem(titleTranlationId, addUnTranslatedPart, icon,
                 (v, x, y, pointer, button) -> {
-                    if (autoClose) close();
+                    if (autoClose)
+                        close();
                     tickCheckBoxes((MenuItem) v);
-                    runnable.run();
+                    if (runnable != null) runnable.run();
                     return true;
                 });
     }
@@ -397,7 +398,7 @@ public class Menu extends ButtonDialog {
 
             // Alle Items in der Breite anpassen
             float w = mListView.getWidth();
-            for (MenuItemBase item : mItems) {
+            for (MenuItem item : mItems) {
                 item.setWidth(w);
             }
 
@@ -439,7 +440,6 @@ public class Menu extends ButtonDialog {
     public void Show() {
         layout();
         super.Show();
-
     }
 
     public void addOnItemClickListener(OnClickListener onItemClickListener) {
@@ -461,16 +461,16 @@ public class Menu extends ButtonDialog {
         layout();
     }
 
-    public ArrayList<MenuItemBase> getItems() {
+    public ArrayList<MenuItem> getItems() {
         return mItems;
     }
 
-    public void addItems(ArrayList<MenuItemBase> items) {
+    public void addItems(ArrayList<MenuItem> items) {
         addItems(items, false);
     }
 
-    public void addItems(ArrayList<MenuItemBase> items, boolean setEnabled) {
-        for (MenuItemBase menuItem : items) {
+    public void addItems(ArrayList<MenuItem> items, boolean setEnabled) {
+        for (MenuItem menuItem : items) {
             if (menuItem.getOnClickListener() == null)
                 menuItem.setOnClickListener(menuItemClickListener);
             if (setEnabled)
@@ -481,7 +481,8 @@ public class Menu extends ButtonDialog {
     }
 
     public void addDivider() {
-        MenuItemDivider item = new MenuItemDivider(new SizeF(mListView.getWidth(), ItemHeight / 5), mItems.size(), "Menu Devider");
+        MenuItemDivider item = new MenuItemDivider(mItems.size(), "Menu Devider");
+        item.setHeight(ItemHeight / 5);
         item.setEnabled(false);
         mItems.add(item);
         mListView.notifyDataSetChanged();
@@ -492,7 +493,7 @@ public class Menu extends ButtonDialog {
      */
     public int reorganizeIndexes() {
         int Index = 0;
-        for (MenuItemBase item : mItems) {
+        for (MenuItem item : mItems) {
             item.setIndex(Index++);
         }
         return Index;
@@ -538,7 +539,7 @@ public class Menu extends ButtonDialog {
         mMoreMenuLabel = null;
 
         if (mItems != null) {
-            for (MenuItemBase it : mItems) {
+            for (MenuItem it : mItems) {
                 it.dispose();
             }
             mItems.clear();

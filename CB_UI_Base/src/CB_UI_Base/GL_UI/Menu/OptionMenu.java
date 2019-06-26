@@ -1,5 +1,6 @@
 package CB_UI_Base.GL_UI.Menu;
 
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
@@ -9,31 +10,18 @@ public class OptionMenu extends Menu {
         autoClose = false;
 
         setButtonCaptions(MessageBoxButtons.OK);
-        mMsgBoxClickListener = (which, data) -> {
-            GL.that.closeDialog(OptionMenu.this);
-            return true;
-        };
 
-        // a default handler for the items. will not be neccessary with the new addMenuItem(...runnable)
-        menuItemClickListener = (v, x, y, pointer, button) -> {
-            if (v instanceof MenuItem) {
-                // update the checkbox
-                ((MenuItem) v).toggleCheck();
+        mMsgBoxClickListener = new MessageBox.OnMsgBoxClickListener() {
+            @Override
+            public boolean onClick(int which, Object data) {
+                GL.that.closeDialog(OptionMenu.this);
+                return true;
             }
-            // execute all registered clickhandlers
-            if (mOnItemClickListeners != null) {
-                for (OnClickListener tmp : mOnItemClickListeners) {
-                    if (tmp.onClick(v, x, y, pointer, button))
-                        break;
-                }
-            }
-            return true;
         };
-
     }
 
-    public void setSingleSelection(){
-        singleSelection=true;
+    public void setSingleSelection() {
+        singleSelection = true;
     }
 
 }
