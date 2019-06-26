@@ -46,7 +46,7 @@ import java.util.Date;
 import static CB_Core.Api.GroundspeakAPI.*;
 
 public class TB_Log extends ActivityBase {
-    public static TB_Log that;
+    private static TB_Log that;
     static WaitDialog wd;
     private Trackable TB;
     private CB_Button btnClose;
@@ -60,10 +60,15 @@ public class TB_Log extends ActivityBase {
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyDraft;
 
-    public TB_Log() {
+    private TB_Log() {
         super(ActivityRec(), "TB_Log_Activity");
         createControls();
         that = this;
+    }
+
+    public static TB_Log getInstance() {
+        if (that == null) that = new TB_Log();
+        return that;
     }
 
     public void Show(Trackable TB, LogTypes Type) {
