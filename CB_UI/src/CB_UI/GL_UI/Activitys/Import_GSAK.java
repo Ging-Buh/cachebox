@@ -245,7 +245,8 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         LogsReader.moveToFirst();
         while (!LogsReader.isAfterLast() && !isCanceled) {
             count++;
-            ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
+            // ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
+            progressBar.setProgress(count * 100 / anz, "" + count + "/" + anz);
             LogEntry logEntry = new LogEntry();
             logEntry.CacheId = Cache.GenerateCacheId(LogsReader.getString("lParent"));
             logEntry.Comment = LogsReader.getString("lText");

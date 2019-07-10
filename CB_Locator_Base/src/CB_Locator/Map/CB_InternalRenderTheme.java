@@ -15,7 +15,7 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
     private final String fileName;
     private final FileHandle fileHandle;
 
-    private CB_InternalRenderTheme(String absolutePath, String file) {
+    CB_InternalRenderTheme(String absolutePath, String file) {
         this.absolutePath = absolutePath;
         this.fileName = file;
         fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);

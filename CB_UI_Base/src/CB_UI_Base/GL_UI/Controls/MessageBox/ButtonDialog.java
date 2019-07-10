@@ -87,7 +87,7 @@ public class ButtonDialog extends Dialog {
         super(rec, Name);
     }
 
-    public static ButtonDialog Show(String msg) {
+    public static ButtonDialog show(String msg) {
         ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
         GL.that.showDialog(msgBox);
         return msgBox;
@@ -234,7 +234,7 @@ public class ButtonDialog extends Dialog {
         return ret;
     }
 
-    public void Show() {
+    public void show() {
         GL.that.RunOnGL(() -> {
             try {
                 GL.that.showDialog(ButtonDialog.this);

@@ -162,7 +162,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         cm2.addMenuItem( "Point2Point",null, this::GenTrackP2P);
         cm2.addMenuItem("Projection",null, this::GenTrackProjection);
         cm2.addMenuItem("Circle",null, this::GenTrackCircle);
-        cm2.Show();
+        cm2.show();
     }
 
     private void GenTrackP2P() {

@@ -33,6 +33,6 @@ public class Action_DeleteDialog extends AbstractAction {
     @Override
     public void Execute() {
         DeleteDialog d = new DeleteDialog();
-        d.Show();
+        d.show();
     }
 }

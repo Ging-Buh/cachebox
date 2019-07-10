@@ -422,7 +422,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
                     GlobalCore.setSelectedWaypoint(tmp, finalWp);
 
                     invalidate();
-                    CacheContextMenu.getCacheContextMenu(true).Show();
+                    CacheContextMenu.getCacheContextMenu(true).show();
                     return true;
                 });
 

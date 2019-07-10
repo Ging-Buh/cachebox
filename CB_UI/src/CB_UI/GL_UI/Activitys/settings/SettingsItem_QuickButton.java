@@ -91,7 +91,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
                     }).setData(item);
         }
         icm.setPrompt(Translation.get("selectQuickButtemItem"));
-        icm.Show();
+        icm.show();
     }
 
     private void initialButtons() {

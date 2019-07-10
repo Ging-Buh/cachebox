@@ -86,7 +86,7 @@ public class GestureButton extends CB_Button {
                     }
                     // and show
                     if (compoundMenu.reorganizeIndexes() > 0) {
-                        compoundMenu.Show();
+                        compoundMenu.show();
                     }
                     else {
                         // what a problem on reorganizing
@@ -138,7 +138,7 @@ public class GestureButton extends CB_Button {
                 }
                 // and show
                 if (compoundMenu.reorganizeIndexes() > 0) {
-                    compoundMenu.Show();
+                    compoundMenu.show();
                 }
                 else {
                     // what a problem on reorganizing
@@ -159,7 +159,7 @@ public class GestureButton extends CB_Button {
             // Actions gewählt werden kann
 
             if (cb_actionButtons.size() > 1) {
-                getLongClickMenu().Show();
+                getLongClickMenu().show();
             } else if (cb_actionButtons.size() == 1) {
                 // nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
                 CB_ActionButton ba = cb_actionButtons.get(0);

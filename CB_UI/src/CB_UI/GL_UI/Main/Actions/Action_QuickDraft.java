@@ -88,7 +88,7 @@ public class Action_QuickDraft extends AbstractAction {
                 });
                 break;
         }
-        cm.Show();
+        cm.show();
     }
 
     private void finalHandling(boolean found) {

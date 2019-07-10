@@ -461,7 +461,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                             }
 
                             setSelection(selectionIndex);
-                            getContextMenu().Show();
+                            getContextMenu().show();
                             return true;
                         });
                         waypointViewItem.Add(() -> {
@@ -509,7 +509,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                             }
 
                             setSelection(selectionIndex);
-                            getContextMenu().Show();
+                            getContextMenu().show();
                             return true;
                         });
                         waypointViewItem.Add(() -> {

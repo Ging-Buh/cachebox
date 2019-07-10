@@ -28,14 +28,14 @@ public class WaitDialog extends ButtonDialog {
     public static WaitDialog ShowWait() {
         WaitDialog wd = createDialog("");
         wd.setCallerName(Trace.getCallerName());
-        wd.Show();
+        wd.show();
         return wd;
     }
 
     public static WaitDialog ShowWait(String Msg) {
         WaitDialog wd = createDialog(Msg);
         wd.setCallerName(Trace.getCallerName());
-        wd.Show();
+        wd.show();
         return wd;
     }
 

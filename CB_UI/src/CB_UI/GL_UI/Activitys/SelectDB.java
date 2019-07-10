@@ -460,7 +460,7 @@ public class SelectDB extends ActivityBase {
             autoStartTime = 60;
             setAutoStartText();
         });
-        cm.Show();
+        cm.show();
     }
 
     @Override

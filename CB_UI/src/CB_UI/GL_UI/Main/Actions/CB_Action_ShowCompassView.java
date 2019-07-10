@@ -84,7 +84,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
                 () -> toggleSetting(CB_UI_Settings.CompassShowSDT));
         menuCompassElements.addCheckableMenuItem("CompassShowLastFound", CB_UI_Settings.CompassShowLastFound.getValue(),
                 () -> toggleSetting( CB_UI_Settings.CompassShowLastFound));
-        menuCompassElements.Show();
+        menuCompassElements.show();
     }
 
     private boolean toggleSetting(SettingBool setting) {

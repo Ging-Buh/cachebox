@@ -32,6 +32,6 @@ public class Action_ParkingDialog extends AbstractAction {
     @Override
     public void Execute() {
         ParkingDialog d = new ParkingDialog();
-        d.Show();
+        d.show();
     }
 }

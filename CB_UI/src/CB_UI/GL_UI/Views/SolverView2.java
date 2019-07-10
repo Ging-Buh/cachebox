@@ -363,7 +363,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
                 setSelection(selectionIndex);
 
                 Menu cm = getContextMenu();
-                cm.Show();
+                cm.show();
 
                 return true;
             });

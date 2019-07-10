@@ -83,7 +83,7 @@ public class Spinner extends CB_Button {
             if (prompt != null && !prompt.equalsIgnoreCase("")) {
                 icm.setPrompt(prompt);
             }
-            icm.Show();
+            icm.show();
             return true;
         });
 

@@ -54,7 +54,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
     @Override
     public void Execute() {
-        getContextMenu().Show();
+        getContextMenu().show();
     }
 
     @Override

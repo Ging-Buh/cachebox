@@ -69,11 +69,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private static CB_Action_ShowMap that;
     public MapView normalMapView;
     private HashMap<String, String> RenderThemes;
-    private OptionMenu mapViewThemeMenu;
     private String themesPath;
     private FZKThemesInfo fzkThemesInfo;
     private Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
-    private themeIsFor whichCase;
+    private ThemeIsFor whichCase;
+    private Menu mapViewFZKDownloadMenu;
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -157,9 +157,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         (sprite == null) ? null : new SpriteDrawable(sprite),
                         (v, x, y, pointer, button) -> {
                             icm.close();
-                            Layer layer1 = (Layer) v.getData();
-                            selectLayer(layer1);
-                            showLanguageSelectionMenu(layer1);
+                            selectLayer(layer);
+                            showLanguageSelectionMenu(layer);
                             return true;
                         }); // == friendlyName == FileName !!! ohne Translation
                 mi.setData(layer);
@@ -173,7 +172,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
 
-        icm.Show();
+        icm.show();
     }
 
     private void selectLayer(Layer layer) {
@@ -228,7 +227,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             return true;
                         });
                     }
-                    lsm.Show();
+                    lsm.show();
                     hasLanguage = true;
                 }
         }
@@ -257,7 +256,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 mi.setData(layer);
             }
         }
-        icm.Show();
+        icm.show();
     }
 
     private void showMapViewLayerMenu() {
@@ -272,7 +271,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         menuMapElements.addCheckableMenuItem("ShowDirectLine", Config.ShowDirektLine.getValue(), () -> toggleSetting(Config.ShowDirektLine));
         menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Config.ShowAccuracyCircle.getValue(), () -> toggleSetting(Config.ShowAccuracyCircle));
         menuMapElements.addCheckableMenuItem("ShowCenterCross", Config.ShowMapCenterCross.getValue(), () -> toggleSetting(Config.ShowMapCenterCross));
-        menuMapElements.Show();
+        menuMapElements.show();
     }
 
     private void toggleSetting(SettingBool setting) {
@@ -295,7 +294,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         else
             cm2.addMenuItem("pause", null, TrackRecorder::PauseRecording).setEnabled(TrackRecorder.recording);
         cm2.addMenuItem("stop", null, TrackRecorder::StopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
-        cm2.Show();
+        cm2.show();
     }
 
     private HashMap<String, String> getRenderThemes() {
@@ -328,11 +327,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private boolean showModusSelectionMenu() {
-        mapViewThemeMenu = new OptionMenu("MapViewThemeMenuTitle");
-        mapViewThemeMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(themeIsFor.day));
-        mapViewThemeMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(themeIsFor.night));
-        mapViewThemeMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(themeIsFor.carday));
-        mapViewThemeMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(themeIsFor.carnight));
+        OptionMenu mapViewThemeMenu = new OptionMenu("MapViewThemeMenuTitle");
+        mapViewThemeMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.day));
+        mapViewThemeMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.night));
+        mapViewThemeMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.carday));
+        mapViewThemeMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.carnight));
 
         themesPath = LocatorSettings.RenderThemesFolder.getValue();
         // only download, if writable
@@ -361,9 +360,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             });
                             return true;
                         });
-            }
+                mapViewThemeMenu.addMenuItem("Download", "\n Freizeitkarte",
+                        Sprites.getSprite(IconName.freizeit.name()), () -> showFZKDownloadMenu());
 
-            addDownloadFZKRenderThemes();
+            }
         } else {
             if (!Config.RememberAsk_RenderThemePathWritable.getValue()) {
                 mapViewThemeMenu.addDivider();
@@ -380,49 +380,55 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
 
-        mapViewThemeMenu.Show();
+        mapViewThemeMenu.show();
         return true;
     }
 
-    private void addDownloadFZKRenderThemes() {
+    private void showFZKDownloadMenu() {
         GL.that.postAsync(() -> {
-            if (fzkThemesInfoList.size == 0) {
-                String repository_freizeitkarte_android = Webb.create()
-                        .get("http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml")
-                        .readTimeout(Config.socket_timeout.getValue())
-                        .ensureSuccess()
-                        .asString()
-                        .getBody();
-                java.util.Map<String, String> values = new HashMap<>();
-                System.setProperty("sjxp.namespaces", "false");
-                Array<IRule<Map<String, String>>> ruleList = createRepositoryRules(new Array<>());
-                XMLParser<Map<String, String>> parserCache = new XMLParser<>(ruleList.toArray(IRule.class));
-                parserCache.parse(new ByteArrayInputStream(repository_freizeitkarte_android.getBytes()), values);
-            }
-
-            for (FZKThemesInfo fzkThemesInfo : fzkThemesInfoList) {
-                mapViewThemeMenu.addMenuItem("Download", "\n" + fzkThemesInfo.Description, Sprites.getSprite(Sprites.IconName.freizeit.name()),
-                        (v, x, y, pointer, button) -> {
-                            GL.that.postAsync(() -> {
-                                ((MenuItem) v).setDisabled(false);
-                                GL.that.renderOnce();
-                                String zipFile = fzkThemesInfo.Url.substring(fzkThemesInfo.Url.lastIndexOf("/") + 1);
-                                String target = themesPath + "/" + zipFile;
-
-                                Download.Download(fzkThemesInfo.Url, target);
-                                try {
-                                    UnZip.extractFolder(target);
-                                } catch (Exception ex) {
-                                    MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
-                                }
-                                Gdx.files.absolute(target).delete();
-                                ((MenuItem) v).setDisabled(true);
-                                GL.that.renderOnce();
-                            });
-                            return true;
-                        });
-            }
+            mapViewFZKDownloadMenu = new Menu("Download");
+            addDownloadFZKRenderThemes();
+            mapViewFZKDownloadMenu.show();
         });
+    }
+
+    private void addDownloadFZKRenderThemes() {
+        if (fzkThemesInfoList.size == 0) {
+            String repository_freizeitkarte_android = Webb.create()
+                    .get("http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml")
+                    .readTimeout(Config.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asString()
+                    .getBody();
+            java.util.Map<String, String> values = new HashMap<>();
+            System.setProperty("sjxp.namespaces", "false");
+            Array<IRule<Map<String, String>>> ruleList = createRepositoryRules(new Array<>());
+            XMLParser<Map<String, String>> parserCache = new XMLParser<>(ruleList.toArray(IRule.class));
+            parserCache.parse(new ByteArrayInputStream(repository_freizeitkarte_android.getBytes()), values);
+        }
+
+        for (FZKThemesInfo fzkThemesInfo : fzkThemesInfoList) {
+            mapViewFZKDownloadMenu.addMenuItem("Download", "\n" + fzkThemesInfo.Description, Sprites.getSprite(Sprites.IconName.freizeit.name()),
+                    (v, x, y, pointer, button) -> {
+                        GL.that.postAsync(() -> {
+                            ((MenuItem) v).setDisabled(false);
+                            GL.that.renderOnce();
+                            String zipFile = fzkThemesInfo.Url.substring(fzkThemesInfo.Url.lastIndexOf("/") + 1);
+                            String target = themesPath + "/" + zipFile;
+
+                            Download.Download(fzkThemesInfo.Url, target);
+                            try {
+                                UnZip.extractFolder(target);
+                            } catch (Exception ex) {
+                                MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                            }
+                            Gdx.files.absolute(target).delete();
+                            ((MenuItem) v).setDisabled(true);
+                            GL.that.renderOnce();
+                        });
+                        return true;
+                    });
+        }
     }
 
     private Array<IRule<java.util.Map<String, String>>> createRepositoryRules(Array<IRule<java.util.Map<String, String>>> ruleList) {
@@ -483,7 +489,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return ruleList;
     }
 
-    private boolean showRenderThemesSelectionMenu(themeIsFor whichCase) {
+    private boolean showRenderThemesSelectionMenu(ThemeIsFor whichCase) {
         this.whichCase = whichCase;
         Menu themeMenu = new Menu("MapViewThemeMenuTitle");
         RenderThemes = getRenderThemes();
@@ -502,7 +508,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
         RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
 
-        themeMenu.Show();
+        themeMenu.show();
         return true;
     }
 
@@ -543,15 +549,15 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 MenuItem mi = menuMapStyle.addMenuItem("", mapStyle, null, (v, x, y, pointer, button) -> {
                     menuMapStyle.close();
                     MenuItem clickedItem = (MenuItem) v;
-                    String mapStyleValue = (String) clickedItem.getData();
-                    HashMap<String, String> StyleOverlays = getStyleOverlays(selectedThemePaN, mapStyleValue);
-                    String ConfigStyle = getStyleFromConfig(mapStyleValue);
-                    showOverlaySelection(selectedThemePaN, mapStyleValue, StyleOverlays, ConfigStyle);
+                    String mapStyleId = (String) clickedItem.getData();
+                    HashMap<String, String> StyleOverlays = getStyleOverlays(selectedThemePaN, mapStyleId);
+                    String ConfigStyle = getStyleFromConfig(mapStyleId);
+                    showOverlaySelection(selectedThemePaN, mapStyleId, StyleOverlays, ConfigStyle);
                     return true;
                 }); // ohne Translation
                 mi.setData(mapStyles.get(mapStyle));
             }
-            menuMapStyle.Show();
+            menuMapStyle.show();
         } else if (mapStyles.size() == 1) {
             // ex.: fzk --> no need to show the mapstyle selection
             for (String mapStyle : mapStyles.keySet()) {
@@ -566,24 +572,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             setConfig(selectedThemePaN, "");
             Config.AcceptChanges();
         }
-    }
-
-    private HashMap<String, String> getMapStyles(String selectedTheme) {
-        if (selectedTheme.length() > 0) {
-            try {
-                GetStylesCallback getStylesCallBack = new GetStylesCallback();
-                XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getStylesCallBack);
-                try {
-                    // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
-                } catch (Exception e) {
-                    Log.err(log, e.getLocalizedMessage());
-                }
-                return getStylesCallBack.getStyles();
-            } catch (Exception ignored) {
-            }
-        }
-        return new HashMap<>();
     }
 
     private void showOverlaySelection(String selectedThemePaN, String mapStyleId, HashMap<String, String> StyleOverlays, String ConfigStyle) {
@@ -618,7 +606,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         };
 
         if (StyleOverlays.size() > 0) {
-            menuMapStyleOverlays.Show();
+            menuMapStyleOverlays.show();
         } else {
             // save the values, there is perhaps no overlay
             setConfig(selectedThemePaN, mapStyleId);
@@ -670,12 +658,34 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         }
     }
 
-    private HashMap<String, String> getStyleOverlays(String selectedThemePaN, String selectedLayer) {
+    private enum ThemeIsFor {
+        day, night, carday, carnight
+    }
+
+    private HashMap<String, String> getMapStyles(String selectedTheme) {
+        if (selectedTheme.length() > 0) {
+            try {
+                GetStylesCallback getStylesCallBack = new GetStylesCallback();
+                XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getStylesCallBack);
+                try {
+                    // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
+                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
+                } catch (Exception e) {
+                    Log.err(log, e.getLocalizedMessage());
+                }
+                return getStylesCallBack.getStyles();
+            } catch (Exception ignored) {
+            }
+        }
+        return new HashMap<>();
+    }
+
+    private HashMap<String, String> getStyleOverlays(String selectedThemePaN, String mapStyleId) {
         if (selectedThemePaN.length() > 0) {
             try {
                 OverlaysCallback getOverlaysCallback = new GetOverlaysCallback();
                 XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedThemePaN, getOverlaysCallback);
-                getOverlaysCallback.setLayer(selectedLayer);
+                getOverlaysCallback.setLayer(mapStyleId);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
                     CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
@@ -687,16 +697,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
         return new HashMap<>();
-    }
-
-    private enum themeIsFor {
-        day, night, carday, carnight
-    }
-
-    interface OverlaysCallback extends XmlRenderThemeMenuCallback {
-        HashMap<String, String> getOverlays();
-
-        void setLayer(String layer);
     }
 
     private class GetStylesCallback implements XmlRenderThemeMenuCallback {
@@ -722,6 +722,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
             return styles;
         }
+    }
+
+    interface OverlaysCallback extends XmlRenderThemeMenuCallback {
+        HashMap<String, String> getOverlays();
+
+        void setLayer(String layer);
     }
 
     private class GetOverlaysCallback implements OverlaysCallback {

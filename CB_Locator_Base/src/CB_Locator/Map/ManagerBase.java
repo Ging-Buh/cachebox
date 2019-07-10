@@ -591,36 +591,6 @@ public abstract class ManagerBase {
     private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
         @Override
         public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
-			/*
-			 * 
-			// String styleId = style.getId();
-			// String styleName = style.getDefaultValue();
-			Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
-			
-			String selection = "";
-			// count visibleStyles for array initialization
-			int visibleStyles = 0;
-			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
-				if (styleLayer.isVisible()) {
-					++visibleStyles;
-				}
-			}
-			CharSequence[] entries = new CharSequence[visibleStyles];
-			CharSequence[] values = new CharSequence[visibleStyles];
-			int i = 0;
-			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
-				if (styleLayer.isVisible()) {
-					entries[i] = styleLayer.getTitle(Translation.Get("Language2Chars");
-					if (entries[i].equals(mapsforgeThemesStyle)) { // Radfahren, Wandern,....
-						selection = styleLayer.getId();
-					} else {
-			
-					}
-					values[i] = styleLayer.getId();
-					++i;
-				}
-			}
-			 */
             String ConfigStyle = mapsforgeThemesStyle;
             int StyleEnds = mapsforgeThemesStyle.indexOf("\t");
             String Style;

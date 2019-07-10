@@ -31,7 +31,7 @@ public class MapDownloadItem extends CB_View_Base {
     private final String workPath;
     private final AtomicBoolean DownloadRuns = new AtomicBoolean(false);
     private int lastProgress = 0;
-    private ProgressBar pgBar;
+    private ProgressBar progressBar;
     private boolean canceld = false;
 
     public MapDownloadItem(MapRepositoryInfo mapInfo, String workPath, float ItemWidth) {
@@ -132,11 +132,11 @@ public class MapDownloadItem extends CB_View_Base {
         float ProgressHeight = (Sprites.ProgressBack.getBottomHeight() + Sprites.ProgressBack.getTopHeight());
         CB_RectF rec = new CB_RectF(checkBoxMap.getMaxX() + margin, 0, innerWidth - margin * 3 - checkBoxMap.getWidth(), ProgressHeight);
 
-        if (pgBar == null) {
-            pgBar = new ProgressBar(rec, "");
-            this.addChild(pgBar);
-            lblName.setY(pgBar.getHalfHeight() - margin);
-            lblSize.setY(pgBar.getHalfHeight() - margin);
+        if (progressBar == null) {
+            progressBar = new ProgressBar(rec, "");
+            this.addChild(progressBar);
+            lblName.setY(progressBar.getHalfHeight() - margin);
+            lblSize.setY(progressBar.getHalfHeight() - margin);
         }
 
         lastProgress = 0;
@@ -149,7 +149,7 @@ public class MapDownloadItem extends CB_View_Base {
                 String zipFile = mapInfo.Url.substring(slashPos + 1, mapInfo.Url.length());
                 String target = workPath + "/" + zipFile;
 
-                pgBar.setProgress(lastProgress, lastProgress + " %");
+                progressBar.setProgress(lastProgress, lastProgress + " %");
 
                 if (Download.Download(mapInfo.Url, target)) {
                     try {
@@ -190,7 +190,7 @@ public class MapDownloadItem extends CB_View_Base {
                 }
 
                 lastProgress = canceld ? 0 : 100;
-                pgBar.setProgress(lastProgress, lastProgress + " %");
+                progressBar.setProgress(lastProgress, lastProgress + " %");
                 DownloadRuns.set(false);
                 Log.info(log, "Download everything ready");
             }

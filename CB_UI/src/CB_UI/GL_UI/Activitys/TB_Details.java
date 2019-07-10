@@ -171,7 +171,7 @@ public class TB_Details extends ActivityBase {
             menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.getInstance().Show(TB, LogTypes.grab_it));
         if (TB.isLogTypePossible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue()))
             menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.getInstance().Show(TB, LogTypes.retrieve));
-        menuLog.Show();
+        menuLog.show();
     }
 
     @Override

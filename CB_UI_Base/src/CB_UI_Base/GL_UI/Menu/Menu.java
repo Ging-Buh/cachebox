@@ -437,9 +437,9 @@ public class Menu extends ButtonDialog {
     }
 
     @Override
-    public void Show() {
+    public void show() {
         layout();
-        super.Show();
+        super.show();
     }
 
     public void addOnItemClickListener(OnClickListener onItemClickListener) {

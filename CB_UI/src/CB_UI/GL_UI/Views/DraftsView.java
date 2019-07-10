@@ -724,7 +724,7 @@ public class DraftsView extends V_ListView {
                     cm.addMenuItem("SelectCache", null, () -> selectCacheFromDraft());
                     cm.addMenuItem( "edit",null,()-> editDraft());
                     cm.addMenuItem( "delete",null,()-> deleteDraft());
-                    cm.Show();
+                    cm.show();
                     return true;
                 });
             }

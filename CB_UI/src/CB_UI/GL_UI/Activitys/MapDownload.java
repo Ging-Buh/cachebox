@@ -45,7 +45,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     private MapRepositoryInfo actMapRepositoryInfo;
     private CB_Button bOK, bCancel;
     private CB_Label lblProgressMsg;
-    private ProgressBar pgBar;
+    private ProgressBar progressBar;
     private Boolean importStarted = false;
     private ScrollBox scrollBox;
     private ImportAnimation dis;
@@ -132,9 +132,9 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
 
-        pgBar = new ProgressBar(rec, "ProgressBar");
+        progressBar = new ProgressBar(rec, "ProgressBar");
 
-        pgBar.setProgress(0, "");
+        progressBar.setProgress(0, "");
 
         float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
 
@@ -142,19 +142,18 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         lblProgressMsg.setFont(Fonts.getSmall());
 
-        this.addChild(pgBar);
+        this.addChild(progressBar);
         this.addChild(lblProgressMsg);
 
     }
 
     @Override
     public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
-
         GL.that.RunOnGL(() -> {
-            pgBar.setProgress(Progress);
+            progressBar.setProgress(Progress);
             lblProgressMsg.setText(ProgressMessage);
-            if (!Message.equals(""))
-                pgBar.setText(Message);
+            if (Message.length() > 0)
+                progressBar.setText(Message);
         });
 
     }
@@ -207,7 +206,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
                 if (AllProgress != newAllProgress) {
                     AllProgress = newAllProgress;
-                    pgBar.setProgress(AllProgress);
+                    progressBar.setProgress(AllProgress);
                     lblProgressMsg.setText(AllProgress + " %");
                 }
 
@@ -250,7 +249,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             dis.dispose();
             dis = null;
         }
-        pgBar.setProgress(0);
+        progressBar.setProgress(0);
 
         if (DownloadIsCompleted) {
             lblProgressMsg.setText("");

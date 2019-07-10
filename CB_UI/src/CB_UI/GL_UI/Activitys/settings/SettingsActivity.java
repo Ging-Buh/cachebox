@@ -149,7 +149,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             icm.setPrompt(Translation.get("SettingsLevelTitle"));
 
-            icm.Show();
+            icm.show();
             return true;
         });
 
@@ -886,7 +886,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 settingFolder.setValue(settingFolder.getDefaultValue());
                 resortList();
             });
-            icm.Show();
+            icm.show();
             return true;
         });
 
@@ -922,7 +922,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 settingFile.setValue("");
                 resortList();
             });
-            icm.Show();
+            icm.show();
             return true;
         });
 

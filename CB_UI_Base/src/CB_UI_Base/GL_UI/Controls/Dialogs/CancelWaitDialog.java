@@ -78,7 +78,7 @@ public class CancelWaitDialog extends WaitDialog {
         wd.animation.setY(imageYPos);
         wd.addChild(wd.animation);
         wd.animation.play();
-        wd.Show();
+        wd.show();
         return wd;
     }
 
