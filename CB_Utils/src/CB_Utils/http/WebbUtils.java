@@ -149,7 +149,7 @@ public class WebbUtils {
         return format;
     }
 
-    static String urlEncode(String value) {
+    public static String urlEncode(String value) {
         try {
             return URLEncoder.encode(value, "UTF-8");
         } catch (UnsupportedEncodingException e) {

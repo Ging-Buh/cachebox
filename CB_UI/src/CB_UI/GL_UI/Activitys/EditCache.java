@@ -185,7 +185,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void btnOKClickHandler() {
-        this.btnOK.setOnClickListener((v, x, y, pointer, button) -> {
+        btnOK.setOnClickListener((v, x, y, pointer, button) -> {
             boolean update = false;
             CacheDAO cacheDAO = new CacheDAO();
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label

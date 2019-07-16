@@ -318,8 +318,16 @@ public class Menu extends ButtonDialog {
     }
 
     public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Object icon, OnClickListener onClickListener) {
+        String title = ((titleTranlationId.length() == 0) ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart;
+        if (title.contains("\n")) {
+            CB_Label tmp = new CB_Label("");
+            tmp.setWidth(mListView.getWidth());
+            tmp.setMultiLineText(title);
+            ItemHeight = tmp.getTextHeight();
+            // ItemHeight = (title.split("\n")).length * UI_Size_Base.that.getButtonHeight();
+        }
         MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), titleTranlationId);
-        item.setTitle(((titleTranlationId.length() == 0) ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart);
+        item.setTitle(title);
         if (icon != null) {
             if (icon instanceof Sprite) {
                 item.setIcon(new SpriteDrawable((Sprite) icon));

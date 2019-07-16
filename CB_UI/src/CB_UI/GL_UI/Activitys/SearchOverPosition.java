@@ -58,7 +58,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     private CoordinateButton coordBtn;
     private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
     private EditTextField Radius;
-    private MultiToggleButton tglBtnGPS, tglBtnMap;
+    private MultiToggleButton tglBtnGPS, tglBtnMap, tglBtnWeb;
     private Coordinate actSearchPos;
     private ImportAnimation dis;
     private Box box;
@@ -223,15 +223,19 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         tglBtnGPS = new MultiToggleButton("");
         tglBtnMap = new MultiToggleButton("");
+        tglBtnWeb = new MultiToggleButton("");
 
         tglBtnGPS.setFont(Fonts.getSmall());
         tglBtnMap.setFont(Fonts.getSmall());
+        tglBtnWeb.setFont(Fonts.getSmall());
 
         tglBtnGPS.initialOn_Off_ToggleStates(Translation.get("FromGps"), Translation.get("FromGps"));
         tglBtnMap.initialOn_Off_ToggleStates(Translation.get("FromMap"), Translation.get("FromMap"));
+        tglBtnWeb.initialOn_Off_ToggleStates(Translation.get("FromWeb"), Translation.get("FromWeb"));
 
         box.addNext(tglBtnGPS);
-        box.addLast(tglBtnMap);
+        box.addNext(tglBtnMap);
+        box.addLast(tglBtnWeb);
 
     }
 
@@ -270,6 +274,15 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         tglBtnMap.setOnClickListener((v, x, y, pointer, button) -> {
             actSearchPos = CB_Action_ShowMap.getInstance().normalMapView.center;
             setToggleBtnState(1);
+            return true;
+        });
+
+        tglBtnWeb.setOnClickListener((v, x, y, pointer, button) -> {
+            actSearchPos = Locator.getCoordinate();
+            new SearchCoordinates().doShow(coordinate -> {
+                actSearchPos = new Coordinate(coordinate);
+                setToggleBtnState(2);
+            });
             return true;
         });
 
@@ -391,19 +404,27 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         setToggleBtnState();
     }
 
-    private void setToggleBtnState() {// 0=GPS, 1= Map, 2= Manuell
+    private void setToggleBtnState() {// 0=GPS, 1= Map, 2= Web, 3= Manuell
         switch (searcheState) {
             case 0:
                 tglBtnGPS.setState(1);
                 tglBtnMap.setState(0);
+                tglBtnWeb.setState(0);
                 break;
             case 1:
                 tglBtnGPS.setState(0);
                 tglBtnMap.setState(1);
+                tglBtnWeb.setState(0);
                 break;
             case 2:
                 tglBtnGPS.setState(0);
                 tglBtnMap.setState(0);
+                tglBtnWeb.setState(1);
+                break;
+            case 3:
+                tglBtnGPS.setState(0);
+                tglBtnMap.setState(0);
+                tglBtnWeb.setState(0);
                 break;
 
         }
