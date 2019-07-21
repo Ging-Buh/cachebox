@@ -1,4 +1,4 @@
-package CB_UI.GL_UI.Activitys;
+package CB_UI.GL_UI.Views;
 
 import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.Function;

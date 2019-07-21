@@ -53,6 +53,7 @@ public class SearchCoordinates extends ActivityBase {
         scrollBox.setVirtualHeight(box.getHeight());
 
         btnOK.setOnClickListener((v, x, y, pointer, button) -> {
+            btnOK.disable();
             GL.that.postAsync(() -> {
                 JSONArray fetchedLocations = fetchLocations();
                 Menu menuLocation;

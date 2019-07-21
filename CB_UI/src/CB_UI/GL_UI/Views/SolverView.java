@@ -22,7 +22,6 @@ import CB_Core.Solver.SolverZeile;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;

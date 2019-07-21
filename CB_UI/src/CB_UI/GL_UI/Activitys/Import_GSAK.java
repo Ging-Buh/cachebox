@@ -435,17 +435,17 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     private CacheSizes CacheSizeFromString(String container) {
-        // R=regular, L=large, M=micro, S=Small, V=Virtual, and U=unknown
-        switch (container) {
+        // R=regular, L=large, M=micro, S=small, V=virtual, and U=unknown
+        switch (container.toLowerCase()) {
             case "regular":
                 return CacheSizes.regular;
             case "large":
                 return CacheSizes.large;
             case "micro":
                 return CacheSizes.micro;
-            case "Small":
+            case "small":
                 return CacheSizes.small;
-            case "Virtual":
+            case "virtual":
                 return CacheSizes.other; // not in CB
             case "unknown":
                 return CacheSizes.other;

@@ -142,7 +142,7 @@ public class Replication {
                     dbCheckSum = c.getInt(0);
                     break;
                 }
-                ;
+
                 if (dbCheckSum < 0) {
                     // a Change for the WP for this Cache must be added to the
                     // Replication Table

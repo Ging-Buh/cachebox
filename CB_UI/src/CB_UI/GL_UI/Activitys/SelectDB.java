@@ -29,14 +29,12 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
+import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
-import CB_UI_Base.GL_UI.Controls.List.Adapter;
-import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
-import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
-import CB_UI_Base.GL_UI.Controls.List.V_ListView;
+import CB_UI_Base.GL_UI.Controls.List.*;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.Action_ShowQuit;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.Math.CB_RectF;
@@ -66,30 +64,10 @@ public class SelectDB extends ActivityBase {
     private CB_Button bSelect;
     private CB_Button bCancel;
     private CB_Button bAutostart;
-    private V_ListView lvFiles;
+    private V_ListView lvDBFile;
     private Scrollbar scrollbar;
     private CustomAdapter lvAdapter;
     private File AktFile = null;
-    private OnClickListener onItemClickListener = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            stopTimer();
-            File file;
-
-            for (int i = 0; i < lvAdapter.getCount(); i++) {
-                if (v.getName().equals(lvAdapter.getItem(i).getName())) {
-                    file = lvAdapter.getItem(i);
-
-                    AktFile = file;
-                    lvFiles.setSelection(i);
-                    break;
-                }
-            }
-            return true;
-
-        }
-    };
     private String[] fileInfos;
     private boolean MustSelect;
     private IReturnListener returnListener;
@@ -190,16 +168,16 @@ public class SelectDB extends ActivityBase {
             index++;
         }
 
-        lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
+        lvDBFile = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
                 "DB File ListView");
         lvAdapter = new CustomAdapter(files);
-        lvFiles.setBaseAdapter(lvAdapter);
-        this.addChild(lvFiles);
+        lvDBFile.setBaseAdapter(lvAdapter);
+        this.addChild(lvDBFile);
 
-        this.scrollbar = new Scrollbar(lvFiles);
+        this.scrollbar = new Scrollbar(lvDBFile);
         this.addChild(this.scrollbar);
 
-        this.lvFiles.addListPosChangedEventHandler(() -> scrollbar.ScrollPositionChanged());
+        this.lvDBFile.addListPosChangedEventHandler(() -> scrollbar.ScrollPositionChanged());
 
         float btWidth = innerWidth / 3;
 
@@ -301,19 +279,19 @@ public class SelectDB extends ActivityBase {
                 fileInfos[index] = Database.Data.getCacheCountInDB(file.getAbsolutePath()) + " Caches  " + fileSize + "    last use " + lastModified;
                 index++;
             }
-            if (lvFiles != null) lvFiles.setBaseAdapter(lvAdapter);
+            if (lvDBFile != null) lvDBFile.setBaseAdapter(lvAdapter);
         }).start();
     }
 
     @Override
     public void onShow() {
 
-        int itemSpace = lvFiles.getMaxItemCount();
+        int itemSpace = lvDBFile.getMaxItemCount();
 
         if (itemSpace >= lvAdapter.getCount()) {
-            lvFiles.setUnDraggable();
+            lvDBFile.setUnDraggable();
         } else {
-            lvFiles.setDraggable();
+            lvDBFile.setDraggable();
         }
 
         TimerTask task = new TimerTask() {
@@ -326,13 +304,13 @@ public class SelectDB extends ActivityBase {
 
                     try {
                         if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
-                            lvFiles.setSelection(i);
+                            lvDBFile.setSelection(i);
                         }
 
-                        Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
+                        Point firstAndLast = lvDBFile.getFirstAndLastVisibleIndex();
 
                         if (!(firstAndLast.x < i && firstAndLast.y > i))
-                            lvFiles.scrollToItem(i);
+                            lvDBFile.scrollToItem(i);
                     } catch (Exception e) {
                         Log.err(log, "select item", e);
                     }
@@ -341,7 +319,7 @@ public class SelectDB extends ActivityBase {
                 GL.that.RunOnGL(() -> setSelectedItemVisible());
 
                 resetInitial();
-                lvFiles.chkSlideBack();
+                lvDBFile.chkSlideBack();
             }
         };
 
@@ -353,15 +331,15 @@ public class SelectDB extends ActivityBase {
 
     private void setSelectedItemVisible() {
         int id = 0;
-        Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
+        Point firstAndLast = lvDBFile.getFirstAndLastVisibleIndex();
 
         try {
             for (File file : lvAdapter.getFileList()) {
                 if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
-                    lvFiles.setSelection(id);
-                    if (lvFiles.isDraggable()) {
+                    lvDBFile.setSelection(id);
+                    if (lvDBFile.isDraggable()) {
                         if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
-                            lvFiles.scrollToItem(id);
+                            lvDBFile.scrollToItem(id);
                         }
                     }
                     break;
@@ -373,8 +351,8 @@ public class SelectDB extends ActivityBase {
                 @Override
                 public void run() {
                     GL.that.RunOnGL(() -> {
-                        if (lvFiles != null) {
-                            lvFiles.chkSlideBack();
+                        if (lvDBFile != null) {
+                            lvDBFile.chkSlideBack();
                             GL.that.renderOnce();
                         }
                     });
@@ -483,9 +461,9 @@ public class SelectDB extends ActivityBase {
         if (bAutostart != null)
             bAutostart.dispose();
         bAutostart = null;
-        if (lvFiles != null)
-            lvFiles.dispose();
-        lvFiles = null;
+        if (lvDBFile != null)
+            lvDBFile.dispose();
+        lvDBFile = null;
         if (scrollbar != null)
             scrollbar.dispose();
         scrollbar = null;
@@ -502,7 +480,7 @@ public class SelectDB extends ActivityBase {
         void back();
     }
 
-    public class CustomAdapter implements Adapter {
+    private class CustomAdapter implements Adapter {
 
         private final CB_RectF recItem;
         private FileList files;
@@ -534,13 +512,58 @@ public class SelectDB extends ActivityBase {
         @Override
         public ListViewItemBase getView(int position) {
             SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), fileInfos[position]);
-            v.setOnClickListener(onItemClickListener);
+            v.setOnClickListener((v1, x, y, pointer, button) -> {
+                stopTimer();
+                for (int i = 0; i < files.size(); i++) {
+                    if (v1.getName().equals(files.get(i).getName())) {
+                        AktFile = files.get(i);
+                        lvDBFile.setSelection(i);
+                        break;
+                    }
+                }
+                return true;
+            });
             return v;
         }
 
         @Override
         public float getItemSize(int position) {
             return recItem.getHeight();
+        }
+
+    }
+
+    private class SelectDBItem extends ListViewItemBackground {
+
+        float left = 20;
+        float mLabelHeight = -1;
+        float mLabelYPos = -1;
+        float mLabelWidth = -1;
+        CB_Label nameLabel;
+        CB_Label countLabel;
+
+        public SelectDBItem(CB_RectF rec, int Index, File file, String count) {
+            super(rec, Index, file.getName());
+
+            if (mLabelHeight == -1) {
+                mLabelHeight = getHeight() * 0.7f;
+                mLabelYPos = (getHeight() - mLabelHeight) / 2;
+                mLabelWidth = getWidth() - (left * 2);
+            }
+
+            nameLabel = new CB_Label(this.name + " nameLabel", left, mLabelYPos, getWidth(), mLabelHeight);
+            nameLabel.setFont(Fonts.getBig());
+            nameLabel.setVAlignment(CB_Label.VAlignment.TOP);
+            nameLabel.setText(file.getName());
+            this.addChild(nameLabel);
+
+            countLabel = new CB_Label(this.name + " countLabel", left, mLabelYPos, getWidth(), mLabelHeight);
+            countLabel.setFont(Fonts.getBubbleNormal());
+            countLabel.setVAlignment(CB_Label.VAlignment.BOTTOM);
+            countLabel.setText(count);
+            this.addChild(countLabel);
+
+            this.setClickable(true);
         }
 
     }

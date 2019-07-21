@@ -1,4 +1,4 @@
-package CB_UI.GL_UI.Controls.Dialogs;
+package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.Function;
@@ -8,9 +8,9 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Activitys.SelectSolverFunction;
-import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI.GL_UI.Controls.CoordinateButton;
+import CB_UI.GL_UI.Views.SelectSolverFunction;
+import CB_UI.GL_UI.Views.SelectSolverFunction.IFunctionResult;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
