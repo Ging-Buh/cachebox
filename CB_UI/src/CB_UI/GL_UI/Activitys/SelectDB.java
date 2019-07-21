@@ -170,7 +170,17 @@ public class SelectDB extends ActivityBase {
             dbFilesInfos[index] = "";
             index++;
         }
-        readDBFilesInfos();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        int idx = 0;
+        for (File file : dbFiles) {
+            dbFilesInfos[idx] = Database.Data.getCacheCountInDB(file.getAbsolutePath())
+                    + " Caches  "
+                    + file.length() / (1024 * 1024) + "MB"
+                    + "    last use "
+                    + sdf.format(file.lastModified());
+            idx++;
+        }
 
         this.addChild(lvDBSelection);
 
@@ -262,21 +272,6 @@ public class SelectDB extends ActivityBase {
         setAutoStartText();
 
         isClickable();
-    }
-
-    private void readDBFilesInfos() {
-        new Thread(() -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-            int index = 0;
-            for (File file : dbFiles) {
-                dbFilesInfos[index] = Database.Data.getCacheCountInDB(file.getAbsolutePath())
-                        + " Caches  "
-                        + file.length() / (1024 * 1024) + "MB"
-                        + "    last use "
-                        + sdf.format(file.lastModified());
-                index++;
-            }
-        }).start();
     }
 
     @Override
