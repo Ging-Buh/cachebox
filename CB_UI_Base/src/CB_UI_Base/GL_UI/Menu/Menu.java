@@ -34,7 +34,6 @@ public class Menu extends ButtonDialog {
     private static boolean MENU_REC_IsInitial = false;
     public float ItemHeight = -1f;
     public ArrayList<MenuItem> mItems = new ArrayList<>();
-    protected ArrayList<OnClickListener> mOnItemClickListeners;
     protected boolean autoClose;
     protected boolean singleSelection; // true: only one option can be selected
     private V_ListView mListView;
@@ -62,13 +61,6 @@ public class Menu extends ButtonDialog {
             GL.that.closeDialog(Menu.this);
             if (isMoreMenu)
                 GL.that.closeDialog(mParentMenu);
-            if (mOnItemClickListeners != null) {
-                for (OnClickListener tmp : mOnItemClickListeners) {
-                    if (tmp.onClick(v, x, y, pointer, button)) {
-                        return true; // break;
-                    }
-                }
-            }
             return false;
         }
     };
@@ -450,12 +442,6 @@ public class Menu extends ButtonDialog {
         super.show();
     }
 
-    public void addOnItemClickListener(OnClickListener onItemClickListener) {
-        if (this.mOnItemClickListeners == null)
-            this.mOnItemClickListeners = new ArrayList<>();
-        this.mOnItemClickListeners.add(onItemClickListener);
-    }
-
     public void setPrompt(String Prompt) {
         // set Title with full width, add many blanks: that is bad
         // this.setTitle(Prompt + "                                                       ");
@@ -566,8 +552,6 @@ public class Menu extends ButtonDialog {
         @Override
         public ListViewItemBase getView(int position) {
             ListViewItemBase v = mItems.get(position);
-            //v.setWidth(mListView.getWidth());
-            //	    v.resetInitial();
             return v;
         }
 
