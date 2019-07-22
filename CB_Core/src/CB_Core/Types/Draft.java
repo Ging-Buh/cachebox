@@ -3,6 +3,7 @@ package CB_Core.Types;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.LogTypes;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -15,9 +16,7 @@ import java.util.TimeZone;
 
 public class Draft implements Serializable {
 
-    /**
-     *
-     */
+    private static final String log = "Draft";
     private static final long serialVersionUID = 4110771837489396946L;
 
     public long Id;
@@ -141,19 +140,19 @@ public class Draft implements Serializable {
 
     public void WriteToDatabase() {
         Parameters args = new Parameters();
-        if (Id >= 0)
-            args.put("id", Id); // bei Update!!!
-        args.put("cacheid", CacheId);
-        args.put("gccode", gcCode);
-        args.put("name", CacheName);
+        args.put("CacheId", CacheId);
+        args.put("GcCode", gcCode);
+        args.put("Name", CacheName);
+        args.put("CacheType", cacheType);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String stimestamp = iso8601Format.format(timestamp);
-        args.put("timestamp", stimestamp);
-        args.put("type", type.getGcLogTypeId());
-        args.put("foundnumber", foundNumber);
-        args.put("comment", comment);
-        args.put("cachetype", cacheType);
-        args.put("url", CacheUrl);
+        args.put("Timestamp", stimestamp);
+        args.put("Type", type.getGcLogTypeId());
+        args.put("FoundNumber", foundNumber);
+        args.put("Comment", comment);
+        if (Id >= 0)
+            args.put("Id", Id); // bei Update!!!
+        args.put("Url", CacheUrl);
         args.put("Uploaded", uploaded);
         args.put("gc_Vote", gc_Vote);
         args.put("TbFieldNote", isTbDraft);
@@ -165,9 +164,10 @@ public class Draft implements Serializable {
         try {
             Database.Drafts.sql.insertWithConflictReplace("Fieldnotes", args);
         } catch (Exception exc) {
+            Log.err(log, exc.toString());
             return;
         }
-        // search FieldNote Id
+        // search FieldNote Id : should be the last entry
         CoreCursor reader = Database.Drafts
                 .sql.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode
                         + "' and type=" + type.getGcLogTypeId(), null);
@@ -178,6 +178,12 @@ public class Draft implements Serializable {
             reader.moveToNext();
         }
         reader.close();
+        if (this.Id == -1) {
+            if (isTbDraft)
+                Log.err(log, "TB-Log not saved: " + TravelBugCode + " in " + gcCode + ".");
+            else
+                Log.err(log, "Cache-Log not saved: " + gcCode + "");
+        }
     }
 
     public void UpdateDatabase() {

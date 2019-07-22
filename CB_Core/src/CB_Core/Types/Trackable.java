@@ -29,7 +29,7 @@ public class Trackable implements Comparable<Trackable> {
     final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
     public boolean Archived;
     public String TBCode;
-    public String TrackingCode;
+    private String mTrackingCode;
     public String CurrentGeocacheCode;
     public String CurrentGoal;
     public String CurrentOwnerName;
@@ -271,11 +271,14 @@ public class Trackable implements Comparable<Trackable> {
     }
 
     public String getTrackingCode() {
-        return this.TrackingCode;
+        if (mTrackingCode == null)
+            return "";
+        else
+            return mTrackingCode;
     }
 
     public void setTrackingCode(String trackingCode) {
-        this.TrackingCode = trackingCode;
+        mTrackingCode = trackingCode;
     }
 
     @Override
@@ -325,7 +328,7 @@ public class Trackable implements Comparable<Trackable> {
                 return true;
 
             // the next LogTypes only possible if User has entered the TrackingCode
-            if (!(TrackingCode != null && TrackingCode.length() > 0))
+            if (!(mTrackingCode != null && mTrackingCode.length() > 0))
                 return false;
             if (ID == 13 || /* ID == 14 || */ID == 48)
                 return true; // TODO ist es Sinnvoll einen TB aus einem Cache in einen Cache zu packen?? ID 14 ist Laut GS erlaubt!
@@ -342,7 +345,7 @@ public class Trackable implements Comparable<Trackable> {
         // TB at other Person
 
         // User entered TB-Code and not TrackingCode: he can not Grab or Discover
-        if (TrackingCode != null && TrackingCode.length() > 0) {
+        if (mTrackingCode != null && mTrackingCode.length() > 0) {
             if (ID == 19 || ID == 48)
                 return true;
         }

@@ -58,7 +58,6 @@ import java.util.TimerTask;
 public class SelectDB extends ActivityBase {
     private static final String log = "SelectDB";
     private final FileList dbFiles;
-    private String[] dbFilesInfos;
     private DBItemAdapter dbItemAdapter;
     private Timer updateTimer;
     private int autoStartTime;
@@ -158,28 +157,14 @@ public class SelectDB extends ActivityBase {
         lvDBSelection = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
                 "DB File ListView");
         dbFiles = new FileList(Config.mWorkPath, "DB3", true);
-        dbItemAdapter = new DBItemAdapter();
-        lvDBSelection.setBaseAdapter(dbItemAdapter);
+        dbItemAdapter = new DBItemAdapter(lvDBSelection, dbFiles);
 
         String dbFile = Config.DatabaseName.getValue();
-        dbFilesInfos = new String[dbFiles.size()];
-        int index = 0;
         for (File file : dbFiles) {
-            if (file.getName().equalsIgnoreCase(dbFile))
+            if (file.getName().equalsIgnoreCase(dbFile)) {
                 AktFile = file;
-            dbFilesInfos[index] = "";
-            index++;
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        int idx = 0;
-        for (File file : dbFiles) {
-            dbFilesInfos[idx] = Database.Data.getCacheCountInDB(file.getAbsolutePath())
-                    + " Caches  "
-                    + file.length() / (1024 * 1024) + "MB"
-                    + "    last use "
-                    + sdf.format(file.lastModified());
-            idx++;
+                break;
+            }
         }
 
         this.addChild(lvDBSelection);
@@ -461,7 +446,6 @@ public class SelectDB extends ActivityBase {
 
         dbItemAdapter = null;
         AktFile = null;
-        dbFilesInfos = null;
 
         returnListener = null;
         super.dispose();
@@ -474,25 +458,30 @@ public class SelectDB extends ActivityBase {
     private class DBItemAdapter implements Adapter {
 
         private final CB_RectF recItem;
+        private V_ListView lvDBSelection;
+        private FileList dbFiles;
 
-        public DBItemAdapter() {
+        public DBItemAdapter(V_ListView lvDBSelection, FileList dbFiles) {
+            // params are only for demonstration of dependencies. could also be in SelectDB
+            this.lvDBSelection = lvDBSelection;
+            this.dbFiles = dbFiles;
             recItem = new CB_RectF(0, 0, lvDBSelection.getInnerWidth(), UiSizes.that.getButtonHeight() * 1.2f);
+            lvDBSelection.setBaseAdapter(this);
         }
 
         @Override
         public int getCount() {
-            return dbFiles.size();
+            return this.dbFiles.size();
         }
 
         @Override
         public ListViewItemBase getView(int position) {
-            DBItem v = new DBItem(recItem, position, dbFiles.get(position), dbFilesInfos[position]);
+            DBItem v = new DBItem(recItem, position, this.dbFiles.get(position));
             v.setOnClickListener((v1, x, y, pointer, button) -> {
                 stopTimer();
                 DBItem selectedItem = (DBItem) v1;
-                int index = selectedItem.getIndex();
                 AktFile = selectedItem.file;
-                lvDBSelection.setSelection(index);
+                this.lvDBSelection.setSelection(selectedItem.getIndex());
                 return true;
             });
             return v;
@@ -507,34 +496,32 @@ public class SelectDB extends ActivityBase {
 
     private class DBItem extends ListViewItemBackground {
 
-        float left = 20;
-        float mLabelHeight = -1;
-        float mLabelYPos = -1;
-        float mLabelWidth = -1;
-        CB_Label lblName;
-        CB_Label lblInfo;
         File file;
 
-        public DBItem(CB_RectF rec, int index, File file, String dbFilesInfo) {
+        DBItem(CB_RectF rec, int index, File file) {
             super(rec, index, file.getName());
             this.file = file;
 
-            if (mLabelHeight == -1) {
-                mLabelHeight = getHeight() * 0.7f;
-                mLabelYPos = (getHeight() - mLabelHeight) / 2;
-                mLabelWidth = getWidth() - (left * 2);
-            }
+            float left = 20;
+            float mLabelHeight = getHeight() * 0.7f;
+            float mLabelYPos = (getHeight() - mLabelHeight) / 2;
 
-            lblName = new CB_Label(name + " lblName", left, mLabelYPos, getWidth(), mLabelHeight);
+            CB_Label lblName = new CB_Label(name + " lblName", left, mLabelYPos, getWidth(), mLabelHeight);
             lblName.setFont(Fonts.getBig());
             lblName.setVAlignment(CB_Label.VAlignment.TOP);
             lblName.setText(file.getName());
             addChild(lblName);
 
-            lblInfo = new CB_Label(name + " lblInfo", left, mLabelYPos, getWidth(), mLabelHeight);
+            CB_Label lblInfo = new CB_Label(name + " lblInfo", left, mLabelYPos, getWidth(), mLabelHeight);
             lblInfo.setFont(Fonts.getBubbleNormal());
             lblInfo.setVAlignment(CB_Label.VAlignment.BOTTOM);
-            lblInfo.setText(dbFilesInfo);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            lblInfo.setText(Database.Data.getCacheCountInDB(file.getAbsolutePath())
+                    + " Caches  "
+                    + file.length() / (1024 * 1024) + "MB"
+                    + "    last use "
+                    + sdf.format(file.lastModified()));
             addChild(lblInfo);
 
             setClickable(true);

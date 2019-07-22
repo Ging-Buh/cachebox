@@ -691,7 +691,7 @@ public class GroundspeakAPI {
 
             if (!tb.TBCode.toLowerCase().equals(TBCode.toLowerCase())) {
                 // fetched by TrackingCode, the result for trackingcode is always empty, except for owner
-                tb.TrackingCode = TBCode;
+                tb.setTrackingCode(TBCode);
             }
             return tb;
         } catch (Exception ex) {
@@ -1012,7 +1012,7 @@ public class GroundspeakAPI {
             tb.TBCode = API1Trackable.optString("referenceCode", "");
             // trackingNumber	string	unique number used to prove discovery of trackable. only returned if user matches the holderCode
             // will not be stored (Why)
-            tb.TrackingCode = API1Trackable.optString("trackingNumber", "");
+            tb.setTrackingCode(API1Trackable.optString("trackingNumber", ""));
             tb.CurrentGeocacheCode = API1Trackable.optString("currentGeocacheCode", "");
             if (tb.CurrentGeocacheCode.equals("null")) tb.CurrentGeocacheCode = "";
             tb.CurrentGoal = CB_Utils.StringH.JsoupParse(API1Trackable.optString("goal"));
