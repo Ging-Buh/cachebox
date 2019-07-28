@@ -150,7 +150,7 @@ public class NumPad extends CB_View_Base {
 
     private void calcSizes() {
 
-        this.setOnClickListener(onBtnClick);
+        this.addClickHandler(onBtnClick);
 
         float btnHeight = this.getHeight() / 5f;
         float btnWidth = this.getWidth() / 5f;
@@ -205,22 +205,22 @@ public class NumPad extends CB_View_Base {
         btn_left.setText("<");
         btn_right.setText(">");
 
-        btn_0.setOnClickListener(onBtnClick);
-        btn_1.setOnClickListener(onBtnClick);
-        btn_2.setOnClickListener(onBtnClick);
-        btn_3.setOnClickListener(onBtnClick);
-        btn_4.setOnClickListener(onBtnClick);
-        btn_5.setOnClickListener(onBtnClick);
-        btn_6.setOnClickListener(onBtnClick);
-        btn_7.setOnClickListener(onBtnClick);
-        btn_8.setOnClickListener(onBtnClick);
-        btn_9.setOnClickListener(onBtnClick);
-        btn_Dot.setOnClickListener(onBtnClick);
+        btn_0.addClickHandler(onBtnClick);
+        btn_1.addClickHandler(onBtnClick);
+        btn_2.addClickHandler(onBtnClick);
+        btn_3.addClickHandler(onBtnClick);
+        btn_4.addClickHandler(onBtnClick);
+        btn_5.addClickHandler(onBtnClick);
+        btn_6.addClickHandler(onBtnClick);
+        btn_7.addClickHandler(onBtnClick);
+        btn_8.addClickHandler(onBtnClick);
+        btn_9.addClickHandler(onBtnClick);
+        btn_Dot.addClickHandler(onBtnClick);
 
-        btn_left.setOnClickListener(onBtnClick);
-        btn_right.setOnClickListener(onBtnClick);
+        btn_left.addClickHandler(onBtnClick);
+        btn_right.addClickHandler(onBtnClick);
 
-        btn_OK.setOnClickListener(new OnClickListener() {
+        btn_OK.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -232,7 +232,7 @@ public class NumPad extends CB_View_Base {
                 return false;
             }
         });
-        btn_Cancel.setOnClickListener(new OnClickListener() {
+        btn_Cancel.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -245,7 +245,7 @@ public class NumPad extends CB_View_Base {
             }
         });
 
-        btn_Del.setOnClickListener(new OnClickListener() {
+        btn_Del.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -258,7 +258,7 @@ public class NumPad extends CB_View_Base {
             }
         });
 
-        btn_Bck.setOnClickListener(new OnClickListener() {
+        btn_Bck.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

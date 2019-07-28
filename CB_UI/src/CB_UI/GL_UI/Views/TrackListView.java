@@ -104,7 +104,7 @@ public class TrackListView extends V_ListView {
                         // Notify Map to Reload RouteOverlay
                         RouteOverlay.RoutesChanged();
                     });
-                    aktRouteItem.setOnClickListener((v, x, y, pointer, button) -> {
+                    aktRouteItem.addClickHandler((v, x, y, pointer, button) -> {
                         selectedTrackItem = ((ListViewItemBase) v).getIndex();
                         setSelection(selectedTrackItem);
                         return true;
@@ -121,7 +121,7 @@ public class TrackListView extends V_ListView {
                 RouteOverlay.RoutesChanged();
             });
 
-            v.setOnClickListener((v1, x, y, pointer, button) -> {
+            v.addClickHandler((v1, x, y, pointer, button) -> {
                 selectedTrackItem = ((ListViewItemBase) v1).getIndex();
                 setSelection(selectedTrackItem);
                 return true;

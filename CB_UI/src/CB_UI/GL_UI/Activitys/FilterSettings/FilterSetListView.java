@@ -11,7 +11,6 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -265,7 +264,7 @@ public class FilterSetListView extends V_ListView {
         FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
         lFilterSetListViewItems.add(v);
 
-        v.setOnClickListener((v1, x, y, pointer, button) -> {
+        v.addClickHandler((v1, x, y, pointer, button) -> {
             // only one or none should be active
             if (activeCollapseButton != null) {
                 if (activeCollapseButton == v1) {

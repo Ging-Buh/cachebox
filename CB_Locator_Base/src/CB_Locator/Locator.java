@@ -300,7 +300,7 @@ public class Locator {
      *
      * @return
      */
-    public static CoordinateGPS getCoordinate() {
+    public static CoordinateGPS getMyPosition() {
         return getLocation(ProviderType.any).toCordinate();
     }
 
@@ -319,7 +319,7 @@ public class Locator {
      * @param type
      * @return
      */
-    public static Coordinate getCoordinate(ProviderType type) {
+    public static Coordinate getMyPosition(ProviderType type) {
         Location loc = getLocation(type);
         if (loc == null)
             return null;

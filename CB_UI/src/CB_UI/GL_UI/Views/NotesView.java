@@ -66,7 +66,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
 
         SelectedCacheEventList.Add(this);
 
-        uploadButton.setOnClickListener((v, x, y, pointer, button) -> {
+        uploadButton.addClickHandler((v, x, y, pointer, button) -> {
             final CB_Button b = (CB_Button) v;
             if (notes.getText().length() > 0) {
                 b.setText("Cancel");
@@ -84,7 +84,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
             return true;
         });
 
-        getSolverButton.setOnClickListener((v, x, y, pointer, button) -> {
+        getSolverButton.addClickHandler((v, x, y, pointer, button) -> {
             String solver;
             if (aktCache != null) {
                 solver = Database.GetSolver(aktCache);

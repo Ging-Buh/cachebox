@@ -95,7 +95,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         Coordinate coordinate = waypoint.Pos;
         if (!coordinate.isValid() || coordinate.isZero()) {
             // coordinate = get from gps
-            coordinate = Locator.getCoordinate();
+            coordinate = Locator.getMyPosition();
             if (!coordinate.isValid() || coordinate.isZero()) {
                 // coordinate = get from cache
                 coordinate = GlobalCore.getSelectedCache().Pos;
@@ -323,7 +323,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         // this.addChild(bHelp);
         this.addChild(bCancel);
 
-        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+        bOK.addClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
                 waypoint.Pos = bCoord.getCoordinate();
                 waypoint.setTitle(etTitle.getText());
@@ -346,13 +346,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             return true;
         });
 
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        bCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null)
                 mReturnListener.returnedWP(null);
             finish();
             return true;
         });
-        bHelp.setOnClickListener((v, x, y, pointer, button) -> true);
+        bHelp.addClickHandler((v, x, y, pointer, button) -> true);
     }
 
     private void showCbStartPoint(boolean visible) {

@@ -193,7 +193,7 @@ public class GestureButton extends CB_Button {
         useDescriptiveCB_Buttons = true;
         this.rememberLastAction = rememberLastAction;
         cb_actionButtons = new ArrayList<>();
-        setOnClickListener(onClickListener);
+        addClickHandler(onClickListener);
         // setOnLongClickListener(longClickListener);
         drawableNormal = new SpriteDrawable(getSprite("button"));
         drawablePressed = new SpriteDrawable(getSprite("btn-pressed"));
@@ -208,7 +208,7 @@ public class GestureButton extends CB_Button {
         useDescriptiveCB_Buttons = false;
         this.rememberLastAction = rememberLastAction;
         cb_actionButtons = new ArrayList<>();
-        setOnClickListener(onClickListener);
+        addClickHandler(onClickListener);
         // setOnLongClickListener(longClickListener);
         setButtonSprites(sprites);
         isFiltered = false;

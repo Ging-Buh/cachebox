@@ -187,14 +187,14 @@ public class SelectDB extends ActivityBase {
         addChild(bAutostart);
 
         // New Button
-        bNew.setOnClickListener((v, x, y, pointer, button) -> {
+        bNew.addClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.get("NewDB"), Translation.get("InsNewDBName"), "NewDB", mDialogListenerNewDB);
             return true;
         });
 
         // Select Button
-        bSelect.setOnClickListener((v, x, y, pointer, button) -> {
+        bSelect.addClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             if (AktFile == null) {
                 GL.that.Toast("Please select Database!", Toast.LENGTH_SHORT);
@@ -205,7 +205,7 @@ public class SelectDB extends ActivityBase {
         });
 
         // Cancel Button
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        bCancel.addClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             if (MustSelect) {
                 Action_ShowQuit.getInstance().Execute();
@@ -217,7 +217,7 @@ public class SelectDB extends ActivityBase {
         });
 
         // AutoStart Button
-        bAutostart.setOnClickListener((v, x, y, pointer, button) -> {
+        bAutostart.addClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             showSelectionMenu();
             return true;
@@ -477,7 +477,7 @@ public class SelectDB extends ActivityBase {
         @Override
         public ListViewItemBase getView(int position) {
             DBItem v = new DBItem(recItem, position, this.dbFiles.get(position));
-            v.setOnClickListener((v1, x, y, pointer, button) -> {
+            v.addClickHandler((v1, x, y, pointer, button) -> {
                 stopTimer();
                 DBItem selectedItem = (DBItem) v1;
                 AktFile = selectedItem.file;

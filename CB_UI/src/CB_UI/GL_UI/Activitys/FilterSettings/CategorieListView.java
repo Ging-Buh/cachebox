@@ -145,7 +145,7 @@ public class CategorieListView extends V_ListView {
         CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
         // inital mit INVISIBLE
         v.setInvisible();
-        v.setOnClickListener(onItemClickListener);
+        v.addClickHandler(onItemClickListener);
         lCategorieListViewItems.add(v);
         return v;
     }
@@ -161,7 +161,7 @@ public class CategorieListView extends V_ListView {
         CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
         lCategorieListViewItems.add(v);
 
-        v.setOnClickListener(new OnClickListener() {
+        v.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int X, int Y, int pointer, int button) {

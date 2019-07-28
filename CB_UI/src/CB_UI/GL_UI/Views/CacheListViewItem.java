@@ -116,7 +116,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
                 mCache = c;
             }
 
-            Coordinate position = Locator.getCoordinate();
+            Coordinate position = Locator.getMyPosition();
 
             Waypoint FinalWp = mCache.getCorrectedFinal();
 

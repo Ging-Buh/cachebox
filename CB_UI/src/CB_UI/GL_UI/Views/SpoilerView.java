@@ -161,7 +161,7 @@ public class SpoilerView extends CB_View_Base {
                         overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
                         overviewloader.setImage(imageEntry.LocalPath);
                         GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-                        overviewItem.setOnClickListener((v, x, y, pointer, button) -> {
+                        overviewItem.addClickHandler((v, x, y, pointer, button) -> {
                             final int idx = ((GalleryItem) v).getIndex();
 
                             gallery.notifyDataSetChanged();

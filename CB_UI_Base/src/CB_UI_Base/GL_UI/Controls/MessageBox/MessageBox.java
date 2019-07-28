@@ -107,24 +107,24 @@ public class MessageBox extends Dialog {
         switch (anzahl) {
             case 1:
                 button1 = new CB_Button(left);
-                button1.setOnClickListener(positiveButtonClickListener);
+                button1.addClickHandler(positiveButtonClickListener);
                 addLast(button1);
                 break;
             case 2:
                 button1 = new CB_Button(left);
-                button1.setOnClickListener(positiveButtonClickListener);
+                button1.addClickHandler(positiveButtonClickListener);
                 button3 = new CB_Button(right);
-                button3.setOnClickListener(negativeButtonClickListener);
+                button3.addClickHandler(negativeButtonClickListener);
                 addNext(button1);
                 addLast(button3);
                 break;
             case 3:
                 button1 = new CB_Button(left);
-                button1.setOnClickListener(positiveButtonClickListener);
+                button1.addClickHandler(positiveButtonClickListener);
                 button2 = new CB_Button(middle);
-                button2.setOnClickListener(neutralButtonClickListener);
+                button2.addClickHandler(neutralButtonClickListener);
                 button3 = new CB_Button(right);
-                button3.setOnClickListener(negativeButtonClickListener);
+                button3.addClickHandler(negativeButtonClickListener);
                 addNext(button1);
                 addNext(button2);
                 addLast(button3);

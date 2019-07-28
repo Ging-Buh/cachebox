@@ -117,14 +117,14 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
 
     private void addControls() {
         btnSolve = new CB_Button(Translation.get("Solve"));
-        btnSolve.setOnClickListener((v, x, y, pointer, button) -> {
+        btnSolve.addClickHandler((v, x, y, pointer, button) -> {
             solve();
             return true;
         });
         this.addChild(btnSolve);
 
         btnFunct = new CB_Button(Translation.get("Funct."));
-        btnFunct.setOnClickListener((v, x, y, pointer, button) -> {
+        btnFunct.addClickHandler((v, x, y, pointer, button) -> {
             SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, function -> {
                 // ausgewählte Funktion verarbeiten!
                 // wenn funktion==null wurde Cancel gedrückt
@@ -166,7 +166,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
         this.addChild(btnFunct);
 
         btnSelect = new CB_Button(Translation.get("Select."));
-        btnSelect.setOnClickListener((v, x, y, pointer, button) -> {
+        btnSelect.addClickHandler((v, x, y, pointer, button) -> {
             GL.that.setFocusedEditTextField(null);
             return true;
         });
@@ -191,19 +191,19 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
         edResult.disableKeyboardPopup();
         this.addChild(edResult);
 
-        btnInputWindow.setOnClickListener((v, x, y, pointer, button) -> {
+        btnInputWindow.addClickHandler((v, x, y, pointer, button) -> {
             windowState = WindowState.Left;
             layoutEditFields(GL.that.getFocusedEditTextField());
             return true;
         });
 
-        btnBothWindow.setOnClickListener((v, x, y, pointer, button) -> {
+        btnBothWindow.addClickHandler((v, x, y, pointer, button) -> {
             windowState = WindowState.Both;
             layoutEditFields(GL.that.getFocusedEditTextField());
             return true;
         });
 
-        btnResultWindow.setOnClickListener((v, x, y, pointer, button) -> {
+        btnResultWindow.addClickHandler((v, x, y, pointer, button) -> {
             windowState = WindowState.Right;
             layoutEditFields(GL.that.getFocusedEditTextField());
             return true;

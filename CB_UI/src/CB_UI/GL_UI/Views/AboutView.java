@@ -142,7 +142,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
         CachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
         CachesFoundLabel.setWidth(getWidth());
 
-        CachesFoundLabel.setOnClickListener(new OnClickListener() {
+        CachesFoundLabel.addClickHandler(new OnClickListener() {
             MessageBox ms;
 
             @Override
@@ -273,7 +273,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
         // set LinkColor
 
-        WaypointLabel.setOnClickListener((v, x, y, pointer, button) -> {
+        WaypointLabel.addClickHandler((v, x, y, pointer, button) -> {
             if (GlobalCore.getSelectedCache() == null)
                 return true;
             PlatformConnector.callUrl(GlobalCore.getSelectedCache().getUrl());
@@ -350,8 +350,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
     @Override
     public void GpsStateChanged() {
-        if (Locator.getCoordinate().hasAccuracy()) {
-            int radius = Locator.getCoordinate().getAccuracy();
+        if (Locator.getMyPosition().hasAccuracy()) {
+            int radius = Locator.getMyPosition().getAccuracy();
 
             if (Accuracy != null)
                 Accuracy.setText("+/- " + UnitFormatter.DistanceString(radius) + " (" + Locator.getProvider().toString() + ")");

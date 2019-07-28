@@ -114,7 +114,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
                 float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.Distance();
 
-                Coordinate position = Locator.getCoordinate();
+                Coordinate position = Locator.getMyPosition();
                 double heading = Locator.getHeading();
                 double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
                 double cacheBearing = -(bearing - heading);

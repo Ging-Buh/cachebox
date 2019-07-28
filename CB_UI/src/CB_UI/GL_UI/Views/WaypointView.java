@@ -198,7 +198,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         }
         Coordinate coord = GlobalCore.getSelectedCoord();
         if (coord == null)
-            coord = Locator.getCoordinate();
+            coord = Locator.getMyPosition();
         if ((coord == null) || (!coord.isValid()))
             coord = GlobalCore.getSelectedCache().Pos;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
@@ -306,7 +306,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     private void addProjection() {
         createNewWaypoint = true;
 
-        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getCoordinate();
+        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getMyPosition();
         String ProjName;
 
         ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;
@@ -431,7 +431,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                     if (items.get(position) == null || items.get(position).isDisposed()) {
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, null);
                         waypointViewItem.setClickable(true);
-                        waypointViewItem.setOnClickListener((v, x, y, pointer, button) -> {
+                        waypointViewItem.addClickHandler((v, x, y, pointer, button) -> {
                             int selectionIndex = ((ListViewItemBase) v).getIndex();
 
                             if (selectionIndex == 0) {
@@ -479,7 +479,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                         Waypoint waypoint = cache.waypoints.get(position - 1);
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, waypoint);
                         waypointViewItem.setClickable(true);
-                        waypointViewItem.setOnClickListener((v, x, y, pointer, button) -> {
+                        waypointViewItem.addClickHandler((v, x, y, pointer, button) -> {
                             int selectionIndex = ((ListViewItemBase) v).getIndex();
 
                             if (selectionIndex == 0) {

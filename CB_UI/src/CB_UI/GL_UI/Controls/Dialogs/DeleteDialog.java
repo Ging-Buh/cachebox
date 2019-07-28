@@ -67,7 +67,7 @@ public class DeleteDialog extends ButtonDialog {
 
         this.setHeight(box.getHeight() + this.mFooterHeight + this.mTitleHeight + 3 * margin);
 
-        btDelFilter.setOnClickListener((v, x, y, pointer, button) -> {
+        btDelFilter.addClickHandler((v, x, y, pointer, button) -> {
             close();
 
             wd = CancelWaitDialog.ShowWait(Translation.get("DelActFilter"), () -> {
@@ -100,7 +100,7 @@ public class DeleteDialog extends ButtonDialog {
             return true;
         });
 
-        btDelArchived.setOnClickListener(new OnClickListener() {
+        btDelArchived.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -139,7 +139,7 @@ public class DeleteDialog extends ButtonDialog {
             }
         });
 
-        btDelFounds.setOnClickListener(new OnClickListener() {
+        btDelFounds.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

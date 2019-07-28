@@ -102,7 +102,7 @@ public class ParkingDialog extends ButtonDialog {
         msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 
-        btSetGPS.setOnClickListener(new OnClickListener() {
+        btSetGPS.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
@@ -116,7 +116,7 @@ public class ParkingDialog extends ButtonDialog {
             }
         });
 
-        btSelectWP.setOnClickListener(new OnClickListener() {
+        btSelectWP.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -130,7 +130,7 @@ public class ParkingDialog extends ButtonDialog {
             }
         });
 
-        btDeleteP.setOnClickListener(new OnClickListener() {
+        btDeleteP.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

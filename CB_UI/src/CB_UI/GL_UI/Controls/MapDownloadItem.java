@@ -103,7 +103,7 @@ public class MapDownloadItem extends CB_View_Base {
         if (file.exists()) {
             checkBoxMap.setChecked(true);
             checkBoxMap.disable();
-            checkBoxMap.setOnClickListener(new OnClickListener() {
+            checkBoxMap.addClickHandler(new OnClickListener() {
 
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

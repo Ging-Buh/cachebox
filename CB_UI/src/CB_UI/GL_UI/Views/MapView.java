@@ -115,7 +115,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                     setMapState(MapState.FREE);
                 else setMapState(MapState.GPS);
                 // Center own position!
-                setCenter(Locator.getCoordinate());
+                setCenter(Locator.getMyPosition());
                 return true;
             });
         }
@@ -199,7 +199,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             zoomBtn.setMinimumFadeValue(0.25f);
         }
 
-        setOnClickListener((v, x, y, pointer, button) -> {
+        addClickHandler((v, x, y, pointer, button) -> {
             WaypointRenderInfo minWpi = null;
 
             if (TargetArrow != null && TargetArrow.contains(x, y)) {
@@ -372,7 +372,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
         infoBubble.setInvisible();
-        infoBubble.setOnClickListener((v, x, y, pointer, button) -> {
+        infoBubble.addClickHandler((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
                 wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
 
@@ -844,7 +844,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         }
         Coordinate coord = center;
         if ((coord == null) || (!coord.isValid()))
-            coord = Locator.getCoordinate();
+            coord = Locator.getMyPosition();
         if ((coord == null) || (!coord.isValid()))
             return;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
@@ -924,7 +924,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         super.OrientationChanged();
         if (info != null) {
             try {
-                Coordinate position = Locator.getCoordinate();
+                Coordinate position = Locator.getMyPosition();
 
                 if (GlobalCore.isSetSelectedCache()) {
                     Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().Pos;
@@ -1062,7 +1062,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         if (Mode == MapMode.Compass) {
             // Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
             // if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-            Coordinate position = Locator.getCoordinate();
+            Coordinate position = Locator.getMyPosition();
 
             float distance = -1;
             if (GlobalCore.isSetSelectedCache() && position.isValid()) {

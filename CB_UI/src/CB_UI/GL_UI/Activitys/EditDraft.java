@@ -157,7 +157,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void setOkAndCancelClickHandlers() {
-        btnOK.setOnClickListener((v, x, y, pointer, button) -> {
+        btnOK.addClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
 
                 if (draft.type.isDirectLogType()) {
@@ -237,7 +237,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
             return true;
         });
 
-        btnCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null)
                 mReturnListener.returnedFieldNote(null, false, false);
             finish();
@@ -298,7 +298,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         etComment.setText(draft.comment);
 
         btnHow = new CB_Button("=");
-        btnHow.setOnClickListener((v, x, y, pointer, button) -> {
+        btnHow.addClickHandler((v, x, y, pointer, button) -> {
             if (btnHow.getText().equals("="))
                 btnHow.setText("+");
             else if (btnHow.getText().equals("+"))
@@ -309,7 +309,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         scrollBoxContent.addNext(btnHow, FIXED);
 
         CB_Button btnFromNotes = new CB_Button(Translation.get("fromNotes"));
-        btnFromNotes.setOnClickListener((v, x, y, pointer, button) -> {
+        btnFromNotes.addClickHandler((v, x, y, pointer, button) -> {
             String text = Database.GetNote(draft.CacheId);
             if (text.length() > 0) {
                 String sBegin = "<Import from Geocaching.com>";
@@ -333,7 +333,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         scrollBoxContent.addNext(btnFromNotes);
 
         CB_Button btnFromFile = new CB_Button(Translation.get("fromFile"));
-        btnFromFile.setOnClickListener((v, x, y, pointer, button) -> {
+        btnFromFile.addClickHandler((v, x, y, pointer, button) -> {
             String mPath = Config.TemplateLastUsedPath.getValue();
             if (mPath.length() == 0) {
                 mPath = Config.mWorkPath + "/User";

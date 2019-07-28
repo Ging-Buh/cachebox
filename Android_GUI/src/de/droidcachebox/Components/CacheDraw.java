@@ -318,7 +318,7 @@ public class CacheDraw {
     private static void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec) {
 
         if (Locator.Valid()) {
-            Coordinate position = Locator.getCoordinate();
+            Coordinate position = Locator.getMyPosition();
             double heading = Locator.getHeading();
             double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), cache.Pos.getLatitude(), cache.Pos.getLongitude());
             double cacheBearing = bearing - heading;

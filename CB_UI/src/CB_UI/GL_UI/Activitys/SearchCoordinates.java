@@ -3,7 +3,6 @@ package CB_UI.GL_UI.Activitys;
 import CB_Core.CB_Core_Settings;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Fonts;
@@ -19,7 +18,6 @@ public class SearchCoordinates extends ActivityBase {
     private ScrollBox scrollBox;
     private EditTextField edtCity;
     private EditTextField edtStreet;
-    private CoordinateButton.ICoordinateChangedListener callBack;
 
     public SearchCoordinates() {
         super(ActivityBase.ActivityRec(), "SearchCoordinates");
@@ -52,7 +50,7 @@ public class SearchCoordinates extends ActivityBase {
         box.adjustHeight();
         scrollBox.setVirtualHeight(box.getHeight());
 
-        btnOK.setOnClickListener((v, x, y, pointer, button) -> {
+        btnOK.addClickHandler((v, x, y, pointer, button) -> {
             btnOK.disable();
             GL.that.postAsync(() -> {
                 JSONArray fetchedLocations = fetchLocations();
@@ -65,8 +63,8 @@ public class SearchCoordinates extends ActivityBase {
                         description = description.replace(",", "\n");
                         Coordinate pos = new Coordinate(jPoi.optDouble("lat", 0), jPoi.optDouble("lon", 0));
                         menuLocation.addMenuItem("", description, null, () -> {
-                            callBack.coordinateChanged(pos);
-                            finish();
+                            callBack(pos);
+                            // finish();
                         });
                     }
                     menuLocation.show();
@@ -75,16 +73,22 @@ public class SearchCoordinates extends ActivityBase {
             return true;
         });
 
-        btnCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
             finish();
             return true;
         });
 
     }
 
-    public void doShow(CoordinateButton.ICoordinateChangedListener callBack) {
-        this.callBack = callBack;
+    public void callBack(Coordinate coordinate) {
+    }
+
+    public void doShow() {
         show();
+    }
+
+    public void doFinish() {
+        finish();
     }
 
     private JSONArray fetchLocations() {

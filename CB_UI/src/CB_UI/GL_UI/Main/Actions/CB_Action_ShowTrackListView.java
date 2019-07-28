@@ -169,7 +169,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
         Coordinate coord = GlobalCore.getSelectedCoord();
 
         if (coord == null)
-            coord = Locator.getCoordinate();
+            coord = Locator.getMyPosition();
 
         ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.get("fromPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
@@ -198,7 +198,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     private void GenTrackProjection() {
         Coordinate coord = GlobalCore.getSelectedCoord();
         if (coord == null)
-            coord = Locator.getCoordinate();
+            coord = Locator.getMyPosition();
 
         ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.get("Projection"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
@@ -228,7 +228,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     private void GenTrackCircle() {
         Coordinate coord = GlobalCore.getSelectedCoord();
         if (coord == null)
-            coord = Locator.getCoordinate();
+            coord = Locator.getMyPosition();
 
         ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.get("centerPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 

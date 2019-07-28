@@ -50,13 +50,6 @@ public class QuickButtonItem extends ListViewItemBase {
     private int hintState = -1;
     private int torchState = -1;
 
-    /**
-     * Constructor
-     *
-     * @param action Action Enum
-     * @param Icon   Action icon
-     * @param Desc   Action Beschreibung
-     */
     public QuickButtonItem(CB_RectF rec, int Index, AbstractAction action, String Desc, QuickActions type) {
         super(rec, Index, action.getTitleTranlationId());
         quickActionsEnum = type;
@@ -73,7 +66,7 @@ public class QuickButtonItem extends ListViewItemBase {
         this.addChild(mButton);
         this.addChild(mButtonIcon);
 
-        mButton.setOnClickListener(new OnClickListener() {
+        mButton.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

@@ -63,7 +63,7 @@ public class Spinner extends CB_Button {
             triangle = new NinePatch(tr, 0, patch, patch, 0);
         }
 
-        this.setOnClickListener((v, x, y, pointer, button) -> {
+        this.addClickHandler((v, x, y, pointer, button) -> {
             if (mAdapter == null)
                 return true; // kann nix anzeigen
 

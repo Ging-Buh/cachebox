@@ -949,7 +949,8 @@ public abstract class GL_View_Base extends CB_RectF {
      * @param listener The callback that will run
      * @see #setClickable(boolean)
      */
-    public void setOnClickListener(OnClickListener listener) {
+    public void addClickHandler(OnClickListener listener) {
+        // name changed from setOnClickListener to addClickHandler to be compatible with CB3
         isClickable = listener != null;
         mOnClickListener = listener;
     }

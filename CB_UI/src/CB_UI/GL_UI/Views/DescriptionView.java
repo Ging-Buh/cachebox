@@ -253,7 +253,7 @@ public class DescriptionView extends CB_View_Base {
 
         this.addChild(downloadButton);
 
-        downloadButton.setOnClickListener(downloadClicked);
+        downloadButton.addClickHandler(downloadClicked);
 
         if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0)
             downloadButton.disable();

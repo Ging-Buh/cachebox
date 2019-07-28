@@ -389,7 +389,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
                 CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
                 v.setClickable(true);
-                v.setOnClickListener((v1, x, y, pointer, button) -> {
+                v.addClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
 
                     Cache tmp;

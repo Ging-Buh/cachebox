@@ -38,7 +38,7 @@ public class CopyPastePopUp extends PopUp_Base {
         btnPaste.setY(rec.getHeight() * 0.4f);
         if (!copyPasteControl.isEditable())
             btnPaste.disable();
-        btnPaste.setOnClickListener(new OnClickListener() {
+        btnPaste.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -57,7 +57,7 @@ public class CopyPastePopUp extends PopUp_Base {
         btnCopy.setFont(Fonts.getBubbleNormal());
         btnCopy.setImage(Sprites.copy);
         btnCopy.setY(rec.getHeight() * 0.4f);
-        btnCopy.setOnClickListener(new OnClickListener() {
+        btnCopy.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -79,7 +79,7 @@ public class CopyPastePopUp extends PopUp_Base {
         if (!copyPasteControl.isEditable()) {
             btnCut.disable();
         }
-        btnCut.setOnClickListener(new OnClickListener() {
+        btnCut.addClickHandler(new OnClickListener() {
             /**
              * onClick
              */

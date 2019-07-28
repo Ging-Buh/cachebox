@@ -93,13 +93,13 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
-        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+        bOK.addClickHandler((v, x, y, pointer, button) -> {
             ImportNow();
             return true;
         });
 
         this.addChild(bCancel);
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        bCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (BreakawayImportThread.isCanceled()) {
                 BreakawayImportThread.reset();
                 finish();

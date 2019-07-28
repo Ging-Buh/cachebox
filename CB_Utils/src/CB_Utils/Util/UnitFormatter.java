@@ -17,6 +17,10 @@ public class UnitFormatter {
         return mUseImperialUnits;
     }
 
+    public static int getKilometer(int miles) {
+        return (int) Math.ceil(miles * 1.609343502101154);
+    }
+
     public static void setUseImperialUnits(boolean useImperialUnits) {
         mUseImperialUnits = useImperialUnits;
     }

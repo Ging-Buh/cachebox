@@ -76,7 +76,7 @@ public class DraftViewItem extends ListViewItemBackground {
         if (this.draft == null) {
             CB_Button btnLoadMore = new CB_Button(Translation.get("LoadMore"));
             btnLoadMore.setWidth(this.getWidth());
-            btnLoadMore.setOnClickListener(new OnClickListener() {
+            btnLoadMore.addClickHandler(new OnClickListener() {
 
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

@@ -145,7 +145,7 @@ public class EditCoord extends ActivityBase {
         this.createUTM(pnlUTM);
         this.addChild(pnlUTM);
 
-        btnOK.setOnClickListener(new OnClickListener() {
+        btnOK.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 if (!parseView()) {
@@ -163,7 +163,7 @@ public class EditCoord extends ActivityBase {
                 return true;
             }
         });
-        btnCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
                 GL.that.closeActivity();
                 mReturnListener.returnCoord(cancelCoord);
@@ -178,17 +178,17 @@ public class EditCoord extends ActivityBase {
     protected void Initial() {
 
         bDec.setTag(0);
-        bDec.setOnClickListener(mtbClicked);
+        bDec.addClickHandler(mtbClicked);
         bDec.setOnDoubleClickListener(bDecDoubleClicked);
 
         bMin.setTag(1);
-        bMin.setOnClickListener(mtbClicked);
+        bMin.addClickHandler(mtbClicked);
 
         bSec.setTag(2);
-        bSec.setOnClickListener(mtbClicked);
+        bSec.addClickHandler(mtbClicked);
 
         bUtm.setTag(3);
-        bUtm.setOnClickListener(mtbClicked);
+        bUtm.addClickHandler(mtbClicked);
 
         bMin.setState(1);
         showPage(1);
@@ -355,7 +355,7 @@ public class EditCoord extends ActivityBase {
 
     private void setClickHandlers(CB_Button[] bLat, CB_Button[] bLon) {
         // N/S
-        bLat[0].setOnClickListener(new OnClickListener() {
+        bLat[0].addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 CB_Button btn = (CB_Button) v;
@@ -367,7 +367,7 @@ public class EditCoord extends ActivityBase {
             }
         });
         // E/W
-        bLon[0].setOnClickListener(new OnClickListener() {
+        bLon[0].addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 CB_Button btn = (CB_Button) v;
@@ -381,7 +381,7 @@ public class EditCoord extends ActivityBase {
 
         for (int i = 1; i < bLat.length; i++) // must have same length for Lat and Lon
         {
-            bLat[i].setOnClickListener(new OnClickListener() {
+            bLat[i].addClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -404,7 +404,7 @@ public class EditCoord extends ActivityBase {
                     return true;
                 }
             });
-            bLon[i].setOnClickListener(new OnClickListener() {
+            bLon[i].addClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -434,7 +434,7 @@ public class EditCoord extends ActivityBase {
         // the clicked button accepts the next input from Numpad
 
         for (int i = 0; i < bLat.length; i++) {
-            bLat[i].setOnClickListener(new OnClickListener() {
+            bLat[i].addClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -450,7 +450,7 @@ public class EditCoord extends ActivityBase {
         }
 
         for (int i = 0; i < (bLon.length - 2); i++) {
-            bLon[i].setOnClickListener(new OnClickListener() {
+            bLon[i].addClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -466,7 +466,7 @@ public class EditCoord extends ActivityBase {
         }
 
         for (int i = 0; i < 3; i++) {
-            bZone[i].setOnClickListener(new OnClickListener() {
+            bZone[i].addClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -494,7 +494,7 @@ public class EditCoord extends ActivityBase {
 
         for (int i = 0; i < 10; i++) {
             btnNumpad[i] = new CB_Button(this, "btnNumpad" + i);
-            btnNumpad[i].setOnClickListener(new OnClickListener() {
+            btnNumpad[i].addClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -534,7 +534,7 @@ public class EditCoord extends ActivityBase {
 
         }
 
-        Leertaste.setOnClickListener(new OnClickListener() {
+        Leertaste.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 CB_Button btn = (CB_Button) v;

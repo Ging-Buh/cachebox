@@ -64,7 +64,7 @@ public class SelectSolverFunction extends ButtonDialog {
     private void iniOkCancel() {
 
         button1.setText(Translation.get("ok"));
-        button1.setOnClickListener(new OnClickListener() {
+        button1.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 if (mResultListener != null) {
@@ -79,7 +79,7 @@ public class SelectSolverFunction extends ButtonDialog {
             }
         });
         button3.setText(Translation.get("cancel"));
-        button3.setOnClickListener(new OnClickListener() {
+        button3.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 if (mResultListener != null)
@@ -207,7 +207,7 @@ public class SelectSolverFunction extends ButtonDialog {
                         btnFct.setDraggable();
 
                         // Wenn Der Button geclickt wurd, wird dieser als Selecktiert Markiert
-                        btnFct.setOnClickListener(new OnClickListener() {
+                        btnFct.addClickHandler(new OnClickListener() {
 
                             @Override
                             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -272,7 +272,7 @@ public class SelectSolverFunction extends ButtonDialog {
                     });
 
                     // Bei einem Click auf dem Category Button wird die darunterliegende CollabsBox geöfnet oder geschlossen
-                    categoryButton.setOnClickListener(new OnClickListener() {
+                    categoryButton.addClickHandler(new OnClickListener() {
                         @Override
                         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                             lay.Toggle();

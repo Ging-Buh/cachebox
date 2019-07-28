@@ -42,7 +42,7 @@ public class API_Button extends CB_Button {
         super(rec, "API-Button");
 
         setText();
-        this.setOnClickListener(click);
+        this.addClickHandler(click);
 
         CB_RectF rec1 = new CB_RectF(this);
         rec1.setWidth(this.getHeight());

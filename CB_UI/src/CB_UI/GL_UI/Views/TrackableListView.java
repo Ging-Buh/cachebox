@@ -229,7 +229,7 @@ public class TrackableListView extends CB_View_Base {
         @Override
         public ListViewItemBase getView(final int position) {
             TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, mTB_List.get(position));
-            v.setOnClickListener((v1, x, y, pointer, button) -> {
+            v.addClickHandler((v1, x, y, pointer, button) -> {
                 if (TB_Details.that == null)
                     new TB_Details();
                 TB_Details.that.Show(mTB_List.get(position));

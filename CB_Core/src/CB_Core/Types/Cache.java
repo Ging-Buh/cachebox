@@ -402,7 +402,7 @@ public class Cache implements Comparable<Cache>, Serializable {
      * @return Entfernung zur uebergebenen User Position als Float
      */
     public float Distance(CalculationType type, boolean useFinal) {
-        return Distance(type, useFinal, Locator.getCoordinate());
+        return Distance(type, useFinal, Locator.getMyPosition());
     }
 
     float Distance(CalculationType type, boolean useFinal, Coordinate fromPos) {

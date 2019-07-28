@@ -78,7 +78,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void initClickHandlersAndContent() {
-        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+        bOK.addClickHandler((v, x, y, pointer, button) -> {
             importRuns = true;
             bOK.disable();
             GL.that.postAsync(() -> {
@@ -88,7 +88,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             return true;
         });
 
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        bCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (importRuns) {
                 bOK.enable();
                 isCanceled = true;
@@ -114,7 +114,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             }
         });
 
-        btnSelectDB.setOnClickListener((v, x, y, pointer, button) -> {
+        btnSelectDB.addClickHandler((v, x, y, pointer, button) -> {
             mPath = Config.GSAKLastUsedDatabasePath.getValue();
             if (mPath.length() == 0) {
                 mPath = Config.mWorkPath + "/User";

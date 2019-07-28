@@ -78,7 +78,7 @@ public class CB_Button extends CB_View_Base {
 
     public CB_Button(CB_RectF rec, OnClickListener onClick) {
         super(rec, "");
-        this.setOnClickListener(onClick);
+        this.addClickHandler(onClick);
     }
 
     public void setninePatch(Drawable drawable) {

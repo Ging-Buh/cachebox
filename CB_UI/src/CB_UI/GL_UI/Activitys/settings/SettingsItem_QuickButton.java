@@ -35,7 +35,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
     public SettingsItem_QuickButton(CB_RectF rec, String Name) {
         super(rec, Name);
 
-        this.setOnClickListener((v, x, y, pointer, button) -> {
+        this.addClickHandler((v, x, y, pointer, button) -> {
             showSelect();
             return true;
         });
@@ -124,12 +124,12 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         this.addChild(del);
         this.addChild(add);
 
-        add.setOnClickListener((v, x, y, pointer, button) -> {
+        add.addClickHandler((v, x, y, pointer, button) -> {
             showSelect();
             return true;
         });
 
-        del.setOnClickListener((v, x, y, pointer, button) -> {
+        del.addClickHandler((v, x, y, pointer, button) -> {
             int index = listView.getSelectedIndex();
 
             if (index >= 0 && index < tmpQuickList.size()) {
@@ -141,7 +141,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             return true;
         });
 
-        down.setOnClickListener((v, x, y, pointer, button) -> {
+        down.addClickHandler((v, x, y, pointer, button) -> {
             int index = listView.getSelectedIndex();
 
             if (index >= 0 && index < tmpQuickList.size()) {
@@ -158,7 +158,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             return true;
         });
 
-        up.setOnClickListener((v, x, y, pointer, button) -> {
+        up.addClickHandler((v, x, y, pointer, button) -> {
             int index = listView.getSelectedIndex();
 
             if (index >= 0 && index < tmpQuickList.size()) {

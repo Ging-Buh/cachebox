@@ -639,7 +639,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             return;
         }
 
-        CoordinateGPS position = Locator.getCoordinate();
+        CoordinateGPS position = Locator.getMyPosition();
 
         if (position == null) {
             Log.info(log, "but position is null");
@@ -722,7 +722,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             return;
 
         if (Locator.Valid()) {
-            Coordinate position = Locator.getCoordinate();
+            Coordinate position = Locator.getMyPosition();
             double heading = Locator.getHeading();
 
             Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
@@ -757,7 +757,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             return;
 
         if (Locator.Valid()) {
-            CoordinateGPS latLon = Locator.getCoordinate();
+            CoordinateGPS latLon = Locator.getMyPosition();
             double heading = Locator.getHeading();
             float centerX = frame.getCenterPosX();
             float centerY = frame.getCenterPosY();

@@ -40,6 +40,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Log.Log;
+import CB_Utils.Util.UnitFormatter;
 import android.text.InputType;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -50,21 +51,21 @@ import java.util.Date;
 import static CB_Core.Api.GroundspeakAPI.*;
 import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 
-public class SearchOverPosition extends ActivityBase implements KeyboardFocusChangedEvent {
-    private static final String log = "SearchOverPosition";
-    private CB_Button bOK, bCancel, btnPlus, btnMinus;
+public class ImportGCPosition extends ActivityBase implements KeyboardFocusChangedEvent {
+    private static final String log = "ImportGCPosition";
+    private CB_Button btnOK, btnCancel, btnPlus, btnMinus;
     private CB_Label lblHeader, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
-    private CoordinateButton coordBtn;
+    private CoordinateButton coordinateButton;
     private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
-    private EditTextField Radius;
+    private EditTextField txtRadius;
     private MultiToggleButton tglBtnGPS, tglBtnMap, tglBtnWeb;
     private Coordinate actSearchPos;
     private ImportAnimation dis;
     private Box box;
     private ScrollBox scrollBox;
     private boolean importRuns = false;
-    private int searcheState = 0; // 0=GPS, 1= Map, 2= Manuell
+    private int searchState = 0; // 0=GPS, 1= Map, 2= Manuell
     private boolean isCanceld = false;
     ICancel icancel = () -> isCanceld;
     private CB_Label lblPublished;
@@ -79,26 +80,26 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     private CB_Label lblCategory;
     private EditTextField edtCategory;
     private SimpleDateFormat simpleDateFormat;
-
-    public SearchOverPosition() {
+    private SearchCoordinates searchCoordinates;
+    public ImportGCPosition() {
         super(ActivityRec(), "searchOverPosActivity");
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         this.removeChilds();
 
         // add to this
         // createHeaderLine();
-        bOK = new CB_Button(Translation.get("import"));
-        bCancel = new CB_Button(Translation.get("cancel"));
+        btnOK = new CB_Button(Translation.get("import"));
+        btnCancel = new CB_Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
-        this.addNext(bOK);
-        this.addLast(bCancel);
+        this.addNext(btnOK);
+        this.addLast(btnCancel);
         scrollBox = new ScrollBox(0, this.getAvailableHeight());
         scrollBox.setBackground(this.getBackground());
         this.addLast(scrollBox);
         box = new Box(scrollBox.getInnerWidth(), 0); // height will be adjusted after containing all controls
         // add to box
-        coordBtn = new CoordinateButton("");
-        box.addLast(coordBtn);
+        coordinateButton = new CoordinateButton("");
+        box.addLast(coordinateButton);
         createToggleButtonLine();
         createRadiusLine();
         createImportLimitLine();
@@ -136,17 +137,21 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         lblRadius = new CB_Label(sRadius);
         lblRadius.setWidth(wRadius);
-        box.addNext(lblRadius, FIXED);
+        //box.addNext(lblRadius, FIXED);
+        box.addNext(lblRadius);
 
-        Radius = new EditTextField(this, "*" + Translation.get("Radius"));
-        Radius.setInputType(InputType.TYPE_CLASS_NUMBER);
-        box.addNext(Radius);
+        txtRadius = new EditTextField(this, "*" + Translation.get("Radius"));
+        txtRadius.setInputType(InputType.TYPE_CLASS_NUMBER);
+        //box.addNext(txtRadius);
+        box.addNext(txtRadius);
 
         lblRadiusEinheit = new CB_Label(sEinheit);
         lblRadiusEinheit.setWidth(wEinheit);
+        //box.addNext(lblRadiusEinheit, FIXED);
         box.addNext(lblRadiusEinheit, FIXED);
 
         btnMinus = new CB_Button("-");
+        //box.addNext(btnMinus);
         box.addNext(btnMinus);
 
         btnPlus = new CB_Button("+");
@@ -241,12 +246,12 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
     private void initClickHandlersAndContent() {
 
-        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+        btnOK.addClickHandler((v, x, y, pointer, button) -> {
             ImportNow();
             return true;
         });
 
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (importRuns) {
                 isCanceld = true;
             } else {
@@ -255,46 +260,44 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             return true;
         });
 
-        btnPlus.setOnClickListener((v, x, y, pointer, button) -> {
+        btnPlus.addClickHandler((v, x, y, pointer, button) -> {
             incrementRadius(1);
             return true;
         });
 
-        btnMinus.setOnClickListener((v, x, y, pointer, button) -> {
+        btnMinus.addClickHandler((v, x, y, pointer, button) -> {
             incrementRadius(-1);
             return true;
         });
 
-        tglBtnGPS.setOnClickListener((v, x, y, pointer, button) -> {
-            actSearchPos = Locator.getCoordinate();
+        tglBtnGPS.addClickHandler((v, x, y, pointer, button) -> {
+            actSearchPos = Locator.getMyPosition();
             setToggleBtnState(0);
             return true;
         });
 
-        tglBtnMap.setOnClickListener((v, x, y, pointer, button) -> {
+        tglBtnMap.addClickHandler((v, x, y, pointer, button) -> {
             actSearchPos = CB_Action_ShowMap.getInstance().normalMapView.center;
             setToggleBtnState(1);
             return true;
         });
 
-        tglBtnWeb.setOnClickListener((v, x, y, pointer, button) -> {
-            actSearchPos = Locator.getCoordinate();
-            new SearchCoordinates().doShow(coordinate -> {
-                actSearchPos = new Coordinate(coordinate);
-                setToggleBtnState(2);
-            });
+        tglBtnWeb.addClickHandler((v, x, y, pointer, button) -> {
+            actSearchPos = Locator.getMyPosition();
+            searchCoordinates = new SearchCoordinates() {
+                public void callBack(Coordinate coordinate) {
+                    if (coordinate != null) {
+                        actSearchPos = coordinate;
+                        setToggleBtnState(2);
+                    }
+                    searchCoordinates.doFinish();
+                }
+            };
+            searchCoordinates.doShow();
             return true;
         });
 
-        coordBtn.setCoordinateChangedListener(coord -> {
-            if (coord != null) {
-                actSearchPos = coord;
-                setToggleBtnState(2);
-            }
-            SearchOverPosition.this.show();
-        });
-
-        btnBeforeAfterEqual.setOnClickListener((v, x, y, pointer, button) -> {
+        btnBeforeAfterEqual.addClickHandler((v, x, y, pointer, button) -> {
             switch (btnBeforeAfterEqual.getText()) {
                 case "X":
                     btnBeforeAfterEqual.setText("<=");
@@ -314,17 +317,17 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
             actSearchPos = CB_Action_ShowMap.getInstance().normalMapView.center;
-            searcheState = 1;
+            searchState = 1;
         } else {
-            actSearchPos = Locator.getCoordinate();
-            searcheState = 0;
+            actSearchPos = Locator.getMyPosition();
+            searchState = 0;
         }
-        setToggleBtnState();
+        setToggleBtnState(searchState);
 
         checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
         checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
         checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
-        Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
+        txtRadius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
 
         edtCategory.setText("API-Import");
         if (GlobalCore.isSetSelectedCache()) {
@@ -381,31 +384,22 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         scrollBox.scrollTo(-scrollBox.getVirtualHeight() + editTextField.getY() + editTextField.getHeight());
     }
 
-    private void incrementRadius(int value) {
+    private void incrementRadius(int direction) {
         try {
-            int ist = Integer.parseInt(Radius.getText());
-            ist += value;
-
+            int ist = Integer.parseInt(txtRadius.getText());
+            ist += direction;
             if (ist > 100)
                 ist = 100;
             if (ist < 1)
                 ist = 1;
-
-            Radius.setText(String.valueOf(ist));
+            txtRadius.setText(String.valueOf(ist));
         } catch (NumberFormatException ignored) {
         }
     }
 
-    /**
-     * 0=GPS, 1= Map, 2= Manuell
-     */
-    private void setToggleBtnState(int value) {
-        searcheState = value;
-        setToggleBtnState();
-    }
-
-    private void setToggleBtnState() {// 0=GPS, 1= Map, 2= Web, 3= Manuell
-        switch (searcheState) {
+    private void setToggleBtnState(int value) {// 0=GPS, 1= Map, 2= Web, 3= Manuell
+        searchState = value;
+        switch (searchState) {
             case 0:
                 tglBtnGPS.setState(1);
                 tglBtnMap.setState(0);
@@ -428,24 +422,24 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                 break;
 
         }
-        coordBtn.setCoordinate(actSearchPos);
+        coordinateButton.setCoordinate(actSearchPos);
 
     }
 
     private void ImportNow() {
+        btnOK.disable();
+        importRuns = true;
+
         isCanceld = false;
+        // disable UI
+        dis = new ImportAnimation(box);
+        dis.setBackground(getBackground());
+        box.addChild(dis, false);
+
         Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
         Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
         Config.AcceptChanges();
-
-        bOK.disable();
-
-        // disable UI
-        dis = new ImportAnimation(box);
-        dis.setBackground(getBackground());
-
-        box.addChild(dis, false);
 
         Date tmpDate;
         try {
@@ -455,7 +449,6 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         }
         final Date publishDate = tmpDate;
 
-        importRuns = true;
         // category.GpxFilename == edtCategory.getText()
         //.resultWithImages(30)
         // Thread abgebrochen!
@@ -471,17 +464,18 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                         Query q = new Query()
                                 .resultWithFullFields()
                                 //.resultWithImages(30)
-                        ;
+                                ;
                         if (!btnBeforeAfterEqual.getText().equals("X")) {
-                                q.publishedDate(publishDate, btnBeforeAfterEqual.getText());
+                            q.publishedDate(publishDate, btnBeforeAfterEqual.getText());
                         }
                         if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
                             q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
                         }
-                        if (Radius.getText().trim().length() > 0) {
+                        if (txtRadius.getText().trim().length() > 0) {
                             int radius;
                             try {
-                                radius = Integer.parseInt(Radius.getText());
+                                radius = Integer.parseInt(txtRadius.getText());
+                                if (Config.ImperialUnits.getValue()) radius = UnitFormatter.getKilometer(radius);
                                 Config.lastSearchRadius.setValue(radius);
                                 Config.AcceptChanges();
                                 q.searchInCircle(actSearchPos, radius * 1000);
@@ -508,6 +502,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                         dis.setAnimationType(AnimationType.Download);
                         ArrayList<GeoCacheRelated> geoCacheRelateds = searchGeoCaches(q);
                         dis.setAnimationType(AnimationType.Work);
+
                         if (geoCacheRelateds.size() > 0) {
                             try {
                                 WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
@@ -525,21 +520,21 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             if (!threadCanceled) {
                 CacheListChangedEventList.Call();
                 if (dis != null) {
-                    SearchOverPosition.this.removeChildsDirekt(dis);
+                    removeChildsDirekt(dis);
                     dis.dispose();
                     dis = null;
                 }
-                bOK.enable();
+                btnOK.enable();
                 finish();
             } else {
                 // Notify Map
                 CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
                 if (dis != null) {
-                    SearchOverPosition.this.removeChildsDirekt(dis);
+                    ImportGCPosition.this.removeChildsDirekt(dis);
                     dis.dispose();
                     dis = null;
                 }
-                bOK.enable();
+                btnOK.enable();
             }
             importRuns = false;
         });
@@ -551,8 +546,8 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
     @Override
     public void dispose() {
-        dispose(bOK);
-        dispose(bCancel);
+        dispose(btnOK);
+        dispose(btnCancel);
         dispose(btnBeforeAfterEqual);
         dispose(btnPlus);
         dispose(btnMinus);
@@ -569,11 +564,11 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         dispose(lblOwner);
         dispose(edtOwner);
         dispose(gsLogo);
-        dispose(coordBtn);
+        dispose(coordinateButton);
         dispose(checkBoxExcludeFounds);
         dispose(checkBoxOnlyAvailable);
         dispose(checkBoxExcludeHides);
-        dispose(Radius);
+        dispose(txtRadius);
         dispose(tglBtnGPS);
         dispose(tglBtnMap);
         dispose(dis);

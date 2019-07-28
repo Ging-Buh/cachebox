@@ -26,7 +26,7 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_UI.GL_UI.Activitys.SearchOverPosition;
+import CB_UI.GL_UI.Activitys.ImportGCPosition;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Controls.Slider.YPositionChanged;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
@@ -208,7 +208,7 @@ public class SearchDialog extends PopUp_Base {
         setLang();
         switchSearcheMode(SearchMode.Title);
 
-        mBtnCancel.setOnClickListener(new OnClickListener() {
+        mBtnCancel.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 close();
@@ -216,7 +216,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnTitle.setOnClickListener(new OnClickListener() {
+        mTglBtnTitle.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchSearcheMode(SearchMode.Title);
@@ -224,7 +224,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnGc.setOnClickListener(new OnClickListener() {
+        mTglBtnGc.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchSearcheMode(SearchMode.GcCode);
@@ -232,7 +232,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnOwner.setOnClickListener(new OnClickListener() {
+        mTglBtnOwner.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchSearcheMode(SearchMode.Owner);
@@ -240,7 +240,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mBtnSearch.setOnClickListener(new OnClickListener() {
+        mBtnSearch.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -251,7 +251,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mBtnNext.setOnClickListener(new OnClickListener() {
+        mBtnNext.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -261,7 +261,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mBtnFilter.setOnClickListener(new OnClickListener() {
+        mBtnFilter.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -275,7 +275,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnOnline.setOnClickListener(new OnClickListener() {
+        mTglBtnOnline.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 setFilterBtnState();
@@ -502,7 +502,7 @@ public class SearchDialog extends PopUp_Base {
                 if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
                     searchCoord = CB_Action_ShowMap.getInstance().normalMapView.center;
                 } else {
-                    searchCoord = Locator.getCoordinate();
+                    searchCoord = Locator.getMyPosition();
                 }
                 if (searchCoord == null) {
                     return;
@@ -727,7 +727,7 @@ public class SearchDialog extends PopUp_Base {
     }
 
     private void showTargetApiDialog() {
-        GL.that.RunOnGL(() -> new SearchOverPosition().show());
+        GL.that.RunOnGL(() -> new ImportGCPosition().show());
     }
 
     @Override

@@ -108,13 +108,13 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bImport);
-        bImport.setOnClickListener((v, x, y, pointer, button) -> {
+        bImport.addClickHandler((v, x, y, pointer, button) -> {
             ImportNow();
             return true;
         });
 
         this.addChild(bCancel);
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        bCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (importRuns) {
 
                 cancelImport();
@@ -244,17 +244,17 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
         checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
 
-        mTglBtnTitle.setOnClickListener((v, x, y, pointer, button) -> {
+        mTglBtnTitle.addClickHandler((v, x, y, pointer, button) -> {
             switchSearcheMode(0);
             return true;
         });
 
-        mTglBtnGc.setOnClickListener((v, x, y, pointer, button) -> {
+        mTglBtnGc.addClickHandler((v, x, y, pointer, button) -> {
             switchSearcheMode(1);
             return true;
         });
 
-        mTglBtnOwner.setOnClickListener((v, x, y, pointer, button) -> {
+        mTglBtnOwner.addClickHandler((v, x, y, pointer, button) -> {
             switchSearcheMode(2);
             return true;
         });
@@ -301,7 +301,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
                                 searchCoord = CB_Action_ShowMap.getInstance().normalMapView.center;
                             } else {
-                                searchCoord = Locator.getCoordinate();
+                                searchCoord = Locator.getMyPosition();
                             }
                             if (searchCoord == null) {
                                 return;

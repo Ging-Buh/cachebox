@@ -65,7 +65,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         super(rec, Name);
         mCoordReturnListener = listener;
 
-        MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
+        MeasuredCoord.Referenz = Locator.getMyPosition(ProviderType.GPS);
 
         if (MeasuredCoord.Referenz == null) {
             MeasuredCoord.Referenz = new CoordinateGPS(0, 0);
@@ -91,7 +91,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         this.addChild(bOK);
         this.addChild(bCancel);
 
-        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+        bOK.addClickHandler((v, x, y, pointer, button) -> {
             if (mCoordReturnListener != null) {
                 synchronized (mMeasureList) {
                     GL.that.RunOnGL(() -> mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord()));
@@ -102,7 +102,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
             return true;
         });
 
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        bCancel.addClickHandler((v, x, y, pointer, button) -> {
             if (mCoordReturnListener != null)
                 mCoordReturnListener.returnCoord(null);
             finish();

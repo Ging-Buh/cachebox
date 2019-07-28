@@ -102,7 +102,7 @@ public class PresetListView extends V_ListView {
         for (PresetEntry entry : mPresetEntries) {
             PresetListViewItem v = new PresetListViewItem(EditFilterSettings.ItemRec, index, entry);
 
-            v.setOnClickListener(new OnClickListener() {
+            v.addClickHandler(new OnClickListener() {
 
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

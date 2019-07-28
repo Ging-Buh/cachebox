@@ -80,7 +80,7 @@ public class EditFilterSettings extends ActivityBase {
 
         CB_Button bOK = new CB_Button(leftBorder / 2, leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
 
-        bOK.setOnClickListener(new OnClickListener() {
+        bOK.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 finish();
@@ -136,7 +136,7 @@ public class EditFilterSettings extends ActivityBase {
 
         CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
-        bCancel.setOnClickListener(new OnClickListener() {
+        bCancel.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 finish();
@@ -179,7 +179,7 @@ public class EditFilterSettings extends ActivityBase {
         btCat.initialOn_Off_ToggleStates(sCat, sCat);
         btTxt.initialOn_Off_ToggleStates(sTxt, sTxt);
 
-        btPre.setOnClickListener(new OnClickListener() {
+        btPre.addClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchVisibility(0);
@@ -187,7 +187,7 @@ public class EditFilterSettings extends ActivityBase {
             }
         });
 
-        btSet.setOnClickListener(new OnClickListener() {
+        btSet.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -196,7 +196,7 @@ public class EditFilterSettings extends ActivityBase {
             }
         });
 
-        btCat.setOnClickListener(new OnClickListener() {
+        btCat.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -296,7 +296,7 @@ public class EditFilterSettings extends ActivityBase {
         CB_RectF rec = new CB_RectF(leftBorder, margin, innerWidth, UI_Size_Base.that.getButtonHeight());
         btnAddPreset = new CB_Button(rec, "AddPresetButon");
         btnAddPreset.setText(Translation.get("AddOwnFilterPreset"));
-        btnAddPreset.setOnClickListener(new OnClickListener() {
+        btnAddPreset.addClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

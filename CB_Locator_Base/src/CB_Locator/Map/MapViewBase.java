@@ -569,7 +569,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 accuracyDrawable = new AccuracyDrawable(this.mapIntWidth, this.mapIntWidth);
             }
 
-            float radius = (pixelsPerMeter * Locator.getCoordinate().getAccuracy());
+            float radius = (pixelsPerMeter * Locator.getMyPosition().getAccuracy());
 
             if (radius > GL_UISizes.PosMarkerSize / 2) {
                 accuracyDrawable.draw(batch, myPointOnScreen.x, myPointOnScreen.y, radius);
@@ -796,7 +796,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             } else {
                 // GPS-Position bekannt?
                 if (Locator.Valid()) {
-                    setCenter(Locator.getCoordinate());
+                    setCenter(Locator.getMyPosition());
                     positionInitialized = true;
                 } else {
                     setInitialLocation();
@@ -903,7 +903,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 return;
         }
         if (getCenterGps())
-            setCenter(Locator.getCoordinate());
+            setCenter(Locator.getMyPosition());
 
         GL.that.renderOnce();
     }
@@ -1310,7 +1310,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         } else if (mapState == MapState.WP) {
             MapStateChangedToWP();
         } else if (mapState == MapState.LOCK || mapState == MapState.GPS) {
-            setCenter(Locator.getCoordinate());
+            setCenter(Locator.getMyPosition());
         }
 
         if (mapState != MapState.CAR) {

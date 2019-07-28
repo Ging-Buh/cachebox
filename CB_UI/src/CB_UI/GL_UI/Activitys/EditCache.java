@@ -185,7 +185,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void btnOKClickHandler() {
-        btnOK.setOnClickListener((v, x, y, pointer, button) -> {
+        btnOK.addClickHandler((v, x, y, pointer, button) -> {
             boolean update = false;
             CacheDAO cacheDAO = new CacheDAO();
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
@@ -232,7 +232,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void btnCancelClickHandler() {
-        this.btnCancel.setOnClickListener((v, x, y, pointer, button) -> {
+        this.btnCancel.addClickHandler((v, x, y, pointer, button) -> {
             finish();
             return true;
         });
@@ -304,7 +304,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             @Override
             public void coordinateChanged(Coordinate coord) {
                 EditCache.this.show();
-                newValues.Pos = coord; // oder = cacheCoords.getCoordinate()
+                newValues.Pos = coord; // oder = cacheCoords.getMyPosition()
             }
         });
     }
