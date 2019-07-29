@@ -56,7 +56,12 @@ public class SearchCoordinates extends ActivityBase {
                 JSONArray fetchedLocations = fetchLocations();
                 Menu menuLocation;
                 if (fetchedLocations.length() > 0) {
-                    menuLocation = new Menu("LocationMenuTitle");
+                    menuLocation = new Menu("LocationMenuTitle") {
+                        public void onHide() {
+                            btnOK.enable();
+                        }
+                    };
+                    menuLocation.onHide();
                     for (int ii = 0; ii < fetchedLocations.length(); ii++) {
                         JSONObject jPoi = (JSONObject) fetchedLocations.get(ii);
                         String description = jPoi.optString("display_name", "");
@@ -68,6 +73,8 @@ public class SearchCoordinates extends ActivityBase {
                         });
                     }
                     menuLocation.show();
+                } else {
+                    btnOK.enable();
                 }
             });
             return true;
