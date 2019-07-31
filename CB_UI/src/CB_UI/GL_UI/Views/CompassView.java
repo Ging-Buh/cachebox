@@ -217,9 +217,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                 if (showIcon && Icon != null) {
                     if (aktWaypoint == null) {
                         if (aktCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.Type.name() + "Solved")));
+                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getType().name() + "Solved")));
                         } else {
-                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.Type.name())));
+                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getType().name())));
                         }
                     } else {
                         Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktWaypoint.Type.name())));

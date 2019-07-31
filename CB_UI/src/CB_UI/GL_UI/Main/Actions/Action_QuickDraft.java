@@ -58,7 +58,7 @@ public class Action_QuickDraft extends AbstractAction {
     public void Execute() {
         Menu cm = new Menu("QuickDraft");
         Cache cache = GlobalCore.getSelectedCache();
-        switch (cache.Type) {
+        switch (cache.getType()) {
             case Event:
             case MegaEvent:
             case Giga:

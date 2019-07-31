@@ -1130,11 +1130,11 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("cache_type")) {
-            cache.Type = CacheTypes.parseString(values.get("cache_type"));
+            cache.setType(CacheTypes.parseString(values.get("cache_type")));
             if (cache.getGcCode().indexOf("MZ") == 0)
-                cache.Type = CacheTypes.Munzee;
+                cache.setType(CacheTypes.Munzee);
         } else {
-            cache.Type = CacheTypes.Undefined;
+            cache.setType(CacheTypes.Undefined);
         }
 
         if (values.containsKey("cache_container")) {

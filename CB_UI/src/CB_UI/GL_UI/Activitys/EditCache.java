@@ -127,7 +127,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     public void create() {
         newValues = new Cache(true);
-        newValues.Type = CacheTypes.Traditional;
+        newValues.setType(CacheTypes.Traditional);
         newValues.Size = CacheSizes.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
@@ -160,7 +160,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         cacheCode.setText(cache.getGcCode());
         cacheTyp.setSelection(0);
         for (int i = 0; i < CacheTypNumbers.length; i++) {
-            if (CacheTypNumbers[i] == cache.Type) {
+            if (CacheTypNumbers[i] == cache.getType()) {
                 cacheTyp.setSelection(i);
             }
         }
@@ -195,7 +195,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
             if (cl != null) {
                 update = true;
-                if (newValues.Type == CacheTypes.Mystery) {
+                if (newValues.getType() == CacheTypes.Mystery) {
                     if (!(cache.Pos.equals(newValues.Pos))) {
                         cache.setHasCorrectedCoordinates(true);
                     }
@@ -203,7 +203,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             }
 
             cache.setGcCode(gcc);
-            cache.Type = newValues.Type;
+            cache.setType(newValues.getType());
             cache.Size = newValues.Size;
             cache.setDifficulty(newValues.getDifficulty());
             cache.setTerrain(newValues.getTerrain());
@@ -263,7 +263,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             @Override
             public void selectionChanged(int index) {
                 EditCache.this.show();
-                newValues.Type = CacheTypNumbers[index];
+                newValues.setType(CacheTypNumbers[index]);
             }
         };
     }

@@ -166,7 +166,7 @@ public class TB_Log extends ActivityBase {
                 msg = Translation.get("retrieveAt") + ": " + GlobalCore.br + c.getName();
             }
 
-            CacheIcon.setSprite(Sprites.getSprite("big" + c.Type.name()), false);
+            CacheIcon.setSprite(Sprites.getSprite("big" + c.getType().name()), false);
 
             lblPlaced.setWidth(contentBox.getInnerWidth() - CacheIcon.getWidth() - (margin * 3));
             lblPlaced.setWrappedText(msg);
@@ -400,7 +400,7 @@ public class TB_Log extends ActivityBase {
                 }
             }
         }
-        return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Type.ordinal() : -1;
+        return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getType().ordinal() : -1;
     }
 
     @Override

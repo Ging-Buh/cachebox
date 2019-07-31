@@ -173,7 +173,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                                 continue;
                                             if (cache.ImTheOwner())
                                                 continue;
-                                            if (cache.Type == CacheTypes.Mystery && !cache.hasCorrectedCoordiantesOrHasCorrectedFinal())
+                                            if (cache.getType() == CacheTypes.Mystery && !cache.hasCorrectedCoordiantesOrHasCorrectedFinal())
                                                 continue;
                                             if (cache.Distance(CalculationType.FAST, true) < nearestDistance) {
                                                 resort = true;

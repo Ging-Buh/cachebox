@@ -271,7 +271,7 @@ public final class GpxSerializer {
                     "url", cache.getUrl(), //
                     "urlname", cache.getName(), //
                     "sym", cache.isFound() ? "Geocache Found" : "Geocache", //
-                    "type", "Geocache|" + cache.Type.toString() + additinalIfFound//
+                    "type", "Geocache|" + cache.getType().toString() + additinalIfFound//
 
             );
 
@@ -300,7 +300,7 @@ public final class GpxSerializer {
                     "name", cache.getName(), //
                     "placed_by", cache.getPlacedBy(), //
                     "owner", cache.getOwner(), //
-                    "type", cache.Type.toString(), //
+                    "type", cache.getType().toString(), //
                     "container", cache.Size.toString(), //
                     "difficulty", difficulty, //
                     "terrain", terrain, //

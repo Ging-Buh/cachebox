@@ -159,7 +159,7 @@ public class CacheDraw {
             if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                 ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], left + VoteWidth - correctPos, top - UI_Size_Base.that.getScaledFontSize() / 2, UI_Size_Base.that.getIconSize());
             } else {
-                ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], left + VoteWidth - correctPos, top - UI_Size_Base.that.getScaledFontSize() / 2, UI_Size_Base.that.getIconSize());
+                ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.getType().ordinal()], left + VoteWidth - correctPos, top - UI_Size_Base.that.getScaledFontSize() / 2, UI_Size_Base.that.getIconSize());
             }
 
             // Draw Cache Name

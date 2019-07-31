@@ -688,7 +688,7 @@ public class FilterProperties {
             return false;
         // TODO implement => if (chkFilterBoolean(this.WithManualWaypoint, cache.)) return false;
         // TODO ? the other restrictions?
-        if (!this.mCacheTypes[cache.Type.ordinal()])
+        if (!this.mCacheTypes[cache.getType().ordinal()])
             return false;
 
         return true;

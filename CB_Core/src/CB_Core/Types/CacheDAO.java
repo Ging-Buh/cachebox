@@ -55,7 +55,7 @@ public class CacheDAO {
             cache.setArchived(reader.getInt(8) != 0);
             cache.setAvailable(reader.getInt(9) != 0);
             cache.setFound(reader.getInt(10) != 0);
-            cache.Type = CacheTypes.values()[reader.getShort(11)];
+            cache.setType(CacheTypes.values()[reader.getShort(11)]);
             cache.setOwner(reader.getString(12).trim());
 
             cache.NumTravelbugs = reader.getInt(13);
@@ -187,7 +187,7 @@ public class CacheDAO {
         args.put("Archived", cache.isArchived() ? 1 : 0);
         args.put("Available", cache.isAvailable() ? 1 : 0);
         args.put("Found", cache.isFound());
-        args.put("Type", cache.Type.ordinal());
+        args.put("Type", cache.getType().ordinal());
         args.put("Owner", cache.getOwner());
         args.put("Country", cache.getCountry());
         args.put("State", cache.getState());
@@ -280,7 +280,7 @@ public class CacheDAO {
         args.put("Archived", cache.isArchived() ? 1 : 0);
         args.put("Available", cache.isAvailable() ? 1 : 0);
         args.put("Found", cache.isFound());
-        args.put("Type", cache.Type.ordinal());
+        args.put("Type", cache.getType().ordinal());
         args.put("PlacedBy", cache.getPlacedBy());
         args.put("Owner", cache.getOwner());
         args.put("Country", cache.getCountry());

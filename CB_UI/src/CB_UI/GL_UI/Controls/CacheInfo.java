@@ -345,15 +345,15 @@ public class CacheInfo extends CB_View_Base {
             if (ifModeFlag(SHOW_ICON)) { // Icon Sprite erstellen
 
                 if (mCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.Type.name() + "Solved"));
-                } else if ((mCache.Type == CacheTypes.Multi) && mCache.getStartWaypoint() != null) {
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getType().name() + "Solved"));
+                } else if ((mCache.getType() == CacheTypes.Multi) && mCache.getStartWaypoint() != null) {
                     // Multi anders darstellen wenn dieser einen definierten Startpunkt hat
                     mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Multi.name() + "StartP"));
-                } else if ((mCache.Type == CacheTypes.Mystery) && mCache.getStartWaypoint() != null) {
+                } else if ((mCache.getType() == CacheTypes.Mystery) && mCache.getStartWaypoint() != null) {
                     // Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
                     mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Mystery.name() + "StartP"));
                 } else {
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.Type.name()));
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getType().name()));
                 }
                 mIconSprite.setSize(mIconSize, mIconSize);
                 mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);

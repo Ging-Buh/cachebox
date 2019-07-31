@@ -83,10 +83,19 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
      */
     public CacheSizes Size;
+
+    public void setType(CacheTypes cacheType) {
+        this.cacheType = cacheType;
+    }
+
+    public CacheTypes getType() {
+        return cacheType;
+    }
+
     /**
      * Art des Caches
      */
-    public CacheTypes Type = CacheTypes.Undefined;
+    private CacheTypes cacheType = CacheTypes.Undefined;
     /**
      * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
      */
@@ -167,10 +176,10 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Constructor
      */
-    public Cache(double Latitude, double Longitude, String Name, CacheTypes type, String GcCode) {
+    public Cache(double Latitude, double Longitude, String Name, CacheTypes cacheType, String GcCode) {
         this.Pos = new Coordinate(Latitude, Longitude);
         this.setName(Name);
-        this.Type = type;
+        this.cacheType = cacheType;
         this.setGcCode(GcCode);
         this.NumTravelbugs = 0;
         this.setDifficulty(0);
@@ -329,7 +338,7 @@ public class Cache implements Comparable<Cache>, Serializable {
      * @return
      */
     public Waypoint getStartWaypoint() {
-        if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery))
+        if ((this.cacheType != CacheTypes.Multi) && (this.cacheType != CacheTypes.Mystery))
             return null;
 
         if (waypoints == null || waypoints.size() == 0)
@@ -492,7 +501,7 @@ public class Cache implements Comparable<Cache>, Serializable {
             this.setFound(cache.isFound());
         // this.TourName = "";
         // this.GPXFilename_ID = 0;
-        this.Type = cache.Type;
+        this.cacheType = cache.cacheType;
         // this.PlacedBy = cache.PlacedBy;
         this.Owner = cache.Owner;
         // this.listingChanged = true; // so that spoiler download will be done again
@@ -540,7 +549,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         Name = null;
         Pos = null;
         Size = null;
-        Type = null;
+        cacheType = null;
         Owner = null;
 
         if (waypoints != null) {
@@ -1076,13 +1085,13 @@ public class Cache implements Comparable<Cache>, Serializable {
      * @return
      */
     public boolean isEvent() {
-        if (this.Type == CacheTypes.Giga)
+        if (this.cacheType == CacheTypes.Giga)
             return true;
-        if (this.Type == CacheTypes.CITO)
+        if (this.cacheType == CacheTypes.CITO)
             return true;
-        if (this.Type == CacheTypes.Event)
+        if (this.cacheType == CacheTypes.Event)
             return true;
-        if (this.Type == CacheTypes.MegaEvent)
+        if (this.cacheType == CacheTypes.MegaEvent)
             return true;
         return false;
     }

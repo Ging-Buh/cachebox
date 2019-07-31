@@ -176,7 +176,7 @@ public class DraftsView extends V_ListView {
             newDraft.CacheId = cache.Id;
             newDraft.comment = templateText;
             newDraft.CacheUrl = cache.getUrl();
-            newDraft.cacheType = cache.Type.ordinal();
+            newDraft.cacheType = cache.getType().ordinal();
             newDraft.fillType();
             aktDraft = newDraft;
         } else {
@@ -430,9 +430,9 @@ public class DraftsView extends V_ListView {
         if (cache != null) {
 
             // Found je nach CacheType
-            if (cache.Type == null)
+            if (cache.getType() == null)
                 return null;
-            switch (cache.Type) {
+            switch (cache.getType()) {
                 case Event:
                 case CITO:
                 case MegaEvent:

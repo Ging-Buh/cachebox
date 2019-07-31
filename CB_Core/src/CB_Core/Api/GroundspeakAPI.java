@@ -1093,7 +1093,7 @@ public class GroundspeakAPI {
                         break;
                     case "geocacheType":
                         // switch subValue
-                        cache.Type = CacheTypeFromID(API1Cache.optJSONObject(switchValue).optInt("id", 0));
+                        cache.setType(CacheTypeFromID(API1Cache.optJSONObject(switchValue).optInt("id", 0)));
                         break;
                     case "geocacheSize":
                         // switch subValue

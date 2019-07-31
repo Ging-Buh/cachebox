@@ -332,7 +332,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     cache.setDateHidden(DateFromString(reader.getString(ii)));
                     break;
                 case "CacheType":
-                    cache.Type = CacheTypeFrom1CharAbbreviation(reader.getString(ii));
+                    cache.setType(CacheTypeFrom1CharAbbreviation(reader.getString(ii)));
                     break;
                 case "Container":
                     cache.Size = CacheSizeFromString(reader.getString(ii));

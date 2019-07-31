@@ -114,7 +114,7 @@ public class CacheList extends MoveableList<Cache> {
                         if (!nextCache.isFound()) {
                             // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht)
                             if (!nextCache.ImTheOwner()) {
-                                if ((nextCache.Type == CacheTypes.Event) || (nextCache.Type == CacheTypes.MegaEvent) || (nextCache.Type == CacheTypes.CITO) || (nextCache.Type == CacheTypes.Giga)) {
+                                if ((nextCache.getType() == CacheTypes.Event) || (nextCache.getType() == CacheTypes.MegaEvent) || (nextCache.getType() == CacheTypes.CITO) || (nextCache.getType() == CacheTypes.Giga)) {
                                     Calendar dateHidden = GregorianCalendar.getInstance();
                                     Calendar today = GregorianCalendar.getInstance();
                                     try {
@@ -127,7 +127,7 @@ public class CacheList extends MoveableList<Cache> {
                                         Log.err("CacheList", nextCache.getGcCode() + " Hidden:" + nextCache.getDateHidden());
                                     }
                                 } else {
-                                    if (nextCache.Type == CacheTypes.Mystery) {
+                                    if (nextCache.getType() == CacheTypes.Mystery) {
                                         if (nextCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                                             break;
                                         }

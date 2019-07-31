@@ -152,32 +152,32 @@ public class MapViewCacheList implements CacheListChangedEventListener {
             return getSprite("mapFound");
         else if (showAtOriginalPosition && !cache.hasCorrectedCoordinates())
             // todo for corrected coordinates there is no original position saved at the moment
-            return getSprite("map" + cache.Type.name());
+            return getSprite("map" + cache.getType().name());
         else if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-            if (cache.Type == CacheTypes.Mystery)
+            if (cache.getType() == CacheTypes.Mystery)
                 return getSprite("mapMysterySolved");
-            else if (cache.Type == CacheTypes.Multi)
+            else if (cache.getType() == CacheTypes.Multi)
                 return getSprite("mapMultiSolved");
-            else if (cache.Type == CacheTypes.Wherigo)
+            else if (cache.getType() == CacheTypes.Wherigo)
                 return getSprite("mapWherigoSolved");
-            else if (cache.Type == CacheTypes.Letterbox)
+            else if (cache.getType() == CacheTypes.Letterbox)
                 return getSprite("mapLetterboxSolved");
-            else if (cache.Type == CacheTypes.Traditional)
+            else if (cache.getType() == CacheTypes.Traditional)
                 return getSprite("mapTraditionalSolved");
-            else if (cache.Type == CacheTypes.Virtual)
+            else if (cache.getType() == CacheTypes.Virtual)
                 return getSprite("mapVirtualSolved");
-            else if (cache.Type == CacheTypes.Camera)
+            else if (cache.getType() == CacheTypes.Camera)
                 return getSprite("mapCameraSolved");
-            else if (cache.Type == CacheTypes.Earth)
+            else if (cache.getType() == CacheTypes.Earth)
                 return getSprite("mapEarthSolved");
             return getSprite("mapMysterySolved");
         }
-        else if ((cache.Type == CacheTypes.Multi) && cache.getStartWaypoint() != null)
+        else if ((cache.getType() == CacheTypes.Multi) && cache.getStartWaypoint() != null)
             return getSprite("mapMultiStartP"); // Multi mit Startpunkt
-        else if ((cache.Type == CacheTypes.Mystery) && cache.getStartWaypoint() != null)
+        else if ((cache.getType() == CacheTypes.Mystery) && cache.getStartWaypoint() != null)
             return getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
         else
-            return getSprite("map" + cache.Type.name());
+            return getSprite("map" + cache.getType().name());
 
     }
 
@@ -192,7 +192,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
         else {
             if (cache.getCorrectedFinal() != null || cache.getStartWaypoint() != null)
                 solved = "Solved";
-            switch (cache.Type) {
+            switch (cache.getType()) {
                 case Multi:
                     icon = "small2";
                     break;
@@ -212,9 +212,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                     icon = "small5";
                     break;
                 case MyParking:
-                    return getSprite("map" + cache.Type.name());
+                    return getSprite("map" + cache.getType().name());
                 case Munzee:
-                    return getSprite("map" + cache.Type.name());
+                    return getSprite("map" + cache.getType().name());
                 default:
                     break;
             }
@@ -399,7 +399,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                                         }
                                     }
                                     // or show Cache at Startwaypoint (only for Multi and Mysterie)
-                                    if ((cache.Type == CacheTypes.Multi) || (cache.Type == CacheTypes.Mystery)) {
+                                    if ((cache.getType() == CacheTypes.Multi) || (cache.getType() == CacheTypes.Mystery)) {
                                         // todo ? really show corrected coord if a startWP is defined?
                                         if (!cache.hasCorrectedCoordinates() && (finalWaypoint == null)) {
                                             startWaypoint = cache.getStartWaypoint();
