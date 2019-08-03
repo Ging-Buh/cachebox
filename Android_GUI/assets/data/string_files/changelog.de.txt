@@ -4,10 +4,19 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 
-Aktuelle Änderungen:
-    + Einstellungen/Mehr: Anzahl zu importierender Logs beim Erstimport kann auf 0/5/30 eingestellt werden. (Geschwindigkeit).
+Aktuelle Änderungen (3403):
+	+ Import über Position durch Eingabe Stadt/Straße
+    + Herunterladen oam + fzk Renderthemen
+	+ Android 9 : (http wird nicht mehr standardmäßig unterstützt) API-Token,...
     + Datum der Veröffentlichung wird nur bei explizitem Anklicken in die Suche über Position einbezogen.
     + Menüs haben jetzt einen Reiter mit Überschrift. Duch Anklicken der Überschrift kann die Menüauswahl abgebrochen werden.
+    ~ GSAK Import: Cachetypen + Größe vervollständigt, Geschwindigkeitszuwachs durch Logimport unabhängig vom Cache
+	~ Anzahl zu importierender Logs beim Erstimport in Einstellungen wählbar (Geschwindigkeit)
+	* TB-Log: Null Problem
+	* Korrektur der Uhrzeit beim Hochladen von Entwürfen (API Änderung genutzt)
+    * Ersten Start feststellen: askAgain korrekt setzen
+	* Automatische Auswahl des nächstgelegenen Caches
+	* Korrektur Ankreuzen von Menüeinträgen (Renderthemeauswahlen)
 
 Änderungen bis Version 3356:
     + Bei einigen Einstellungsänderungen erscheint jetzt eine Aufforderung zum Neustart

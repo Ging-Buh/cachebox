@@ -3,10 +3,19 @@
 • Fixes = *
 • Deletions = -
 
-Current changes:
-    + Settings / More: The number of logs to be imported during the first import can be set to 0/5/30. (Importspeed).
+Current changes (3403):
+	+ Import at position accepts city/street names
+    + Download oam + fzk renderthemes
+	+ Android 9 : (http no longer supported by default) API-Token,...
     + Published Date will only be included in the search of "Import by position", if explicitly clicked.
     + Menus now have a tab with headline. By clicking on the heading, the menu selection can be canceled.
+    ~ GSAK Import: Cachetypen and size completed, Speedup (by separation logs from caches)
+	~ Number of logs on first import is selectable in settings (speed)
+	* TB-Log: Null problem
+	* correct time for upload of draftentries (by API change)
+    * first start: askAgain correct init
+	* Automatic selection of nearest cache
+	* correct handling checking of menu entries (rendertheme selections)
 
 Changes up to version 3356:
     + Some setting changes will now prompt you to restart
