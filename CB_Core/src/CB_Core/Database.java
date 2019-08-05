@@ -38,7 +38,7 @@ public abstract class Database extends Database_Core {
     public static Database Drafts;
     public static Database Settings;
     public CacheList cacheList;
-    protected DatabaseType databaseType;
+    private DatabaseType databaseType;
 
     public Database(DatabaseType databaseType) {
         super();
