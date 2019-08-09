@@ -84,7 +84,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
         chkLogImages = new CB_CheckBox("GSAKwithLogImages");
         addNext(chkLogImages, FIXED);
-        CB_Label lblLogImages = new CB_Label("GSAKwithLogImages");
+        CB_Label lblLogImages = new CB_Label(Translation.get("GSAKwithLogImages"));
         addLast(lblLogImages);
 
         initClickHandlersAndContent();
