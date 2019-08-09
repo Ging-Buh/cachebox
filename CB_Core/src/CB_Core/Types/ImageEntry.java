@@ -67,6 +67,10 @@ public class ImageEntry implements Serializable {
         LocalPath = DescriptionImageGrabber.BuildDescriptionImageFilename(GcCode, URI.create(ImageUrl));
     }
 
+    public String getFilename() {
+        return LocalPath.substring(LocalPath.lastIndexOf('/') + 1);
+    }
+
     public void clear() {
         Description = "";
         Name = "";

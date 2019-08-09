@@ -2,6 +2,7 @@ package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.*;
+import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -16,6 +17,7 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
+import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.text.InputType;
@@ -32,15 +34,15 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private static final String sKlasse = "Import_GSAK";
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
-    EditTextField edtCategory, edtDBName, edtNumberOfLogs;
-    private CB_Button bOK, bCancel, btnSelectDB;
+    private EditTextField edtCategory, edtDBName, edtImagesDBName, edtImagesPath;
+    private CB_Button bOK, bCancel, btnSelectDB, btnSelectImagesDB, btnSelectImagesPath;
+    private CB_CheckBox chkLogImages;
     private ProgressBar progressBar;
-    private String mPath;
-    private String mDatabaseName;
+    private String mDatabasePath, mImageDatabasePath, mImagesPath;
+    private String mDatabaseName, mImageDatabaseName;
     private SQLiteInterface sql;
     private String[] ResultFieldsArray;
     private boolean importRuns, isCanceled;
-    private int numberOfLogs = Integer.MAX_VALUE;
 
     public Import_GSAK() {
         super("Import_GSAK");
@@ -54,24 +56,37 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         addLast(progressBar);
         CB_Label lblCategory = new CB_Label(Translation.get("category"));
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
-        addNext(lblCategory, FIXED);
+        addLast(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.get("category"));
         edtCategory.setInputType(InputType.TYPE_CLASS_NUMBER);
         addLast(edtCategory);
-        /*
-        CB_Label lblNumberOfLogs = new CB_Label(Translation.get("NumberOfLogs"));
-        lblNumberOfLogs.setWidth(Fonts.Measure(lblNumberOfLogs.getText()).width);
-        addNext(lblNumberOfLogs, FIXED);
-        edtNumberOfLogs = new EditTextField(this, "NumberOfLogs");
-        addLast(edtNumberOfLogs);
-        */
         CB_Label lblDBName = new CB_Label(Translation.get("GSAKDatabase"));
         lblDBName.setWidth(Fonts.Measure(lblDBName.getText()).width);
-        addNext(lblDBName, FIXED);
+        addLast(lblDBName, FIXED);
         edtDBName = new EditTextField(this, "*" + Translation.get("GSAKDatabase"));
-        addLast(edtDBName);
+        addNext(edtDBName);
         btnSelectDB = new CB_Button(Translation.get("GSAKButtonSelectDB"));
-        addLast(btnSelectDB);
+        addLast(btnSelectDB, 0.5f);
+
+        CB_Label lblImagesDBName = new CB_Label(Translation.get("GSAKImagesDatabase"));
+        addLast(lblImagesDBName);
+        edtImagesDBName = new EditTextField(this, "*" + Translation.get("GSAKImagesDatabase"));
+        addNext(edtImagesDBName);
+        btnSelectImagesDB = new CB_Button(Translation.get("GSAKButtonSelectImagesDB"));
+        addLast(btnSelectImagesDB, 0.5f);
+
+        CB_Label lblImagesPath = new CB_Label(Translation.get("GSAKImagesPath"));
+        addLast(lblImagesPath);
+        edtImagesPath = new EditTextField(this, "*" + Translation.get("GSAKImagesPath"));
+        addNext(edtImagesPath);
+        btnSelectImagesPath = new CB_Button(Translation.get("GSAKButtonSelectImagesPath"));
+        addLast(btnSelectImagesPath, 0.5f);
+
+        chkLogImages = new CB_CheckBox("GSAKwithLogImages");
+        addNext(chkLogImages, FIXED);
+        CB_Label lblLogImages = new CB_Label("GSAKwithLogImages");
+        addLast(lblLogImages);
+
         initClickHandlersAndContent();
         importRuns = false;
         isCanceled = false;
@@ -101,7 +116,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         edtDBName.setTextFieldListener(new EditTextFieldBase.TextFieldListener() {
             @Override
             public void keyTyped(EditTextFieldBase textField, char key) {
-                File file = FileFactory.createFile(mPath + "/" + edtDBName.getText());
+                File file = FileFactory.createFile(mDatabasePath + "/" + edtDBName.getText());
                 if (file.exists())
                     bOK.enable();
                 else
@@ -115,45 +130,82 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         });
 
         btnSelectDB.addClickHandler((v, x, y, pointer, button) -> {
-            mPath = Config.GSAKLastUsedDatabasePath.getValue();
-            if (mPath.length() == 0) {
-                mPath = Config.mWorkPath + "/User";
+            mDatabasePath = Config.GSAKLastUsedDatabasePath.getValue();
+            if (mDatabasePath.length() == 0) {
+                mDatabasePath = Config.mWorkPath + "/User";
             }
-            PlatformConnector.getFile(mPath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), PathAndName -> {
+            PlatformConnector.getFile(mDatabasePath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), PathAndName -> {
                 File file = FileFactory.createFile(PathAndName);
-                mPath = file.getParent();
+                mDatabasePath = file.getParent();
                 mDatabaseName = file.getName();
                 edtDBName.setText(mDatabaseName);
             });
             return true;
         });
 
+        btnSelectImagesDB.addClickHandler((v, x, y, pointer, button) -> {
+            mImageDatabasePath = Config.GSAKLastUsedImageDatabasePath.getValue();
+            if (mImageDatabasePath.length() == 0) {
+                mImageDatabasePath = Config.mWorkPath + "/User";
+            }
+            PlatformConnector.getFile(mImageDatabasePath, "*.db3", Translation.get("GSAKTitleSelectImagesDB"), Translation.get("GSAKButtonSelectDB"), PathAndName -> {
+                File file = FileFactory.createFile(PathAndName);
+                mImageDatabasePath = file.getParent();
+                mImageDatabaseName = file.getName();
+                edtImagesDBName.setText(mImageDatabaseName);
+            });
+            return true;
+        });
+
+        btnSelectImagesPath.addClickHandler(((v, x, y, pointer, button) -> {
+            mImagesPath = Config.GSAKLastUsedImagesPath.getValue();
+            if (mImagesPath.length() == 0) {
+                mImagesPath = Config.mWorkPath + "/User";
+            }
+            PlatformConnector.getFolder(mImagesPath, Translation.get("GSAKTitleSelectImagesPath"), Translation.get("GSAKButtonSelectPath"), Path -> {
+                File file = FileFactory.createFile(Path);
+                mImagesPath = file.getAbsolutePath();
+                edtImagesPath.setText(mImagesPath);
+            });
+            return true;
+        }));
+
         edtCategory.setText("GSAK_Import");
-        mPath = Config.GSAKLastUsedDatabasePath.getValue();
-        if (mPath.length() == 0) {
-            mPath = Config.mWorkPath + "/User";
+        mDatabasePath = Config.GSAKLastUsedDatabasePath.getValue();
+        if (mDatabasePath == null) mDatabasePath = "";
+        if (mDatabasePath.length() == 0) {
+            mDatabasePath = Config.mWorkPath + "/User";
         }
         mDatabaseName = Config.GSAKLastUsedDatabaseName.getValue();
+        if (mDatabaseName == null) mDatabaseName = "";
         if (mDatabaseName.length() == 0) {
             mDatabaseName = "sqlite.db3";
         }
         edtDBName.setText(mDatabaseName);
+
+        mImageDatabasePath = Config.GSAKLastUsedImageDatabasePath.getValue();
+        if (mImageDatabasePath == null) mImageDatabasePath = "";
+        if (mImageDatabasePath.length() == 0) {
+            mImageDatabasePath = Config.mWorkPath + "/User";
+        }
+        mImageDatabaseName = Config.GSAKLastUsedImageDatabaseName.getValue();
+        if (mImageDatabaseName == null) mImageDatabaseName = "";
+        edtImagesDBName.setText(mImageDatabaseName);
+
+        mImagesPath = Config.GSAKLastUsedImagesPath.getValue();
+        if (mImagesPath == null) mImagesPath = "";
+        if (mImagesPath.length() == 0) {
+            mImagesPath = Config.mWorkPath + "/User";
+        }
+        edtImagesPath.setText(mImagesPath);
+
+        chkLogImages.setChecked(Config.withLogImages.getValue());
 
         progressBar.setProgress(0, "");
     }
 
 
     public void doImport() {
-        /*
-        if (edtNumberOfLogs.getText().length() > 0) {
-            try {
-                numberOfLogs = Integer.parseInt(edtNumberOfLogs.getText().trim());
-            }
-            catch (Exception ignored) {
-            }
-        }
-         */
-
         GpxFilename gpxFilename = null;
         Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
         if (category != null) // should not happen!!!
@@ -167,9 +219,10 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         String ResultFields = fields + "," + memofields;
         ResultFieldsArray = ResultFields.split(",");
         // sql.beginTransaction();
-        if (sql.openReadOnly(mPath + "/" + mDatabaseName)) {
-            Config.GSAKLastUsedDatabasePath.setValue(mPath);
+        if (sql.openReadOnly(mDatabasePath + "/" + mDatabaseName)) {
+            Config.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
             Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
+            Config.withLogImages.setValue(chkLogImages.isChecked());
             Config.AcceptChanges();
             Database.Data.sql.beginTransaction();
 
@@ -208,8 +261,74 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         PlatformConnector.freeSQLInstance(sql);
         Database.Data.sql.endTransaction();
         Database.Data.GPXFilenameUpdateCacheCount();
+        doImportImages("CacheImages");
+        if (chkLogImages.isChecked())
+            doImportImages("LogImages");
     }
 
+    public void doImportImages(String tableName) {
+        File file = FileFactory.createFile(mImageDatabasePath + "/" + mImageDatabaseName);
+        if (file.exists()) {
+            // sql.execSQL("ATTACH DATABASE " + file.getAbsolutePath() + " AS imagesLink");
+            SQLiteInterface sqlImageLink = PlatformConnector.getSQLInstance();
+            if (sqlImageLink.openReadOnly(file.getAbsolutePath())) {
+                Config.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
+                Config.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
+                Config.GSAKLastUsedImagesPath.setValue(mImagesPath);
+                Config.AcceptChanges();
+            }
+            CoreCursor c = sql.rawQuery("select count(*) from " + tableName, null);
+            c.moveToFirst();
+            int anz = c.getInt(0);
+            int count = 0;
+            progressBar.resetProgress("Wait for Images query");
+            String cmd = "select iCode,iName,iDescription,iGuid,iImage from " + tableName;
+            CoreCursor imagesReader = sql.rawQuery(cmd, null);
+            imagesReader.moveToFirst();
+            while (!imagesReader.isAfterLast() && !isCanceled) {
+                count++;
+                ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
+                String link = imagesReader.getString("iImage");
+                CoreCursor imageLinkReader = sqlImageLink.rawQuery("select Fname from files where link=\"" + link + "\"", null);
+                imageLinkReader.moveToFirst();
+                String fName = imageLinkReader.getString("Fname");
+                if (fName != null) {
+                    ImageEntry imageEntry = new ImageEntry();
+                    imageEntry.GcCode = imagesReader.getString("iCode");
+                    if (imageEntry.GcCode != null) {
+                        imageEntry.Description = imagesReader.getString("iName");
+                        if (imageEntry.Description == null) imageEntry.Description = "";
+                        imageEntry.ImageUrl = link;
+                        copyImage(mImagesPath + "/" + fName, imageEntry);
+                    }
+                }
+                imageLinkReader.close();
+                imagesReader.moveToNext();
+            }
+            imagesReader.close();
+        }
+    }
+
+    private void copyImage(String source, ImageEntry imageEntry) {
+        imageEntry = DescriptionImageGrabber.BuildAdditionalImageFilenameHashNew(imageEntry);
+        File dst = FileFactory.createFile(imageEntry.LocalPath);
+        /* create parent directories, if necessary */
+        final File parent = dst.getParentFile();
+        if ((parent != null) && !parent.exists()) {
+            parent.mkdirs();
+        }
+        if (!dst.exists()) {
+            File src = FileFactory.createFile(source);
+            if (src.exists()) {
+                try {
+                    Copy.copyFolder(src, dst);
+                } catch (Exception ignored) {
+                }
+            }
+        }
+    }
+
+    /*
     private ArrayList<LogEntry> createLogs(Cache cache) {
         ArrayList<LogEntry> logList = new ArrayList<>();
         if (numberOfLogs > 0) {
@@ -233,6 +352,8 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         }
         return logList;
     }
+
+     */
 
     private void writeLogs() {
         CoreCursor c = sql.rawQuery("select count(*) from Logs", null);

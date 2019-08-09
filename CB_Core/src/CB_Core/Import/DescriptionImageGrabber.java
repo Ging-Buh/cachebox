@@ -289,14 +289,13 @@ public class DescriptionImageGrabber {
                 ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                 // direkt download
-                for (int j = 0; j < 1 /* && !parent.Cancel */; j++) {
-                    if (Download(uri.toString(), local)) {
-                        // Next image
-                        DeleteMissingImageInformation(local);
-                        break;
-                    } else {
-                        imageLoadError = HandleMissingImages(imageLoadError, uri.toString(), local);
-                    }
+                if (Download(uri.toString(), local)) {
+                    // there could be an pseudo image indicating a pprevious error
+                    // this file must be deleted
+                    DeleteMissingImageInformation(local);
+                    break;
+                } else {
+                    imageLoadError = HandleMissingImages(imageLoadError, uri.toString(), local);
                 }
             }
 
@@ -347,7 +346,7 @@ public class DescriptionImageGrabber {
 
                     ip.ProgressChangeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
-                    imageEntry = BuildAdditionalImageFilenameHashNew(gcCode, imageEntry);
+                    imageEntry = BuildAdditionalImageFilenameHashNew(imageEntry);
                     if (imageEntry != null) {
                         // todo ? should write or update database
                         String filename = imageEntry.LocalPath.substring(imageEntry.LocalPath.lastIndexOf('/') + 1);
@@ -357,16 +356,13 @@ public class DescriptionImageGrabber {
                             allSpoilers.remove(filename);
                             continue; // dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
                         }
-
-                        for (int j = 0; j < 1; j++) {
-                            if (Download(imageEntry.ImageUrl, imageEntry.LocalPath)) {
-                                // Next image
-                                DeleteMissingImageInformation(imageEntry.LocalPath);
-                                break;
-                            } else {
-                                imageLoadError = HandleMissingImages(imageLoadError, uri, imageEntry.LocalPath);
-                            }
-
+                        // todo first look for an image from gsak
+                        if (Download(imageEntry.ImageUrl, imageEntry.LocalPath)) {
+                            // there could be an pseudo image indicating a pprevious error
+                            // this file must be deleted
+                            DeleteMissingImageInformation(imageEntry.LocalPath);
+                        } else {
+                            imageLoadError = HandleMissingImages(imageLoadError, uri, imageEntry.LocalPath);
                         }
                     }
                 }
@@ -441,13 +437,13 @@ public class DescriptionImageGrabber {
      * Neue Version, mit @ als Eingrenzung des Hashs, da die Klammern nicht als URL's verwendet werden dürfen
      *
      */
-    public static ImageEntry BuildAdditionalImageFilenameHashNew(String GcCode, ImageEntry imageEntry) {
+    public static ImageEntry BuildAdditionalImageFilenameHashNew(ImageEntry imageEntry) {
         try {
             String uriPath = new URI(imageEntry.ImageUrl).getPath();
-            String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+            String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + imageEntry.GcCode.substring(0, 4);
 
             if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-                imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
+                imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + imageEntry.GcCode.substring(0, 4);
             imageEntry.Name = imageEntry.Description.trim();
             imageEntry.Name = imageEntry.Name.replaceAll("[^a-zA-Z0-9_\\.\\-]", "_");
 
@@ -455,7 +451,7 @@ public class DescriptionImageGrabber {
             String extension = (idx >= 0) ? imageEntry.ImageUrl.substring(idx) : ".";
 
             // Create sdbm Hash from Path of URI, not from complete URI
-            imageEntry.LocalPath = imagePath + "/" + GcCode + " - " + imageEntry.Name + " @" + SDBM_Hash.sdbm(uriPath) + "@" + extension;
+            imageEntry.LocalPath = imagePath + "/" + imageEntry.GcCode + " - " + imageEntry.Name + " @" + SDBM_Hash.sdbm(uriPath) + "@" + extension;
             return imageEntry;
         }
         catch (Exception ex) {

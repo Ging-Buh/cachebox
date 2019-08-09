@@ -53,6 +53,10 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
         this.index = indexCount++;
     }
 
+    public String toString() {
+        return super.toString() + ":" + name;
+    }
+
     public void addSettingChangedListener(IChanged listener) {
         synchronized (SettingChangedListeners) {
             if (!SettingChangedListeners.contains(listener))
