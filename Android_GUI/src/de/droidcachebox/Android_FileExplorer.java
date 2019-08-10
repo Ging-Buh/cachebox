@@ -15,8 +15,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class Android_FileExplorer {
@@ -34,6 +34,7 @@ public class Android_FileExplorer {
     private boolean selectDirectoryOption;
     private String fileEndsWith;
     private String secondSDCard;
+    private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
 
     /**
      * @param activity
@@ -146,7 +147,6 @@ public class Android_FileExplorer {
                     }
                 });
             }
-
             builder.setItems(fileList, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -199,7 +199,7 @@ public class Android_FileExplorer {
     }
 
     private void loadFileList(File path) {
-        List<String> r = new ArrayList<String>();
+        ArrayList<String> r = new ArrayList<>();
         currentPath = path;
 
         String absolutePath;
@@ -241,10 +241,19 @@ public class Android_FileExplorer {
 
         if (currentPath.exists()) {
             String[] tmpFileList = currentPath.list(filter);
+            ArrayList<String> directories = new ArrayList<>();
+            ArrayList<String> files = new ArrayList<>();
             if (tmpFileList != null) {
                 for (String file : tmpFileList) {
-                    r.add(file);
+                    if (FileFactory.createFile(currentPath, file).isDirectory()) {
+                        directories.add(DIRICON + file);
+                    }
+                    else {
+                        files.add(file);
+                    }
                 }
+                r.addAll(directories);
+                r.addAll(files);
             }
         }
         fileList = r.toArray(new String[]{});
@@ -256,6 +265,8 @@ public class Android_FileExplorer {
                 return currentPath.getParentFile();
             else if (fileChosen.startsWith("/"))
                 return FileFactory.createFile(fileChosen);
+            else if (fileChosen.startsWith(DIRICON))
+                return FileFactory.createFile(currentPath, fileChosen.substring(DIRICON.length()));
             else
                 return FileFactory.createFile(currentPath, fileChosen);
         } catch (Exception e) {
