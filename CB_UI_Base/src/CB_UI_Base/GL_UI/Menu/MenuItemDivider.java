@@ -2,6 +2,7 @@ package CB_UI_Base.GL_UI.Menu;
 
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.DialogElement;
+import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,6 +14,12 @@ public class MenuItemDivider extends MenuItem {
     Drawable Image;
     float spriteHeight = 0;
     float spriteWidth = 0;
+
+    public MenuItemDivider() {
+        super(0, "Separator");
+        setHeight(UI_Size_Base.that.getButtonHeight() / 5);
+        setEnabled(false);
+    }
 
     public MenuItemDivider(int Index, String Name) {
         super(Index, Name);
