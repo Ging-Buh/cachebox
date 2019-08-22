@@ -9,16 +9,16 @@ import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
 
 public final class CB_Android_FileExplorer implements IgetFileListener, IgetFolderListener {
-    public static Activity UsedActivity;
+    private Activity usedActivity;
 
-    public CB_Android_FileExplorer(Activity activity) {
-        UsedActivity = activity;
+    CB_Android_FileExplorer(Activity activity) {
+        usedActivity = activity;
     }
 
     @Override
     public void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
         File mPath = FileFactory.createFile(initialPath);
-        Android_FileExplorer fileDialog = new Android_FileExplorer(UsedActivity, mPath, TitleText, ButtonText);
+        Android_FileExplorer fileDialog = new Android_FileExplorer(usedActivity, mPath, TitleText, ButtonText);
         fileDialog.setFileReturnListener(returnListener);
         fileDialog.showDialog();
     }
@@ -26,8 +26,8 @@ public final class CB_Android_FileExplorer implements IgetFileListener, IgetFold
     @Override
     public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
         File mPath = FileFactory.createFile(initialPath);
-        Android_FileExplorer folderDialog = new Android_FileExplorer(UsedActivity, mPath, TitleText, ButtonText);
-        folderDialog.setSelectDirectoryOption(true);
+        Android_FileExplorer folderDialog = new Android_FileExplorer(usedActivity, mPath, TitleText, ButtonText);
+        folderDialog.setSelectDirectoryOption();
         folderDialog.setFolderReturnListener(returnListener);
         folderDialog.showDialog();
     }

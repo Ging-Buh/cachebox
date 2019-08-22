@@ -350,8 +350,6 @@ public class CacheDAO {
                 reader.close();
             e.printStackTrace();
             return null;
-        } finally {
-            reader = null;
         }
 
     }

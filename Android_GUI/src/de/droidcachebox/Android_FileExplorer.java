@@ -7,26 +7,22 @@ import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class Android_FileExplorer {
+class Android_FileExplorer {
     private static final String log = "Android_FileExplorer";
     private static final String PARENT_DIR = "..";
     private final Activity activity;
     private final String TitleText;
     private final String ButtonText;
     private final String firstSDCard;
-    // private final String TAG = getClass().getName();
+    private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
     private String[] fileList;
     private File currentPath;
     private IgetFileReturnListener CB_FileReturnListener;
@@ -34,23 +30,17 @@ public class Android_FileExplorer {
     private boolean selectDirectoryOption;
     private String fileEndsWith;
     private String secondSDCard;
-    private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
 
-    /**
-     * @param activity
-     * @param initialPath
-     */
-    public Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText) {
+    Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText) {
         this(activity, initialPath, TitleText, ButtonText, null);
     }
 
-    @SuppressLint("NewApi")
     private Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText, String fileEndsWith) {
 
         this.activity = activity;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            java.io.File dirs[] = activity.getExternalFilesDirs(null);
+            java.io.File[] dirs = activity.getExternalFilesDirs(null);
 
             if (dirs.length > 0) {
                 String tmp = dirs[0].getAbsolutePath();
@@ -64,7 +54,7 @@ public class Android_FileExplorer {
             }
 
             if (dirs.length > 1) {
-                String tmp = null;
+                String tmp;
                 try {
                     tmp = dirs[1].getAbsolutePath();
                     int pos = tmp.indexOf("Android") - 1;
@@ -110,20 +100,17 @@ public class Android_FileExplorer {
         }
     }
 
-    public void setFileReturnListener(IgetFileReturnListener returnListener) {
+    void setFileReturnListener(IgetFileReturnListener returnListener) {
         CB_FileReturnListener = returnListener;
     }
 
-    public void setFolderReturnListener(IgetFolderReturnListener returnListener) {
+    void setFolderReturnListener(IgetFolderReturnListener returnListener) {
         CB_FolderReturnListener = returnListener;
     }
 
     /**
-     * @return file dialog
      */
-    private Dialog createFileDialog() {
-        Dialog dialog = null;
-
+    private void createFileDialog() {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
@@ -140,59 +127,46 @@ public class Android_FileExplorer {
             }
 
             if (selectDirectoryOption) {
-                builder.setPositiveButton(ButtonText, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        CB_FolderReturnListener.returnFolder(currentPath.getAbsolutePath());
-                    }
-                });
+                builder.setPositiveButton(ButtonText, (dialog12, which) -> CB_FolderReturnListener.returnFolder(currentPath.getAbsolutePath()));
             }
-            builder.setItems(fileList, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    File chosenFile;
-                    try {
-                        chosenFile = getChosenFile(fileList[which]);
 
-                        if (chosenFile.isDirectory()) {
-                            loadFileList(chosenFile);
-                            dialog.cancel();
-                            dialog.dismiss();
-                            showDialog();
-                        } else {
-                            CB_FileReturnListener.returnFile(chosenFile.getAbsolutePath());
-                        }
+            builder.setItems(fileList, (dialog1, which) -> {
+                File chosenFile;
+                try {
+                    chosenFile = getChosenFile(fileList[which]);
 
-                    } catch (Exception e) {
-                        Log.err(log, e.getLocalizedMessage());
+                    if (chosenFile.isDirectory()) {
+                        loadFileList(chosenFile);
+                        dialog1.cancel();
+                        dialog1.dismiss();
+                        showDialog();
+                    } else {
+                        CB_FileReturnListener.returnFile(chosenFile.getAbsolutePath());
                     }
+
+                } catch (Exception e) {
+                    Log.err(log, e.getLocalizedMessage());
                 }
             });
 
-            dialog = builder.show();
+            builder.show();
 
         } catch (Exception e) {
             Log.err(log, e.getLocalizedMessage());
         }
 
-        return dialog;
     }
 
-    public void setSelectDirectoryOption(boolean selectDirectoryOption) {
-        this.selectDirectoryOption = selectDirectoryOption;
+    void setSelectDirectoryOption() {
+        this.selectDirectoryOption = true;
     }
 
     /**
      * Show file dialog
      */
-    public void showDialog() {
+    void showDialog() {
         try {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    createFileDialog().show();
-                }
-            });
+            activity.runOnUiThread(this::createFileDialog);
         } catch (Exception e) {
             Log.err(log, e.getLocalizedMessage());
         }
@@ -224,18 +198,15 @@ public class Android_FileExplorer {
                 r.add(secondSDCard);
         }
 
-        FilenameFilter filter = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                File sel = FileFactory.createFile(dir, filename);
-                if (!sel.canRead())
-                    return false;
-                if (selectDirectoryOption)
-                    return sel.isDirectory();
-                else {
-                    boolean endsWith = fileEndsWith != null ? filename.toLowerCase(Locale.US).endsWith(fileEndsWith) : true;
-                    return endsWith || sel.isDirectory();
-                }
+        FilenameFilter filter = (dir, filename) -> {
+            File sel = FileFactory.createFile(dir, filename);
+            if (!sel.canRead())
+                return false;
+            if (selectDirectoryOption)
+                return sel.isDirectory();
+            else {
+                boolean endsWith = (fileEndsWith == null) || filename.toLowerCase(Locale.US).endsWith(fileEndsWith);
+                return endsWith || sel.isDirectory();
             }
         };
 
@@ -247,8 +218,7 @@ public class Android_FileExplorer {
                 for (String file : tmpFileList) {
                     if (FileFactory.createFile(currentPath, file).isDirectory()) {
                         directories.add(DIRICON + file);
-                    }
-                    else {
+                    } else {
                         files.add(file);
                     }
                 }
@@ -276,7 +246,10 @@ public class Android_FileExplorer {
     }
 
     private void setFileEndsWith(String fileEndsWith) {
-        this.fileEndsWith = fileEndsWith != null ? fileEndsWith.toLowerCase() : fileEndsWith;
+        if (fileEndsWith == null) {
+            this.fileEndsWith = null;
+        } else {
+            this.fileEndsWith = fileEndsWith.toLowerCase();
+        }
     }
-
 }

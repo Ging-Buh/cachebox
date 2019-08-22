@@ -324,6 +324,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                         imageEntry.Description = imagesReader.getString("iName");
                         if (imageEntry.Description == null) imageEntry.Description = "";
                         imageEntry.ImageUrl = link;
+                        ProgresssChangedEventList.Call(fName, count + "/" + anz, count * 100 / anz);
                         copyImage(mImagesPath + "/" + fName, imageEntry);
                     }
                 }

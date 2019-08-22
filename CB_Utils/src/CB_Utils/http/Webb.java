@@ -75,7 +75,7 @@ public class Webb {
      * @param name  name of the header (regarding HTTP it is not case-sensitive, but here case is important).
      * @param value value of the header. If <code>null</code> the header value is cleared (effectively not set).
      * @see #setDefaultHeader(String, Object)
-     * @see com.goebl.david.Request#header(String, Object)
+     * @see Request#header(String, Object)
      */
     public static void setGlobalHeader(String name, Object value) {
         if (value != null) {
@@ -115,7 +115,7 @@ public class Webb {
      * <br>
      * In contrast to {@link java.net.HttpURLConnection}, we use a default timeout of 10 seconds, since no
      * timeout is odd.<br>
-     * Can be overwritten for each Request with {@link com.goebl.david.Request#connectTimeout(int)}.
+     * Can be overwritten for each Request with {@link Request#connectTimeout(int)}.
      *
      * @param globalConnectTimeout the new timeout or <code>&lt;= 0</code> to use HttpURLConnection default timeout.
      */
@@ -128,7 +128,7 @@ public class Webb {
      * <br>
      * In contrast to {@link java.net.HttpURLConnection}, we use a default timeout of 3 minutes, since no
      * timeout is odd.<br>
-     * Can be overwritten for each Request with {@link com.goebl.david.Request#readTimeout(int)}.
+     * Can be overwritten for each Request with {@link Request#readTimeout(int)}.
      *
      * @param globalReadTimeout the new timeout or <code>&lt;= 0</code> to use HttpURLConnection default timeout.
      */
@@ -204,7 +204,7 @@ public class Webb {
      * Set the value for a named header which is valid for all requests created by this instance.
      * <br>
      * The value takes precedence over {@link Webb#setGlobalHeader(String, Object)} but can be overwritten by
-     * {@link com.goebl.david.Request#header(String, Object)}.
+     * {@link Request#header(String, Object)}.
      * <br>
      * For the supported types for values see {@link Request#header(String, Object)}.
      *
@@ -212,7 +212,7 @@ public class Webb {
      * @param value value of the header. If <code>null</code> the header value is cleared (effectively not set).
      *              When setting the value to null, a value from global headers can shine through.
      * @see #setGlobalHeader(String, Object)
-     * @see com.goebl.david.Request#header(String, Object)
+     * @see Request#header(String, Object)
      */
     public void setDefaultHeader(String name, Object value) {
         if (defaultHeaders == null) {
@@ -226,7 +226,7 @@ public class Webb {
     }
 
     /**
-     * Registers an alternative {@link com.goebl.david.RetryManager}.
+     * Registers an alternative {@link RetryManager}.
      *
      * @param retryManager the new manager for deciding whether it makes sense to retry a request.
      */
@@ -335,8 +335,8 @@ public class Webb {
 
         try {
             String uri = request.uri;
-            if (request.method == Request.Method.GET &&
-                    !uri.contains("?") &&
+            // request.method == Request.Method.GET &&
+            if (!uri.contains("?") &&
                     request.params != null &&
                     !request.params.isEmpty()) {
                 uri += "?" + WebbUtils.queryString(request.params);
@@ -347,7 +347,8 @@ public class Webb {
             } else {
                 connection = (HttpURLConnection) apiUrl.openConnection();
             }
-            Log.debug("Webb", "url " + URLDecoder.decode(uri,"UTF-8"));
+            String forDebug =  URLDecoder.decode(uri, "UTF-8");
+            Log.debug("Webb", "url " + forDebug);
             prepareSslConnection(connection);
             connection.setRequestMethod(request.method.name());
             if (request.followRedirects != null) {

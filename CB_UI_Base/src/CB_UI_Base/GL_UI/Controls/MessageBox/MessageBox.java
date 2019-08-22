@@ -39,13 +39,13 @@ public class MessageBox extends Dialog {
     public static final int BUTTON_NEGATIVE = 3;
     public static MessageBox that;
     private OnMsgBoxClickListener mMsgBoxClickListener;
-    public OnClickListener positiveButtonClickListener;
-    public OnClickListener neutralButtonClickListener;
-    public OnClickListener negativeButtonClickListener;
+    public OnClickListener btnLeftPositiveClickListener;
+    public OnClickListener btnMiddleNeutralClickListener;
+    public OnClickListener btnRightNegativeClickListener;
     protected CB_Label label;
-    protected CB_Button button1;
-    protected CB_Button button2;
-    protected CB_Button button3;
+    protected CB_Button btnLeftPositive;
+    protected CB_Button btnMiddleNeutral;
+    protected CB_Button btnRightNegative;
     protected SettingBool rememberSetting = null;
     protected CB_CheckBox chkRemember;
     private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
@@ -64,7 +64,7 @@ public class MessageBox extends Dialog {
             createButtons(2,"ok", null,"cancel");
         } else if (buttons == MessageBoxButtons.Cancel) {
             createButtons(2,"", null,"cancel");
-            button1.setInvisible();
+            btnLeftPositive.setInvisible();
         } else if (buttons == MessageBoxButtons.NOTHING) {
             this.setFooterHeight(calcFooterHeight(false));
         } else if (buttons == MessageBoxButtons.YesNoCancel) {
@@ -106,28 +106,28 @@ public class MessageBox extends Dialog {
         }
         switch (anzahl) {
             case 1:
-                button1 = new CB_Button(left);
-                button1.addClickHandler(positiveButtonClickListener);
-                addLast(button1);
+                btnLeftPositive = new CB_Button(left);
+                btnLeftPositive.addClickHandler(btnLeftPositiveClickListener);
+                addLast(btnLeftPositive);
                 break;
             case 2:
-                button1 = new CB_Button(left);
-                button1.addClickHandler(positiveButtonClickListener);
-                button3 = new CB_Button(right);
-                button3.addClickHandler(negativeButtonClickListener);
-                addNext(button1);
-                addLast(button3);
+                btnLeftPositive = new CB_Button(left);
+                btnLeftPositive.addClickHandler(btnLeftPositiveClickListener);
+                btnRightNegative = new CB_Button(right);
+                btnRightNegative.addClickHandler(btnRightNegativeClickListener);
+                addNext(btnLeftPositive);
+                addLast(btnRightNegative);
                 break;
             case 3:
-                button1 = new CB_Button(left);
-                button1.addClickHandler(positiveButtonClickListener);
-                button2 = new CB_Button(middle);
-                button2.addClickHandler(neutralButtonClickListener);
-                button3 = new CB_Button(right);
-                button3.addClickHandler(negativeButtonClickListener);
-                addNext(button1);
-                addNext(button2);
-                addLast(button3);
+                btnLeftPositive = new CB_Button(left);
+                btnLeftPositive.addClickHandler(btnLeftPositiveClickListener);
+                btnMiddleNeutral = new CB_Button(middle);
+                btnMiddleNeutral.addClickHandler(btnMiddleNeutralClickListener);
+                btnRightNegative = new CB_Button(right);
+                btnRightNegative.addClickHandler(btnRightNegativeClickListener);
+                addNext(btnLeftPositive);
+                addNext(btnMiddleNeutral);
+                addLast(btnRightNegative);
                 break;
         }
 
@@ -147,9 +147,9 @@ public class MessageBox extends Dialog {
     }
 
     private void setButtonListener() {
-        positiveButtonClickListener = (v, x, y, pointer, button) -> handleButtonClick(1);
-        neutralButtonClickListener = (v, x, y, pointer, button) -> handleButtonClick(2);
-        negativeButtonClickListener = (v, x, y, pointer, button) -> handleButtonClick(3);
+        btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(1);
+        btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(2);
+        btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(3);
     }
 
     private boolean handleButtonClick(int button) {
@@ -172,24 +172,24 @@ public class MessageBox extends Dialog {
     public void setButtonText(int number, String text) {
         switch (number) {
             case 1:
-                button1.setText(text);
+                btnLeftPositive.setText(text);
                 break;
             case 2:
-                button2.setText(text);
+                btnMiddleNeutral.setText(text);
                 break;
             case 3:
-                button3.setText(text);
+                btnRightNegative.setText(text);
         }
     }
 
     public CB_Button getButton(int number) {
         switch (number) {
             case 1:
-                return button1;
+                return btnLeftPositive;
             case 2:
-                return button2;
+                return btnMiddleNeutral;
         }
-        return button3;
+        return btnRightNegative;
     }
 
     public void setMessage(String message) {
@@ -224,13 +224,13 @@ public class MessageBox extends Dialog {
             FooterItems = null;
         }
 
-        button1 = null;
-        button2 = null;
-        button3 = null;
+        btnLeftPositive = null;
+        btnMiddleNeutral = null;
+        btnRightNegative = null;
         mMsgBoxClickListener = null;
-        positiveButtonClickListener = null;
-        neutralButtonClickListener = null;
-        negativeButtonClickListener = null;
+        btnLeftPositiveClickListener = null;
+        btnMiddleNeutralClickListener = null;
+        btnRightNegativeClickListener = null;
 
         label = null;
 

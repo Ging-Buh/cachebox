@@ -16,6 +16,7 @@
 package CB_Core.Api;
 
 import CB_Core.*;
+import CB_Core.DAO.LogDAO;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.*;
 import CB_Locator.Coordinate;
@@ -46,7 +47,7 @@ public class GroundspeakAPI {
     private static final String log = "GroundspeakAPI";
     public static String LastAPIError = "";
     public static int APIError;
-
+    public static String logReferenceCode = "";
     private static UserInfos me;
     private static Webb netz;
     private static long startTs;
@@ -80,12 +81,12 @@ public class GroundspeakAPI {
         return netz;
     }
 
+    // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
+
     public static void setAuthorization() {
         getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
         me = null;
     }
-
-    // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
 
     private static boolean retry(Exception ex) {
         // Alternate: implement own RetryManager for 429
@@ -483,9 +484,9 @@ public class GroundspeakAPI {
         }
     }
 
-    public static int UploadDraftOrLog(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
+    public static int UploadDraftOrLog(String gcCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
         Log.info(log, "UploadDraftOrLog");
-
+        logReferenceCode = "";
         if (isAccessTokenInvalid()) return ERROR; // should be checked in advance
 
         try {
@@ -495,22 +496,31 @@ public class GroundspeakAPI {
                     return ERROR;
                 }
                 Log.debug(log, "is Log");
-                getNetz()
-                        .post(getUrl(1, "geocachelogs"))
+                LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+                params.put("fields", "owner.username,loggedDate,text,type,referenceCode");
+                JSONObject geocacheLog = getNetz()
+                        .post(getUrl(1, "geocachelogs") + "?" + WebbUtils.queryString(params))
                         .body(new JSONObject()
-                                .put("geocacheCode", cacheCode)
+                                .put("geocacheCode", gcCode)
                                 .put("type", wptLogTypeId)
                                 .put("loggedDate", getDate(dateLogged))
                                 .put("text", prepareNote(note))
                         )
                         .ensureSuccess()
-                        .asVoid();
+                        .asJsonObject()
+                        .getBody();
+                long cacheId = Cache.GenerateCacheId(gcCode);
+                // Cache cache = new CacheDAO().getFromDbByCacheId(cacheId);
+                LogEntry logEntry = createLog(geocacheLog, cacheId);
+                new LogDAO().WriteToDatabase(logEntry);
+                // logReferenceCode is return value
+                logReferenceCode = geocacheLog.optString("referenceCode", ""); // as return value
             } else {
                 Log.debug(log, "is draft"); //  + getUTCDate(dateLogged)
                 getNetz()
                         .post(getUrl(1, "logdrafts"))
                         .body(new JSONObject()
-                                .put("geocacheCode", cacheCode)
+                                .put("geocacheCode", gcCode)
                                 .put("logType", wptLogTypeId)
                                 .put("loggedDate", getDate(dateLogged))
                                 .put("note", prepareNote(note))
@@ -523,7 +533,7 @@ public class GroundspeakAPI {
             return OK;
         } catch (Exception e) {
             retry(e);
-            Log.err(log, "UploadDraftOrLog geocacheCode: " + cacheCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError, e);
+            Log.err(log, "UploadDraftOrLog geocacheCode: " + gcCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError, e);
             return ERROR;
         }
     }
@@ -570,7 +580,7 @@ public class GroundspeakAPI {
                             friendList.remove(finder.toLowerCase(Locale.US));
                         }
 
-                        logList.add(createLog(geocacheLog, cache));
+                        logList.add(createLog(geocacheLog, cache.Id));
                     }
 
                     // all logs loaded or all friends found
@@ -844,7 +854,7 @@ public class GroundspeakAPI {
             Log.info(log, "uploadCacheNote done");
             return OK;
         } catch (Exception ex) {
-            LastAPIError = ex.getLocalizedMessage();
+            LastAPIError = ex.toString();
             LastAPIError += "\n for " + getUrl(1, "geocaches/" + cacheCode + "/notes");
             LastAPIError += "\n APIKey: " + GetSettingsAccessToken();
             LastAPIError += "\n geocacheCode: " + cacheCode;
@@ -855,8 +865,31 @@ public class GroundspeakAPI {
         }
     }
 
+
     private static String prepareNote(String note) {
         return note.replace("\r", "");
+    }
+
+    public static void uploadLogImage(String logReferenceCode, String image, String description) {
+        LastAPIError = "";
+        APIError = OK;
+        JSONObject url = new JSONObject();
+        JSONObject uploading;
+        try {
+            url = getNetz()
+                    .post(getUrl(1, "geocachelogs/" + logReferenceCode + "/images"))
+                    .body(uploading = new JSONObject()
+                            .put("base64ImageData", image)
+                            .put("description", description)
+                    )
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            Log.info(log, "uploadLogImage done");
+        } catch (Exception ex) {
+            APIError = ERROR;
+            LastAPIError = ex.toString() + url.toString();
+        }
     }
 
     public static boolean isAccessTokenInvalid() {
@@ -1288,15 +1321,15 @@ public class GroundspeakAPI {
         ArrayList<LogEntry> logList = new ArrayList<>();
         if (geocacheLogs != null) {
             for (int ii = 0; ii < geocacheLogs.length(); ii++) {
-                logList.add(createLog((JSONObject) geocacheLogs.get(ii), cache));
+                logList.add(createLog((JSONObject) geocacheLogs.get(ii), cache.Id));
             }
         }
         return logList;
     }
 
-    private static LogEntry createLog(JSONObject geocacheLog, Cache cache) {
+    private static LogEntry createLog(JSONObject geocacheLog, long cacheId) {
         LogEntry logEntry = new LogEntry();
-        logEntry.CacheId = cache.Id;
+        logEntry.CacheId = cacheId;
         logEntry.Comment = geocacheLog.optString("text", "");
         logEntry.Finder = getStringValue(geocacheLog, "owner", "username");
         String dateCreated = geocacheLog.optString("loggedDate", "");
@@ -1542,7 +1575,7 @@ public class GroundspeakAPI {
         long utc = date.getTime();
         // TimeZone tzp = TimeZone.getTimeZone("GMT");
         // utc = utc - tzp.getOffset(utc);
-        long newUtc = utc + date.getTimezoneOffset()*60*1000;
+        long newUtc = utc + date.getTimezoneOffset() * 60 * 1000;
         Date newDate = new Date();
         newDate.setTime(newUtc);
         String ret = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(newDate);

@@ -20,10 +20,7 @@ import CB_Core.LogTypes;
 import CB_Core.Types.Draft;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.GL_UI.Controls.CB_Button;
-import CB_UI_Base.GL_UI.Controls.CB_Label;
-import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -57,6 +54,8 @@ public class DraftViewItem extends ListViewItemBackground {
     private EditTextField mCacheName;
     private EditTextField mGcCode;
     private EditTextField mComment;
+    private Box header;
+    public boolean headerClicked;
 
     public DraftViewItem(CB_RectF rec, int Index, Draft draft) {
         super(rec, Index, "");
@@ -66,8 +65,21 @@ public class DraftViewItem extends ListViewItemBackground {
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
         headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (UI_Size_Base.that.getMargin());
 
+        header = new Box(getWidth(), headHeight);
+        header.addClickHandler(new OnClickListener() {
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                headerClicked = true;
+                return false;
+            }
+        });
+        headerClicked = false;
         iniImage();
+        header.addNext(ivTyp, FIXED);
         iniDateLabel();
+        header.addLast(lblDate);
+        lblDate.setHAlignment(CB_Label.HAlignment.RIGHT);
+        this.addLast(header);
         iniCacheTypeImage();
         iniCacheNameLabel();
         iniGcCodeLabel();
@@ -120,7 +132,7 @@ public class DraftViewItem extends ListViewItemBackground {
         if (this.draft == null)
             return;
         ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2), UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "", false);
-        this.addChild(ivTyp);
+        //header.addChild(ivTyp);
         ivTyp.setDrawable(getTypeIcon(this.draft));
     }
 
@@ -146,7 +158,7 @@ public class DraftViewItem extends ListViewItemBackground {
         lblDate = new CB_Label(" lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight);
         lblDate.setFont(Fonts.getNormal());
         lblDate.setText(dateString);
-        this.addChild(lblDate);
+        // header.addChild(lblDate);
     }
 
     private void iniCacheTypeImage() {

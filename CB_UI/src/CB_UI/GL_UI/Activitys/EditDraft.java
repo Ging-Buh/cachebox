@@ -160,8 +160,9 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         btnOK.addClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
 
+                // removed the possibility
                 if (draft.type.isDirectLogType()) {
-                    draft.isDirectLog = rbDirectLog.isChecked();
+                    draft.isDirectLog = false; // rbDirectLog.isChecked();
                 } else {
                     draft.isDirectLog = false;
                 }
@@ -396,8 +397,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         Group.add(rbOnlyDraft);
         Group.add(rbDirectLog);
 
-        scrollBoxContent.addLast(rbDirectLog);
-        scrollBoxContent.addLast(rbOnlyDraft);
+        //scrollBoxContent.addLast(rbDirectLog);
+        //scrollBoxContent.addLast(rbOnlyDraft);
 
         if (isNewDraft) {
             rbOnlyDraft.setChecked(true);

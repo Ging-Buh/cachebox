@@ -127,7 +127,6 @@ public class Action_chkState extends AbstractAction {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                     CacheListDAO cacheListDAO = new CacheListDAO();
                     cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-                    cacheListDAO = null;
                 }
 
                 CacheListChangedEventList.Call();

@@ -156,6 +156,7 @@ public interface CB_UI_Settings {
     SettingBool withLogImages = new SettingBool("withLogImages", Internal, NEVER, false, Global, ACB);
     SettingString TemplateLastUsedPath = new SettingString("TemplateLastUsedPath", Internal, NEVER, "", Global, ACB);
     SettingString TemplateLastUsedName = new SettingString("TemplateLastUsedName", Internal, NEVER, "", Global, ACB);
+    SettingString ImageUploadLastUsedPath = new SettingString("ImageUploadLastUsedPath", Internal, NEVER, "", Global, ACB);
 
     SettingBool dynamicZoom = new SettingBool("dynamicZoom", CarMode, NORMAL, true, Global, ACB);
     SettingInt dynamicZoomLevelMax = new SettingInt("dynamicZoomLevelMax", CarMode, NORMAL, 17, Global, ACB);

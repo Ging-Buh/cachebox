@@ -66,8 +66,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         mainPanel = new ScrollBox(0, getAvailableHeight());
         mainPanel.setBackground(this.getBackground());
         this.addLast(mainPanel);
-        Box box = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
-        mainPanel.addChild(box);
+        Box mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
+        mainPanel.addChild(mainContent);
 
         cacheTitle = (new EditTextField(this, "cacheTitle")).setWrapType(WrapType.MULTILINE);
         TextFieldStyle s = cacheTitle.getStyle();
@@ -85,21 +85,21 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         cacheState = new EditTextField(this, "cacheState");
         cacheCountry = new EditTextField(this, "cacheCountry");
         // layout
-        box.addLast(cacheCode);
-        box.addNext(cacheTyp);
-        box.addLast(cacheDifficulty, 0.3f);
-        box.addNext(cacheSize);
-        box.addLast(cacheTerrain, 0.3f);
-        box.addLast(cacheTitle);
-        box.addLast(cacheCoords);
-        box.addLast(cacheOwner);
-        box.addLast(cacheCountry);
-        box.addLast(cacheState);
+        mainContent.addLast(cacheCode);
+        mainContent.addNext(cacheTyp);
+        mainContent.addLast(cacheDifficulty, 0.3f);
+        mainContent.addNext(cacheSize);
+        mainContent.addLast(cacheTerrain, 0.3f);
+        mainContent.addLast(cacheTitle);
+        mainContent.addLast(cacheCoords);
+        mainContent.addLast(cacheOwner);
+        mainContent.addLast(cacheCountry);
+        mainContent.addLast(cacheState);
         cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
         cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
-        box.addLast(cacheDescription);
-        box.adjustHeight();
-        mainPanel.setVirtualHeight(box.getHeight());
+        mainContent.addLast(cacheDescription);
+        mainContent.adjustHeight();
+        mainPanel.setVirtualHeight(mainContent.getHeight());
 
         btnOKClickHandler();
         btnCancelClickHandler();

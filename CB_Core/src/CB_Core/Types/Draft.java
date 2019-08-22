@@ -22,6 +22,7 @@ public class Draft implements Serializable {
     public long Id;
     public long CacheId;
     public String gcCode = "";
+    public String GcId = ""; // (mis)used for LogId (or ReferenceCode)
     public Date timestamp;
     public String typeString = "";
     public LogTypes type;
@@ -44,6 +45,7 @@ public class Draft implements Serializable {
         this.Id = fne.Id;
         this.CacheId = fne.CacheId;
         this.gcCode = fne.gcCode;
+        GcId=fne.GcId;
         this.timestamp = fne.timestamp;
         this.typeString = fne.typeString;
         this.type = fne.type;
@@ -96,7 +98,7 @@ public class Draft implements Serializable {
         TrackingNumber = reader.getString(16);
         isDirectLog = reader.getInt(17) != 0;
         fillType();
-
+        GcId = reader.getString("GcId");
     }
 
     public void fillType() {
@@ -142,6 +144,7 @@ public class Draft implements Serializable {
         Parameters args = new Parameters();
         args.put("CacheId", CacheId);
         args.put("GcCode", gcCode);
+        args.put("GcId", GcId);
         args.put("Name", CacheName);
         args.put("CacheType", cacheType);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -169,7 +172,7 @@ public class Draft implements Serializable {
         }
         // search FieldNote Id : should be the last entry
         CoreCursor reader = Database.Drafts
-                .sql.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode
+                .sql.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog, GcId from FieldNotes where GcCode='" + gcCode
                         + "' and type=" + type.getGcLogTypeId(), null);
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
@@ -192,6 +195,7 @@ public class Draft implements Serializable {
         Parameters args = new Parameters();
         args.put("cacheid", CacheId);
         args.put("gccode", gcCode);
+        args.put("GcId", GcId);
         args.put("name", CacheName);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String stimestamp = iso8601Format.format(timestamp);
@@ -228,7 +232,8 @@ public class Draft implements Serializable {
 
     public boolean equals(Draft fne) {
         boolean ret = true;
-
+        if (!GcId.equals(fne.GcId))
+            ret = false;
         if (this.Id != fne.Id)
             ret = false;
         if (this.CacheId != fne.CacheId)
