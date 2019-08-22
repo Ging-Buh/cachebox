@@ -344,70 +344,6 @@ public class DraftsView extends V_ListView {
         that.notifyDataSetChanged();
     }
 
-    private static void logOnline(final Draft draft, final boolean directLog) {
-        boolean isNewDraft = false; // never changed (relikt)
-        wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
-
-        }, new ICancelRunnable() {
-
-            @Override
-            public void run() {
-
-                if (Config.GcVotePassword.getEncryptedValue().length() > 0 && !draft.isTbDraft) {
-                    if (draft.gc_Vote > 0) {
-                        // Stimme abgeben
-                        try {
-                            if (!GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
-                                Log.err(log, draft.gcCode + " GC-Vote");
-                            }
-                        } catch (Exception e) {
-                            Log.err(log, draft.gcCode + " GC-Vote");
-                        }
-                    }
-                }
-
-                if (OK == GroundspeakAPI.UploadDraftOrLog(draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment, directLog)) {
-                    // after direct Log change state to uploaded
-                    draft.uploaded = true;
-                    if (directLog && !draft.isTbDraft) {
-                        draft.GcId = GroundspeakAPI.logReferenceCode;
-                        LogView.getInstance().resetInitial(); // if own log is written !
-                    }
-                    addOrChangeDraft(draft, isNewDraft, false);
-                } else {
-                    // Error handling
-                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
-                        switch (which) {
-                            case MessageBox.BUTTON_NEGATIVE:
-                                logOnline(draft, true);
-                                // addOrChangeDraft(draft, isNewDraft, true);// try again
-                                break;
-                            case MessageBox.BUTTON_NEUTRAL:
-                                break;
-                            case MessageBox.BUTTON_POSITIVE:
-                                // is alread in local database
-                                // addOrChangeDraft(draft, isNewDraft, false);// create Draft
-                                logOnline(draft, false); // or nothing
-                        }
-                        return true;
-                    });
-                }
-                if (GroundspeakAPI.LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
-                }
-                if (wd != null)
-                    wd.close();
-
-            }
-
-            @Override
-            public boolean doCancel() {
-                return false;
-            }
-        });
-
-    }
-
     @Override
     public void onShow() {
         reloadDrafts();
@@ -678,6 +614,70 @@ public class DraftsView extends V_ListView {
             });
         }
 
+        private void logOnline(final Draft draft, final boolean directLog) {
+            boolean isNewDraft = false; // never changed (relikt)
+            wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
+
+            }, new ICancelRunnable() {
+
+                @Override
+                public void run() {
+
+                    if (Config.GcVotePassword.getEncryptedValue().length() > 0 && !draft.isTbDraft) {
+                        if (draft.gc_Vote > 0) {
+                            // Stimme abgeben
+                            try {
+                                if (!GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
+                                    Log.err(log, draft.gcCode + " GC-Vote");
+                                }
+                            } catch (Exception e) {
+                                Log.err(log, draft.gcCode + " GC-Vote");
+                            }
+                        }
+                    }
+
+                    if (OK == GroundspeakAPI.UploadDraftOrLog(draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment, directLog)) {
+                        // after direct Log change state to uploaded
+                        draft.uploaded = true;
+                        if (directLog && !draft.isTbDraft) {
+                            draft.GcId = GroundspeakAPI.logReferenceCode;
+                            LogView.getInstance().resetInitial(); // if own log is written !
+                        }
+                        addOrChangeDraft(draft, isNewDraft, false);
+                    } else {
+                        // Error handling
+                        MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                            switch (which) {
+                                case MessageBox.BUTTON_NEGATIVE:
+                                    logOnline(draft, true);
+                                    // addOrChangeDraft(draft, isNewDraft, true);// try again
+                                    break;
+                                case MessageBox.BUTTON_NEUTRAL:
+                                    break;
+                                case MessageBox.BUTTON_POSITIVE:
+                                    // is alread in local database
+                                    // addOrChangeDraft(draft, isNewDraft, false);// create Draft
+                                    logOnline(draft, false); // or nothing
+                            }
+                            return true;
+                        });
+                    }
+                    if (GroundspeakAPI.LastAPIError.length() > 0) {
+                        GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
+                    }
+                    if (wd != null)
+                        wd.close();
+
+                }
+
+                @Override
+                public boolean doCancel() {
+                    return false;
+                }
+            });
+
+        }
+
         private void selectCacheFromDraft() {
             if (aktDraft == null)
                 return;
@@ -718,6 +718,7 @@ public class DraftsView extends V_ListView {
         }
 
         private void deleteDraft() {
+            // todo perhaps delete the uploaded draft or log
             // aktuell selectierte draft löschen
             if (aktDraft == null)
                 return;

@@ -26,7 +26,7 @@ public class UploadDrafts {
     private boolean API_Key_error = false;
     private ProgressDialog PD;
 
-    public void UploadDrafts() {
+    public UploadDrafts() {
     }
 
     public void upload(boolean direct) {
@@ -73,19 +73,24 @@ public class UploadDrafts {
                             result = GroundspeakAPI.uploadTrackableLog(draft.TravelBugCode, draft.TrackingNumber, draft.gcCode, LogTypes.CB_LogType2GC(draft.type), draft.timestamp, draft.comment);
                         } else {
                             if (sendGCVote) {
-                                if (draft.gc_Vote > 0)
-                                    sendCacheVote(draft);
+                                if (draft.gc_Vote > 0) {
+                                    try {
+                                        sendCacheVote(draft);
+                                    }
+                                    catch (Exception ignored) {
+                                    }
+                                }
                             }
                             result = GroundspeakAPI.UploadDraftOrLog(draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment, direct);
                         }
 
                         if (result == GroundspeakAPI.ERROR) {
                             GL.that.Toast(GroundspeakAPI.LastAPIError);
-                            UploadMeldung += draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
+                            UploadMeldung = UploadMeldung + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
                             // set draft as uploaded only when upload was working
                             draft.uploaded = true;
-                            if (draft.isDirectLog && !draft.isTbDraft) {
+                            if (direct && !draft.isTbDraft) {
                                 draft.GcId = GroundspeakAPI.logReferenceCode;
                                 LogView.getInstance().resetInitial(); // if own log is written !
                             }
@@ -126,7 +131,7 @@ public class UploadDrafts {
 
     }
 
-    void sendCacheVote(Draft draft) {
+    private void sendCacheVote(Draft draft) {
 
         // Stimme abgeben
         try {
