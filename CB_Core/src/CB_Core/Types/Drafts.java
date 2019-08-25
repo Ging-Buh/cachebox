@@ -18,6 +18,10 @@ package CB_Core.Types;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Core.LogTypes;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
@@ -70,7 +74,8 @@ public class Drafts extends ArrayList<Draft> {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.err(log, e.toString() + " at\n" + dirFileName);
+            MessageBox.show(e.toString() + " at\n" + dirFileName, Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
         }
     }
 

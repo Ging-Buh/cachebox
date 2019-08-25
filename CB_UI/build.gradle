@@ -93,7 +93,8 @@ task saveBuildInfo {
 
         def df = new SimpleDateFormat("yyyy-MM-dd")
         // df.setTimeZone(TimeZone.getTimeZone("UTC"))
-        def build_time = df.format(new Date())
+        // def build_time = df.format(new Date())
+        def build_time = df.parse("2019-08-26")
 
         // save the combined build info into assets/build.info file
         def result_line = git_ver_tag.toString().trim() + "#" + git_revison + "#" + git_branch_or_tag + "#" + git_version + "#" +

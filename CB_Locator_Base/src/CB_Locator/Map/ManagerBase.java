@@ -213,6 +213,9 @@ public abstract class ManagerBase {
         String filename = layer.GetLocalFilename(tile);
         // String path = layer.GetLocalPath(tile);
         String url = layer.GetUrl(tile);
+        if (!url.startsWith("http")) {
+            return false;
+        }
 
         // Falls Kachel schon geladen wurde, kann sie übersprungen werden
         synchronized (this) {
@@ -228,8 +231,10 @@ public abstract class ManagerBase {
         }
 
         try {
+            Log.info(log, "Caching " + url + " to " + filename);
             FileOutputStream stream = new FileOutputStream(filename, false);
-            InputStream fromUrl = Webb.create()
+            InputStream fromUrl;
+            fromUrl = Webb.create()
                     .get(url)
                     .connectTimeout(CONECTION_TIME_OUT)
                     .ensureSuccess()
@@ -241,10 +246,9 @@ public abstract class ManagerBase {
             NumTilesLoaded++;
             return true;
         } catch (Exception ex) {
-            Log.err(log, url + ": " + ex.getLocalizedMessage());
+            Log.err(log, "245-" + url + ": " + ex.toString());
             return false;
         }
-
     }
 
     public void LoadTMS(String string) {
@@ -509,8 +513,7 @@ public abstract class ManagerBase {
         if (databaseRenderer[ThreadIndex] == null)
             return null;
         try {
-            TileGL tileGL = databaseRenderer[ThreadIndex].execute(rendererJob);
-            return tileGL;
+            return databaseRenderer[ThreadIndex].execute(rendererJob);
         } catch (Exception e) {
             e.printStackTrace();
         }
