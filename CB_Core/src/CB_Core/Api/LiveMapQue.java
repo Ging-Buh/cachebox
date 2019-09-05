@@ -43,6 +43,11 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static CB_Locator.Map.Descriptor.TileXToLongitude;
+import static CB_Locator.Map.Descriptor.TileYToLatitude;
+import static CB_Utils.MathUtils.DEG_RAD;
+import static CB_Utils.MathUtils.WGS84_MAJOR_AXIS;
+
 /**
  * @author Longri
  */
@@ -87,6 +92,12 @@ public class LiveMapQue {
                 for (int i = 0; i < eventList.size(); i++)
                     eventList.get(i).stateChanged();
                 DownloadIsActive.set(true);
+
+                double lon1 = DEG_RAD * TileXToLongitude(desc.getZoom(), desc.getX());
+                double lat1 = DEG_RAD * TileYToLatitude(desc.getZoom(), desc.getY());
+                double lon2 = DEG_RAD * TileXToLongitude(desc.getZoom(), desc.getX() + 1);
+                double lat2 = DEG_RAD * TileYToLatitude(desc.getZoom(), desc.getY()+ 1);
+                Used_max_request_radius = (int) (WGS84_MAJOR_AXIS * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))) / 2 + 0.5); // round
 
                 GroundspeakAPI.Query q = new GroundspeakAPI.Query()
                         .setMaxToFetch(MAX_REQUEST_CACHE_COUNT)
@@ -148,10 +159,6 @@ public class LiveMapQue {
                         Used_Zoom = DEFAULT_ZOOM_13;
                         Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
                         break;
-                    case Zoom_14:
-                        Used_Zoom = DEFAULT_ZOOM_14;
-                        Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
-                        break;
                     default:
                         Used_Zoom = DEFAULT_ZOOM_14;
                         Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
@@ -169,10 +176,6 @@ public class LiveMapQue {
                 Used_Zoom = DEFAULT_ZOOM_13;
                 Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
                 break;
-            case Zoom_14:
-                Used_Zoom = DEFAULT_ZOOM_14;
-                Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
-                break;
             default:
                 Used_Zoom = DEFAULT_ZOOM_14;
                 Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
@@ -183,7 +186,6 @@ public class LiveMapQue {
         int maxLiveCount = CB_Core.CB_Core_Settings.LiveMaxCount.getValue();
         LiveCaches = new CacheListLive(maxLiveCount);
         CB_Core.CB_Core_Settings.LiveMaxCount.addSettingChangedListener(new IChanged() {
-
             @Override
             public void handleChange() {
                 int maxLiveCount = CB_Core.CB_Core_Settings.LiveMaxCount.getValue();

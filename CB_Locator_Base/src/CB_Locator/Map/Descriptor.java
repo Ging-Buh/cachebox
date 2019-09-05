@@ -146,9 +146,7 @@ public class Descriptor implements Comparable<Descriptor> {
      * @return PointD
      */
     public static PointD projectCoordinate(double latitude, double longitude, int projectionZoom) {
-        PointD result = new PointD(LongitudeToTileX(projectionZoom, longitude), LatitudeToTileY(projectionZoom, latitude));
-
-        return result;
+        return new PointD(LongitudeToTileX(projectionZoom, longitude), LatitudeToTileY(projectionZoom, latitude));
     }
 
     /**
@@ -203,7 +201,6 @@ public class Descriptor implements Comparable<Descriptor> {
      * Berechnet aus der übergebenen OSM-X-Koordinate den entsprechenden Längengrad
      */
     public static double TileXToLongitude(double zoom, double x) {
-
         return -180.0 + (360.0 * x) / Math.pow(2, zoom);
     }
 
