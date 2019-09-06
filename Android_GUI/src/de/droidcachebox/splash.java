@@ -90,10 +90,6 @@ public class splash extends Activity {
     protected int width;
     private Bitmap bitmap;
     private Dialog pleaseWaitDialog;
-    private String GcCode = null;
-    private String guid = null;
-    private String name = null;
-    private String GpxPath = null;
     private String workPath;
     private int AdditionalWorkPathCount;
     private MessageBox msg;
@@ -106,6 +102,7 @@ public class splash extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // CB_SLF4J.changeLogLevel(LogLevel.ALL);
         splashActivity = this;
 
@@ -138,92 +135,115 @@ public class splash extends Activity {
         // Porträt erzwingen
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-
         // Check if use small skin
         GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
 
-        final Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            GcCode = extras.getString("geocode");
-            name = extras.getString("name");
-            guid = extras.getString("guid");
-        }
+        if (main.mainActivity != null) {
+            // meaning main has  been startet already
+            String GcCode = null;
+            String guid = null;
+            String name = null;
 
-        final Uri uri = getIntent().getData();
-        String LatLon = "";
-        if (uri != null) {
-            if (uri.getEncodedPath().endsWith(".gpx")) {
-                GpxPath = uri.getEncodedPath();
+            final Bundle intentExtras = getIntent().getExtras();
+            if (intentExtras != null) {
+                GcCode = intentExtras.getString("geocode");
+                name = intentExtras.getString("name");
+                guid = intentExtras.getString("guid");
             }
-            if (GcCode == null && guid == null) {
-                String uriHost = uri.getHost().toLowerCase(Locale.US);
-                String uriPath = uri.getPath().toLowerCase(Locale.US);
-                if (uri.getScheme().toLowerCase().startsWith("geo")) {
-                    LatLon = uri.getSchemeSpecificPart();
-                    // todo preperation for to create a tempory waypoint on the map and go there
-                } else {
-                    if (uriHost.contains("geocaching.com")) {
-                        GcCode = uri.getQueryParameter("wp");
-                        if (StringH.isEmpty(GcCode)) {
-                            int i1 = uriPath.indexOf("/gc") + 1;
-                            int i2 = uriPath.indexOf("_");
-                            if (i2 > i1) {
-                                GcCode = uriPath.substring(i1, i2);
-                                Log.debug(log, "GCCode='" + GcCode + "'");
-                            } else if (i1 > 0) {
-                                GcCode = uriPath.substring(i1);
-                                Log.debug(log, "GCCode='" + GcCode + "'");
-                            }
-                        }
-                        // todo guid not yet implemented : implement fetch cache by  guid in main
-                        guid = uri.getQueryParameter("guid");
 
-                        if (GcCode != null && GcCode.length() > 0) {
-                            GcCode = GcCode.toUpperCase(Locale.US);
-                            guid = null;
-                        } else if (guid != null && guid.length() > 0) {
-                            GcCode = null;
-                            guid = guid.toLowerCase(Locale.US);
-                            if (guid.endsWith("#")) {
-                                guid = guid.substring(0, guid.length() - 1);
+            final Uri intentData = getIntent().getData();
+            String GpxPath = null;
+            String LatLon = null;
+            String downloadPath = null;
+            if (intentData != null) {
+                final Uri uri = intentData;
+                String scheme = intentData.getScheme();
+                if (scheme != null) {
+                    scheme = scheme.toLowerCase();
+                    switch (scheme) {
+                        case "file":
+                            if (uri.getEncodedPath().endsWith(".gpx") || uri.getEncodedPath().endsWith(".zip")) {
+                                GpxPath = uri.getEncodedPath();
                             }
-                        } else {
-                            // warning.showToast(res.getString(R.string.err_detail_open));
-                            finish();
-                            return;
-                        }
-                    } else if (uriHost.contains("coord.info")) {
-                        if (uriPath != null && uriPath.startsWith("/gc")) {
-                            GcCode = uriPath.substring(1).toUpperCase(Locale.US);
-                        } else {
-                            // warning.showToast(res.getString(R.string.err_detail_open));
-                            finish();
-                            return;
-                        }
+                            break;
+                        case "http":
+                        case "https":
+                            String uriHost = uri.getHost().toLowerCase(Locale.US);
+                            String uriPath = uri.getPath().toLowerCase(Locale.US);
+                            if (uriHost.contains("geocaching.com")) {
+                                GcCode = uri.getQueryParameter("wp");
+                                if (StringH.isEmpty(GcCode)) {
+                                    int i1 = uriPath.indexOf("/gc") + 1;
+                                    int i2 = uriPath.indexOf("_");
+                                    if (i2 > i1) {
+                                        GcCode = uriPath.substring(i1, i2);
+                                        Log.debug(log, "GCCode='" + GcCode + "'");
+                                    } else if (i1 > 0) {
+                                        GcCode = uriPath.substring(i1);
+                                        Log.debug(log, "GCCode='" + GcCode + "'");
+                                    }
+                                }
+                                // todo guid not yet implemented : implement fetch cache by  guid in main
+                                guid = uri.getQueryParameter("guid");
+
+                                if (GcCode != null && GcCode.length() > 0) {
+                                    GcCode = GcCode.toUpperCase(Locale.US);
+                                    guid = null;
+                                } else if (guid != null && guid.length() > 0) {
+                                    GcCode = null;
+                                    guid = guid.toLowerCase(Locale.US);
+                                    if (guid.endsWith("#")) {
+                                        guid = guid.substring(0, guid.length() - 1);
+                                    }
+                                } else {
+                                    // warning.showToast(res.getString(R.string.err_detail_open));
+                                    finish();
+                                    return;
+                                }
+                            } else if (uriHost.contains("coord.info")) {
+                                if (uriPath != null && uriPath.startsWith("/gc")) {
+                                    GcCode = uriPath.substring(1).toUpperCase(Locale.US);
+                                } else {
+                                    // warning.showToast(res.getString(R.string.err_detail_open));
+                                    finish();
+                                    return;
+                                }
+                            }
+                            break;
+                        case "geo":
+                            LatLon = uri.getSchemeSpecificPart();
+                            // todo preperation for to create a tempory waypoint on the map and go there
+                            break;
+                        case "orux-map":
+                            // download.openandromaps.org/mapsV4/Germany/baden-wuerttemberg.zip
+                            // mit http://
+                            downloadPath = uri.getEncodedSchemeSpecificPart();
+                            break;
+                        default:
                     }
                 }
             }
-        }
 
-        if (main.mainActivity != null) {
             Bundle b = new Bundle();
-            if (GcCode != null) {
+            if (GcCode != null)
                 b.putSerializable("GcCode", GcCode);
-                b.putSerializable("name", name);
-                b.putSerializable("guid", guid);
-            }
-            if (GpxPath != null) {
+            if (name != null)
+                b.putSerializable("Name", name);
+            if (guid != null)
+                b.putSerializable("Guid", guid);
+            if (GpxPath != null)
                 b.putSerializable("GpxPath", GpxPath);
-            }
-            b.putSerializable("latlon", LatLon);
+            if (LatLon != null)
+                b.putSerializable("LatLon", LatLon);
+            if (downloadPath != null)
+                b.putSerializable("MapDownloadPath", downloadPath);
             Intent mainIntent = main.mainActivity.getIntent();
             mainIntent.putExtras(b);
-            Log.info(log, "startActivity mainIntent from splash.onCreate for created main.mainActivity (com.badlogic.gdx.backends.android.AndroidApplication)");
             startActivity(mainIntent);
             finish();
         }
 
-        LoadImages();
+        loadImages();
 
         if (savedInstanceState != null) {
             mSelectDbIsStarted = savedInstanceState.getBoolean("SelectDbIsStartet");
@@ -532,7 +552,8 @@ public class splash extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.debug(log, "onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.debug(getClass().getName(), "onActivityResult");
         splashActivity = this;
 
         if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5) {
@@ -550,13 +571,7 @@ public class splash extends Activity {
                 List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
             }
 
-            Thread th = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Initial(width, height);
-                }
-            });
-            th.start();
+            new Thread(() -> Initial(width, height)).start();
 
         }
 
@@ -564,8 +579,8 @@ public class splash extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.debug(log, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
+        Log.debug(log, "onSaveInstanceState");
         splashActivity = this;
         outState.putBoolean("SelectDbIsStartet", mSelectDbIsStarted);
         outState.putBoolean("OriantationRestart", true);
@@ -573,9 +588,10 @@ public class splash extends Activity {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         Log.debug(log, "onDestroy");
         if (isFinishing()) {
-            ReleaseImages();
+            releaseImages();
             // versionTextView = null;
             // myTextView = null;
             // descTextView = null;
@@ -960,8 +976,6 @@ public class splash extends Activity {
             ui.Window = new Size(width, height);
             ui.Density = res.getDisplayMetrics().density;
             ui.isLandscape = false;
-            Log.debug(log, "ui.Window: " + ui.Window.toString());
-            Log.debug(log, "ui.Density: " + ui.Density);
         }
 
         new UiSizes();
@@ -990,18 +1004,9 @@ public class splash extends Activity {
         }
 
         Bundle b = new Bundle();
-        if (GcCode != null) {
-            b.putSerializable("GcCode", GcCode);
-            b.putSerializable("name", name);
-            b.putSerializable("guid", guid);
-        }
-        if (GpxPath != null) {
-            b.putSerializable("GpxPath", GpxPath);
-        }
-        b.putSerializable("UI", ui);
-        // Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath); // + " UI " + ui
+        // b.putSerializable("UI", ui);
 
-        Intent mainIntent = new Intent().setClass(splash.this, main.class);
+        Intent mainIntent = new Intent().setClass(this, main.class);
         mainIntent.putExtras(b);
         Log.info(log, "startActivity for main.class (com.badlogic.gdx.backends.android.AndroidApplication) from slash");
         startActivity(mainIntent);
@@ -1020,13 +1025,13 @@ public class splash extends Activity {
         }
     }
 
-    private void LoadImages() {
-        ((TextView) findViewById(R.id.splash_textViewDesc)).setVisibility(View.INVISIBLE);
-        ((TextView) findViewById(R.id.splash_textViewVersion)).setVisibility(View.INVISIBLE);
-        ((TextView) findViewById(R.id.splash_TextView)).setVisibility(View.INVISIBLE);
+    private void loadImages() {
+        findViewById(R.id.splash_textViewDesc).setVisibility(View.INVISIBLE);
+        findViewById(R.id.splash_textViewVersion).setVisibility(View.INVISIBLE);
+        findViewById(R.id.splash_TextView).setVisibility(View.INVISIBLE);
     }
 
-    private void ReleaseImages() {
+    private void releaseImages() {
         ((ImageView) findViewById(R.id.splash_BackImage)).setImageResource(0);
 
         if (bitmap != null) {

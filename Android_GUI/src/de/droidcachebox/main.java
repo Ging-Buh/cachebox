@@ -33,9 +33,11 @@ import CB_Locator.Locator.CompassType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_UI.GL_UI.Activitys.MapDownload;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.SearchMode;
+import CB_UI.GL_UI.Main.Actions.Action_MapDownload;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowCacheList;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
@@ -146,7 +148,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private static Uri uri;
     private static CB_Locator.Location recordingStartCoordinate;
     private static boolean mVoiceRecIsStart = false;
-    private static Vibrator vibrator;
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
 
     static {
@@ -223,9 +224,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private FrameLayout tabFrame;
     private FrameLayout GlFrame;
     private LinearLayout TopLayout;
-    private String ExtSearch_GcCode = null;
-    private String ExtSearch_GpxPath = null;
-    private boolean mustRunSearch = false;
+    private String ExternalRequestGCCode;
+    private String ExternalRequestGpxPath;
+    private String ExternalRequestMapDownloadPath;
+    private String ExternalRequestLatLon;
+    private String ExternalRequestGuid;
+    private String ExternalRequestName;
+    private boolean mustHandleExternalRequest = false;
     private Mic_On_Flash Mic_Icon;
     private ViewOptionsMenu aktView = null;
     private ViewOptionsMenu aktTabView = null;
@@ -238,9 +243,191 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private SharedPreferences.Editor androidSettingEditor;
     private boolean lostCheck = false;
 
-    public static void vibrate() {
-        if (Config.vibrateFeedback.getValue())
-            vibrator.vibrate(Config.VibrateTime.getValue());
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (GlobalCore.RunFromSplash) {
+            // meaning initialising from splash has been done
+
+            mainActivity = this; // com.badlogic.gdx.backends.android.AndroidApplication
+
+            if (savedInstanceState != null) {
+                Log.debug(sKlasse, "main onCreate with savedInstanceState");
+                GlobalCore.restartAfterKill = true;
+                GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
+
+                String workPath = savedInstanceState.getString("WorkPath");
+                new Config(workPath);
+
+                // hier muss die Config Db initialisiert werden
+                Database.Settings = new AndroidDB(DatabaseType.Settings, this);
+                if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
+                    return;
+                Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
+                Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+                Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
+
+                Config.AcceptChanges();
+
+                Resources res = this.getResources();
+                DevicesSizes ui = new DevicesSizes();
+
+                ui.Window = new Size(savedInstanceState.getInt("WindowWidth"), savedInstanceState.getInt("WindowHeight"));
+                ui.Density = res.getDisplayMetrics().density;
+
+                ui.isLandscape = false;
+
+                new UiSizes();
+
+                UiSizes.that.initial(ui);
+
+                Global.Paints.init(this);
+                Global.initIcons(this);
+
+                GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
+                GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
+
+            } else {
+                Log.debug(sKlasse, "main onCreate without savedInstanceState");
+                GlobalCore.restartAfterKill = false;
+            }
+
+            ActivityUtils.onActivityCreateSetTheme(this);
+
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
+            // initialize receiver for screen switched on/off
+            IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+            filter.addAction(Intent.ACTION_SCREEN_OFF);
+            if (mReceiver == null) {
+                mReceiver = new ScreenReceiver();
+                registerReceiver(mReceiver, filter);
+            }
+
+            setContentView(R.layout.main);
+
+            findViewsById();
+
+            initPlatformConnector();
+
+            inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+            CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
+            new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), new MainViewInit(rec), new ViewManager(rec));
+            GL.that.textInput = new Android_TextInput(mainActivity);
+
+            SelectedCacheEventList.Add(this);
+            CacheListChangedEventList.Add(this);
+            // GpsStateChangeEventList.Add(this);
+
+            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+            Config.AcceptChanges();
+
+            Config.RunOverLockScreen.addSettingChangedListener(() -> setLockScreenProperty());
+
+            // Initial Android TexturePacker
+            new Android_Packer();
+
+            initialLocationManager();
+
+            initalMicIcon();
+
+            GL.that.onStart();
+
+            if (tabFrame != null)
+                tabFrame.setVisibility(View.INVISIBLE);
+            if (frame != null)
+                frame.setVisibility(View.INVISIBLE);
+
+            InfoDownSlider.invalidate();
+
+            CacheListChangedEvent();
+
+            downSlider.isInitial = false;
+
+            int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
+
+            setQuickButtonHeight(sollHeight);
+
+            // at the moment isFirstStart is always true. Intended for change of theme (ActivityUtils): code there not used, removed
+            if (isFirstStart) {
+                // ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
+                if (Config.newInstall.getValue() && GetSettingsAccessToken().length() == 0) {
+                    askToGetApiKey();
+                } else {
+                    if (!GlobalCore.restartAfterKill)
+                        chkGpsIsOn();
+                }
+
+                if (Config.newInstall.getValue()) {
+                    // wait for Copy Asset is closed
+                    CheckTranslationIsLoaded();
+                    Timer tim = new Timer();
+                    TimerTask timTask = new TimerTask() {
+
+                        @Override
+                        public void run() {
+
+                            mainActivity.runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    String Welcome = "";
+                                    String LangId = getString(R.string.langId);
+                                    try {
+                                        Welcome = Translation.GetTextFile("welcome", LangId);
+
+                                        Welcome += Translation.GetTextFile("changelog", LangId);
+                                    } catch (IOException e1) {
+                                        e1.printStackTrace();
+                                    }
+
+                                    MessageBox.Show(Welcome, Translation.get("welcome"), MessageBoxIcon.None);
+                                }
+                            });
+
+                        }
+                    };
+
+                    tim.schedule(timTask, 5000);
+
+                }
+
+                if (input == null) {
+                    graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
+
+                    input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
+
+                }
+
+            }
+
+            if (aktView != null)
+                ((View) aktView).setVisibility(View.INVISIBLE);
+            if (aktTabView != null)
+                ((View) aktTabView).setVisibility(View.INVISIBLE);
+            if (InfoDownSlider != null)
+                (InfoDownSlider).setVisibility(View.INVISIBLE);
+            if (cacheNameView != null)
+                (cacheNameView).setVisibility(View.INVISIBLE);
+
+            initialViewGL();
+
+        } else {
+            Log.debug(sKlasse, "main onCreate not started from splash: starting splash!");
+            Intent splashIntent = new Intent().setClass(this, splash.class);
+            startActivity(splashIntent);
+            finish();
+        }
     }
 
     @Override
@@ -261,193 +448,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // TODO onSaveInstanceState => save more
 
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (!GlobalCore.RunFromSplash) {
-            Log.debug(sKlasse, "main onCreate not started from splash: starting splash!");
-            Intent splashIntent = new Intent().setClass(main.this, de.droidcachebox.splash.class);
-            startActivity(splashIntent);
-            finish();
-            return;
-        }
-
-        mainActivity = this; // com.badlogic.gdx.backends.android.AndroidApplication
-
-        if (savedInstanceState != null) {
-            Log.debug(sKlasse, "main onCreate with savedInstanceState");
-            GlobalCore.restartAfterKill = true;
-            GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
-
-            String workPath = savedInstanceState.getString("WorkPath");
-            new Config(workPath);
-
-            // hier muss die Config Db initialisiert werden
-            Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-            if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
-                return;
-            Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
-            Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-            Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
-
-            Config.AcceptChanges();
-
-            Resources res = this.getResources();
-            DevicesSizes ui = new DevicesSizes();
-
-            ui.Window = new Size(savedInstanceState.getInt("WindowWidth"), savedInstanceState.getInt("WindowHeight"));
-            ui.Density = res.getDisplayMetrics().density;
-
-            ui.isLandscape = false;
-
-            new UiSizes();
-
-            UiSizes.that.initial(ui);
-
-            Global.Paints.init(this);
-            Global.initIcons(this);
-
-            GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
-            GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
-
-        } else {
-            Log.debug(sKlasse, "main onCreate without savedInstanceState");
-            GlobalCore.restartAfterKill = false;
-        }
-
-        ActivityUtils.onActivityCreateSetTheme(this);
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-
-        // initialize receiver for screen switched on/off
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        if (mReceiver == null) {
-            mReceiver = new ScreenReceiver();
-            registerReceiver(mReceiver, filter);
-        }
-
-        setContentView(R.layout.main);
-
-        findViewsById();
-
-        initPlatformConnector();
-
-        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-        CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
-        new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), new MainViewInit(rec), new ViewManager(rec));
-        GL.that.textInput = new Android_TextInput(mainActivity);
-
-        SelectedCacheEventList.Add(this);
-        CacheListChangedEventList.Add(this);
-        // GpsStateChangeEventList.Add(this);
-
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-        Config.AcceptChanges();
-
-        Config.RunOverLockScreen.addSettingChangedListener(() -> setLockScreenProperty());
-
-        // Initial Android TexturePacker
-        new Android_Packer();
-
-        initialLocationManager();
-
-        initalMicIcon();
-
-        GL.that.onStart();
-
-        if (tabFrame != null)
-            tabFrame.setVisibility(View.INVISIBLE);
-        if (frame != null)
-            frame.setVisibility(View.INVISIBLE);
-
-        InfoDownSlider.invalidate();
-
-        CacheListChangedEvent();
-
-        downSlider.isInitial = false;
-
-        int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
-
-        setQuickButtonHeight(sollHeight);
-
-        // at the moment isFirstStart is always true. Intended for change of theme (ActivityUtils): code there not used, removed
-        if (isFirstStart) {
-            // ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
-            if (Config.newInstall.getValue() && GetSettingsAccessToken().length() == 0) {
-                askToGetApiKey();
-            } else {
-                if (!GlobalCore.restartAfterKill)
-                    chkGpsIsOn();
-            }
-
-            if (Config.newInstall.getValue()) {
-                // wait for Copy Asset is closed
-                CheckTranslationIsLoaded();
-                Timer tim = new Timer();
-                TimerTask timTask = new TimerTask() {
-
-                    @Override
-                    public void run() {
-
-                        mainActivity.runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                String Welcome = "";
-                                String LangId = getString(R.string.langId);
-                                try {
-                                    Welcome = Translation.GetTextFile("welcome", LangId);
-
-                                    Welcome += Translation.GetTextFile("changelog", LangId);
-                                } catch (IOException e1) {
-                                    e1.printStackTrace();
-                                }
-
-                                MessageBox.Show(Welcome, Translation.get("welcome"), MessageBoxIcon.None);
-                            }
-                        });
-
-                    }
-                };
-
-                tim.schedule(timTask, 5000);
-
-            }
-
-            if (input == null) {
-                graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
-
-                input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
-
-            }
-
-        }
-
-        if (aktView != null)
-            ((View) aktView).setVisibility(View.INVISIBLE);
-        if (aktTabView != null)
-            ((View) aktTabView).setVisibility(View.INVISIBLE);
-        if (InfoDownSlider != null)
-            (InfoDownSlider).setVisibility(View.INVISIBLE);
-        if (cacheNameView != null)
-            (cacheNameView).setVisibility(View.INVISIBLE);
-
-        initialViewGL();
     }
 
     private void askToGetApiKey() {
@@ -835,20 +835,30 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
 
 
-        final Bundle extras = getIntent().getExtras();
-        if (!GlobalCore.restartAfterKill || extras != null) {
-            ExtSearch_GcCode = extras.getString("GcCode");
-            ExtSearch_GpxPath = extras.getString("GpxPath");
-            if (ExtSearch_GcCode != null || ExtSearch_GpxPath != null) {
-                mustRunSearch = true;
-                if (ViewManager.that.isInitial()) {
-                    PlatformConnector.FirstShow();
-                }
-            }
+        if (!GlobalCore.restartAfterKill) {
+            final Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                ExternalRequestGCCode = extras.getString("GcCode");
+                ExternalRequestGpxPath = extras.getString("GpxPath");
+                ExternalRequestMapDownloadPath = extras.getString("MapDownloadPath");
+                ExternalRequestLatLon = extras.getString("LatLon");
+                ExternalRequestGuid = extras.getString("Guid");
+                ExternalRequestName = extras.getString("Name");
 
-            // delete handled extras
-            getIntent().removeExtra("GcCode");
-            getIntent().removeExtra("GpxPath");
+                if (ExternalRequestGCCode != null || ExternalRequestGpxPath != null || ExternalRequestGuid != null || ExternalRequestLatLon != null || ExternalRequestMapDownloadPath != null || ExternalRequestName != null) {
+                    mustHandleExternalRequest = true;
+                    if (ViewManager.that.isInitial()) {
+                        PlatformConnector.FirstShow();
+                    }
+                }
+                // delete handled extras
+                getIntent().removeExtra("GcCode");
+                getIntent().removeExtra("GpxPath");
+                getIntent().removeExtra("MapDownloadPath");
+                getIntent().removeExtra("LatLon");
+                getIntent().removeExtra("Guid");
+                getIntent().removeExtra("Name");
+            }
         }
         GL.that.RestartRender();
     }
@@ -1693,7 +1703,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             @Override
             public void vibrate() {
-                main.vibrate();
+                if (Config.vibrateFeedback.getValue())
+                    ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(Config.VibrateTime.getValue());
             }
 
             @Override
@@ -1890,13 +1901,27 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             @Override
             public void firstShow() {
-                if (mustRunSearch) {
-                    if (ExtSearch_GcCode != null)
-                        ImportCacheByGCCode();
-                    if (ExtSearch_GpxPath != null)
-                        ImportGPXFile();
+                if (mustHandleExternalRequest) {
+                    if (ExternalRequestGCCode != null)
+                        importCacheByGCCode();
+                    if (ExternalRequestGpxPath != null)
+                        importGPXFile();
+                    if (ExternalRequestGuid!= null)
+                        // importCacheByGuid();
+                    ;
+                    if (ExternalRequestLatLon != null)
+                        // positionLatLon();
+                    ;
+                    if (ExternalRequestMapDownloadPath != null) {
+                        MapDownload.getInstance().importByUrl("http:" + ExternalRequestMapDownloadPath);
+                        Action_MapDownload.getInstance().Execute();
+                        MapDownload.getInstance().importByUrlFinished();
+                    }
+                    if (ExternalRequestName != null)
+                        //importCacheByName();
+                        ;
                 }
-
+                mustHandleExternalRequest = false;
             }
 
             @Override
@@ -2091,11 +2116,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    private void ImportCacheByGCCode() {
+    private void importCacheByGCCode() {
         TimerTask runTheSearchTasks = new TimerTask() {
             @Override
             public void run() {
-                if (ExtSearch_GcCode != null) {
+                if (ExternalRequestGCCode != null) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -2103,15 +2128,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 // show cachelist first then search dialog
                                 mustShowCacheList = false;
                                 CB_Action_ShowCacheList.getInstance().Execute();
-                                ImportCacheByGCCode(); // now the search can start (doSearchOnline)
+                                importCacheByGCCode(); // now the search can start (doSearchOnline)
                             } else {
                                 mustShowCacheList = true;
                                 if (SearchDialog.that == null) {
                                     new SearchDialog();
                                 }
                                 SearchDialog.that.showNotCloseAutomaticly();
-                                SearchDialog.that.doSearchOnline(ExtSearch_GcCode, SearchMode.GcCode);
-                                ExtSearch_GcCode = null;
+                                SearchDialog.that.doSearchOnline(ExternalRequestGCCode, SearchMode.GcCode);
+                                ExternalRequestGCCode = null;
                             }
                         }
                     });
@@ -2121,7 +2146,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         new Timer().schedule(runTheSearchTasks, 500);
     }
 
-    private void ImportGPXFile() {
+    private void importGPXFile() {
         TimerTask gpxImportTask = new TimerTask() {
             @Override
             public void run() {
@@ -2137,14 +2162,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         }, new ICancelRunnable() {
                             @Override
                             public void run() {
-                                Log.debug(sKlasse, "Import GPXFile from " + ExtSearch_GpxPath + " startet");
+                                Log.debug(sKlasse, "Import GPXFile from " + ExternalRequestGpxPath + " startet");
                                 Date ImportStart = new Date();
                                 Importer importer = new Importer();
                                 ImporterProgress ip = new ImporterProgress();
 
                                 Database.Data.sql.beginTransaction();
                                 try {
-                                    importer.importGpx(ExtSearch_GpxPath, ip);
+                                    importer.importGpx(ExternalRequestGpxPath, ip);
                                 } catch (Exception ignored) {
                                 }
                                 Database.Data.sql.setTransactionSuccessful();
@@ -2157,9 +2182,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                                 long ImportZeit = new Date().getTime() - ImportStart.getTime();
                                 String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "Caches\n" + String.valueOf(GPXFileImporter.LogCount) + "Logs\n in " + String.valueOf(ImportZeit);
-                                Log.debug(sKlasse, Msg.replace("\n", "\n\r") + " from " + ExtSearch_GpxPath);
+                                Log.debug(sKlasse, Msg.replace("\n", "\n\r") + " from " + ExternalRequestGpxPath);
                                 GL.that.Toast(Msg, 3000);
-                                ExtSearch_GpxPath = null;
+                                ExternalRequestGpxPath = null;
                             }
 
                             @Override

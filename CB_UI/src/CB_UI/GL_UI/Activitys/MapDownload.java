@@ -52,6 +52,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     private String repository_freizeitkarte_android;
     private boolean canceld = false;
     private boolean isChkRepository = false;
+    private boolean doImportByUrl;
 
     private MapDownload() {
         super(ActivityRec(), "mapDownloadActivity");
@@ -76,7 +77,8 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     @Override
     public void onShow() {
         ProgresssChangedEventList.Add(this);
-        chkRepository();
+        if (!doImportByUrl)
+            chkRepository();
     }
 
     @Override
@@ -158,6 +160,23 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
     }
 
+    public void importByUrl(String url) {
+        mapInfoList.clear();
+        MapRepositoryInfo mapRepositoryInfo = new MapRepositoryInfo();
+        mapRepositoryInfo.Url = url;
+        int slashPos = mapRepositoryInfo.Url.lastIndexOf("/");
+        String zipFile = mapRepositoryInfo.Url.substring(slashPos + 1, mapRepositoryInfo.Url.length());
+        mapRepositoryInfo.Description = zipFile;
+        mapRepositoryInfo.Size = 100; // unknown
+        mapInfoList.add(mapRepositoryInfo);
+        fillRepositoryList();
+        doImportByUrl = true;
+    }
+
+    public void importByUrlFinished() {
+        doImportByUrl = false;
+    }
+
     private void ImportNow() {
         if (importStarted)
             return;
@@ -176,7 +195,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
         canceld = false;
         importStarted = true;
-        for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
+        for (int i = 0; i < mapInfoItemList.size; i++) {
             MapDownloadItem item = mapInfoItemList.get(i);
             item.beginDownload();
         }
@@ -185,7 +204,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
             while (!DownloadIsCompleted) {
                 if (canceld) {
-                    for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
+                    for (int i = 0; i < mapInfoItemList.size; i++) {
                         MapDownloadItem item = mapInfoItemList.get(i);
                         item.cancelDownload();
                     }
@@ -193,7 +212,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
                 int calcAll = 0;
                 int downloadCount = 0;
-                for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
+                for (int i = 0; i < mapInfoItemList.size; i++) {
                     MapDownloadItem item = mapInfoItemList.get(i);
                     int actPro = item.getDownloadProgress();
                     if (actPro > -1) {
@@ -325,7 +344,27 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         InputStream stream = new ByteArrayInputStream(repository_freizeitkarte_android.getBytes());
         parserCache.parse(stream, values);
 
+        fillRepositoryList();
+
+    }
+
+    private void fillRepositoryList() {
+        // Create possible download List
         float yPos = 0;
+        String workPath = getWorkPath();
+        for (int i = 0, n = mapInfoList.size; i < n; i++) {
+            MapRepositoryInfo map = mapInfoList.get(i);
+            MapDownloadItem item = new MapDownloadItem(map, workPath, MapDownload.this.innerWidth);
+            item.setY(yPos);
+            scrollBox.addChild(item);
+            mapInfoItemList.add(item);
+            yPos += item.getHeight() + margin;
+        }
+
+        scrollBox.setVirtualHeight(yPos);
+    }
+
+    private String getWorkPath() {
 
         // get and check the target directory (global value)
         String workPath = Config.MapPackFolder.getValue();
@@ -345,19 +384,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             isWritable = FileIO.canWrite(workPath);
             Log.info(log, "Download to " + workPath + " is possible? " + isWritable);
         }
-
-        // Create possible download List
-        for (int i = 0, n = mapInfoList.size; i < n; i++) {
-            MapRepositoryInfo map = mapInfoList.get(i);
-
-            MapDownloadItem item = new MapDownloadItem(map, workPath, MapDownload.this.innerWidth);
-            item.setY(yPos);
-            scrollBox.addChild(item);
-            mapInfoItemList.add(item);
-            yPos += item.getHeight() + margin;
-        }
-
-        scrollBox.setVirtualHeight(yPos);
+        return workPath;
     }
 
     private List<IRule<Map<String, String>>> createRepositoryRules(List<IRule<Map<String, String>>> ruleList) {
