@@ -269,7 +269,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         // Actions den Buttons zuweisen
         db_button.addAction(CB_Action_ShowCacheList.getInstance(), true, GestureDirection.Up);
-        db_button.addAction(Action_ParkingDialog.getInstance(), false);
+        db_button.addAction(Action_ParkingDialog.getInstance(), false, GestureDirection.Down);
         db_button.addAction(CB_Action_ShowTrackableListView.getInstance(), false, GestureDirection.Right);
 
         cache_button.addAction(CB_Action_ShowDescriptionView.getInstance(), true, GestureDirection.Up);
@@ -277,7 +277,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         cache_button.addAction(Action_HintDialog.getInstance(), false);
         cache_button.addAction(CB_Action_ShowSpoilerView.getInstance(), false);
         cache_button.addAction(CB_Action_ShowLogView.getInstance(), false, GestureDirection.Down);
-        cache_button.addAction(CB_Action_ShowNotesView.getInstance(), false);
+        cache_button.addAction(CB_Action_ShowNotesView.getInstance(), false, GestureDirection.Left);
         cache_button.addAction(Action_StartExternalDescription.getInstance(), false);
 
         navButton.addAction(CB_Action_ShowMap.getInstance(), true, GestureDirection.Up);
@@ -286,6 +286,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         navButton.addAction(actionNavigateTo, false, GestureDirection.Down);
         navButton.addAction(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left);
         navButton.addAction(Action_MapDownload.getInstance(), false);
+        navButton.addAction(Action_OpenAndroMaps.getInstance(), false);
 
         tool_button.addAction(CB_Action_ShowDraftsView.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         tool_button.addAction(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left);

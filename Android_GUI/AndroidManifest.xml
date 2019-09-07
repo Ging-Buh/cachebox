@@ -56,7 +56,11 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="orux-map"/>
+				<data android:scheme="mf-v3-map"/>
+				<data android:scheme="backcountrynav-action-map"/>
+				<data android:scheme="bikecomputer-map"/>
+				<data android:scheme="mf-v4-map"/>
+				<data android:scheme="orux-map"/>
             </intent-filter>
 
 			<intent-filter>
@@ -81,6 +85,10 @@
 					  android:pathPrefix="/geocache/GC" />
 				<data android:scheme="https" android:host="coord.info"
 					  android:pathPrefix="/GC" />
+
+                <data android:scheme="http" android:host="download.openandromaps.org"
+                      android:pathPrefix="/maps" />
+
 			</intent-filter>
 
 			 <intent-filter>

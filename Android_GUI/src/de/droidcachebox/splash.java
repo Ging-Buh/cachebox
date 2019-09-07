@@ -114,7 +114,7 @@ public class splash extends Activity {
 
         setContentView(R.layout.splash);
 
-        DisplayMetrics displaymetrics = this.getResources().getDisplayMetrics();
+        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
 
         GlobalCore.displayDensity = displaymetrics.density;
         int h = displaymetrics.heightPixels;
@@ -139,22 +139,24 @@ public class splash extends Activity {
         GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
 
         if (main.mainActivity != null) {
-            // meaning main has  been startet already
+            // meaning ACB should have been started to handle requests
+            // else ACB will be started, but request will not be handled
             String GcCode = null;
             String guid = null;
             String name = null;
+            String GpxPath = null;
+            String LatLon = null;
+            String downloadPath = null;
 
             final Bundle intentExtras = getIntent().getExtras();
             if (intentExtras != null) {
+                // todo ask André what is the intention for this
                 GcCode = intentExtras.getString("geocode");
                 name = intentExtras.getString("name");
                 guid = intentExtras.getString("guid");
             }
 
             final Uri intentData = getIntent().getData();
-            String GpxPath = null;
-            String LatLon = null;
-            String downloadPath = null;
             if (intentData != null) {
                 final Uri uri = intentData;
                 String scheme = intentData.getScheme();
@@ -177,49 +179,43 @@ public class splash extends Activity {
                                     int i2 = uriPath.indexOf("_");
                                     if (i2 > i1) {
                                         GcCode = uriPath.substring(i1, i2);
-                                        Log.debug(log, "GCCode='" + GcCode + "'");
                                     } else if (i1 > 0) {
                                         GcCode = uriPath.substring(i1);
-                                        Log.debug(log, "GCCode='" + GcCode + "'");
                                     }
                                 }
-                                // todo guid not yet implemented : implement fetch cache by  guid in main
-                                guid = uri.getQueryParameter("guid");
-
-                                if (GcCode != null && GcCode.length() > 0) {
-                                    GcCode = GcCode.toUpperCase(Locale.US);
-                                    guid = null;
-                                } else if (guid != null && guid.length() > 0) {
-                                    GcCode = null;
-                                    guid = guid.toLowerCase(Locale.US);
-                                    if (guid.endsWith("#")) {
-                                        guid = guid.substring(0, guid.length() - 1);
+                                if (StringH.isEmpty(GcCode)) {
+                                    // todo guid not yet implemented : implement fetch cache by  guid in main
+                                    guid = uri.getQueryParameter("guid");
+                                    if (!StringH.isEmpty(guid)) {
+                                        guid = guid.toLowerCase(Locale.US);
+                                        if (guid.endsWith("#")) {
+                                            guid = guid.substring(0, guid.length() - 1);
+                                        }
                                     }
-                                } else {
-                                    // warning.showToast(res.getString(R.string.err_detail_open));
-                                    finish();
-                                    return;
                                 }
                             } else if (uriHost.contains("coord.info")) {
                                 if (uriPath != null && uriPath.startsWith("/gc")) {
                                     GcCode = uriPath.substring(1).toUpperCase(Locale.US);
-                                } else {
-                                    // warning.showToast(res.getString(R.string.err_detail_open));
-                                    finish();
-                                    return;
                                 }
+                            } else if (uriHost.contains("download.openandromaps.org")) {
+                                downloadPath = uri.toString();
                             }
                             break;
                         case "geo":
                             LatLon = uri.getSchemeSpecificPart();
-                            // todo preperation for to create a tempory waypoint on the map and go there
-                            break;
-                        case "orux-map":
-                            // download.openandromaps.org/mapsV4/Germany/baden-wuerttemberg.zip
-                            // mit http://
-                            downloadPath = uri.getEncodedSchemeSpecificPart();
+                            // todo
+                            // we have no navigation but we can
+                            // create a tempory waypoint on the map and go there
+                            // or
+                            // show map and center map there
                             break;
                         default:
+                            // download.openandromaps.org -> orux-map, backcountrynav-action-map, bikecomputer-map
+                            downloadPath = uri.getEncodedSchemeSpecificPart();
+                            if (downloadPath != null) {
+                                downloadPath = "http:" + downloadPath;
+                                if (!downloadPath.endsWith("zip")) downloadPath = null;
+                            }
                     }
                 }
             }
@@ -237,10 +233,13 @@ public class splash extends Activity {
                 b.putSerializable("LatLon", LatLon);
             if (downloadPath != null)
                 b.putSerializable("MapDownloadPath", downloadPath);
-            Intent mainIntent = main.mainActivity.getIntent();
-            mainIntent.putExtras(b);
-            startActivity(mainIntent);
-            finish();
+            if (!b.isEmpty()) {
+                Intent mainIntent = main.mainActivity.getIntent();
+                mainIntent.putExtras(b);
+                startActivity(mainIntent);
+            }
+            finish(); // this activity can be closed and back to the calling activity in onActivityResult
+            return;
         }
 
         loadImages();

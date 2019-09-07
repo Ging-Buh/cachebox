@@ -1913,7 +1913,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         // positionLatLon();
                     ;
                     if (ExternalRequestMapDownloadPath != null) {
-                        MapDownload.getInstance().importByUrl("http:" + ExternalRequestMapDownloadPath);
+                        MapDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
                         Action_MapDownload.getInstance().Execute();
                         MapDownload.getInstance().importByUrlFinished();
                     }
