@@ -19,34 +19,42 @@ public class PolylineReduction {
     // / <param name="Points">The points.</param>
     // / <param name="Tolerance">The tolerance.</param>
     // / <returns></returns>
-    public static ArrayList<TrackPoint> DouglasPeuckerReduction(ArrayList<TrackPoint> points, double Tolerance) {
+    public static ArrayList<TrackPoint> polylineReduction(ArrayList<TrackPoint> points, double tolerance) {
         if (points == null || points.size() < 50)
-            return points; // created Circle have 36 points and don`t need reduction
+            return points;
 
-        int firstPoint = 0;
         int lastPoint = points.size() - 1;
-        ArrayList<Integer> pointIndexsToKeep = new ArrayList<Integer>();
-
-        // Add the first and last index to the keepers
-        pointIndexsToKeep.add(firstPoint);
-        pointIndexsToKeep.add(lastPoint);
-
-        // The first and the last point cannot be the same
-        while (points.get(firstPoint) == points.get(lastPoint)) {
-            lastPoint--;
+        if (points.get(0).equals(points.get(lastPoint))) {
+            // avoid closed polygon: The first and the last point cannot be the same
+            // avoid closed polygon: simplified by splitting into 2 ArrayLists of same size.
+            // (normally you should take the two points with the maximal distance)
+            ArrayList<TrackPoint> r1 = reduce(new ArrayList<>(points.subList(0, lastPoint / 2)), tolerance);
+            ArrayList<TrackPoint> r2 = reduce(new ArrayList<>(points.subList(lastPoint / 2, lastPoint)), tolerance);
+            r1.addAll(r2);
+            return r1;
+        } else {
+            return reduce(points, tolerance);
         }
+    }
 
-        DouglasPeuckerReduction(points, firstPoint, lastPoint, Tolerance, pointIndexsToKeep);
-
-        ArrayList<TrackPoint> returnPoints = new ArrayList<TrackPoint>();
-
-        Collections.sort(pointIndexsToKeep);
-
-        for (int index : pointIndexsToKeep) {
-            returnPoints.add(points.get(index));
+    private static ArrayList<TrackPoint> reduce(ArrayList<TrackPoint> trackPoints, double tolerance) {
+        int lastPoint = trackPoints.size() - 1;
+        if (lastPoint > 0) {
+            while (trackPoints.get(0).equals(trackPoints.get(lastPoint))) {
+                lastPoint--;
+                if (lastPoint == 0) return trackPoints; // simplified use the original, all points are equal
+            }
         }
-
-        return returnPoints;
+        ArrayList<Integer> reducedIndexes = new ArrayList<>();
+        reducedIndexes.add(0);
+        reducedIndexes.add(trackPoints.size() - 1);
+        reduceWithDouglasPeuckerAlgorithm(trackPoints, 0, trackPoints.size() - 1, tolerance, reducedIndexes);
+        Collections.sort(reducedIndexes);
+        ArrayList<TrackPoint> result = new ArrayList<>();
+        for (int index : reducedIndexes) {
+            result.add(trackPoints.get(index));
+        }
+        return result;
     }
 
     // / <summary>
@@ -57,12 +65,12 @@ public class PolylineReduction {
     // / <param name="lastPoint">The last point.</param>
     // / <param name="tolerance">The tolerance.</param>
     // / <param name="pointIndexsToKeep">The point index to keep.</param>
-    private static void DouglasPeuckerReduction(ArrayList<TrackPoint> points, int firstPoint, int lastPoint, double tolerance, ArrayList<Integer> pointIndexsToKeep) {
+    private static void reduceWithDouglasPeuckerAlgorithm(ArrayList<TrackPoint> points, int firstPoint, int lastPoint, double tolerance, ArrayList<Integer> pointIndexsToKeep) {
         double maxDistance = 0.0;
         int indexFarthest = 0;
 
         for (int index = firstPoint; index < lastPoint; index++) {
-            double distance = PerpendicularDistance(points.get(firstPoint), points.get(lastPoint), points.get(index));
+            double distance = calculatePerpendicularDistance(points.get(firstPoint), points.get(lastPoint), points.get(index));
             if (distance > maxDistance) {
                 maxDistance = distance;
                 indexFarthest = index;
@@ -73,8 +81,8 @@ public class PolylineReduction {
             // Add the largest point that exceeds the tolerance
             pointIndexsToKeep.add(indexFarthest);
 
-            DouglasPeuckerReduction(points, firstPoint, indexFarthest, tolerance, pointIndexsToKeep);
-            DouglasPeuckerReduction(points, indexFarthest, lastPoint, tolerance, pointIndexsToKeep);
+            reduceWithDouglasPeuckerAlgorithm(points, firstPoint, indexFarthest, tolerance, pointIndexsToKeep);
+            reduceWithDouglasPeuckerAlgorithm(points, indexFarthest, lastPoint, tolerance, pointIndexsToKeep);
         }
     }
 
@@ -85,7 +93,7 @@ public class PolylineReduction {
     // / <param name="pt2">The PT2.</param>
     // / <param name="p">The p.</param>
     // / <returns></returns>
-    public static double PerpendicularDistance(PointD Point1, PointD Point2, PointD Point) {
+    private static double calculatePerpendicularDistance(PointD Point1, PointD Point2, PointD Point) {
 
         try {
             // double area = Math.abs(0.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
@@ -105,12 +113,14 @@ public class PolylineReduction {
             if (bottom == 0.0)
                 return 0.0;
 
-            double height = area / bottom * 2;
-
-            return height;
+            return area / bottom * 2;
         } catch (Exception e) {
             return 0.0;
         }
+
+    }
+
+    private void getReduced() {
 
     }
 

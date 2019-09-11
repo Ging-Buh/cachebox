@@ -50,7 +50,6 @@ public class PermissionCheck {
                 DENIED_List.add(permission);
             }
         }
-
         if (!DENIED_List.isEmpty()) {
             String[] ar = DENIED_List.toArray(new String[DENIED_List.size()]);
             ActivityCompat.requestPermissions(context, ar, MY_PERMISSIONS_REQUEST);

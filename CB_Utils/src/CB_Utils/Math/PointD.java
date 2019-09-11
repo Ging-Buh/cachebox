@@ -1,19 +1,9 @@
 package CB_Utils.Math;
 
 public class PointD {
-    /**
-     * X
-     */
     public double X;
-
-    /**
-     * Y
-     */
     public double Y;
 
-    /**
-     * Standardkonstruktor
-     */
     public PointD(double x, double y) {
         this.X = x;
         this.Y = y;
@@ -22,5 +12,19 @@ public class PointD {
     @Override
     public String toString() {
         return this.X + " / " + this.Y;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof PointD)) {
+            return false;
+        }
+        PointD other = (PointD) obj;
+        if (X == other.X && Y == other.Y)
+            return true;
+        else
+            return false;
     }
 }

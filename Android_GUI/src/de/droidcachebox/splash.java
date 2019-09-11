@@ -320,7 +320,7 @@ public class splash extends Activity {
             }
 
             try {
-                final Dialog dialog = new Dialog(splashActivity) {
+                final Dialog dialog = new Dialog(this) {
                     @Override
                     public boolean onKeyDown(int keyCode, KeyEvent event) {
                         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -334,7 +334,7 @@ public class splash extends Activity {
                 TextView title = dialog.findViewById(R.id.select_sd_title);
                 title.setText(Translation.get("selectWorkSpace") + "\n\n");
 
-                Button btnInternal_SD = dialog.findViewById(R.id.button1);
+                Button btnInternal_SD = dialog.findViewById(R.id.btnInternal_SD);
                 btnInternal_SD.setText("Internal SD\n\n" + workPath);
                 btnInternal_SD.setOnClickListener(v -> {
                     // close select dialog
@@ -356,7 +356,7 @@ public class splash extends Activity {
                     }.start();
                 });
 
-                Button btnExternalSandbox = (Button) dialog.findViewById(R.id.button2);
+                Button btnExternalSandbox = dialog.findViewById(R.id.btnExternalSandbox);
                 final boolean isSandbox = externalSd == null ? false : externalSd.contains("Android/data/de.droidcachebox");
                 if (!hasExtSd) {
                     btnExternalSandbox.setVisibility(Button.INVISIBLE);
@@ -502,18 +502,16 @@ public class splash extends Activity {
                         showPleaseWaitDialog();
 
                         // use external SD -> change workPath
-                        Thread thread = new Thread() {
+                        new Thread() {
                             @Override
                             public void run() {
                                 workPath = _AdditionalWorkPath;
-
                                 // boolean useTabletLayout = rbTabletLayout.isChecked();
                                 saveWorkPath();
                                 startInitial();
                                 Log.info(log, "Initial for " + workPath);
                             }
-                        };
-                        thread.start();
+                        }.start();
 
                     });
 
@@ -521,7 +519,7 @@ public class splash extends Activity {
                 }
 
                 // with the changed (own) folder  get, the workspace can not be created, only selected
-                Button btnCreateWorkpath = (Button) dialog.findViewById(R.id.buttonCreateWorkspace);
+                Button btnCreateWorkpath = dialog.findViewById(R.id.btnCreateWorkpath);
                 btnCreateWorkpath.setText(Translation.get("createWorkSpace"));
                 btnCreateWorkpath.setOnClickListener(v -> {
                     // close select dialog

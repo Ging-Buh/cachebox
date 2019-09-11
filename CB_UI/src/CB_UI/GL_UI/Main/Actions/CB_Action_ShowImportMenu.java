@@ -103,7 +103,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             });
         }));
         icm.addMenuItem("moreImport", null, () -> GL.that.postAsync(() -> new Import().show()));
-        icm.addMenuItem("importCachesOverPosition", null, () -> new ImportGCPosition().show()); // "import"
+        icm.addMenuItem("importCachesOverPosition", null, () -> new ImportGCPosition().show());
         icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", null, SearchOverNameOwnerGcCode::ShowInstanz);
         icm.addMenuItem("GCVoteRatings", null, () -> new Import(MI_IMPORT_GCV).show());
         icm.addMenuItem("GSAKMenuImport", null, () -> new Import_GSAK().show());

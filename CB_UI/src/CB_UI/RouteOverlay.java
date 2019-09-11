@@ -44,7 +44,6 @@ import java.util.Date;
 public class RouteOverlay {
     private static final String log = "RouteOverlay";
     public static boolean mRoutesChanged = false;
-    public static double Tolleranz = 0;
     public static int aktCalcedZoomLevel = -1;
     /**
      * ist in Routes eine von openRouteService generierter Track enthalten, dann enthält diese Variable diesen track.
@@ -389,15 +388,14 @@ public class RouteOverlay {
             mRoutesChanged = false;
             aktCalcedZoomLevel = Zoom;
             if (DrawRoutes == null)
-                DrawRoutes = new ArrayList<RouteOverlay.Route>();
+                DrawRoutes = new ArrayList<>();
             else
                 DrawRoutes.clear();
 
             double tolerance = 0.01 * Math.exp(-1 * (Zoom - 11));
-            Tolleranz = tolerance;
 
+            // Log.info(log, "Number of Routes to show: " + Routes.size());
             for (int i = 0; i < Routes.size(); i++) {
-
                 if (Routes.get(i) != null && Routes.get(i).ShowRoute) {
                     addToDrawRoutes(tolerance, Routes.get(i), Zoom, false);
                 }
@@ -464,11 +462,14 @@ public class RouteOverlay {
             ArrayList<TrackPoint> reducedPoints;
 
             // ab zoom level 18 keine Punkte Reduzieren
-
             if (dontReduce || Zoom >= 18) {
                 reducedPoints = track.Points;
             } else {
-                reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
+                reducedPoints = PolylineReduction.polylineReduction(track.Points, tolerance);
+                Log.info(log, "Track: " + track.FileName + " has " + track.Points.size() + ". reduced to " + reducedPoints.size() + " at Zoom = " + Zoom);
+                if (reducedPoints.size() == 2) {
+                    reducedPoints = track.Points;
+                }
             }
 
             // AllTrackPoints = track.Points.size();
