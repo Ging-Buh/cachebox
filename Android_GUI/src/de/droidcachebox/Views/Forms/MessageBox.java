@@ -33,9 +33,9 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 import de.droidcachebox.Global;
+import de.droidcachebox.Main;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.splash;
+import de.droidcachebox.Splash;
 
 import static android.view.View.GONE;
 
@@ -217,9 +217,9 @@ public class MessageBox extends android.app.Dialog {
     private static Activity getActivity() {
         if (parent != null)
             return parent;
-        if (main.mainActivity != null)
-            return main.mainActivity;
-        return splash.splashActivity;
+        if (Main.mainActivity != null)
+            return Main.mainActivity;
+        return Splash.splashActivity;
     }
 
     /**

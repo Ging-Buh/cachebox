@@ -19,7 +19,6 @@ import CB_Utils.http.Download;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
@@ -30,8 +29,8 @@ import android.view.MotionEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Main;
 import de.droidcachebox.Views.Forms.MessageBox;
-import de.droidcachebox.main;
 
 import java.io.File;
 import java.util.*;
@@ -223,8 +222,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    if (main.mainActivity == null) return;
-                    main.mainActivity.runOnUiThread(() -> scrollTo(0, 0));
+                    if (Main.mainActivity == null) return;
+                    Main.mainActivity.runOnUiThread(() -> scrollTo(0, 0));
                 }
             };
             timer.schedule(task, 100);
@@ -293,7 +292,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
 
             final String FinalHtml = html;
-            main.mainActivity.runOnUiThread(() -> {
+            Main.mainActivity.runOnUiThread(() -> {
                 try {
                     DescriptionViewControl.that.loadDataWithBaseURL("fake://fake.de", FinalHtml, "text/html", "utf-8", null);
                 } catch (Exception ignored) {
@@ -302,7 +301,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         }
 
         try {
-            main.mainActivity.runOnUiThread(() -> {
+            Main.mainActivity.runOnUiThread(() -> {
                 if (DescriptionViewControl.that.getSettings() != null)
                     DescriptionViewControl.that.getSettings().setLightTouchEnabled(true);
             });
@@ -401,7 +400,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     @Override
     public void OnShow() {
-        main.mainActivity.runOnUiThread(() -> {
+        Main.mainActivity.runOnUiThread(() -> {
             if (GlobalCore.isSetSelectedCache()) {
                 // aktCache = GlobalCore.getSelectedCache();
 
@@ -413,9 +412,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 // im Day Mode brauchen wir kein InvertView
                 // das sollte mehr Performance geben
                 if (Config.nightMode.getValue()) {
-                    invertViewControl.Me.setVisibility(VISIBLE);
+                    InvertViewControl.Me.setVisibility(VISIBLE);
                 } else {
-                    invertViewControl.Me.setVisibility(GONE);
+                    InvertViewControl.Me.setVisibility(GONE);
                 }
 
                 that.setWillNotDraw(false);
@@ -439,10 +438,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     }
 
     @Override
-    public void ActivityResult(int requestCode, int resultCode, Intent data) {
-    }
-
-    @Override
     public int GetContextMenuId() {
         return 0;
     }
@@ -459,7 +454,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        invertViewControl.Me.invalidate();
+        InvertViewControl.Me.invalidate();
     }
 
     @Override

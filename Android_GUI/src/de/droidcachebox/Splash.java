@@ -82,8 +82,9 @@ import java.util.*;
  * + check if this (Intent) is called with "Params" in the Extras Bundle: if pass them to main
  * + at last starting the gdx AndroidApplication main
  */
-public class splash extends Activity {
+public class Splash extends Activity {
     private static final String log = "splash";
+    public static final int REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5 = 42;
     public static Activity splashActivity;
     private static DevicesSizes ui;
     protected int height;
@@ -138,7 +139,7 @@ public class splash extends Activity {
         // Check if use small skin
         GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
 
-        if (main.mainActivity != null) {
+        if (Main.mainActivity != null) {
             // meaning ACB should have been started to handle requests
             // else ACB will be started, but request will not be handled
             String GcCode = null;
@@ -234,7 +235,7 @@ public class splash extends Activity {
             if (downloadPath != null)
                 b.putSerializable("MapDownloadPath", downloadPath);
             if (!b.isEmpty()) {
-                Intent mainIntent = main.mainActivity.getIntent();
+                Intent mainIntent = Main.mainActivity.getIntent();
                 mainIntent.putExtras(b);
                 startActivity(mainIntent);
             }
@@ -324,7 +325,7 @@ public class splash extends Activity {
                     @Override
                     public boolean onKeyDown(int keyCode, KeyEvent event) {
                         if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            splash.this.finish();
+                            Splash.this.finish();
                         }
                         return super.onKeyDown(keyCode, event);
                     }
@@ -462,7 +463,7 @@ public class splash extends Activity {
                     btnAdditionalWorkpath.setOnLongClickListener(v -> {
 
                         // setting the MessageBox then the UI_sizes are not initial in this moment
-                        Resources res = splash.this.getResources();
+                        Resources res = Splash.this.getResources();
                         float scale = res.getDisplayMetrics().density;
                         float calcBase = 533.333f * scale;
 
@@ -532,7 +533,7 @@ public class splash extends Activity {
                             onStart();
                         } else {
                             String WriteProtectionMsg = Translation.get("NoWriteAcces");
-                            Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+                            Toast.makeText(Splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
                         }
                     });
                 });
@@ -553,7 +554,7 @@ public class splash extends Activity {
         Log.debug(getClass().getName(), "onActivityResult");
         splashActivity = this;
 
-        if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5) {
             Uri treeUri = data.getData();
 
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -613,7 +614,7 @@ public class splash extends Activity {
     }
 
     private void showPleaseWaitDialog() {
-        pleaseWaitDialog = ProgressDialog.show(splash.this, "In progress", "Copy resources");
+        pleaseWaitDialog = ProgressDialog.show(Splash.this, "In progress", "Copy resources");
         pleaseWaitDialog.show();
         TextView tv1 = (TextView) pleaseWaitDialog.findViewById(android.R.id.message);
         tv1.setTextColor(Color.WHITE);
@@ -822,7 +823,7 @@ public class splash extends Activity {
                 height = frame.getMeasuredHeight();
 
                 while (width == 0 || height == 0) {
-                    splash.this.runOnUiThread(new Runnable() {
+                    Splash.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             frame.forceLayout();
@@ -897,7 +898,7 @@ public class splash extends Activity {
             @Override
             public void Write(SettingBase<?> setting) {
                 if (androidSetting == null)
-                    androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, MODE_PRIVATE);
+                    androidSetting = Splash.this.getSharedPreferences(Global.PREFS_NAME, MODE_PRIVATE);
                 if (androidSettingEditor == null)
                     androidSettingEditor = androidSetting.edit();
                 if (setting instanceof SettingBool) {
@@ -913,7 +914,7 @@ public class splash extends Activity {
             @Override
             public SettingBase<?> Read(SettingBase<?> setting) {
                 if (androidSetting == null)
-                    androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+                    androidSetting = Splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
                 if (setting instanceof SettingString) {
                     String value = androidSetting.getString(setting.getName(), "");
                     ((SettingString) setting).setValue(value);
@@ -968,7 +969,7 @@ public class splash extends Activity {
         Log.info(log, "Screen width/height:" + width + "/" + height);
 
         if (ui == null) {
-            Resources res = splash.this.getResources();
+            Resources res = Splash.this.getResources();
             ui = new DevicesSizes();
             ui.Window = new Size(width, height);
             ui.Density = res.getDisplayMetrics().density;
@@ -1003,7 +1004,7 @@ public class splash extends Activity {
         Bundle b = new Bundle();
         // b.putSerializable("UI", ui);
 
-        Intent mainIntent = new Intent().setClass(this, main.class);
+        Intent mainIntent = new Intent().setClass(this, Main.class);
         mainIntent.putExtras(b);
         Log.info(log, "startActivity for main.class (com.badlogic.gdx.backends.android.AndroidApplication) from slash");
         startActivity(mainIntent);

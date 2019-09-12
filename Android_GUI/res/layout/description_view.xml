@@ -16,7 +16,7 @@
 					android:id="@+id/DescriptionViewControl" android:layout_height="fill_parent"
 					android:layout_width="fill_parent" />
 			</LinearLayout>
-			<de.droidcachebox.Custom_Controls.invertViewControl
+			<de.droidcachebox.Custom_Controls.InvertViewControl
 				android:id="@+id/InvertViewControl" android:layout_height="fill_parent"
 				android:layout_width="fill_parent" />
 

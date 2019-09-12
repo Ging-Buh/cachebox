@@ -21,16 +21,6 @@ import java.util.TimeZone;
 public class Global {
 
     public static final String PREFS_NAME = "DroidCacheboxPrefsFile";
-
-    /**
-     * Activity Result IDs
-     */
-    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
-    public static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
-    public static final int REQUEST_CODE_GET_API_KEY = 987654321;
-    public static final int REQUEST_CODE_SCREENLOCK = 12345;
-    public static final int REQUEST_CODE_KEYBOARDACTIVITY = 11012;
-    public static final int REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5 = 42;
     /**
      * Nacht Color Matrix
      */

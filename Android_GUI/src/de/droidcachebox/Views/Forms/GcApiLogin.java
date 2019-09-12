@@ -14,9 +14,9 @@ import android.view.ViewParent;
 import android.webkit.*;
 import android.widget.LinearLayout;
 import de.droidcachebox.Global;
+import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.main;
 
 import static CB_Core.Api.GroundspeakAPI.fetchMyUserInfos;
 import static CB_Core.Api.GroundspeakAPI.setAuthorization;
@@ -73,7 +73,7 @@ public class GcApiLogin extends Activity {
         }
 
         // Instanz new WebView
-        webView = new WebView(main.mainActivity, null, android.R.attr.webViewStyle);
+        webView = new WebView(Main.mainActivity, null, android.R.attr.webViewStyle);
         webView.requestFocus(View.FOCUS_DOWN);
         webView.setOnTouchListener(new View.OnTouchListener() {
             @Override

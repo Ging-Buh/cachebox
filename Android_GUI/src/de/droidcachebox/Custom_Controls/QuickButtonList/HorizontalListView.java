@@ -33,7 +33,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import de.droidcachebox.Custom_Controls.downSlider;
+import de.droidcachebox.Custom_Controls.DownSlider;
 
 /**
  * nur noch ein Dummy um die Größe und damit das Layout zu erhalten
@@ -113,7 +113,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(measure(widthMeasureSpec), downSlider.getAktQuickButtonHeight());
+        setMeasuredDimension(measure(widthMeasureSpec), DownSlider.getAktQuickButtonHeight());
     }
 
     /**

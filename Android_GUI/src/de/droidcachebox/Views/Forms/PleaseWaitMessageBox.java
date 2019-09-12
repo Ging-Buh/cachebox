@@ -36,8 +36,8 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.*;
 import de.droidcachebox.Global;
+import de.droidcachebox.Main;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
 
 /**
  * Zeigt ein Meldungsfeld an, das Text, Schaltflächen und Symbole mit Informationen und Anweisungen für den Benutzer enthalten kann.
@@ -382,7 +382,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      */
     private static Activity getActivity() {
         if (parent == null)
-            return main.mainActivity;
+            return Main.mainActivity;
 
         return parent;
 

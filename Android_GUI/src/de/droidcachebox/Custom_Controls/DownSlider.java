@@ -54,18 +54,18 @@ import android.view.View;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Global;
+import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.main;
 
 import java.util.Iterator;
 
-public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent {
+public final class DownSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent {
 
     private static final String log = "downSlider";
     public static boolean isInitial = false;
     private static int QuickButtonHeight;
-    private static downSlider Me;
+    private static DownSlider Me;
     private final int AnimationTime = 50;
     private final double AnimationMulti = 1.4;
     int attCompleadHeight = 0;
@@ -225,11 +225,11 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
         }
     };
 
-    public downSlider(Context context) {
+    public DownSlider(Context context) {
         super(context);
     }
 
-    public downSlider(Context context, AttributeSet attrs) {
+    public DownSlider(Context context, AttributeSet attrs) {
         super(context, attrs);
         SelectedCacheEventList.Add(this);
 
@@ -241,21 +241,21 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
     }
 
-    public downSlider(Context context, AttributeSet attrs, int defStyle) {
+    public DownSlider(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
     }
 
     public static void ButtonShowStateChanged() {
-        if (downSlider.Me != null) {
+        if (DownSlider.Me != null) {
             if (Config.quickButtonShow.getValue()) {
-                downSlider.Me.setPos_onUI(downSlider.Me.QuickButtonMaxHeight);
+                DownSlider.Me.setPos_onUI(DownSlider.Me.QuickButtonMaxHeight);
             } else {
-                downSlider.Me.setPos_onUI(0);
+                DownSlider.Me.setPos_onUI(0);
             }
 
             if (GlobalCore.isSetSelectedCache()) {
-                downSlider.Me.setCache_onUI(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+                DownSlider.Me.setCache_onUI(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
             }
 
         }
@@ -451,7 +451,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
                         Attributes att = iterator.next();
                         String uri = "drawable/" + att.getImageName();
 
-                        int imageResource = getResources().getIdentifier(uri, null, main.mainActivity.getPackageName());
+                        int imageResource = getResources().getIdentifier(uri, null, Main.mainActivity.getPackageName());
                         Drawable image = null;
                         try {
                             image = getResources().getDrawable(imageResource);
@@ -517,9 +517,9 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
         CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, GPSInfoHeight - 5);
         ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground));
 
-        Bitmap b = Bitmap.createBitmap(main.strengthLayout.getMeasuredWidth(), main.strengthLayout.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(Main.strengthLayout.getMeasuredWidth(), Main.strengthLayout.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
-        main.strengthLayout.draw(c);
+        Main.strengthLayout.draw(c);
 
         int left = width - b.getWidth() - 22;
         int top = GPSInfoHeight - b.getHeight() - 10;
@@ -547,7 +547,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
     public void setPos_onUI(final int Pos) {
         tmpPos = Pos;
-        ((main) main.mainActivity).runOnUiThread(new Runnable() {
+        ((Main) Main.mainActivity).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // ((main) main.mainActivity).InfoDownSlider.setPos(Pos);
@@ -576,7 +576,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
             } else {
                 QuickButtonHeight = 0;
             }
-            ((main) main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
+            ((Main) Main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
 
         } else {
             yPos = 0;
@@ -608,8 +608,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
     public void ActionUp() // Slider zurück scrolllen lassen
     {
 
-        if (main.mainActivity != null) {
-            ((main) main.mainActivity).runOnUiThread(new Runnable() {
+        if (Main.mainActivity != null) {
+            ((Main) Main.mainActivity).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
@@ -626,7 +626,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
                         Config.AcceptChanges();
                     }
 
-                    ((main) main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
+                    ((Main) Main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
 
                     if (swipeUp || swipeDown) {
                         if (swipeUp) {
@@ -674,7 +674,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
         }
 
-        ((main) main.mainActivity).runOnUiThread(new Runnable() {
+        ((Main) Main.mainActivity).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mCache = cache;
@@ -688,7 +688,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
                 WPInfoHeight = 0;
                 topCalc = 0;
 
-                int TextWidth = downSlider.Me.width - downSlider.Me.imgSize;
+                int TextWidth = DownSlider.Me.width - DownSlider.Me.imgSize;
 
                 Rect bounds = new Rect();
                 WPLayoutTextPaint = new TextPaint();
@@ -712,7 +712,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
                     WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight() + WPLayoutName.getHeight();
                 }
 
-                downSlider.Me.invalidate();
+                DownSlider.Me.invalidate();
 
             }
         });

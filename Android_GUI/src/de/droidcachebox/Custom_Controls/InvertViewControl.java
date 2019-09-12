@@ -26,8 +26,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import de.droidcachebox.Global;
+import de.droidcachebox.Main;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,25 +35,25 @@ import java.util.TimerTask;
 /**
  * @author Longri
  */
-public final class invertViewControl extends View {
+public final class InvertViewControl extends View {
 
-    public static invertViewControl Me;
+    public static InvertViewControl Me;
     LinearLayout WebViewLayout = null;
     Bitmap b = null;
     boolean firstDraw = true;
 
-    public invertViewControl(Context context) {
+    public InvertViewControl(Context context) {
         super(context);
         Me = this;
     }
 
-    public invertViewControl(Context context, AttributeSet attrs) {
+    public InvertViewControl(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         Me = this;
     }
 
-    public invertViewControl(Context context, AttributeSet attrs, int defStyle) {
+    public InvertViewControl(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         Me = this;
     }
@@ -84,12 +84,12 @@ public final class invertViewControl extends View {
                 public void run() {
                     Thread t = new Thread() {
                         public void run() {
-                            main.mainActivity.runOnUiThread(new Runnable() {
+                            Main.mainActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (firstDraw) {
                                         firstDraw = false;
-                                        ((main) main.mainActivity).showView(ViewConst.DESCRIPTION_VIEW);
+                                        ((Main) Main.mainActivity).showView(ViewConst.DESCRIPTION_VIEW);
                                     }
                                 }
                             });

@@ -4,7 +4,6 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.SelectedCacheEvent;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,10 +68,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
     @Override
     public int GetMenuId() {
         return 0;
-    }
-
-    @Override
-    public void ActivityResult(int requestCode, int resultCode, Intent data) {
     }
 
     @Override

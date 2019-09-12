@@ -1,32 +1,29 @@
 package de.droidcachebox.Events;
 
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
 public interface ViewOptionsMenu {
 
-    public boolean ItemSelected(MenuItem item);
+    boolean ItemSelected(MenuItem item);
 
-    public void BeforeShowMenu(Menu menu);
+    void BeforeShowMenu(Menu menu);
 
-    public int GetMenuId();
+    int GetMenuId();
 
-    public void OnShow();
+    void OnShow();
 
-    public void OnHide();
+    void OnHide();
 
-    public void OnFree();
+    void OnFree();
 
-    public void ActivityResult(int requestCode, int resultCode, Intent data);
+    int GetContextMenuId();
 
-    public int GetContextMenuId();
+    void BeforeShowContextMenu(Menu menu);
 
-    public void BeforeShowContextMenu(Menu menu);
+    boolean ContextMenuItemSelected(MenuItem item);
 
-    public boolean ContextMenuItemSelected(MenuItem item);
-
-    public boolean dispatchTouchEvent(MotionEvent event);
+    boolean dispatchTouchEvent(MotionEvent event);
 
 }

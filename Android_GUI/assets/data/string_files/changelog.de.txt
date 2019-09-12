@@ -3,8 +3,22 @@
 • Änderungen = ~
 • Fehlerbeseitigungen = *
 • Streichungen = -
+• Offen = •
 
-Aktuelle Änderungen (3403):
+Aktuelle Änderungen:
+    + Import OAM - Karten	
+	+ Bilder Import von GSAK
+	+ Alle lokalen Logentwürfe als Log hochladen.
+	+ Fotos zu Logs hochladen
+	~ Android Dateiexplorer Sortierung, Kennzeichnung Verzeichnisse
+	~ Logentwurf Klick auf Kopfzeile, Klick auf Logtext
+	* Anzeige geschlossener Wegstrecken (tracks)
+	* Fehlende Caches in Live Karte
+	* Möglichkeit ältere Entwicklungsversionen zu installieren	
+	* CBServer Import
+	- Langklick auf Logentwurf (geht noch, muss aber nicht mehr)
+	• Muss auf Android API Version 27 (target) bleiben oder neueste Mapsforge Version einbauen
+Änderungen bis Version 3403:
 	+ Import über Position durch Eingabe Stadt/Straße
     + Herunterladen oam + fzk Renderthemen
 	+ Android 9 : (http wird nicht mehr standardmäßig unterstützt) API-Token,...

@@ -3,7 +3,6 @@ package de.droidcachebox.Views;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import android.content.Context;
-import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -101,11 +100,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     }
 
     @Override
-    public void ActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
-    @Override
     public int GetContextMenuId() {
         return 0;
     }
@@ -121,7 +115,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
     public void InitializeMap() {
         // glListener.InitializeMap();
-
     }
 
     @Override

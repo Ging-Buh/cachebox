@@ -99,10 +99,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.AndroidGraphics;
-import com.badlogic.gdx.backends.android.AndroidInput;
+import com.badlogic.gdx.backends.android.*;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import de.cb.sqlite.AndroidDB;
@@ -110,9 +107,9 @@ import de.cb.sqlite.SQLiteClass;
 import de.cb.sqlite.SQLiteInterface;
 import de.droidcachebox.CB_Texturepacker.Android_Packer;
 import de.droidcachebox.Components.CacheNameView;
+import de.droidcachebox.Custom_Controls.DownSlider;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
-import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AndroidContentClipboard;
@@ -132,20 +129,21 @@ import static android.content.Intent.ACTION_VIEW;
 
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
-public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
-    private static final String sKlasse = "main";
+public class Main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
+    private static final String sKlasse = "Main";
+    private static final int REQUEST_CODE_GET_API_KEY = 987654321;
+    private static final int REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY = 61216516;
+    private static final int REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY = 61216517;
     public static AndroidApplication mainActivity;
     public static LinearLayout strengthLayout;
-    public static Boolean isRestart = false;
-    public static Boolean isFirstStart = true;
     private static DescriptionView descriptionView = null;
     private static ViewGL viewGL = null;
+    private static Boolean isRestart = false;
     private static ViewID aktViewId = null;
     private static ViewID aktTabViewId = null;
     private static LocationManager locationManager;
     private static ServiceConnection mConnection;
     private static BroadcastReceiver mReceiver;
-    private static Uri uri;
     private static CB_Locator.Location recordingStartCoordinate;
     private static boolean mVoiceRecIsStart = false;
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
@@ -207,8 +205,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         }
     };
+    private Uri videoUri;
+    private AndroidEventListener handlingRecordedVideo, handlingTakePhoto, handlingGetApiAuth;
     private HorizontalListView QuickButtonList;
-    private downSlider InfoDownSlider;
+    private DownSlider downSlider;
     private PowerManager.WakeLock mWakeLock;
     private CancelWaitDialog wd;
     private Dialog pWaitD;
@@ -250,24 +250,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         if (GlobalCore.RunFromSplash) {
             // meaning initialising from splash has been done
 
-            mainActivity = this; // com.badlogic.gdx.backends.android.AndroidApplication
+            mainActivity = this;
 
-            if (savedInstanceState != null) {
-                Log.debug(sKlasse, "main onCreate with savedInstanceState");
+            if (savedInstanceState == null) {
+                GlobalCore.restartAfterKill = false;
+            } else {
                 GlobalCore.restartAfterKill = true;
+                // initialize from savedInstanceState
                 GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
-
-                String workPath = savedInstanceState.getString("WorkPath");
-                new Config(workPath);
-
-                // hier muss die Config Db initialisiert werden
-                Database.Settings = new AndroidDB(DatabaseType.Settings, this);
+                new Config(savedInstanceState.getString("WorkPath"));
                 if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
                     return;
+                Database.Settings = new AndroidDB(DatabaseType.Settings, this);
                 Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
                 Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
                 Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
-
                 Config.AcceptChanges();
 
                 Resources res = this.getResources();
@@ -288,9 +285,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
                 GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
 
-            } else {
-                Log.debug(sKlasse, "main onCreate without savedInstanceState");
-                GlobalCore.restartAfterKill = false;
             }
 
             ActivityUtils.onActivityCreateSetTheme(this);
@@ -348,66 +342,62 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             if (frame != null)
                 frame.setVisibility(View.INVISIBLE);
 
-            InfoDownSlider.invalidate();
+            downSlider.invalidate();
 
             CacheListChangedEvent();
 
-            downSlider.isInitial = false;
+            DownSlider.isInitial = false;
 
             int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
 
             setQuickButtonHeight(sollHeight);
 
-            // at the moment isFirstStart is always true. Intended for change of theme (ActivityUtils): code there not used, removed
-            if (isFirstStart) {
-                // ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
-                if (Config.newInstall.getValue() && GetSettingsAccessToken().length() == 0) {
-                    askToGetApiKey();
-                } else {
-                    if (!GlobalCore.restartAfterKill)
-                        chkGpsIsOn();
-                }
+            // ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
+            if (Config.newInstall.getValue() && GetSettingsAccessToken().length() == 0) {
+                askToGetApiKey();
+            } else {
+                if (!GlobalCore.restartAfterKill)
+                    chkGpsIsOn();
+            }
 
-                if (Config.newInstall.getValue()) {
-                    // wait for Copy Asset is closed
-                    CheckTranslationIsLoaded();
-                    Timer tim = new Timer();
-                    TimerTask timTask = new TimerTask() {
+            if (Config.newInstall.getValue()) {
+                // wait for Copy Asset is closed
+                CheckTranslationIsLoaded();
+                Timer tim = new Timer();
+                TimerTask timTask = new TimerTask() {
 
-                        @Override
-                        public void run() {
+                    @Override
+                    public void run() {
 
-                            mainActivity.runOnUiThread(new Runnable() {
+                        mainActivity.runOnUiThread(new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    String Welcome = "";
-                                    String LangId = getString(R.string.langId);
-                                    try {
-                                        Welcome = Translation.GetTextFile("welcome", LangId);
+                            @Override
+                            public void run() {
+                                String Welcome = "";
+                                String LangId = getString(R.string.langId);
+                                try {
+                                    Welcome = Translation.GetTextFile("welcome", LangId);
 
-                                        Welcome += Translation.GetTextFile("changelog", LangId);
-                                    } catch (IOException e1) {
-                                        e1.printStackTrace();
-                                    }
-
-                                    MessageBox.Show(Welcome, Translation.get("welcome"), MessageBoxIcon.None);
+                                    Welcome += Translation.GetTextFile("changelog", LangId);
+                                } catch (IOException e1) {
+                                    e1.printStackTrace();
                                 }
-                            });
 
-                        }
-                    };
+                                MessageBox.Show(Welcome, Translation.get("welcome"), MessageBoxIcon.None);
+                            }
+                        });
 
-                    tim.schedule(timTask, 5000);
+                    }
+                };
 
-                }
+                tim.schedule(timTask, 5000);
 
-                if (input == null) {
-                    graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
+            }
 
-                    input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
+            if (input == null) {
+                graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
 
-                }
+                input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 
             }
 
@@ -415,16 +405,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 ((View) aktView).setVisibility(View.INVISIBLE);
             if (aktTabView != null)
                 ((View) aktTabView).setVisibility(View.INVISIBLE);
-            if (InfoDownSlider != null)
-                (InfoDownSlider).setVisibility(View.INVISIBLE);
+            if (downSlider != null)
+                (downSlider).setVisibility(View.INVISIBLE);
             if (cacheNameView != null)
                 (cacheNameView).setVisibility(View.INVISIBLE);
 
-            initialViewGL();
+            initializeGDXAndroidApplication();
+
+            /*
+            public static final int REQUEST_CODE_SCREENLOCK = 12345;
+            public static final int REQUEST_CODE_KEYBOARDACTIVITY = 11012;
+            private boolean mustAddOnActivityResultListener = true;
+            if (mustAddOnActivityResultListener) {
+                addAndroidEventListener(new AndroidEventListener() {
+                    @Override
+                    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+                        if (requestCode == Global.REQUEST_CODE_KEYBOARDACTIVITY || requestCode == Global.REQUEST_CODE_SCREENLOCK) {
+                            return;
+                        }
+                        GL.that.onStart();
+                    }
+                });
+                mustAddOnActivityResultListener = false;
+            }
+             */
 
         } else {
-            Log.debug(sKlasse, "main onCreate not started from splash: starting splash!");
-            Intent splashIntent = new Intent().setClass(this, splash.class);
+            Log.err(sKlasse, "main onCreate not started from splash: starting splash!");
+            Intent splashIntent = new Intent().setClass(this, Splash.class);
             startActivity(splashIntent);
             finish();
         }
@@ -480,7 +488,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Window window = main.this.getWindow();
+                Window window = Main.this.getWindow();
                 if (window != null) {
                     if (Config.RunOverLockScreen.getValue()) {
                         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -524,7 +532,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             distance = waypoint.Distance();
         }
         if (distance > Config.SoundApproachDistance.getValue()) {
-            (main.mainActivity).runOnUiThread(new Runnable() {
+            (Main.mainActivity).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     GlobalCore.switchToCompassCompleted = false;
@@ -568,131 +576,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     @Override
     public void CacheListChangedEvent() {
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        // Back from Activitiy
-        String action = "";
-        if (intent != null) {
-            action = intent.getAction();
-            if (action == null)
-                action = "";
-        }
-        Log.info(sKlasse, "Return from activity " + action + " with requestCode " + requestCode);
-        if (requestCode != Global.REQUEST_CODE_KEYBOARDACTIVITY && requestCode != Global.REQUEST_CODE_SCREENLOCK) {
-            GL.that.onStart();
-        } else {
-            return;
-        }
-
-        // Intent Result Take Photo
-        if (requestCode == Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                GL.that.RunIfInitial(() -> {
-                    Log.info(sKlasse, "Photo taken");
-                    try {
-                        // move the photo from temp to UserImageFolder
-                        String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
-                        String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
-                        if (!sourceName.equals(destinationName)) {
-                            File source = FileFactory.createFile(sourceName);
-                            File destination = FileFactory.createFile(destinationName);
-                            if (!source.renameTo(destination)) {
-                                Log.err(sKlasse, "move from " + sourceName + " to " + destinationName + " failed");
-                            }
-                        }
-
-                        // for the photo to show within spoilers
-                        if (GlobalCore.isSetSelectedCache()) {
-                            GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            SpoilerView.getInstance().ForceReload();
-                        }
-
-                        ViewManager.that.reloadSprites(false);
-
-                        // track annotation
-                        String TrackFolder = Config.TrackFolder.getValue();
-                        String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                        CB_Locator.Location lastLocation = Locator.getLastSavedFineLocation();
-                        if (lastLocation == null) {
-                            lastLocation = Locator.getLocation(ProviderType.any);
-                            if (lastLocation == null) {
-                                Log.info(sKlasse, "No (GPS)-Location for Trackrecording.");
-                                return;
-                            }
-                        }
-                        // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-                        TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
-                    } catch (Exception e) {
-                        Log.err(sKlasse, e.getLocalizedMessage());
-                    }
-                });
-
-            } else {
-                Log.err(sKlasse, "Intent Take Photo resultCode: " + resultCode);
-            }
-
-            return;
-        }
-
-        // Intent Result Record Video
-        if (requestCode == Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                GL.that.RunIfInitial(() -> {
-                    Log.info(sKlasse, "Video recorded.");
-                    String ext = "";
-                    try {
-                        // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
-                        String recordedVideoFilePath = "";
-                        // first get the tempfile pathAndName (recordedVideoFilePath)
-                        String[] proj = {MediaStore.Images.Media.DATA}; // want to get Path to the file on disk.
-                        Cursor cursor = getContentResolver().query(uri, proj, null, null, null); // result set
-                        if (cursor != null && cursor.getCount() != 0) {
-                            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA); // my meaning: if only one element index is 0
-                            cursor.moveToFirst(); // first row ( here we should have only one row )
-                            recordedVideoFilePath = cursor.getString(columnIndex);
-                        }
-                        if (cursor != null) {
-                            cursor.close();
-                        }
-
-                        if (recordedVideoFilePath.length() > 0) {
-                            ext = FileIO.GetFileExtension(recordedVideoFilePath);
-
-                            File source = FileFactory.createFile(recordedVideoFilePath);
-                            String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
-                            File destination = FileFactory.createFile(destinationName);
-                            if (!source.renameTo(destination)) {
-                                Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
-                            } else {
-                                Log.info(sKlasse, "Video saved at " + destinationName);
-                                // track annotation
-                                String TrackFolder = Config.TrackFolder.getValue();
-                                String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                                TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
-                            }
-                        }
-                    } catch (Exception e) {
-                        Log.err(sKlasse, e.getLocalizedMessage());
-                    }
-                });
-            } else {
-                Log.err(sKlasse, "Intent Record Video resultCode: " + resultCode);
-            }
-
-            return;
-        }
-
-        // Intent Result get API key
-        if (requestCode == Global.REQUEST_CODE_GET_API_KEY) {
-            GL.that.RunIfInitial(() -> SettingsActivity.resortList());
-            Config.AcceptChanges();
-        }
-
-        if (aktView != null)
-            aktView.ActivityResult(requestCode, resultCode, intent);
-
     }
 
     @Override
@@ -796,9 +679,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
 
         int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
-        ((main) main.mainActivity).setQuickButtonHeight(sollHeight);
-        downSlider.isInitial = false;
-        InfoDownSlider.invalidate();
+        ((Main) Main.mainActivity).setQuickButtonHeight(sollHeight);
+        DownSlider.isInitial = false;
+        downSlider.invalidate();
 
         // Ausschalten verhindern
         /*
@@ -818,13 +701,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 Log.debug(sKlasse, "main => onResume SuppressPowerSaving");
                 final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
-                main.this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
-                main.this.mWakeLock.acquire();
+                Main.this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
+                Main.this.mWakeLock.acquire();
 
             } else {
                 final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                main.this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Cachebox non Powersave");
-                main.this.mWakeLock.acquire();
+                Main.this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Cachebox non Powersave");
+                Main.this.mWakeLock.acquire();
             }
         });
 
@@ -963,7 +846,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     descriptionView = null;
                     mainActivity = null;
 
-                    InfoDownSlider = null;
+                    downSlider = null;
 
                     Config.AcceptChanges();
 
@@ -1060,15 +943,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         frame.addView((View) aktView);
         aktView.OnShow();
 
-        InfoDownSlider.invalidate();
+        downSlider.invalidate();
         ((View) aktView).forceLayout();
 
         if (aktView != null)
             ((View) aktView).setVisibility(View.VISIBLE);
         if (aktTabView != null)
             ((View) aktTabView).setVisibility(View.VISIBLE);
-        if (InfoDownSlider != null)
-            ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+        if (downSlider != null)
+            ((View) downSlider).setVisibility(View.INVISIBLE);
         if (cacheNameView != null)
             ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
@@ -1077,7 +960,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private void ShowViewGL() {
         Log.debug(sKlasse, "ShowViewGL " + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
 
-        initialViewGL();
+        initializeGDXAndroidApplication();
 
         GL.that.onStart();
         GL.that.setGLViewID();
@@ -1090,7 +973,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             frame.setVisibility(View.INVISIBLE);
         }
 
-        InfoDownSlider.invalidate();
+        downSlider.invalidate();
 
     }
 
@@ -1101,7 +984,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         tabFrame = (FrameLayout) this.findViewById(R.id.tabletLayoutContent);
         GlFrame = (FrameLayout) this.findViewById(R.id.layoutGlContent);
 
-        InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
+        downSlider = (DownSlider) this.findViewById(R.id.downSlider);
 
         Mic_Icon = (Mic_On_Flash) this.findViewById(R.id.mic_flash);
 
@@ -1147,7 +1030,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             Config.gpsUpdateTime.addSettingChangedListener(() -> {
                 int updateTime1 = Config.gpsUpdateTime.getValue();
                 try {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime1, 1, main.this);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime1, 1, Main.this);
                 } catch (SecurityException sex) {
                     Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
                 }
@@ -1169,7 +1052,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    private void initialViewGL() {
+    private void initializeGDXAndroidApplication() {
         try {
             gdxView = initializeForView(GL.that, gdxConfig);
 
@@ -1321,6 +1204,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            Uri uri;
             if (android.os.Build.VERSION.SDK_INT >= 24) {
                 uri = FileProvider.getUriForFile(this, "de.droidcachebox.android.fileprovider", new java.io.File(tempMediaPathAndName));
             } else {
@@ -1330,7 +1214,59 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
             if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                if (handlingTakePhoto == null) {
+                    handlingTakePhoto = (requestCode, resultCode, data) -> {
+                        Main.this.removeAndroidEventListener(handlingTakePhoto);
+                        // Intent Result Take Photo
+                        if (requestCode == REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY) {
+                            if (resultCode == RESULT_OK) {
+                                GL.that.RunIfInitial(() -> {
+                                    Log.info(sKlasse, "Photo taken");
+                                    try {
+                                        // move the photo from temp to UserImageFolder
+                                        String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
+                                        String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
+                                        if (!sourceName.equals(destinationName)) {
+                                            File source = FileFactory.createFile(sourceName);
+                                            File destination = FileFactory.createFile(destinationName);
+                                            if (!source.renameTo(destination)) {
+                                                Log.err(sKlasse, "move from " + sourceName + " to " + destinationName + " failed");
+                                            }
+                                        }
+
+                                        // for the photo to show within spoilers
+                                        if (GlobalCore.isSetSelectedCache()) {
+                                            GlobalCore.getSelectedCache().loadSpoilerRessources();
+                                            SpoilerView.getInstance().ForceReload();
+                                        }
+
+                                        ViewManager.that.reloadSprites(false);
+
+                                        // track annotation
+                                        String TrackFolder = Config.TrackFolder.getValue();
+                                        String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+                                        CB_Locator.Location lastLocation = Locator.getLastSavedFineLocation();
+                                        if (lastLocation == null) {
+                                            lastLocation = Locator.getLocation(ProviderType.any);
+                                            if (lastLocation == null) {
+                                                Log.info(sKlasse, "No (GPS)-Location for Trackrecording.");
+                                                return;
+                                            }
+                                        }
+                                        // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
+                                        TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
+                                    } catch (Exception e) {
+                                        Log.err(sKlasse, e.getLocalizedMessage());
+                                    }
+                                });
+                            } else {
+                                Log.err(sKlasse, "Intent Take Photo resultCode: " + resultCode);
+                            }
+                        }
+                    };
+                }
+                addAndroidEventListener(handlingTakePhoto);
+                startActivityForResult(intent, REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY);
             } else {
                 Log.err(sKlasse, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
             }
@@ -1340,6 +1276,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     private void recVideo() {
+
         try {
             Log.info(sKlasse, "recVideo start " + GlobalCore.getSelectedCache());
             // define the file-name to save video taken by Camera activity
@@ -1364,19 +1301,70 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             ContentValues values = new ContentValues();
             values.put(MediaStore.Video.Media.TITLE, "");
-            uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+            videoUri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
             // Log.info(uri.toString());
             final Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
             // intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);
             if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(intent, Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                if (handlingRecordedVideo == null)
+                    handlingRecordedVideo = (requestCode, resultCode, data) -> {
+                        Main.this.removeAndroidEventListener(handlingRecordedVideo);
+                        // Intent Result Record Video
+                        if (requestCode == REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY) {
+                            if (resultCode == RESULT_OK) {
+                                GL.that.RunIfInitial(() -> {
+                                    Log.info(sKlasse, "Video recorded.");
+                                    String ext = "";
+                                    try {
+                                        // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
+                                        String recordedVideoFilePath = "";
+                                        // first get the tempfile pathAndName (recordedVideoFilePath)
+                                        String[] proj = {MediaStore.Images.Media.DATA}; // want to get Path to the file on disk.
+
+                                        Cursor cursor = Main.this.getContentResolver().query(videoUri, proj, null, null, null); // result set
+                                        if (cursor != null && cursor.getCount() != 0) {
+                                            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA); // my meaning: if only one element index is 0
+                                            cursor.moveToFirst(); // first row ( here we should have only one row )
+                                            recordedVideoFilePath = cursor.getString(columnIndex);
+                                        }
+                                        if (cursor != null) {
+                                            cursor.close();
+                                        }
+
+                                        if (recordedVideoFilePath.length() > 0) {
+                                            ext = FileIO.GetFileExtension(recordedVideoFilePath);
+
+                                            File source = FileFactory.createFile(recordedVideoFilePath);
+                                            String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
+                                            File destination = FileFactory.createFile(destinationName);
+                                            if (!source.renameTo(destination)) {
+                                                Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
+                                            } else {
+                                                Log.info(sKlasse, "Video saved at " + destinationName);
+                                                // track annotation
+                                                String TrackFolder = Config.TrackFolder.getValue();
+                                                String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+                                                TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        Log.err(sKlasse, e.getLocalizedMessage());
+                                    }
+                                });
+                            } else {
+                                Log.err(sKlasse, "Intent Record Video resultCode: " + resultCode);
+                            }
+                        }
+                    };
+                addAndroidEventListener(handlingRecordedVideo);
+                startActivityForResult(intent, REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
             } else {
                 Log.err(sKlasse, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
             }
         } catch (Exception e) {
-            Log.err(sKlasse, e.getLocalizedMessage());
+            Log.err(sKlasse, e.toString());
         }
     }
 
@@ -1416,13 +1404,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                 setVoiceRecIsStart(true);
 
-                return;
             } else { // Voice Recorder stoppen
                 // Log.d("DroidCachebox", "Stoping voice recorder on the
                 // phone...");
                 // Stop recording
                 setVoiceRecIsStart(false);
-                return;
             }
         } catch (Exception e) {
             Log.err(sKlasse, e.getLocalizedMessage());
@@ -1688,7 +1674,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
              * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
              */
             public boolean isOnline() {
-                ConnectivityManager cm = (ConnectivityManager) main.mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+                ConnectivityManager cm = (ConnectivityManager) Main.mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo netInfo = cm.getActiveNetworkInfo();
                 if (netInfo != null && netInfo.isConnectedOrConnecting()) {
                     return true;
@@ -1743,7 +1729,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 Log.info(sKlasse, "switchToGpsMeasure()");
                 int updateTime = Config.gpsUpdateTime.getValue();
                 try {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, main.this);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, Main.this);
                 } catch (SecurityException sex) {
                     Log.err(sKlasse, "switchToGpsMeasure: " + sex.getLocalizedMessage());
                 }
@@ -1754,7 +1740,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 Log.info(sKlasse, "switchtoGpsDefault()");
                 int updateTime = Config.gpsUpdateTime.getValue();
                 try {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, main.this);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, Main.this);
                 } catch (SecurityException sex) {
                     Log.err(sKlasse, "switchtoGpsDefault: " + sex.getLocalizedMessage());
                 }
@@ -1798,9 +1784,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                             }
                         }
 
-                        if (InfoDownSlider != null) {
-                            InfoDownSlider.ActionUp();
-                            ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+                        if (downSlider != null) {
+                            downSlider.ActionUp();
+                            ((View) downSlider).setVisibility(View.INVISIBLE);
                         }
 
                         if (aktView != null)
@@ -1860,8 +1846,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                             ((View) aktView).setVisibility(View.INVISIBLE);
                         if (aktTabView != null)
                             ((View) aktTabView).setVisibility(View.INVISIBLE);
-                        if (InfoDownSlider != null)
-                            ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+                        if (downSlider != null)
+                            ((View) downSlider).setVisibility(View.INVISIBLE);
                         if (cacheNameView != null)
                             ((View) cacheNameView).setVisibility(View.INVISIBLE);
                         setLockScreenProperty();
@@ -1889,8 +1875,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                     aktTabView.OnShow();
                                     setContentSize(lastLeft, lastTop, lastRight, lastBottom);
                                 }
-                                if (InfoDownSlider != null)
-                                    (InfoDownSlider).setVisibility(View.INVISIBLE);
+                                if (downSlider != null)
+                                    (downSlider).setVisibility(View.INVISIBLE);
                                 if (cacheNameView != null)
                                     (cacheNameView).setVisibility(View.INVISIBLE);
                             }
@@ -1906,12 +1892,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         importCacheByGCCode();
                     if (ExternalRequestGpxPath != null)
                         importGPXFile();
-                    if (ExternalRequestGuid!= null)
+                    if (ExternalRequestGuid != null)
                         // importCacheByGuid();
-                    ;
+                        ;
                     if (ExternalRequestLatLon != null)
                         // positionLatLon();
-                    ;
+                        ;
                     if (ExternalRequestMapDownloadPath != null) {
                         MapDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
                         Action_MapDownload.getInstance().Execute();
@@ -2069,7 +2055,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 Uri uriToImage = Uri.fromFile(new java.io.File(file));
                 Intent shareIntent = new Intent(ACTION_VIEW);
                 shareIntent.setDataAndType(uriToImage, "image/*");
-                main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
+                Main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
             }
         });
 
@@ -2078,7 +2064,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public void Write(SettingBase<?> setting) {
                 if (androidSetting == null)
-                    androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
+                    androidSetting = Main.this.getSharedPreferences(Global.PREFS_NAME, 0);
                 if (androidSettingEditor == null)
                     androidSettingEditor = androidSetting.edit();
 
@@ -2097,7 +2083,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public SettingBase<?> Read(SettingBase<?> setting) {
                 if (androidSetting == null)
-                    androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
+                    androidSetting = Main.this.getSharedPreferences(Global.PREFS_NAME, 0);
 
                 if (setting instanceof SettingString) {
                     String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
@@ -2206,7 +2192,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     public void GetApiAuth() {
         Intent intent = new Intent().setClass(mainActivity, GcApiLogin.class);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_GET_API_KEY);
+            if (handlingGetApiAuth == null)
+                handlingGetApiAuth = (requestCode, resultCode, data) -> {
+                    Main.this.removeAndroidEventListener(handlingGetApiAuth);
+                    // Intent Result get API key
+                    if (requestCode == REQUEST_CODE_GET_API_KEY) {
+                        GL.that.RunIfInitial(() -> SettingsActivity.resortList());
+                        Config.AcceptChanges();
+                    }
+                };
+            addAndroidEventListener(handlingGetApiAuth);
+            mainActivity.startActivityForResult(intent, REQUEST_CODE_GET_API_KEY);
         } else {
             Log.err(sKlasse, intent.getAction() + " not installed.");
         }

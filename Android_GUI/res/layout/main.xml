@@ -66,7 +66,7 @@
 
     
 
-    <de.droidcachebox.Custom_Controls.downSlider
+    <de.droidcachebox.Custom_Controls.DownSlider
         android:id="@+id/downSlider"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
