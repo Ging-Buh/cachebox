@@ -286,7 +286,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         navButton.addAction(actionNavigateTo, false, GestureDirection.Down);
         navButton.addAction(CB_Action_ShowTrackListView.getInstance(), false, GestureDirection.Left);
         navButton.addAction(Action_MapDownload.getInstance(), false);
-        navButton.addAction(Action_OpenAndroMaps.getInstance(), false);
 
         tool_button.addAction(CB_Action_ShowDraftsView.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         tool_button.addAction(CB_Action_ShowSolverView.getInstance(), false, GestureDirection.Left);

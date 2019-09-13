@@ -83,8 +83,8 @@ import java.util.*;
  * + at last starting the gdx AndroidApplication main
  */
 public class Splash extends Activity {
-    private static final String log = "splash";
     public static final int REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5 = 42;
+    private static final String log = "splash";
     public static Activity splashActivity;
     private static DevicesSizes ui;
     protected int height;
@@ -138,109 +138,112 @@ public class Splash extends Activity {
 
         // Check if use small skin
         GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
+        // meaning ACB should have been started to handle requests
+        // else ACB will be started, but request will not be handled
+        String GcCode = null;
+        String guid = null;
+        String name = null;
+        String GpxPath = null;
+        String LatLon = null;
+        String downloadPath = null;
 
-        if (Main.mainActivity != null) {
-            // meaning ACB should have been started to handle requests
-            // else ACB will be started, but request will not be handled
-            String GcCode = null;
-            String guid = null;
-            String name = null;
-            String GpxPath = null;
-            String LatLon = null;
-            String downloadPath = null;
+        final Bundle intentExtras = getIntent().getExtras();
+        if (intentExtras != null) {
+            // todo ask André what is the intention for this
+            GcCode = intentExtras.getString("geocode");
+            name = intentExtras.getString("name");
+            guid = intentExtras.getString("guid");
+        }
 
-            final Bundle intentExtras = getIntent().getExtras();
-            if (intentExtras != null) {
-                // todo ask André what is the intention for this
-                GcCode = intentExtras.getString("geocode");
-                name = intentExtras.getString("name");
-                guid = intentExtras.getString("guid");
-            }
-
-            final Uri intentData = getIntent().getData();
-            if (intentData != null) {
-                final Uri uri = intentData;
-                String scheme = intentData.getScheme();
-                if (scheme != null) {
-                    scheme = scheme.toLowerCase();
-                    switch (scheme) {
-                        case "file":
-                            if (uri.getEncodedPath().endsWith(".gpx") || uri.getEncodedPath().endsWith(".zip")) {
-                                GpxPath = uri.getEncodedPath();
+        final Uri intentData = getIntent().getData();
+        if (intentData != null) {
+            final Uri uri = intentData;
+            String scheme = intentData.getScheme();
+            if (scheme != null) {
+                scheme = scheme.toLowerCase();
+                switch (scheme) {
+                    case "file":
+                        if (uri.getEncodedPath().endsWith(".gpx") || uri.getEncodedPath().endsWith(".zip")) {
+                            GpxPath = uri.getEncodedPath();
+                        }
+                        break;
+                    case "http":
+                    case "https":
+                        String uriHost = uri.getHost().toLowerCase(Locale.US);
+                        String uriPath = uri.getPath().toLowerCase(Locale.US);
+                        if (uriHost.contains("geocaching.com")) {
+                            GcCode = uri.getQueryParameter("wp");
+                            if (StringH.isEmpty(GcCode)) {
+                                int i1 = uriPath.indexOf("/gc") + 1;
+                                int i2 = uriPath.indexOf("_");
+                                if (i2 > i1) {
+                                    GcCode = uriPath.substring(i1, i2);
+                                } else if (i1 > 0) {
+                                    GcCode = uriPath.substring(i1);
+                                }
                             }
-                            break;
-                        case "http":
-                        case "https":
-                            String uriHost = uri.getHost().toLowerCase(Locale.US);
-                            String uriPath = uri.getPath().toLowerCase(Locale.US);
-                            if (uriHost.contains("geocaching.com")) {
-                                GcCode = uri.getQueryParameter("wp");
-                                if (StringH.isEmpty(GcCode)) {
-                                    int i1 = uriPath.indexOf("/gc") + 1;
-                                    int i2 = uriPath.indexOf("_");
-                                    if (i2 > i1) {
-                                        GcCode = uriPath.substring(i1, i2);
-                                    } else if (i1 > 0) {
-                                        GcCode = uriPath.substring(i1);
+                            if (StringH.isEmpty(GcCode)) {
+                                // todo guid not yet implemented : implement fetch cache by  guid in main
+                                guid = uri.getQueryParameter("guid");
+                                if (!StringH.isEmpty(guid)) {
+                                    guid = guid.toLowerCase(Locale.US);
+                                    if (guid.endsWith("#")) {
+                                        guid = guid.substring(0, guid.length() - 1);
                                     }
                                 }
-                                if (StringH.isEmpty(GcCode)) {
-                                    // todo guid not yet implemented : implement fetch cache by  guid in main
-                                    guid = uri.getQueryParameter("guid");
-                                    if (!StringH.isEmpty(guid)) {
-                                        guid = guid.toLowerCase(Locale.US);
-                                        if (guid.endsWith("#")) {
-                                            guid = guid.substring(0, guid.length() - 1);
-                                        }
-                                    }
-                                }
-                            } else if (uriHost.contains("coord.info")) {
-                                if (uriPath != null && uriPath.startsWith("/gc")) {
-                                    GcCode = uriPath.substring(1).toUpperCase(Locale.US);
-                                }
-                            } else if (uriHost.contains("download.openandromaps.org")) {
-                                downloadPath = uri.toString();
                             }
-                            break;
-                        case "geo":
-                            LatLon = uri.getSchemeSpecificPart();
-                            // todo
-                            // we have no navigation but we can
-                            // create a tempory waypoint on the map and go there
-                            // or
-                            // show map and center map there
-                            break;
-                        default:
-                            // download.openandromaps.org -> orux-map, backcountrynav-action-map, bikecomputer-map
-                            downloadPath = uri.getEncodedSchemeSpecificPart();
-                            if (downloadPath != null) {
-                                downloadPath = "http:" + downloadPath;
-                                if (!downloadPath.endsWith("zip")) downloadPath = null;
+                        } else if (uriHost.contains("coord.info")) {
+                            if (uriPath != null && uriPath.startsWith("/gc")) {
+                                GcCode = uriPath.substring(1).toUpperCase(Locale.US);
                             }
-                    }
+                        } else if (uriHost.contains("download.openandromaps.org") || uriHost.contains("download.freizeitkarte-osm.de")) {
+                            downloadPath = uri.toString();
+                            if (!downloadPath.endsWith("zip")) downloadPath = null;
+                        }
+                        break;
+                    case "geo":
+                        LatLon = uri.getSchemeSpecificPart();
+                        // todo
+                        // we have no navigation but we can
+                        // create a tempory waypoint on the map and go there
+                        // or
+                        // show map and center map there
+                        break;
+                    default:
+                        // download.openandromaps.org -> orux-map, backcountrynav-action-map, bikecomputer-map
+                        downloadPath = uri.getEncodedSchemeSpecificPart();
+                        if (downloadPath != null) {
+                            downloadPath = "http:" + downloadPath;
+                            if (!downloadPath.endsWith("zip")) downloadPath = null;
+                        }
                 }
             }
+        }
 
-            Bundle b = new Bundle();
-            if (GcCode != null)
-                b.putSerializable("GcCode", GcCode);
-            if (name != null)
-                b.putSerializable("Name", name);
-            if (guid != null)
-                b.putSerializable("Guid", guid);
-            if (GpxPath != null)
-                b.putSerializable("GpxPath", GpxPath);
-            if (LatLon != null)
-                b.putSerializable("LatLon", LatLon);
-            if (downloadPath != null)
-                b.putSerializable("MapDownloadPath", downloadPath);
-            if (!b.isEmpty()) {
+        Bundle bundeledData = new Bundle();
+        if (GcCode != null)
+            bundeledData.putSerializable("GcCode", GcCode);
+        if (name != null)
+            bundeledData.putSerializable("Name", name);
+        if (guid != null)
+            bundeledData.putSerializable("Guid", guid);
+        if (GpxPath != null)
+            bundeledData.putSerializable("GpxPath", GpxPath);
+        if (LatLon != null)
+            bundeledData.putSerializable("LatLon", LatLon);
+        if (downloadPath != null)
+            bundeledData.putSerializable("MapDownloadPath", downloadPath);
+
+        if (!bundeledData.isEmpty()) {
+            // todo Wait until CacheBox is started. Don't return if not
+            if (Main.mainActivity != null) {
+                Log.info("CB2 Splash", "Starting Main Activity.");
                 Intent mainIntent = Main.mainActivity.getIntent();
-                mainIntent.putExtras(b);
+                mainIntent.putExtras(bundeledData);
                 startActivity(mainIntent);
             }
             finish(); // this activity can be closed and back to the calling activity in onActivityResult
-            return;
+            return; // don't need to start CacheBox
         }
 
         loadImages();
@@ -586,6 +589,7 @@ public class Splash extends Activity {
 
     @Override
     public void onDestroy() {
+
         super.onDestroy();
         Log.debug(log, "onDestroy");
         if (isFinishing()) {
@@ -1006,7 +1010,7 @@ public class Splash extends Activity {
 
         Intent mainIntent = new Intent().setClass(this, Main.class);
         mainIntent.putExtras(b);
-        Log.info(log, "startActivity for main.class (com.badlogic.gdx.backends.android.AndroidApplication) from slash");
+        Log.info(log, "startActivity for Main.class (com.badlogic.gdx.backends.android.AndroidApplication) from slash");
         startActivity(mainIntent);
 
         finish();

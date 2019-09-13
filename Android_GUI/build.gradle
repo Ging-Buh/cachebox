@@ -78,6 +78,8 @@ android {
         targetSdkVersion 27
         versionCode = Integer.decode(buildTime())
         versionName = buildTime()
+        versionCode = 20190912
+        versionName = "Entwlng RC1"
         multiDexEnabled true
     }
 

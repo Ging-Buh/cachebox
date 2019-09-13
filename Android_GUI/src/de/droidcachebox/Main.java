@@ -32,8 +32,8 @@ import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
+import CB_UI.GL_UI.Activitys.FZKDownload;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_UI.GL_UI.Activitys.MapDownload;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.SearchMode;
@@ -1899,9 +1899,9 @@ public class Main extends AndroidApplication implements SelectedCacheEvent, Loca
                         // positionLatLon();
                         ;
                     if (ExternalRequestMapDownloadPath != null) {
-                        MapDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
+                        FZKDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
                         Action_MapDownload.getInstance().Execute();
-                        MapDownload.getInstance().importByUrlFinished();
+                        FZKDownload.getInstance().importByUrlFinished();
                     }
                     if (ExternalRequestName != null)
                         //importCacheByName();

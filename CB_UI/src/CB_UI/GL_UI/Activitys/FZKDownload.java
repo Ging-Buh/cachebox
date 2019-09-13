@@ -34,9 +34,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.*;
 
-public class MapDownload extends ActivityBase implements ProgressChangedEvent {
+public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "MapDownload";
-    private static MapDownload INSTANCE;
+    private static FZKDownload INSTANCE;
     private final String URL_FREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
     private boolean DownloadIsCompleted = false;
     private int AllProgress = 0;
@@ -54,7 +54,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
     private boolean isChkRepository = false;
     private boolean doImportByUrl;
 
-    private MapDownload() {
+    private FZKDownload() {
         super(ActivityRec(), "mapDownloadActivity");
         repository_freizeitkarte_android = "";
         scrollBox = new ScrollBox(ActivityRec());
@@ -66,10 +66,10 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         scrollBox.setBackground(this.getBackground());
     }
 
-    public static MapDownload getInstance() {
+    public static FZKDownload getInstance() {
         // cause Activity gets disposed and a second run will produce an error
         if (INSTANCE == null || INSTANCE.isDisposed()) {
-            INSTANCE = new MapDownload();
+            INSTANCE = new FZKDownload();
         }
         return INSTANCE;
     }
@@ -318,7 +318,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             fillDownloadList();
 
             if (dis != null) {
-                MapDownload.this.removeChildsDirekt(dis);
+                FZKDownload.this.removeChildsDirekt(dis);
                 dis.dispose();
                 dis = null;
             }
@@ -354,7 +354,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
         String workPath = getWorkPath();
         for (int i = 0, n = mapInfoList.size; i < n; i++) {
             MapRepositoryInfo map = mapInfoList.get(i);
-            MapDownloadItem item = new MapDownloadItem(map, workPath, MapDownload.this.innerWidth);
+            MapDownloadItem item = new MapDownloadItem(map, workPath, FZKDownload.this.innerWidth);
             item.setY(yPos);
             scrollBox.addChild(item);
             mapInfoItemList.add(item);

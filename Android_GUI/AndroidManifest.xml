@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.droidcachebox" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.droidcachebox"
+          android:installLocation="auto">
 
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"> </uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"> </uses-permission>
-	<uses-permission android:name="android.permission.WAKE_LOCK"> </uses-permission>
-	<uses-permission android:name="android.permission.INTERNET"> </uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"> </uses-permission>
-	<uses-permission android:name="android.permission.RECORD_AUDIO"> </uses-permission>
-	<uses-permission android:name="android.permission.CAMERA"> </uses-permission>
-	<uses-permission android:name="android.permission.VIBRATE"> </uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"> </uses-permission>
-	
-	<uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"> </uses-feature>
-	<uses-feature android:name="android.hardware.camera" android:required="false"> </uses-feature>
-	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"> </uses-feature>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"></uses-feature>
+    <uses-feature android:name="android.hardware.camera" android:required="false"></uses-feature>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"></uses-feature>
 
 
-	<application
-			android:label="@string/app_name"
-			android:theme="@style/Theme_day"
-			android:icon="@drawable/cb"
-			android:vmSafeMode="false"
-			android:allowBackup="true"
-			android:usesCleartextTraffic="true">
+    <application
+            android:label="@string/app_name"
+            android:theme="@style/Theme_day"
+            android:icon="@drawable/cb"
+            android:vmSafeMode="false"
+            android:allowBackup="true"
+            android:usesCleartextTraffic="true">
 
-		<activity android:name=".Main"
-				  android:label="@string/app_name"
-				  android:screenOrientation="behind"
-				  android:alwaysRetainTaskState="true"
-				  android:configChanges="orientation|keyboard|keyboardHidden"
-				  android:launchMode="singleTask"
-				  android:windowSoftInputMode="adjustPan"
-				  android:exported="true">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
+        <activity android:name=".Main"
+                  android:label="@string/app_name"
+                  android:screenOrientation="behind"
+                  android:alwaysRetainTaskState="true"
+                  android:configChanges="orientation|keyboard|keyboardHidden"
+                  android:launchMode="singleTask"
+                  android:windowSoftInputMode="adjustPan"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
 
-		<activity android:name=".Splash" android:launchMode="singleTask" >
+        <activity android:name=".Splash" android:launchMode="singleTask">
 
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -55,96 +56,102 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-				<data android:scheme="mf-v3-map"/>
-				<data android:scheme="backcountrynav-action-map"/>
-				<data android:scheme="bikecomputer-map"/>
-				<data android:scheme="mf-v4-map"/>
-				<data android:scheme="orux-map"/>
-            </intent-filter>
-
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-
-				<data android:scheme="http" android:host="geocaching.com"
-					  android:pathPrefix="/seek/cache_details.aspx" />
-				<data android:scheme="http" android:host="www.geocaching.com"
-					  android:pathPrefix="/seek/cache_details.aspx" />
-				<data android:scheme="http" android:host="www.geocaching.com"
-					  android:pathPrefix="/geocache/GC" />
-				<data android:scheme="http" android:host="coord.info"
-					  android:pathPrefix="/GC" />
-
-				<data android:scheme="https" android:host="geocaching.com"
-					  android:pathPrefix="/seek/cache_details.aspx" />
-				<data android:scheme="https" android:host="www.geocaching.com"
-					  android:pathPrefix="/seek/cache_details.aspx" />
-				<data android:scheme="https" android:host="www.geocaching.com"
-					  android:pathPrefix="/geocache/GC" />
-				<data android:scheme="https" android:host="coord.info"
-					  android:pathPrefix="/GC" />
-
-				<data android:scheme="http" android:host="download.openandromaps.org"
-					  android:pathPrefix="/maps" />
-				<data android:scheme="https" android:host="download.openandromaps.org"
-					  android:pathPrefix="/maps" />
-			</intent-filter>
-
-			 <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:mimeType="application/gpx" android:host="localhost" />
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:pathPattern=".*\\.gpx" />
+                <data android:scheme="mf-v3-map"/>
+                <data android:scheme="backcountrynav-action-map"/>
+                <data android:scheme="bikecomputer-map"/>
+                <data android:scheme="mf-v4-map"/>
+                <data android:scheme="orux-map"/>
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:mimeType="text/xml" android:host="localhost" />
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:pathPattern=".*\\.gpx" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="http" android:host="geocaching.com"
+                      android:pathPrefix="/seek/cache_details.aspx"/>
+                <data android:scheme="http" android:host="www.geocaching.com"
+                      android:pathPrefix="/seek/cache_details.aspx"/>
+                <data android:scheme="http" android:host="www.geocaching.com"
+                      android:pathPrefix="/geocache/GC"/>
+                <data android:scheme="http" android:host="coord.info"
+                      android:pathPrefix="/GC"/>
+
+                <data android:scheme="https" android:host="geocaching.com"
+                      android:pathPrefix="/seek/cache_details.aspx"/>
+                <data android:scheme="https" android:host="www.geocaching.com"
+                      android:pathPrefix="/seek/cache_details.aspx"/>
+                <data android:scheme="https" android:host="www.geocaching.com"
+                      android:pathPrefix="/geocache/GC"/>
+                <data android:scheme="https" android:host="coord.info"
+                      android:pathPrefix="/GC"/>
+
+                <data android:scheme="http" android:host="download.openandromaps.org"
+                      android:pathPrefix="/maps"/>
+                <data android:scheme="https" android:host="download.openandromaps.org"
+                      android:pathPrefix="/maps"/>
+
+                <data android:scheme="http" android:host="download.freizeitkarte-osm.de"
+                      android:pathPrefix="/android"/>
+                <data android:scheme="https" android:host="download.freizeitkarte-osm.de"
+                      android:pathPrefix="/android"/>
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:mimeType="text/plain" android:host="localhost" />
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:pathPattern=".*\\.gpx" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="application/gpx" android:host="localhost"/>
+                <data android:scheme="file"/>
+                <data android:scheme="content"/>
+                <data android:pathPattern=".*\\.gpx"/>
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-				<data android:mimeType="application/zip" android:host="localhost" />
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:pathPattern=".*\\.zip" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="text/xml" android:host="localhost"/>
+                <data android:scheme="file"/>
+                <data android:scheme="content"/>
+                <data android:pathPattern=".*\\.gpx"/>
             </intent-filter>
 
-		</activity>
-		
-		<activity android:name="de.droidcachebox.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent" />		    
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="text/plain" android:host="localhost"/>
+                <data android:scheme="file"/>
+                <data android:scheme="content"/>
+                <data android:pathPattern=".*\\.gpx"/>
+            </intent-filter>
 
-		<provider
-				android:name="android.support.v4.content.FileProvider"
-				android:authorities="de.droidcachebox.android.fileprovider"
-				android:exported="false"
-				android:grantUriPermissions="true">
-			<meta-data
-					android:name="android.support.FILE_PROVIDER_PATHS"
-					android:resource="@xml/file_paths">
-			</meta-data>
-		</provider>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="application/zip" android:host="localhost"/>
+                <data android:scheme="file"/>
+                <data android:scheme="content"/>
+                <data android:pathPattern=".*\\.zip"/>
+            </intent-filter>
 
-	</application>
+        </activity>
+
+        <activity android:name="de.droidcachebox.Views.Forms.GcApiLogin" android:screenOrientation="behind"
+                  android:theme="@style/Theme_day_transparent"/>
+
+        <provider
+                android:name="android.support.v4.content.FileProvider"
+                android:authorities="de.droidcachebox.android.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
+
+    </application>
 </manifest>
