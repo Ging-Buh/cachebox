@@ -51,6 +51,7 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Global;
@@ -61,8 +62,9 @@ import de.droidcachebox.Ui.ActivityUtils;
 import java.util.Iterator;
 
 public final class DownSlider extends View implements SelectedCacheChangedEventListener, GpsStateChangeEvent {
-
     private static final String log = "downSlider";
+    private LinearLayout strengthLayout = findViewById(R.id.main_strength_control);
+
     public static boolean isInitialized = false;
     private static int QuickButtonHeight;
     private static DownSlider Me;
@@ -511,9 +513,9 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, GPSInfoHeight - 5);
         ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground));
 
-        Bitmap b = Bitmap.createBitmap(Main.strengthLayout.getMeasuredWidth(), Main.strengthLayout.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(strengthLayout.getMeasuredWidth(), strengthLayout.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
-        Main.strengthLayout.draw(c);
+        strengthLayout.draw(c);
 
         int left = width - b.getWidth() - 22;
         int top = GPSInfoHeight - b.getHeight() - 10;

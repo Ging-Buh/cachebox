@@ -44,10 +44,12 @@ import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.*;
+import CB_UI_Base.Events.PlatformConnector.ICallUrl;
+import CB_UI_Base.Events.PlatformConnector.IConnection;
+import CB_UI_Base.Events.PlatformConnector.IHardwarStateListener;
+import CB_UI_Base.Events.PlatformConnector.IShowViewListener;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -93,7 +95,6 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -130,14 +131,12 @@ import static android.content.Intent.ACTION_VIEW;
 
 @SuppressWarnings("deprecation")
 public class Main extends AndroidApplication implements SelectedCacheChangedEventListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
-    public static final int REQUEST_FROM_SPLASH = 987654322;
+    static final int REQUEST_FROM_SPLASH = 987654322;
     private static final String sKlasse = "Main";
     private static final int REQUEST_CAPTURE_IMAGE = 61216516;
     private static final int REQUEST_CAPTURE_VIDEO = 61216517;
     private static final int REQUEST_GET_APIKEY = 987654321;
     public static AndroidApplication mainActivity;
-    public static LinearLayout strengthLayout;
-    private static DescriptionView descriptionView = null;
     private static Boolean isRestart = false;
     private static ViewID aktViewId = null;
     private static ViewID aktTabViewId = null;
@@ -147,6 +146,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
     private final AtomicBoolean waitForGL = new AtomicBoolean(false);
     private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<>(14);
+    private DescriptionView descriptionView = null;
     private SensorEventListener mSensorEventListener;
     private ScreenBroadcastReceiver screenBroadcastReceiver;
     private AndroidApplicationConfiguration gdxConfig;
@@ -196,16 +196,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         gdxConfig.useCompass = true;
         screenBroadcastReceiver = new ScreenBroadcastReceiver();
         mSensorEventListener = new SensorEventListener() {
-            private final float orientationValues[] = new float[3];
-            private final float R[] = new float[9];
-            private final float I[] = new float[9];
-            private final float minChange = 0.5f;
-            private final long updateTime = 15;
+            private final float[] orientationValues = new float[3];
+            private final float[] R = new float[9];
+            private final float[] I = new float[9];
             private final RingBufferFloat ringBuffer = new RingBufferFloat(15);
             private float[] gravity;
-            private float[] geomagnetic;
-            private long lastUpdateTime = 0;
-            private float orientation;
             private float lastOrientation;
 
             @Override
@@ -213,13 +208,16 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
                     gravity = event.values;
                 long now = System.currentTimeMillis();
-                if (lastUpdateTime == 0 || lastUpdateTime + updateTime < now) {
+                long lastUpdateTime = 0;
+                long updateTime = 15;
+                // if (lastUpdateTime == 0 ||
+                if (lastUpdateTime + updateTime < now) {
                     if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                        geomagnetic = event.values;
+                        float[] geomagnetic = event.values;
                         if (gravity != null && geomagnetic != null) {
                             if (SensorManager.getRotationMatrix(R, I, gravity, geomagnetic)) {
                                 SensorManager.getOrientation(R, orientationValues);
-                                orientation = ringBuffer.add((float) Math.toDegrees(orientationValues[0]));
+                                float orientation = ringBuffer.add((float) Math.toDegrees(orientationValues[0]));
                                 while (orientation < 0) {
                                     orientation += 360;
                                 }
@@ -228,6 +226,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                                     orientation -= 360;
                                 }
 
+                                float minChange = 0.5f;
                                 if (Math.abs(lastOrientation - orientation) > minChange) {
                                     Locator.getInstance().setHeading(orientation, CompassType.Magnetic);
                                     // sKlasse.debug("orientation: {}", orientation);
@@ -263,12 +262,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 setWakeLockLevelToOnlyCPUOn();
             }
         };
-        onTouchListener = new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, final MotionEvent event) {
-                v.performClick();
-                return sendMotionEvent(event);
-            }
+        onTouchListener = (v, event) -> {
+            v.performClick();
+            return sendMotionEvent(event);
         };
     }
 
@@ -477,6 +473,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         lastState = LastState.onStop;
     }
 
+    @SuppressLint("WakelockTimeout")
     @Override
     protected void onResume() {
         Log.info(sKlasse, "=> onResume");
@@ -686,7 +683,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 inflater.inflate(id, menu);
                 ((ViewOptionsMenu) v).BeforeShowContextMenu(menu);
             }
-            return;
         }
     }
 
@@ -746,7 +742,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                         return;
                     if (!s[6].equals("1") & !s[6].equals("2"))
                         return; // Fix ungültig
-                    double altCorrection = Double.valueOf(s[11]);
+                    double altCorrection = Double.parseDouble(s[11]);
                     if (altCorrection == 0)
                         return;
                     // Log.info(sKlasse, "AltCorrection: " + String.valueOf(altCorrection));
@@ -969,9 +965,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (aktTabView != null)
             ((View) aktTabView).setVisibility(View.VISIBLE);
         if (downSlider != null)
-            ((View) downSlider).setVisibility(View.INVISIBLE);
+            downSlider.setVisibility(View.INVISIBLE);
         if (cacheNameView != null)
-            ((View) cacheNameView).setVisibility(View.INVISIBLE);
+            cacheNameView.setVisibility(View.INVISIBLE);
 
     }
 
@@ -996,20 +992,14 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     private void findViewsById() {
-        QuickButtonList = (HorizontalListView) findViewById(R.id.main_quick_button_list);
-        TopLayout = (LinearLayout) findViewById(R.id.layoutTop);
-        frame = (FrameLayout) findViewById(R.id.layoutContent);
-        tabFrame = (FrameLayout) findViewById(R.id.tabletLayoutContent);
-        GlFrame = (FrameLayout) findViewById(R.id.layoutGlContent);
-
-        downSlider = (DownSlider) findViewById(R.id.downSlider);
-
-        Mic_Icon = (Mic_On_Flash) findViewById(R.id.mic_flash);
-
-        cacheNameView = (CacheNameView) findViewById(R.id.main_cache_name_view);
-
-        strengthLayout = (LinearLayout) findViewById(R.id.main_strength_control);
-
+        QuickButtonList = findViewById(R.id.main_quick_button_list);
+        TopLayout = findViewById(R.id.layoutTop);
+        frame = findViewById(R.id.layoutContent);
+        tabFrame = findViewById(R.id.tabletLayoutContent);
+        GlFrame = findViewById(R.id.layoutGlContent);
+        downSlider = findViewById(R.id.downSlider);
+        Mic_Icon = findViewById(R.id.mic_flash);
+        cacheNameView = findViewById(R.id.main_cache_name_view);
     }
 
     private void initialLocationManager() {
@@ -1086,10 +1076,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             if (GL.that != null) {
                 if (GL.that.mGL_Listener_Interface == null)
                     new ViewGL(this, inflater, gdxView, GL.that);
-            }
-            else {
+            } else {
                 Log.err(sKlasse, "GL is null");
-                // todo shutdown?
+                restartFromSplash();
             }
 
             GlFrame.removeAllViews();
@@ -1107,7 +1096,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     }
 
-    public boolean sendMotionEvent(final MotionEvent event) {
+    private boolean sendMotionEvent(final MotionEvent event) {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
         final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 
@@ -1132,11 +1121,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         return true;
     }
 
-    public boolean getVoiceRecIsStart() {
+    private boolean getVoiceRecIsStart() {
         return mVoiceRecIsStart;
     }
 
-    public void setVoiceRecIsStart(boolean value) {
+    private void setVoiceRecIsStart(boolean value) {
         mVoiceRecIsStart = value;
         if (mVoiceRecIsStart) {
             Mic_Icon.SetOn();
@@ -1153,13 +1142,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     private void initalMicIcon() {
         Mic_Icon.SetOff();
-        Mic_Icon.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Stoppe Aufnahme durch klick auf Mikrofon-Icon
-                setVoiceRecIsStart(false);
-            }
+        Mic_Icon.setOnClickListener(v -> {
+            // Stoppe Aufnahme durch klick auf Mikrofon-Icon
+            setVoiceRecIsStart(false);
         });
     }
 
@@ -1175,12 +1160,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             String cacheName;
             if (GlobalCore.isSetSelectedCache()) {
                 String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
-                cacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
+                cacheName = validName.substring(0, Math.min(validName.length(), 32));
             } else {
                 cacheName = "Image";
             }
             mediaFileNameWithoutExtension = Global.GetDateTimeString() + " " + cacheName;
-            tempMediaPath = getExternalFilesDir("User/Media").getAbsolutePath() + "/"; // oder Environment.DIRECTORY_PICTURES
+            tempMediaPath = Objects.requireNonNull(getExternalFilesDir("User/Media")).getAbsolutePath() + "/"; // oder Environment.DIRECTORY_PICTURES
             if (!FileIO.createDirectory(tempMediaPath)) {
                 Log.err(sKlasse, "can't create " + tempMediaPath);
                 return;
@@ -1280,7 +1265,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             String cacheName;
             if (GlobalCore.isSetSelectedCache()) {
                 String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
-                cacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
+                cacheName = validName.substring(0, Math.min(validName.length(), 32));
             } else {
                 cacheName = "Video";
             }
@@ -1307,7 +1292,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                             if (resultCode == RESULT_OK) {
                                 GL.that.RunIfInitial(() -> {
                                     Log.info(sKlasse, "Video recorded.");
-                                    String ext = "";
+                                    String ext;
                                     try {
                                         // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
                                         String recordedVideoFilePath = "";
@@ -1375,7 +1360,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 String cacheName;
                 if (GlobalCore.isSetSelectedCache()) {
                     String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
-                    cacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
+                    cacheName = validName.substring(0, Math.min(validName.length(), 32));
                 } else {
                     cacheName = "Voice";
                 }
@@ -1421,35 +1406,42 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             String selectedNavi = Config.Navis.getValue();
 
             Intent intent = null;
-            if (selectedNavi.equals("Navigon")) {
-                intent = getIntent("android.intent.action.navigon.START_PUBLIC", "");
-                if (intent == null) {
-                    intent = getIntent("", "com.navigon.navigator"); // get the launch-intent from package
-                }
-                if (intent != null) {
-                    intent.putExtra("latitude", (float) lat);
-                    intent.putExtra("longitude", (float) lon);
-                }
-            } else if (selectedNavi.equals("Orux")) {
-                intent = getIntent("com.oruxmaps.VIEW_MAP_ONLINE", "");
-                // from http://www.oruxmaps.com/oruxmapsmanual_en.pdf
-                if (intent != null) {
-                    double[] targetLat = {lat};
-                    double[] targetLon = {lon};
-                    String[] targetNames = {targetName};
-                    intent.putExtra("targetLat", targetLat);
-                    intent.putExtra("targetLon", targetLon);
-                    intent.putExtra("targetName", targetNames);
-                    intent.putExtra("navigatetoindex", 1);
-                }
-            } else if (selectedNavi.equals("OsmAnd")) {
-                intent = getIntent(ACTION_VIEW, "geo:" + lat + "," + lon);
-            } else if (selectedNavi.equals("OsmAnd2")) {
-                intent = getIntent(ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
-            } else if (selectedNavi.equals("Waze")) {
-                intent = getIntent(ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
-            } else if (selectedNavi.equals("Sygic")) {
-                intent = getIntent(ACTION_VIEW, "com.sygic.aura://coordinate|" + lon + "|" + lat + "|drive");
+            switch (selectedNavi) {
+                case "Navigon":
+                    intent = getIntent("android.intent.action.navigon.START_PUBLIC", "");
+                    if (intent == null) {
+                        intent = getIntent("", "com.navigon.navigator"); // get the launch-intent from package
+                    }
+                    if (intent != null) {
+                        intent.putExtra("latitude", (float) lat);
+                        intent.putExtra("longitude", (float) lon);
+                    }
+                    break;
+                case "Orux":
+                    intent = getIntent("com.oruxmaps.VIEW_MAP_ONLINE", "");
+                    // from http://www.oruxmaps.com/oruxmapsmanual_en.pdf
+                    if (intent != null) {
+                        double[] targetLat = {lat};
+                        double[] targetLon = {lon};
+                        String[] targetNames = {targetName};
+                        intent.putExtra("targetLat", targetLat);
+                        intent.putExtra("targetLon", targetLon);
+                        intent.putExtra("targetName", targetNames);
+                        intent.putExtra("navigatetoindex", 1);
+                    }
+                    break;
+                case "OsmAnd":
+                    intent = getIntent(ACTION_VIEW, "geo:" + lat + "," + lon);
+                    break;
+                case "OsmAnd2":
+                    intent = getIntent(ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
+                    break;
+                case "Waze":
+                    intent = getIntent(ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
+                    break;
+                case "Sygic":
+                    intent = getIntent(ACTION_VIEW, "com.sygic.aura://coordinate|" + lon + "|" + lat + "|drive");
+                    break;
             }
             if (intent == null) {
                 // "default" or "no longer existing selection" or "fallback" to google
@@ -1465,7 +1457,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     private Intent getIntent(String action, String data) {
-        Intent intent = null;
+        Intent intent;
         try {
             if (action.length() > 0) {
                 if (data.length() > 0) {
@@ -1495,14 +1487,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     public void setQuickButtonHeight(int value) {
         horizontalListViewHeigt = value;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                QuickButtonList.setHeight(horizontalListViewHeigt);
-                QuickButtonList.invalidate();
-                TopLayout.requestLayout();
-                frame.requestLayout();
-            }
+        runOnUiThread(() -> {
+            QuickButtonList.setHeight(horizontalListViewHeigt);
+            QuickButtonList.invalidate();
+            TopLayout.requestLayout();
+            frame.requestLayout();
         });
 
     }
@@ -1515,31 +1504,22 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         try {
             if (Config.Ask_Switch_GPS_ON.getValue()) {
                 CheckTranslationIsLoaded();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MessageBox.Show(Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int button) {
-                                // Behandle das ergebniss
-                                switch (button) {
-                                    case -1:
-                                        // yes open gps settings
-                                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                                        break;
-                                    case -2:
-                                        // no,
-                                        break;
-                                    case -3:
+                runOnUiThread(() -> MessageBox.Show(Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (dialog, button) -> {
+                    // Behandle das ergebniss
+                    switch (button) {
+                        case -1:
+                            // yes open gps settings
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            break;
+                        case -2:
+                            // no,
+                            break;
+                        case -3:
 
-                                        break;
-                                }
-                                dialog.dismiss();
-                            }
-
-                        });
+                            break;
                     }
-                });
+                    dialog.dismiss();
+                }));
 
             }
         } catch (Exception e) {
@@ -1565,8 +1545,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     private boolean GpsOn() {
         LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean GpsOn = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        return GpsOn;
+        assert locManager != null;
+        return locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public void showView(ViewID ID) {
@@ -1574,10 +1554,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             return;// keine Action
         }
 
+        /*
         if (ID.getPos() != null) {
             //Pos = ID.getPos().toString();
             //Type = ID.getType().toString();
         }
+         */
 
         if (ID.getType() == ViewID.UI_Type.Activity) {
             showActivity(ID);
@@ -1629,16 +1611,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             private Camera deviceCamera;
 
             @Override
-            /**
-             * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
-             */
             public boolean isOnline() {
+                // isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
                 ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                assert cm != null;
                 NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                    return true;
-                }
-                return false;
+                return netInfo != null && netInfo.isConnectedOrConnecting();
             }
 
             @Override
@@ -1649,7 +1627,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             @Override
             public void vibrate() {
                 if (Config.vibrateFeedback.getValue())
-                    ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(Config.VibrateTime.getValue());
+                    ((Vibrator) Objects.requireNonNull(getSystemService(Context.VIBRATOR_SERVICE))).vibrate(Config.VibrateTime.getValue());
             }
 
             @Override
@@ -1663,9 +1641,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
             @Override
             public boolean isTorchOn() {
-                if (deviceCamera != null)
-                    return true;
-                return false;
+                return deviceCamera != null;
             }
 
             @Override
@@ -1714,50 +1690,47 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             @Override
             public void show(final ViewID viewID, final int left, final int top, final int right, final int bottom) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.info(sKlasse, "Show View with ID = " + viewID.getID());
+                runOnUiThread(() -> {
+                    Log.info(sKlasse, "Show View with ID = " + viewID.getID());
 
-                        // set Content size
+                    // set Content size
 
-                        if (viewID.getType() != ViewID.UI_Type.Activity) {
-                            if (viewID.getPos() == UI_Pos.Left) {
-                                RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
-                                paramsLeft.setMargins(left, top, right, bottom);
-                                frame.setLayoutParams(paramsLeft);
-                                frame.requestLayout();
-                            } else {
-                                if (tabFrame != null) {
-                                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
+                    if (viewID.getType() != UI_Type.Activity) {
+                        if (viewID.getPos() == UI_Pos.Left) {
+                            RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
+                            paramsLeft.setMargins(left, top, right, bottom);
+                            frame.setLayoutParams(paramsLeft);
+                            frame.requestLayout();
+                        } else {
+                            if (tabFrame != null) {
+                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
-                                    int versatz = 0;
-                                    if (ViewManager.leftTab != null) {
-                                        versatz = (int) (ViewManager.leftTab.getWidth() - frame.getWidth());
-                                    }
-
-                                    params.setMargins(versatz + left, top, right, bottom);
-                                    tabFrame.setLayoutParams(params);
-                                    tabFrame.requestLayout();
+                                int versatz = 0;
+                                if (ViewManager.leftTab != null) {
+                                    versatz = (int) (ViewManager.leftTab.getWidth() - frame.getWidth());
                                 }
+
+                                params.setMargins(versatz + left, top, right, bottom);
+                                tabFrame.setLayoutParams(params);
+                                tabFrame.requestLayout();
                             }
                         }
-
-                        if (downSlider != null) {
-                            downSlider.ActionUp();
-                            ((View) downSlider).setVisibility(View.INVISIBLE);
-                        }
-
-                        if (aktView != null)
-                            ((View) aktView).setVisibility(View.VISIBLE);
-                        if (aktTabView != null)
-                            ((View) aktTabView).setVisibility(View.VISIBLE);
-                        if (cacheNameView != null)
-                            ((View) cacheNameView).setVisibility(View.INVISIBLE);
-
-                        showView(viewID);
-
                     }
+
+                    if (downSlider != null) {
+                        downSlider.ActionUp();
+                        downSlider.setVisibility(View.INVISIBLE);
+                    }
+
+                    if (aktView != null)
+                        ((View) aktView).setVisibility(View.VISIBLE);
+                    if (aktTabView != null)
+                        ((View) aktTabView).setVisibility(View.VISIBLE);
+                    if (cacheNameView != null)
+                        cacheNameView.setVisibility(View.INVISIBLE);
+
+                    showView(viewID);
+
                 });
 
             }
@@ -1765,26 +1738,23 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             @Override
             public void hideView(final ViewID viewID) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.info(sKlasse, "Hide View with ID = " + viewID.getID());
+                runOnUiThread(() -> {
+                    Log.info(sKlasse, "Hide View with ID = " + viewID.getID());
 
-                        if (!(aktView == null) && viewID == aktViewId) {
-                            aktView.OnHide();
-                        }
+                    if (!(aktView == null) && viewID == aktViewId) {
+                        aktView.OnHide();
+                    }
 
-                        if (aktTabViewId != null && aktTabViewId == viewID && aktTabViewId.getPos() == UI_Pos.Right) {
-                            tabFrame.setVisibility(View.INVISIBLE);
-                            aktTabViewId = null;
-                            aktTabView = null;
-                        }
+                    if (aktTabViewId != null && aktTabViewId == viewID && aktTabViewId.getPos() == UI_Pos.Right) {
+                        tabFrame.setVisibility(View.INVISIBLE);
+                        aktTabViewId = null;
+                        aktTabView = null;
+                    }
 
-                        if (aktViewId != null && aktViewId == viewID && aktViewId.getPos() == UI_Pos.Left) {
-                            frame.setVisibility(View.INVISIBLE);
-                            aktViewId = null;
-                            aktView = null;
-                        }
+                    if (aktViewId != null && aktViewId == viewID && aktViewId.getPos() == UI_Pos.Left) {
+                        frame.setVisibility(View.INVISIBLE);
+                        aktViewId = null;
+                        aktView = null;
                     }
                 });
 
@@ -1793,25 +1763,22 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             @Override
             public void showForDialog() {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // chk for timer conflict (releay set invisible)
-                        // only if showing Dialog or Activity
-                        if (!GL.that.isShownDialogOrActivity())
-                            return;
+                runOnUiThread(() -> {
+                    // chk for timer conflict (releay set invisible)
+                    // only if showing Dialog or Activity
+                    if (!GL.that.isShownDialogOrActivity())
+                        return;
 
-                        if (aktView != null)
-                            ((View) aktView).setVisibility(View.INVISIBLE);
-                        if (aktTabView != null)
-                            ((View) aktTabView).setVisibility(View.INVISIBLE);
-                        if (downSlider != null)
-                            ((View) downSlider).setVisibility(View.INVISIBLE);
-                        if (cacheNameView != null)
-                            ((View) cacheNameView).setVisibility(View.INVISIBLE);
-                        handleRunOverLockScreenConfig();
-                        // Log.info(sKlasse, "Show AndroidView");
-                    }
+                    if (aktView != null)
+                        ((View) aktView).setVisibility(View.INVISIBLE);
+                    if (aktTabView != null)
+                        ((View) aktTabView).setVisibility(View.INVISIBLE);
+                    if (downSlider != null)
+                        downSlider.setVisibility(View.INVISIBLE);
+                    if (cacheNameView != null)
+                        cacheNameView.setVisibility(View.INVISIBLE);
+                    handleRunOverLockScreenConfig();
+                    // Log.info(sKlasse, "Show AndroidView");
                 });
             }
 
@@ -1851,19 +1818,25 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 if (ExternalRequestGpxPath != null)
                     importGPXFile();
                 if (ExternalRequestGuid != null)
-                    // importCacheByGuid();
-                    ;
+                    importCacheByGuid();
                 if (ExternalRequestLatLon != null)
-                    // positionLatLon();
-                    ;
+                    positionLatLon();
                 if (ExternalRequestMapDownloadPath != null) {
                     FZKDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
                     Action_MapDownload.getInstance().Execute();
                     FZKDownload.getInstance().importByUrlFinished();
                 }
                 if (ExternalRequestName != null)
-                    //importCacheByName();
-                    ;
+                    importCacheByName();
+            }
+
+            private void importCacheByName() {
+            }
+
+            private void positionLatLon() {
+            }
+
+            private void importCacheByGuid() {
             }
 
             @Override
@@ -1892,31 +1865,28 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 lastTop = top;
                 lastBottom = bottom;
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
-                        Log.info(sKlasse, "Set Android Content Sizeleft/top/right/bottom :" + String.valueOf(left) + "/" + String.valueOf(top) + "/" + String.valueOf(right) + "/" + String.valueOf(bottom));
+                    Log.info(sKlasse, "Set Android Content Sizeleft/top/right/bottom :" + left + "/" + top + "/" + right + "/" + bottom);
 
-                        // set Content size
+                    // set Content size
 
-                        if (aktView != null) {
-                            RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
-                            paramsLeft.setMargins(left, top, right, bottom);
-                            frame.setLayoutParams(paramsLeft);
-                            frame.requestLayout();
-                        } else if (aktTabView != null) {
-                            if (tabFrame != null) {
-                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
+                    if (aktView != null) {
+                        RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
+                        paramsLeft.setMargins(left, top, right, bottom);
+                        frame.setLayoutParams(paramsLeft);
+                        frame.requestLayout();
+                    } else if (aktTabView != null) {
+                        if (tabFrame != null) {
+                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
-                                LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
-                                params.setMargins(left - paramsLeft.width, top, right, bottom);
-                                tabFrame.setLayoutParams(params);
-                                tabFrame.requestLayout();
-                            }
-                        } else {
-                            Log.info(sKlasse, "ActView & aktTabView == NULL");
+                            LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
+                            params.setMargins(left - paramsLeft.width, top, right, bottom);
+                            tabFrame.setLayoutParams(params);
+                            tabFrame.requestLayout();
                         }
+                    } else {
+                        Log.info(sKlasse, "ActView & aktTabView == NULL");
                     }
                 });
             }
@@ -1931,7 +1901,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
             @Override
             public void freeSQLInstance(SQLiteInterface sqlInstance) {
-                sqlInstance = null;
+                // sqlInstance = null;
             }
         });
 
@@ -1953,27 +1923,18 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         PlatformConnector.setGetFileListener(fileExplorer);
         PlatformConnector.setGetFolderListener(fileExplorer);
 
-        PlatformConnector.setQuitListener(new IQuit() {
-
-            @Override
-            public void Quit() {
-                if (GlobalCore.isSetSelectedCache()) {
-                    // speichere selektierten Cache, da nicht alles über die
-                    // SelectedCacheEventList läuft
-                    Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
-                    Config.AcceptChanges();
-                    Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
-                }
-                finish();
+        PlatformConnector.setQuitListener(() -> {
+            if (GlobalCore.isSetSelectedCache()) {
+                // speichere selektierten Cache, da nicht alles über die
+                // SelectedCacheEventList läuft
+                Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
+                Config.AcceptChanges();
+                Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
             }
+            finish();
         });
 
-        PlatformConnector.setGetApiKeyListener(new IGetApiKey() {
-            @Override
-            public void getApiKey() {
-                Main.this.getApiKey();
-            }
-        });
+        PlatformConnector.setGetApiKeyListener(Main.this::getApiKey);
 
         PlatformConnector.setCallUrlListener(new ICallUrl() {
 
@@ -2005,14 +1966,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             }
         });
 
-        PlatformConnector.setStartPictureApp(new iStartPictureApp() {
-            @Override
-            public void Start(String file) {
-                Uri uriToImage = Uri.fromFile(new java.io.File(file));
-                Intent shareIntent = new Intent(ACTION_VIEW);
-                shareIntent.setDataAndType(uriToImage, "image/*");
-                Main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
-            }
+        PlatformConnector.setStartPictureApp(file -> {
+            Uri uriToImage = Uri.fromFile(new java.io.File(file));
+            Intent shareIntent = new Intent(ACTION_VIEW);
+            shareIntent.setDataAndType(uriToImage, "image/*");
+            Main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
         });
 
         PlatformSettings.setPlatformSettings(new IPlatformSettings() {
@@ -2063,23 +2021,20 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             @Override
             public void run() {
                 if (ExternalRequestGCCode != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mustShowCacheList) {
-                                // show cachelist first then search dialog
-                                mustShowCacheList = false;
-                                ViewManager.leftTab.ShowView(CacheListView.getInstance());
-                                importCacheByGCCode(); // now the search can start (doSearchOnline)
-                            } else {
-                                mustShowCacheList = true;
-                                if (SearchDialog.that == null) {
-                                    new SearchDialog();
-                                }
-                                SearchDialog.that.showNotCloseAutomaticly();
-                                SearchDialog.that.doSearchOnline(ExternalRequestGCCode, SearchMode.GcCode);
-                                ExternalRequestGCCode = null;
+                    runOnUiThread(() -> {
+                        if (mustShowCacheList) {
+                            // show cachelist first then search dialog
+                            mustShowCacheList = false;
+                            ViewManager.leftTab.ShowView(CacheListView.getInstance());
+                            importCacheByGCCode(); // now the search can start (doSearchOnline)
+                        } else {
+                            mustShowCacheList = true;
+                            if (SearchDialog.that == null) {
+                                new SearchDialog();
                             }
+                            SearchDialog.that.showNotCloseAutomaticly();
+                            SearchDialog.that.doSearchOnline(ExternalRequestGCCode, SearchMode.GcCode);
+                            ExternalRequestGCCode = null;
                         }
                     });
                 }
@@ -2093,51 +2048,39 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             @Override
             public void run() {
                 Log.info(sKlasse, "ImportGPXFile");
-                runOnUiThread(new Runnable() {
+                runOnUiThread(() -> wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), () -> wd.close(), new ICancelRunnable() {
                     @Override
                     public void run() {
-                        wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), new IcancelListener() {
-                            @Override
-                            public void isCanceled() {
-                                wd.close();
-                            }
-                        }, new ICancelRunnable() {
-                            @Override
-                            public void run() {
-                                Log.info(sKlasse, "Import GPXFile from " + ExternalRequestGpxPath + " startet");
-                                Date ImportStart = new Date();
-                                Importer importer = new Importer();
-                                ImporterProgress ip = new ImporterProgress();
+                        Log.info(sKlasse, "Import GPXFile from " + ExternalRequestGpxPath + " startet");
+                        Date ImportStart = new Date();
+                        Importer importer = new Importer();
+                        ImporterProgress ip = new ImporterProgress();
 
-                                Database.Data.sql.beginTransaction();
-                                try {
-                                    importer.importGpx(ExternalRequestGpxPath, ip);
-                                } catch (Exception ignored) {
-                                }
-                                Database.Data.sql.setTransactionSuccessful();
-                                Database.Data.sql.endTransaction();
+                        Database.Data.sql.beginTransaction();
+                        try {
+                            importer.importGpx(ExternalRequestGpxPath, ip);
+                        } catch (Exception ignored) {
+                        }
+                        Database.Data.sql.setTransactionSuccessful();
+                        Database.Data.sql.endTransaction();
 
-                                wd.close();
-                                CacheListChangedEventList.Call();
-                                FilterProperties props = FilterInstances.getLastFilter();
-                                EditFilterSettings.ApplyFilter(props);
+                        wd.close();
+                        CacheListChangedEventList.Call();
+                        FilterProperties props = FilterInstances.getLastFilter();
+                        EditFilterSettings.ApplyFilter(props);
 
-                                long ImportZeit = new Date().getTime() - ImportStart.getTime();
-                                String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "Caches\n" + String.valueOf(GPXFileImporter.LogCount) + "Logs\n in " + String.valueOf(ImportZeit);
-                                Log.info(sKlasse, Msg.replace("\n", "\n\r") + " from " + ExternalRequestGpxPath);
-                                GL.that.Toast(Msg, 3000);
-                                ExternalRequestGpxPath = null;
-                            }
-
-                            @Override
-                            public boolean doCancel() {
-                                // TODO handle cancel
-                                return false;
-                            }
-                        });
-
+                        long ImportZeit = new Date().getTime() - ImportStart.getTime();
+                        String Msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
+                        Log.info(sKlasse, Msg.replace("\n", "\n\r") + " from " + ExternalRequestGpxPath);
+                        GL.that.Toast(Msg, 3000);
+                        ExternalRequestGpxPath = null;
                     }
-                });
+
+                    @Override
+                    public boolean doCancel() {
+                        return false;
+                    }
+                }));
 
             }
         };
@@ -2152,7 +2095,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 handlingGetApiAuth = (requestCode, resultCode, data) -> {
                     Main.this.removeAndroidEventListener(handlingGetApiAuth);
                     if (requestCode == REQUEST_GET_APIKEY) {
-                        GL.that.RunIfInitial(() -> SettingsActivity.resortList());
+                        GL.that.RunIfInitial(SettingsActivity::resortList);
                         Config.AcceptChanges();
                     }
                 };
@@ -2172,11 +2115,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             try {
                 latitude = Config.MapInitLatitude.getValue();
                 longitude = Config.MapInitLongitude.getValue();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
-        } else {
-            // reload config
-            // TODO
         }
 
         ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
@@ -2301,12 +2241,16 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     private static class ScreenBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                Energy.setDisplayOff();
-                Locator.getInstance().setDisplayOff();
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                Energy.setDisplayOn();
-                Locator.getInstance().setDisplayOn();
+            if (intent != null) {
+                if (intent.getAction() != null) {
+                    if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                        Energy.setDisplayOff();
+                        Locator.getInstance().setDisplayOff();
+                    } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                        Energy.setDisplayOn();
+                        Locator.getInstance().setDisplayOn();
+                    }
+                }
             }
         }
     }
