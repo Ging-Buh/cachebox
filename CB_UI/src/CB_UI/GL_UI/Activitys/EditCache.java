@@ -140,7 +140,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         do {
             count++;
             newValues.setGcCode(prefix + String.format("%04d", count));
-        } while (Database.Data.cacheList.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
+        } while (Database.Data.cacheList.getCacheByIdFromCacheList(Cache.GenerateCacheId(newValues.getGcCode())) != null);
         newValues.setName(newValues.getGcCode());
         newValues.setOwner("Unbekannt");
         newValues.setState("");
@@ -191,7 +191,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
             cache.Id = Cache.GenerateCacheId(gcc);
 
-            Cache cl = Database.Data.cacheList.GetCacheById(cache.Id);
+            Cache cl = Database.Data.cacheList.getCacheByIdFromCacheList(cache.Id);
 
             if (cl != null) {
                 update = true;

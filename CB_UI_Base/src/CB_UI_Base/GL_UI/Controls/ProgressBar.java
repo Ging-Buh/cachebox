@@ -31,7 +31,7 @@ public class ProgressBar extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         if (drawableBackground == null) {
             setBackground(Sprites.ProgressBack);
         }
@@ -98,7 +98,7 @@ public class ProgressBar extends CB_View_Base {
         if (this.isDisposed())
             return;
         if (progressFill == null || progressFillDisabled == null)
-            Initial();
+            initialize();
 
         if (!isDisabled) {
             if (progressFill != null) {

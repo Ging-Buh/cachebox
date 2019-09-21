@@ -39,7 +39,7 @@ public class SettingsItem_Audio extends SettingsItemBase {
 
         CB_RectF rec2 = rec.copy();
 
-        float margin = UiSizes.that.getMargin();
+        float margin = UiSizes.getInstance().getMargin();
 
         rec2.setHeight(ProgressHeight);
         rec2.setWidth(this.getWidth() - Check.getWidth() - (margin * 2));

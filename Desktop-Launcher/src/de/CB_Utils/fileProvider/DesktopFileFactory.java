@@ -38,9 +38,9 @@ public class DesktopFileFactory extends FileFactory {
     protected String createPlatformThumb(String Path, int scaledWidth, String thumbPrefix) {
         try {
 
-            String storePath = FileIO.GetDirectoryName(Path) + "/";
-            String storeName = FileIO.GetFileNameWithoutExtension(Path);
-            String storeExt = FileIO.GetFileExtension(Path).toLowerCase();
+            String storePath = FileIO.getDirectoryName(Path) + "/";
+            String storeName = FileIO.getFileNameWithoutExtension(Path);
+            String storeExt = FileIO.getFileExtension(Path).toLowerCase();
             String ThumbPath = storePath + thumbPrefix + THUMB + storeName + "." + storeExt;
 
             java.io.File ThumbFile = new java.io.File(ThumbPath);

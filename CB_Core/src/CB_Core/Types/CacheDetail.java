@@ -346,7 +346,7 @@ public class CacheDetail implements Serializable {
 
     private void loadSpoilerResourcesFromPath(String directory, final Cache cache) {
         Log.trace(log, "LoadSpoilerResourcesFromPath from " + directory);
-        if (!FileIO.DirectoryExists(directory))
+        if (!FileIO.directoryExists(directory))
             return;
         File dir = FileFactory.createFile(directory);
         FilenameFilter filter = new FilenameFilter() {
@@ -370,7 +370,7 @@ public class CacheDetail implements Serializable {
         if (!(files == null)) {
             if (files.length > 0) {
                 for (String file : files) {
-                    String ext = FileIO.GetFileExtension(file);
+                    String ext = FileIO.getFileExtension(file);
                     if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif")) {
                         ImageEntry imageEntry = new ImageEntry();
                         imageEntry.LocalPath = directory + "/" + file;

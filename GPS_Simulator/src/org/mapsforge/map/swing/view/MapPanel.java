@@ -2,6 +2,7 @@ package org.mapsforge.map.swing.view;
 
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
+import CB_Locator.Locator;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_Utils.fileProvider.FileFactory;
@@ -74,12 +75,9 @@ public class MapPanel extends JPanel implements ActionListener {
 
             @Override
             public void valueChanged() {
-                if (CB_Locator.Locator.that != null) {
-                    LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
-                    model.mapViewPosition.setCenter(pos);
-                    CB_Locator.Locator.setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true, (float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
-                }
-
+                LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
+                model.mapViewPosition.setCenter(pos);
+                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true, (float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
             }
         });
     }

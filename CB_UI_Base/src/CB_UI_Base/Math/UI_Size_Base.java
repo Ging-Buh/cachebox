@@ -15,10 +15,8 @@
  */
 package CB_UI_Base.Math;
 
-import CB_UI_Base.settings.CB_UI_Base_Settings;
-
 public abstract class UI_Size_Base {
-    public static UI_Size_Base that;
+    public static UI_Size_Base ui_size_base;
     protected int ButtonWidth;
     protected int ButtonHeight;
     protected int WideButtonWidth;
@@ -39,45 +37,7 @@ public abstract class UI_Size_Base {
     protected DevicesSizes devicesSizes;
 
     public UI_Size_Base() {
-        that = this;
-    }
-
-    public abstract void instanzeInitial();
-
-    public Size initial(DevicesSizes devicesSizes) {
-        this.devicesSizes = devicesSizes;
-        this.windowWidth = devicesSizes.Window.width;
-        this.windowHeight = devicesSizes.Window.height;
-        this.scale = devicesSizes.Density; // res.getDisplayMetrics().density;
-
-        mClickToleranz = (int) (17 * scale);
-
-        calcBase = 533.333 * scale;
-
-        margin = (int) (10 * scale);
-
-        float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
-
-        ButtonWidth = (int) (NormalTextSize * scale);
-        ButtonHeight = ButtonWidth;
-        WideButtonWidth = (windowWidth - 4 * margin) / 3;
-
-        RefWidth = windowWidth;
-
-        scaledFontSize_normal = (int) (10 * scale);
-        scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
-        ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
-        ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
-        scaledFontSize_btn = (int) (11 * scale);
-
-        iconSize = (int) (10 * scale);
-
-        IconContextMenuHeight = (int) (calcBase / 11.1);
-
-        instanzeInitial();
-
-        return new Size(windowWidth, windowHeight);
-
+        ui_size_base = this;
     }
 
     public int getMargin() {

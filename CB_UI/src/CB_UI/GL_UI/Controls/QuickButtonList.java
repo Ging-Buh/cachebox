@@ -25,7 +25,7 @@ public class QuickButtonList extends H_ListView {
     public QuickButtonList(CB_RectF rec, String Name) {
         super(rec, Name);
         that = this;
-        btnHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
+        btnHeight = UiSizes.getInstance().getQuickButtonListHeight() * 0.93f;
         setBackground(Sprites.ButtonBack);
 
         CB_RectF btnRec = new CB_RectF(0, 0, btnHeight, btnHeight);
@@ -51,8 +51,8 @@ public class QuickButtonList extends H_ListView {
     }
 
     @Override
-    public void Initial() {
-        super.Initial();
+    public void initialize() {
+        super.initialize();
         chkIsDraggable();
     }
 

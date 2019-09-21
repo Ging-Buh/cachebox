@@ -34,7 +34,7 @@ public class ExportCBServerListItem extends ListViewItemBackground {
         // lblInfo.setText("---");
 
         chk = new CB_CheckBox("");
-        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
+        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.ui_size_base.getMargin());
         chk.setY(this.getHalfHeight() - chk.getHalfHeight());
         chk.setChecked(item.toExport);
         chk.setOnCheckChangedListener(new OnCheckChangedListener() {

@@ -79,7 +79,7 @@ public class DraftsView extends V_ListView {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
         this.mCanDispose = false;
         this.setForceHandleTouchEvents(true);
-        ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
+        ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f);
 
         setBackground(Sprites.ListBack);
 
@@ -700,12 +700,12 @@ public class DraftsView extends V_ListView {
             }
 
             synchronized (Data.cacheList) {
-                cache = Data.cacheList.GetCacheByGcCode(aktDraft.gcCode);
+                cache = Data.cacheList.getCacheByGcCodeFromCacheList(aktDraft.gcCode);
             }
 
             if (cache == null) {
                 Data.cacheList.add(tmpCache);
-                cache = Data.cacheList.GetCacheByGcCode(aktDraft.gcCode);
+                cache = Data.cacheList.getCacheByGcCodeFromCacheList(aktDraft.gcCode);
             }
 
             Waypoint finalWp = null;
@@ -766,7 +766,7 @@ public class DraftsView extends V_ListView {
                                 // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
                                 // damit das Smiley Symbol aus der Map und der CacheList verschwindet
                                 synchronized (Data.cacheList) {
-                                    Cache tc = Data.cacheList.GetCacheById(cache.Id);
+                                    Cache tc = Data.cacheList.getCacheByIdFromCacheList(cache.Id);
                                     if (tc != null) {
                                         tc.setFound(false);
                                     }
@@ -810,9 +810,9 @@ public class DraftsView extends V_ListView {
         }
 
         private float MeasureItemHeight(Draft fne) {
-            float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (UI_Size_Base.that.getMargin());
-            float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + UI_Size_Base.that.getMargin() + Fonts.Measure("T").height;
-            float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2);
+            float headHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + (UI_Size_Base.ui_size_base.getMargin());
+            float cacheIfoHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + UI_Size_Base.ui_size_base.getMargin() + Fonts.Measure("T").height;
+            float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.ui_size_base.getMargin() * 2);
 
             float mh = 0;
             if (fne != null) {
@@ -825,7 +825,7 @@ public class DraftsView extends V_ListView {
                     e.printStackTrace();
                 }
             }
-            float commentHeight = (UI_Size_Base.that.getMargin() * 3) + mh;
+            float commentHeight = (UI_Size_Base.ui_size_base.getMargin() * 3) + mh;
 
             return headHeight + cacheIfoHeight + commentHeight;
         }

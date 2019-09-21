@@ -46,7 +46,7 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 
-public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent {
+public class WaypointView extends V_ListView implements SelectedCacheChangedEventListener, WaypointListChangedEvent {
     private static final String log = "WaypointView";
     private static WaypointView that;
     private Waypoint aktWaypoint = null;
@@ -58,7 +58,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         super(ViewManager.leftTab.getContentRec(), "WaypointView");
         setBackground(Sprites.ListBack);
         SetSelectedCache(GlobalCore.getSelectedCache());
-        SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
         WaypointListChangedEventList.Add(this);
         this.setDisposeFlag(false);
     }
@@ -143,7 +143,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     }
 
     @Override
-    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         // cache and aktCache are the same objects so ==, but content has changed, thus setting aktCache to null
         aktCache = null;
@@ -198,7 +198,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         }
         Coordinate coord = GlobalCore.getSelectedCoord();
         if (coord == null)
-            coord = Locator.getMyPosition();
+            coord = Locator.getInstance().getMyPosition();
         if ((coord == null) || (!coord.isValid()))
             coord = GlobalCore.getSelectedCache().Pos;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
@@ -239,7 +239,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                     aktCache = null;
                     aktWaypoint = null;
 
-                    SelectedCacheChanged(GlobalCore.getSelectedCache(), waypoint);
+                    selectedCacheChanged(GlobalCore.getSelectedCache(), waypoint);
 
                 } else {
                     aktWaypoint.setTitle(waypoint.getTitle());
@@ -306,7 +306,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     private void addProjection() {
         createNewWaypoint = true;
 
-        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getMyPosition();
+        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getInstance().getMyPosition();
         String ProjName;
 
         ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;
@@ -384,7 +384,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         that = null;
 
         // release all EventHandler
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         WaypointListChangedEventList.Remove(this);
         super.dispose();
     }
@@ -429,7 +429,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                 if (position == 0) {
                     // the cache
                     if (items.get(position) == null || items.get(position).isDisposed()) {
-                        WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, null);
+                        WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache, null);
                         waypointViewItem.setClickable(true);
                         waypointViewItem.addClickHandler((v, x, y, pointer, button) -> {
                             int selectionIndex = ((ListViewItemBase) v).getIndex();
@@ -477,7 +477,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
                 } else {
                     if (items.get(position) == null || items.get(position).isDisposed()) {
                         Waypoint waypoint = cache.waypoints.get(position - 1);
-                        WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, waypoint);
+                        WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache, waypoint);
                         waypointViewItem.setClickable(true);
                         waypointViewItem.addClickHandler((v, x, y, pointer, button) -> {
                             int selectionIndex = ((ListViewItemBase) v).getIndex();

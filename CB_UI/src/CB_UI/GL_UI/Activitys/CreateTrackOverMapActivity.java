@@ -90,9 +90,9 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     private void createControls() {
         float btWidth = innerWidth / 3;
 
-        btnOk = new CB_Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onOkClick);
-        btnAdd = new CB_Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClick);
-        btnCancel = new CB_Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
+        btnOk = new CB_Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), onOkClick);
+        btnAdd = new CB_Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), onAddClick);
+        btnCancel = new CB_Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), onCancelClik);
 
         // translations
         btnOk.setText(Translation.get("ok".hashCode()));

@@ -18,7 +18,7 @@ public class QuickDraftFeedbackPopUp extends PopUp_Base {
     TimerTask AnimateTimertask;
 
     public QuickDraftFeedbackPopUp(boolean found) {
-        super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 2.5f, UI_Size_Base.that.getButtonWidth() * 2.5f), "QuickDraftFeedbackPopUp");
+        super(new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidth() * 2.5f, UI_Size_Base.ui_size_base.getButtonWidth() * 2.5f), "QuickDraftFeedbackPopUp");
         counter = 0;
         toSmall = true;
         if (found) {

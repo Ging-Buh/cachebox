@@ -200,7 +200,7 @@ public abstract class PackBase implements Comparable<PackBase> {
                     // Dateigröße ermitteln
                     String local = layer.GetLocalFilename(desc);
 
-                    if (FileIO.FileExists(local)) {
+                    if (FileIO.fileExists(local)) {
                         File info = FileFactory.createFile(local);
                         if (info.lastModified() < MaxAge)
                             layer.DownloadTile(desc);
@@ -208,7 +208,7 @@ public abstract class PackBase implements Comparable<PackBase> {
                         layer.DownloadTile(desc);
 
                     // Nicht vorhandene Tiles haben die L�nge 0
-                    if (!FileIO.FileExists(local))
+                    if (!FileIO.fileExists(local))
                         offset += 0;
                     else {
                         File info = FileFactory.createFile(local);

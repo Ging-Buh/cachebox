@@ -36,7 +36,7 @@ public class Spinner extends CB_Button {
     private ISelectionChangedListener mListener;
 
     public Spinner(String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-        super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), TranslationId);
+        super(new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidthWide(), UI_Size_Base.ui_size_base.getButtonHeight()), TranslationId);
         mAdapter = adapter;
         mListener = listener;
     }
@@ -54,8 +54,8 @@ public class Spinner extends CB_Button {
     }
 
     @Override
-    protected void Initial() {
-        super.Initial();
+    protected void initialize() {
+        super.initialize();
 
         if (triangle == null) {
             Sprite tr = Sprites.getSprite("spinner-triangle");
@@ -121,7 +121,7 @@ public class Spinner extends CB_Button {
                     icon = new Image(rec, "", false);
                     icon.setY(this.getHalfHeight() - icon.getHalfHeight());
 
-                    float margin = UI_Size_Base.that.getMargin();
+                    float margin = UI_Size_Base.ui_size_base.getMargin();
 
                     icon.setX(margin * 2);
 
@@ -129,7 +129,7 @@ public class Spinner extends CB_Button {
 
                     lblTxt.setX(icon.getMaxX() + margin);
                 }
-                float margin = UI_Size_Base.that.getMargin();
+                float margin = UI_Size_Base.ui_size_base.getMargin();
 
                 icon.setX(margin * 2);
 

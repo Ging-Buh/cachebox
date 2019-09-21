@@ -41,7 +41,7 @@ public class PositionChangedEventList {
         minPosEventTime = Math.min(minPosEventTime, System.currentTimeMillis() - lastPosTime);
         lastPosTime = System.currentTimeMillis();
 
-        if (lastPositionChanged != 0 && lastPositionChanged > System.currentTimeMillis() - Locator.getMinUpdateTime())
+        if (lastPositionChanged != 0 && lastPositionChanged > System.currentTimeMillis() - Locator.getInstance().getMinUpdateTime())
             return;
         lastPositionChanged = System.currentTimeMillis();
 
@@ -49,7 +49,7 @@ public class PositionChangedEventList {
             try {
                 for (PositionChangedEvent event : list) {
                     // If display is switched off fire only events with high priority!
-                    if (Locator.isDisplayOff() && (event.getPriority() != Priority.High))
+                    if (Locator.getInstance().isDisplayOff() && (event.getPriority() != Priority.High))
                         continue;
                     try {
                         event.PositionChanged();
@@ -69,13 +69,13 @@ public class PositionChangedEventList {
 
     public static void OrientationChanged() {
 
-        if (Locator.isDisplayOff())
+        if (Locator.getInstance().isDisplayOff())
             return; // Hier braucht niemand ein OriantationChangedEvent
 
         minOrientationEventTime = Math.min(minOrientationEventTime, System.currentTimeMillis() - lastOrientTime);
         lastOrientTime = System.currentTimeMillis();
 
-        if (lastOrintationChangedEvent != 0 && lastOrintationChangedEvent > System.currentTimeMillis() - Locator.getMinUpdateTime())
+        if (lastOrintationChangedEvent != 0 && lastOrintationChangedEvent > System.currentTimeMillis() - Locator.getInstance().getMinUpdateTime())
             return;
         lastOrintationChangedEvent = System.currentTimeMillis();
 
@@ -93,7 +93,7 @@ public class PositionChangedEventList {
 
     public static void SpeedChanged() {
 
-        if (Locator.isDisplayOff())
+        if (Locator.getInstance().isDisplayOff())
             return; // Hier braucht niemand ein SpeedChangedEvent
 
         synchronized (list) {

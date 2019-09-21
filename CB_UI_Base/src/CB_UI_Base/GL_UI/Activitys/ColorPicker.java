@@ -74,8 +74,8 @@ public class ColorPicker extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("ok"));
@@ -106,7 +106,7 @@ public class ColorPicker extends ActivityBase {
     }
 
     private void createColorPreviewLine() {
-        CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UI_Size_Base.ui_size_base.getButtonWidthWide(), UI_Size_Base.ui_size_base.getButtonHeight());
         lastColorBox = new Box(rec, "LastColor");
         actColorBox = new Box(rec, "aktColor");
 

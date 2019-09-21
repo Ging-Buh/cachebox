@@ -72,7 +72,7 @@ public class GL implements ApplicationListener {
     private MainViewBase mSplash;
     private MainViewBase mMainView;
     private boolean allIsInitialized;
-    private boolean stopRender;
+    private boolean renderingIsStopped;
     private boolean darknessAnimationRuns;
     private Fader grayFader;
     private long GL_ThreadId;
@@ -81,7 +81,7 @@ public class GL implements ApplicationListener {
     private ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
     private AtomicBoolean started = new AtomicBoolean(false);
     private PolygonSpriteBatch mPolygonSpriteBatch;
-    private GL_Listener_Interface mGL_Listener_Interface; // implementation in Android_GUI/ViewGL : Desktop-Launcher/DesktopMain/start
+    public GL_Listener_Interface mGL_Listener_Interface; // implementation in Android_GUI/ViewGL : Desktop-Launcher/DesktopMain/start
     private int FpsInfoPos = 0;
     private ParentInfo prjMatrix;
     private Sprite FpsInfoSprite;
@@ -128,7 +128,7 @@ public class GL implements ApplicationListener {
         mSplash = splash;
         mMainView = mainView;
         ToastIsShown = false;
-        stopRender = false;
+        renderingIsStopped = false;
         darknessAnimationRuns = false;
         currentDialogIsShown = false;
         currentActivityIsShown = false;
@@ -195,13 +195,14 @@ public class GL implements ApplicationListener {
         // ApplicationListener Implementation render()
         if (Gdx.gl == null) {
             Gdx.app.error("CB_UI GL", "GL.render() with not initial GDX.gl");
+            Log.err("GL:render()", "GL.render() with not initial GDX.gl");
             return;
         }
 
         if (Energy.DisplayOff())
             return;
 
-        if (!started.get() || stopRender)
+        if (!started.get() || renderingIsStopped)
             return;
 
         if (grayFader == null) {
@@ -395,7 +396,7 @@ public class GL implements ApplicationListener {
 
         if (Global.isTestVersion()) {
             // TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
-            float FpsInfoSize = 4 * UI_Size_Base.that.getScale();
+            float FpsInfoSize = 4 * UI_Size_Base.ui_size_base.getScale();
             if (FpsInfoSprite != null) {
                 mPolygonSpriteBatch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
             } else {
@@ -407,8 +408,8 @@ public class GL implements ApplicationListener {
                 }
             }
 
-            FpsInfoPos += UI_Size_Base.that.getScale();
-            if (FpsInfoPos > 60 * UI_Size_Base.that.getScale()) {
+            FpsInfoPos += UI_Size_Base.ui_size_base.getScale();
+            if (FpsInfoPos > 60 * UI_Size_Base.ui_size_base.getScale()) {
                 FpsInfoPos = 0;
             }
 
@@ -1228,10 +1229,10 @@ public class GL implements ApplicationListener {
         }
         toast.setWrappedText(string);
 
-        GlyphLayout bounds = Fonts.MeasureWrapped(string, UiSizes.that.getWindowWidth());
+        GlyphLayout bounds = Fonts.MeasureWrapped(string, UiSizes.getInstance().getWindowWidth());
 
         // float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
-        float border = +(toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
+        float border = +(toast.getLeftWidth() * 2) + (UI_Size_Base.ui_size_base.getMargin() * 2);
         toast.setWidth(bounds.width + border);
         toast.setHeight(bounds.height + border);
 
@@ -1243,19 +1244,21 @@ public class GL implements ApplicationListener {
     /**
      * Stopt den Rendervorgang bis er durch RestartRender() wieder gestartet wird
      */
-    public void StopRender() {
-        stopRender = true;
+    public void stopRendering() {
+        renderingIsStopped = true;
     }
 
     /**
-     * Startet den Renderer wenn er durch StopRender() gestoppt wurde
+     * Startet den Renderer, nicht nur wenn er durch StopRender() gestoppt wurde
+     * auch MainViewInit:initialize()
+     * und
+     * ViewManager:reloadSprites(boolean switchDayNight)
      */
-    public void RestartRender() {
-
-        // Log.debug(log, "restart render" + Trace.getCallerName());
-
-        mGL_Listener_Interface.RenderContinous();
-        stopRender = false;
+    public void restartRendering() {
+        if (mGL_Listener_Interface != null) {
+            mGL_Listener_Interface.RenderContinous();
+        }
+        renderingIsStopped = false;
         renderOnce();
         setAllIsInitialized(true);
     }

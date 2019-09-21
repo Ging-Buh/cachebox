@@ -70,7 +70,7 @@ public class TrackableListView extends CB_View_Base {
     public void onHide() {
     }
 
-    protected void Initial() {
+    protected void initialize() {
 
         listView = new V_ListView(new CB_RectF(0, 0, getWidth(), 0), "listView");
         listView.setEmptyMsg(Translation.get("TB_List_Empty"));
@@ -228,7 +228,7 @@ public class TrackableListView extends CB_View_Base {
 
         @Override
         public ListViewItemBase getView(final int position) {
-            TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, mTB_List.get(position));
+            TrackableListViewItem v = new TrackableListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, mTB_List.get(position));
             v.addClickHandler((v1, x, y, pointer, button) -> {
                 if (TB_Details.that == null)
                     new TB_Details();
@@ -241,7 +241,7 @@ public class TrackableListView extends CB_View_Base {
 
         @Override
         public float getItemSize(int position) {
-            return UiSizes.that.getCacheListItemRec().getHeight();
+            return UiSizes.getInstance().getCacheListItemRec().getHeight();
         }
 
     }

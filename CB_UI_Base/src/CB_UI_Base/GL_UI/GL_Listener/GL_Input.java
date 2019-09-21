@@ -128,7 +128,7 @@ public class GL_Input implements InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         // InputProcessor Implementation scrolled
-        int scrollSize = (UiSizes.that.getClickToleranz() + 10) * amount;
+        int scrollSize = (UiSizes.getInstance().getClickToleranz() + 10) * amount;
         int Pointer = (scrollSize > 0) ? GL_View_Base.MOUSE_WHEEL_POINTER_UP : GL_View_Base.MOUSE_WHEEL_POINTER_DOWN;
         onTouchDownBase(MouseX, MouseY, Pointer, -1);
         onTouchDraggedBase(MouseX - scrollSize, MouseY - scrollSize, Pointer);

@@ -13,7 +13,7 @@ public class SettingsItemEnum extends SettingsItemBase {
 
         spinner = new Spinner(lblDefault, Name, null, null);
 
-        spinner.setHeight(UI_Size_Base.that.getButtonHeight());
+        spinner.setHeight(UI_Size_Base.ui_size_base.getButtonHeight());
 
         this.addChild(spinner);
 
@@ -27,7 +27,7 @@ public class SettingsItemEnum extends SettingsItemBase {
     protected void layout() {
         lblDefault.setHeight(spinner.getHeight());
         super.layout();
-        spinner.setY(lblDefault.getY() + UI_Size_Base.that.getMargin());
+        spinner.setY(lblDefault.getY() + UI_Size_Base.ui_size_base.getMargin());
 
     }
 

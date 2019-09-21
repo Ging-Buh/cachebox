@@ -25,7 +25,7 @@ public class FileList extends ArrayList<File> implements Comparator<File> {
         if (!(files == null)) {
             if (files.length > 0) {
                 for (String file : files) {
-                    if (FileIO.GetFileExtension(file).equalsIgnoreCase(extension)) {
+                    if (FileIO.getFileExtension(file).equalsIgnoreCase(extension)) {
                         File newfile = FileFactory.createFile(absolutePath + file);
                         this.add(newfile);
                     }

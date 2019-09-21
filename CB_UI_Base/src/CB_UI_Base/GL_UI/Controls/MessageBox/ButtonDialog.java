@@ -63,7 +63,7 @@ public class ButtonDialog extends Dialog {
         setButtonCaptions(buttons);
         SizeF contentSize = getContentSize();
 
-        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
 
         if (icon != MessageBoxIcon.None && icon != null) {
             Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
@@ -72,7 +72,7 @@ public class ButtonDialog extends Dialog {
         }
 
         label = new CB_Label(contentSize.getBounds());
-        label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
+        label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.ui_size_base.getButtonHeight());
         label.setX(imageRec.getMaxX() + 5);
         label.setY(-margin);
         label.setWrappedText(msg);
@@ -94,8 +94,8 @@ public class ButtonDialog extends Dialog {
     }
 
     @Override
-    protected void Initial() {
-        super.Initial();
+    protected void initialize() {
+        super.initialize();
         synchronized (childs) {
             for (Iterator<CB_View_Base> iterator = FooterItems.iterator(); iterator.hasNext(); ) {
                 childs.add(iterator.next());

@@ -55,7 +55,7 @@ public interface CB_UI_Base_Settings {
     SettingInt LongClickTime = new SettingInt("LongClicktime", Misc, EXPERT, 600, Global, ACB);
     SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), Global, ACB);
 
-    SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, (float) displayDensity, Global, ACB);
+    SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, displayDensity, Global, ACB);
 
     SettingFolder ImageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
 

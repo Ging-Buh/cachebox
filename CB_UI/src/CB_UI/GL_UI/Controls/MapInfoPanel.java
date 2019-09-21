@@ -50,7 +50,7 @@ public class MapInfoPanel extends CB_View_Base {
     private float aktDistance = -1;
     private float aktHeading = 0;
     private float aktBearing = 0;
-    private boolean lastUsedCompass = Locator.UseMagneticCompass();
+    private boolean lastUsedCompass = Locator.getInstance().UseMagneticCompass();
 
     public MapInfoPanel(CB_RectF rec, String Name, MapViewBase parentMapView) {
         super(rec, Name);
@@ -149,7 +149,7 @@ public class MapInfoPanel extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         this.removeChilds();
 
         setBackground(Sprites.InfoBack);
@@ -216,7 +216,7 @@ public class MapInfoPanel extends CB_View_Base {
     }
 
     private void setArrowDrawable(boolean forceSet) {
-        boolean tmp = Locator.UseMagneticCompass();
+        boolean tmp = Locator.getInstance().UseMagneticCompass();
         if (!forceSet && tmp == lastUsedCompass)
             return;// no change required
         lastUsedCompass = tmp;
@@ -234,7 +234,7 @@ public class MapInfoPanel extends CB_View_Base {
 
     @Override
     protected void SkinIsChanged() {
-        Initial();
+        initialize();
     }
 
     public enum CoordType {

@@ -79,7 +79,7 @@ public class Waypoint implements Serializable {
     // / Entfernung von der letzten gültigen Position
     // / </summary>
     public float Distance() {
-        Coordinate fromPos = Locator.getLocation().toCordinate();
+        Coordinate fromPos = Locator.getInstance().getLocation().toCordinate();
         float[] dist = new float[4];
 
         MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(), Pos.getLongitude(), dist);

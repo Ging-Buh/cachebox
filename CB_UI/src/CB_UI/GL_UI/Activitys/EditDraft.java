@@ -248,7 +248,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void iniTitle() {
-        ivTyp = new Image(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "", false);
+        ivTyp = new Image(0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight(), "", false);
         if (draft.isTbDraft) {
             ivTyp.setImageURL(draft.TbIconUrl);
         } else {
@@ -286,7 +286,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             if (!draft.isTbDraft) {
                 FilterSetEntry tmp = new FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), FilterSetListView.NUMERIC_ITEM, 0, 5, draft.gc_Vote / 100.0, 0.5f);
-                GcVote = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 1.1f), 0, tmp);
+                GcVote = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f), 0, tmp);
                 scrollBoxContent.addLast(GcVote);
             }
         }

@@ -23,8 +23,8 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
+import CB_UI.SelectedCacheChangedEventListener;
+import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -39,7 +39,7 @@ import CB_Utils.Lists.CB_List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LogView extends V_ListView implements SelectedCacheEvent {
+public class LogView extends V_ListView implements SelectedCacheChangedEventListener {
     private static CB_RectF ItemRec;
     private static LogView that;
     private Cache aktCache;
@@ -49,7 +49,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
     private LogView() {
         super(ViewManager.leftTab.getContentRec(), "LogView");
         setForceHandleTouchEvents(true);
-        ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
+        ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
         this.setBaseAdapter(null);
@@ -70,11 +70,11 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 
     @Override
     public void onHide() {
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
     }
 
     @Override
-    public void Initial() {
+    public void initialize() {
         // super.Initial(); does nothing at the moment
 
         createItemList();
@@ -130,8 +130,8 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 
     private float MeasureItemHeight(LogEntry logEntry) {
         // object ist nicht von Dialog abgeleitet, daher
-        float margin = UI_Size_Base.that.getMargin();
-        float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + margin;
+        float margin = UI_Size_Base.ui_size_base.getMargin();
+        float headHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + margin;
 
         float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (margin * 2);
 
@@ -152,7 +152,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
     }
 
     @Override
-    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         setCache(cache);
     }
 

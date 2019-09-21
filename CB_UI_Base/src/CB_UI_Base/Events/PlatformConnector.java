@@ -17,7 +17,6 @@ package CB_UI_Base.Events;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ViewID;
-import de.cb.sqlite.Database_Core;
 import de.cb.sqlite.SQLiteInterface;
 
 import java.util.ArrayList;
@@ -62,13 +61,13 @@ public class PlatformConnector {
         }
     }
 
-    public static void FirstShow() {
+    public static void handleExternalRequest() {
         if (showViewListener != null) {
-            showViewListener.firstShow();
+            showViewListener.handleExternalRequest();
         }
     }
 
-    public static void DayNightSwitched() {
+    public static void dayNightSwitched() {
         if (showViewListener != null) {
             showViewListener.dayNightSwitched();
         }
@@ -76,7 +75,7 @@ public class PlatformConnector {
 
     public static void hideView(ViewID viewID) {
         if (showViewListener != null) {
-            showViewListener.hide(viewID);
+            showViewListener.hideView(viewID);
         }
     }
 
@@ -296,7 +295,7 @@ public class PlatformConnector {
 
         void setContentSize(int left, int top, int right, int bottom);
 
-        void hide(ViewID viewID);
+        void hideView(ViewID viewID);
 
         void showForDialog();
 
@@ -304,7 +303,7 @@ public class PlatformConnector {
 
         void dayNightSwitched();
 
-        void firstShow();
+        void handleExternalRequest();
     }
 
     public interface IHardwarStateListener {

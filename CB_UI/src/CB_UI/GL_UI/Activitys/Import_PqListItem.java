@@ -35,7 +35,7 @@ public class Import_PqListItem extends ListViewItemBackground {
 
         chk = new CB_CheckBox("");
         chk.setRec(chk.ScaleCenter(0.6f));
-        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
+        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.ui_size_base.getMargin());
         chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
         chk.setChecked(pq.doDownload);
         chk.setOnCheckChangedListener((view, isChecked) -> pq.doDownload = isChecked);

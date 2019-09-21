@@ -106,7 +106,7 @@ public class ActivityUtils {
     }
 
     public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor) {
-        drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, UiSizes.that.getCornerSize());
+        drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, UiSizes.getInstance().getCornerSize());
     }
 
     public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize) {
@@ -288,7 +288,7 @@ public class ActivityUtils {
     public static void setListViewPropertys(ListView list) {
         list.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
         list.setCacheColorHint(0);
-        list.setDividerHeight(UiSizes.that.getHalfCornerSize() * 2);
+        list.setDividerHeight(UiSizes.getInstance().getHalfCornerSize() * 2);
         list.setDivider(list.getBackground());
     }
 

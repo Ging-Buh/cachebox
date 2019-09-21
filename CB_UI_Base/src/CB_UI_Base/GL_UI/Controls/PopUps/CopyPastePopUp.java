@@ -22,7 +22,7 @@ public class CopyPastePopUp extends PopUp_Base {
     private ImageButton btnPaste;
 
     public CopyPastePopUp(String Name, final ICopyPaste copyPasteControl) {
-        super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 3.2f, UI_Size_Base.that.getButtonHeight() * 1.5f), Name);
+        super(new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidth() * 3.2f, UI_Size_Base.ui_size_base.getButtonHeight() * 1.5f), Name);
 
         int p = Sprites.patch;
 
@@ -30,7 +30,7 @@ public class CopyPastePopUp extends PopUp_Base {
 
         this.setClickable(true);
 
-        CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
 
         btnPaste = new ImageButton(rec, "PasteButton");
         btnPaste.setFont(Fonts.getBubbleNormal());

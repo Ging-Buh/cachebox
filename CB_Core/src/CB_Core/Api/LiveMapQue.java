@@ -228,7 +228,7 @@ public class LiveMapQue {
 
     private static boolean descExistLiveCache(Descriptor desc) {
         String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
-        return FileIO.FileExists(path, CB_Core_Settings.LiveCacheTime.getEnumValue().getMinuten());
+        return FileIO.fileExistsMaxAge(path, CB_Core_Settings.LiveCacheTime.getEnumValue().getMinuten());
     }
 
     static public void quePosition(Coordinate coord) {

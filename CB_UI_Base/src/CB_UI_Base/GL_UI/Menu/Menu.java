@@ -74,7 +74,7 @@ public class Menu extends ButtonDialog {
         singleSelection = false;
 
         if (ItemHeight == -1f)
-            ItemHeight = UI_Size_Base.that.getButtonHeight();
+            ItemHeight = UI_Size_Base.ui_size_base.getButtonHeight();
         mListView = new V_ListView(this, "MenuList");
         mListView.setSize(this.getContentSize());
         mListView.setZeroPos();
@@ -178,8 +178,8 @@ public class Menu extends ButtonDialog {
     }
 
     @Override
-    protected void Initial() {
-        super.Initial();
+    protected void initialize() {
+        super.initialize();
 
         if (!isMoreMenu) {
             // Menu level 1
@@ -192,15 +192,15 @@ public class Menu extends ButtonDialog {
                     higherValue += item.getHeight() + mListView.getDividerHeight();
                 }
                 float freiraumObenPlusUnten = 0; // x * UI_Size_Base.that.getButtonHeight();
-                if (higherValue > UI_Size_Base.that.getWindowHeight() - freiraumObenPlusUnten) {
-                    higherValue = UI_Size_Base.that.getWindowHeight() - freiraumObenPlusUnten;
+                if (higherValue > UI_Size_Base.ui_size_base.getWindowHeight() - freiraumObenPlusUnten) {
+                    higherValue = UI_Size_Base.ui_size_base.getWindowHeight() - freiraumObenPlusUnten;
                 }
                 float MenuWidth = GL_UISizes.UI_Left.getWidth();
                 this.setSize(MenuWidth, higherValue);
 
                 // initial more menus
                 if (mMoreMenu != null)
-                    mMoreMenu.Initial();
+                    mMoreMenu.initialize();
 
             }
         } else {
@@ -218,7 +218,7 @@ public class Menu extends ButtonDialog {
         mListView.setBaseAdapter(new CustomAdapter());
 
         if (mMoreMenu != null && !mMoreMenuIsInitial) {
-            mMoreMenu.Initial();
+            mMoreMenu.initialize();
             mMoreMenu.setVisible(false);
             mMoreMenu.setZeroPos();
             mMoreMenu.setHeight(this.getHeight());
@@ -258,8 +258,8 @@ public class Menu extends ButtonDialog {
         }
 
         // set display center pos
-        float cx = (UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth();
-        float cy = (UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight();
+        float cx = (UI_Size_Base.ui_size_base.getWindowWidth() / 2) - this.getHalfWidth();
+        float cy = (UI_Size_Base.ui_size_base.getWindowHeight() / 2) - this.getHalfHeight();
         this.setPos(cx, cy);
 
         layout();

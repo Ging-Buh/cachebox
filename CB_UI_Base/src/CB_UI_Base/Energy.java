@@ -29,40 +29,20 @@ import java.util.ArrayList;
  */
 public class Energy {
     private static final String log = "Energy";
-
-    // ##########################
-    // Dont Render
-    // ##########################
     protected static ArrayList<IChanged> ChangedEventList = new ArrayList<>();
-    /**
-     * Explain of no Render jobs!
-     */
     private static boolean displayOff = false;
     private static boolean sliderIsShown = false;
 
-    /**
-     * Explain of no Render jobs!
-     */
     public static boolean DisplayOff() {
         return displayOff;
     }
 
-    // ##############################
-    // Slider is Shown
-    // ##############################
-
-    /**
-     * Set DisplayOff to 'True'
-     */
     public static void setDisplayOff() {
         displayOff = true;
         fireChangedEvent();
         Log.info(log, "ENERGY setDisplayOff");
     }
 
-    /**
-     * Set DisplayOff to 'False'
-     */
     public static void setDisplayOn() {
         displayOff = false;
         fireChangedEvent();
@@ -77,12 +57,10 @@ public class Energy {
 
     public static void setSliderIsShown() {
         sliderIsShown = true;
-
     }
 
     public static void resetSliderIsShown() {
         sliderIsShown = false;
-
     }
 
     protected static void fireChangedEvent() {
@@ -91,7 +69,6 @@ public class Energy {
                 event.handleChange();
             }
         }
-
     }
 
     public static void addChangedEventListener(IChanged listener) {

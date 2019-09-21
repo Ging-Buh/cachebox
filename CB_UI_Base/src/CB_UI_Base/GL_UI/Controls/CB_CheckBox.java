@@ -14,7 +14,7 @@ public class CB_CheckBox extends CB_Button {
     protected OnCheckChangedListener changeListener;
 
     public CB_CheckBox(String name) {
-        super(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name);
+        super(new CB_RectF(UI_Size_Base.ui_size_base.getChkBoxSize()), name);
         this.setClickable(true);
     }
 
@@ -26,7 +26,7 @@ public class CB_CheckBox extends CB_Button {
     @Override
     protected void render(Batch batch) {
         if (drawableNormal == null || drawablePressed == null || drawableDisabledChk == null || drawableDisabled == null) {
-            Initial();
+            initialize();
             GL.that.renderOnce();
         }
 
@@ -51,7 +51,7 @@ public class CB_CheckBox extends CB_Button {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
 
         // die einzelnen Hintergründe werden hier anders benutzt
         // drawableNormal= unchecked

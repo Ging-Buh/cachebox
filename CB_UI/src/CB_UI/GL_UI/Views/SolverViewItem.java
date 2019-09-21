@@ -35,11 +35,11 @@ public class SolverViewItem extends ListViewItemBackground {
     }
 
     @Override
-    protected void Initial() {
-        super.Initial();
+    protected void initialize() {
+        super.initialize();
         lblSolverZeile = new CB_Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
         lblSolverZeile.setHeight(this.getHeight()); // todo ob das immer passt?
-        this.setBorders(UI_Size_Base.that.getMargin(), UI_Size_Base.that.getMargin());
+        this.setBorders(UI_Size_Base.ui_size_base.getMargin(), UI_Size_Base.ui_size_base.getMargin());
         this.addLast(lblSolverZeile);
     }
 

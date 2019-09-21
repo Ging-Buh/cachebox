@@ -123,7 +123,7 @@ public class DescriptionView extends CB_View_Base {
 
     private void getNewCacheInfo() {
         if (sel == null) return;
-        cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
+        cacheInfo = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), 0, sel);
         cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 
         this.addChild(cacheInfo);
@@ -137,7 +137,7 @@ public class DescriptionView extends CB_View_Base {
             cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
         layout();
 
-        float infoHeight = -(UiSizes.that.getInfoSliderHeight());
+        float infoHeight = -(UiSizes.getInstance().getInfoSliderHeight());
         if (cacheInfo != null)
             infoHeight += cacheInfo.getHeight();
         infoHeight += margin * 2;
@@ -266,7 +266,7 @@ public class DescriptionView extends CB_View_Base {
 
         if (PowerdBy != null) {
             if (Line == null) {
-                float strokeWidth = 3 * UI_Size_Base.that.getScale();
+                float strokeWidth = 3 * UI_Size_Base.ui_size_base.getScale();
 
                 Line l1 = new Line(margin, PowerdBy.getY() - margin, this.getWidth() - margin, PowerdBy.getY() - margin);
 

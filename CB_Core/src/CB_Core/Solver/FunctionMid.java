@@ -6,7 +6,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 /**
  * Return a substring of a string. Parameter 3 defaults to 1
  * Mid(String; StartPosition; [CharacterCount])
- *
  */
 public class FunctionMid extends Function {
     private static final long serialVersionUID = 3727854231542597267L;
@@ -46,8 +45,8 @@ public class FunctionMid extends Function {
         } catch (Exception ex) {
             return Translation.get("solverErrParamType", "$solverFuncMid", "5", "$count", "$number", parameter[2]);
         }
-        if (iPos > Wert.length()) {
-            return Translation.get("PosGtLength", "$solverFuncMid", String.valueOf(iPos), Wert);
+        if (iPos == 0 || iPos > Wert.length() || iPos + iCount - 1 > Wert.length()) {
+            return "%" + Translation.get("PosGtLength", "$solverFuncMid", String.valueOf(iPos), Wert);
         }
         return Wert.substring(iPos - 1, iPos - 1 + iCount);
     }

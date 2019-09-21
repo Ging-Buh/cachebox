@@ -34,6 +34,10 @@ public class FunctionAlphaSum extends Function {
         for (char c : parameter[0].toCharArray()) {
             if ((c >= 'a') && (c <= 'z'))
                 result += c - ('a') + 1;
+            if (c == 'ä') result += 27;
+            if (c == 'ö') result += 28;
+            if (c == 'ü') result += 29;
+            if (c == 'ß') result += 30;
         }
         return String.valueOf(result);
     }

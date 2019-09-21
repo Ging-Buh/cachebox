@@ -71,9 +71,9 @@ public class GestureHelp extends CB_View_Base {
 
     @Override
     public void setPos(float x, float y) {
-        if (x + getWidth() > UI_Size_Base.that.getWindowWidth()) {
+        if (x + getWidth() > UI_Size_Base.ui_size_base.getWindowWidth()) {
             UseLastBtnBackground = true;
-            x = UI_Size_Base.that.getWindowWidth() - getWidth();
+            x = UI_Size_Base.ui_size_base.getWindowWidth() - getWidth();
         }
 
         super.setPos(x, y);

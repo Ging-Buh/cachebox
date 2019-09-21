@@ -373,10 +373,10 @@ public class MessageBox extends android.app.Dialog {
 
         @SuppressWarnings("deprecation")
         public MessageBox create() {
-            int winWidth = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowWidth() : WindowWidth;
-            int winHeight = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowHeight() : WindowHeight;
+            int winWidth = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getWindowWidth() : WindowWidth;
+            int winHeight = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getWindowHeight() : WindowHeight;
             // float txtSize = UI_Size_Base.that != null ? (float) (UI_Size_Base.that.getScaledFontSize_btn()) : textSize;
-            int Buttonheight = UI_Size_Base.that != null ? UI_Size_Base.that.getButtonHeight() : ButtonHeight;
+            int Buttonheight = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getButtonHeight() : ButtonHeight;
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // instantiate the dialog with the custom Theme

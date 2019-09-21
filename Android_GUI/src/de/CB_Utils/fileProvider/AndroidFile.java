@@ -18,22 +18,22 @@ import java.util.List;
 public class AndroidFile extends File {
     private static final String sKlasse = "AndroidFile";
 
-    private final java.io.File mFile;
+    private java.io.File mFile;
 
     private AndroidFile(java.io.File file) {
-        mFile = file;
+        mFile = new java.io.File(file, "");
     }
 
     public AndroidFile(String path) {
         mFile = new java.io.File(path);
     }
 
-    public AndroidFile(File parent) {
-        mFile = ((AndroidFile) parent).mFile;
+    public AndroidFile(File file) {
+        mFile = new java.io.File(file.getAbsolutePath());
     }
 
-    public AndroidFile(File parent, String child) {
-        mFile = new java.io.File(((AndroidFile) parent).mFile, child);
+    public AndroidFile(File file, String child) {
+        mFile = new java.io.File(file.getAbsolutePath(), child);
     }
 
     public AndroidFile(String parent, String child) {
@@ -46,7 +46,7 @@ public class AndroidFile extends File {
     }
 
     @Override
-    public boolean delete() throws IOException {
+    public boolean delete() {
         return mFile.delete();
     }
 
@@ -83,13 +83,7 @@ public class AndroidFile extends File {
 
     @Override
     public String[] list(final FilenameFilter filenameFilter) {
-
-        String[] list = mFile.list(new java.io.FilenameFilter() {
-            @Override
-            public boolean accept(java.io.File dir, String name) {
-                return filenameFilter.accept(new AndroidFile(dir), name);
-            }
-        });
+        String[] list = mFile.list((dir, name) -> filenameFilter.accept(new AndroidFile(dir), name));
         return list;
     }
 
@@ -114,7 +108,7 @@ public class AndroidFile extends File {
         if (names == null || filenameFilter == null) {
             return null;
         }
-        List<String> v = new ArrayList<String>();
+        List<String> v = new ArrayList<>();
         for (int i = 0; i < names.length; i++) {
             if (filenameFilter.accept(this, names[i])) {
                 v.add(names[i]);

@@ -45,7 +45,7 @@ public class CacheListChangedEventList {
             return;
 
         synchronized (Database.Data.cacheList) {
-            Cache cache = Database.Data.cacheList.GetCacheByGcCode("CBPark");
+            Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
 
             if (cache != null)
                 Database.Data.cacheList.remove(cache);

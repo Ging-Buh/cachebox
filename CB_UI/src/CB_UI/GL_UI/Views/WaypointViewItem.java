@@ -104,7 +104,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     private void setActLocator() {
-        if (Locator.Valid()) {
+        if (Locator.getInstance().Valid()) {
 
             if (mWaypoint != null && mWaypoint.Pos.isZero()) {
                 arrow = null;
@@ -114,8 +114,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
                 float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.Distance();
 
-                Coordinate position = Locator.getMyPosition();
-                double heading = Locator.getHeading();
+                Coordinate position = Locator.getInstance().getMyPosition();
+                double heading = Locator.getInstance().getHeading();
                 double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
                 double cacheBearing = -(bearing - heading);
                 setDistanceString(UnitFormatter.DistanceString(distance));
@@ -215,12 +215,12 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
         if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
         {
-            float size = UiSizes.that.getCacheListItemRec().asFloat().getHeight() / 2.3f;
+            float size = UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight() / 2.3f;
             ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
             arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
             arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-            if (Locator.Valid()) {
+            if (Locator.getInstance().Valid()) {
                 arrow.setColor(DISABLE_COLOR);
                 setDistanceString("---");
             } else {
@@ -233,7 +233,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
         }
 
         if (mWaypoint != null) {
-            float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
+            float scaleFactor = getWidth() / UiSizes.getInstance().getCacheListItemRec().getWidth();
             float mLeft = 3 * scaleFactor;
             float mTop = 3 * scaleFactor;
             mMargin = mLeft;
@@ -295,7 +295,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             allHeight += coordHeight;
             textYPos -= coordHeight;
 
-            if (allHeight > UiSizes.that.getCacheListItemRec().asFloat().getHeight()) {
+            if (allHeight > UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight()) {
 
                 if (!inChange && getHeight() != allHeight) {
                     inChange = true;

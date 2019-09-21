@@ -13,6 +13,7 @@ import android.os.Environment;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 
 class Android_FileExplorer {
@@ -222,7 +223,9 @@ class Android_FileExplorer {
                         files.add(file);
                     }
                 }
+                Collections.sort(directories, String.CASE_INSENSITIVE_ORDER);
                 r.addAll(directories);
+                Collections.sort(files, String.CASE_INSENSITIVE_ORDER);
                 r.addAll(files);
             }
         }

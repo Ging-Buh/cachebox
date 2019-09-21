@@ -82,7 +82,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
                     (v, x, y, pointer, button) -> {
                         icm.close();
                         QuickActions type = (QuickActions) v.getData();
-                        float itemHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
+                        float itemHeight = UiSizes.getInstance().getQuickButtonListHeight() * 0.93f;
                         QuickButtonItem tmp1 = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight),
                                 tmpQuickList.size(), QuickActions.getActionEnumById(type.ordinal()), QuickActions.getName(type.ordinal()), type);
                         tmpQuickList.add(tmp1);
@@ -257,7 +257,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 
         @Override
         public float getItemSize(int position) {
-            return UI_Size_Base.that.getButtonHeight();
+            return UI_Size_Base.ui_size_base.getButtonHeight();
         }
 
         @Override

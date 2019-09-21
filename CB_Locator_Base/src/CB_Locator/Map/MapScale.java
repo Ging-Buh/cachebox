@@ -66,7 +66,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         generatedZomm = -1;
         zoomChanged();
     }

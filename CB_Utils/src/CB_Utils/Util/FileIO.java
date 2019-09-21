@@ -3,7 +3,6 @@ package CB_Utils.Util;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
-import com.badlogic.gdx.files.FileHandle;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class FileIO {
      * @param filename
      * @return true, wenn das File existiert, ansonsten false.
      */
-    public static boolean FileExists(String filename) {
+    public static boolean fileExists(String filename) {
         File file = FileFactory.createFile(filename);
         return file.exists();
     }
@@ -28,7 +27,7 @@ public class FileIO {
      * @param filename
      * @return true, wenn das File existiert, ansonsten false.
      */
-    public static boolean FileExistsNotEmpty(String filename) {
+    public static boolean fileExistsNotEmpty(String filename) {
         File file = FileFactory.createFile(filename);
         if (!file.exists())
             return false;
@@ -46,7 +45,7 @@ public class FileIO {
      * @param maxAge
      * @return true, wenn das File existiert und das Alter nicht größer als {maxAge} ist, ansonsten false.
      */
-    public static boolean FileExists(String filename, int maxAge) {
+    public static boolean fileExistsMaxAge(String filename, int maxAge) {
         File file = FileFactory.createFile(filename);
         if (!file.exists())
             return false;
@@ -61,13 +60,13 @@ public class FileIO {
     /**
      * Returns TRUE has the given PATH write permission!
      *
-     * @param Path
+     * @param path
      * @return
      */
-    public static boolean canWrite(String Path) {
+    public static boolean canWrite(String path) {
         boolean result = true;
         try {
-            String testFolderName = Path + "/Test/";
+            String testFolderName = path + "/Test/";
 
             File testFolder = FileFactory.createFile(testFolderName);
             if (testFolder.mkdirs()) {
@@ -121,18 +120,25 @@ public class FileIO {
         }
     }
 
-    /**
-     * @param folder Path as String
-     * @return true, if folder exist! false otherwise
-     */
-    public static boolean DirectoryExists(String folder) {
-        FileHandle fh = new FileHandle(folder);
-        boolean exist = fh.exists();
-        fh = null;
-        return exist;
+    public static File createFile(String pathAndName) {
+        // works, if FileFactory is initialized
+        try {
+            File file = FileFactory.createFile(pathAndName);
+            File path = file.getParentFile();
+            path.mkdirs();
+            if (path.exists()) {
+                file.createNewFile();
+            }
+            if (file.exists())
+                return file;
+            else
+                return null;
+        } catch (IOException ignored) {
+            return null;
+        }
     }
 
-    public static String GetFileExtension(String filename) {
+    public static String getFileExtension(String filename) {
         int dotposition = filename.lastIndexOf(".");
         String ext = "";
         if (dotposition > -1) {
@@ -142,7 +148,7 @@ public class FileIO {
         return ext;
     }
 
-    public static String GetFileNameWithoutExtension(String filename) {
+    public static String getFileNameWithoutExtension(String filename) {
         int dotposition = filename.lastIndexOf(".");
         if (dotposition >= 0)
             filename = filename.substring(0, dotposition);
@@ -153,7 +159,7 @@ public class FileIO {
 
     }
 
-    public static String GetFileName(String filename) {
+    public static String getFileName(String filename) {
         int slashposition = Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\\"));
         if (slashposition >= 0)
             filename = filename.substring(slashposition + 1, filename.length());
@@ -161,7 +167,7 @@ public class FileIO {
 
     }
 
-    public static String GetDirectoryName(String filename) {
+    public static String getDirectoryName(String filename) {
         int slashposition = Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\\"));
         if (slashposition >= 0)
             filename = filename.substring(0, slashposition);
@@ -210,7 +216,7 @@ public class FileIO {
         return relative;
     }
 
-    public static String RemoveInvalidFatChars(String str) {
+    public static String removeInvalidFatChars(String str) {
         String[] invalidChars = new String[]{":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";", "#"};
 
         for (int i = 0; i < invalidChars.length; i++)
@@ -270,52 +276,55 @@ public class FileIO {
         return files;
     }
 
-    public static void deleteDir(File file) {
-        if (file.isDirectory()) {
+    public static void deleteDirectory(File directory) {
+        if (directory.isDirectory()) {
 
             // directory is empty, then delete it
-            if (file.list().length == 0) {
+            if (directory.list().length == 0) {
 
                 try {
-                    file.delete();
+                    directory.delete();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                System.out.println("Directory is deleted : " + file.getAbsolutePath());
+                System.out.println("Directory is deleted : " + directory.getAbsolutePath());
 
             } else {
 
                 // list all the directory contents
-                String files[] = file.list();
+                String files[] = directory.list();
 
                 for (String temp : files) {
                     // construct the file structure
-                    File fileDelete = FileFactory.createFile(file, temp);
+                    File fileDelete = FileFactory.createFile(directory, temp);
 
                     // recursive delete
-                    deleteDir(fileDelete);
+                    deleteDirectory(fileDelete);
                 }
 
                 // check the directory again, if empty then delete it
-                if (file.list().length == 0) {
+                if (directory.list().length == 0) {
                     try {
-                        file.delete();
+                        directory.delete();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    System.out.println("Directory is deleted : " + file.getAbsolutePath());
+                    System.out.println("Directory is deleted : " + directory.getAbsolutePath());
                 }
             }
 
         } else {
             // if file, then delete it
             try {
-                file.delete();
+                directory.delete();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("File is deleted : " + file.getAbsolutePath());
+            System.out.println("File is deleted : " + directory.getAbsolutePath());
         }
     }
 
+    public static boolean directoryExists(String pathName) {
+        return FileFactory.createFile(pathName).exists();
+    }
 }

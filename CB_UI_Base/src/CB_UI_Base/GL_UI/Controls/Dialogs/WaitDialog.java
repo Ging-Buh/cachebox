@@ -48,12 +48,12 @@ public class WaitDialog extends ButtonDialog {
 
         SizeF contentSize = waitDialog.getContentSize();
 
-        CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
         waitDialog.animation = WorkAnimation.GetINSTANCE(imageRec);
         waitDialog.addChild(waitDialog.animation);
 
         waitDialog.label = new CB_Label(contentSize.getBounds());
-        waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
+        waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.ui_size_base.getButtonHeight());
         waitDialog.label.setX(imageRec.getMaxX() + margin);
         waitDialog.label.setWrappedText(msg);
 
@@ -80,7 +80,7 @@ public class WaitDialog extends ButtonDialog {
     public void setAnimation(final AnimationBase Animation) {
         GL.that.RunOnGL(() -> {
             WaitDialog.this.removeChild(WaitDialog.this.animation);
-            CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+            CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
             WaitDialog.this.animation = Animation.INSTANCE(imageRec);
             WaitDialog.this.addChild(WaitDialog.this.animation);
         });

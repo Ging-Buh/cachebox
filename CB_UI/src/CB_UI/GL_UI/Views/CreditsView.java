@@ -44,7 +44,7 @@ public class CreditsView extends CB_View_Base {
         super(ViewManager.leftTab.getContentRec(), "CreditsView");
         CB_RectF rec = this;
         this.setBackground(Sprites.AboutBack);
-        ref = UI_Size_Base.that.getWindowHeight() / 13f;
+        ref = UI_Size_Base.ui_size_base.getWindowHeight() / 13f;
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 
         logo = new Image(CB_LogoRec, "Logo", false);
@@ -110,8 +110,8 @@ public class CreditsView extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
-        margin = UI_Size_Base.that.getMargin();
+    protected void initialize() {
+        margin = UI_Size_Base.ui_size_base.getMargin();
 
         lineHeight = Fonts.Measure("Tg").height * 1.6f;
         layout.removeChilds();

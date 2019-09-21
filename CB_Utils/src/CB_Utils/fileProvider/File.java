@@ -19,6 +19,10 @@ public abstract class File {
 
     public abstract File getParentFile();
 
+    /**
+     * Creates the directory named by this abstract pathname, including any necessary but nonexistent parent directories.
+     * The result is not usable. It is false, if the directory exists or could not be created. Ask exists()
+     */
     public abstract boolean mkdirs();
 
     public abstract boolean isDirectory();

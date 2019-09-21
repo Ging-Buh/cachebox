@@ -35,6 +35,7 @@ public class FunctionAlphaPos extends Function {
             return "0";
         char c = wert.charAt(0);
         int result = c - ('a') + 1;
+        if (result < 0) result = 0;
         return String.valueOf(result);
     }
 

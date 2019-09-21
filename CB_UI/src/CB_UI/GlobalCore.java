@@ -168,7 +168,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             selectedCache.loadDetail();
         }
 
-        SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
+        SelectedCacheChangedEventListeners.getInstance().fireEvent(selectedCache, selectedWaypoint);
 
         if (changeAutoResort) {
             // switch off auto select
@@ -213,7 +213,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
         CacheList List = Database.Data.cacheList;
 
         // Prüfen, ob der SelectedCache noch in der cacheList drin ist.
-        if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
+        if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().Id) == null)) {
             // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
             Log.debug(log, "Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
             GlobalCore.setSelectedCache(List.get(0));

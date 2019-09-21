@@ -79,7 +79,7 @@ import static CB_UI_Base.GL_UI.Sprites.*;
  * @author ging-buh
  * @author Longri
  */
-public class MapView extends MapViewBase implements SelectedCacheEvent, PositionChangedEvent {
+public class MapView extends MapViewBase implements SelectedCacheChangedEventListener, PositionChangedEvent {
     private static final String log = "MapView";
     private boolean MapTileLoderPreInitial = false;
     private CB_RectF TargetArrow = new CB_RectF();
@@ -115,7 +115,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                     setMapState(MapState.FREE);
                 else setMapState(MapState.GPS);
                 // Center own position!
-                setCenter(Locator.getMyPosition());
+                setCenter(Locator.getInstance().getMyPosition());
                 return true;
             });
         }
@@ -161,7 +161,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         // initial Zoom Buttons
         zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
 
-        zoomBtn.setX(getWidth() - (zoomBtn.getWidth() + UI_Size_Base.that.getMargin()));
+        zoomBtn.setX(getWidth() - (zoomBtn.getWidth() + UI_Size_Base.ui_size_base.getMargin()));
 
         zoomBtn.setOnClickListenerDown((v, x, y, pointer, button) -> {
             // bei einer Zoom Animation in negativer Richtung muss der setDiffCameraZoom gesetzt werden!
@@ -403,7 +403,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         }
                         CacheListChangedEventList.Call();
 
-                        Cache selCache = Database.Data.cacheList.GetCacheByGcCode(GCCode);
+                        Cache selCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         wd.close();
@@ -497,7 +497,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
             if (getMapState() == MapState.FREE) {
                 if (CrossLines == null) {
                     float crossSize = Math.min(mapIntHeight / 3.0f, mapIntWidth / 3.0f) / 2;
-                    float strokeWidth = 2 * UI_Size_Base.that.getScale();
+                    float strokeWidth = 2 * UI_Size_Base.ui_size_base.getScale();
 
                     GeometryList geomList = new GeometryList();
                     Line l1 = new Line(mapIntWidth / 2.0f - crossSize, mapIntHeight / 2.0f, mapIntWidth / 2.0f + crossSize, mapIntHeight / 2.0f);
@@ -624,7 +624,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         // FIXME create a LineDrawable class for create one times and set the Coordinates with calculated Triangles
         if (myPointOnScreen != null && showDirectLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
             // FIXME render only if visible on screen (intersect the screen rec)
-            Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UI_Size_Base.that.getScale());
+            Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UI_Size_Base.ui_size_base.getScale());
             if (paint == null) {
                 paint = new GL_Paint();
                 paint.setGLColor(Color.RED);
@@ -727,7 +727,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     }
 
     @Override
-    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         if (cache == null)
             return;
         try {
@@ -801,7 +801,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     @Override
     public void SpeedChanged() {
         if (info != null) {
-            info.setSpeed(Locator.SpeedString());
+            info.setSpeed(Locator.getInstance().SpeedString());
 
             if (getMapState() == MapState.CAR && Config.dynamicZoom.getValue()) {
                 // calculate dynamic Zoom
@@ -810,7 +810,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                 int maxZoom = Config.dynamicZoomLevelMax.getValue();
                 int minZoom = Config.dynamicZoomLevelMin.getValue();
 
-                double percent = Locator.SpeedOverGround() / maxSpeed;
+                double percent = Locator.getInstance().SpeedOverGround() / maxSpeed;
 
                 float dynZoom = (float) (maxZoom - ((maxZoom - minZoom) * percent));
                 if (dynZoom > maxZoom)
@@ -844,7 +844,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         }
         Coordinate coord = center;
         if ((coord == null) || (!coord.isValid()))
-            coord = Locator.getMyPosition();
+            coord = Locator.getInstance().getMyPosition();
         if ((coord == null) || (!coord.isValid()))
             return;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
@@ -876,7 +876,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     @Override
     public void dispose() {
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         super.dispose();
     }
 
@@ -888,7 +888,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     @Override
     public void onHide() {
-        CB_UI.SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         super.onHide();
     }
 
@@ -924,7 +924,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         super.OrientationChanged();
         if (info != null) {
             try {
-                Coordinate position = Locator.getMyPosition();
+                Coordinate position = Locator.getInstance().getMyPosition();
 
                 if (GlobalCore.isSetSelectedCache()) {
                     Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().Pos;
@@ -932,7 +932,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                     if (dest == null)
                         return;
 
-                    float heading = Locator.getHeading();
+                    float heading = Locator.getInstance().getHeading();
 
                     float[] result = new float[2];
 
@@ -1042,7 +1042,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         if (CarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
-            if (!Locator.isGPSprovided())
+            if (!Locator.getInstance().isGPSprovided())
                 return;
         }
 
@@ -1062,7 +1062,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         if (Mode == MapMode.Compass) {
             // Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
             // if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-            Coordinate position = Locator.getMyPosition();
+            Coordinate position = Locator.getInstance().getMyPosition();
 
             float distance = -1;
             if (GlobalCore.isSetSelectedCache() && position.isValid()) {
@@ -1128,9 +1128,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     @Override
     public void onShow() {
         super.onShow();
-        CB_UI.SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
         NorthOriented = Mode == MapMode.Normal ? Config.MapNorthOriented.getValue() : false;
-        SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+        selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
     }
 
     /**

@@ -201,10 +201,10 @@ public class MessageBox extends Dialog {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         if (isDisposed())
             return;
-        super.Initial();
+        super.initialize();
         synchronized (childs) {
             for (Iterator<CB_View_Base> iterator = FooterItems.iterator(); iterator.hasNext(); ) {
                 childs.add(iterator.next());
@@ -342,7 +342,7 @@ public class MessageBox extends Dialog {
 
         SizeF contentSize = msgBox.getContentSize();
 
-        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
 
         Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
         if (icon != MessageBoxIcon.None)
@@ -350,7 +350,7 @@ public class MessageBox extends Dialog {
         msgBox.addChild(iconImage);
 
         msgBox.label = new CB_Label(contentSize.getBounds());
-        msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
+        msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.ui_size_base.getButtonHeight());
         msgBox.label.setPos(imageRec.getMaxX() + 5, 0);
         msgBox.label.setWrappedText(msg);
         msgBox.addChild(msgBox.label);

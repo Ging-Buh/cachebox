@@ -138,13 +138,13 @@ public class CategorieListViewItem extends ListViewItemBackground {
 
             EntryName = new BitmapFontCache(Fonts.getNormal());
             EntryName.setColor(COLOR.getFontColor());
-            EntryName.setText(Name, left + UI_Size_Base.that.getMargin(), top);
+            EntryName.setText(Name, left + UI_Size_Base.ui_size_base.getMargin(), top);
 
             top = margin + margin + Fonts.MeasureSmall(Count).height;
 
             EntryDate = new BitmapFontCache(Fonts.getSmall());
             EntryDate.setColor(COLOR.getFontColor());
-            EntryDate.setText(Date, left + UI_Size_Base.that.getMargin(), top);
+            EntryDate.setText(Date, left + UI_Size_Base.ui_size_base.getMargin(), top);
 
             float measure = Fonts.Measure(Count).width;
             EntryCount = new BitmapFontCache(Fonts.getSmall());
@@ -193,27 +193,27 @@ public class CategorieListViewItem extends ListViewItemBackground {
     }
 
     private void drawPin(Batch batch) {
-        margin = UI_Size_Base.that.getMargin();
+        margin = UI_Size_Base.ui_size_base.getMargin();
         float iconHeight = this.getHeight() * 0.6f;
         float iconWidth = iconHeight;
 
         if (this.getCategorieEntry().getCat().pinned) {
             if (sPinOn == null) {
                 sPinOn = Sprites.getSprite("pin-icon");
-                sPinOn.setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
+                sPinOn.setBounds(left, UI_Size_Base.ui_size_base.getMargin(), iconWidth, iconHeight);
             }
 
             sPinOn.draw(batch);
         } else {
             if (sPinOff == null) {
                 sPinOff = Sprites.getSprite("pin-icon-disable");
-                sPinOff.setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
+                sPinOff.setBounds(left, UI_Size_Base.ui_size_base.getMargin(), iconWidth, iconHeight);
             }
             sPinOff.draw(batch);
 
         }
 
-        left += iconWidth + UI_Size_Base.that.getMargin();
+        left += iconWidth + UI_Size_Base.ui_size_base.getMargin();
 
     }
 

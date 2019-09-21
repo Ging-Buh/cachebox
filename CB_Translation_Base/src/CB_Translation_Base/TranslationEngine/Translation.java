@@ -17,8 +17,6 @@
 package CB_Translation_Base.TranslationEngine;
 
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Log;
-import CB_Utils.Log.Trace;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -210,7 +208,7 @@ public class Translation {
         readDefFile(FilePath);
 
         {// read refFile (EN)
-            String FileName = FileIO.GetFileName(FilePath);
+            String FileName = FileIO.getFileName(FilePath);
             int pos = FilePath.lastIndexOf("lang") + 4;
             String LangFileName = FilePath.substring(0, pos) + "/en-GB/" + FileName;
             readRefFile(LangFileName);
@@ -291,7 +289,6 @@ public class Translation {
             MissingTranslation notFound = new MissingTranslation(StringId, "??");
             if (!mMissingStringList.contains(notFound)) {
                 mMissingStringList.add(notFound);
-                Log.debug(log, "MissingTranslation: " + notFound.toString() + " from =>" + Trace.getCallerName(2));
             }
             return retString;
         }

@@ -45,7 +45,7 @@ public abstract class FileFactory {
         return INSTANCE.createPlatformThumb(path, scaledWidth, thumbPrefix);
     }
 
-    public static boolean isInitial() {
+    public static boolean isInitialized() {
         return INSTANCE != null;
     }
 

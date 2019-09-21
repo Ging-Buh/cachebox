@@ -127,7 +127,7 @@ public class CoordinateEntity extends Entity {
             // evtl. bereits geladenen Waypoint aktualisieren
             Cache cacheFromCacheList;
             synchronized (Database.Data.cacheList) {
-                cacheFromCacheList = Database.Data.cacheList.GetCacheById(dbWaypoint.CacheId);
+                cacheFromCacheList = Database.Data.cacheList.getCacheByIdFromCacheList(dbWaypoint.CacheId);
             }
             cacheFromCacheList = Solver.solverCacheInterface.sciGetSelectedCache();
             if (cacheFromCacheList != null) {

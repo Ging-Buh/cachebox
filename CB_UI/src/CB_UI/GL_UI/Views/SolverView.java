@@ -24,8 +24,8 @@ import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
+import CB_UI.SelectedCacheChangedEventListener;
+import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
@@ -44,7 +44,7 @@ import CB_Utils.Plattform;
 /**
  * @author Longri
  */
-public class SolverView extends CB_View_Base implements SelectedCacheEvent, KeyboardFocusChangedEvent {
+public class SolverView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEvent {
 
     private static SolverView that;
     private WindowState windowState = WindowState.Both;
@@ -83,7 +83,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
         if (aktCache == null)
             return;
 
-        SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
 
         if (mustLoadSolver) {
             String sol = Database.GetSolver(aktCache);
@@ -99,7 +99,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
     @Override
     public void onHide() {
         KeyboardFocusChangedEventList.Remove(this);
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         if (aktCache != null) {
             Database.SetSolver(aktCache, edInput.getText());
             // When Solver 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
@@ -329,7 +329,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
     }
 
     @Override
-    public void SelectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
         onShow();
     }
 

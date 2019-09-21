@@ -110,20 +110,20 @@ public class SpoilerView extends CB_View_Base {
 
                         String description = "";
 
-                        String localName = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
+                        String localName = FileIO.getFileNameWithoutExtension(imageEntry.LocalPath);
                         for (ImageEntry dbImage : dbImages) {
-                            String localNameFromDB = FileIO.GetFileNameWithoutExtension(dbImage.LocalPath);
+                            String localNameFromDB = FileIO.getFileNameWithoutExtension(dbImage.LocalPath);
                             if (localNameFromDB.equals(localName)) {
                                 // Description
                                 description = dbImage.Name + "\n" + dbImage.Description;
                                 break;
                             } else {
-                                if (FileIO.GetFileNameWithoutExtension(dbImage.Name).equals(localName)) {
+                                if (FileIO.getFileNameWithoutExtension(dbImage.Name).equals(localName)) {
                                     // Spoiler CacheWolf
                                     description = dbImage.Description;
                                     break;
                                 } else {
-                                    if (localName.contains(FileIO.GetFileNameWithoutExtension(dbImage.Name))) {
+                                    if (localName.contains(FileIO.getFileNameWithoutExtension(dbImage.Name))) {
                                         // Spoiler ACB
                                         description = localName + "\n" + dbImage.Description;
                                         break;
@@ -139,7 +139,7 @@ public class SpoilerView extends CB_View_Base {
                         if (description.length() > 0)
                             label = removeHashFromLabel(description);
                         else {
-                            label = removeHashFromLabel(FileIO.GetFileNameWithoutExtension(imageEntry.Name));
+                            label = removeHashFromLabel(FileIO.getFileNameWithoutExtension(imageEntry.Name));
                         }
 
                         GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);

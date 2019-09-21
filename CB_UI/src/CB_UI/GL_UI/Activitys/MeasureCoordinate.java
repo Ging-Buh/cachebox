@@ -65,7 +65,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         super(rec, Name);
         mCoordReturnListener = listener;
 
-        MeasuredCoord.Referenz = Locator.getMyPosition(ProviderType.GPS);
+        MeasuredCoord.Referenz = Locator.getInstance().getMyPosition(ProviderType.GPS);
 
         if (MeasuredCoord.Referenz == null) {
             MeasuredCoord.Referenz = new CoordinateGPS(0, 0);
@@ -79,7 +79,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     }
 
     private void iniOkCancel() {
-        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
+        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight());
         bOK = new CB_Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());
@@ -172,7 +172,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         repaintPreview();
     }
 
@@ -302,7 +302,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
                 lblMeasureCoord.setText("");
 
             MeasureCount++;
-            mMeasureList.add(new MeasuredCoord(Locator.getLocation(ProviderType.GPS).toCordinate()));
+            mMeasureList.add(new MeasuredCoord(Locator.getInstance().getLocation(ProviderType.GPS).toCordinate()));
 
             lblMeasureCount.setText(MeasureCount + "/" + mMeasureList.size());
 

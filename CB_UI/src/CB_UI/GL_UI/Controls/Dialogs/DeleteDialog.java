@@ -40,7 +40,7 @@ public class DeleteDialog extends ButtonDialog {
 
         float innerWidth = msgBoxContentSize.width;
 
-        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
+        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.ui_size_base.getButtonHeight() * 2);
 
         btDelFilter = new ImageButton(MTBRec, "btSetGPS");
         btDelArchived = new ImageButton(MTBRec, "btSelectWP");
@@ -54,7 +54,7 @@ public class DeleteDialog extends ButtonDialog {
         lblDelArchived = new CB_Label(Translation.get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
         lblDelFounds = new CB_Label(Translation.get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 
-        Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
+        Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight()), "");
         box.initRow(BOTTOMUP);
         box.addNext(lblDelFilter);
         box.addNext(lblDelArchived);

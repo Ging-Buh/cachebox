@@ -60,7 +60,7 @@ public class CB_TabView extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         // Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
         if (mButtonList.Buttons.size() <= buttonListView.getMaxItemCount()) {
             float sollDivider = (buttonListView.getWidth() - (MainBtnSize.getHeight() * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);

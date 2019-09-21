@@ -189,7 +189,7 @@ public class DescriptionImageGrabber {
                     URI imgUri = URI.create(/* baseUri, */src);
                     String localFile = BuildDescriptionImageFilename(Cache.getGcCode(), imgUri);
 
-                    if (FileIO.FileExistsNotEmpty(localFile)) {
+                    if (FileIO.fileExistsNotEmpty(localFile)) {
                         int idx = 0;
 
                         while ((idx = html.indexOf(src, idx)) >= 0) {
@@ -403,7 +403,7 @@ public class DescriptionImageGrabber {
 
     private static String[] getFilesInDirectory(String path, final String GcCode) {
         String imagePath = path + "/" + GcCode.substring(0, 4);
-        boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+        boolean imagePathDirExists = FileIO.directoryExists(imagePath);
 
         if (imagePathDirExists) {
             File dir = FileFactory.createFile(imagePath);

@@ -271,7 +271,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         });
 
         tglBtnGPS.addClickHandler((v, x, y, pointer, button) -> {
-            actSearchPos = Locator.getMyPosition();
+            actSearchPos = Locator.getInstance().getMyPosition();
             setToggleBtnState(0);
             return true;
         });
@@ -283,7 +283,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         });
 
         tglBtnWeb.addClickHandler((v, x, y, pointer, button) -> {
-            actSearchPos = Locator.getMyPosition();
+            actSearchPos = Locator.getInstance().getMyPosition();
             searchCoordinates = new SearchCoordinates() {
                 public void callBack(Coordinate coordinate) {
                     if (coordinate != null) {
@@ -319,7 +319,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             actSearchPos = CB_Action_ShowMap.getInstance().normalMapView.center;
             searchState = 1;
         } else {
-            actSearchPos = Locator.getMyPosition();
+            actSearchPos = Locator.getInstance().getMyPosition();
             searchState = 0;
         }
         setToggleBtnState(searchState);

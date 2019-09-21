@@ -375,7 +375,7 @@ public class Importer {
         if (file.isFile()) {
             files.add(file);
         } else {
-            if (FileIO.DirectoryExists(directoryPath)) {
+            if (FileIO.directoryExists(directoryPath)) {
                 files = FileIO.recursiveDirectoryReader(FileFactory.createFile(directoryPath), files);
             }
         }

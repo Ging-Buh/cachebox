@@ -185,7 +185,7 @@ public class TrackRecorder {
 
     public static void recordPosition() {
 
-        if (gpxfile == null || pauseRecording || !Locator.isGPSprovided())
+        if (gpxfile == null || pauseRecording || !Locator.getInstance().isGPSprovided())
             return;
 
         if (writeAnnotateMedia) {
@@ -194,7 +194,7 @@ public class TrackRecorder {
 
         if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
         {
-            LastRecordedPosition = Locator.getLocation(GPS).cpy();
+            LastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
             SaveAltitude = LastRecordedPosition.getAltitude();
         } else {
             writePos = true;
@@ -205,17 +205,17 @@ public class TrackRecorder {
             // zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
             float[] dist = new float[1];
 
-            MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
+            MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
             float cachedDistance = dist[0];
 
             if (cachedDistance > Config.TrackDistance.getValue()) {
                 StringBuilder sb = new StringBuilder();
 
-                sb.append("<trkpt lat=\"").append(Locator.getLatitude(GPS)).append("\" lon=\"").append(Locator.getLongitude(GPS)).append("\">\n")
-                        .append("   <ele>").append(Locator.getAlt()).append("</ele>\n")
+                sb.append("<trkpt lat=\"").append(Locator.getInstance().getLatitude(GPS)).append("\" lon=\"").append(Locator.getInstance().getLongitude(GPS)).append("\">\n")
+                        .append("   <ele>").append(Locator.getInstance().getAlt()).append("</ele>\n")
                         .append("   <time>").append(GetDateTimeString()).append("</time>\n")
-                        .append("   <course>").append(Locator.getHeading(_GPS)).append("</course>\n")
-                        .append("   <speed>").append(Locator.SpeedOverGround()).append("</speed>\n")
+                        .append("   <course>").append(Locator.getInstance().getHeading(_GPS)).append("</course>\n")
+                        .append("   <speed>").append(Locator.getInstance().SpeedOverGround()).append("</speed>\n")
                         .append("</trkpt>\n");
 
                 RandomAccessFile rand;
@@ -245,7 +245,7 @@ public class TrackRecorder {
                     Log.err(log, "Trackrecorder", "IOException", e);
                 }
 
-                NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS), new Date());
+                NewPoint = new TrackPoint(Locator.getInstance().getLongitude(GPS), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getAlt(), Locator.getInstance().getHeading(_GPS), new Date());
 
                 GlobalCore.AktuelleRoute.Points.add(NewPoint);
 
@@ -253,13 +253,13 @@ public class TrackRecorder {
                 TrackListView.getInstance().notifyActTrackChanged();
 
                 RouteOverlay.RoutesChanged();
-                LastRecordedPosition = Locator.getLocation(GPS).cpy();
+                LastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
                 GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
 
-                AltDiff = Math.abs(SaveAltitude - Locator.getAlt());
+                AltDiff = Math.abs(SaveAltitude - Locator.getInstance().getAlt());
                 if (AltDiff >= 25) {
                     GlobalCore.AktuelleRoute.AltitudeDifference += AltDiff;
-                    SaveAltitude = Locator.getAlt();
+                    SaveAltitude = Locator.getInstance().getAlt();
                 }
                 writePos = false;
 

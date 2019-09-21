@@ -72,7 +72,7 @@ public abstract class Dialog extends CB_View_Base {
         mFooterHeight = mHeaderHeight;
 
         if (margin <= 0)
-            margin = UI_Size_Base.that.getMargin();
+            margin = UI_Size_Base.ui_size_base.getMargin();
 
         try {
             if (Sprites.Dialog.get(DialogElement.footer.ordinal()) == null)
@@ -108,37 +108,37 @@ public abstract class Dialog extends CB_View_Base {
 
     public static float calcFooterHeight(boolean hasButtons) {
         if (margin <= 0)
-            margin = UI_Size_Base.that.getMargin();
+            margin = UI_Size_Base.ui_size_base.getMargin();
 
-        return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin : calcHeaderHeight();
+        return hasButtons ? UI_Size_Base.ui_size_base.getButtonHeight() + margin : calcHeaderHeight();
     }
 
     public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember) {
         if (margin <= 0)
-            margin = UI_Size_Base.that.getMargin();
+            margin = UI_Size_Base.ui_size_base.getMargin();
 
-        float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
-        if (Width * 1.2 < UI_Size_Base.that.getWindowWidth())
+        float Width = (((UI_Size_Base.ui_size_base.getButtonWidthWide() + margin) * 3) + margin);
+        if (Width * 1.2 < UI_Size_Base.ui_size_base.getWindowWidth())
             Width *= 1.2f;
 
-        float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
+        float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.ui_size_base.getButtonHeight();
 
         float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
 
-        int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
+        int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.ui_size_base.getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
         if (hasTitle) {
             Height += getTitleHeight();
         }
         Height += calcFooterHeight(hasButtons);
         if (hasRemember)
-            Height += UI_Size_Base.that.getChkBoxSize().height;
+            Height += UI_Size_Base.ui_size_base.getChkBoxSize().height;
         Height += calcHeaderHeight();
 
         // min Height festlegen
-        Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
+        Height = (int) Math.max(Height, UI_Size_Base.ui_size_base.getButtonHeight() * 2.5f);
 
         // max Height festlegen
-        Height = (int) Math.min(Height, UI_Size_Base.that.getWindowHeight() * 0.95f);
+        Height = (int) Math.min(Height, UI_Size_Base.ui_size_base.getWindowHeight() * 0.95f);
 
         Size ret = new Size((int) Width, Height);
         return ret;
@@ -206,7 +206,7 @@ public abstract class Dialog extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         initialDialog();
         isInitial = true;
     }
@@ -242,7 +242,7 @@ public abstract class Dialog extends CB_View_Base {
     private void reziseContentBox() {
 
         if (margin <= 0)
-            margin = UI_Size_Base.that.getMargin();
+            margin = UI_Size_Base.ui_size_base.getMargin();
 
         if (mContent == null) {
             this.initialDialog();

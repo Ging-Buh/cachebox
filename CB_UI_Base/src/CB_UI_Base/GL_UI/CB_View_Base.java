@@ -73,11 +73,11 @@ public class CB_View_Base extends GL_View_Base {
     protected void render(Batch batch) {
         if (!isInitial) {
             isInitial = true;
-            Initial();
+            initialize();
         }
     }
 
-    protected void Initial() {
+    protected void initialize() {
     }
 
     @Override

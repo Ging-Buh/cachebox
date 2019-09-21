@@ -133,14 +133,14 @@ public class SearchDialog extends PopUp_Base {
 
         that = this;
 
-        this.setSize(UiSizes.that.getCacheListItemSize().asFloat());
+        this.setSize(UiSizes.getInstance().getCacheListItemSize().asFloat());
 
         this.setBackground(Sprites.ListBack);
 
-        float margin = UI_Size_Base.that.getMargin();
+        float margin = UI_Size_Base.ui_size_base.getMargin();
         float btnWidth = (this.getWidth() - (margin * 7)) / 4;
 
-        CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.ui_size_base.getButtonHeight());
 
         mTglBtnTitle = new MultiToggleButton(rec, "mTglBtnTitle");
         mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");
@@ -502,7 +502,7 @@ public class SearchDialog extends PopUp_Base {
                 if (CB_Action_ShowMap.getInstance().normalMapView.isVisible()) {
                     searchCoord = CB_Action_ShowMap.getInstance().normalMapView.center;
                 } else {
-                    searchCoord = Locator.getMyPosition();
+                    searchCoord = Locator.getInstance().getMyPosition();
                 }
                 if (searchCoord == null) {
                     return;
@@ -568,7 +568,7 @@ public class SearchDialog extends PopUp_Base {
                             GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(j);
                             Cache cache = geoCacheRelated.cache;
                             counter++;
-                            if (Database.Data.cacheList.GetCacheById(cache.Id) == null) {
+                            if (Database.Data.cacheList.getCacheByIdFromCacheList(cache.Id) == null) {
                                 Database.Data.cacheList.add(cache);
 
                                 if (cache.getGPXFilename_ID() == 0) {
@@ -605,7 +605,7 @@ public class SearchDialog extends PopUp_Base {
 
                     if (counter == 1) {
                         // select this Cache
-                        Cache cache = Database.Data.cacheList.GetCacheById(geoCacheRelateds.get(0).cache.Id);
+                        Cache cache = Database.Data.cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.Id);
                         GlobalCore.setSelectedCache(cache);
                     }
 

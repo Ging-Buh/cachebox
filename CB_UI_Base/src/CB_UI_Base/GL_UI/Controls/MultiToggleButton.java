@@ -58,7 +58,7 @@ public class MultiToggleButton extends CB_Button {
     }
 
     public MultiToggleButton(String Name) {
-        super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), Name);
+        super(0, 0, UI_Size_Base.ui_size_base.getButtonWidth(), UI_Size_Base.ui_size_base.getButtonHeight(), Name);
     }
 
     @Override

@@ -20,7 +20,7 @@ import java.util.TimeZone;
 
 public class Global {
 
-    public static final String PREFS_NAME = "DroidCacheboxPrefsFile";
+    public static final String PreferencesNAME = "DroidCacheboxPrefsFile";
     /**
      * Nacht Color Matrix
      */
@@ -447,7 +447,7 @@ public class Global {
             // calc sizes
 
             measurePaint = new Paint();
-            measurePaint.setTextSize(UI_Size_Base.that.getScaledFontSize());
+            measurePaint.setTextSize(UI_Size_Base.ui_size_base.getScaledFontSize());
 
             ListBackground = new Paint();
             Night.ListBackground_second = new Paint();

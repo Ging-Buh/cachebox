@@ -111,7 +111,7 @@ public class Scrollbar extends CB_View_Base {
         SliderRec.setX(this.getWidth() - (minWidth / 1.35f));
         SliderRec.setWidth(minWidth);
 
-        mPushSliderIstHight = UI_Size_Base.that.getButtonHeight() * 0.8f;
+        mPushSliderIstHight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.8f;
 
         SliderPuchRec.setX(SliderRec.getX() - mPushSliderIstHight + Slider.getLeftWidth());
         SliderPuchRec.setY(mSliderPos);
@@ -166,7 +166,7 @@ public class Scrollbar extends CB_View_Base {
     private float getMinSliderHeight() {
         if (mMinSliderHeight > 0)
             return mMinSliderHeight;
-        return mMinSliderHeight = UI_Size_Base.that.getButtonHeight() * 0.5f;
+        return mMinSliderHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.5f;
     }
 
     @Override

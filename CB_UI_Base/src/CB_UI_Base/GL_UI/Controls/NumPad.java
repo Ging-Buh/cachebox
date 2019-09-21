@@ -81,7 +81,7 @@ public class NumPad extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         this.removeChilds();
         calcSizes();
         calcPositions();

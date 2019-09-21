@@ -70,7 +70,7 @@ public class EditTextField extends EditTextFieldBase {
     private float leftPosAtTouchDown = 0;
 
     public EditTextField(CB_View_Base parent, String name) {
-        super(UiSizes.that.getButtonRectF(), parent, name);
+        super(UiSizes.getInstance().getButtonRectF(), parent, name);
         initEditTextField();
     }
 

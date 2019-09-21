@@ -1,10 +1,7 @@
 package de;
 
-import CB_Locator.Coordinate;
-import CB_Locator.CoordinateGPS;
+import CB_Locator.*;
 import CB_Locator.Events.GpsStateChangeEventList;
-import CB_Locator.GPS;
-import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
@@ -140,7 +137,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
             public void run() {
                 TrackPoint trk = simulationRoute.Points.get(trackPointIndex);
                 Coordinate pos = new CoordinateGPS(trk.Y, trk.X);
-                CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, ProviderType.GPS));
+                Locator.getInstance().setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, ProviderType.GPS));
 
                 DesktopMain.compassheading = (float) trk.Direction;
 
@@ -205,7 +202,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
                 Bearing += 5;
 
-                CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
+                Locator.getInstance().setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
 
                 CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
 

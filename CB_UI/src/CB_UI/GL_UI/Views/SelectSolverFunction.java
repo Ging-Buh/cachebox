@@ -37,9 +37,9 @@ public class SelectSolverFunction extends ButtonDialog {
         this.dataType = dataType;
 
         // Grössen für die CategoryButtons und ItemButtons berechnen!
-        categoryBtnRec = new CB_RectF(leftBorder, 0, innerWidth - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth(), UI_Size_Base.that.getButtonHeight());
+        categoryBtnRec = new CB_RectF(leftBorder, 0, innerWidth - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth(), UI_Size_Base.ui_size_base.getButtonHeight());
 
-        itemBtnRec = new CB_RectF(leftBorder, 0, categoryBtnRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.that.getButtonHeight());
+        itemBtnRec = new CB_RectF(leftBorder, 0, categoryBtnRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.ui_size_base.getButtonHeight());
 
         // Initialisiert die unteren Buttons für Ok/Cancel
         iniOkCancel();
@@ -56,9 +56,9 @@ public class SelectSolverFunction extends ButtonDialog {
     }
 
     public static CB_RectF ActivityRec() {
-        float w = Math.min(UI_Size_Base.that.getSmallestWidth(), UI_Size_Base.that.getWindowHeight() * 0.66f);
+        float w = Math.min(UI_Size_Base.ui_size_base.getSmallestWidth(), UI_Size_Base.ui_size_base.getWindowHeight() * 0.66f);
 
-        return new CB_RectF(0, 0, w, (int) (UI_Size_Base.that.getWindowHeight() * 0.95));
+        return new CB_RectF(0, 0, w, (int) (UI_Size_Base.ui_size_base.getWindowHeight() * 0.95));
     }
 
     private void iniOkCancel() {
@@ -96,7 +96,7 @@ public class SelectSolverFunction extends ButtonDialog {
 
     private void iniDescLabel() {
         // rechteck für Label erstellen
-        CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.5f);
+        CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.getWidth(), UI_Size_Base.ui_size_base.getButtonHeight() * 1.5f);
 
         desc = new CB_Label(rec);
 

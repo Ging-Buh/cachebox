@@ -32,7 +32,7 @@ public class GpsStateChangeEventList {
             minEventTime = Math.min(minEventTime, System.currentTimeMillis() - lastTime);
             lastTime = System.currentTimeMillis();
 
-            if (lastChanged != 0 && lastChanged > System.currentTimeMillis() - Locator.getMinUpdateTime()) {
+            if (lastChanged != 0 && lastChanged > System.currentTimeMillis() - Locator.getInstance().getMinUpdateTime()) {
                 return;
             }
             lastChanged = System.currentTimeMillis();

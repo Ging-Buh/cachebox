@@ -32,7 +32,7 @@ public class CacheList extends MoveableList<Cache> {
 
     public boolean ResortAtWork = false;
 
-    public Cache GetCacheByGcCode(String GcCode) {
+    public Cache getCacheByGcCodeFromCacheList(String GcCode) {
         for (int i = 0, n = this.size(); i < n; i++) {
             Cache cache = this.get(i);
             if (cache.getGcCode().equalsIgnoreCase(GcCode))
@@ -41,7 +41,7 @@ public class CacheList extends MoveableList<Cache> {
         return null;
     }
 
-    public Cache GetCacheById(long cacheId) {
+    public Cache getCacheByIdFromCacheList(long cacheId) {
         for (int i = 0, n = this.size(); i < n; i++) {
             Cache cache = this.get(i);
             if (cache.Id == cacheId)
@@ -73,14 +73,14 @@ public class CacheList extends MoveableList<Cache> {
      * @param selected
      * @return
      */
-    public CacheWithWP Resort(Coordinate selectedCoord, CacheWithWP selected) {
+    public CacheWithWP resort(Coordinate selectedCoord, CacheWithWP selected) {
 
         CacheWithWP retValue = null;
 
         this.ResortAtWork = true;
-        boolean LocatorValid = Locator.Valid();
+        boolean isLocatorValid = Locator.getInstance().Valid();
         // Alle Distanzen aktualisieren
-        if (LocatorValid) {
+        if (isLocatorValid) {
             for (int i = 0, n = this.size(); i < n; i++) {
                 Cache cache = this.get(i);
                 cache.Distance(CalculationType.FAST, true);
@@ -158,7 +158,7 @@ public class CacheList extends MoveableList<Cache> {
         CB_Core.CacheListChangedEventList.Call();
 
         // vorhandenen Parkplatz Cache nach oben schieben
-        Cache park = this.GetCacheByGcCode("CBPark");
+        Cache park = this.getCacheByGcCodeFromCacheList("CBPark");
         if (park != null) {
             this.MoveItemFirst(this.indexOf(park));
         }

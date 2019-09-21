@@ -73,7 +73,7 @@ public class TB_Details extends ActivityBase {
             return true;
         });
 
-        CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidth(), UI_Size_Base.ui_size_base.getButtonHeight());
         iconRec = iconRec.ScaleCenter(0.8f);
         icon = new Image(iconRec, "Icon", false);
         title = new EditTextField(iconRec, this, "title");

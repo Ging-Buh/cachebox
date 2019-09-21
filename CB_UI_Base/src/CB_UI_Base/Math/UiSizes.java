@@ -16,6 +16,8 @@
 
 package CB_UI_Base.Math;
 
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+
 /**
  * Enthält die Größen einzelner Controls
  *
@@ -23,7 +25,7 @@ package CB_UI_Base.Math;
  */
 public class UiSizes extends UI_Size_Base {
 
-    public static UiSizes that;
+    private static UiSizes uiSizes;
     Size QuickButtonList;
     int CacheInfoHeight;
     int scaledIconSize;
@@ -42,14 +44,51 @@ public class UiSizes extends UI_Size_Base {
     int QuickButtonRef;
     CB_RectF ButtonRectF;
     CB_RectF WideButtonRectF;
+    private boolean isInitialized;
 
-    public UiSizes() {
-        super();
-        that = this;
+    private UiSizes() {
+        isInitialized = false;
     }
 
-    @Override
-    public void instanzeInitial() {
+    public static UiSizes getInstance() {
+        if (uiSizes == null) uiSizes = new UiSizes();
+        return uiSizes;
+    }
+
+    public boolean isInitialized() {
+        return isInitialized;
+    }
+
+    public Size initialize(DevicesSizes devicesSizes) {
+        this.devicesSizes = devicesSizes;
+        this.windowWidth = devicesSizes.Window.width;
+        this.windowHeight = devicesSizes.Window.height;
+        this.scale = devicesSizes.Density; // res.getDisplayMetrics().density;
+
+        mClickToleranz = (int) (17 * scale);
+
+        calcBase = 533.333 * scale;
+
+        margin = (int) (10 * scale);
+
+        float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
+
+        ButtonWidth = (int) (NormalTextSize * scale);
+        ButtonHeight = ButtonWidth;
+        WideButtonWidth = (windowWidth - 4 * margin) / 3;
+
+        RefWidth = windowWidth;
+
+        scaledFontSize_normal = (int) (10 * scale);
+        scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
+        ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
+        ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
+        scaledFontSize_btn = (int) (11 * scale);
+
+        iconSize = (int) (10 * scale);
+
+        IconContextMenuHeight = (int) (calcBase / 11.1);
+
         QuickButtonRef = 320;
         QuickButtonList = new Size((int) (QuickButtonRef * scale - (13.3333f * scale)), (int) (((QuickButtonRef * scale) / 5) - 4 * scale));
 
@@ -75,6 +114,8 @@ public class UiSizes extends UI_Size_Base {
         ButtonRectF = new CB_RectF(0, 0, ButtonWidth, ButtonHeight);
         WideButtonRectF = new CB_RectF(0, 0, WideButtonWidth, ButtonHeight);
 
+        isInitialized = true;
+        return new Size(windowWidth, windowHeight);
     }
 
     public int getTbIconSize() {

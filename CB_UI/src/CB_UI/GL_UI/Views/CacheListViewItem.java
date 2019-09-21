@@ -47,7 +47,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     public CacheListViewItem(CB_RectF rec, int Index, Cache cache) {
         super(rec, Index, cache.getName());
         mCache = cache;
-        info = new ExtendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+        info = new ExtendedCacheInfo(UiSizes.getInstance().getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
         info.setZeroPos();
         distance.setColor(COLOR.getFontColor());
         this.addChild(info);
@@ -58,7 +58,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
         arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-        if (!Locator.Valid()) {
+        if (!Locator.getInstance().Valid()) {
             arrow.setColor(DISABLE_COLOR);
             setDistanceString("---");
         } else {
@@ -105,18 +105,18 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
         // Log.debug(log, "CacheListItem set ActLocator");
 
-        if (Locator.Valid()) {
+        if (Locator.getInstance().Valid()) {
 
             if (mCache.Pos == null) {
                 // mCache was disposed
-                Cache c = Database.Data.cacheList.GetCacheById(mCache.Id);
+                Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.Id);
                 if (c == null) {
                     return;
                 }
                 mCache = c;
             }
 
-            Coordinate position = Locator.getMyPosition();
+            Coordinate position = Locator.getInstance().getMyPosition();
 
             Waypoint FinalWp = mCache.getCorrectedFinal();
 
@@ -212,7 +212,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
     @Override
     public void OrientationChanged() {
-        this.heading = Locator.getHeading();
+        this.heading = Locator.getInstance().getHeading();
         setActLocator();
     }
 

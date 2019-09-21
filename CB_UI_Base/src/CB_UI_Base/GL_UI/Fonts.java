@@ -88,7 +88,7 @@ public class Fonts {
         Log.debug(log, "Generate scaled Fonts from " + font);
         generator = new FreeTypeFontGenerator(font);
 
-        double density = UiSizes.that.getScale();
+        double density = UiSizes.getInstance().getScale();
 
         compass = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeBiggest() * density));
         big = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeBig() * density));
@@ -191,9 +191,9 @@ public class Fonts {
         if (CB_Skin.getInstance().getSkinFolder().type() == FileType.Absolute) {
             String FolderPath = CB_Skin.getInstance().getSkinFolder().path();
             String path = FolderPath.replace("/", fs) + fs + "fnts";
-            if (FileIO.DirectoryExists(path)) {
+            if (FileIO.directoryExists(path)) {
                 // fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
-                fontPath = path + fs + String.valueOf(scale) + ".fnt";
+                fontPath = path + fs + scale + ".fnt";
             } else {
                 // fonts-Verzeichnis "global" im cachebox/skins
                 path = FolderPath.replace("/", fs) + fs + ".." + fs + "fnts";
@@ -203,7 +203,7 @@ public class Fonts {
         }
 
         // Wenn der font nicht vorberechnet ist, dann wird er generiert
-        if (FileIO.FileExists(fontPath)) {
+        if (FileIO.fileExists(fontPath)) {
             Log.debug(log, "load font for scale " + scale + " from " + fontPath);
             // automatic load of png does not work on Android, so
             // return new BitmapFont(Gdx.files.absolute(fontPath),false);

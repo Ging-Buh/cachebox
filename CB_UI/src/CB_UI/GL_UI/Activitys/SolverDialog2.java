@@ -261,7 +261,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             if (btn == buttons.Operator)
                 continue; // Operator erstmal noch nicht anzeigen
             if ((dataType == null) || btn.hasDataType(dataType)) {
-                MultiToggleButton button = new MultiToggleButton(0, 0, 0, UI_Size_Base.that.getButtonHeight(), btn.description);
+                MultiToggleButton button = new MultiToggleButton(0, 0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), btn.description);
                 button.addState(btn.description, new HSV_Color(Color.GRAY));
                 button.addState(btn.description, new HSV_Color(Color.GREEN));
                 button.setOnStateChangedListener(this);
@@ -414,8 +414,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("ok"));
@@ -463,7 +463,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private void createTitleLine() {
         // Title+Progressbar
 
-        float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
+        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
 
         lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());

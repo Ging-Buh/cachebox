@@ -175,7 +175,7 @@ public class EditCoord extends ActivityBase {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
 
         bDec.setTag(0);
         bDec.addClickHandler(mtbClicked);

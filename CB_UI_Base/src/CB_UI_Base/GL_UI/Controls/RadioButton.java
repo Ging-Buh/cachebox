@@ -30,11 +30,11 @@ public class RadioButton extends CB_CheckBox {
 
     public RadioButton(String Name) {
         super(Name);
-        radioBack = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
+        radioBack = new Image(new CB_RectF(UI_Size_Base.ui_size_base.getChkBoxSize()), name, false);
         radioBack.setDrawable(Sprites.radioBack);
         this.addChild(radioBack);
 
-        radioSet = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
+        radioSet = new Image(new CB_RectF(UI_Size_Base.ui_size_base.getChkBoxSize()), name, false);
         radioSet.setDrawable(Sprites.radioOn);
         this.addChild(radioSet);
     }
@@ -46,7 +46,7 @@ public class RadioButton extends CB_CheckBox {
     @Override
     protected void render(Batch batch) {
         if (lblTxt != null && lblTxt.getX() < radioBack.getMaxX()) {
-            lblTxt.setX(radioBack.getMaxX() + UI_Size_Base.that.getMargin());
+            lblTxt.setX(radioBack.getMaxX() + UI_Size_Base.ui_size_base.getMargin());
         }
 
         if (isChk && !radioSet.isVisible()) {
@@ -59,7 +59,7 @@ public class RadioButton extends CB_CheckBox {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         // do neither explicit nor implicit a super.Initial();
     }
 

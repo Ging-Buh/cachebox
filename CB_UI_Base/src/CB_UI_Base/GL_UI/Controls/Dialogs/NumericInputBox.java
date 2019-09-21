@@ -35,7 +35,7 @@ public class NumericInputBox extends CB_View_Base {
 
         Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
-        float margin = UI_Size_Base.that.getMargin();
+        float margin = UI_Size_Base.ui_size_base.getMargin();
         MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
 
         editText = new EditTextField(null, "NumerikInputBox editText");
@@ -45,7 +45,7 @@ public class NumericInputBox extends CB_View_Base {
 
         CB_Label label = new CB_Label("MsgBoxLabel");
 
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
+        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.ui_size_base.getButtonHeight() * 6);
         msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
 
         msgBox.setMargins(0, margin);
@@ -85,11 +85,11 @@ public class NumericInputBox extends CB_View_Base {
         mType = type.doubleType;
         Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
-        float margin = UI_Size_Base.that.getMargin();
+        float margin = UI_Size_Base.ui_size_base.getMargin();
         MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
+        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.ui_size_base.getButtonHeight() * 6);
 
         CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -144,11 +144,11 @@ public class NumericInputBox extends CB_View_Base {
 
         Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
-        float margin = UI_Size_Base.that.getMargin();
+        float margin = UI_Size_Base.ui_size_base.getMargin();
         MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
+        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.ui_size_base.getButtonHeight() * 6);
 
         CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 

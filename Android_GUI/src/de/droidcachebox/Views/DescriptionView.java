@@ -2,7 +2,7 @@ package de.droidcachebox.Views;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheChangedEventListener;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,7 +15,7 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.R;
 //import org.slf4j.LoggerFactory;
 
-public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
+public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheChangedEventListener {
     private static DescriptionViewControl mDescriptionViewControl;
     private long aktCacheID;
     private LinearLayout mLinearLayout;
@@ -89,7 +89,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
      * @param waypoint
      */
     @Override
-    public void SelectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
         if (selectedCache == null || mDescriptionViewControl == null)
             return;
         if (aktCacheID != selectedCache.Id) {

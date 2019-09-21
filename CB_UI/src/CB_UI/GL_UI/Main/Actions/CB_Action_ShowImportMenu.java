@@ -112,7 +112,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             StringInputBox.Show(WrapType.SINGLELINE,
                     Translation.get("enterFileName"),
                     Translation.get("GPX_EXPORT"),
-                    FileIO.GetFileName(Config.gpxExportFileName.getValue()),
+                    FileIO.getFileName(Config.gpxExportFileName.getValue()),
                     (which, data) -> {
                         if (which == 1) {
                             final String FileName = StringInputBox.editText.getText();
@@ -127,7 +127,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     }
 
     private void ExportgetFolderStep(final String FileName) {
-        PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()),
+        PlatformConnector.getFolder(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
                 Translation.get("selectExportFolder".hashCode()),
                 Translation.get("select".hashCode()),
                 Path -> GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path)));

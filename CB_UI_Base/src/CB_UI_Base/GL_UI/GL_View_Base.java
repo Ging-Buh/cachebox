@@ -42,7 +42,7 @@ public abstract class GL_View_Base extends CB_RectF {
     public static boolean debug = false;
     public static boolean disableScissor = false;
     protected static int nDepthCounter = 0;
-    private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<GL_View_Base.SkinChangedEventListener>();
+    private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     private static boolean calling = false;
     protected final Matrix4 rotateMatrix = new Matrix4();
     protected final MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
@@ -1068,7 +1068,7 @@ public abstract class GL_View_Base extends CB_RectF {
         // wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
         // innerhalb dem erstmal kein onTouchDragged aufgerufen wird
         if (isClickable())
-            return UI_Size_Base.that.getClickToleranz();
+            return UI_Size_Base.ui_size_base.getClickToleranz();
         else
             // Wenn aber eine View nicht clickable ist dann darf der onTouchDragged sofort aufgerufen werden
             return 1;

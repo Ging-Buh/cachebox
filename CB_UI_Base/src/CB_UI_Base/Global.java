@@ -12,7 +12,7 @@ public abstract class Global {
     public static boolean forcePhone = true;
     public static boolean useSmallSkin = false;
     public static DisplayType displayType = DisplayType.Normal;
-    public static double displayDensity = 1;
+    public static float displayDensity = 1;
     protected static Global Instance;
     private static Clipboard defaultClipBoard;
 

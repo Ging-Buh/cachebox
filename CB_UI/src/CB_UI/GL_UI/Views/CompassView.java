@@ -32,8 +32,8 @@ import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.SunMoonCalculator;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
+import CB_UI.SelectedCacheChangedEventListener;
+import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -61,7 +61,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListener {
+public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListener {
     private static final String log = "CompassView";
     private static CompassView that;
     private CB_RectF imageRec;
@@ -83,7 +83,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     private float descHeight;
     private float lblHeight;
     private boolean initDone, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
-    private boolean lastUsedCompass = Locator.UseMagneticCompass();
+    private boolean lastUsedCompass = Locator.getInstance().UseMagneticCompass();
     private MapView mCompassMapView;
     private IChanged settingChangedListener = () -> {
         readSettings();
@@ -106,7 +106,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     public void onShow() {
         aktCache = GlobalCore.getSelectedCache();
         aktWaypoint = GlobalCore.getSelectedWaypoint();
-        Initial();
+        initialize();
         setCache();
         if (chart != null) {
             chart.onShow();
@@ -118,7 +118,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             ex.printStackTrace();
         }
         PositionChanged();
-        SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
         PositionChangedEventList.Add(this);
         CacheListChangedEventList.Add(this);
         invalidateTextureEventList.Add(this);
@@ -128,7 +128,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     public void onHide() {
         if (chart != null)
             chart.onHide();
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         PositionChangedEventList.Remove(this);
         if (mCompassMapView != null) {
             mCompassMapView.onHide();
@@ -138,7 +138,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         if (initDone)
             return;
         readSettings();
@@ -599,7 +599,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     }
 
     private void setArrowDrawable(boolean forceSet) {
-        boolean tmp = Locator.UseMagneticCompass();
+        boolean tmp = Locator.getInstance().UseMagneticCompass();
         if (!forceSet && tmp == lastUsedCompass)
             return;// no change required
         lastUsedCompass = tmp;
@@ -622,7 +622,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     }
 
     @Override
-    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         if (aktCache != cache || aktWaypoint != waypoint) {
             aktCache = cache;
             aktWaypoint = waypoint;
@@ -639,14 +639,14 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             return;
         }
 
-        CoordinateGPS position = Locator.getMyPosition();
+        CoordinateGPS position = Locator.getInstance().getMyPosition();
 
         if (position == null) {
             Log.info(log, "but position is null");
             return;
         }
 
-        double heading = Locator.getHeading();
+        double heading = Locator.getInstance().getHeading();
 
         if (lblOwnCoords != null)
             lblOwnCoords.setText(position.FormatCoordinate());
@@ -701,7 +701,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         }
 
         if (showSatInfos && lblAlt != null && !lblAlt.isDisposed()) {
-            lblAlt.setText(Translation.get("alt") + Locator.getAltString());
+            lblAlt.setText(Translation.get("alt") + Locator.getInstance().getAltString());
         }
 
         if (showSunMoon) {
@@ -721,9 +721,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         if (aktCache == null)
             return;
 
-        if (Locator.Valid()) {
-            Coordinate position = Locator.getMyPosition();
-            double heading = Locator.getHeading();
+        if (Locator.getInstance().Valid()) {
+            Coordinate position = Locator.getInstance().getMyPosition();
+            double heading = Locator.getInstance().getHeading();
 
             Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
 
@@ -756,9 +756,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         if (Sun == null || Moon == null)
             return;
 
-        if (Locator.Valid()) {
-            CoordinateGPS latLon = Locator.getMyPosition();
-            double heading = Locator.getHeading();
+        if (Locator.getInstance().Valid()) {
+            CoordinateGPS latLon = Locator.getInstance().getMyPosition();
+            double heading = Locator.getInstance().getHeading();
             float centerX = frame.getCenterPosX();
             float centerY = frame.getCenterPosY();
             float radius = frame.getHalfWidth() + Sun.getHalfHeight() + (Sun.getHalfHeight() / 4);
@@ -923,7 +923,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         Config.CompassShowLastFound.removeSettingChangedListener(settingChangedListener);
 
         settingChangedListener = null;
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         CacheListChangedEventList.Remove(this);
         PositionChangedEventList.Remove(this);
         invalidateTextureEventList.Remove(this);

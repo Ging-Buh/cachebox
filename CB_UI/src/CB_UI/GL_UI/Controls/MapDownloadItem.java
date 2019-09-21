@@ -38,7 +38,7 @@ public class MapDownloadItem extends CB_View_Base {
         super(mapInfo.Name);
         this.mapInfo = mapInfo;
         this.workPath = workPath;
-        margin = UI_Size_Base.that.getMargin();
+        margin = UI_Size_Base.ui_size_base.getMargin();
 
         checkBoxMap = new CB_CheckBox("Image");
         this.setHeight(checkBoxMap.getHeight() + (margin * 2));
@@ -97,7 +97,7 @@ public class MapDownloadItem extends CB_View_Base {
         int slashPos = mapInfo.Url.lastIndexOf("/");
         String zipFile = mapInfo.Url.substring(slashPos, mapInfo.Url.length());
 
-        String FileString = FileIO.GetFileNameWithoutExtension(zipFile);
+        String FileString = FileIO.getFileNameWithoutExtension(zipFile);
 
         File file = FileFactory.createFile(workPath + "/" + FileString);
         if (file.exists()) {
@@ -159,8 +159,8 @@ public class MapDownloadItem extends CB_View_Base {
                     }
 
                     // Copy and Clear ? todo check is this necessary and ok?
-                    File folder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(zipFile));
-                    File newfolder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(folder.getName()));
+                    File folder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(zipFile));
+                    File newfolder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(folder.getName()));
 
                     if (folder.isDirectory()) {
                         folder.renameTo(newfolder);

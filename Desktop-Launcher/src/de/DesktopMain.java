@@ -2,7 +2,8 @@ package de;
 
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
-import CB_Locator.Location.ProviderType;
+import CB_Locator.Location;
+import CB_Locator.Locator;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
@@ -189,8 +190,7 @@ public class DesktopMain {
             });
         }
 
-        new UiSizes();
-        UiSizes.that.initial(ui);
+        UiSizes.getInstance().initialize(ui);
         initialLocatorBase();
 
         Timer timer = new Timer();
@@ -448,37 +448,37 @@ public class DesktopMain {
         // ##########################################################
         double latitude = Config.MapInitLatitude.getValue();
         double longitude = Config.MapInitLongitude.getValue();
-        ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
+        Location.ProviderType provider = (latitude == -1000) ? Location.ProviderType.NULL : Location.ProviderType.Saved;
 
-        CB_Locator.Location initialLocation;
+        Location initialLocation;
 
-        if (provider == ProviderType.Saved) {
-            initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
+        if (provider == Location.ProviderType.Saved) {
+            initialLocation = new Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
         } else {
-            initialLocation = CB_Locator.Location.NULL_LOCATION;
+            initialLocation = Location.NULL_LOCATION;
         }
 
-        new CB_Locator.Locator(initialLocation);
+        Locator.getInstance().setNewLocation(initialLocation);
 
         // ##########################################################
         // initial settings changed handling
         // ##########################################################
 
         // Use Imperial units?
-        CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-        Config.ImperialUnits.addSettingChangedListener(() -> CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue()));
+        Locator.getInstance().setUseImperialUnits(Config.ImperialUnits.getValue());
+        Config.ImperialUnits.addSettingChangedListener(() -> Locator.getInstance().setUseImperialUnits(Config.ImperialUnits.getValue()));
 
         // GPS update time?
-        CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-        Config.gpsUpdateTime.addSettingChangedListener(() -> CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue()));
+        Locator.getInstance().setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+        Config.gpsUpdateTime.addSettingChangedListener(() -> Locator.getInstance().setMinUpdateTime((long) Config.gpsUpdateTime.getValue()));
 
         // Use magnetic Compass?
-        CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-        Config.HardwareCompass.addSettingChangedListener(() -> CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue()));
+        Locator.getInstance().setUseHardwareCompass(Config.HardwareCompass.getValue());
+        Config.HardwareCompass.addSettingChangedListener(() -> Locator.getInstance().setUseHardwareCompass(Config.HardwareCompass.getValue()));
 
         // Magnetic compass level
-        CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-        Config.HardwareCompassLevel.addSettingChangedListener(() -> CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue()));
+        Locator.getInstance().setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+        Config.HardwareCompassLevel.addSettingChangedListener(() -> Locator.getInstance().setHardwareCompassLevel(Config.HardwareCompassLevel.getValue()));
     }
 
     public static boolean isWindows() {

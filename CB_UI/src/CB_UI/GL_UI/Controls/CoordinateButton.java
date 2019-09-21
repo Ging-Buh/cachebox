@@ -76,8 +76,8 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     }
 
     @Override
-    protected void Initial() {
-        super.Initial();
+    protected void initialize() {
+        super.initialize();
         // switch ninePatchImages
         Drawable tmp = drawableNormal;
         drawableNormal = drawablePressed;
@@ -128,8 +128,8 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         CB_RectF world = getWorldRec();
 
         // not enough place on Top?
-        float windowH = UI_Size_Base.that.getWindowHeight();
-        float windowW = UI_Size_Base.that.getWindowWidth();
+        float windowH = UI_Size_Base.ui_size_base.getWindowHeight();
+        float windowW = UI_Size_Base.ui_size_base.getWindowWidth();
         float worldY = world.getY();
 
         if (popUp.getHeight() + worldY > windowH * 0.8f) {

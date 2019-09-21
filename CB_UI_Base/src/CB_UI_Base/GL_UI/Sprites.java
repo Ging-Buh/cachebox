@@ -371,7 +371,7 @@ public class Sprites {
             Arrows = new ArrayList<Sprite>();
         synchronized (Arrows) {
 
-            float scale = UI_Size_Base.that.getScale();
+            float scale = UI_Size_Base.ui_size_base.getScale();
 
             Arrows.clear();
             Arrows.add(getSprite("arrow-Compass")); // 0

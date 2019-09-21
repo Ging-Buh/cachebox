@@ -145,7 +145,7 @@ public class RouteOverlay {
                                 AltitudeDifference = 0;
                                 AnzTracks++;
                                 if (GPXName == null)
-                                    route.Name = FileIO.GetFileName(file);
+                                    route.Name = FileIO.getFileName(file);
                                 else {
                                     if (AnzTracks <= 1)
                                         route.Name = GPXName;
@@ -166,7 +166,7 @@ public class RouteOverlay {
                                 AltitudeDifference = 0;
                                 AnzTracks++;
                                 if (GPXName != null)
-                                    route.Name = FileIO.GetFileName(file);
+                                    route.Name = FileIO.getFileName(file);
                                 else {
                                     if (AnzTracks <= 1)
                                         route.Name = GPXName;
@@ -417,7 +417,7 @@ public class RouteOverlay {
                 float overlap = rt.overlap;
                 ArrowSprite.setColor(rt.mColor);
                 PointSprite.setColor(rt.mColor);
-                float scale = UI_Size_Base.that.getScale();
+                float scale = UI_Size_Base.ui_size_base.getScale();
 
                 for (int ii = 0; ii < rt.Points.size() - 1; ii++) {
 

@@ -24,15 +24,15 @@ public abstract class PopUp_Base extends CB_View_Base {
     }
 
     public void show(int msec) {
-        float x = (UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth();
-        float y = (UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight();
+        float x = (UI_Size_Base.ui_size_base.getWindowWidth() / 2) - this.getHalfWidth();
+        float y = (UI_Size_Base.ui_size_base.getWindowHeight() / 2) - this.getHalfHeight();
 
         show(x, y, msec);
     }
 
     public void show() {
-        float x = (UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth();
-        float y = (UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight();
+        float x = (UI_Size_Base.ui_size_base.getWindowWidth() / 2) - this.getHalfWidth();
+        float y = (UI_Size_Base.ui_size_base.getWindowHeight() / 2) - this.getHalfHeight();
 
         show(x, y, SHOW_TIME_NORMAL);
     }

@@ -63,7 +63,7 @@ public class CacheContextMenu {
             CacheDAO dao = new CacheDAO();
             dao.UpdateDatabase(GlobalCore.getSelectedCache());
             // Update cacheList
-            Database.Data.cacheList.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+            Database.Data.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
             // Update View
             CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
             CacheListChangedEventList.Call();
@@ -133,7 +133,7 @@ public class CacheContextMenu {
                         }
                         CacheListChangedEventList.Call();
                         //
-                        GlobalCore.setSelectedCache(Database.Data.cacheList.GetCacheByGcCode(GCCode));
+                        GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         GL.that.RunOnGL(() -> {
                             CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
                             GL.that.renderOnce();

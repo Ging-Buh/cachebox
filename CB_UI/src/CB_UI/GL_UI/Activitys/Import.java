@@ -187,7 +187,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 IMAGE_LINE_ACTIVE = false;
         }
 
-        CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
+        CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 6;
         innerHeight = 1000;
         scrollBox = new ScrollBox(ActivityRec());
         this.addChild(scrollBox);
@@ -246,8 +246,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Import");
-        CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Import");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Import");
+        CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Import");
 
         // Translations
         bOK.setText(Translation.get("import"));
@@ -284,7 +284,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private void createTitleLine() {
         // Title+Progressbar
 
-        float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
+        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
 
         CB_Label lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
@@ -1227,7 +1227,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         public ListViewItemBase getView(int position) {
             final PQ pq = PqList.get(position);
             if (itemRec == null) {
-                itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
                 float itemWidth = PQ_ListCollapseBox.getInnerWidth();
 
                 itemRec = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -1240,7 +1240,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         @Override
         public float getItemSize(int position) {
             if (itemHeight == -1)
-                itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
             return itemHeight;
         }
 
@@ -1263,7 +1263,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         public ListViewItemBase getView(int position) {
             final RpcAnswer_GetExportList.ListItem it = cbServerExportList.get(position);
             if (itemRecCBServer == null) {
-                itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
                 float itemWidth = CBServerCollapseBox.getInnerWidth();
 
                 itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -1276,7 +1276,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         @Override
         public float getItemSize(int position) {
             if (itemHeight == -1)
-                itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
             return itemHeight;
         }
 

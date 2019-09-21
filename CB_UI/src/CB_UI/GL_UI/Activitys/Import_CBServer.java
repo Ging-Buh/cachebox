@@ -99,8 +99,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        CB_Button bCancel = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
+        CB_Button bCancel = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
 
         this.initRow(BOTTOMUP);
         // Translations
@@ -146,7 +146,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private void createTitleLine() {
         CB_Label lblTitle = new CB_Label(Translation.get("export"), Fonts.getBig(), null, null);
 
-        float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
+        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
         CB_RectF rec = new CB_RectF(0, 0, 0, lineHeight);
         pgBar = new ProgressBar(rec, "ProgressBar");
         pgBar.setProgress(0, "");
@@ -395,7 +395,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         public ListViewItemBase getView(int position) {
             final ExportEntry it = exportList.get(position);
             if (itemRecCBServer == null) {
-                itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
                 float itemWidth = scrollBox.getInnerWidth();
 
                 itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -407,7 +407,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         @Override
         public float getItemSize(int position) {
             if (itemHeight == -1)
-                itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
             return itemHeight;
         }
 

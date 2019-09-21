@@ -87,8 +87,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("import"));
@@ -125,7 +125,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private void createTitleLine() {
         // Title+Progressbar
 
-        float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
+        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
 
         CB_Label lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());

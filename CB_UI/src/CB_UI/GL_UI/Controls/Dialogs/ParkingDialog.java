@@ -45,7 +45,7 @@ public class ParkingDialog extends ButtonDialog {
         layout.setX(0);
         // layout.setBackground(new ColorDrawable(Color.GREEN));
 
-        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
+        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.ui_size_base.getButtonHeight() * 2);
 
         btSetGPS = new ImageButton(MTBRec, "btSetGPS");
         btSelectWP = new ImageButton(MTBRec, "btSelectWP");
@@ -59,7 +59,7 @@ public class ParkingDialog extends ButtonDialog {
         btSelectWP.setX(btSetGPS.getMaxX());
         btDeleteP.setX(btSelectWP.getMaxX());
 
-        Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
+        Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight() * 2), "");
 
         box.addChild(btSetGPS);
         box.addChild(btSelectWP);
@@ -67,7 +67,7 @@ public class ParkingDialog extends ButtonDialog {
 
         layout.addChild(box);
 
-        Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
+        Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight() * 2), "");
 
         lblSetGPS = new CB_Label(btSetGPS.ScaleCenter(0.8f));
         lblSelectWP = new CB_Label(btSelectWP.ScaleCenter(0.8f));
@@ -91,7 +91,7 @@ public class ParkingDialog extends ButtonDialog {
 
         // chk disable select and delete Button
         synchronized (Database.Data.cacheList) {
-            Cache cache = Database.Data.cacheList.GetCacheByGcCode("CBPark");
+            Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache == null) {
                 btSelectWP.disable();
                 btDeleteP.disable();
@@ -106,8 +106,8 @@ public class ParkingDialog extends ButtonDialog {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-                Config.ParkingLatitude.setValue(Locator.getLatitude());
-                Config.ParkingLongitude.setValue(Locator.getLongitude());
+                Config.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
+                Config.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
                 Config.AcceptChanges();
                 CacheListChangedEventList.Call();
 
@@ -121,7 +121,7 @@ public class ParkingDialog extends ButtonDialog {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 synchronized (Database.Data.cacheList) {
-                    Cache cache = Database.Data.cacheList.GetCacheByGcCode("CBPark");
+                    Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
                     if (cache != null)
                         GlobalCore.setSelectedCache(cache);
                 }

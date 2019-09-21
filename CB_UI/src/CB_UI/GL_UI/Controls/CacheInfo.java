@@ -133,7 +133,7 @@ public class CacheInfo extends CB_View_Base {
     }
 
     void initialMesure() {
-        mScaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
+        mScaleFactor = getWidth() / UiSizes.getInstance().getCacheListItemRec().getWidth();
         mIconSize = Fonts.MeasureSmall("T").height * 3.5f * mScaleFactor;
         mMargin = 3 * mScaleFactor;
     }
@@ -527,7 +527,7 @@ public class CacheInfo extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         cacheIsInitial = true;
         requestLayout();
     }

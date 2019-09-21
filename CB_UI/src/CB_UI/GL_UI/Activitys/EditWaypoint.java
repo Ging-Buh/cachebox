@@ -91,11 +91,11 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniCoordButton() {
-        CB_RectF rec = new CB_RectF(leftBorder, tvCacheName.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(leftBorder, tvCacheName.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
         Coordinate coordinate = waypoint.Pos;
         if (!coordinate.isValid() || coordinate.isZero()) {
             // coordinate = get from gps
-            coordinate = Locator.getMyPosition();
+            coordinate = Locator.getInstance().getMyPosition();
             if (!coordinate.isValid() || coordinate.isZero()) {
                 // coordinate = get from cache
                 coordinate = GlobalCore.getSelectedCache().Pos;
@@ -109,7 +109,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelTyp() {
-        cbStartPointWidth = UI_Size_Base.that.getButtonHeight() * 1.5f;
+        cbStartPointWidth = UI_Size_Base.ui_size_base.getButtonHeight() * 1.5f;
         tvTyp = new CB_Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight);
         tvTyp.setFont(Fonts.getBubbleNormal());
         tvTyp.setText(Translation.get("type"));
@@ -124,7 +124,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniTypeSpinner() {
-        CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth - cbStartPointWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), innerWidth - cbStartPointWidth, UI_Size_Base.ui_size_base.getButtonHeight());
         sType = new Spinner(rec, "WaypointType", getSpinerAdapter(), index -> {
             EditWaypoint.this.show();
             showCbStartPoint(false);
@@ -153,7 +153,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         });
 
         // CheckBox for the selection whether this WP is the startpoint of the cache
-        rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.that.getButtonHeight() / 2.0f), tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.ui_size_base.getButtonHeight() / 2.0f), tvTyp.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
         cbStartPoint = new CB_CheckBox(rec, "CheckBoxStartPoint");
         cbStartPoint.setVisible(false);
 
@@ -235,7 +235,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniTitleTextField() {
-        CB_RectF rec = new CB_RectF(leftBorder, tvTitle.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(leftBorder, tvTitle.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
         etTitle = new EditTextField(rec, this, "*" + Translation.get("Title"));
 
         String txt = (waypoint.getTitle() == null) ? "" : waypoint.getTitle();
@@ -252,7 +252,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniTitleTextDesc() {
-        CB_RectF rec = new CB_RectF(leftBorder, tvDescription.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(leftBorder, tvDescription.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
         etDescription = new EditTextField(rec, this, "*" + Translation.get("Description"), WrapType.WRAPPED);
 
         String txt = (waypoint.getDescription() == null) ? "" : waypoint.getDescription();
@@ -283,7 +283,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniTitleTextClue() {
-        CB_RectF rec = new CB_RectF(leftBorder, tvClue.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(leftBorder, tvClue.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
         etClue = new EditTextField(rec, this, "*" + Translation.get("Clue"), WrapType.WRAPPED);
 
         String txt = (waypoint.getClue() == null) ? "" : waypoint.getClue();
@@ -306,7 +306,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniOkCancel() {
-        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
+        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight());
         bOK = new CB_Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());
@@ -376,8 +376,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMeasuredHeight() + rand);
         float clueHeight = Math.min(maxTextFieldHeight, etClue.getMeasuredHeight() + rand);
 
-        descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
-        clueHeight = Math.max(clueHeight, UI_Size_Base.that.getButtonHeight());
+        descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.ui_size_base.getButtonHeight());
+        clueHeight = Math.max(clueHeight, UI_Size_Base.ui_size_base.getButtonHeight());
 
         etDescription.setHeight(descriptionHeight);
         etClue.setHeight(clueHeight);

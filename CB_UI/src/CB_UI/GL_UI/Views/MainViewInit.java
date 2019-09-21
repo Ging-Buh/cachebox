@@ -25,7 +25,6 @@ import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.SelectDB;
-import CB_UI.GL_UI.Activitys.SelectDB.IReturnListener;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
@@ -72,8 +71,8 @@ public class MainViewInit extends MainViewBase {
     }
 
     @Override
-    protected void Initial() {
-        GL.that.RestartRender();
+    protected void initialize() {
+        GL.that.restartRendering();
         switcher = !switcher;
         if (switcher && !breakForWait) {
             // in jedem Render Vorgang einen Step ausführen
@@ -134,7 +133,7 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_Progressbar() {
 
-        float ref = UI_Size_Base.that.getWindowHeight() / 13;
+        float ref = UI_Size_Base.ui_size_base.getWindowHeight() / 13;
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
         CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
         CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
@@ -220,7 +219,7 @@ public class MainViewInit extends MainViewBase {
      * Load Config DB3
      */
     private void ini_Config() {
-        // Log.debug(log, "ini_Config");
+        // Log.info(log, "ini_Config");
         // Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
         // Config.settings.ReadFromDB();
         // // now must reinitial UiSizes with reading settings values
@@ -234,7 +233,7 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_Translations() {
         if (!Translation.isInitial()) {
-            Log.debug(log, "ini_Translations");
+            Log.info(log, "ini_Translations");
 
             // Load from Assets changes
             // delete work path from settings value
@@ -282,7 +281,7 @@ public class MainViewInit extends MainViewBase {
      * chk directories
      */
     private void ini_Dirs() {
-        Log.debug(log, "ini_Dirs");
+        Log.info(log, "ini_Dirs");
         ini_Dir(Config.PocketQueryFolder.getValue());
         ini_Dir(Config.TileCacheFolder.getValue());
         ini_Dir(Config.mWorkPath + "/User");
@@ -298,9 +297,7 @@ public class MainViewInit extends MainViewBase {
         if (!nomedia.exists()) {
             try {
                 nomedia.createNewFile();
-            } catch (IOException e) {
-
-                e.printStackTrace();
+            } catch (IOException ignored) {
             }
         }
     }
@@ -317,7 +314,7 @@ public class MainViewInit extends MainViewBase {
      * show select DB Dialog
      */
     private void ini_SelectDB() {
-        Log.debug(log, "ini_SelectDB");
+        Log.info(log, "ini_SelectDB");
         // search number of DB3 files
         FileList fileList = null;
         try {
@@ -328,14 +325,8 @@ public class MainViewInit extends MainViewBase {
         if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
             breakForWait = true;
             SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
-            selectDBDialog.setReturnListener(new IReturnListener() {
-                @Override
-                public void back() {
-                    returnFromSelectDB();
-                }
-            });
+            selectDBDialog.setReturnListener(this::returnFromSelectDB);
             selectDBDialog.show();
-            selectDBDialog = null;
         }
 
     }
@@ -350,7 +341,7 @@ public class MainViewInit extends MainViewBase {
      * Load Cache DB3
      */
     private void ini_CacheDB() {
-        Log.debug(log, "ini_CacheDB");
+        Log.info(log, "ini_CacheDB");
         // chk if exist filter preset splitter "#" and Replace
         String ConfigPreset = Config.UserFilter.getValue();
         if (ConfigPreset.endsWith("#")) {
@@ -418,7 +409,7 @@ public class MainViewInit extends MainViewBase {
      * chk installed map packs/layers
      */
     private void ini_MapPacks() {
-        Log.debug(log, "ini_MapPacks");
+        Log.info(log, "ini_MapPacks");
         ManagerBase.Manager.initMapPacks();
     }
 
@@ -427,13 +418,13 @@ public class MainViewInit extends MainViewBase {
      * Show ViewManager
      */
     private void ini_TabMainView() {
-        Log.debug(log, "ini_TabMainView");
+        Log.info(log, "ini_TabMainView");
         GL.that.removeRenderView(this);
         GL.that.switchToMainView();
 
         if (GlobalCore.restartCache != null) {
             synchronized (Database.Data.cacheList) {
-                Cache c = Database.Data.cacheList.GetCacheByGcCode(GlobalCore.restartCache);
+                Cache c = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
                 if (c != null) {
                     if (GlobalCore.restartWaypoint != null) {
                         WaypointDAO dao = new WaypointDAO();
@@ -447,10 +438,10 @@ public class MainViewInit extends MainViewBase {
                                     w = wp;
                                 }
                             }
-                            Log.debug(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache + WP.");
+                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache + WP.");
                             GlobalCore.setSelectedWaypoint(c, w);
                         } else {
-                            Log.debug(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache.");
+                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache.");
                             GlobalCore.setSelectedCache(c);
                         }
                     }

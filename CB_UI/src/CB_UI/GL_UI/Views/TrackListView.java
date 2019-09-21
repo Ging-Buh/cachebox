@@ -25,7 +25,7 @@ public class TrackListView extends V_ListView {
     private TrackListView() {
         super(ViewManager.leftTab.getContentRec(), "TrackListView");
 
-        ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
+        ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f);
 
         this.setEmptyMsg(Translation.get("EmptyTrackList"));
 

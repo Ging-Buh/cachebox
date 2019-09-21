@@ -21,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Longri on 11.05.2016.
@@ -39,11 +40,24 @@ public class PermissionCheck {
     static final String VIBRATE = "android.permission.VIBRATE";
     static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
     static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
-
-    static final String[] NEEDED_PERMISSIONS = new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, WAKE_LOCK, INTERNET, ACCESS_NETWORK_STATE, RECORD_AUDIO, CAMERA, VIBRATE, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE};
+    static ArrayList<String> NEEDED_PERMISSIONS;
 
     public static void checkNeededPermissions(Activity context) {
-        ArrayList<String> DENIED_List = new ArrayList<String>();
+        NEEDED_PERMISSIONS = new ArrayList<String>(
+                Arrays.asList(
+                        ACCESS_FINE_LOCATION,
+                        ACCESS_COARSE_LOCATION,
+                        WAKE_LOCK,
+                        INTERNET,
+                        ACCESS_NETWORK_STATE,
+                        RECORD_AUDIO,
+                        CAMERA,
+                        VIBRATE,
+                        WRITE_EXTERNAL_STORAGE,
+                        READ_EXTERNAL_STORAGE
+                ));
+
+        ArrayList<String> DENIED_List = new ArrayList<>();
 
         for (String permission : NEEDED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {

@@ -43,8 +43,7 @@ class DCB {
         DesktopMain.InitialConfig();
         Config.settings.ReadFromDB();
 
-        new CB_SLF4J(Config.mWorkPath);
-        CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+        CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
         Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
 
         File Dir = FileFactory.createFile("./");

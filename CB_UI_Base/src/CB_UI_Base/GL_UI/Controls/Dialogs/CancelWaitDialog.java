@@ -61,7 +61,7 @@ public class CancelWaitDialog extends WaitDialog {
         Log.debug(sKlasse, Msg);
         final CancelWaitDialog wd = createDialog(Msg, cancelListener, cancelRunnable);
         wd.setCallerName(Trace.getCallerName(1));
-        CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
         Animation.setRec(animationRec);
         wd.animation = Animation;
         wd.setButtonCaptions(MessageBoxButtons.Cancel);
@@ -95,10 +95,10 @@ public class CancelWaitDialog extends WaitDialog {
 
         SizeF contentSize = waitDialog.getContentSize();
 
-        CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
 
         waitDialog.label = new CB_Label(contentSize.getBounds());
-        waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
+        waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.ui_size_base.getButtonHeight());
         waitDialog.label.setX(imageRec.getMaxX() + margin);
         waitDialog.label.setWrappedText(msg);
 

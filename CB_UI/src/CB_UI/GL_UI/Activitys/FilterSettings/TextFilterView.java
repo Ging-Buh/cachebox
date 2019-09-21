@@ -67,10 +67,10 @@ public class TextFilterView extends CB_View_Base {
 
         that = this;
 
-        float margin = UI_Size_Base.that.getMargin() * 2;
+        float margin = UI_Size_Base.ui_size_base.getMargin() * 2;
         float btnWidth = (this.getWidth() - (margin * 7)) / 3;
 
-        CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.ui_size_base.getButtonHeight());
 
         mTglBtnTitle = new MultiToggleButton(btnRrec, "mTglBtnTitle");
         mTglBtnGc = new MultiToggleButton(btnRrec, "mTglBtnGc");

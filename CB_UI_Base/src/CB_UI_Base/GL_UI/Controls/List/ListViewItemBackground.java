@@ -45,7 +45,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         if (!mBackIsInitial) {
             backSelect = new NinePatch(Sprites.getSprite("listrec-selected"), 13, 13, 13, 13);
             back1 = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
@@ -68,7 +68,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 
         // Draw Background
         if (!mBackIsInitial) {
-            Initial();
+            initialize();
         }
         Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
         if (isSelected) {
@@ -100,7 +100,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getLeftWidth() {
         if (!mBackIsInitial)
-            Initial();
+            initialize();
         if (isSelected) {
             return backSelect.getLeftWidth();
         } else if ((this.getIndex() % 2) == 1) {
@@ -113,7 +113,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getBottomHeight() {
         if (!mBackIsInitial)
-            Initial();
+            initialize();
         if (isSelected) {
             return backSelect.getBottomHeight();
         } else if ((this.getIndex() % 2) == 1) {
@@ -126,7 +126,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getRightWidth() {
         if (!mBackIsInitial)
-            Initial();
+            initialize();
         if (isSelected) {
             return backSelect.getRightWidth();
         } else if ((this.getIndex() % 2) == 1) {
@@ -139,7 +139,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getTopHeight() {
         if (!mBackIsInitial)
-            Initial();
+            initialize();
         if (isSelected) {
             return backSelect.getTopHeight();
         } else if ((this.getIndex() % 2) == 1) {

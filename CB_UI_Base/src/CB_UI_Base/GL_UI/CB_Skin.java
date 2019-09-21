@@ -50,6 +50,9 @@ public class CB_Skin {
             SkinFolder = Global.getInternalFileHandle("skins/small");
         } else {
             SkinFolder = Gdx.files.absolute(CB_UI_Base_Settings.SkinFolder.getValue());
+            if (!SkinFolder.isDirectory()) {
+                SkinFolder = Global.getInternalFileHandle("skins/default");
+            }
         }
 
         DefaultSkinFolder = Global.getInternalFileHandle("skins/default");

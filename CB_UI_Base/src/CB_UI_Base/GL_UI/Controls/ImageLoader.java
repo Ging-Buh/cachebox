@@ -18,7 +18,6 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.utils.GifDecoder;
@@ -136,7 +135,7 @@ public class ImageLoader {
         textureSettings.fast = false;
         textureSettings.debug = false;
 
-        String inputFolder = FileIO.GetDirectoryName(ImagePath);
+        String inputFolder = FileIO.getDirectoryName(ImagePath);
         String outputFolder = CB_UI_Base_Settings.ImageCacheFolder.getValue();
         String Name = getCachedAtlasName(inputFolder);
 
@@ -168,12 +167,12 @@ public class ImageLoader {
         if (Atlanten == null)
             Atlanten = new HashMap<String, TextureAtlas>();
 
-        String inputFolder = FileIO.GetDirectoryName(ImagePath);
-        String ImageName = FileIO.GetFileNameWithoutExtension(ImagePath);
+        String inputFolder = FileIO.getDirectoryName(ImagePath);
+        String ImageName = FileIO.getFileNameWithoutExtension(ImagePath);
         String Name = getCachedAtlasName(inputFolder);
 
         final String AtlasPath = CB_UI_Base_Settings.ImageCacheFolder.getValue() + "/" + Name;
-        if (!FileIO.FileExistsNotEmpty(AtlasPath))
+        if (!FileIO.fileExistsNotEmpty(AtlasPath))
             return null;
         TextureAtlas atlas = null;
         if (Atlanten.containsKey(AtlasPath)) {
@@ -284,7 +283,7 @@ public class ImageLoader {
                 final String LocalPath = iconUrl.substring(slashPos);
 
                 // check if Image exist on Cache
-                if (FileIO.FileExistsNotEmpty(CachePath + LocalPath)) {
+                if (FileIO.fileExistsNotEmpty(CachePath + LocalPath)) {
                     setImage(CachePath + LocalPath);
                     return;
                 }
@@ -301,7 +300,7 @@ public class ImageLoader {
                             inLoad = false;
 
                             // chk if Download complied
-                            if (!FileIO.FileExistsNotEmpty(CachePath + LocalPath)) {
+                            if (!FileIO.fileExistsNotEmpty(CachePath + LocalPath)) {
                                 // Download Error
                                 ImageLoadError = true;
                                 return;
@@ -345,8 +344,8 @@ public class ImageLoader {
 
         if (this.resizeListener != null) {
             float proportionWidth = resizeWidth / spriteWidth;
-            if (proportionWidth > UI_Size_Base.that.getScale()) {
-                proportionWidth = UI_Size_Base.that.getScale();
+            if (proportionWidth > UI_Size_Base.ui_size_base.getScale()) {
+                proportionWidth = UI_Size_Base.ui_size_base.getScale();
             }
 
             float newWidth = spriteWidth * proportionWidth;//* UI_Size_Base.that.getScale();
@@ -467,8 +466,8 @@ public class ImageLoader {
 
                 if (this.resizeListener != null) {
                     float proportionWidth = resizeWidth / spriteWidth;
-                    if (proportionWidth > UI_Size_Base.that.getScale()) {
-                        proportionWidth = UI_Size_Base.that.getScale();
+                    if (proportionWidth > UI_Size_Base.ui_size_base.getScale()) {
+                        proportionWidth = UI_Size_Base.ui_size_base.getScale();
                     }
 
                     float newWidth = spriteWidth * proportionWidth;

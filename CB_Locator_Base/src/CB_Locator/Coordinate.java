@@ -370,7 +370,7 @@ public class Coordinate extends LatLong implements Serializable {
      */
     public float Distance(CalculationType type) {
         float[] dist = new float[1];
-        MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), Locator.getLatitude(), Locator.getLongitude(), dist);
+        MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), Locator.getInstance().getLatitude(), Locator.getInstance().getLongitude(), dist);
         return dist[0];
     }
 

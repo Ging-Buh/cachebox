@@ -17,7 +17,7 @@ public class MenuItemDivider extends MenuItem {
 
     public MenuItemDivider() {
         super(0, "Separator");
-        setHeight(UI_Size_Base.that.getButtonHeight() / 5);
+        setHeight(UI_Size_Base.ui_size_base.getButtonHeight() / 5);
         setEnabled(false);
     }
 

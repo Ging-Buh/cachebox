@@ -219,7 +219,7 @@ public abstract class ManagerBase {
 
         // Falls Kachel schon geladen wurde, kann sie übersprungen werden
         synchronized (this) {
-            if (FileIO.FileExists(filename))
+            if (FileIO.fileExists(filename))
                 return true;
         }
 
@@ -370,10 +370,10 @@ public abstract class ManagerBase {
         if (files != null) {
             if (files.size() > 0) {
                 for (String file : files) {
-                    if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) {
+                    if (FileIO.getFileExtension(file).equalsIgnoreCase("pack")) {
                         LoadMapPack(file);
                     }
-                    if (FileIO.GetFileExtension(file).equalsIgnoreCase("map")) {
+                    if (FileIO.getFileExtension(file).equalsIgnoreCase("map")) {
 
                         java.io.File f = new java.io.File(FileFactory.createFile(file).getAbsolutePath());
                         MapFile mapFile;
@@ -389,17 +389,17 @@ public abstract class ManagerBase {
                         if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
                             mapType = MapType.FREIZEITKARTE;
                         }
-                        String Name = FileIO.GetFileNameWithoutExtension(file);
+                        String Name = FileIO.getFileNameWithoutExtension(file);
                         Layer layer = new Layer(mapType, LayerType.normal, Layer.StorageType.PNG, Name, Name, file);
                         layer.languages = mapFile.getMapLanguages();
                         ManagerBase.Manager.layers.add(layer);
 
                     }
 
-                    if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml")) {
+                    if (FileIO.getFileExtension(file).equalsIgnoreCase("xml")) {
                         ManagerBase.Manager.LoadTMS(file);
                     }
-                    if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh")) {
+                    if (FileIO.getFileExtension(file).equalsIgnoreCase("bsh")) {
                         ManagerBase.Manager.LoadBSH(file);
                     }
                 }

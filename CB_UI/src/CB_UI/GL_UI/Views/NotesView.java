@@ -22,8 +22,8 @@ import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
+import CB_UI.SelectedCacheChangedEventListener;
+import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
@@ -37,7 +37,7 @@ import CB_Utils.Log.Log;
 /**
  * @author Longri
  */
-public class NotesView extends CB_View_Base implements SelectedCacheEvent, KeyboardFocusChangedEvent {
+public class NotesView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEvent {
     private static NotesView that;
     private final String sKlasse = "NotesView";
     private boolean mustLoadNotes;
@@ -64,7 +64,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
         this.addLast(notes);
         notesDefaultYPos = notes.getY();
 
-        SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
 
         uploadButton.addClickHandler((v, x, y, pointer, button) -> {
             final CB_Button b = (CB_Button) v;
@@ -163,7 +163,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent, Keybo
     }
 
     @Override
-    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         aktCache = cache;
         mustLoadNotes = true;

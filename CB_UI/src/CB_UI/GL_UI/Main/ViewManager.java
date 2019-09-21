@@ -111,7 +111,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         Log.debug(log, "Start ViewManager-Initial");
 
         GlobalCore.receiver = new CB_UI.GlobalLocationReceiver();
@@ -225,7 +225,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
-        PlatformConnector.FirstShow();
+        PlatformConnector.handleExternalRequest();
         filterSetChanged();
         GL.that.removeRenderView(this);
 
@@ -241,7 +241,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     private void addPhoneTab() {
         // nur ein Tab  mit fünf Buttons
 
-        CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.UI_Left.getWidth(), getHeight() - UiSizes.that.getInfoSliderHeight());
+        CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.UI_Left.getWidth(), getHeight() - UiSizes.getInstance().getInfoSliderHeight());
         leftTab = new CB_TabView(rec, "leftTab");
 
         if (Config.useDescriptiveCB_Buttons.getValue()) {
@@ -345,10 +345,10 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public void reloadSprites(boolean switchDayNight) {
 
         if (!isInitial)
-            Initial();
+            initialize();
 
         try {
-            GL.that.StopRender();
+            GL.that.stopRendering();
             if (switchDayNight)
                 Config.changeDayNight();
             GL.that.onStop();
@@ -365,13 +365,13 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             // add Slider as last
             Slider slider = new Slider(this, "Slider");
             this.addChild(slider);
-            slider.SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+            slider.selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
             String state = Config.nightMode.getValue() ? "Night" : "Day";
 
             GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 
-            PlatformConnector.DayNightSwitched();
+            PlatformConnector.dayNightSwitched();
 
             synchronized (childs) {
                 for (int i = 0, n = childs.size(); i < n; i++) {
@@ -385,7 +385,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        GL.that.RestartRender();
+        GL.that.restartRendering();
     }
 
     public void mToolsButtonOnLeftTabPerformClick() {
@@ -413,7 +413,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         synchronized (Database.Data.cacheList) {
             int filterCount = Database.Data.cacheList.size();
 
-            if (Database.Data.cacheList.GetCacheByGcCode("CBPark") != null)
+            if (Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark") != null)
                 --filterCount;
 
             int DBCount = Database.Data.getCacheCountInDB();
@@ -478,7 +478,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public void SpeedChanged() {
     }
 
-    public boolean isInitial() {
+    public boolean isInitialized() {
         return isInitial;
     }
 

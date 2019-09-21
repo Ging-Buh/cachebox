@@ -318,7 +318,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 } else {
                     String ttt = tmp.toLowerCase();
                     if (ttt.endsWith("xml")) {
-                        files.put(FileIO.GetFileNameWithoutExtension(tmp), f.getAbsolutePath());
+                        files.put(FileIO.getFileNameWithoutExtension(tmp), f.getAbsolutePath());
                     }
                 }
             }

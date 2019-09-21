@@ -268,11 +268,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     @Override
     protected void render(Batch batch) {
 
-        if (LocatorSettings.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.hasSpeed()) {
+        if (LocatorSettings.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.getInstance().hasSpeed()) {
 
             double maxSpeed = LocatorSettings.MoveMapCenterMaxSpeed.getValue();
 
-            double percent = Locator.SpeedOverGround() / maxSpeed;
+            double percent = Locator.getInstance().SpeedOverGround() / maxSpeed;
 
             float diff = (float) ((this.getHeight()) / 3 * percent);
             if (diff > this.getHeight() / 3)
@@ -554,7 +554,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     // FIXME make point and vPoint final and setValues!
     protected void renderPositionMarker(Batch batch) {
-        PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, Locator.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
+        PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
                 MapTileLoader.MAX_MAP_ZOOM);
 
         Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
@@ -569,14 +569,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 accuracyDrawable = new AccuracyDrawable(this.mapIntWidth, this.mapIntWidth);
             }
 
-            float radius = (pixelsPerMeter * Locator.getMyPosition().getAccuracy());
+            float radius = (pixelsPerMeter * Locator.getInstance().getMyPosition().getAccuracy());
 
             if (radius > GL_UISizes.PosMarkerSize / 2) {
                 accuracyDrawable.draw(batch, myPointOnScreen.x, myPointOnScreen.y, radius);
             }
         }
 
-        boolean lastUsedCompass = Locator.UseMagneticCompass();
+        boolean lastUsedCompass = Locator.getInstance().UseMagneticCompass();
         boolean Transparency = LocatorSettings.PositionMarkerTransparent.getValue();
 
         int arrowId = 0;
@@ -795,8 +795,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 // setLockPosition(0);
             } else {
                 // GPS-Position bekannt?
-                if (Locator.Valid()) {
-                    setCenter(Locator.getMyPosition());
+                if (Locator.getInstance().Valid()) {
+                    setCenter(Locator.getInstance().getMyPosition());
                     positionInitialized = true;
                 } else {
                     setInitialLocation();
@@ -819,7 +819,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if (Path.length() > 0) {
             if (Path.equals(ManagerBase.INTERNAL_THEME_CAR) || Path.equals(ManagerBase.INTERNAL_THEME_DEFAULT) || Path.equals(ManagerBase.INTERNAL_THEME_OSMARENDER)) {
                 mapsForgeThemePath = Path;
-            } else if (FileIO.FileExists(Path) && FileIO.GetFileExtension(Path).contains("xml")) {
+            } else if (FileIO.fileExists(Path) && FileIO.getFileExtension(Path).contains("xml")) {
                 mapsForgeThemePath = Path;
             } else
                 mapsForgeThemePath = "";
@@ -899,11 +899,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public void PositionChanged() {
         if (CarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
-            if (!Locator.isGPSprovided())
+            if (!Locator.getInstance().isGPSprovided())
                 return;
         }
         if (getCenterGps())
-            setCenter(Locator.getMyPosition());
+            setCenter(Locator.getInstance().getMyPosition());
 
         GL.that.renderOnce();
     }
@@ -911,10 +911,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     @Override
     public void OrientationChanged() {
 
-        float heading = Locator.getHeading();
+        float heading = Locator.getInstance().getHeading();
 
         // im CarMode keine Richtungs �nderungen unter 20kmh
-        if (CarMode && Locator.SpeedOverGround() < 20)
+        if (CarMode && Locator.getInstance().SpeedOverGround() < 20)
             heading = this.mapHeading;
 
         if (!this.NorthOriented || CarMode) {
@@ -1310,7 +1310,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         } else if (mapState == MapState.WP) {
             MapStateChangedToWP();
         } else if (mapState == MapState.LOCK || mapState == MapState.GPS) {
-            setCenter(Locator.getMyPosition());
+            setCenter(Locator.getInstance().getMyPosition());
         }
 
         if (mapState != MapState.CAR) {

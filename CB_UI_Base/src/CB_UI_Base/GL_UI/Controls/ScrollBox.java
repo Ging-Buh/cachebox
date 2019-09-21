@@ -42,7 +42,7 @@ public class ScrollBox extends CB_View_Base {
         lv.setClickable(true);
         item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
             @Override
-            protected void Initial() {
+            protected void initialize() {
                 isInitial = true;
             }
         };
@@ -137,7 +137,7 @@ public class ScrollBox extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         isInitial = true;
     }
 

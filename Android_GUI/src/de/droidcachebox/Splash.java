@@ -41,7 +41,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.*;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -71,24 +73,21 @@ import org.mapsforge.map.model.DisplayModel;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * what is this good for:
- * + write some values to the config database:
- * installedRev, newInstall
+ * + write some values to the config database: installedRev, newInstall
  * + initialising some classes with good values:
- * ... etc todo continue infos
  * + check if this (Intent) is called with "Params" in the Extras Bundle: if pass them to main
- * + at last starting the gdx AndroidApplication main
+ * + at last starting the gdx AndroidApplication Main
  */
 public class Splash extends Activity {
-    public static final int REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5 = 42;
-    private static final String log = "splash";
+    private static final String log = "CB2 Splash";
     public static Activity splashActivity;
-    private static DevicesSizes ui;
-    protected int height;
-    protected int width;
     private Bitmap bitmap;
     private Dialog pleaseWaitDialog;
     private String workPath;
@@ -98,48 +97,74 @@ public class Splash extends Activity {
     private SharedPreferences androidSetting;
     private SharedPreferences.Editor androidSettingEditor;
     private Boolean showSandbox;
-    private boolean mSelectDbIsStarted = false;
+    private Bundle bundeledData;
+    private boolean askForWorkpath;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // CB_SLF4J.changeLogLevel(LogLevel.ALL);
+        if (!FileFactory.isInitialized()) {
+            // so Main has not been started
+            new AndroidFileFactory(); // used by CB_SLF4J
+            // read workpath from Android Preferences
+            androidSetting = getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
+            workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
+            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO); // perhaps put this into androidSetting,setting another start LogLevel
+            Log.info(log, "Logging initialized");
+        }
+        Log.info(log, "onCreate called");
+
+        bundeledData = new Bundle();
+        prepareBundledData();
+
         splashActivity = this;
 
-        if (!FileFactory.isInitial()) {
-            new AndroidFileFactory();
-        }
-
+        // settings for this class Activity
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // Porträt erzwingen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         setContentView(R.layout.splash);
 
-        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+        initializeSomeUiSettings(); // don't know, if it must be done here
+        loadImages();
+        Log.info(log, "onCreate finished.");
+    }
 
-        GlobalCore.displayDensity = displaymetrics.density;
-        int h = displaymetrics.heightPixels;
-        int w = displaymetrics.widthPixels;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.info(log, "onStart");
+        if (Main.mainActivity == null) {
+            startInitialization();
+            if (askForWorkpath) {
+                askForWorkPath(); // does finishInitializationAndStartMain()
+            } else {
+                finishInitializationAndStartMain();
+            }
+        } else {
+            startMain();
+        }
+    }
 
-        int dpH = (int) (h / GlobalCore.displayDensity + 0.5);
-        int dpW = (int) (w / GlobalCore.displayDensity + 0.5);
+    private void startMain() {
+        GlobalCore.RunFromSplash = true;
+        if (Main.mainActivity == null) {
+            Log.info(log, "Start Main");
+            Intent mainIntent = new Intent().setClass(this, Main.class);
+            mainIntent.putExtras(bundeledData);
+            startActivity(mainIntent);
+        } else {
+            Log.info(log, "Connect to Main to onNewIntent(Intent)");
+            Intent mainIntent = Main.mainActivity.getIntent();
+            mainIntent.putExtras(bundeledData);
+            startActivityForResult(mainIntent, Main.REQUEST_FROM_SPLASH); // don't want a result
+            setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
+        }
+        finish(); // this activity can be closed and back to the calling activity in onActivityResult
+    }
 
-        if (dpH * dpW >= 960 * 720)
-            GlobalCore.displayType = DisplayType.xLarge;
-        else if (dpH * dpW >= 640 * 480)
-            GlobalCore.displayType = DisplayType.Large;
-        else if (dpH * dpW >= 470 * 320)
-            GlobalCore.displayType = DisplayType.Normal;
-        else
-            GlobalCore.displayType = DisplayType.Small;
+    private void prepareBundledData() {
 
-        // Porträt erzwingen
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        // Check if use small skin
-        GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
-        // meaning ACB should have been started to handle requests
-        // else ACB will be started, but request will not be handled
         String GcCode = null;
         String guid = null;
         String name = null;
@@ -220,7 +245,6 @@ public class Splash extends Activity {
             }
         }
 
-        Bundle bundeledData = new Bundle();
         if (GcCode != null)
             bundeledData.putSerializable("GcCode", GcCode);
         if (name != null)
@@ -234,45 +258,66 @@ public class Splash extends Activity {
         if (downloadPath != null)
             bundeledData.putSerializable("MapDownloadPath", downloadPath);
 
-        if (!bundeledData.isEmpty()) {
-            // todo Wait until CacheBox is started. Don't return if not
-            if (Main.mainActivity != null) {
-                Log.info("CB2 Splash", "Starting Main Activity.");
-                Intent mainIntent = Main.mainActivity.getIntent();
-                mainIntent.putExtras(bundeledData);
-                startActivity(mainIntent);
-            }
-            finish(); // this activity can be closed and back to the calling activity in onActivityResult
-            return; // don't need to start CacheBox
-        }
-
-        loadImages();
-
-        if (savedInstanceState != null) {
-            mSelectDbIsStarted = savedInstanceState.getBoolean("SelectDbIsStartet");
-        }
-
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void initializeSomeUiSettings() {
+        if (!UiSizes.getInstance().isInitialized()) {
+            // class GlobalCore: displayDensity(Default for MapViewDPIFaktor, displayType, useSmallSkin
+            DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+            int height = displaymetrics.heightPixels;
+            int width = displaymetrics.widthPixels;
+            GlobalCore.displayDensity = displaymetrics.density;
+            int dpH = (int) (height / GlobalCore.displayDensity + 0.5);
+            int dpW = (int) (width / GlobalCore.displayDensity + 0.5);
+            if (dpH * dpW >= 960 * 720)
+                GlobalCore.displayType = DisplayType.xLarge;
+            else if (dpH * dpW >= 640 * 480)
+                GlobalCore.displayType = DisplayType.Large;
+            else if (dpH * dpW >= 470 * 320)
+                GlobalCore.displayType = DisplayType.Normal;
+            else
+                GlobalCore.displayType = DisplayType.Small;
+            GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
+            // class UiSizes
+            Resources res = Splash.this.getResources();
+            DevicesSizes ui = new DevicesSizes();
+            ui.Density = displaymetrics.density;
+            ui.isLandscape = false;
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                height = height - getResources().getDimensionPixelSize(resourceId);
+            }
+            ui.Window = new Size(width, height);
+            UiSizes.getInstance().initialize(ui);
+            // class GL_UISizes
+            GL_UISizes.defaultDPI = displaymetrics.density;
+
+            Log.info(log, "Screen width/height:" + ui.Window.width + "/" + ui.Window.height);
+        }
+    }
+
+    private void startInitialization() {
         splashActivity = this;
-        // Log.* ist erst nach StartInitial möglich
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             PermissionCheck.checkNeededPermissions(this);
         }
-
         // initial GDX
-        Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath()); // /data/data/de.droidcachebox/files
-        // read some setting from Android Preferences (Platform
-        androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
+        Gdx.files = new AndroidFiles(getAssets(), getFilesDir().getAbsolutePath()); // /data/data/de.droidcachebox/files
 
-        workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
+        // read some setting from Android Preferences (Platform
+        androidSetting = getSharedPreferences(Global.PreferencesNAME, 0);
+
+        if (!getWorkPathFromFile())
+            workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
         // default must be true, for first selection or else check workPath to start with /data
-        boolean askAgain = androidSetting.getBoolean("AskAgain", false);
-        if (workPath.toLowerCase().startsWith("/data/")) askAgain = true;
+        askForWorkpath = androidSetting.getBoolean("AskAgain", false)
+                || workPath.toLowerCase().startsWith("/data/")
+                || FileIO.fileExists(workPath + "/askAgain.txt");
         showSandbox = androidSetting.getBoolean("showSandbox", false);
+
+        CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO);
+        Log.info(log, "onStart called");
 
         Global.initTheme(this);
         Global.initIcons(this);
@@ -307,67 +352,84 @@ public class Splash extends Activity {
         try {
             new Translation(workPath, FileType.Internal); // /data/cachebox
             Translation.LoadTranslation(LangPath); // data/lang/de/strings.ini
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
+    }
 
-        if (askAgain || FileIO.FileExists(workPath + "/askAgain.txt")) {
-            workPath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
-
-            String externalSd = getExternalSdPath();  // externalSd = null or ...
-            boolean hasExtSd;
-            final String externalSd2 = externalSd;
-            if (externalSd != null) {
-                hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
-            } else {
-                hasExtSd = false;
-            }
-
+    private boolean getWorkPathFromFile() {
+        // Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
+        if (FileIO.fileExists(workPath + "/redirection.txt")) {
+            BufferedReader Filereader;
             try {
-                final Dialog dialog = new Dialog(this) {
-                    @Override
-                    public boolean onKeyDown(int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            Splash.this.finish();
-                        }
-                        return super.onKeyDown(keyCode, event);
+                Filereader = new BufferedReader(new FileReader(workPath + "/redirection.txt"));
+                String line;
+                while ((line = Filereader.readLine()) != null) {
+                    // chk ob der umleitungs Ordner existiert
+                    if (FileIO.fileExists(line)) {
+                        workPath = line;
                     }
-                };
-                dialog.setContentView(R.layout.sdselectdialog);
-
-                TextView title = dialog.findViewById(R.id.select_sd_title);
-                title.setText(Translation.get("selectWorkSpace") + "\n\n");
-
-                Button btnInternal_SD = dialog.findViewById(R.id.btnInternal_SD);
-                btnInternal_SD.setText("Internal SD\n\n" + workPath);
-                btnInternal_SD.setOnClickListener(v -> {
-                    // close select dialog
-                    dialog.dismiss();
-
-                    // show please wait dialog
-                    showPleaseWaitDialog();
-
-                    // use internal SD -> nothing to change
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            // boolean useTabletLayout = rbTabletLayout.isChecked();
-                            saveWorkPath();
-                            dialog.dismiss();
-                            startInitial();
-                            Log.info(log, "Initial for use internal SD");
-                        }
-                    }.start();
-                });
-
-                Button btnExternalSandbox = dialog.findViewById(R.id.btnExternalSandbox);
-                final boolean isSandbox = externalSd == null ? false : externalSd.contains("Android/data/de.droidcachebox");
-                if (!hasExtSd) {
-                    btnExternalSandbox.setVisibility(Button.INVISIBLE);
-                } else {
-                    String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
-                    btnExternalSandbox.setText(extSdText + externalSd);
                 }
+                Filereader.close();
+                return true;
+            } catch (IOException e) {
+                Log.err(log, "read redirection getWorkPathFromFile", e);
+            }
+        }
+        return false;
+    }
+
+    private void askForWorkPath() {
+        workPath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
+
+        String externalSd = getExternalSdPath();  // externalSd = null or ...
+        final String externalSd2 = externalSd;
+
+        try {
+            final Dialog dialog = new Dialog(this) {
+                @Override
+                public boolean onKeyDown(int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        Splash.this.finish();
+                    }
+                    return super.onKeyDown(keyCode, event);
+                }
+            };
+            dialog.setContentView(R.layout.sdselectdialog);
+
+            TextView title = dialog.findViewById(R.id.select_sd_title);
+            title.setText(Translation.get("selectWorkSpace") + "\n\n");
+
+            Button btnInternal_SD = dialog.findViewById(R.id.btnInternal_SD);
+            btnInternal_SD.setText("Internal SD\n\n" + workPath);
+            btnInternal_SD.setOnClickListener(v -> {
+                // close select dialog
+                dialog.dismiss();
+
+                // show please wait dialog
+                showPleaseWaitDialog();
+
+                // use internal SD -> nothing to change
+                new Thread() {
+                    @Override
+                    public void run() {
+                        // boolean useTabletLayout = rbTabletLayout.isChecked();
+                        saveWorkPath();
+                        dialog.dismiss();
+                        finishInitializationAndStartMain();
+                    }
+                }.start();
+            });
+
+            Button btnExternalSandbox = dialog.findViewById(R.id.btnExternalSandbox);
+            boolean hasExtSd = false;
+            if (externalSd != null)
+                if (externalSd.length() > 0)
+                    if (!externalSd.equalsIgnoreCase(workPath))
+                        hasExtSd = true;
+            final boolean isSandbox = externalSd != null && externalSd.contains("Android/data/de.droidcachebox");
+            if (hasExtSd) {
+                String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
+                btnExternalSandbox.setText(extSdText + externalSd);
                 btnExternalSandbox.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -402,8 +464,7 @@ public class Splash extends Activity {
 
                                             // boolean useTabletLayout = rbTabletLayout.isChecked();
                                             saveWorkPath();
-                                            startInitial();
-                                            Log.info(log, "Initial for " + workPath);
+                                            finishInitializationAndStartMain();
                                         }
                                     };
                                     thread.start();
@@ -435,156 +496,118 @@ public class Splash extends Activity {
                                 public void run() {
                                     workPath = externalSd2;
                                     saveWorkPath();
-                                    startInitial();
-                                    Log.info(log, "Initial for " + workPath);
+                                    finishInitializationAndStartMain();
                                 }
                             };
                             thread.start();
                         }
                     }
                 });
+            } else {
+                btnExternalSandbox.setVisibility(Button.INVISIBLE);
+            }
 
-                LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.scrollViewLinearLayout);
+            LinearLayout ll = dialog.findViewById(R.id.scrollViewLinearLayout);
 
-                // add all Buttons for created Workpaths
+            // add all Buttons for created Workpaths
 
-                AdditionalWorkPathArray = getAdditionalWorkPathArray();
+            AdditionalWorkPathArray = getAdditionalWorkPathArray();
 
-                for (final String _AdditionalWorkPath : AdditionalWorkPathArray) {
-                    final String Name = FileIO.GetFileNameWithoutExtension(_AdditionalWorkPath);
-                    if (!FileFactory.createFile(_AdditionalWorkPath).exists()) {
-                        deleteWorkPath(_AdditionalWorkPath);
-                        continue;
-                    }
-                    if (!FileIO.canWrite(_AdditionalWorkPath)) {
-                        deleteWorkPath(_AdditionalWorkPath);
-                        continue;
-                    }
-
-                    Button btnAdditionalWorkpath = new Button(splashActivity);
-                    btnAdditionalWorkpath.setText(Name + "\n\n" + _AdditionalWorkPath);
-                    btnAdditionalWorkpath.setOnLongClickListener(v -> {
-
-                        // setting the MessageBox then the UI_sizes are not initial in this moment
-                        Resources res = Splash.this.getResources();
-                        float scale = res.getDisplayMetrics().density;
-                        float calcBase = 533.333f * scale;
-
-                        FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
-                        int width = frame.getMeasuredWidth();
-                        int height = frame.getMeasuredHeight();
-
-                        MessageBox.Builder.WindowWidth = width;
-                        MessageBox.Builder.WindowHeight = height;
-                        MessageBox.Builder.textSize = (calcBase / res.getDimensionPixelSize(R.dimen.BtnTextSize)) * scale;
-                        MessageBox.Builder.ButtonHeight = (int) (50 * scale);
-
-                        // Ask before delete
-                        msg = (MessageBox) MessageBox.Show(Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog1, int which) {
-                                if (which == MessageBox.BUTTON_POSITIVE) {
-                                    // Delete this Workpath only from Settings don't delete any File
-                                    deleteWorkPath(_AdditionalWorkPath);
-                                }
-                                // Start again to exclude the old Folder
-                                msg.dismiss();
-                                onStart();
-                            }
-
-                        });
-
-                        dialog.dismiss();
-                        return true;
-                    });
-                    btnAdditionalWorkpath.setOnClickListener(v -> {
-                        // close select dialog
-                        dialog.dismiss();
-
-                        // show please wait dialog
-                        showPleaseWaitDialog();
-
-                        // use external SD -> change workPath
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                workPath = _AdditionalWorkPath;
-                                // boolean useTabletLayout = rbTabletLayout.isChecked();
-                                saveWorkPath();
-                                startInitial();
-                                Log.info(log, "Initial for " + workPath);
-                            }
-                        }.start();
-
-                    });
-
-                    ll.addView(btnAdditionalWorkpath);
+            for (final String _AdditionalWorkPath : AdditionalWorkPathArray) {
+                final String Name = FileIO.getFileNameWithoutExtension(_AdditionalWorkPath);
+                if (!FileFactory.createFile(_AdditionalWorkPath).exists()) {
+                    deleteWorkPath(_AdditionalWorkPath);
+                    continue;
+                }
+                if (!FileIO.canWrite(_AdditionalWorkPath)) {
+                    deleteWorkPath(_AdditionalWorkPath);
+                    continue;
                 }
 
-                // with the changed (own) folder  get, the workspace can not be created, only selected
-                Button btnCreateWorkpath = dialog.findViewById(R.id.btnCreateWorkpath);
-                btnCreateWorkpath.setText(Translation.get("createWorkSpace"));
-                btnCreateWorkpath.setOnClickListener(v -> {
+                Button btnAdditionalWorkpath = new Button(splashActivity);
+                btnAdditionalWorkpath.setText(Name + "\n\n" + _AdditionalWorkPath);
+                btnAdditionalWorkpath.setOnLongClickListener(v -> {
+
+                    // setting the MessageBox then the UI_sizes are not initial in this moment
+                    Resources res = Splash.this.getResources();
+                    float scale = res.getDisplayMetrics().density;
+                    float calcBase = 533.333f * scale;
+
+                    FrameLayout frame = findViewById(R.id.frameLayout1);
+                    int width = frame.getMeasuredWidth();
+                    int height = frame.getMeasuredHeight();
+
+                    MessageBox.Builder.WindowWidth = width;
+                    MessageBox.Builder.WindowHeight = height;
+                    MessageBox.Builder.textSize = (calcBase / res.getDimensionPixelSize(R.dimen.BtnTextSize)) * scale;
+                    MessageBox.Builder.ButtonHeight = (int) (50 * scale);
+
+                    // Ask before delete
+                    msg = (MessageBox) MessageBox.Show(Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog1, int which) {
+                            if (which == MessageBox.BUTTON_POSITIVE) {
+                                // Delete this Workpath only from Settings don't delete any File
+                                deleteWorkPath(_AdditionalWorkPath);
+                            }
+                            // Start again to exclude the old Folder
+                            msg.dismiss();
+                            onStart();
+                        }
+
+                    });
+
+                    dialog.dismiss();
+                    return true;
+                });
+                btnAdditionalWorkpath.setOnClickListener(v -> {
                     // close select dialog
                     dialog.dismiss();
-                    PlatformConnector.getFolder("", Translation.get("select_folder"), Translation.get("select"), Path -> {
-                        if (FileIO.canWrite(Path)) {
-                            AdditionalWorkPathArray.add(Path);
-                            writeAdditionalWorkPathArray(AdditionalWorkPathArray);
-                            // Start again to include the new Folder
-                            onStart();
-                        } else {
-                            String WriteProtectionMsg = Translation.get("NoWriteAcces");
-                            Toast.makeText(Splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+
+                    // show please wait dialog
+                    showPleaseWaitDialog();
+
+                    // use external SD -> change workPath
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            workPath = _AdditionalWorkPath;
+                            // boolean useTabletLayout = rbTabletLayout.isChecked();
+                            saveWorkPath();
+                            finishInitializationAndStartMain();
                         }
-                    });
+                    }.start();
+
                 });
 
-                dialog.show();
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            startInitial();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.debug(getClass().getName(), "onActivityResult");
-        splashActivity = this;
-
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5) {
-            Uri treeUri = data.getData();
-
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-            // Check for the freshest data.
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                ContentResolver cr = getContentResolver();
-                grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cr.takePersistableUriPermission(treeUri, takeFlags);
-                List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
+                ll.addView(btnAdditionalWorkpath);
             }
 
-            new Thread(() -> Initial(width, height)).start();
+            // with the changed (own) folder  get, the workspace can not be created, only selected
+            Button btnCreateWorkpath = dialog.findViewById(R.id.btnCreateWorkpath);
+            btnCreateWorkpath.setText(Translation.get("createWorkSpace"));
+            btnCreateWorkpath.setOnClickListener(v -> {
+                // close select dialog
+                dialog.dismiss();
+                PlatformConnector.getFolder("", Translation.get("select_folder"), Translation.get("select"), Path -> {
+                    if (FileIO.canWrite(Path)) {
+                        AdditionalWorkPathArray.add(Path);
+                        writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+                        // Start again to include the new Folder
+                        onStart();
+                    } else {
+                        String WriteProtectionMsg = Translation.get("NoWriteAcces");
+                        Toast.makeText(Splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+                    }
+                });
+            });
 
+            dialog.show();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.debug(log, "onSaveInstanceState");
-        splashActivity = this;
-        outState.putBoolean("SelectDbIsStartet", mSelectDbIsStarted);
-        outState.putBoolean("OriantationRestart", true);
     }
 
     @Override
@@ -605,8 +628,6 @@ public class Splash extends Activity {
             pleaseWaitDialog = null;
         }
 
-        ui = null;
-
     }
 
     @Override
@@ -620,7 +641,7 @@ public class Splash extends Activity {
     private void showPleaseWaitDialog() {
         pleaseWaitDialog = ProgressDialog.show(Splash.this, "In progress", "Copy resources");
         pleaseWaitDialog.show();
-        TextView tv1 = (TextView) pleaseWaitDialog.findViewById(android.R.id.message);
+        TextView tv1 = pleaseWaitDialog.findViewById(android.R.id.message);
         tv1.setTextColor(Color.WHITE);
     }
 
@@ -631,7 +652,7 @@ public class Splash extends Activity {
         // internal SD, not
         // the external!!!
         try {
-            if (FileIO.FileExists(extPath)) {
+            if (FileIO.fileExists(extPath)) {
                 StatFs stat = new StatFs(extPath);
                 @SuppressWarnings("deprecation")
                 long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
@@ -669,7 +690,7 @@ public class Splash extends Activity {
 
     private void saveWorkPath() {
 
-        SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
+        SharedPreferences settings = this.getSharedPreferences(Global.PreferencesNAME, 0);
         // We need an Editor object to make preference changes.
         // All objects are from android.context.Context
         SharedPreferences.Editor editor = settings.edit();
@@ -710,22 +731,6 @@ public class Splash extends Activity {
                                                                                 if ((externalSd = testExtSdPath("/mnt/shared/ExtSD")) == null) {
                                                                                 }
         }
-
-        /*
-        final java.io.File[] externalCacheDirs = ContextCompat.getExternalCacheDirs(splashActivity);
-        final List<String> result = new ArrayList<>();
-        for (int i = 1; i < externalCacheDirs.length; ++i) {
-            final java.io.File file = externalCacheDirs[i];
-            if (file == null)
-                continue;
-            final String storageState = EnvironmentCompat.getStorageState(file);
-            if (Environment.MEDIA_MOUNTED.equals(storageState))
-                result.add(getRootOfInnerSdCardFolder(externalCacheDirs[i]));
-        }
-        if (!result.isEmpty()) {
-            externalSd = result.get(0) + Folder;
-        }
-        */
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             // check for Root permission
@@ -777,7 +782,7 @@ public class Splash extends Activity {
         ArrayList<String> retList = new ArrayList<String>();
         AdditionalWorkPathCount = androidSetting.getInt("AdditionalWorkPathCount", 0);
         for (int i = 0; i < AdditionalWorkPathCount; i++) {
-            retList.add(androidSetting.getString("AdditionalWorkPath" + String.valueOf(i), ""));
+            retList.add(androidSetting.getString("AdditionalWorkPath" + i, ""));
         }
         return retList;
     }
@@ -787,14 +792,14 @@ public class Splash extends Activity {
 
         // first remove all
         for (int i = 0; i < AdditionalWorkPathCount; i++) {
-            String delWorkPath = "AdditionalWorkPath" + String.valueOf(i);
+            String delWorkPath = "AdditionalWorkPath" + i;
             editor.remove(delWorkPath);
         }
         editor.commit();
 
         int index = 0;
         for (String workpath : list) {
-            String addWorkPath = "AdditionalWorkPath" + String.valueOf(index);
+            String addWorkPath = "AdditionalWorkPath" + index;
             editor.putString(addWorkPath, workpath);
             index++;
         }
@@ -810,75 +815,19 @@ public class Splash extends Activity {
         writeAdditionalWorkPathArray(AdditionalWorkPathArray);
     }
 
-    private void startInitial() {
+    private void finishInitializationAndStartMain() {
+        Log.info(log, "Initialized for use with " + workPath);
 
         // show wait dialog if not running
         if (pleaseWaitDialog == null)
             showPleaseWaitDialog();
 
-        // saved workPath found -> use this
-        new Thread() {
-            @Override
-            public void run() {
-                // wait for measure layout
+        CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO);
 
-                final FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
-                width = frame.getMeasuredWidth();
-                height = frame.getMeasuredHeight();
-
-                while (width == 0 || height == 0) {
-                    Splash.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            frame.forceLayout();
-                        }
-                    });
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                    }
-                    width = frame.getMeasuredWidth();
-                    height = frame.getMeasuredHeight();
-                }
-
-                Initial(width, height);
-
-            }
-        }.start();
-    }
-
-    private void Initial(int width, int height) {
-
-        // Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
-        if (FileIO.FileExists(workPath + "/redirection.txt")) {
-            BufferedReader Filereader;
-
-            try {
-                Filereader = new BufferedReader(new FileReader(workPath + "/redirection.txt"));
-                String line;
-
-                while ((line = Filereader.readLine()) != null) {
-                    // chk ob der umleitungs Ordner existiert
-                    if (FileIO.FileExists(line)) {
-                        workPath = line;
-                    }
-                }
-
-                Filereader.close();
-            } catch (IOException e) {
-                Log.err(log, "read redirection", e);
-            }
-
-        }
-
-        // init logging
-        new CB_SLF4J(workPath);
-        CB_SLF4J.setLogLevel(LogLevel.INFO);
-
+        Log.info(log, "mediaInfo");
         mediaInfo();
 
         new Config(workPath);
-
         Log.info(log, "start Settings Database " + workPath + "/User/Config.db3");
         boolean userFolderExists = FileIO.createDirectory(workPath + "/User");
         if (!userFolderExists)
@@ -895,14 +844,13 @@ public class Splash extends Activity {
             Log.info(log, "Settings read from configDB.");
         }
 
-        CB_SLF4J.changeLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+        CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
         Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
-        Log.info(log, "initialisieren der PlattformSettings");
         PlatformSettings.setPlatformSettings(new IPlatformSettings() {
             @Override
             public void Write(SettingBase<?> setting) {
                 if (androidSetting == null)
-                    androidSetting = Splash.this.getSharedPreferences(Global.PREFS_NAME, MODE_PRIVATE);
+                    androidSetting = Splash.this.getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
                 if (androidSettingEditor == null)
                     androidSettingEditor = androidSetting.edit();
                 if (setting instanceof SettingBool) {
@@ -918,7 +866,7 @@ public class Splash extends Activity {
             @Override
             public SettingBase<?> Read(SettingBase<?> setting) {
                 if (androidSetting == null)
-                    androidSetting = Splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+                    androidSetting = Splash.this.getSharedPreferences(Global.PreferencesNAME, 0);
                 if (setting instanceof SettingString) {
                     String value = androidSetting.getString(setting.getName(), "");
                     ((SettingString) setting).setValue(value);
@@ -951,11 +899,11 @@ public class Splash extends Activity {
                 Config.AcceptChanges();
 
                 // create .nomedia Files
-                createFile(workPath + "/data/.nomedia");
-                createFile(workPath + "/skins/.nomedia");
-                createFile(workPath + "/repository/.nomedia");
-                createFile(workPath + "/Repositories/.nomedia");
-                createFile(workPath + "/cache/.nomedia");
+                FileIO.createFile(workPath + "/data/.nomedia");
+                FileIO.createFile(workPath + "/skins/.nomedia");
+                FileIO.createFile(workPath + "/repository/.nomedia");
+                FileIO.createFile(workPath + "/Repositories/.nomedia");
+                FileIO.createFile(workPath + "/cache/.nomedia");
 
             } else {
                 Config.newInstall.setValue(false);
@@ -967,64 +915,27 @@ public class Splash extends Activity {
         Config.showSandbox.setValue(showSandbox);
         Config.AcceptChanges();
 
-        // UiSize Structur für die Berechnung der Größen zusammen stellen!
-
         Log.info(log, GlobalCore.getInstance().getVersionString());
-        Log.info(log, "Screen width/height:" + width + "/" + height);
-
-        if (ui == null) {
-            Resources res = Splash.this.getResources();
-            ui = new DevicesSizes();
-            ui.Window = new Size(width, height);
-            ui.Density = res.getDisplayMetrics().density;
-            ui.isLandscape = false;
-        }
-
-        new UiSizes();
-        UiSizes.that.initial(ui);
-        GL_UISizes.defaultDPI = ui.Density;
 
         Global.Paints.init(this);
 
-        {// restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
-            ext_AndroidGraphicFactory.createInstance(this.getApplication());
-            float restrictedScaleFactor = 1f;
-            DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
-            new de.droidcachebox.Map.AndroidManager(new DisplayModel());
-        }
+        // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
+        ext_AndroidGraphicFactory.createInstance(this.getApplication());
+        float restrictedScaleFactor = 1f;
+        DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
+        new de.droidcachebox.Map.AndroidManager(new DisplayModel());
 
         Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
         Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
 
         Config.AcceptChanges();
 
-        GlobalCore.RunFromSplash = true;
-
         if (pleaseWaitDialog != null) {
             pleaseWaitDialog.dismiss();
             pleaseWaitDialog = null;
         }
 
-        Bundle b = new Bundle();
-        // b.putSerializable("UI", ui);
-
-        Intent mainIntent = new Intent().setClass(this, Main.class);
-        mainIntent.putExtras(b);
-        Log.info(log, "startActivity for Main.class (com.badlogic.gdx.backends.android.AndroidApplication) from slash");
-        startActivity(mainIntent);
-
-        finish();
-
-    }
-
-    private void createFile(String path) {
-        try {
-            File CreateFile = FileFactory.createFile(path);
-            CreateFile.getParentFile().mkdirs();
-            CreateFile.createNewFile();
-        } catch (IOException e) {
-            Log.err(log, path + ": " + e.getLocalizedMessage());
-        }
+        startMain();
     }
 
     private void loadImages() {
@@ -1105,7 +1016,7 @@ public class Splash extends Activity {
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 // normally [0] is the internal SD, [1] is the external SD
-                java.io.File dirs[] = getExternalFilesDirs(null);
+                java.io.File[] dirs = getExternalFilesDirs(null);
                 for (int i = 0; i < dirs.length; i++) {
                     Log.info(log, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
                 }

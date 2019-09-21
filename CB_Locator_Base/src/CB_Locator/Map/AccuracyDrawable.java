@@ -54,7 +54,7 @@ public class AccuracyDrawable {
         GL_Paint paint = new GL_Paint();
         paint.setColor(Color.BLUE);
         paint.setStyle(GL_Style.STROKE);
-        paint.setStrokeWidth(3 * UI_Size_Base.that.getScale());
+        paint.setStrokeWidth(3 * UI_Size_Base.ui_size_base.getScale());
         strokes[index] = new CircleDrawable(0, 0, radius, paint, size, size);
 
         GL_Paint paint2 = new GL_Paint();

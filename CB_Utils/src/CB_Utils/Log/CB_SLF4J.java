@@ -54,16 +54,13 @@ public class CB_SLF4J {
     private static final String log = "CB_SLF4J";
     private static final String br = System.getProperty("line.separator");
     public static String logfile;
-    private static CB_SLF4J that;
-    private final String WORKPATH;
+    private static CB_SLF4J cb_slf4J;
+    private static String WORKPATH;
     private final String logFolder;
     private final String logBackXmlFile;
 
     /**
      * Constructor for initialization of slf4j {@link #Logger} inside of all CB projects. <br>
-     * Initial this class inside the main class with: <br>
-     * <code>new CB_SLF4J(WorkPath);</code> <br>
-     * <br>
      * Inside the given WorkPath will create a Folder <code>Logs</code>. <br>
      * On this folder the class will search the {@link #Logger} config file called <code>"logback.xml"</code>.<br>
      * <br>
@@ -73,18 +70,17 @@ public class CB_SLF4J {
      * The config file will be changed the property value <code>property name="LOG_DIR"</code> to the path of the given<br>
      * WorkPath eG. <code> sdCard/cachebox/Logs</code> if the given WorkPath <code> cdCard/cachebox</code>
      */
-    public CB_SLF4J(String workpath) {
-        that = this;
+    private CB_SLF4J(String workpath) {
         WORKPATH = workpath;
 
         logFolder = (WORKPATH + "/Logs").replace("\\", "/");
         logBackXmlFile = logFolder + "/logback.xml";
 
-        File logFolderFiile = FileFactory.createFile(logFolder);
+        File logFolderFile = FileFactory.createFile(logFolder);
 
-        if (logFolderFiile.exists() && logFolderFiile.isDirectory()) {// delete all logs are not from today
+        if (logFolderFile.exists() && logFolderFile.isDirectory()) {// delete all logs are not from today
 
-            String fileNames[] = logFolderFiile.list();
+            String fileNames[] = logFolderFile.list();
             for (String fileName : fileNames) {
                 if (!fileName.endsWith("logback.xml")) {
                     File file = FileFactory.createFile(logFolder + "/" + fileName);
@@ -93,35 +89,33 @@ public class CB_SLF4J {
                         // file is older then 24h, so we delete
                         try {
                             file.delete();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (IOException ignored) {
                         }
                     }
                 }
             }
         } else {// create folder
-            logFolderFiile.mkdirs();
+            logFolderFile.mkdirs();
         }
 
-        if (FileFactory.createFile(logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR)) {
-            Initial();
-        }
+        initialize();
+    }
+
+    public static CB_SLF4J getInstance(String workpath) {
+        if (cb_slf4J == null) cb_slf4J = new CB_SLF4J(workpath);
+        if (!workpath.equals(WORKPATH))
+            cb_slf4J = new CB_SLF4J(workpath);
+        return cb_slf4J;
     }
 
     public static void setLogLevel(LogLevel level) {
-        LogLevel.setLogLevel(level);
-        if (that != null && (FileFactory.createFile(that.logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR))) {
-            that.Initial();
+        if (level != LogLevel.getLogLevel()) {
+            LogLevel.setLogLevel(level);
+            Log.info(log, "Set LogLevel to:" + level.toString());
         }
-        Log.info(log, "Set LogLevel to:" + level.toString());
     }
 
-    public static void changeLogLevel(LogLevel level) {
-        Log.info(log, "Set LogLevel to:" + level.toString());
-        LogLevel.setLogLevel(level);
-    }
-
-    private void Initial() {
+    private void initialize() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd._HH_mm_ss");
         logfile = logFolder + "/log_" + simpleDateFormat.format(new Date()) + ".txt";
 

@@ -34,7 +34,7 @@ public class ImportAPIListItem extends ListViewItemBackground {
         // lblInfo.setText("---");
 
         chk = new CB_CheckBox("");
-        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
+        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.ui_size_base.getMargin());
         chk.setY(this.getHalfHeight() - chk.getHalfHeight());
         chk.setChecked(false);
         chk.setOnCheckChangedListener(new OnCheckChangedListener() {

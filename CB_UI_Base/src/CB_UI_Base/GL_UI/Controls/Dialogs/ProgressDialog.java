@@ -55,7 +55,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         progressMessageTextView = new CB_Label(this.name + " progressMessageTextView", leftBorder, margin, innerWidth, measuredLabelHeight);
         this.addChild(progressMessageTextView);
 
-        CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width, UI_Size_Base.that.getButtonHeight() * 0.75f);
+        CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width, UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f);
 
         progressBar = new ProgressBar(rec, "");
         progressBar.setProgress(0);
@@ -94,7 +94,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
 
         ProgressDialog PD = new ProgressDialog(calcMsgBoxSize(title, true, true, true), title);
 
-        float h = withAnimation ? UI_Size_Base.that.getButtonHeight() / 2 : 0;
+        float h = withAnimation ? UI_Size_Base.ui_size_base.getButtonHeight() / 2 : 0;
 
         PD.setHeight(PD.getHeight() + (PD.measuredLabelHeight * 2f) + h);
 
@@ -117,7 +117,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
     public void setAnimation(final AnimationBase Animation) {
         GL.that.RunOnGL(() -> {
             ProgressDialog.this.removeChild(ProgressDialog.this.animation);
-            CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+            CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
             ProgressDialog.this.animation = Animation.INSTANCE(imageRec);
             ProgressDialog.this.addChild(ProgressDialog.this.animation);
         });

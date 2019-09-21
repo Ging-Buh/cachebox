@@ -28,8 +28,8 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
+import CB_UI.SelectedCacheChangedEventListener;
+import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -50,7 +50,7 @@ import com.badlogic.gdx.utils.Align;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CacheListView extends CB_View_Base implements CacheListChangedEventListener, SelectedCacheEvent, PositionChangedEvent {
+public class CacheListView extends CB_View_Base implements CacheListChangedEventListener, SelectedCacheChangedEventListener, PositionChangedEvent {
     private static final String log = "CacheListView";
     private static CacheListView that;
     private V_ListView listView;
@@ -64,7 +64,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
         super(ViewManager.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
         CacheListChangedEventList.Add(this);
-        SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
         listView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
         listView.setZeroPos();
 
@@ -81,7 +81,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     }
 
     @Override
-    public void Initial() {
+    public void initialize() {
         // Log.debug(log, "CacheListView => Initial()");
         // this.setListPos(0, false);
         listView.chkSlideBack();
@@ -269,7 +269,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     }
 
     @Override
-    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
             CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
@@ -349,7 +349,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
         emptyMsg = null;
 
         CacheListChangedEventList.Remove(this);
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         PositionChangedEventList.Remove(this);
 
         super.dispose();
@@ -387,7 +387,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
                 Cache cache = cacheList.get(position);
 
-                CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
+                CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache);
                 v.setClickable(true);
                 v.addClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
@@ -444,7 +444,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
                     return 0;
 
                 // alle Items haben die gleiche Größe (Höhe)
-                return UiSizes.that.getCacheListItemRec().getHeight();
+                return UiSizes.getInstance().getCacheListItemRec().getHeight();
             }
 
         }

@@ -68,7 +68,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     public FilterSetListViewItem(CB_RectF rec, int Index, FilterSetEntry fne) {
         super(rec, Index, fne.getName());
         this.mFilterSetEntry = fne;
-        MARGIN = UI_Size_Base.that.getMargin();
+        MARGIN = UI_Size_Base.ui_size_base.getMargin();
         BUTTON_MARGIN = -(MARGIN / 10);
     }
 

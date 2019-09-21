@@ -113,10 +113,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
         return false;
     }
 
-    public void InitializeMap() {
-        // glListener.InitializeMap();
-    }
-
     @Override
     public void RequestRender() {
 
@@ -154,7 +150,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
     @Override
     public void RenderContinous() {
-        // Log.debug(log, "Set: RenderContinous");
+        // CB_Utils.Log.Log.info(log, "Set: RenderContinous");
         switch (mAktSurfaceType) {
             case GLSURFACE_VIEW20:
                 ((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);

@@ -41,7 +41,7 @@ public class RouteDialog extends ButtonDialog {
         layout.setX(0);
         // layout.setBackground(new ColorDrawable(Color.GREEN));
 
-        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
+        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.ui_size_base.getButtonHeight() * 2);
 
         btMotoWay = new ImageMultiToggleButton(MTBRec, "btMotoWay");
         btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
@@ -55,7 +55,7 @@ public class RouteDialog extends ButtonDialog {
         btCycleWay.setX(btMotoWay.getMaxX());
         btFootWay.setX(btCycleWay.getMaxX());
 
-        Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
+        Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight() * 2), "");
 
         box.addChild(btMotoWay);
         box.addChild(btCycleWay);
@@ -67,7 +67,7 @@ public class RouteDialog extends ButtonDialog {
         btCycleWay.initialOn_Off_ToggleStates("", "");
         btFootWay.initialOn_Off_ToggleStates("", "");
 
-        Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
+        Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight()), "");
         chkTmc = new CB_CheckBox("TMC");
         box2.addChild(chkTmc);
 

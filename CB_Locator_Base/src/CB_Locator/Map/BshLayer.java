@@ -11,7 +11,7 @@ public class BshLayer extends Layer {
     private Interpreter interpreter;
 
     public BshLayer(LayerType LayerType, String filename) {
-        super(MapType.ONLINE, LayerType, Layer.StorageType.PNG, "B- " + FileIO.GetFileNameWithoutExtension(filename), FileIO.GetFileNameWithoutExtension(filename), "");
+        super(MapType.ONLINE, LayerType, Layer.StorageType.PNG, "B- " + FileIO.getFileNameWithoutExtension(filename), FileIO.getFileNameWithoutExtension(filename), "");
         this.interpreter = new Interpreter();
         try {
             this.interpreter.source(filename);

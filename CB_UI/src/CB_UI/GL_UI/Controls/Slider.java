@@ -8,8 +8,8 @@ import CB_UI.CB_UI_Settings;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.WaypointViewItem;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
+import CB_UI.SelectedCacheChangedEventListener;
+import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Slider extends CB_View_Base implements SelectedCacheEvent {
+public class Slider extends CB_View_Base implements SelectedCacheChangedEventListener {
     private static final int MAX_ANIMATION_COUNT = 1000;
     public static Slider that;
     private static Box mSlideBox, mSlideBoxContent;
@@ -118,14 +118,14 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
         super(rec, Name);
         that = this;
         registerSkinChangedEvent();
-        SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
         this.setClickable(true);
 
-        QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
+        QuickButtonMaxHeight = UiSizes.getInstance().getQuickButtonListHeight();
 
         quickButtonList = new QuickButtonList(new CB_RectF(0, this.getHeight() - QuickButtonMaxHeight, this.getWidth(), QuickButtonMaxHeight), "QuickButtonList");
 
-        mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
+        mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.getInstance().getInfoSliderHeight()), "SlideBox");
         mSlideBox.setBackground(Sprites.ProgressBack);
         mLblCacheName = new CB_Label(new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
         mLblCacheName.setPos(30, 0);
@@ -149,7 +149,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
                 quickButtonList.setHeight(0);
             }
             quickButtonList.notifyDataSetChanged();
-            Initial();
+            initialize();
         });
 
     }
@@ -180,7 +180,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         float initialPos;
         if (Config.quickButtonShow.getValue()) {
             initialPos = this.getHeight() - mSlideBox.getHeight() - QuickButtonMaxHeight;
@@ -197,7 +197,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     }
 
     @Override
-    public void SelectedCacheChanged(final Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(final Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         actCache = cache; // normally these are the same objects
         actWaypoint = waypoint; // normally these are the same objects
@@ -360,7 +360,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private void fillCacheWpInfo() {
         mSlideBoxContent.removeChildsDirekt();
 
-        CB_RectF rec = UiSizes.that.getCacheListItemRec().asFloat();
+        CB_RectF rec = UiSizes.getInstance().getCacheListItemRec().asFloat();
         rec.setWidth(this.getWidth());
         if (actCache != null) {
             cacheDesc = new WaypointViewItem(rec, 0, actCache, null, CacheInfo.VIEW_MODE_SLIDER);

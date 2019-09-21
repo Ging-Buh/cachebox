@@ -72,7 +72,7 @@ public class GalleryBigItem extends ListViewItemBackground {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         if (!mBackIsInitial) {
             backSelect = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
             mBackIsInitial = true;
@@ -95,7 +95,7 @@ public class GalleryBigItem extends ListViewItemBackground {
             }
 
         } else {
-            Initial();
+            initialize();
         }
 
     }

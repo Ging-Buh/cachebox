@@ -30,8 +30,8 @@ import CB_UI.GL_UI.Activitys.SolverDialog2.ISolverBackStringListener;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
+import CB_UI.SelectedCacheChangedEventListener;
+import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI.WaypointListChangedEventList;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -45,7 +45,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 
-public class SolverView2 extends V_ListView implements SelectedCacheEvent {
+public class SolverView2 extends V_ListView implements SelectedCacheChangedEventListener {
     private static final String log = "SolverView2";
     private static SolverView2 that;
     private final ISolverBackStringListener backListener;
@@ -98,7 +98,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     @Override
     public void onShow() {
         Log.debug(log, "onShow()");
-        SelectedCacheEventList.Add(this);
+        SelectedCacheChangedEventListeners.getInstance().add(this);
 
         setBackground(Sprites.ListBack);
         // Reload when
@@ -165,14 +165,14 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     @Override
     public void onHide() {
         Log.debug(log, "onHide()");
-        SelectedCacheEventList.Remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         if (GlobalCore.isSetSelectedCache())
             Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
     }
 
     @Override
-    public void Initial() {
-        super.Initial();
+    public void initialize() {
+        super.initialize();
         Log.debug(log, "SolverView2 => Initial()");
         this.setListPos(0, false);
         chkSlideBack();
@@ -201,7 +201,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     }
 
     @Override
-    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         if (cache == this.cache)
             return; // Cache hat sich nicht geändert!
         // Solver speichern
@@ -348,7 +348,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             //FIXME cache SolverViewItem, don't create new. Bad dispose this cache
 
             SolverZeile solverZeile = solver.get(position);
-            SolverViewItem solverViewItem = new SolverViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, solverZeile);
+            SolverViewItem solverViewItem = new SolverViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, solverZeile);
             solverViewItem.setClickable(true);
             solverViewItem.addClickHandler((v, x, y, pointer, button) -> {
                 int selectionIndex = ((ListViewItemBase) v).getIndex();
@@ -379,7 +379,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             // SolverZeile solverZeile = solver.get(position);
             // if (solverZeile.Solution.length() == 0) return UiSizes.getCacheListItemRec().getHeight();
             // else
-            return UiSizes.that.getCacheListItemRec().getHeight();
+            return UiSizes.getInstance().getCacheListItemRec().getHeight();
         }
 
     }

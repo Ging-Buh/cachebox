@@ -141,8 +141,8 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
         CB_RectF world = getWorldRec();
 
         // not enough place on Top?
-        float windowH = UI_Size_Base.that.getWindowHeight();
-        float windowW = UI_Size_Base.that.getWindowWidth();
+        float windowH = UI_Size_Base.ui_size_base.getWindowHeight();
+        float windowW = UI_Size_Base.ui_size_base.getWindowWidth();
         float worldY = world.getY();
 
         if (popUp.getHeight() + worldY > windowH * 0.8f) {

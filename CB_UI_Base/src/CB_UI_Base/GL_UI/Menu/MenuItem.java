@@ -70,8 +70,8 @@ public class MenuItem extends ListViewItemBackground {
     }
 
     @Override
-    protected void Initial() {
-        super.Initial();
+    protected void initialize() {
+        super.initialize();
         this.removeChilds();
 
         mLabel = new CB_Label(this);

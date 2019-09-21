@@ -49,7 +49,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     public Import_GSAK() {
         super("Import_GSAK");
-        progressBar = new ProgressBar(UiSizes.that.getButtonRectF(), "ProgressBar");
+        progressBar = new ProgressBar(UiSizes.getInstance().getButtonRectF(), "ProgressBar");
         addLast(progressBar);
         bOK = new CB_Button(Translation.get("import"));
         bCancel = new CB_Button(Translation.get("cancel"));

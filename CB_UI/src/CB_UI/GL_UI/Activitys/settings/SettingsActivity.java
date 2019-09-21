@@ -48,7 +48,6 @@ import CB_Utils.Settings.*;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import CB_Utils.fileProvider.FilenameFilter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -97,9 +96,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private void initial() {
         this.setLongClickable(true);
         Config.settings.SaveToLastValue();
-        ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.that.getButtonHeight());
+        ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
 
-        itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.that.getButtonHeight());
+        itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.ui_size_base.getButtonHeight());
 
         createButtons();
         fillContent();
@@ -118,11 +117,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private void createButtons() {
-        float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
+        float btnW = (innerWidth - UI_Size_Base.ui_size_base.getButtonWidth()) / 2;
 
-        btnOk = new CB_Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        btnMenu = new CB_Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), "Menu Button");
-        btnCancel = new CB_Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        btnOk = new CB_Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
+        btnMenu = new CB_Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.ui_size_base.getButtonWidth(), UI_Size_Base.ui_size_base.getButtonHeight(), "Menu Button");
+        btnCancel = new CB_Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
 
         btnOk.setText(Translation.get("save"));
         btnCancel.setText(Translation.get("cancel"));
@@ -951,10 +950,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         String info = "";
 
                         info += "Density= " + String.valueOf(GL_UISizes.DPI) + GlobalCore.br;
-                        info += "Height= " + String.valueOf(UI_Size_Base.that.getWindowHeight()) + GlobalCore.br;
-                        info += "Width= " + String.valueOf(UI_Size_Base.that.getWindowWidth()) + GlobalCore.br;
-                        info += "Scale= " + String.valueOf(UI_Size_Base.that.getScale()) + GlobalCore.br;
-                        info += "FontSize= " + String.valueOf(UI_Size_Base.that.getScaledFontSize()) + GlobalCore.br;
+                        info += "Height= " + String.valueOf(UI_Size_Base.ui_size_base.getWindowHeight()) + GlobalCore.br;
+                        info += "Width= " + String.valueOf(UI_Size_Base.ui_size_base.getWindowWidth()) + GlobalCore.br;
+                        info += "Scale= " + String.valueOf(UI_Size_Base.ui_size_base.getScale()) + GlobalCore.br;
+                        info += "FontSize= " + String.valueOf(UI_Size_Base.ui_size_base.getScaledFontSize()) + GlobalCore.br;
                         info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
                         info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime) + GlobalCore.br;
 
@@ -1214,18 +1213,16 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB) {
         String SkinFolder = Config.mWorkPath + "/skins";
         File dir = FileFactory.createFile(SkinFolder);
-        final ArrayList<String> skinFolders = new ArrayList<String>();
-        dir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File f, String name) {
-                if (f.isDirectory()) {
-                    String Path = f.getAbsolutePath();
-                    if (!Path.contains(".svn")) {
-                        skinFolders.add(name);
-                    }
+        final ArrayList<String> skinFolders = new ArrayList<>();
+        dir.listFiles((f, name) -> {
+            File found = FileFactory.createFile(f,name);
+            if (found.isDirectory()) {
+                String Path = f.getAbsolutePath();
+                if (!Path.contains(".svn")) {
+                    skinFolders.add(name);
                 }
-                return false;
             }
+            return false;
         });
 
         final String[] items = new String[skinFolders.size() + 2];// + internal (default and small)

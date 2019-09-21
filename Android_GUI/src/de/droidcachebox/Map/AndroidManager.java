@@ -63,7 +63,7 @@ public class AndroidManager extends ManagerBase {
 
             long cachedTileAge = 0;
 
-            if (FileIO.FileExists(cachedTileFilename)) {
+            if (FileIO.fileExists(cachedTileFilename)) {
                 File info = FileFactory.createFile(cachedTileFilename);
                 cachedTileAge = info.lastModified();
             }
@@ -120,7 +120,7 @@ public class AndroidManager extends ManagerBase {
 
             long cachedTileAge = 0;
 
-            if (FileIO.FileExists(cachedTileFilename)) {
+            if (FileIO.fileExists(cachedTileFilename)) {
                 File info = FileFactory.createFile(cachedTileFilename);
                 cachedTileAge = info.lastModified();
             }

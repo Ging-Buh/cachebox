@@ -321,7 +321,7 @@ public class CacheListDAO {
         for (Iterator<String> iterator = list.iterator(); iterator.hasNext(); ) {
             final String GcCode = iterator.next().toLowerCase();
             String directory = path + "/" + GcCode.substring(0, Math.min(4, GcCode.length()));
-            if (!FileIO.DirectoryExists(directory))
+            if (!FileIO.directoryExists(directory))
                 continue;
 
             FileHandle dir = new FileHandle(directory);

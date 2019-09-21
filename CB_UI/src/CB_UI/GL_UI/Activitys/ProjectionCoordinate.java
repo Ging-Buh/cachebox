@@ -76,7 +76,7 @@ public class ProjectionCoordinate extends ActivityBase {
     }
 
     private void iniCoordButton() {
-        CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
         bCoord = new CoordinateButton(rec, "CoordButton", coord, wpName);
 
         bCoord.setCoordinateChangedListener(Coord -> {
@@ -94,7 +94,7 @@ public class ProjectionCoordinate extends ActivityBase {
         CB_Label lblP2P = new CB_Label(this.name + " lblP2P", labelRec, Translation.get("toPoint"));
         this.addChild(lblP2P);
 
-        CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
+        CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.ui_size_base.getButtonHeight(), innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
         CoordinateButton bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord, null);
 
         bCoord2.setCoordinateChangedListener(Coord -> {
@@ -169,7 +169,7 @@ public class ProjectionCoordinate extends ActivityBase {
     }
 
     private void iniOkCancel() {
-        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
+        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight());
         bOK = new CB_Button(btnRec, "OkButton");
 
         btnRec.setX(bOK.getMaxX());

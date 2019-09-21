@@ -61,12 +61,12 @@ public class CB_Button extends CB_View_Base {
     }
 
     public CB_Button(GL_View_Base parent, String name) {
-        super(UiSizes.that.getButtonRectF(), parent, name);
+        super(UiSizes.getInstance().getButtonRectF(), parent, name);
         this.setClickable(true);
     }
 
     public CB_Button(String text) {
-        super(UiSizes.that.getButtonRectF(), text);
+        super(UiSizes.getInstance().getButtonRectF(), text);
         this.setText(text);
         this.setClickable(true);
     }
@@ -130,28 +130,28 @@ public class CB_Button extends CB_View_Base {
             if (drawableNormal != null) {
                 drawableNormal.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                Initial();
+                initialize();
                 GL.that.renderOnce();
             }
         } else if (isPressed) {
             if (drawablePressed != null) {
                 drawablePressed.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                Initial();
+                initialize();
                 GL.that.renderOnce();
             }
         } else if (isFocused) {
             if (drawableFocused != null) {
                 drawableFocused.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                Initial();
+                initialize();
                 GL.that.renderOnce();
             }
         } else {
             if (drawableDisabled != null) {
                 drawableDisabled.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                Initial();
+                initialize();
                 GL.that.renderOnce();
             }
         }
@@ -254,7 +254,7 @@ public class CB_Button extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
+    protected void initialize() {
         if (drawableNormal == null) {
             drawableNormal = Sprites.btn;
         }

@@ -1,7 +1,7 @@
 package de.cb.sqlite;
 
 import CB_Utils.Log.Log;
-import CB_Utils.Log.LogLevel;
+import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
@@ -25,10 +25,10 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public boolean open(String databasePath) {
         try {
-            Log.trace(log, "open data base: " + databasePath);
             myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READWRITE);
             return true;
-        } catch (Exception exc) {
+        } catch (Exception ex) {
+            Log.err(log, "open: ", ex);
             return false;
         }
     }
@@ -37,10 +37,10 @@ public class SQLiteClass implements SQLiteInterface {
     public boolean openReadOnly(String databasePath) {
         try {
             // todo Handle exists, but can't be opened
-            Log.trace(log, "open data base: " + databasePath);
             myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READONLY);
             return true;
-        } catch (Exception exc) {
+        } catch (Exception ex) {
+            Log.err(log, "openReadOnly: ", ex);
             return false;
         }
     }
@@ -51,46 +51,27 @@ public class SQLiteClass implements SQLiteInterface {
         // if exists, delete old database file
         File file = FileFactory.createFile(databasePath);
         if (file.exists()) {
-            Log.trace(log, "RESET DB, delete file: " + databasePath);
             try {
                 file.delete();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ex) {
+                Log.err(log, "createDB: delete", ex);
             }
         }
 
         try {
-            Log.trace(log, "create data base: " + databasePath);
-            myDB = activity.openOrCreateDatabase(createDatabaseFile(databasePath).getAbsolutePath(), 0, null);
+            File dbFile = FileIO.createFile(databasePath);
+            if (dbFile == null)
+                return false;
+            myDB = activity.openOrCreateDatabase(dbFile.getAbsolutePath(), 0, null);
             return true;
         } catch (Exception exc) {
-            Log.err(log, "createDB", exc);
+            Log.err(log, "createDB: openOrCreateDatabase", exc);
             return false;
         }
     }
 
-    private File createDatabaseFile(String dbfile) {
-
-        File result = FileFactory.createFile(dbfile);
-
-        if (!result.getParentFile().exists()) {
-            result.getParentFile().mkdirs();
-        }
-
-        return result;
-    }
-
     @Override
     public CoreCursor rawQuery(String sql, String[] args) {
-        if (LogLevel.isLogLevel(LogLevel.TRACE)) {
-            StringBuilder sb = new StringBuilder("RAW_QUERY :" + sql + " ARGs= ");
-            if (args != null) {
-                for (String arg : args)
-                    sb.append(arg + ", ");
-            } else
-                sb.append("NULL");
-            Log.trace(log, sb.toString());
-        }
         if (myDB == null)
             return null;
         Cursor c = myDB.rawQuery(sql, args);
@@ -99,12 +80,11 @@ public class SQLiteClass implements SQLiteInterface {
 
     @Override
     public boolean execSQL(String sql) {
-        Log.trace(log, "execSQL : " + sql);
         try {
             myDB.execSQL(sql);
             return true;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.err(log, "execSQL: ", ex);
             return false;
         }
     }
@@ -139,15 +119,11 @@ public class SQLiteClass implements SQLiteInterface {
 
     @Override
     public long insert(String tablename, HashMap<String, Object> val) {
-
-        ContentValues values = getContentValues(val);
-
         long ret = -1;
         try {
-            Log.trace(log, "INSERT into: " + tablename + "values: " + values.toString());
-            return myDB.insert(tablename, null, values);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return myDB.insert(tablename, null, getContentValues(val));
+        } catch (Exception ex) {
+            Log.err(log, "insert: ", ex);
         }
 
         return ret;
@@ -155,86 +131,49 @@ public class SQLiteClass implements SQLiteInterface {
 
     @Override
     public long update(String tablename, HashMap<String, Object> val, String whereClause, String[] whereArgs) {
-
-        if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-            StringBuilder sb = new StringBuilder("Update Table:" + tablename);
-            sb.append("Parameters:" + val.toString());
-            sb.append("WHERECLAUSE:" + whereClause);
-
-            if (whereArgs != null) {
-                for (String arg : whereArgs) {
-                    sb.append(arg + ", ");
-                }
-            }
-
-            Log.trace(log, sb.toString());
-        }
-
         try {
-            ContentValues values = getContentValues(val);
-            return myDB.update(tablename, values, whereClause, whereArgs);
+            return myDB.update(tablename, getContentValues(val), whereClause, whereArgs);
         } catch (Exception ex) {
+            Log.err(log, "update: ", ex);
             return 0;
         }
     }
 
     @Override
     public long delete(String tablename, String whereClause, String[] whereArgs) {
-
-        if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-            StringBuilder sb = new StringBuilder("Delete@ Table:" + tablename);
-            sb.append("WHERECLAUSE:" + whereClause);
-
-            if (whereArgs != null) {
-                for (String arg : whereArgs) {
-                    sb.append(arg + ", ");
-                }
-            }
-
-            Log.trace(log, sb.toString());
-        }
-
         return myDB.delete(tablename, whereClause, whereArgs);
     }
 
     @Override
     public void beginTransaction() {
-        Log.trace(log, "begin transaction");
         if (myDB != null)
             myDB.beginTransaction();
     }
 
     @Override
     public void setTransactionSuccessful() {
-        Log.trace(log, "set Transaction Successful");
         if (myDB != null)
             myDB.setTransactionSuccessful();
     }
 
     @Override
     public void endTransaction() {
-        Log.trace(log, "endTransaction");
         if (myDB != null)
             myDB.endTransaction();
     }
 
     @Override
     public long insertWithConflictReplace(String tablename, HashMap<String, Object> val) {
-        Log.trace(log, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
-        ContentValues values = getContentValues(val);
-        return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        return myDB.insertWithOnConflict(tablename, null, getContentValues(val), SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     @Override
     public long insertWithConflictIgnore(String tablename, HashMap<String, Object> val) {
-        Log.trace(log, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
-        ContentValues values = getContentValues(val);
-        return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        return myDB.insertWithOnConflict(tablename, null, getContentValues(val), SQLiteDatabase.CONFLICT_IGNORE);
     }
 
     @Override
     public void close() {
-        Log.trace(log, "close DB:");
         if (myDB != null)
             myDB.close();
         myDB = null;
