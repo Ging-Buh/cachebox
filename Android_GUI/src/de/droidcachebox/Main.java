@@ -37,7 +37,6 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.SearchMode;
-import CB_UI.GL_UI.Main.Actions.Action_MapDownload;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MainViewInit;
@@ -1823,7 +1822,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     positionLatLon();
                 if (ExternalRequestMapDownloadPath != null) {
                     FZKDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
-                    Action_MapDownload.getInstance().Execute();
+                    GL.that.showActivity(FZKDownload.getInstance());
                     FZKDownload.getInstance().importByUrlFinished();
                 }
                 if (ExternalRequestName != null)
