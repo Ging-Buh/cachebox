@@ -18,6 +18,7 @@ package CB_Locator.Map;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.LayerType;
 import CB_Locator.Map.Layer.MapType;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
@@ -25,14 +26,16 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.http.Webb;
 import CB_Utils.http.WebbUtils;
-import org.mapsforge.core.graphics.Bitmap;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.Array;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MultiMapDataStore;
 import org.mapsforge.map.datastore.MultiMapDataStore.DataPolicy;
-import org.mapsforge.map.layer.labels.TileBasedLabelStore;
-import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
-import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
+import org.mapsforge.map.layer.cache.InMemoryTileCache;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.renderer.DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
@@ -41,13 +44,11 @@ import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
-import java.io.FileNotFoundException;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -59,38 +60,28 @@ public abstract class ManagerBase {
     public static final String INTERNAL_THEME_DEFAULT = "Default";
     public static final String INTERNAL_THEME_OSMARENDER = "OsmaRender";
     public static final String INTERNAL_THEME_CAR = "Car";
+    public static final float DEFAULT_TEXT_SCALE = 1;
     private static final String log = "ManagerBase";
-    public static ManagerBase Manager = null;
-    public static int PROCESSOR_COUNT; // == nr of threads for getting tiles (mapsforge)
-    public static long NumBytesLoaded = 0;
-    public static int NumTilesLoaded = 0;
-    public static int NumTilesCached = 0;
-    public static float DEFAULT_TEXT_SCALE = 1;
-    public final DisplayModel DISPLAY_MODEL;
-    private final int CONECTION_TIME_OUT = 15000;// 15 sec
-    private final int CONECTION_TIME_OUT_MESSAGE_INTERVALL = 60000;// 1min
-    private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
+    public static ManagerBase manager;
+    static int PROCESSOR_COUNT; // == nr of threads for getting tiles (mapsforge)
+    private final TileCache firstLevelTileCache = new InMemoryTileCache(128); //mapsforge
     private final Layer[] userMaps = new Layer[2];
-    public ArrayList<PackBase> mapPacks = new ArrayList<PackBase>();
-    public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
-    public ArrayList<Layer> layers = new ArrayList<Layer>();
     public float textScale = 1;
-    HashMap<String, Long> LastRequestTimeOut = new HashMap<String, Long>();
-    MultiMapDataStore mapDatabase[] = null;
-    IDatabaseRenderer databaseRenderer[] = null;
-    Bitmap tileBitmap = null;
-    XmlRenderTheme renderTheme;
+    protected ArrayList<PackBase> mapPacks = new ArrayList<>(); // loadLocalPixmap differs in Android and Java
+    private DisplayModel displayModel;
+    private MultiMapDataStore[] mapDatabase = null;
+    private ArrayList<Layer> layers = new ArrayList<>();
+    private ArrayList<TmsMap> tmsMaps = new ArrayList<>();
     private boolean mayAddLayer = false; // add only during startup (why?)
     private String mapsforgeThemesStyle = "";
     private String mapsforgeTheme = "";
     private boolean alreadySet = false;
+    private DatabaseRenderer[] databaseRenderers = null;
     private RenderThemeFuture renderThemeFuture;
 
-    public ManagerBase(DisplayModel displaymodel) {
-        Manager = this;
-        //PROCESSOR_COUNT = 1; // = Runtime.getRuntime().availableProcessors();
+    public ManagerBase() {
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-        DISPLAY_MODEL = displaymodel;
+        Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
 
         if (LocatorSettings.CurrentMapLayer != null)
             LocatorSettings.CurrentMapLayer.addSettingChangedListener(() -> {
@@ -98,6 +89,34 @@ public abstract class ManagerBase {
                 if (layer.isMapsForge())
                     initMapDatabase(layer);
             });
+
+        LocatorSettings.UserMap1.addSettingChangedListener(() -> {
+            try {
+                if (userMaps[0] != null) {
+                    layers.remove(userMaps[0]);
+                }
+                String url = LocatorSettings.UserMap1.getValue();
+                userMaps[0] = getUserMap(url, "UserMap1");
+                layers.add(userMaps[0]);
+            } catch (Exception e) {
+                Log.err(log, "Initial UserMap1", e);
+            }
+        });
+
+        LocatorSettings.UserMap2.addSettingChangedListener(() -> {
+            try {
+                if (userMaps[1] != null) {
+                    layers.remove(userMaps[1]);
+                }
+                String url = LocatorSettings.UserMap2.getValue();
+                userMaps[1] = getUserMap(url, "UserMap2");
+                layers.add(userMaps[1]);
+            } catch (Exception e) {
+                Log.err(log, "Initial UserMap2", e);
+            }
+        });
+
+        manager = this;
     }
 
     /**
@@ -121,27 +140,6 @@ public abstract class ManagerBase {
             data[i] = HSV_Color.colorMatrixManipulation(data[i], matrix);
         }
         return imgData;
-    }
-
-    public abstract PackBase CreatePack(String file) throws IOException;
-
-    /**
-     * Läd ein Map Pack und fügt es dem Manager hinzu
-     *
-     * @param file
-     * @return true, falls das Pack erfolgreich geladen wurde, sonst false
-     */
-    public boolean LoadMapPack(String file) {
-        try {
-            PackBase pack = CreatePack(file);
-            layers.add(pack.layer);
-            mapPacks.add(pack);
-            // Nach Aktualität sortieren
-            Collections.sort(mapPacks);
-            return true;
-        } catch (Exception exc) {
-        }
-        return false;
     }
 
     public Layer getOrAddLayer(String[] Name, String friendlyName, String url) {
@@ -182,36 +180,28 @@ public abstract class ManagerBase {
         }
     }
 
-    public abstract TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex);
-
-    // ##########################################################################
-    // Mapsforge 0.6.0
-    // ##########################################################################
-
-    protected abstract ImageData getImagePixel(byte[] img);
-
-    protected abstract byte[] getImageFromData(ImageData imgData);
-
     /**
      * Load Tile from URL and save to MapTile-Cache
      *
-     * @param layer
-     * @param tile
-     * @return
+     * @param layer Layer
+     * @param tile  Descriptor
+     * @return boolean
      */
-    public boolean cacheTile(Layer layer, Descriptor tile) {
+    boolean cacheTile(Layer layer, Descriptor tile) {
 
-        if (layer == null)
+        if (layer == null) {
+            Log.err(log, "layer = null");
             return false;
+        }
 
-        // Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen werden!
+        // get mapPack from layer and check, if tile is covered (can be generated) from mapPack then simply return
         for (PackBase pack : mapPacks)
             if (pack.layer == layer)
-                if (pack.Contains(tile) != null)
+                if (pack.contains(tile) != null)
                     return true;
 
+        // Download from url into cache
         String filename = layer.GetLocalFilename(tile);
-        // String path = layer.GetLocalPath(tile);
         String url = layer.GetUrl(tile);
         if (!url.startsWith("http")) {
             return false;
@@ -234,6 +224,8 @@ public abstract class ManagerBase {
             Log.info(log, "Caching " + url + " to " + filename);
             FileOutputStream stream = new FileOutputStream(filename, false);
             InputStream fromUrl;
+            // 15 sec
+            int CONECTION_TIME_OUT = 15000;
             fromUrl = Webb.create()
                     .get(url)
                     .connectTimeout(CONECTION_TIME_OUT)
@@ -243,53 +235,57 @@ public abstract class ManagerBase {
             WebbUtils.copyStream(fromUrl, stream);
             fromUrl.close();
             stream.close();
-            NumTilesLoaded++;
             return true;
         } catch (Exception ex) {
-            Log.err(log, "245-" + url + ": " + ex.toString());
+            Log.err(log, "Download from url (into cache) " + url + " : " + ex.toString());
             return false;
         }
     }
 
-    public void LoadTMS(String string) {
+    private void loadMapPack(String file) {
+        try {
+            PackBase pack = getMapPack(file);
+            layers.add(pack.layer);
+            mapPacks.add(pack);
+            Collections.sort(mapPacks);
+        } catch (Exception ignored) {
+        }
+    }
+
+    protected abstract PackBase getMapPack(String file) throws Exception;
+
+    private void loadMapsforge(String pathAndName) {
+        try {
+            MapFile mapFile = new MapFile(pathAndName);
+            MapFileInfo mapInfo = mapFile.getMapFileInfo();
+            MapType mapType = MapType.MAPSFORGE;
+            if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
+                mapType = MapType.FREIZEITKARTE;
+            }
+            String Name = FileIO.getFileNameWithoutExtension(pathAndName);
+            Layer layer = new Layer(mapType, LayerType.normal, Layer.StorageType.PNG, Name, Name, pathAndName);
+            layer.languages = mapFile.getMapLanguages();
+            layers.add(layer);
+        } catch (Exception e) {
+            Log.err(log, "Load mapsforge for " + pathAndName + ":\n" + e.toString());
+        }
+    }
+
+    private void loadTMS(String string) {
         try {
             TmsMap tmsMap = new TmsMap(string);
             if ((tmsMap.name == null) || (tmsMap.url == null)) {
                 return;
             }
-            tmsMaps.add(tmsMap);
             layers.add(new TmsLayer(LayerType.normal, tmsMap));
-        } catch (Exception ex) {
-
+        } catch (Exception ignored) {
         }
-
     }
 
-    public void LoadBSH(String string) {
+    private void loadBSH(String string) {
         try {
-            BshLayer layer = new BshLayer(LayerType.normal, string);
-            layers.add(layer);
-        } catch (Exception ex) {
-
-        }
-
-    }
-
-    private void getFiles(ArrayList<String> files, ArrayList<String> mapnames, String directory) {
-        File dir = FileFactory.createFile(directory);
-        String[] dirFiles = dir.list();
-        if (dirFiles != null && dirFiles.length > 0) {
-            for (String tmp : dirFiles) {
-                String FilePath = directory + "/" + tmp;
-                String ttt = tmp.toLowerCase();
-                if (ttt.endsWith("pack") || ttt.endsWith("map") || ttt.endsWith("xml") || ttt.endsWith("bsh")) {
-                    if (!mapnames.contains(tmp)) {
-                        files.add(FilePath);
-                        mapnames.add(tmp);
-                        Log.trace(log, "add: " + tmp);
-                    }
-                }
-            }
+            layers.add(new BshLayer(LayerType.normal, string));
+        } catch (Exception ignored) {
         }
     }
 
@@ -297,43 +293,34 @@ public abstract class ManagerBase {
         layers.clear();
 
         mayAddLayer = true;
-
-        layers.addAll(DEFAULT_LAYER);
+        layers.add(new Layer(MapType.ONLINE, LayerType.normal, Layer.StorageType.PNG, "Mapnik", "Mapnik", "http://c.tile.openstreetmap.org/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.normal, Layer.StorageType.PNG, "OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"));
+        // layers.add(new Layer(MapType.ONLINE, Type.normal, "Esri", "", "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"));
+        // layers.add(new Layer(MapType.ONLINE, Type.normal, "Google Hybrid", "", "http://mt0.google.com/vt/lyrs=y@142&x={x}&y={y}&z={z}"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "hillshading", "hillshading", "http://a.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "hiking", "hiking", "http://tile.waymarkedtrails.org/hillshading/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "public_transport", "public_transport", "http://tile.memomaps.de/tilegen/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "railway", "railway", "http://a.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png")); // Eisenbahn
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "cycling", "cycling", "http://a.www.toolserver.org/tiles/bicycle_network/{z}/{x}/{y}.png")); // Radwege Alternative
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "mtb", "mtb", "http://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "riding", "riding", "http://tile.waymarkedtrails.org/riding/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "skating", "skating", "http://tile.waymarkedtrails.org/skating/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerType.overlay, Layer.StorageType.PNG, "slopemap", "slopemap", "http://tile.waymarkedtrails.org/slopemap/{z}/{x}/{y}.png"));
 
         try {
-            if (LocatorSettings.UserMap1.getValue().length() > 0) {
-                String url = LocatorSettings.UserMap1.getValue();
-                userMaps[0] = getUserMap(url, "UserMap1");
-                layers.add(userMaps[0]);
-            } else {
-                String url = LocatorSettings.UserMap1.getDefaultValue();
-                userMaps[0] = getUserMap(url, "UserMap1");
-                layers.add(userMaps[0]);
+            String url = LocatorSettings.UserMap1.getValue();
+            if (url.length() == 0) {
+                url = LocatorSettings.UserMap1.getDefaultValue();
             }
+            userMaps[0] = getUserMap(url, "UserMap1");
+            layers.add(userMaps[0]);
         } catch (Exception e) {
             Log.err(log, "Initial UserMap1", e);
         }
 
         try {
-            LocatorSettings.UserMap1.addSettingChangedListener(() -> {
-                try {
-                    if (userMaps[0] != null) {
-                        layers.remove(userMaps[0]);
-                    }
-                    String url = LocatorSettings.UserMap1.getValue();
-                    userMaps[0] = getUserMap(url, "UserMap1");
-                    layers.add(userMaps[0]);
-                } catch (Exception e) {
-                    Log.err(log, "Initial UserMap1", e);
-                }
-            });
-        } catch (Exception e) {
-            Log.err(log, "Initial UserMap1", e);
-        }
-
-        try {
-            if (LocatorSettings.UserMap2.getValue().length() > 0) {
-                String url = LocatorSettings.UserMap2.getValue();
+            String url = LocatorSettings.UserMap2.getValue();
+            if (url.length() > 0) {
                 userMaps[1] = getUserMap(url, "UserMap2");
                 layers.add(userMaps[1]);
             }
@@ -341,71 +328,33 @@ public abstract class ManagerBase {
             Log.err(log, "Initial UserMap2", e);
         }
 
-        try {
-            LocatorSettings.UserMap2.addSettingChangedListener(() -> {
-                try {
-                    if (userMaps[1] != null) {
-                        layers.remove(userMaps[1]);
-                    }
-                    String url = LocatorSettings.UserMap2.getValue();
-                    userMaps[1] = getUserMap(url, "UserMap2");
-                    layers.add(userMaps[1]);
-                } catch (Exception e) {
-                    Log.err(log, "Initial UserMap2", e);
-                }
-            });
-        } catch (Exception e) {
-            Log.err(log, "Initial UserMap2", e);
-        }
-
-        ArrayList<String> files = new ArrayList<String>();
-        ArrayList<String> mapnames = new ArrayList<String>();
-
+        Array<String> alreadyAdded = new Array<>(); // avoid same file in different directories
         Log.debug(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
-        getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
-
+        addToLayers(LocatorSettings.MapPackFolderLocal.getValue(), alreadyAdded);
         Log.debug(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
-        getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
+        addToLayers(LocatorSettings.MapPackFolder.getValue(), alreadyAdded);
+        mayAddLayer = false;
+    }
 
-        if (files != null) {
-            if (files.size() > 0) {
-                for (String file : files) {
-                    if (FileIO.getFileExtension(file).equalsIgnoreCase("pack")) {
-                        LoadMapPack(file);
+    private void addToLayers(String directoryName, Array<String> alreadyAdded) {
+        String[] fileNames = FileFactory.createFile(directoryName).list();
+        if (fileNames != null && fileNames.length > 0) {
+            for (String fileName : fileNames) {
+                if (!alreadyAdded.contains(fileName, false)) {
+                    String lowerCaseFileName = fileName.toLowerCase();
+                    if (lowerCaseFileName.endsWith("pack")) {
+                        loadMapPack(directoryName + "/" + fileName);
+                    } else if (lowerCaseFileName.endsWith("map")) {
+                        loadMapsforge(directoryName + "/" + fileName);
+                    } else if (lowerCaseFileName.endsWith("xml")) {
+                        loadTMS(directoryName + "/" + fileName);
+                    } else if (lowerCaseFileName.endsWith("bsh")) {
+                        loadBSH(directoryName + "/" + fileName);
                     }
-                    if (FileIO.getFileExtension(file).equalsIgnoreCase("map")) {
-
-                        java.io.File f = new java.io.File(FileFactory.createFile(file).getAbsolutePath());
-                        MapFile mapFile;
-                        try {
-                            mapFile = new MapFile(f);
-                        } catch (Exception e) {
-                            Log.err(log, "INIT MAPPACKS for " + f.getAbsolutePath() + ":\n" + e.getMessage());
-                            continue;
-                        }
-
-                        MapFileInfo mapInfo = mapFile.getMapFileInfo();
-                        MapType mapType = MapType.MAPSFORGE;
-                        if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
-                            mapType = MapType.FREIZEITKARTE;
-                        }
-                        String Name = FileIO.getFileNameWithoutExtension(file);
-                        Layer layer = new Layer(mapType, LayerType.normal, Layer.StorageType.PNG, Name, Name, file);
-                        layer.languages = mapFile.getMapLanguages();
-                        ManagerBase.Manager.layers.add(layer);
-
-                    }
-
-                    if (FileIO.getFileExtension(file).equalsIgnoreCase("xml")) {
-                        ManagerBase.Manager.LoadTMS(file);
-                    }
-                    if (FileIO.getFileExtension(file).equalsIgnoreCase("bsh")) {
-                        ManagerBase.Manager.LoadBSH(file);
-                    }
+                    alreadyAdded.add(fileName);
                 }
             }
         }
-        mayAddLayer = false;
     }
 
     private Layer getUserMap(String url, String name) {
@@ -433,10 +382,6 @@ public abstract class ManagerBase {
         }
     }
 
-    public ArrayList<Layer> getLayers() {
-        return layers;
-    }
-
     public void setRenderTheme(String theme, String themestyle) {
         if (alreadySet)
             if (theme.equals(mapsforgeTheme))
@@ -444,6 +389,7 @@ public abstract class ManagerBase {
                     return;
         mapsforgeThemesStyle = themestyle;
         mapsforgeTheme = theme;
+        XmlRenderTheme renderTheme;
         if (mapsforgeTheme.length() == 0) {
             Log.info(log, "Use RenderTheme CB_InternalRenderTheme.DEFAULT");
             renderTheme = CB_InternalRenderTheme.DEFAULT;
@@ -467,58 +413,83 @@ public abstract class ManagerBase {
                     Log.err(log, mapsforgeTheme + " not found!");
                     renderTheme = CB_InternalRenderTheme.DEFAULT;
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
                 renderTheme = CB_InternalRenderTheme.DEFAULT;
             }
         }
 
         try {
-            CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
+            CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(displayModel.getScaleFactor()), displayModel, renderTheme);
         } catch (Exception e) {
             Log.err(log, "Error in checking RenderTheme " + mapsforgeTheme, e);
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         }
 
-        if (databaseRenderer == null) {
-            databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
+        if (databaseRenderers == null) {
+            databaseRenderers = new DatabaseRenderer[PROCESSOR_COUNT];
         } else {
             for (int i = 0; i < PROCESSOR_COUNT; i++) {
-                databaseRenderer[i] = null;
+                databaseRenderers[i] = null;
             }
         }
 
-        this.renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), this.renderTheme, this.DISPLAY_MODEL);
+        renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(displayModel.getScaleFactor()), renderTheme, this.displayModel);
         new Thread(this.renderThemeFuture).start();
 
         alreadySet = true;
     }
 
-    public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex) {
-        // Log.debug(log, "getTile " + layer.Name + " " + desc);
-        // Mapsforge 0.4.0
+    protected TileGL getMapsforgeTileGL_Bmp(Layer layer, Descriptor desc, int ThreadIndex) {
+        // check initialization
         if ((mapDatabase == null)) {
             initMapDatabase(layer);
         }
-
-        Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
-
-        RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], this.renderThemeFuture, DISPLAY_MODEL, textScale, false, false);
-
-        TileBasedLabelStore labelStore = null;
-
-        if (databaseRenderer[ThreadIndex] == null) {
-            databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), MF_DatabaseRenderer.firstLevelTileCache, labelStore, true, true);
+        // TileBasedLabelStore labelStore = null;
+        if (databaseRenderers[ThreadIndex] == null) {
+            databaseRenderers[ThreadIndex] = new DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
         }
-        if (databaseRenderer[ThreadIndex] == null)
+        if (databaseRenderers[ThreadIndex] == null)
             return null;
+        // create bitmap from tile-definition
         try {
-            return databaseRenderer[ThreadIndex].execute(rendererJob);
+            Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
+            RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], renderThemeFuture, displayModel, textScale, false, false);
+            TileBitmap bitmap = databaseRenderers[ThreadIndex].executeJob(rendererJob);
+            /*
+              // direct Buffer swap
+              If the goal is to convert an Android Bitmap to a libgdx Texture, you don't need to use Pixmap at all. You can do it directly with
+              the help of simple OpenGL and Android GLUtils. Try the followings; it is 100x faster than your solution. I assume that you are
+              not in the rendering thread (you should not most likely). If you are, you don't need to call postRunnable().
+              Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Format.RGBA8888);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle());
+                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+                    bitmap.recycle(); // now you have the texture to do whatever you want
+                }
+              });
+            */
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(baos);
+                byte[] b = baos.toByteArray();
+                TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileGL.TileState.Present, Pixmap.Format.RGB565);
+                ((ext_Bitmap) bitmap).recycle();
+                return bmpTile;
+            } catch (Exception e) {
+                Log.err(log, "convert mapsfore tile to bmpTile: " + e.toString(), e);
+                return null;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.err(log, "get mapsfore tile: " + e.toString(), e);
+            return null;
         }
-        return null;
     }
+
+    public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
 
     private void initMapDatabase(Layer layer) {
 
@@ -526,7 +497,7 @@ public abstract class ManagerBase {
             MapFile mapforgeMapFile = getMapFile(layer);
             ArrayList<MapFile> additionalMapFiles = null;
             if (layer.hasAdditionalMaps()) {
-                additionalMapFiles = new ArrayList<MapFile>();
+                additionalMapFiles = new ArrayList<>();
                 for (Layer addLayer : layer.getAdditionalMaps()) {
                     additionalMapFiles.add(getMapFile(addLayer));
                 }
@@ -544,6 +515,7 @@ public abstract class ManagerBase {
 
                 mapDatabase[i].addMapDataStore(mapforgeMapFile, false, false);
                 if (layer.hasAdditionalMaps()) {
+                    assert additionalMapFiles != null;
                     for (MapFile mf : additionalMapFiles) {
                         mapDatabase[i].addMapDataStore(mf, false, false);
                     }
@@ -583,7 +555,19 @@ public abstract class ManagerBase {
         return mapforgeMapFile;
     }
 
-    public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
+    protected abstract TileGL getTileGL(Layer layer, Descriptor desc, int ThreadIndex);
+
+    public ArrayList<Layer> getLayers() {
+        return layers;
+    }
+
+    public DisplayModel getDisplayModel() {
+        return displayModel;
+    }
+
+    public void setDisplayModel(DisplayModel displayModel) {
+        this.displayModel = displayModel;
+    }
 
     public class ImageData {
         public int[] PixelColorArray;

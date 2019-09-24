@@ -410,7 +410,7 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_MapPacks() {
         Log.info(log, "ini_MapPacks");
-        ManagerBase.Manager.initMapPacks();
+        ManagerBase.manager.initMapPacks();
     }
 
     /**

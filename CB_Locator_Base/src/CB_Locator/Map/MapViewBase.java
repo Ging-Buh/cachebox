@@ -475,7 +475,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             }
             batch.enableBlending();
 
-            // FIXME sort rotate List first the Symbols then the Text! sort Text with same Font!
+            // todo FIXME sort rotate List first the Symbols then the Text! sort Text with same Font!
             // Don't change the Texture (improve the Performance)
 
             for (int i = 0, n = rotateList.size(); i < n; i++) {

@@ -87,11 +87,10 @@ public abstract class PackBase implements Comparable<PackBase> {
     // / </summary>
     // / <param name="desc">Deskriptor, dessen </param>
     // / <returns></returns>
-    public BoundingBox Contains(Descriptor desc) {
+    public BoundingBox contains(Descriptor desc) {
         for (BoundingBox bbox : BoundingBoxes)
             if (bbox.Zoom == desc.getZoom() && desc.getX() <= bbox.MaxX && desc.getX() >= bbox.MinX && desc.getY() <= bbox.MaxY && desc.getY() >= bbox.MinY)
                 return bbox;
-
         return null;
     }
 

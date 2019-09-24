@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * {@link #ALL} = Integer.MIN_VALUE <br>
  * <p/>
  * Additional LogLevl is <br>
- * {@link #GPS_Trace} = 7000
+ * {@link # GPS_Trace} = 7000
  *
  * @author Longri 2014
  */
@@ -47,7 +47,7 @@ public enum LogLevel {
     /**
      * Actual logging level
      *
-     * @param level {@link #LogLevel}
+     * @param level {@link # LogLevel}
      */
     static void setLogLevel(LogLevel level) {
         Level actlevel = Level.toLevel(level.toInt(), Level.OFF);
@@ -65,20 +65,20 @@ public enum LogLevel {
     }
 
     /**
-     * Returns {@link true} if the int value of the given {@link #LogLevel} higher or equals the actual {@link #LogLevel}<br>
+     * Returns {@link true} if the int value of the given {@link # LogLevel} higher or equals the actual {@link # LogLevel}<br>
      * Otherwise returns false;
      *
-     * @param level {@link #LogLevel}
-     * @return
+     * @param level {@link # LogLevel}
+     * @return boolean true if should write
      */
-    public static boolean isLogLevel(LogLevel level) {
+    public static boolean shouldWriteLog(LogLevel level) {
         return act.toInt() <= level.toInt();
     }
 
     /**
-     * Returns the int value of this {@link #LogLevel}
+     * Returns the int value of this {@link # LogLevel}
      *
-     * @return
+     * @return the level to int
      */
     public int toInt() {
         switch (this) {
@@ -90,8 +90,6 @@ public enum LogLevel {
                 return Level.ERROR_INT;
             case INFO:
                 return Level.INFO_INT;
-            case OFF:
-                return Level.OFF_INT;
             case TRACE:
                 return Level.TRACE_INT;
             case WARN:

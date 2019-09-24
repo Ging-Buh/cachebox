@@ -485,7 +485,6 @@ public class GroundspeakAPI {
     }
 
     public static int UploadDraftOrLog(String gcCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
-        Log.info(log, "UploadDraftOrLog");
         logReferenceCode = "";
         if (isAccessTokenInvalid()) return ERROR; // should be checked in advance
 

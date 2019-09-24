@@ -356,7 +356,7 @@ public class SelectDB extends ActivityBase {
         Config.DatabaseName.setValue(AktFile.getName());
         Config.AcceptChanges();
 
-        ManagerBase.Manager.initMapPacks();
+        ManagerBase.manager.initMapPacks();
 
         finish();
         if (returnListener != null)

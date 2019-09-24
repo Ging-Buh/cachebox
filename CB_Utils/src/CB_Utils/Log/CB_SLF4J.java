@@ -35,12 +35,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Class for initialization of slf4j {@link #Logger} inside of all CB projects. <br>
+ * Class for initialization of slf4j {@link # Logger} inside of all CB projects. <br>
  * Initial this class inside the main class with: <br>
  * <code>new CB_SLF4J(WorkPath);</code> <br>
  * <br>
  * Inside the given WorkPath will create a Folder <code>Logs</code>. <br>
- * On this folder the class will search the {@link #Logger} config file called <code>"logback.xml"</code>.<br>
+ * On this folder the class will search the {@link # Logger} config file called <code>"logback.xml"</code>.<br>
  * <br>
  * If the config file exists, so the LoggerFactory will load this config file, otherwise the LoggerFactory <br>
  * will set to DEFAULT Logger.<br>
@@ -60,9 +60,9 @@ public class CB_SLF4J {
     private final String logBackXmlFile;
 
     /**
-     * Constructor for initialization of slf4j {@link #Logger} inside of all CB projects. <br>
+     * Constructor for initialization of slf4j {@link # Logger} inside of all CB projects. <br>
      * Inside the given WorkPath will create a Folder <code>Logs</code>. <br>
-     * On this folder the class will search the {@link #Logger} config file called <code>"logback.xml"</code>.<br>
+     * On this folder the class will search the {@link # Logger} config file called <code>"logback.xml"</code>.<br>
      * <br>
      * If the config file exists, so the LoggerFactory will load this config file, otherwise the LoggerFactory <br>
      * will set to DEFAULT Logger.<br>
@@ -108,7 +108,7 @@ public class CB_SLF4J {
         return cb_slf4J;
     }
 
-    public static void setLogLevel(LogLevel level) {
+    public void setLogLevel(LogLevel level) {
         if (level != LogLevel.getLogLevel()) {
             LogLevel.setLogLevel(level);
             Log.info(log, "Set LogLevel to:" + level.toString());

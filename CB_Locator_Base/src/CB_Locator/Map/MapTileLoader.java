@@ -143,7 +143,7 @@ public class MapTileLoader {
         // GL.MaptileLoaderDebugString = text;
         // }
 
-        if (ManagerBase.Manager == null)
+        if (ManagerBase.manager == null)
             return; // Kann nichts laden, wenn der Manager Null ist!
 
         // alle notwendigen Tiles zum Laden einstellen in die Queue

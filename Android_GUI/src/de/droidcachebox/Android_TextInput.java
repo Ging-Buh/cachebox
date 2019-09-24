@@ -14,7 +14,7 @@ import de.droidcachebox.Views.Forms.MessageBox;
 public class Android_TextInput implements TextInputInterface {
     private Activity activity;
 
-    public Android_TextInput(Activity activity) {
+    Android_TextInput(Activity activity) {
         this.activity = activity;
     }
 
@@ -23,7 +23,6 @@ public class Android_TextInput implements TextInputInterface {
         try {
             if (editTextField == null) return;
 
-            // AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.Dialog);
             MessageBox.Builder builder = new MessageBox.Builder(activity);
 
             if (editTextField.getName().startsWith("*"))
@@ -61,6 +60,7 @@ public class Android_TextInput implements TextInputInterface {
                 input.postDelayed(() -> {
                     input.requestFocus();
                     input.setSelection(input.getText().length());
+                    assert manager != null;
                     manager.showSoftInput(input, 0);
                 }, 100);
             });

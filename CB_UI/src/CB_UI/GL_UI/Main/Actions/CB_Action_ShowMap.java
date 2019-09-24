@@ -73,7 +73,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private FZKThemesInfo fzkThemesInfo;
     private Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     private ThemeIsFor whichCase;
-    private Menu mapViewFZKDownloadMenu;
+    private Menu availableFZKThemesMenu;
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -131,10 +131,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         Menu icm = new Menu("MapViewLayerMenuTitle");
 
         // Sorting (perhaps use an arraylist of layers without the overlay layers)
-        Collections.sort(ManagerBase.Manager.getLayers(), (layer1, layer2) -> layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase()));
+        Collections.sort(ManagerBase.manager.getLayers(), (layer1, layer2) -> layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase()));
 
         String[] curentLayerNames = MapView.mapTileLoader.getCurrentLayer().getNames();
-        for (Layer layer : ManagerBase.Manager.getLayers()) {
+        for (Layer layer : ManagerBase.manager.getLayers()) {
             if (!layer.isOverlay()) {
                 //set icon (Online, Mapsforge or Freizeitkarte)
                 Sprite sprite = null;
@@ -237,7 +237,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void showMapOverlayMenu() {
         final OptionMenu icm = new OptionMenu("MapViewOverlayMenuTitle");
         icm.setSingleSelection();
-        for (Layer layer : ManagerBase.Manager.getLayers()) {
+        for (Layer layer : ManagerBase.manager.getLayers()) {
             if (layer.isOverlay()) {
                 MenuItem mi = icm.addMenuItem(layer.FriendlyName, "", null,
                         (v, x, y, pointer, button) -> {
@@ -352,6 +352,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                                 try {
                                     UnZip.extractFolder(target, false);
                                 } catch (Exception ex) {
+                                    Log.err(log, "Unzip error: " + ex.toString());
                                     MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                                 }
                                 Gdx.files.absolute(target).delete();
@@ -360,9 +361,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             });
                             return true;
                         });
-                mapViewThemeMenu.addMenuItem("Download", "\n Freizeitkarte",
-                        Sprites.getSprite(IconName.freizeit.name()), () -> showFZKDownloadMenu());
-
+                mapViewThemeMenu.addMenuItem("Download", "\n Freizeitkarte", Sprites.getSprite(IconName.freizeit.name()), () -> showFZKThemesDownloadMenu());
             }
         } else {
             if (!Config.RememberAsk_RenderThemePathWritable.getValue()) {
@@ -384,15 +383,15 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return true;
     }
 
-    private void showFZKDownloadMenu() {
+    private void showFZKThemesDownloadMenu() {
         GL.that.postAsync(() -> {
-            mapViewFZKDownloadMenu = new Menu("Download");
-            addDownloadFZKRenderThemes();
-            mapViewFZKDownloadMenu.show();
+            availableFZKThemesMenu = new Menu("Download");
+            downloadAvailableFZKThemesList();
+            availableFZKThemesMenu.show();
         });
     }
 
-    private void addDownloadFZKRenderThemes() {
+    private void downloadAvailableFZKThemesList() {
         if (fzkThemesInfoList.size == 0) {
             String repository_freizeitkarte_android = Webb.create()
                     .get("http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml")
@@ -408,7 +407,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         }
 
         for (FZKThemesInfo fzkThemesInfo : fzkThemesInfoList) {
-            mapViewFZKDownloadMenu.addMenuItem("Download", "\n" + fzkThemesInfo.Description, Sprites.getSprite(Sprites.IconName.freizeit.name()),
+            availableFZKThemesMenu.addMenuItem("Download", "\n" + fzkThemesInfo.Description, Sprites.getSprite(Sprites.IconName.freizeit.name()),
                     (v, x, y, pointer, button) -> {
                         GL.that.postAsync(() -> {
                             ((MenuItem) v).setDisabled(false);
@@ -420,6 +419,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             try {
                                 UnZip.extractFolder(target);
                             } catch (Exception ex) {
+                                Log.err(log, "Unzip error: " + ex.toString());
                                 MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                             }
                             Gdx.files.absolute(target).delete();
@@ -669,7 +669,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getStylesCallBack);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
+                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.manager.getGraphicFactory(ManagerBase.manager.getDisplayModel().getScaleFactor()), new DisplayModel(), renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
@@ -688,7 +688,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 getOverlaysCallback.setLayer(mapStyleId);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
+                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.manager.getGraphicFactory(ManagerBase.manager.getDisplayModel().getScaleFactor()), new DisplayModel(), renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }

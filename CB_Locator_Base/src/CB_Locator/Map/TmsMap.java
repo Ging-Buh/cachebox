@@ -14,27 +14,20 @@ import java.util.Map;
 public class TmsMap {
     public String url;
     public String name;
-    private String Filename;
-
+    private List<IRule<Map<String, String>>> ruleList;
     public TmsMap(String file) throws Exception {
-        Filename = file;
-
         System.setProperty("sjxp.namespaces", "false");
-
-        Map<String, String> values = new HashMap<String, String>();
-        List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
-
-        ruleList = createCustomMultiLayerMapSourceRules(ruleList);
-        ruleList = createMultiLayersRules(ruleList);
-        ruleList = createCustomMapSourceRules(ruleList);
-
+        Map<String, String> values = new HashMap<>();
+        ruleList = new ArrayList<>();
+        createCustomMultiLayerMapSourceRules();
+        createMultiLayersRules();
+        createCustomMapSourceRules();
         @SuppressWarnings("unchecked")
-        XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
-
-        parserCache.parse(new FileInputStream(Filename), values);
+        XMLParser<Map<String, String>> parserCache = new XMLParser<>(ruleList.toArray(new IRule[0]));
+        parserCache.parse(new FileInputStream(file), values);
     }
 
-    private List<IRule<Map<String, String>>> createCustomMultiLayerMapSourceRules(List<IRule<Map<String, String>>> ruleList) throws Exception {
+    private void createCustomMultiLayerMapSourceRules() throws Exception {
 
         // Basic GPX Rules
 
@@ -51,11 +44,9 @@ public class TmsMap {
                 // String tileType = text;
             }
         });
-
-        return ruleList;
     }
 
-    private List<IRule<Map<String, String>>> createMultiLayersRules(List<IRule<Map<String, String>>> ruleList) {
+    private void createMultiLayersRules() {
         ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/customMultiLayerMapSource/layers/customMapSource") {
             @Override
             public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values) {
@@ -104,11 +95,9 @@ public class TmsMap {
                 values.put("url", text);
             }
         });
-
-        return ruleList;
     }
 
-    private List<IRule<Map<String, String>>> createCustomMapSourceRules(List<IRule<Map<String, String>>> ruleList) {
+    private void createCustomMapSourceRules() {
         ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/customMapSource") {
             @Override
             public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values) {
@@ -157,8 +146,6 @@ public class TmsMap {
                 values.put("url", text);
             }
         });
-
-        return ruleList;
     }
 
 }

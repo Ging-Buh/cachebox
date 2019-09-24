@@ -44,7 +44,7 @@ class DCB {
         Config.settings.ReadFromDB();
 
         CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
+        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
 
         File Dir = FileFactory.createFile("./");
         final String[] files;

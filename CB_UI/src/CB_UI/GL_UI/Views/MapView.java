@@ -297,16 +297,16 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // from create
 
         String[] currentLayerNames = Config.CurrentMapLayer.getValue();
-        if (ManagerBase.Manager != null) {
+        if (ManagerBase.manager != null) {
             if (mapTileLoader.getCurrentLayer() == null) {
-                mapTileLoader.setCurrentLayer(ManagerBase.Manager.getOrAddLayer(currentLayerNames, currentLayerNames[0], ""));
+                mapTileLoader.setCurrentLayer(ManagerBase.manager.getOrAddLayer(currentLayerNames, currentLayerNames[0], ""));
             }
         }
 
         String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayer.getValue()};
-        if (ManagerBase.Manager != null) {
+        if (ManagerBase.manager != null) {
             if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
-                mapTileLoader.setCurrentOverlayLayer(ManagerBase.Manager.getOrAddLayer(currentOverlayLayerName, currentOverlayLayerName[0], ""));
+                mapTileLoader.setCurrentOverlayLayer(ManagerBase.manager.getOrAddLayer(currentOverlayLayerName, currentOverlayLayerName[0], ""));
         }
 
         iconFactor = Config.MapViewDPIFaktor.getValue();
@@ -1190,7 +1190,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             String mapsforgeThemesStyle;
             mapsForgeThemePath = "";
             if (CarMode) {
-                ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
+                ManagerBase.manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
                 mapsForgeThemePath = ManagerBase.INTERNAL_THEME_CAR;
                 if (Config.nightMode.getValue()) {
                     mapsforgeThemesStyle = Config.MapsforgeCarNightStyle.getValue();
@@ -1200,7 +1200,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     setTheme(Config.MapsforgeCarDayTheme.getValue());
                 }
             } else {
-                ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
+                ManagerBase.manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
                 if (Config.nightMode.getValue()) {
                     mapsforgeThemesStyle = Config.MapsforgeNightStyle.getValue();
                     setTheme(Config.MapsforgeNightTheme.getValue());
@@ -1209,7 +1209,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     setTheme(Config.MapsforgeDayTheme.getValue());
                 }
             }
-            ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, mapsforgeThemesStyle);
+            ManagerBase.manager.setRenderTheme(mapsForgeThemePath, mapsforgeThemesStyle);
         }
 
         if ((InitialFlags & INITIAL_WP_LIST) != 0) {

@@ -141,62 +141,58 @@ public class MapDownloadItem extends CB_View_Base {
 
         lastProgress = 0;
 
-        Thread runThread = new Thread(new Runnable() {
+        new Thread(() -> {
+            int slashPos = mapInfo.Url.lastIndexOf("/");
+            String zipFile = mapInfo.Url.substring(slashPos + 1, mapInfo.Url.length());
+            String target = workPath + "/" + zipFile;
 
-            @Override
-            public void run() {
-                int slashPos = mapInfo.Url.lastIndexOf("/");
-                String zipFile = mapInfo.Url.substring(slashPos + 1, mapInfo.Url.length());
-                String target = workPath + "/" + zipFile;
+            progressBar.setProgress(lastProgress, lastProgress + " %");
 
-                progressBar.setProgress(lastProgress, lastProgress + " %");
+            if (Download.Download(mapInfo.Url, target)) {
+                Log.info(log, "Unzip " + target + " start.");
+                try {
+                    UnZip.extractFolder(target);
+                } catch (Exception ex) {
+                    Log.err(log, "Unzip error: " + ex.toString());
+                }
+                Log.info(log, "Unzip " + target + " end.");
 
-                if (Download.Download(mapInfo.Url, target)) {
+                // Copy and Clear ? todo check is this necessary and ok?
+                File folder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(zipFile));
+                File newfolder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(folder.getName()));
+
+                if (folder.isDirectory()) {
+                    folder.renameTo(newfolder);
+
                     try {
-                        UnZip.extractFolder(target);
-                    } catch (Exception e) {
+                        Copy.copyFolder(newfolder, FileFactory.createFile(workPath));
+                    } catch (IOException e) {
                         Log.err(log, e.getLocalizedMessage());
                     }
 
-                    // Copy and Clear ? todo check is this necessary and ok?
-                    File folder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(zipFile));
-                    File newfolder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(folder.getName()));
-
-                    if (folder.isDirectory()) {
-                        folder.renameTo(newfolder);
-
-                        try {
-                            Copy.copyFolder(newfolder, FileFactory.createFile(workPath));
-                        } catch (IOException e) {
-                            Log.err(log, e.getLocalizedMessage());
-                        }
-
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            Log.err(log, e.getLocalizedMessage());
-                        }
-
-                        deleteDirectory(newfolder);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        Log.err(log, e.getLocalizedMessage());
                     }
 
+                    deleteDirectory(newfolder);
                 }
 
-                try {
-                    FileFactory.createFile(target).delete();
-                    Log.info(log, "Deleted " + target);
-                } catch (IOException e) {
-                    Log.err(log, e.getLocalizedMessage());
-                }
-
-                lastProgress = canceld ? 0 : 100;
-                progressBar.setProgress(lastProgress, lastProgress + " %");
-                DownloadRuns.set(false);
-                Log.info(log, "Download everything ready");
             }
-        });
 
-        runThread.start();
+            try {
+                FileFactory.createFile(target).delete();
+                Log.info(log, "Deleted " + target);
+            } catch (IOException e) {
+                Log.err(log, e.getLocalizedMessage());
+            }
+
+            lastProgress = canceld ? 0 : 100;
+            progressBar.setProgress(lastProgress, lastProgress + " %");
+            DownloadRuns.set(false);
+            Log.info(log, "Download everything ready");
+        }).start();
 
     }
 

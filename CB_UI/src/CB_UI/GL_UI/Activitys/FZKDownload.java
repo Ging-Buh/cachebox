@@ -282,8 +282,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             lblProgressMsg.setText(Translation.get("DownloadCanceld"));
 
         bOK.enable();
-        if (ManagerBase.Manager != null)
-            ManagerBase.Manager.initMapPacks();
+        if (ManagerBase.manager != null)
+            ManagerBase.manager.initMapPacks();
     }
 
     private void chkRepository() {
@@ -326,8 +326,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             isChkRepository = false;
             lblProgressMsg.setText("");
 
-            if (ManagerBase.Manager != null)
-                ManagerBase.Manager.initMapPacks();
+            if (ManagerBase.manager != null)
+                ManagerBase.manager.initMapPacks();
         }).start();
 
     }

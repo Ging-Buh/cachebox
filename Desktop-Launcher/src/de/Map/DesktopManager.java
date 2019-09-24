@@ -24,7 +24,6 @@ import CB_Utils.Util.HSV_Color;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.map.awt.graphics.ext_AwtGraphicFactory;
-import org.mapsforge.map.model.DisplayModel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -42,8 +41,7 @@ import java.io.InputStream;
  */
 public class DesktopManager extends ManagerBase {
 
-    public DesktopManager(DisplayModel displaymodel) {
-        super(displaymodel);
+    public DesktopManager() {
     }
 
     @Override
@@ -52,10 +50,10 @@ public class DesktopManager extends ManagerBase {
     }
 
     @Override
-    public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex) {
+    protected TileGL getTileGL(Layer layer, Descriptor desc, int ThreadIndex) {
 
         if (layer.isMapsForge()) {
-            return getMapsforgePixMap(layer, desc, ThreadIndex);
+            return getMapsforgeTileGL_Bmp(layer, desc, ThreadIndex);
         }
         // else
         com.badlogic.gdx.graphics.Pixmap.Format format = layer.isOverlay() ? com.badlogic.gdx.graphics.Pixmap.Format.RGBA4444 : com.badlogic.gdx.graphics.Pixmap.Format.RGB565;
@@ -74,7 +72,7 @@ public class DesktopManager extends ManagerBase {
             for (int i = 0; i < mapPacks.size(); i++) {
                 PackBase mapPack = mapPacks.get(i);
                 if ((mapPack.layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
-                    BoundingBox bbox = mapPacks.get(i).Contains(desc);
+                    BoundingBox bbox = mapPacks.get(i).contains(desc);
 
                     if (bbox != null) {
                         byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
@@ -117,8 +115,7 @@ public class DesktopManager extends ManagerBase {
         return null;
     }
 
-    @Override
-    protected ImageData getImagePixel(byte[] img) {
+    private ImageData getImagePixel(byte[] img) {
         InputStream in = new ByteArrayInputStream(img);
         BufferedImage bImage;
         try {
@@ -144,8 +141,7 @@ public class DesktopManager extends ManagerBase {
 
     }
 
-    @Override
-    protected byte[] getImageFromData(ImageData imgData) {
+    private byte[] getImageFromData(ImageData imgData) {
 
         BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
 
@@ -160,7 +156,7 @@ public class DesktopManager extends ManagerBase {
     }
 
     @Override
-    public PackBase CreatePack(String file) throws IOException {
+    public PackBase getMapPack(String file) throws IOException {
         return new DesktopPack(file);
     }
 

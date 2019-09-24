@@ -94,7 +94,6 @@ public class TileGL_Bmp extends TileGL {
                     Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
                     texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
                     pixmap.dispose();
-                    pixmap = null;
                 } catch (Exception ex) {
                     Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
                 }

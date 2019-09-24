@@ -87,12 +87,11 @@ import java.util.Map;
  */
 public class Splash extends Activity {
     private static final String log = "CB2 Splash";
-    public static Activity splashActivity;
     private Bitmap bitmap;
     private Dialog pleaseWaitDialog;
     private String workPath;
     private int AdditionalWorkPathCount;
-    private MessageBox msg;
+    private Dialog msg;
     private ArrayList<String> AdditionalWorkPathArray;
     private SharedPreferences androidSetting;
     private SharedPreferences.Editor androidSettingEditor;
@@ -110,15 +109,13 @@ public class Splash extends Activity {
             // read workpath from Android Preferences
             androidSetting = getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
             workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
-            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO); // perhaps put this into androidSetting,setting another start LogLevel
+            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.ERROR); // perhaps put this into androidSetting,setting another start LogLevel
             Log.info(log, "Logging initialized");
         }
         Log.info(log, "onCreate called");
 
         bundeledData = new Bundle();
         prepareBundledData();
-
-        splashActivity = this;
 
         // settings for this class Activity
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // Porträt erzwingen
@@ -297,7 +294,6 @@ public class Splash extends Activity {
     }
 
     private void startInitialization() {
-        splashActivity = this;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             PermissionCheck.checkNeededPermissions(this);
@@ -436,7 +432,7 @@ public class Splash extends Activity {
                         // show KitKat Massage?
 
                         if (isSandbox && !showSandbox) {
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(splashActivity);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Splash.this);
 
                             // set title
                             alertDialogBuilder.setTitle("KitKat Sandbox");
@@ -524,7 +520,7 @@ public class Splash extends Activity {
                     continue;
                 }
 
-                Button btnAdditionalWorkpath = new Button(splashActivity);
+                Button btnAdditionalWorkpath = new Button(Splash.this);
                 btnAdditionalWorkpath.setText(Name + "\n\n" + _AdditionalWorkPath);
                 btnAdditionalWorkpath.setOnLongClickListener(v -> {
 
@@ -543,20 +539,16 @@ public class Splash extends Activity {
                     MessageBox.Builder.ButtonHeight = (int) (50 * scale);
 
                     // Ask before delete
-                    msg = (MessageBox) MessageBox.Show(Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog1, int which) {
-                            if (which == MessageBox.BUTTON_POSITIVE) {
-                                // Delete this Workpath only from Settings don't delete any File
-                                deleteWorkPath(_AdditionalWorkPath);
-                            }
-                            // Start again to exclude the old Folder
-                            msg.dismiss();
-                            onStart();
-                        }
-
-                    });
+                    msg = MessageBox.show(this, Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                            (dialog1, which) -> {
+                                if (which == Dialog.BUTTON_POSITIVE) {
+                                    // Delete this Workpath only from Settings don't delete any File
+                                    deleteWorkPath(_AdditionalWorkPath);
+                                }
+                                // Start again to exclude the old Folder
+                                msg.dismiss();
+                                onStart();
+                            });
 
                     dialog.dismiss();
                     return true;
@@ -617,10 +609,6 @@ public class Splash extends Activity {
         Log.debug(log, "onDestroy");
         if (isFinishing()) {
             releaseImages();
-            // versionTextView = null;
-            // myTextView = null;
-            // descTextView = null;
-            splashActivity = null;
         }
         super.onDestroy();
         if (pleaseWaitDialog != null && pleaseWaitDialog.isShowing()) {
@@ -844,8 +832,8 @@ public class Splash extends Activity {
             Log.info(log, "Settings read from configDB.");
         }
 
-        CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
+        CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
         PlatformSettings.setPlatformSettings(new IPlatformSettings() {
             @Override
             public void Write(SettingBase<?> setting) {
@@ -923,7 +911,7 @@ public class Splash extends Activity {
         ext_AndroidGraphicFactory.createInstance(this.getApplication());
         float restrictedScaleFactor = 1f;
         DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
-        new de.droidcachebox.Map.AndroidManager(new DisplayModel());
+        new de.droidcachebox.Map.AndroidManager().setDisplayModel(new DisplayModel());
 
         Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
         Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
@@ -956,7 +944,6 @@ public class Splash extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        splashActivity = this;
         switch (requestCode) {
             case PermissionCheck.MY_PERMISSIONS_REQUEST: {
                 Map<String, Integer> perms = new HashMap<String, Integer>();

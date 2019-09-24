@@ -33,9 +33,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 import de.droidcachebox.Global;
-import de.droidcachebox.Main;
 import de.droidcachebox.R;
-import de.droidcachebox.Splash;
 
 import static android.view.View.GONE;
 
@@ -47,22 +45,7 @@ import static android.view.View.GONE;
  * @author Longri Basiert auf dem Sample Code von Antoine Vianey.
  * Zu finden unter http://code.google.com/p/androgames-sample/
  */
-public class MessageBox extends android.app.Dialog {
-
-    static String button1 = "";
-    static String button2 = "";
-    static String button3 = "";
-    static Drawable icon = null;
-    private static DialogInterface.OnClickListener listener;
-    private static Activity parent;
-
-    public MessageBox(Context context, int theme) {
-        super(context, theme);
-    }
-
-    public MessageBox(Context context) {
-        super(context);
-    }
+public class MessageBox {
 
     /**
      * Zeigt ein Meldungsfeld mit angegebenem Text an.
@@ -72,26 +55,16 @@ public class MessageBox extends android.app.Dialog {
      * @param msg Die Message, welche ausgegeben werden soll.
      *
      *            <pre>
-     *                                                    Beispiel:</b>
-     *                                                    {@code
-     *                                                    MessageBox.Show("Test");
-     *                                                    }
-     *                                                </pre>
+     *                           Beispiel:</b>
+     *                           {@code
+     *                           MessageBox.show("Test");
+     *                           }
+     *                       </pre>
      */
-    public static void Show(String msg) {
-        listener = null;
+    public static void show(Activity activity, String msg) {
         Bundle b = new Bundle();
         b.putString("msg", msg);
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_1, b);
-        dialog.show();
-    }
-
-    public static void Show(String msg, Activity act) {
-        parent = act;
-        listener = null;
-        Bundle b = new Bundle();
-        b.putString("msg", msg);
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_1, b);
+        Dialog dialog = createDialog(activity, DialogID.MSG_BOX_1, b, null);
         dialog.show();
     }
 
@@ -102,202 +75,131 @@ public class MessageBox extends android.app.Dialog {
      * @param msg      Der im Meldungsfeld anzuzeigende Text.
      * @param title    Der in der Titelleiste des Meldungsfelds anzuzeigende Text.
      * @param buttons  Ein MessageBoxButtons-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
-     * @param Listener Welcher die Events der Buttons behandelt
+     * @param listener handling all button events
      *
      *                 <pre>
-     *                                                                     <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     *                                                                     {@code
-     *                                                                     MessageBox.Show("Test", "Titel" ,null);
-     *                                                                     }
-     *                                                                 </pre>
+     *                                     <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
+     *                                     {@code
+     *                                     MessageBox.show("Test", "Titel" ,null);
+     *                                     }
+     *                                 </pre>
      *
      *                 <pre>
-     *                                                                     <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
-     *                                                                     {@code
-     *                                                                     	MessageBox.Show("Test", "Titel",DialogListener)
-     *                                                                      private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
-     *                                                                       {
-     *                                                                      &#64;return
-     *                                                                     	@Override
-     *                                                                     	public void onClick(DialogInterface dialog, int button)
-     *                                                                     	{
-     *                                                                     		// Behandle das ergebniss
-     *                                                                     		switch (button)
-     *                                                                     		{
-     *                                                                     			case -1:
-     *                                                                     				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-     *                                                                     				break;
-     *                                                                     			case -2:
-     *                                                                     				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-     *                                                                     				break;
-     *                                                                     			case -3:
-     *                                                                     				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-     *                                                                     				break;
-     *                                                                     		}
-     *
-     *                                                                     		dialog.dismiss();
-     *                                                                     	}
-     *
-     *                                                                        };
-     *                                                                     }
-     *                                                                  </pre>
+     *                                     <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
+     *                                     {@code
+     *                                     MessageBox.show("Test", "Titel",DialogListener)
+     *                                     private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
+     *                                     {
+     *                                     &#64;return
+     *                                     @Override
+     *                                     public void onClick(DialogInterface dialog, int button)
+     *                                     {
+     *                                     // Behandle das ergebniss
+     *                                     switch (button)
+     *                                     {
+     *                                     case -1:
+     *                                     Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                     break;
+     *                                     case -2:
+     *                                     Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                     break;
+     *                                     case -3:
+     *                                     Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                     break;
+     *                                     }
+     *                                     dialog.dismiss();
+     *                                     }
+     *                                     };
+     *                                     }
+     *                                 </pre>
      */
-    public static Dialog Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
-        listener = Listener;
+    public static Dialog show(Activity activity, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener listener) {
         Bundle b = new Bundle();
         b.putString("msg", msg);
         b.putString("title", title);
         b.putInt("buttons", buttons.ordinal());
         b.putInt("icon", icon.ordinal());
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_4, b);
+        Dialog dialog = createDialog(activity, DialogID.MSG_BOX_4, b, listener);
         try {
             dialog.show();
-        } catch (Exception e) {
-            parent = null;
-            dialog = CreateDialog(DialogID.MSG_BOX_4, b);
-            dialog.show();
+        } catch (Exception ignored) {
         }
         return dialog;
     }
 
-    public static void Show(String msg, String title, MessageBoxIcon icon) {
-        Show(msg, title, MessageBoxButtons.OK, icon, null);
-
+    public static void show(Activity activity, String msg, String title, MessageBoxIcon icon) {
+        show(activity, msg, title, MessageBoxButtons.OK, icon, null);
     }
 
-    public static Dialog CreateDialog(int dialogId, Bundle b) {
+    private static Dialog createDialog(Activity activity, int dialogId, Bundle b, DialogInterface.OnClickListener listener) {
         if (listener == null) {
-            // setze standard Listener zu Schliessen des Dialogs, falls kein Listener angegeben wurde
-            listener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            };
+            listener = (dialog, which) -> dialog.dismiss();
         }
-
-        Dialog dialog = null;
+        MessageBox.Builder customBuilder = new MessageBox.Builder(activity);
         switch (dialogId) {
             case DialogID.MSG_BOX_1:
-                MessageBox.Builder customBuilder = new MessageBox.Builder(getActivity());
                 customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
-                dialog = customBuilder.create();
                 break;
-
             case DialogID.MSG_BOX_2:
-                MessageBox.Builder customBuilder2 = new MessageBox.Builder(getActivity());
-                customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
-                dialog = customBuilder2.create();
+                customBuilder.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
                 break;
-
             case DialogID.MSG_BOX_3:
-
-                setButtonCaptions(b);
-                MessageBox.Builder customBuilder3 = new MessageBox.Builder(getActivity());
-                customBuilder3.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(button1, listener).setNeutralButton(button2, listener).setNegativeButton(button3, listener);
-                dialog = customBuilder3.create();
+                setButtonCaptions(b, customBuilder, listener);
+                customBuilder.setTitle(b.getString("title")).setMessage(b.getString("msg"));
                 break;
-
             case DialogID.MSG_BOX_4:
-
-                setButtonCaptions(b);
-                setIcon(b);
-                MessageBox.Builder customBuilder4 = new MessageBox.Builder(getActivity());
-                customBuilder4.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(button1, listener).setNeutralButton(button2, listener).setNegativeButton(button3, listener).setIcon(icon);
-                dialog = customBuilder4.create();
+                setButtonCaptions(b, customBuilder, listener);
+                customBuilder.setTitle(b.getString("title")).setMessage(b.getString("msg"));
+                customBuilder.setIcon(getIcon(b.getInt("icon")));
                 break;
-
         }
-        return dialog;
+        return customBuilder.create();
     }
 
-    /**
-     * @return
-     */
-    private static Activity getActivity() {
-        if (parent != null)
-            return parent;
-        if (Main.mainActivity != null)
-            return Main.mainActivity;
-        return Splash.splashActivity;
-    }
-
-    /**
-     * @param b
-     */
-    private static void setButtonCaptions(Bundle b) {
+    private static void setButtonCaptions(Bundle b, MessageBox.Builder customBuilder, DialogInterface.OnClickListener listener) {
         int button = b.getInt("buttons");
         if (button == 0) {
-            button1 = Translation.get("abort");
-            button2 = Translation.get("retry");
-            button3 = Translation.get("ignore");
+            setButtons(customBuilder, Translation.get("abort"), Translation.get("retry"), Translation.get("ignore"), listener);
         } else if (button == 1) {
-            button1 = Translation.get("ok");
-            button2 = "";
-            button3 = "";
+            setButtons(customBuilder, Translation.get("ok"), "", "", listener);
         } else if (button == 2) {
-            button1 = Translation.get("ok");
-            button2 = "";
-            button3 = Translation.get("cancel");
+            setButtons(customBuilder, Translation.get("ok"), "", Translation.get("cancel"), listener);
         } else if (button == 3) {
-            button1 = Translation.get("retry");
-            button2 = "";
-            button3 = Translation.get("cancel");
+            setButtons(customBuilder, Translation.get("retry"), "", Translation.get("cancel"), listener);
         } else if (button == 4) {
-            button1 = Translation.get("yes");
-            button2 = "";
-            button3 = Translation.get("no");
+            setButtons(customBuilder, Translation.get("yes"), "", Translation.get("no"), listener);
         } else if (button == 5) {
-            button1 = Translation.get("yes");
-            button2 = Translation.get("no");
-            button3 = Translation.get("cancel");
+            setButtons(customBuilder, Translation.get("yes"), Translation.get("no"), Translation.get("cancel"), listener);
         }
     }
 
-    /**
-     * @param b
-     */
-    private static void setIcon(Bundle b) {
-        switch (b.getInt("icon")) {
-            case 0:
-                icon = Global.Icons[32];
-                break;
+    private static void setButtons(MessageBox.Builder customBuilder, String positive, String neutral, String negative, DialogInterface.OnClickListener listener) {
+        customBuilder.setPositiveButton(positive, listener);
+        customBuilder.setNeutralButton(neutral, listener);
+        customBuilder.setNegativeButton(negative, listener);
+    }
+
+    private static Drawable getIcon(int which) {
+        switch (which) {
             case 1:
-                icon = Global.Icons[31];
-                break;
-            case 2:
-                icon = Global.Icons[33];
-                break;
             case 3:
-                icon = Global.Icons[31];
-                break;
-            case 4:
-                icon = Global.Icons[32];
-                break;
-            case 5:
-                icon = null;
-                break;
-            case 6:
-                icon = Global.Icons[34];
-                break;
             case 7:
-                icon = Global.Icons[31];
-                break;
+                return Global.Icons[31];
+            case 0:
+            case 4:
+                return Global.Icons[32];
+            case 2:
             case 8:
-                icon = Global.Icons[33];
-                break;
+                return Global.Icons[33];
+            case 6:
+                return Global.Icons[34];
             case 9:
-                icon = Global.Icons[35];
-                break;
+                return Global.Icons[35];
             case 10:
-                icon = Global.Icons[36];
-                break;
-
+                return Global.Icons[36];
             default:
-                icon = null;
-
+                return null;
         }
-
     }
 
     /**
@@ -325,16 +227,6 @@ public class MessageBox extends android.app.Dialog {
 
         public Builder setMessage(String message) {
             this.message = message;
-            return this;
-        }
-
-        public Builder setMessage(int message) {
-            this.message = (String) context.getText(message);
-            return this;
-        }
-
-        public Builder setTitle(int title) {
-            this.title = (String) context.getText(title);
             return this;
         }
 
@@ -372,23 +264,21 @@ public class MessageBox extends android.app.Dialog {
         }
 
         @SuppressWarnings("deprecation")
-        public MessageBox create() {
+        public Dialog create() {
             int winWidth = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getWindowWidth() : WindowWidth;
             int winHeight = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getWindowHeight() : WindowHeight;
-            // float txtSize = UI_Size_Base.that != null ? (float) (UI_Size_Base.that.getScaledFontSize_btn()) : textSize;
             int Buttonheight = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getButtonHeight() : ButtonHeight;
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // instantiate the dialog with the custom Theme
-            final MessageBox dialog = new MessageBox(context, R.style.Dialog);
+            final Dialog dialog = new Dialog(context, R.style.Dialog);
             View layout = inflater.inflate(R.layout.message_box_layout, null);
             dialog.addContentView(layout, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
             // set the dialog title
             if (title != null && !title.equals("")) {
                 ((TextView) layout.findViewById(R.id.title)).setText(title);
-                // ((TextView) layout.findViewById(R.id.title)).setTextSize(txtSize);
             } else {
-                ((TextView) layout.findViewById(R.id.title)).setVisibility(GONE);
+                layout.findViewById(R.id.title).setVisibility(GONE);
             }
 
             // set the confirm button
@@ -398,7 +288,7 @@ public class MessageBox extends android.app.Dialog {
                     ((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                            positiveButtonClickListener.onClick(dialog, Dialog.BUTTON_POSITIVE);
                             dialog.dismiss();
                         }
                     });
@@ -414,7 +304,7 @@ public class MessageBox extends android.app.Dialog {
                     ((Button) layout.findViewById(R.id.neutralButton)).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            neutralButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+                            neutralButtonClickListener.onClick(dialog, Dialog.BUTTON_NEUTRAL);
                             dialog.dismiss();
                         }
                     });
@@ -430,7 +320,7 @@ public class MessageBox extends android.app.Dialog {
                     ((Button) layout.findViewById(R.id.negativeButton)).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            negativeButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
+                            negativeButtonClickListener.onClick(dialog, Dialog.BUTTON_NEGATIVE);
                             dialog.dismiss();
                         }
                     });
@@ -476,7 +366,6 @@ public class MessageBox extends android.app.Dialog {
             return dialog;
         }
 
-        @SuppressWarnings("deprecation")
         private void setBackgroundDrawables(View layout) {
             Resources res = context.getResources();
 
@@ -489,17 +378,15 @@ public class MessageBox extends android.app.Dialog {
             Drawable center = res.getDrawable(NightMode ? R.drawable.night_center : R.drawable.center);
             Drawable footer = res.getDrawable(NightMode ? R.drawable.night_footer : R.drawable.footer);
 
-            ((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
-            ((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);
-            ((LinearLayout) layout.findViewById(R.id.content)).setBackgroundDrawable(center);
-            ((LinearLayout) layout.findViewById(R.id.footer)).setBackgroundDrawable(footer);
+            layout.findViewById(R.id.header).setBackgroundDrawable(header);
+            layout.findViewById(R.id.title).setBackgroundDrawable(title);
+            layout.findViewById(R.id.content).setBackgroundDrawable(center);
+            layout.findViewById(R.id.footer).setBackgroundDrawable(footer);
 
             ((TextView) layout.findViewById(R.id.title)).setTextColor(Global.getColor(R.attr.TextColor));
             TextView tvM = layout.findViewById(R.id.message);
             if (tvM != null)
                 tvM.setTextColor(Global.getColor(R.attr.TextColor));
-
-            res = null;
         }
 
     }

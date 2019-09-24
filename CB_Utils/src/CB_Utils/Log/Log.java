@@ -46,27 +46,27 @@ public class Log {
     }
 
     public static void debug(String sKlasse, String logText) {
-        if (LogLevel.isLogLevel(LogLevel.DEBUG))
+        if (LogLevel.shouldWriteLog(LogLevel.DEBUG))
             LoggerFactory.getLogger(sKlasse).debug(logText);
     }
 
     public static void info(String sKlasse, String logText) {
-        if (LogLevel.isLogLevel(LogLevel.INFO))
+        if (LogLevel.shouldWriteLog(LogLevel.INFO))
             LoggerFactory.getLogger(sKlasse).info(logText);
     }
 
     public static void trace(String sKlasse, String logText) {
-        if (LogLevel.isLogLevel(LogLevel.TRACE))
+        if (LogLevel.shouldWriteLog(LogLevel.TRACE))
             LoggerFactory.getLogger(sKlasse).trace(logText);
     }
 
     public static void trace(String sKlasse, Throwable t) {
-        if (LogLevel.isLogLevel(LogLevel.TRACE))
+        if (LogLevel.shouldWriteLog(LogLevel.TRACE))
             LoggerFactory.getLogger(sKlasse).trace("", t);
     }
 
     public static void warn(String sKlasse, String logText) {
-        if (LogLevel.isLogLevel(LogLevel.WARN))
+        if (LogLevel.shouldWriteLog(LogLevel.WARN))
             LoggerFactory.getLogger(sKlasse).warn(logText);
     }
 

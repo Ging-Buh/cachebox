@@ -386,7 +386,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                                 Welcome += Translation.GetTextFile("changelog", LangId);
                             } catch (IOException ignored) {
                             }
-                            MessageBox.Show(Welcome, Translation.get("welcome"), MessageBoxIcon.None);
+                            MessageBox.show(Main.mainActivity,  Welcome, Translation.get("welcome"), MessageBoxIcon.None);
                         });
                     }
                 }, 5000);
@@ -766,7 +766,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     private void askToGetApiKey() {
-        MessageBox.Show(Translation.get("wantApi"), Translation.get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+        MessageBox.show(this, Translation.get("wantApi"), Translation.get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
                 (dialog, button) -> {
                     switch (button) {
                         case -1:
@@ -1503,7 +1503,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         try {
             if (Config.Ask_Switch_GPS_ON.getValue()) {
                 CheckTranslationIsLoaded();
-                runOnUiThread(() -> MessageBox.Show(Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (dialog, button) -> {
+                runOnUiThread(() -> MessageBox.show(Main.mainActivity, Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (dialog, button) -> {
                     // Behandle das ergebniss
                     switch (button) {
                         case -1:

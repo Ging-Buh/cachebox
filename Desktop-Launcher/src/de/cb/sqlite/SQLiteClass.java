@@ -73,7 +73,7 @@ public class SQLiteClass implements SQLiteInterface {
         if (myDB == null)
             return null;
 
-        if (LogLevel.isLogLevel(LogLevel.TRACE)) {
+        if (LogLevel.shouldWriteLog(LogLevel.TRACE)) {
             StringBuilder sb = new StringBuilder("RAW_QUERY :" + sql + " ARGs= ");
             if (args != null) {
                 for (String arg : args)
@@ -160,7 +160,7 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public long update(String tablename, HashMap<String, Object> val, String whereClause, String[] whereArgs) {
 
-        if (LogLevel.isLogLevel(LogLevel.TRACE)) {
+        if (LogLevel.shouldWriteLog(LogLevel.TRACE)) {
             StringBuilder sb = new StringBuilder("Update @ Table:" + tablename);
             sb.append("Parameters:" + val.toString());
             sb.append("WHERECLAUSE:" + whereClause);
@@ -289,7 +289,7 @@ public class SQLiteClass implements SQLiteInterface {
 
     @Override
     public long delete(String tablename, String whereClause, String[] whereArgs) {
-        if (LogLevel.isLogLevel(LogLevel.TRACE)) {
+        if (LogLevel.shouldWriteLog(LogLevel.TRACE)) {
             StringBuilder sb = new StringBuilder("Delete@ Table:" + tablename);
             sb.append("WHERECLAUSE:" + whereClause);
 

@@ -174,14 +174,11 @@ class MultiThreadQueueProcessor extends Thread {
         return this.isAlive;
     }
 
-    // #######################################################################
-    // private
-
     private void LoadTile(Descriptor desc) {
 
         TileGL tile = null;
-        if (ManagerBase.Manager != null) {
-            tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
+        if (ManagerBase.manager != null) {
+            tile = ManagerBase.manager.getTileGL(queueData.CurrentLayer, desc, ThreadId);
         }
 
         if (tile != null) {
@@ -189,8 +186,8 @@ class MultiThreadQueueProcessor extends Thread {
             // Redraw Map after a new Tile was loaded or generated
             GL.that.renderOnce();
         } else {
-            if (ManagerBase.Manager.cacheTile(queueData.CurrentLayer, desc)) {
-                tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
+            if (ManagerBase.manager.cacheTile(queueData.CurrentLayer, desc)) {
+                tile = ManagerBase.manager.getTileGL(queueData.CurrentLayer, desc, ThreadId);
                 addLoadedTile(desc, tile);
                 // Redraw Map after a new Tile was loaded or generated
                 GL.that.renderOnce();
@@ -207,9 +204,9 @@ class MultiThreadQueueProcessor extends Thread {
             return;
 
         TileGL tile = null;
-        if (ManagerBase.Manager != null) {
+        if (ManagerBase.manager != null) {
             // Load Overlay never inverted !!!
-            tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentOverlayLayer, desc, ThreadId);
+            tile = ManagerBase.manager.getTileGL(queueData.CurrentOverlayLayer, desc, ThreadId);
         }
 
         if (tile != null) {
@@ -217,7 +214,7 @@ class MultiThreadQueueProcessor extends Thread {
             // Redraw Map after a new Tile was loaded or generated
             GL.that.renderOnce();
         } else {
-            ManagerBase.Manager.cacheTile(queueData.CurrentOverlayLayer, desc);
+            ManagerBase.manager.cacheTile(queueData.CurrentOverlayLayer, desc);
             // to avoid endless tries
             RemoveFromQueuedTiles(desc);
         }

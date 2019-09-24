@@ -309,7 +309,7 @@ public class CB_Label extends CB_View_Base {
 
         final int n = mText.length();
 
-        if (LogLevel.isLogLevel(LogLevel.TRACE)) {
+        if (LogLevel.shouldWriteLog(LogLevel.TRACE)) {
             // show chars, that don't exist in the mFont
             for (int start = 0; start < n; start++) {
                 if (mFont.getData().getGlyph(mText.charAt(start)) == null) {

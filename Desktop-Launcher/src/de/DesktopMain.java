@@ -126,8 +126,7 @@ public class DesktopMain {
             Config.AcceptChanges();
         }
 
-        DisplayModel model = new DisplayModel();
-        new DesktopManager(model);
+        new DesktopManager().setDisplayModel(new DisplayModel());
 
         int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 

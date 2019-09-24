@@ -1,3 +1,3 @@
 include ':CB_Utils', ':CB_Translation_Base', ':CB_mapsforge', ':CB_UI_Base', ':CB_Locator_Base', ':CB_Locator_Desktop', ':GPS_Simulator', ':SkinPacker', ':CB_Rpc', ':CB_Core'
-include 'Desktop-Launcher', 'Android_GUI', 'iOS-Launcher', 'CB_UI'
+include 'Desktop-Launcher', 'Android_GUI', 'CB_UI'
 //include ':CB_Server'

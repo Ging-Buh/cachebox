@@ -27,7 +27,6 @@ import CB_Utils.fileProvider.FileFactory;
 import android.graphics.BitmapFactory;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
-import org.mapsforge.map.model.DisplayModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,21 +38,20 @@ import java.io.IOException;
 public class AndroidManager extends ManagerBase {
     private static final String log = "AndroidManager";
 
-    public AndroidManager(DisplayModel displaymodel) {
-        super(displaymodel);
+    public AndroidManager() {
     }
 
     @Override
-    public PackBase CreatePack(String file) throws IOException {
+    public PackBase getMapPack(String file) throws IOException {
         return new AndroidPack(file);
     }
 
 
     @Override
-    public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex) {
+    protected TileGL getTileGL(Layer layer, Descriptor desc, int ThreadIndex) {
 
         if (layer.isMapsForge()) {
-            return getMapsforgePixMap(layer, desc, ThreadIndex);
+            return getMapsforgeTileGL_Bmp(layer, desc, ThreadIndex);
         }
 
         Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
@@ -72,7 +70,7 @@ public class AndroidManager extends ManagerBase {
             for (int i = 0; i < mapPacks.size(); i++) {
                 PackBase mapPack = mapPacks.get(i);
                 if ((mapPack.layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
-                    BoundingBox bbox = mapPacks.get(i).Contains(desc);
+                    BoundingBox bbox = mapPacks.get(i).contains(desc);
 
                     if (bbox != null) {
                         byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
@@ -113,6 +111,7 @@ public class AndroidManager extends ManagerBase {
         return null;
     }
 
+    /*
     public android.graphics.Bitmap LoadLocalBitmap(Layer layer, Descriptor desc) {
         try {
             // Schauen, ob Tile im Cache liegt
@@ -129,7 +128,7 @@ public class AndroidManager extends ManagerBase {
             for (int i = 0; i < mapPacks.size(); i++) {
                 AndroidPack mapPack = (AndroidPack) mapPacks.get(i);
                 if ((mapPack.layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
-                    BoundingBox bbox = mapPacks.get(i).Contains(desc);
+                    BoundingBox bbox = mapPacks.get(i).contains(desc);
 
                     if (bbox != null)
                         return ((AndroidPack) (mapPacks.get(i))).LoadFromBoundingBox(bbox, desc);
@@ -145,9 +144,9 @@ public class AndroidManager extends ManagerBase {
         }
         return null;
     }
+     */
 
-    @Override
-    protected ImageData getImagePixel(byte[] img) {
+    private ImageData getImagePixel(byte[] img) {
         android.graphics.Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
         // Buffer dst = null;
         int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
@@ -163,10 +162,8 @@ public class AndroidManager extends ManagerBase {
         return imgData;
     }
 
-    @Override
-    protected byte[] getImageFromData(ImageData imgData) {
+    private byte[] getImageFromData(ImageData imgData) {
         android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height, android.graphics.Bitmap.Config.RGB_565);
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
         byte[] b = baos.toByteArray();
