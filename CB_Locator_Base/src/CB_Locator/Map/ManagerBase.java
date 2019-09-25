@@ -64,31 +64,37 @@ public abstract class ManagerBase {
     private static final String log = "ManagerBase";
     public static ManagerBase manager;
     static int PROCESSOR_COUNT; // == nr of threads for getting tiles (mapsforge)
-    private final TileCache firstLevelTileCache = new InMemoryTileCache(128); //mapsforge
-    private final Layer[] userMaps = new Layer[2];
-    public float textScale = 1;
-    protected ArrayList<PackBase> mapPacks = new ArrayList<>(); // loadLocalPixmap differs in Android and Java
+    private final TileCache firstLevelTileCache; //mapsforge
+    private final Layer[] userMaps;
+    public float textScale;
+    protected ArrayList<PackBase> mapPacks; // loadLocalPixmap differs in Android and Java
     private DisplayModel displayModel;
-    private MultiMapDataStore[] mapDatabase = null;
-    private ArrayList<Layer> layers = new ArrayList<>();
-    private ArrayList<TmsMap> tmsMaps = new ArrayList<>();
+    private MultiMapDataStore[] mapDatabase;
+    private ArrayList<Layer> layers;
     private boolean mayAddLayer = false; // add only during startup (why?)
-    private String mapsforgeThemesStyle = "";
-    private String mapsforgeTheme = "";
-    private boolean alreadySet = false;
-    private DatabaseRenderer[] databaseRenderers = null;
+    private String mapsforgeThemesStyle;
+    private String mapsforgeTheme;
+    private boolean alreadySet;
+    private DatabaseRenderer[] databaseRenderers;
     private RenderThemeFuture renderThemeFuture;
 
     public ManagerBase() {
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
         Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
+        layers = new ArrayList<>();
+        mapPacks = new ArrayList<>();
+        firstLevelTileCache = new InMemoryTileCache(128);
+        textScale = 1;
+        mapsforgeThemesStyle = "";
+        mapsforgeTheme = "";
+        alreadySet = false;
+        userMaps = new Layer[2];
 
-        if (LocatorSettings.CurrentMapLayer != null)
-            LocatorSettings.CurrentMapLayer.addSettingChangedListener(() -> {
-                Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");
-                if (layer.isMapsForge())
-                    initMapDatabase(layer);
-            });
+        LocatorSettings.CurrentMapLayer.addSettingChangedListener(() -> {
+            Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "");
+            if (layer.isMapsForge())
+                initMapDatabase(layer);
+        });
 
         LocatorSettings.UserMap1.addSettingChangedListener(() -> {
             try {
@@ -130,25 +136,22 @@ public abstract class ManagerBase {
      * B' = k*R + l*G + m*B + n*A + o;<br>
      * A' = p*R + q*G + r*B + s*A + t;<br>
      *
-     * @param matrix
-     * @return
+     * @return ImageData
      */
-    public static ImageData getImageDataWithColormatrixManipulation(float[] matrix, ImageData imgData) {
+    protected ImageData getImageDataWithColorMatrixManipulation(ImageData imgData) {
 
         int[] data = imgData.PixelColorArray;
         for (int i = 0; i < data.length; i++) {
-            data[i] = HSV_Color.colorMatrixManipulation(data[i], matrix);
+            data[i] = HSV_Color.colorMatrixManipulation(data[i], HSV_Color.NIGHT_COLOR_MATRIX);
         }
         return imgData;
     }
 
-    public Layer getOrAddLayer(String[] Name, String friendlyName, String url) {
-        if (Name[0] == "OSM" || Name[0] == "")
+    public Layer getOrAddLayer(String[] Name, String url) {
+        if (Name[0].equals("OSM") || Name[0].length() == 0)
             Name[0] = "Mapnik";
-
         for (Layer layer : layers) {
             if (layer.Name.equalsIgnoreCase(Name[0])) {
-
                 // add aditional
                 // todo : this adding is only necessary when setting from Config. Otherwise the adds are done directly to the layers additionalMapsforgeLayer.
                 // therefore checked on additionalMapsforgeLayer.add for duplicates. A bit
@@ -161,17 +164,15 @@ public abstract class ManagerBase {
                         }
                     }
                 }
-
                 return layer;
             }
         }
-
         if (mayAddLayer) {
             Layer newLayer = new Layer(MapType.ONLINE, LayerType.normal, Layer.StorageType.PNG, Name[0], Name[0], url);
             layers.add(newLayer);
             return newLayer;
         } else {
-            if (layers != null && layers.size() > 0) {
+            if (layers.size() > 0) {
                 Layer firstLayer = layers.get(0);
                 LocatorSettings.CurrentMapLayer.setValue(firstLayer.getNames());
                 return firstLayer; // ist wahrscheinlich Mapnik und sollte immer tun
@@ -440,22 +441,23 @@ public abstract class ManagerBase {
         alreadySet = true;
     }
 
-    protected TileGL getMapsforgeTileGL_Bmp(Layer layer, Descriptor desc, int ThreadIndex) {
+    protected TileGL getMapsforgeTileGL_Bmp(Layer layer, Descriptor desc, int threadIndex) {
         // check initialization
         if ((mapDatabase == null)) {
             initMapDatabase(layer);
         }
         // TileBasedLabelStore labelStore = null;
-        if (databaseRenderers[ThreadIndex] == null) {
-            databaseRenderers[ThreadIndex] = new DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
+        if (databaseRenderers[threadIndex] == null) {
+            databaseRenderers[threadIndex] = new DatabaseRenderer(mapDatabase[threadIndex], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
         }
-        if (databaseRenderers[ThreadIndex] == null)
+        if (databaseRenderers[threadIndex] == null)
             return null;
         // create bitmap from tile-definition
         try {
+            Log.info(log, "get Tile for " + layer.FriendlyName + " / " + desc.toString() + " on thread " + threadIndex);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
-            RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], renderThemeFuture, displayModel, textScale, false, false);
-            TileBitmap bitmap = databaseRenderers[ThreadIndex].executeJob(rendererJob);
+            RendererJob rendererJob = new RendererJob(tile, mapDatabase[threadIndex], renderThemeFuture, displayModel, textScale, false, false);
+            TileBitmap bitmap = databaseRenderers[threadIndex].executeJob(rendererJob);
             /*
               // direct Buffer swap
               If the goal is to convert an Android Bitmap to a libgdx Texture, you don't need to use Pixmap at all. You can do it directly with
@@ -475,10 +477,9 @@ public abstract class ManagerBase {
             try {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(baos);
-                byte[] b = baos.toByteArray();
-                TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileGL.TileState.Present, Pixmap.Format.RGB565);
+                byte[] byteArray = baos.toByteArray(); // takes long
                 ((ext_Bitmap) bitmap).recycle();
-                return bmpTile;
+                return new TileGL_Bmp(desc, byteArray, TileGL.TileState.Present, Pixmap.Format.RGB565);
             } catch (Exception e) {
                 Log.err(log, "convert mapsfore tile to bmpTile: " + e.toString(), e);
                 return null;
@@ -569,7 +570,7 @@ public abstract class ManagerBase {
         this.displayModel = displayModel;
     }
 
-    public class ImageData {
+    public static class ImageData {
         public int[] PixelColorArray;
         public int width;
         public int height;

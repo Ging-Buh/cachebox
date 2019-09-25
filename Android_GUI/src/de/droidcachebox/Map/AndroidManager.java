@@ -21,7 +21,6 @@ import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.HSV_Color;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.graphics.BitmapFactory;
@@ -77,12 +76,11 @@ public class AndroidManager extends ManagerBase {
 
                         if (CB_UI_Base_Settings.nightMode.getValue()) {
                             ImageData imgData = getImagePixel(b);
-                            imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
+                            imgData = getImageDataWithColorMatrixManipulation(imgData);
                             b = getImageFromData(imgData);
                         }
 
-                        TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
-                        return bmpTile;
+                        return new TileGL_Bmp(desc, b, TileState.Present, format);
                     }
                 }
             }
@@ -97,12 +95,11 @@ public class AndroidManager extends ManagerBase {
 
                     if (CB_UI_Base_Settings.nightMode.getValue()) {
                         ImageData imgData = getImagePixel(b);
-                        imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
+                        imgData = getImageDataWithColorMatrixManipulation(imgData);
                         b = getImageFromData(imgData);
                     }
 
-                    TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
-                    return bmpTile;
+                    return new TileGL_Bmp(desc, b, TileState.Present, format);
                 }
             }
         } catch (Exception exc) {

@@ -17,7 +17,6 @@ package CB_Locator.Map;
 
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import java.util.ArrayList;
 import java.util.SortedMap;
@@ -28,55 +27,39 @@ import java.util.concurrent.locks.Lock;
  * @author Longri
  */
 public class MapTileLoader {
-    public static final int MAX_MAP_ZOOM = 22;
     private static final String log = "MapTileLoader";
-    private final QueueData queueData = new QueueData();
-    CB_List<Long> neadedTiles = new CB_List<Long>();
-    int InitialCount = 0;
-    private MultiThreadQueueProcessor[] queueProcessor = null;
-    private Thread[] queueProcessorAliveCheck = null;
-    private int maxNumTiles = 0;
-    private boolean ThreadPrioSetted = false;
-    private boolean CombleadInitial = false;
-    private long lastLoadHash = 0;
+    private final QueueData queueData;
+    private CB_List<Long> neadedTiles;
+    private int queueProcessorIndex;
+    private MultiThreadQueueProcessor[] queueProcessor;
+    private Thread[] queueProcessorAliveCheck;
+    private int maxNumTiles;
+    private boolean isThreadPrioSet;
+    private boolean CombleadInitial;
+    private long lastLoadHash;
 
-    public MapTileLoader() {
+    MapTileLoader() {
         super();
-
-        if (queueProcessor == null) {
-
-            queueProcessor = new MultiThreadQueueProcessor[ManagerBase.PROCESSOR_COUNT];
-            queueProcessorAliveCheck = new Thread[ManagerBase.PROCESSOR_COUNT];
-
-            initial(Thread.NORM_PRIORITY); // first initial one thread(MultiThreadQueueProcessor)
-
-        }
+        queueData = new QueueData();
+        neadedTiles = new CB_List<>();
+        queueProcessorIndex = 0;
+        maxNumTiles = 0;
+        isThreadPrioSet = false;
+        CombleadInitial = false;
+        lastLoadHash = 0;
+        queueProcessor = new MultiThreadQueueProcessor[ManagerBase.PROCESSOR_COUNT];
+        queueProcessorAliveCheck = new Thread[ManagerBase.PROCESSOR_COUNT];
+        initialize(Thread.NORM_PRIORITY); // first initialize only one thread(MultiThreadQueueProcessor)
     }
 
-    public static float convertCameraZommToFloat(OrthographicCamera cam) {
-        if (cam == null || cam.zoom <= 0)
-            return 0f;
-
-        float result = 0.0f;
-        result = MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
-        return result;
-    }
-
-    public static long getMapTilePosFactor(float zoom) {
-        long result = 1;
-        result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
-        return result;
-    }
-
-    private void initial(int ThreadPriority) {
-        if (InitialCount < ManagerBase.PROCESSOR_COUNT) {
-            queueProcessor[InitialCount] = new MultiThreadQueueProcessor(queueData, InitialCount);
-            queueProcessor[InitialCount].setPriority(ThreadPriority);
-            queueProcessor[InitialCount].start();
-
-            startAliveCheck(InitialCount);
-
-            InitialCount++;
+    private void initialize(int ThreadPriority) {
+        if (queueProcessorIndex < ManagerBase.PROCESSOR_COUNT) {
+            Log.info(log, "Start queueProcessor(thread) number " + queueProcessorIndex);
+            queueProcessor[queueProcessorIndex] = new MultiThreadQueueProcessor(queueData, queueProcessorIndex);
+            queueProcessor[queueProcessorIndex].setPriority(ThreadPriority);
+            queueProcessor[queueProcessorIndex].start();
+            startAliveCheck(queueProcessorIndex);
+            queueProcessorIndex++;
         }
     }
 
@@ -94,7 +77,7 @@ public class MapTileLoader {
                     }
 
                     if (!queueProcessor[index].Alive()) {
-                        Log.debug(log, "MapTileLoader Restart queueProcessor[" + index + "]");
+                        Log.info(log, "MapTileLoader Restart queueProcessor[" + index + "]");
                         queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
                         queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
                         queueProcessor[index].start();
@@ -124,12 +107,12 @@ public class MapTileLoader {
 
         // Initial Threads?
         if (!CombleadInitial) {
-            if (InitialCount < ManagerBase.PROCESSOR_COUNT && InitialCount > 0 && queueData.loadedTiles.size() > 1) {
-                initial(Thread.NORM_PRIORITY);
-            } else if (InitialCount >= ManagerBase.PROCESSOR_COUNT && !ThreadPrioSetted) {
+            if (queueProcessorIndex < ManagerBase.PROCESSOR_COUNT && queueProcessorIndex > 0 && queueData.loadedTiles.size() > 1) {
+                initialize(Thread.NORM_PRIORITY);
+            } else if (queueProcessorIndex >= ManagerBase.PROCESSOR_COUNT && !isThreadPrioSet) {
                 for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++) {
                     queueProcessor[i].setPriority(Thread.MIN_PRIORITY);
-                    ThreadPrioSetted = true;
+                    isThreadPrioSet = true;
                     CombleadInitial = true;
                 }
             }

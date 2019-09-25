@@ -172,7 +172,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
             lastDynamicZoom = zoomBtn.getZoom();
 
-            kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+            kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
             GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
             GL.that.renderOnce();
             calcPixelsPerMeter();
@@ -185,7 +185,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
             lastDynamicZoom = zoomBtn.getZoom();
 
-            kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+            kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
             GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
             GL.that.renderOnce();
             calcPixelsPerMeter();
@@ -292,21 +292,21 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // initial Zoom Scale
         // zoomScale = new GL_ZoomScale(6, 20, 13);
 
-        mapCacheList = new MapViewCacheList(MapTileLoader.MAX_MAP_ZOOM);
+        mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
         // from create
 
         String[] currentLayerNames = Config.CurrentMapLayer.getValue();
         if (ManagerBase.manager != null) {
             if (mapTileLoader.getCurrentLayer() == null) {
-                mapTileLoader.setCurrentLayer(ManagerBase.manager.getOrAddLayer(currentLayerNames, currentLayerNames[0], ""));
+                mapTileLoader.setCurrentLayer(ManagerBase.manager.getOrAddLayer(currentLayerNames, ""));
             }
         }
 
         String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayer.getValue()};
         if (ManagerBase.manager != null) {
             if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
-                mapTileLoader.setCurrentOverlayLayer(ManagerBase.manager.getOrAddLayer(currentOverlayLayerName, currentOverlayLayerName[0], ""));
+                mapTileLoader.setCurrentOverlayLayer(ManagerBase.manager.getOrAddLayer(currentOverlayLayerName, ""));
         }
 
         iconFactor = Config.MapViewDPIFaktor.getValue();
@@ -535,8 +535,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if (coord == null) {
             return;
         }
-        float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.getLongitude()));
-        float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.getLatitude()));
+        float x = (float) (256.0 * Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, coord.getLongitude()));
+        float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, coord.getLatitude()));
 
         float halfHeight = mapIntHeight / 2.0f - ySpeedVersatz;
         float halfWidth = mapIntWidth / 2.0f;
@@ -823,7 +823,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     zoomBtn.setZoom((int) lastDynamicZoom);
                     inputState = InputState.Idle;
 
-                    kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+                    kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
                     GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
                     GL.that.renderOnce();
@@ -1094,7 +1094,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     zoomBtn.setZoom(setZoomTo);
                     inputState = InputState.Idle;
 
-                    kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+                    kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(setZoomTo), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
                     GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
                     GL.that.renderOnce();

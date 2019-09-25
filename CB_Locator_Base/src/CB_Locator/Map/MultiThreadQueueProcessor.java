@@ -79,7 +79,7 @@ class MultiThreadQueueProcessor extends Thread {
                                 if (mapView == null)
                                     continue;
 
-                                long posFactor = MapTileLoader.getMapTilePosFactor(tmpDesc.Zoom);
+                                long posFactor = mapView.getMapTilePosFactor(tmpDesc.Zoom);
 
                                 double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor - mapView.screenCenterW.x, 2) + Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterW.y, 2));
 

@@ -44,11 +44,6 @@ public class TileGL_Bmp extends TileGL {
         createTexture();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see CB_Locator.Map.TileGL#canDraw()
-     */
     @Override
     public boolean canDraw() {
         if (texture != null)
@@ -57,6 +52,7 @@ public class TileGL_Bmp extends TileGL {
             return false;
         if (inCreation)
             return false;
+        Log.info(log, "can draw create Texture once more!?");
         createTexture();
         return texture != null;
     }
@@ -75,7 +71,6 @@ public class TileGL_Bmp extends TileGL {
                 Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
                 texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
                 pixmap.dispose();
-                pixmap = null;
             } catch (Exception ex) {
                 Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
             }
@@ -107,15 +102,10 @@ public class TileGL_Bmp extends TileGL {
 
     @Override
     public String toString() {
-        return "[Age: " + Age + " " + State.toString() + ", " + Descriptor.ToString();
+        return "[Age: " + Age + " " + State.toString() + ", " + Descriptor.toString();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see CB_Locator.Map.TileGL#draw(com.badlogic.gdx.graphics.g2d.SpriteBatch, float, float, float, float)
-     */
-    @Override
+     @Override
     public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> rotateList) {
         if (texture != null)
             batch.draw(texture, x, y, width, height);

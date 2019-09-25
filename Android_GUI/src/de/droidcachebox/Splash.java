@@ -57,7 +57,6 @@ import android.os.StatFs;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.*;
 import com.badlogic.gdx.Files.FileType;
@@ -103,11 +102,11 @@ public class Splash extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        androidSetting = getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
         if (!FileFactory.isInitialized()) {
             // so Main has not been started
             new AndroidFileFactory(); // used by CB_SLF4J
             // read workpath from Android Preferences
-            androidSetting = getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
             workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
             CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.ERROR); // perhaps put this into androidSetting,setting another start LogLevel
             Log.info(log, "Logging initialized");
@@ -281,15 +280,16 @@ public class Splash extends Activity {
             ui.Density = displaymetrics.density;
             ui.isLandscape = false;
             int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            int heightOfStatusBar = getResources().getDimensionPixelSize(resourceId);
             if (resourceId > 0) {
-                height = height - getResources().getDimensionPixelSize(resourceId);
+                height = height - heightOfStatusBar;
             }
             ui.Window = new Size(width, height);
             UiSizes.getInstance().initialize(ui);
             // class GL_UISizes
             GL_UISizes.defaultDPI = displaymetrics.density;
 
-            Log.info(log, "Screen width/height:" + ui.Window.width + "/" + ui.Window.height);
+            Log.info(log, "Screen width/height+height of statusbar: " + ui.Window.width + "/" + ui.Window.height + " + " + heightOfStatusBar);
         }
     }
 
@@ -302,8 +302,6 @@ public class Splash extends Activity {
         Gdx.files = new AndroidFiles(getAssets(), getFilesDir().getAbsolutePath()); // /data/data/de.droidcachebox/files
 
         // read some setting from Android Preferences (Platform
-        androidSetting = getSharedPreferences(Global.PreferencesNAME, 0);
-
         if (!getWorkPathFromFile())
             workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
         // default must be true, for first selection or else check workPath to start with /data
@@ -375,6 +373,7 @@ public class Splash extends Activity {
     }
 
     private void askForWorkPath() {
+        // Default workpath Environment.getDataDirectory() + "/cachebox";
         workPath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
 
         String externalSd = getExternalSdPath();  // externalSd = null or ...
@@ -426,28 +425,23 @@ public class Splash extends Activity {
             if (hasExtSd) {
                 String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
                 btnExternalSandbox.setText(extSdText + externalSd);
-                btnExternalSandbox.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // show KitKat Massage?
+                btnExternalSandbox.setOnClickListener(v -> {
+                    if (isSandbox && !showSandbox) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Splash.this);
 
-                        if (isSandbox && !showSandbox) {
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Splash.this);
+                        // set title
+                        alertDialogBuilder.setTitle("Sandbox");
 
-                            // set title
-                            alertDialogBuilder.setTitle("KitKat Sandbox");
-
-                            // set dialog message
-                            alertDialogBuilder.setMessage(Translation.get("Desc_Sandbox")).setCancelable(false).setPositiveButton(Translation.get("yes"), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
+                        // set dialog message
+                        alertDialogBuilder.setMessage(Translation.get("Desc_Sandbox")).setCancelable(false).setPositiveButton(Translation.get("yes"),
+                                (dialog12, id) -> {
                                     // if this button is clicked, run Sandbox Path
 
                                     showSandbox = true;
                                     // Config.AcceptChanges();
 
                                     // close select dialog
-                                    dialog.dismiss();
+                                    dialog12.dismiss();
 
                                     // show please wait dialog
                                     showPleaseWaitDialog();
@@ -457,46 +451,42 @@ public class Splash extends Activity {
                                         @Override
                                         public void run() {
                                             workPath = externalSd2;
-
-                                            // boolean useTabletLayout = rbTabletLayout.isChecked();
                                             saveWorkPath();
                                             finishInitializationAndStartMain();
                                         }
                                     };
                                     thread.start();
-                                }
-                            }).setNegativeButton(Translation.get("no"), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, just close
-                                    // the dialog box and do nothing
-                                    dialog.cancel();
-                                }
-                            });
+                                }).setNegativeButton(Translation.get("no"), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog13, int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog13.cancel();
+                            }
+                        });
 
-                            // create alert dialog
-                            AlertDialog alertDialog = alertDialogBuilder.create();
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
 
-                            // show it
-                            alertDialog.show();
-                        } else {
-                            // close select dialog
-                            dialog.dismiss();
+                        // show it
+                        alertDialog.show();
+                    } else {
+                        // close select dialog
+                        dialog.dismiss();
 
-                            // show please wait dialog
-                            showPleaseWaitDialog();
+                        // show please wait dialog
+                        showPleaseWaitDialog();
 
-                            // use external SD -> change workPath
-                            Thread thread = new Thread() {
-                                @Override
-                                public void run() {
-                                    workPath = externalSd2;
-                                    saveWorkPath();
-                                    finishInitializationAndStartMain();
-                                }
-                            };
-                            thread.start();
-                        }
+                        // use external SD -> change workPath
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                workPath = externalSd2;
+                                saveWorkPath();
+                                finishInitializationAndStartMain();
+                            }
+                        };
+                        thread.start();
                     }
                 });
             } else {
@@ -598,7 +588,7 @@ public class Splash extends Activity {
             dialog.show();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.err(log, "askForWorkPath Dialogs: " + ex.toString(), ex);
         }
     }
 

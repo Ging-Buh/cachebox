@@ -16,7 +16,10 @@
 package CB_UI;
 
 import CB_Locator.CoordinateGPS;
-import CB_Locator.Map.*;
+import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.PolylineReduction;
+import CB_Locator.Map.Track;
+import CB_Locator.Map.TrackPoint;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -421,11 +424,11 @@ public class RouteOverlay {
 
                 for (int ii = 0; ii < rt.Points.size() - 1; ii++) {
 
-                    double MapX1 = 256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, rt.Points.get(ii).X);
-                    double MapY1 = -256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, rt.Points.get(ii).Y);
+                    double MapX1 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, rt.Points.get(ii).X);
+                    double MapY1 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, rt.Points.get(ii).Y);
 
-                    double MapX2 = 256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, rt.Points.get(ii + 1).X);
-                    double MapY2 = -256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, rt.Points.get(ii + 1).Y);
+                    double MapX2 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, rt.Points.get(ii + 1).X);
+                    double MapY2 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, rt.Points.get(ii + 1).Y);
 
                     Vector2 screen1 = mapView.worldToScreen(new Vector2((float) MapX1, (float) MapY1));
                     Vector2 screen2 = mapView.worldToScreen(new Vector2((float) MapX2, (float) MapY2));

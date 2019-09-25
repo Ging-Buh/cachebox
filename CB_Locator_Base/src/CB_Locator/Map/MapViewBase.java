@@ -67,6 +67,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public static int INITIAL_WP_LIST = 4;
     public static int INITIAL_ALL = 7;
     public static int INITIAL_SETTINGS_WITH_OUT_ZOOM = 9;
+    public static final int MAX_MAP_ZOOM = 22;
 
     // ######################################
     public static MapTileLoader mapTileLoader = new MapTileLoader();
@@ -149,7 +150,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
             setVisible();
 
-            int zoom = MapTileLoader.MAX_MAP_ZOOM;
+            int zoom = MAX_MAP_ZOOM;
             float tmpZoom = camera.zoom; //
             float faktor = 1.5f;
             faktor = faktor / iconFactor; //
@@ -199,7 +200,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
         aktZoom = zoomBtn.getZoom();
 
-        camera.zoom = MapTileLoader.getMapTilePosFactor(aktZoom);
+        camera.zoom = getMapTilePosFactor(aktZoom);
 
         camera.position.set(0, 0, 0);
 
@@ -289,7 +290,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             // float tmpZoom = mapTileLoader.convertCameraZommToFloat(camera);
             // aktZoom = (int) tmpZoom;
 
-            int zoom = MapTileLoader.MAX_MAP_ZOOM;
+            int zoom = MAX_MAP_ZOOM;
             float tmpZoom = camera.zoom;
             float faktor = 1.5f;
             // faktor = faktor - iconFactor + 1;
@@ -311,12 +312,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             if (mapScale != null)
                 mapScale.ZoomChanged();
             if (zoomScale != null)
-                zoomScale.setZoom(MapTileLoader.convertCameraZommToFloat(camera));
+                zoomScale.setZoom(convertCameraZommToFloat(camera));
 
         }
 
         if ((kineticPan != null) && (kineticPan.getStarted())) {
-            long faktor = MapTileLoader.getMapTilePosFactor(aktZoom);
+            long faktor = getMapTilePosFactor(aktZoom);
             Point pan = kineticPan.getAktPan();
             screenCenterT.x += pan.x * faktor;
             screenCenterT.y += pan.y * faktor;
@@ -517,7 +518,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if (tile == null || tile.Descriptor == null)
             return 1;
         long result = 1;
-        result = (long) (Math.pow(2.0, MapTileLoader.MAX_MAP_ZOOM - tile.Descriptor.getZoom()) / tile.getScaleFactor());
+        result = (long) (Math.pow(2.0, MAX_MAP_ZOOM - tile.Descriptor.getZoom()) / tile.getScaleFactor());
         return result;
     }
 
@@ -554,8 +555,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     // FIXME make point and vPoint final and setValues!
     protected void renderPositionMarker(Batch batch) {
-        PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
-                MapTileLoader.MAX_MAP_ZOOM);
+        PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MAX_MAP_ZOOM,
+                MAX_MAP_ZOOM);
 
         Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
@@ -703,7 +704,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 boolean canDraw = mapTileLoader.markToDraw(desc);
                 if (canDraw) {
 
-                } else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM)) {
+                } else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MAX_MAP_ZOOM)) {
                     // f�r den aktuellen Zoom ist kein Tile vorhanden -> gr��ere
                     // Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
                     // sind...
@@ -732,7 +733,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 boolean canDraw = mapTileLoader.markToDrawOverlay(desc);
                 if (canDraw) {
 
-                } else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM)) {
+                } else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MAX_MAP_ZOOM)) {
                     // f�r den aktuellen Zoom ist kein Tile vorhanden -> gr��ere
                     // Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
                     // sind...
@@ -843,8 +844,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 center = new CoordinateGPS(48.0, 12.0);
             positionInitialized = true;
             center = value;
-            PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
-                    MapTileLoader.MAX_MAP_ZOOM);
+            PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, center.getLongitude()), Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, center.getLatitude()), MAX_MAP_ZOOM,
+                    MAX_MAP_ZOOM);
             setScreenCenter(new Vector2((float) point.X, (float) point.Y));
         }
     }
@@ -882,7 +883,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected Descriptor screenToDescriptor(Vector2 point, int zoom, Descriptor destDescriptor) {
         // World-Koordinaten in Pixel
         Vector2 world = screenToWorld(point);
-        for (int i = MapTileLoader.MAX_MAP_ZOOM; i > zoom; i--) {
+        for (int i = MAX_MAP_ZOOM; i > zoom; i--) {
             world.x /= 2;
             world.y /= 2;
         }
@@ -1026,7 +1027,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 zoomBtn.setZoom((int) lastDynamicZoom);
                 inputState = InputState.Idle;
 
-                kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+                kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
                 // kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
                 // 1000);
@@ -1080,7 +1081,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 // GL_Listener.glListener.addRenderView(this, frameRateAction);
                 GL.that.renderOnce();
                 // debugString = "";
-                long faktor = MapTileLoader.getMapTilePosFactor(aktZoom);
+                long faktor = getMapTilePosFactor(aktZoom);
                 // debugString += faktor;
                 Point lastPoint = (Point) fingerDown.values().toArray()[0];
                 // debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
@@ -1131,16 +1132,16 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 float ratio = originalDistance / currentDistance;
                 camera.zoom = camera.zoom * ratio;
 
-                if (camera.zoom < MapTileLoader.getMapTilePosFactor(zoomBtn.getMaxZoom())) {
-                    camera.zoom = MapTileLoader.getMapTilePosFactor(zoomBtn.getMaxZoom());
+                if (camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom())) {
+                    camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
                 }
-                if (camera.zoom > MapTileLoader.getMapTilePosFactor(zoomBtn.getMinZoom())) {
-                    camera.zoom = MapTileLoader.getMapTilePosFactor(zoomBtn.getMinZoom());
+                if (camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom())) {
+                    camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
                 }
 
                 lastDynamicZoom = camera.zoom;
 
-                int zoom = MapTileLoader.MAX_MAP_ZOOM;
+                int zoom = MAX_MAP_ZOOM;
                 float tmpZoom = camera.zoom;
                 float faktor = 1.5f;
                 // faktor = faktor - iconFactor + 1;
@@ -1156,7 +1157,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 zoomBtn.setZoom(aktZoom);
 
                 if (!CarMode && zoomScale != null) {
-                    zoomScale.setZoom(MapTileLoader.convertCameraZommToFloat(camera));
+                    zoomScale.setZoom(convertCameraZommToFloat(camera));
                     zoomScale.resetFadeOut();
                 }
 
@@ -1227,14 +1228,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     protected void calcCenter() {
         // berechnet anhand des ScreenCenterW die Center-Coordinaten
-        PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
+        PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MAX_MAP_ZOOM, MAX_MAP_ZOOM);
 
-        center = new CoordinateGPS(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MapTileLoader.MAX_MAP_ZOOM, point.X));
+        center = new CoordinateGPS(Descriptor.TileYToLatitude(MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MAX_MAP_ZOOM, point.X));
     }
 
     protected void calcPixelsPerMeter() {
 
-        float calcZoom = MapTileLoader.convertCameraZommToFloat(camera);
+        float calcZoom = convertCameraZommToFloat(camera);
 
         Coordinate dummy = CoordinateGPS.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
         double l1 = Descriptor.LongitudeToTileX(calcZoom, center.getLongitude());
@@ -1340,10 +1341,25 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
         lastDynamicZoom = newZoom;
 
-        kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(newZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+        kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(newZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
         GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
         GL.that.renderOnce();
         calcPixelsPerMeter();
+    }
+
+    float convertCameraZommToFloat(OrthographicCamera cam) {
+        if (cam == null || cam.zoom <= 0)
+            return 0f;
+
+        float result = 0.0f;
+        result = MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
+        return result;
+    }
+
+    public long getMapTilePosFactor(float zoom) {
+        long result = 1;
+        result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
+        return result;
     }
 
     public boolean isCarMode() {

@@ -277,7 +277,7 @@ public class Descriptor implements Comparable<Descriptor> {
         return BuffertHash;
     }
 
-    public String ToString() {
+    public String toString() {
         return "X = " + X + ", Y = " + Y + ", Zoom = " + Zoom;
     }
 
@@ -303,11 +303,6 @@ public class Descriptor implements Comparable<Descriptor> {
                 return true;
         }
         return false;
-    }
-
-    @Override
-    public String toString() {
-        return "X=" + this.getX() + " Y=" + this.getY() + " Zoom=" + this.getZoom();
     }
 
     public void dispose() {

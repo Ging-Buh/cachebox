@@ -20,7 +20,6 @@ import CB_Locator.Map.TileGL.TileState;
 import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.HSV_Color;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.map.awt.graphics.ext_AwtGraphicFactory;
@@ -79,12 +78,11 @@ public class DesktopManager extends ManagerBase {
 
                         if (CB_UI_Base_Settings.nightMode.getValue()) {
                             ImageData imgData = getImagePixel(b);
-                            imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
+                            imgData = getImageDataWithColorMatrixManipulation(imgData);
                             b = getImageFromData(imgData);
                         }
 
-                        TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
-                        return bmpTile;
+                        return new TileGL_Bmp(desc, b, TileState.Present, format);
                     }
                 }
             }
@@ -99,13 +97,11 @@ public class DesktopManager extends ManagerBase {
 
                 if (CB_UI_Base_Settings.nightMode.getValue()) {
                     ImageData imgData = getImagePixel(data);
-                    imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
+                    imgData = getImageDataWithColorMatrixManipulation(imgData);
                     data = getImageFromData(imgData);
                 }
 
-                TileGL_Bmp bmpTile = new TileGL_Bmp(desc, data, TileState.Present, format);
-
-                return bmpTile;
+                return new TileGL_Bmp(desc, data, TileState.Present, format);
             }
         } catch (Exception exc) {
             /*

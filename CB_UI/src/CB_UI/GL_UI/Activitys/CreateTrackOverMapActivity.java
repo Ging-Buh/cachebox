@@ -19,7 +19,6 @@ import CB_Core.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
-import CB_Locator.Map.MapTileLoader;
 import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -201,8 +200,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         for (int i = 0; i < waypoints.size(); i++) {
             Waypoint wp = waypoints.get(i);
 
-            double MapX = 256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, wp.Pos.getLongitude());
-            double MapY = -256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, wp.Pos.getLatitude());
+            double MapX = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, wp.Pos.getLongitude());
+            double MapY = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, wp.Pos.getLatitude());
             if (true)// isVisible(MapX, MapY)
             {
                 WaypointRenderInfo wpi = new WaypointRenderInfo();
