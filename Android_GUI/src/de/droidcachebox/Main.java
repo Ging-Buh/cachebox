@@ -786,9 +786,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     private void checkExternalRequest() {
-        Log.info(sKlasse, "prepared Request from splash");
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
+            Log.info(sKlasse, "prepared Request from splash");
             ExternalRequestGCCode = extras.getString("GcCode");
             ExternalRequestGpxPath = extras.getString("GpxPath");
             ExternalRequestMapDownloadPath = extras.getString("MapDownloadPath");

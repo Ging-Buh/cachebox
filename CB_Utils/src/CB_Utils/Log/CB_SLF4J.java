@@ -103,9 +103,10 @@ public class CB_SLF4J {
 
     public static CB_SLF4J getInstance(String workpath) {
         if (cb_slf4J == null) cb_slf4J = new CB_SLF4J(workpath);
-        if (!workpath.equals(WORKPATH))
+        if (!workpath.equals(WORKPATH)) {
             Log.info(log, "changed workpath to " + workpath);
             cb_slf4J = new CB_SLF4J(workpath);
+        }
         return cb_slf4J;
     }
 

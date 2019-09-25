@@ -108,7 +108,7 @@ public class Splash extends Activity {
             new AndroidFileFactory(); // used by CB_SLF4J
             // read workpath from Android Preferences
             workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
-            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.ERROR); // perhaps put this into androidSetting,setting another start LogLevel
+            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO); // perhaps put this into androidSetting,setting another start LogLevel
             Log.info(log, "Logging initialized");
         }
         Log.info(log, "onCreate called");
@@ -156,6 +156,7 @@ public class Splash extends Activity {
             startActivityForResult(mainIntent, Main.REQUEST_FROM_SPLASH); // don't want a result
             setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
         }
+        CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
         finish(); // this activity can be closed and back to the calling activity in onActivityResult
     }
 
@@ -822,7 +823,6 @@ public class Splash extends Activity {
             Log.info(log, "Settings read from configDB.");
         }
 
-        CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
         Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
         PlatformSettings.setPlatformSettings(new IPlatformSettings() {
             @Override
