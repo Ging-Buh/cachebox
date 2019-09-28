@@ -17,24 +17,24 @@ public class FunctionBearing extends Function {
 
     @Override
     public String getName() {
-        return Translation.get("solverFuncBearing".hashCode());
+        return Translation.get("solverFuncBearing");
     }
 
     @Override
     public String getDescription() {
-        return Translation.get("solverDescBearing".hashCode());
+        return Translation.get("solverDescBearing");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 2) {
-            return Translation.get("solverErrParamCount".hashCode(), "2", "$solverFuncBearing");
+            return Translation.get("solverErrParamCount", "2", "$solverFuncBearing");
         }
         Coordinate[] coord = new Coordinate[2];
         for (int i = 0; i < 2; i++) {
             coord[i] = new CoordinateGPS(parameter[i]);
             if (!coord[i].isValid())
-                return Translation.get("solverErrParamType".hashCode(), "$solverFuncBearing", String.valueOf(i + 1), "$coordinate", "$coordinate", parameter[i]);
+                return Translation.get("solverErrParamType", "$solverFuncBearing", String.valueOf(i + 1), "$coordinate", "$coordinate", parameter[i]);
         }
         try {
             double bearing = CoordinateGPS.Bearing(CalculationType.ACCURATE, coord[0], coord[1]);
@@ -42,7 +42,7 @@ public class FunctionBearing extends Function {
                 bearing = bearing + 360;
             return String.valueOf(bearing);
         } catch (Exception ex) {
-            return Translation.get("StdError".hashCode(), "$solverFuncBearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+            return Translation.get("StdError", "$solverFuncBearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
         }
     }
 

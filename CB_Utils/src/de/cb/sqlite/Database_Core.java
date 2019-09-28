@@ -26,12 +26,7 @@ public abstract class Database_Core{
     }
 
     public boolean StartUp(String databasePath) {
-        try {
-            Log.debug(log, "DB Startup : " + databasePath);
-        } catch (Exception e) {
-            // gibt beim splash - Start: NPE in Translation.readMissingStringsFile
-            // Nachfolgende Starts sollten aber protokolliert werden
-        }
+        Log.debug(log, "DB Startup : " + databasePath);
 
         this.databasePath = databasePath;
 

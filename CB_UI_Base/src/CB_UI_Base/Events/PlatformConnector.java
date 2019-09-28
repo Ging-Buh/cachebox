@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @author Longri
  */
 public class PlatformConnector {
-    public static iStartPictureApp startPictureApp;
+    public static IStartPictureApp startPictureApp;
     static Thread threadVibrate;
     static IQuit quitListener;
     static IGetApiKey getApiKeyListener;
@@ -33,7 +33,6 @@ public class PlatformConnector {
     static ICallUrl CallUrlListener;
     private static IShowViewListener showViewListener;
     private static IHardwarStateListener hardwareListener;
-    private static KeyEventListener mKeyListener;
     private static IgetFileListener getFileListener;
     private static IgetFolderListener getFolderListener;
     private static ArrayList<String> sendToMediaScannerList;
@@ -61,12 +60,6 @@ public class PlatformConnector {
         }
     }
 
-    public static void handleExternalRequest() {
-        if (showViewListener != null) {
-            showViewListener.handleExternalRequest();
-        }
-    }
-
     public static void dayNightSwitched() {
         if (showViewListener != null) {
             showViewListener.dayNightSwitched();
@@ -75,7 +68,7 @@ public class PlatformConnector {
 
     public static void hideView(ViewID viewID) {
         if (showViewListener != null) {
-            showViewListener.hideView(viewID);
+            showViewListener.hide(viewID);
         }
     }
 
@@ -153,34 +146,6 @@ public class PlatformConnector {
         }
     }
 
-    public static void setKeyEventListener(KeyEventListener listener) {
-        mKeyListener = listener;
-    }
-
-    public static boolean sendKey(Character character) {
-        if (mKeyListener != null) {
-            return mKeyListener.onKeyPressed(character);
-        }
-
-        return false;
-    }
-
-    public static boolean sendKeyDown(int KeyCode) {
-        if (mKeyListener != null) {
-            return mKeyListener.keyDown(KeyCode);
-        }
-
-        return false;
-    }
-
-    public static boolean sendKeyUp(int KeyCode) {
-        if (mKeyListener != null) {
-            return mKeyListener.keyUp(KeyCode);
-        }
-
-        return false;
-    }
-
     public static void setGetFileListener(IgetFileListener listener) {
         getFileListener = listener;
     }
@@ -235,13 +200,13 @@ public class PlatformConnector {
             CallUrlListener.call(url);
     }
 
-    public static void setStartPictureApp(iStartPictureApp listener) {
+    public static void setStartPictureApp(IStartPictureApp listener) {
         startPictureApp = listener;
     }
 
     public static void StartPictureApp(String file) {
         if (startPictureApp != null)
-            startPictureApp.Start(file);
+            startPictureApp.start(file);
     }
 
     public static void switchToGpsMeasure() {
@@ -295,7 +260,7 @@ public class PlatformConnector {
 
         void setContentSize(int left, int top, int right, int bottom);
 
-        void hideView(ViewID viewID);
+        void hide(ViewID viewID);
 
         void showForDialog();
 
@@ -303,7 +268,15 @@ public class PlatformConnector {
 
         void dayNightSwitched();
 
-        void handleExternalRequest();
+        void onResume();
+
+        void onDestroyWithFinishing();
+
+        void onDestroyWithoutFinishing();
+
+        int getAktViewId();
+
+        void requestLayout();
     }
 
     public interface IHardwarStateListener {
@@ -324,14 +297,6 @@ public class PlatformConnector {
         void switchtoGpsDefault();
     }
 
-    public interface KeyEventListener {
-        boolean onKeyPressed(Character character);
-
-        boolean keyUp(int KeyCode);
-
-        boolean keyDown(int keycode);
-    }
-
     public interface IgetFileReturnListener {
         void returnFile(String PathAndName);
     }
@@ -343,8 +308,6 @@ public class PlatformConnector {
     public interface IgetFolderReturnListener {
         void returnFolder(String Path);
     }
-
-    // ----------------------------------------
 
     public interface IgetFolderListener {
         void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
@@ -366,8 +329,7 @@ public class PlatformConnector {
         void call(String url);
     }
 
-    // ----- startPictureApp -----
-    public interface iStartPictureApp {
-        void Start(String file);
+    public interface IStartPictureApp {
+        void start(String file);
     }
 }

@@ -128,8 +128,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
     private void ExportgetFolderStep(final String FileName) {
         PlatformConnector.getFolder(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
-                Translation.get("selectExportFolder".hashCode()),
-                Translation.get("select".hashCode()),
+                Translation.get("selectExportFolder"),
+                Translation.get("select"),
                 Path -> GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path)));
     }
 
@@ -195,9 +195,9 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                     }
 
                     if (canceld) {
-                        MessageBox.show(Translation.get("exportedCanceld".hashCode(), String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MessageBoxIcon.Stop);
+                        MessageBox.show(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MessageBoxIcon.Stop);
                     } else {
-                        MessageBox.show(Translation.get("exported".hashCode(), String.valueOf(actExportedCount)), Translation.get("export"), MessageBoxIcon.Information);
+                        MessageBox.show(Translation.get("exported", String.valueOf(actExportedCount)), Translation.get("export"), MessageBoxIcon.Information);
                     }
 
                 }

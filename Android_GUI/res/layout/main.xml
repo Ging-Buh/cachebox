@@ -39,13 +39,13 @@
             android:orientation="vertical" >
 
             <de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView
-                android:id="@+id/main_quick_button_list"
+                android:id="@+id/quickButtonListView"
                 android:layout_width="fill_parent"
                 android:layout_height="0dip" 
                 android:visibility="invisible" />
 
             <de.droidcachebox.Components.CacheNameView
-                android:id="@+id/main_cache_name_view"
+                android:id="@+id/cacheNameView"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/SliderHeight" />
             
@@ -55,8 +55,8 @@
 
     
 
-    <de.droidcachebox.Custom_Controls.Mic_On_Flash
-        android:id="@+id/mic_flash"
+    <de.droidcachebox.Custom_Controls.MicrophoneView
+        android:id="@+id/microphone"
         android:layout_width="60dip"
         android:layout_height="60dip"
         android:layout_alignParentBottom="true"

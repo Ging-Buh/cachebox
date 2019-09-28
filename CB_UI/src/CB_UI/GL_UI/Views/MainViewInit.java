@@ -232,7 +232,7 @@ public class MainViewInit extends MainViewBase {
      * Load Translations
      */
     private void ini_Translations() {
-        if (!Translation.isInitial()) {
+        if (!Translation.isInitialized()) {
             Log.info(log, "ini_Translations");
 
             // Load from Assets changes
@@ -252,15 +252,10 @@ public class MainViewInit extends MainViewBase {
 
             FileType fileType = FileType.Internal;
 
-            new Translation(Config.mWorkPath, fileType);
             try {
-                Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
+                new Translation(Config.mWorkPath, fileType).loadTranslation(Config.Sel_LanguagePath.getValue());
             } catch (Exception e) {
-                try {
-                    Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
-                } catch (IOException e1) {
-                    Log.err(log,"ini_Translations", e1);
-                }
+                Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
             }
         }
     }

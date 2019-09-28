@@ -443,10 +443,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     }
 
     @Override
-    public void BeforeShowContextMenu(Menu menu) {
-    }
-
-    @Override
     public boolean ContextMenuItemSelected(MenuItem item) {
         return false;
     }

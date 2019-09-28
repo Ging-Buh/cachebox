@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static CB_Utils.Settings.SettingStoreType.*;
+
 public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     private static final String log = "SettingsList";
     private static final long serialVersionUID = -969846843815877942L;
@@ -89,12 +91,12 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                 if (!setting.isDirty())
                     continue; // is not changed -> do not
 
-                if (SettingStoreType.Local == setting.getStoreType()) {
+                if (Local == setting.getStoreType()) {
                     if (Data != null)
                         dao.WriteToDatabase(Data, setting);
-                } else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType())) {
+                } else if (Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && Platform == setting.getStoreType())) {
                     dao.WriteToDatabase(getSettingsDB(), setting);
-                } else if (SettingStoreType.Platform == setting.getStoreType()) {
+                } else if (Platform == setting.getStoreType()) {
                     dao.WriteToPlatformSettings(setting);
                     dao.WriteToDatabase(getSettingsDB(), setting);
                 }
@@ -120,23 +122,11 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     }
 
     public void ReadFromDB() {
-        // Read from DB
-        // Log.debug will not work, cause setting of loglevel is from settings (that and not yet read and set)
-        try {
-            Log.debug(log, "Load settings from: " + getSettingsDB().getDatabasePath());
-            Log.debug(log, "and local settings: " + getDataDB().getDatabasePath());
-        } catch (Exception e) {
-            // gibt beim splash - Start: NPE in Translation.readMissingStringsFile
-            // Nachfolgende Starts sollten aber protokolliert werden
-        }
-
         AtomicInteger tryCount = new AtomicInteger(0);
-
         while (tryCount.incrementAndGet() < 10) {
-
-
             SettingsDAO dao = new SettingsDAO();
             try {
+
                 for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
                     SettingBase<?> setting = it.next();
                     String debugString;
@@ -144,14 +134,14 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                     boolean isPlatform = false;
                     boolean isPlattformoverride = false;
 
-                    if (SettingStoreType.Local == setting.getStoreType()) {
+                    if (Local == setting.getStoreType()) {
                         if (getDataDB() == null || getDataDB().getDatabasePath() == null)
                             setting.loadDefault();
                         else
                             setting = dao.ReadFromDatabase(getDataDB(), setting);
-                    } else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType())) {
+                    } else if (Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && Platform == setting.getStoreType())) {
                         setting = dao.ReadFromDatabase(getSettingsDB(), setting);
-                    } else if (SettingStoreType.Platform == setting.getStoreType()) {
+                    } else if (Platform == setting.getStoreType()) {
                         isPlatform = true;
                         SettingBase<?> cpy = setting.copy();
                         cpy = dao.ReadFromDatabase(getSettingsDB(), cpy);

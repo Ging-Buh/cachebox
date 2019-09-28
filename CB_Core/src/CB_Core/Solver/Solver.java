@@ -7,7 +7,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class Solver extends ArrayList<SolverZeile> {
-    public static final String errorPrefix = Translation.get("solverErrorPrefix".hashCode());
+    public static final String errorPrefix = Translation.get("solverErrorPrefix");
     public static final String errorPostfix = "";
     private static final long serialVersionUID = 132452345624562L;
     public static SolverCacheInterface solverCacheInterface = null;

@@ -161,7 +161,7 @@ public class DescriptionView extends CB_View_Base {
                 float infoHeight = 0;
                 if (cacheInfo != null)
                     infoHeight = cacheInfo.getHeight();
-                PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.getX(), DescriptionView.this.getY(), DescriptionView.this.getWidth(), DescriptionView.this.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
+                PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, that.getX(), that.getY(), that.getWidth(), that.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
             }
         };
         timer.schedule(task, 50);

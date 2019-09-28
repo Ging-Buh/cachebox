@@ -231,7 +231,7 @@ public final class GpxSerializer {
         boolean loadAllWaypoints = true;
         boolean withDescription = true;
 
-        progressListener.publishProgress(countExported, Translation.get("readCacheDetails".hashCode(), String.valueOf(geocodesOfBatch.size())));
+        progressListener.publishProgress(countExported, Translation.get("readCacheDetails", String.valueOf(geocodesOfBatch.size())));
 
         clDAO.ReadCacheList(cacheList, geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
 
@@ -350,7 +350,7 @@ public final class GpxSerializer {
 
             countExported++;
             if (progressListener != null) {
-                progressListener.publishProgress(countExported, Translation.get("writeCache".hashCode(), cache.getGcCode()));
+                progressListener.publishProgress(countExported, Translation.get("writeCache", cache.getGcCode()));
             }
         }
 

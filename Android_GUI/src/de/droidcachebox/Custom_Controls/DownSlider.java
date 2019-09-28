@@ -65,7 +65,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     private static final String log = "downSlider";
     private LinearLayout strengthLayout = findViewById(R.id.main_strength_control);
 
-    public static boolean isInitialized = false;
+    private static boolean isInitialized = false;
     private static int QuickButtonHeight;
     private static DownSlider Me;
     private final int AnimationTime = 50;
@@ -259,6 +259,10 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
     public static int getAktQuickButtonHeight() {
         return Config.quickButtonShow.getValue() ? QuickButtonHeight : 0;
+    }
+
+    public static boolean isInitialized() {
+        return isInitialized;
     }
 
     @Override
@@ -555,7 +559,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             } else {
                 QuickButtonHeight = 0;
             }
-            ((Main) Main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
+            Main.mainActivity.setQuickButtonHeight(QuickButtonHeight);
 
         } else {
             yPos = 0;
@@ -588,7 +592,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     {
 
         if (Main.mainActivity != null) {
-            ((Main) Main.mainActivity).runOnUiThread(new Runnable() {
+            Main.mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
@@ -605,7 +609,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
                         Config.AcceptChanges();
                     }
 
-                    ((Main) Main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
+                    Main.mainActivity.setQuickButtonHeight(QuickButtonHeight);
 
                     if (swipeUp || swipeDown) {
                         if (swipeUp) {
@@ -653,47 +657,44 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         }
 
-        ((Main) Main.mainActivity).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCache = cache;
-                if (waypoint == null) {
-                    mWaypoint = null;
-                } else {
-                    mWaypoint = waypoint;
-                }
-                attCompleadHeight = 0;
-                CacheInfoHeight = 0;
-                WPInfoHeight = 0;
-                topCalc = 0;
-
-                int TextWidth = DownSlider.Me.width - DownSlider.Me.imgSize;
-
-                Rect bounds = new Rect();
-                WPLayoutTextPaint = new TextPaint();
-                WPLayoutTextPaint.setTextSize((float) (UI_Size_Base.ui_size_base.getScaledFontSize() * 1.3));
-                WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
-                LineSep = bounds.height() / 3;
-
-                String Clue = "";
-                if (mWaypoint != null) {
-                    if (mWaypoint.getClue() != null)
-                        Clue = mWaypoint.getClue();
-                    WPLayoutTextPaint.setAntiAlias(true);
-                    WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-                    WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / " + UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
-                            false);
-                    WPLayoutDesc = new StaticLayout(mWaypoint.getDescription(), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-                    WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-                    WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
-                    WPLayoutTextPaintBold.setFakeBoldText(true);
-                    WPLayoutName = new StaticLayout(waypoint.getGcCode() + ": " + waypoint.getTitle(), WPLayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-                    WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight() + WPLayoutName.getHeight();
-                }
-
-                DownSlider.Me.invalidate();
-
+        Main.mainActivity.runOnUiThread(() -> {
+            mCache = cache;
+            if (waypoint == null) {
+                mWaypoint = null;
+            } else {
+                mWaypoint = waypoint;
             }
+            attCompleadHeight = 0;
+            CacheInfoHeight = 0;
+            WPInfoHeight = 0;
+            topCalc = 0;
+
+            int TextWidth = DownSlider.Me.width - DownSlider.Me.imgSize;
+
+            Rect bounds = new Rect();
+            WPLayoutTextPaint = new TextPaint();
+            WPLayoutTextPaint.setTextSize((float) (UI_Size_Base.ui_size_base.getScaledFontSize() * 1.3));
+            WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
+            LineSep = bounds.height() / 3;
+
+            String Clue = "";
+            if (mWaypoint != null) {
+                if (mWaypoint.getClue() != null)
+                    Clue = mWaypoint.getClue();
+                WPLayoutTextPaint.setAntiAlias(true);
+                WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
+                WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / " + UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
+                        false);
+                WPLayoutDesc = new StaticLayout(mWaypoint.getDescription(), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+                WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+                WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
+                WPLayoutTextPaintBold.setFakeBoldText(true);
+                WPLayoutName = new StaticLayout(waypoint.getGcCode() + ": " + waypoint.getTitle(), WPLayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+                WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight() + WPLayoutName.getHeight();
+            }
+
+            DownSlider.Me.invalidate();
+
         });
     }
 

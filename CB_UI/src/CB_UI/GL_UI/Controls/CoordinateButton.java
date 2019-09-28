@@ -23,13 +23,9 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     protected String mwpName;
     protected CopyPastePopUp popUp;
     protected Clipboard clipboard;
-    OnClickListener longCLick = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            showPopUp(x, y);
-            return true;
-        }
+    OnClickListener longCLick = (v, x, y, pointer, button) -> {
+        showPopUp(x, y);
+        return true;
     };
     private EditCoord edCo;
     private ICoordinateChangedListener mCoordinateChangedListener;

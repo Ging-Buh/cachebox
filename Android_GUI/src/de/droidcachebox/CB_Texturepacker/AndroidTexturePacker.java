@@ -19,8 +19,8 @@ import java.io.OutputStream;
 /**
  * @author Nathan Sweet ; Longri
  */
-public class Android_Packer extends TexturePacker_Base {
-    public Android_Packer(File rootDir, Settings settings) {
+public class AndroidTexturePacker extends TexturePacker_Base {
+    public AndroidTexturePacker(File rootDir, Settings settings) {
         this.settings = settings;
 
         if (settings.pot) {
@@ -34,7 +34,7 @@ public class Android_Packer extends TexturePacker_Base {
         imageProcessor = new ImageProcessor(rootDir, settings);
     }
 
-    public Android_Packer() {
+    public AndroidTexturePacker() {
         super();
         that = this;
         // initial Rect
@@ -43,7 +43,7 @@ public class Android_Packer extends TexturePacker_Base {
 
     @Override
     public TexturePacker_Base getInstanz(File rootDir, Settings settings) {
-        return new Android_Packer(rootDir, settings);
+        return new AndroidTexturePacker(rootDir, settings);
     }
 
     @Override

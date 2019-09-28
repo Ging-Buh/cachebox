@@ -24,6 +24,7 @@ import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.DisplayType;
+import CB_UI_Base.GL_UI.Handler;
 import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.Size;
@@ -97,7 +98,7 @@ public class Splash extends Activity {
     private Boolean showSandbox;
     private Bundle bundeledData;
     private boolean askForWorkpath;
-
+    private FrameLayout frame;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +108,8 @@ public class Splash extends Activity {
             // so Main has not been started
             new AndroidFileFactory(); // used by CB_SLF4J
             // read workpath from Android Preferences
-            workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
-            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO); // perhaps put this into androidSetting,setting another start LogLevel
+            workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
+            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO); // perhaps put this into androidSetting,setting: a "startLogLevel"
             Log.info(log, "Logging initialized");
         }
         Log.info(log, "onCreate called");
@@ -120,8 +121,7 @@ public class Splash extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // Porträt erzwingen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash);
-
-        initializeSomeUiSettings(); // don't know, if it must be done here
+        frame = findViewById(R.id.frameLayout1);
         loadImages();
         Log.info(log, "onCreate finished.");
     }
@@ -144,20 +144,27 @@ public class Splash extends Activity {
 
     private void startMain() {
         GlobalCore.RunFromSplash = true;
+        Intent mainIntent;
         if (Main.mainActivity == null) {
             Log.info(log, "Start Main");
-            Intent mainIntent = new Intent().setClass(this, Main.class);
-            mainIntent.putExtras(bundeledData);
-            startActivity(mainIntent);
+            mainIntent = new Intent().setClass(this, Main.class);
         } else {
+            mainIntent = Main.mainActivity.getIntent();
             Log.info(log, "Connect to Main to onNewIntent(Intent)");
-            Intent mainIntent = Main.mainActivity.getIntent();
-            mainIntent.putExtras(bundeledData);
-            startActivityForResult(mainIntent, Main.REQUEST_FROM_SPLASH); // don't want a result
-            setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
         }
-        CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        finish(); // this activity can be closed and back to the calling activity in onActivityResult
+        int width = frame.getMeasuredWidth();
+        int height = frame.getMeasuredHeight();
+        int delaytime = 0; // give splash the time to show: width/height != 0
+        if (width == 0 || height == 0) delaytime = 1000;
+        new Handler().postDelayed(() -> {
+            // could bundle ui too, but the (static) classes are initialized directly
+            initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
+            Global.Paints.init(this);
+            mainIntent.putExtras(bundeledData); // the prepared Data
+            startActivity(mainIntent);
+            setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
+            finish(); // this activity can be closed and back to the calling activity in onActivityResult
+        }, delaytime);
     }
 
     private void prepareBundledData() {
@@ -260,9 +267,19 @@ public class Splash extends Activity {
     private void initializeSomeUiSettings() {
         if (!UiSizes.getInstance().isInitialized()) {
             // class GlobalCore: displayDensity(Default for MapViewDPIFaktor, displayType, useSmallSkin
+            int width = frame.getMeasuredWidth();
+            int height = frame.getMeasuredHeight();
             DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
-            int height = displaymetrics.heightPixels;
-            int width = displaymetrics.widthPixels;
+            if (height == 0 || width == 0) {
+                Log.info(log, "Width/Height still 0, so calc from displaymetrics");
+                height = displaymetrics.heightPixels;
+                width = displaymetrics.widthPixels;
+                int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+                int heightOfStatusBar = getResources().getDimensionPixelSize(resourceId);
+                if (resourceId > 0) {
+                    height = height - heightOfStatusBar;
+                }
+            }
             GlobalCore.displayDensity = displaymetrics.density;
             int dpH = (int) (height / GlobalCore.displayDensity + 0.5);
             int dpW = (int) (width / GlobalCore.displayDensity + 0.5);
@@ -275,22 +292,17 @@ public class Splash extends Activity {
             else
                 GlobalCore.displayType = DisplayType.Small;
             GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
+
             // class UiSizes
-            Resources res = Splash.this.getResources();
             DevicesSizes ui = new DevicesSizes();
             ui.Density = displaymetrics.density;
             ui.isLandscape = false;
-            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-            int heightOfStatusBar = getResources().getDimensionPixelSize(resourceId);
-            if (resourceId > 0) {
-                height = height - heightOfStatusBar;
-            }
             ui.Window = new Size(width, height);
             UiSizes.getInstance().initialize(ui);
             // class GL_UISizes
             GL_UISizes.defaultDPI = displaymetrics.density;
 
-            Log.info(log, "Screen width/height+height of statusbar: " + ui.Window.width + "/" + ui.Window.height + " + " + heightOfStatusBar);
+            Log.info(log, "Screen width/height: " + ui.Window.width + "/" + ui.Window.height);
         }
     }
 
@@ -299,15 +311,15 @@ public class Splash extends Activity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             PermissionCheck.checkNeededPermissions(this);
         }
-        // initial GDX
-        Gdx.files = new AndroidFiles(getAssets(), getFilesDir().getAbsolutePath()); // /data/data/de.droidcachebox/files
+
+        String privateFilesDirectory = getFilesDir().getAbsolutePath(); // /data/data/de.droidcachebox/files
+        Gdx.files = new AndroidFiles(getAssets(), privateFilesDirectory); // will be set automatically to this values in init of gdx's AndroidApplication
 
         // read some setting from Android Preferences (Platform
-        if (!getWorkPathFromFile())
-            workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox"); // /data/cachebox
-        // default must be true, for first selection or else check workPath to start with /data
+        workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
+        setWorkPathFromRedirectionFileIfExists();
         askForWorkpath = androidSetting.getBoolean("AskAgain", false)
-                || workPath.toLowerCase().startsWith("/data/")
+                || !FileIO.directoryExists((Environment.getExternalStorageDirectory().getPath() + "/CacheBox"))
                 || FileIO.fileExists(workPath + "/askAgain.txt");
         showSandbox = androidSetting.getBoolean("showSandbox", false);
 
@@ -321,37 +333,23 @@ public class Splash extends Activity {
         PlatformConnector.setGetFileListener(fileExplorer);
         PlatformConnector.setGetFolderListener(fileExplorer);
 
-        String LangPath = androidSetting.getString("Sel_LanguagePath", ""); // ""
-        if (LangPath.length() == 0) {
-            String locale = Locale.getDefault().getLanguage(); // de
-            if (locale.contains("de")) {
-                LangPath = "data/lang/de/strings.ini";
-            } else if (locale.contains("cs")) {
-                LangPath = "data/lang/cs/strings.ini";
-            } else if (locale.contains("cs")) {
-                LangPath = "data/lang/cs/strings.ini";
-            } else if (locale.contains("fr")) {
-                LangPath = "data/lang/fr/strings.ini";
-            } else if (locale.contains("nl")) {
-                LangPath = "data/lang/nl/strings.ini";
-            } else if (locale.contains("pl")) {
-                LangPath = "data/lang/pl/strings.ini";
-            } else if (locale.contains("pt")) {
-                LangPath = "data/lang/pt/strings.ini";
-            } else if (locale.contains("hu")) {
-                LangPath = "data/lang/hu/strings.ini";
-            } else {
-                LangPath = "data/lang/en-GB/strings.ini";
+        String languagePath = androidSetting.getString("Sel_LanguagePath", ""); // ""
+        if (languagePath.length() == 0) {
+            String locale = Locale.getDefault().getLanguage();
+            if (locale.equalsIgnoreCase("en")) {
+                locale = "en-GB";
+            } else if (locale.equalsIgnoreCase("pt")) {
+                locale = "pt-PT";
             }
+            languagePath = "data/lang/" + locale + "/strings.ini";
         }
         try {
-            new Translation(workPath, FileType.Internal); // /data/cachebox
-            Translation.LoadTranslation(LangPath); // data/lang/de/strings.ini
+            new Translation(workPath, FileType.Internal).loadTranslation(languagePath);
         } catch (Exception ignored) {
         }
     }
 
-    private boolean getWorkPathFromFile() {
+    private void setWorkPathFromRedirectionFileIfExists() {
         // Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
         if (FileIO.fileExists(workPath + "/redirection.txt")) {
             BufferedReader Filereader;
@@ -365,19 +363,16 @@ public class Splash extends Activity {
                     }
                 }
                 Filereader.close();
-                return true;
             } catch (IOException e) {
                 Log.err(log, "read redirection getWorkPathFromFile", e);
             }
         }
-        return false;
     }
 
     private void askForWorkPath() {
-        // Default workpath Environment.getDataDirectory() + "/cachebox";
         workPath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
 
-        String externalSd = getExternalSdPath();  // externalSd = null or ...
+        String externalSd = getExternalSdPath();  // externalSd = null or sandboxPath
         final String externalSd2 = externalSd;
 
         try {
@@ -448,15 +443,14 @@ public class Splash extends Activity {
                                     showPleaseWaitDialog();
 
                                     // use external SD -> change workPath
-                                    Thread thread = new Thread() {
+                                    new Thread() {
                                         @Override
                                         public void run() {
-                                            workPath = externalSd2;
+                                            workPath = externalSd2 + "/CacheBox";
                                             saveWorkPath();
                                             finishInitializationAndStartMain();
                                         }
-                                    };
-                                    thread.start();
+                                    }.start();
                                 }).setNegativeButton(Translation.get("no"), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog13, int id) {
@@ -479,15 +473,14 @@ public class Splash extends Activity {
                         showPleaseWaitDialog();
 
                         // use external SD -> change workPath
-                        Thread thread = new Thread() {
+                        new Thread() {
                             @Override
                             public void run() {
                                 workPath = externalSd2;
                                 saveWorkPath();
                                 finishInitializationAndStartMain();
                             }
-                        };
-                        thread.start();
+                        }.start();
                     }
                 });
             } else {
@@ -595,7 +588,6 @@ public class Splash extends Activity {
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
         Log.debug(log, "onDestroy");
         if (isFinishing()) {
@@ -679,82 +671,14 @@ public class Splash extends Activity {
     }
 
     private String getExternalSdPath() {
-
-        String externalSd;
-        if ((externalSd = testExtSdPath(workPath)) == null) {
-            String prev;
-            int pos = workPath.indexOf("/", 2); // search for the second /
-            if (pos > 0) {
-                prev = workPath.substring(0, pos);
-            } else {
-                prev = "/mnt";
-            }
-            // search for an external SD-Card
-            if ((externalSd = testExtSdPath(prev + "/extSdCard")) == null)
-                if ((externalSd = testExtSdPath(prev + "/MicroSD")) == null)
-                    if ((externalSd = testExtSdPath(prev + "/ext_sdcard")) == null)
-                        if ((externalSd = testExtSdPath(prev + "/sdcard/ext_sd")) == null)
-                            if ((externalSd = testExtSdPath(prev + "/ext_card")) == null)
-                                if ((externalSd = testExtSdPath(prev + "/external")) == null)
-                                    if ((externalSd = testExtSdPath(prev + "/sdcard2")) == null)
-                                        if ((externalSd = testExtSdPath(prev + "/sdcard1")) == null)
-                                            if ((externalSd = testExtSdPath(prev + "/sdcard/_ExternalSD")) == null)
-                                                if ((externalSd = testExtSdPath(prev + "/sdcard-ext")) == null)
-                                                    if ((externalSd = testExtSdPath(prev + "/external1")) == null)
-                                                        if ((externalSd = testExtSdPath(prev + "/sdcard/external_sd")) == null)
-                                                            if ((externalSd = testExtSdPath(prev + "/emmc")) == null)
-                                                                if ((externalSd = testExtSdPath("/Removable/MicroSD")) == null)
-                                                                    if ((externalSd = testExtSdPath("/mnt/ext_sd")) == null)
-                                                                        if ((externalSd = testExtSdPath("/sdcard/tflash")) == null)
-                                                                            if ((externalSd = testExtSdPath(prev + "/sdcard")) == null)
-                                                                                if ((externalSd = testExtSdPath("/mnt/shared/ExtSD")) == null) {
-                                                                                }
+        // we have minsdk >= KITKAT
+        File sandbox = getExternalSandbox();
+        if (sandbox != null) {
+            return sandbox.getAbsolutePath();
         }
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            // check for Root permission
-
-            File sandboxPath = null;
-            String sandboxParentPath;
-            try {
-                String testFolderName = externalSd + "/Test";
-                File testFolder = FileFactory.createFile(testFolderName);
-                sandboxParentPath = FileFactory.createFile(externalSd).getParent() + "/Android/data/" + getPackageName();
-                sandboxPath = FileFactory.createFile(sandboxParentPath + "/files");
-                File test = FileFactory.createFile(testFolder + "/Test.txt");
-                testFolder.mkdirs();
-                test.createNewFile();
-                if (!test.exists()) {
-                    externalSd = null;
-                }
-                test.delete();
-                testFolder.delete();
-            } catch (Exception e) {
-                externalSd = null;
-            }
-
-            if (externalSd == null && sandboxPath != null) {
-                try {
-                    getExternalFilesDir(null);
-                    String testFolderName = sandboxPath.getAbsolutePath() + "/Test";
-                    File testFolder = FileFactory.createFile(testFolderName);
-                    File test = FileFactory.createFile(testFolderName + "/Test.txt");
-                    testFolder.mkdirs();
-                    test.createNewFile();
-                    if (!test.exists()) {
-                        externalSd = null;
-                    }
-                    test.delete();
-                    testFolder.delete();
-                    externalSd = sandboxPath.getAbsolutePath();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    externalSd = null;
-                }
-            }
+        else {
+            return null;
         }
-
-        return externalSd;
     }
 
     private ArrayList<String> getAdditionalWorkPathArray() {
@@ -822,7 +746,6 @@ public class Splash extends Activity {
             Config.settings.ReadFromDB();
             Log.info(log, "Settings read from configDB.");
         }
-
         Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
         PlatformSettings.setPlatformSettings(new IPlatformSettings() {
             @Override
@@ -894,8 +817,6 @@ public class Splash extends Activity {
         Config.AcceptChanges();
 
         Log.info(log, GlobalCore.getInstance().getVersionString());
-
-        Global.Paints.init(this);
 
         // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
         ext_AndroidGraphicFactory.createInstance(this.getApplication());
@@ -981,6 +902,14 @@ public class Splash extends Activity {
         }
     }
 
+    private File getExternalSandbox() {
+        java.io.File[] dirs = getExternalFilesDirs(null);
+        if (dirs.length > 1) {
+            return FileFactory.createFile(dirs[1].getAbsolutePath());
+        }
+        return null;
+    }
+
     private void mediaInfo() {
         //<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"></uses-permission> is only for system apps
         try {
@@ -991,6 +920,7 @@ public class Splash extends Activity {
             Log.info(log, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
             Log.info(log, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
 
+            java.io.File[] dirss = getExternalFilesDirs(null);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 // normally [0] is the internal SD, [1] is the external SD
                 java.io.File[] dirs = getExternalFilesDirs(null);

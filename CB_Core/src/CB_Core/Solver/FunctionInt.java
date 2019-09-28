@@ -14,24 +14,24 @@ public class FunctionInt extends Function {
 
     @Override
     public String getName() {
-        return Translation.get("solverFuncInt".hashCode());
+        return Translation.get("solverFuncInt");
     }
 
     @Override
     public String getDescription() {
-        return Translation.get("solverDescInt".hashCode());
+        return Translation.get("solverDescInt");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 1) {
-            return Translation.get("solverErrParamCount".hashCode(), "1", "$solverFuncInt");
+            return Translation.get("solverErrParamCount", "1", "$solverFuncInt");
         }
         double number = 0;
         try {
             number = Double.valueOf(parameter[0].trim());
         } catch (Exception ex) {
-            return Translation.get("solverErrParamType".hashCode(), "$solverFuncInt", "1", "$value", "$number", parameter[0]);
+            return Translation.get("solverErrParamType", "$solverFuncInt", "1", "$value", "$number", parameter[0]);
         }
         return String.valueOf((int) number);
     }

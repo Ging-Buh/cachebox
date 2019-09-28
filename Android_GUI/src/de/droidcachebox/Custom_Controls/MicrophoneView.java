@@ -9,7 +9,7 @@ import android.view.View;
 import de.droidcachebox.Global;
 import de.droidcachebox.Ui.ActivityUtils;
 
-public final class Mic_On_Flash extends View {
+public final class MicrophoneView extends View {
 
     Handler handler = new Handler();
     /*
@@ -28,17 +28,17 @@ public final class Mic_On_Flash extends View {
         }
     };
 
-    public Mic_On_Flash(Context context) {
+    public MicrophoneView(Context context) {
         super(context);
         iniColorArray();
     }
 
-    public Mic_On_Flash(Context context, AttributeSet attrs) {
+    public MicrophoneView(Context context, AttributeSet attrs) {
         super(context, attrs);
         iniColorArray();
     }
 
-    public Mic_On_Flash(Context context, AttributeSet attrs, int defStyle) {
+    public MicrophoneView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         iniColorArray();
     }

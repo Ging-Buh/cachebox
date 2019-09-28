@@ -81,9 +81,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public static ViewManager that;
     public static CB_TabView leftTab; // the only one (has been left aand right for Tablet)
 
-    public static Action_PlatformActivity actionTakePicture;
-    public static Action_PlatformActivity actionRecordVideo;
-    public static Action_PlatformActivity actionRecordVoice;
+    public static Action_PlatformActivity actionTakePicture, actionRecordVideo, actionRecordVoice, actionWhatsApp;
 
     private GestureButton db_button; // default: show CacheList
     private GestureButton cache_button; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
@@ -225,7 +223,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
-        PlatformConnector.handleExternalRequest();
         filterSetChanged();
         GL.that.removeRenderView(this);
 
@@ -271,6 +268,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         db_button.addAction(CB_Action_ShowCacheList.getInstance(), true, GestureDirection.Up);
         db_button.addAction(Action_ParkingDialog.getInstance(), false, GestureDirection.Down);
         db_button.addAction(CB_Action_ShowTrackableListView.getInstance(), false, GestureDirection.Right);
+        actionWhatsApp = new Action_PlatformActivity("WhatsApp", MenuID.AID_WhatsApp, ViewConst.WhatsApp, null); // Sprites.getSprite(IconName.voiceRecIcon.name())
+        db_button.addAction(actionWhatsApp, false);
 
         cache_button.addAction(CB_Action_ShowDescriptionView.getInstance(), true, GestureDirection.Up);
         cache_button.addAction(CB_Action_ShowWaypointView.getInstance(), false, GestureDirection.Right);

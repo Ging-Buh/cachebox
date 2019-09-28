@@ -51,7 +51,6 @@ import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -202,8 +201,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         }
 
-        SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
-        CB_View_Base langView = getLangSpinnerView(lang);
+        // SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+        CB_View_Base langView = getLangSpinnerView();
 
         addControlToLinearLayout(langView, margin);
 
@@ -398,7 +397,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         } else if (SB instanceof SettingsListGetApiButton) {
             return getApiKeyButtonView((SettingsListGetApiButton<?>) SB, BackgroundChanger);
         } else if (SB instanceof SettingsListButtonLangSpinner) {
-            return getLangSpinnerView((SettingsListButtonLangSpinner<?>) SB);
+            return getLangSpinnerView();
         } else if (SB instanceof SettingsListButtonSkinSpinner) {
             return getSkinSpinnerView((SettingsListButtonSkinSpinner<?>) SB);
         } else if (SB instanceof SettingsAudio) {
@@ -1143,8 +1142,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return String.valueOf(minutes) + ":" + String.valueOf(seconds);
     }
 
-    private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner<?> SB) {
-        Sprachen = Translation.GetLangs(Config.LanguagePath.getValue());
+    private CB_View_Base getLangSpinnerView() {
+        Sprachen = Translation.that.getLangs(Config.LanguagePath.getValue());
 
         if (Sprachen == null || Sprachen.size() == 0)
             return null;
@@ -1188,13 +1187,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 if (selected.equals(tmp.Name)) {
                     Config.Sel_LanguagePath.setValue(tmp.Path);
                     try {
-                        Translation.LoadTranslation(tmp.Path);
+                        Translation.that.loadTranslation(tmp.Path);
                     } catch (Exception e) {
-                        try {
-                            Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
+                        Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
                     }
                     break;
                 }

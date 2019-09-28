@@ -2,9 +2,9 @@ package de.droidcachebox.Views;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Utils.Log.Log;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,23 +20,20 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     public final static int GLSURFACE_VIEW20 = 0;
     public final static int GLSURFACE_GLSURFACE = 3;
     private static final String log = "ViewGL";
-    public static View ViewGl;
+    private View gdxView;
     private static int mAktSurfaceType = -1;
-    public GL glListener;
-    AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
+    private AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
 
-    @SuppressWarnings("deprecation")
-    public ViewGL(Context context, LayoutInflater inflater, View glView, GL glListener) {
+    public ViewGL(Context context, LayoutInflater inflater, View gdxView) {
         super(context);
-        ViewGl = glView;
+        this.gdxView = gdxView;
         GL.that.setGL_Listener_Interface(this);
-        this.glListener = glListener;
         try {
 
             RelativeLayout mapviewLayout = (RelativeLayout) inflater.inflate(R.layout.mapviewgl, null, false);
             this.addView(mapviewLayout);
 
-            mapviewLayout.addView(glView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+            mapviewLayout.addView(gdxView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         } catch (Exception ex) {
         }
     }
@@ -60,12 +57,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
     @Override
     public boolean ItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case 0:
-                return true;
-
-        }
-        return false;
+        return item.getItemId() == 0;
     }
 
     @Override
@@ -79,19 +71,10 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
     @Override
     public void OnShow() {
-        CB_Utils.Log.Log.debug(log, "OnShow");
-        // GL_Listener.onStart();
     }
-
-    // public void Initialize()
-    // {
-    // glListener.Initialize();
-    // }
 
     @Override
     public void OnHide() {
-        CB_Utils.Log.Log.debug(log, "OnHide");
-        // GL_Listener.onStop();
     }
 
     @Override
@@ -102,10 +85,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     @Override
     public int GetContextMenuId() {
         return 0;
-    }
-
-    @Override
-    public void BeforeShowContextMenu(Menu menu) {
     }
 
     @Override
@@ -120,11 +99,11 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
         switch (mAktSurfaceType) {
             case GLSURFACE_VIEW20:
-                ((GLSurfaceView20) ViewGl).requestRender();
+                ((GLSurfaceView20) gdxView).requestRender();
                 break;
 
             case GLSURFACE_GLSURFACE:
-                ((GLSurfaceView) ViewGl).requestRender();
+                ((GLSurfaceView) gdxView).requestRender();
                 break;
         }
     }
@@ -135,11 +114,11 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
         try {
             switch (mAktSurfaceType) {
                 case GLSURFACE_VIEW20:
-                    ((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
+                    ((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
                     break;
 
                 case GLSURFACE_GLSURFACE:
-                    ((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
+                    ((GLSurfaceView) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
                     break;
             }
             isContinousRenderMode.set(false);
@@ -150,14 +129,14 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
     @Override
     public void RenderContinous() {
-        // CB_Utils.Log.Log.info(log, "Set: RenderContinous");
+        // .Log.info(log, "Set: RenderContinous");
         switch (mAktSurfaceType) {
             case GLSURFACE_VIEW20:
-                ((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
+                ((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
                 break;
 
             case GLSURFACE_GLSURFACE:
-                ((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
+                ((GLSurfaceView) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
                 break;
         }
         isContinousRenderMode.set(true);
@@ -170,27 +149,13 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int mesuredWidth = measure(widthMeasureSpec);
-        int mesuredHeight = measure(heightMeasureSpec);
+        int mesuredWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int mesuredHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        Log.d("CACHEBOX", "With/Height " + mesuredWidth + " / " + mesuredHeight);
+        Log.info("CACHEBOX", "With/Height " + mesuredWidth + " / " + mesuredHeight);
 
         setMeasuredDimension(mesuredWidth, mesuredHeight);
 
-    }
-
-    /**
-     * Determines the width of this view
-     *
-     * @param measureSpec A measureSpec packed into an int
-     * @return The width of the view, honoring constraints from measureSpec
-     */
-    private int measure(int measureSpec) {
-        int result = 0;
-        int specSize = MeasureSpec.getSize(measureSpec);
-        result = specSize;
-
-        return result;
     }
 
 }

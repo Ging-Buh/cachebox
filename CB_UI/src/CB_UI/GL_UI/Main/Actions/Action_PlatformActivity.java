@@ -6,22 +6,22 @@ import CB_UI_Base.GL_UI.ViewID;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Action_PlatformActivity extends AbstractAction {
-    private ViewID viewConst;
-    private Sprite mIcon;
+    private ViewID viewID;
+    private Sprite sprite;
 
-    public Action_PlatformActivity(String Name, int ID, ViewID ViewConst, Sprite icon) {
+    public Action_PlatformActivity(String Name, int ID, ViewID viewID, Sprite icon) {
         super(Name, ID);
-        viewConst = ViewConst;
-        mIcon = icon;
+        this.viewID = viewID;
+        this.sprite = icon;
     }
 
     @Override
     public void Execute() {
-        PlatformConnector.showView(viewConst, 0, 0, 0, 0);
+        PlatformConnector.showView(viewID, 0, 0, 0, 0);
     }
 
     @Override
     public Sprite getIcon() {
-        return mIcon;
+        return sprite;
     }
 }

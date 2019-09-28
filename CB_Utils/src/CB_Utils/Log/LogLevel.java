@@ -36,8 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 public enum LogLevel {
     OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL;
-
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(LogLevel.class);
     private static LogLevel act = OFF;
 
     static LogLevel getLogLevel() {

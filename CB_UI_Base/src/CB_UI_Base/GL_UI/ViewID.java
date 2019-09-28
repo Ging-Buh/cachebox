@@ -16,6 +16,8 @@
 
 package CB_UI_Base.GL_UI;
 
+import static CB_UI_Base.GL_UI.Menu.MenuID.*;
+
 /**
  * Stellt die Identifizierung einer View dar.
  *
@@ -23,13 +25,14 @@ package CB_UI_Base.GL_UI;
  */
 public class ViewID {
 
-    public final static int MAP_VIEW = 0;
     public final static int DESCRIPTION_VIEW = 4;
 
-    public final static int NAVIGATE_TO = 108;
-    public final static int VOICE_REC = 110;
-    public final static int TAKE_PHOTO = 111;
-    public final static int VIDEO_REC = 112;
+    public final static int NAVIGATE_TO = AID_NAVIGATE_TO;
+    public final static int VOICE_REC = AID_VOICE_REC;
+    public final static int TAKE_PHOTO = AID_TAKE_PHOTO;
+    public final static int VIDEO_REC = AID_VIDEO_REC;
+    public final static int WhatsApp = AID_WhatsApp;
+
     private final int Id;
     private final UI_Pos pos;
     private final UI_Pos posTab;

@@ -41,7 +41,6 @@ public class Translations {
      *
      * @param ID          as String
      * @param Trans       as String
-     * @param defaultLang
      */
     public Translations(String ID, String Trans) {
         this.Id = ID.hashCode();

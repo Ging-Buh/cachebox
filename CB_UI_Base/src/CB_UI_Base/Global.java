@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Clipboard;
 public abstract class Global {
     public static final String br = System.getProperty("line.separator");
     public static final String fs = System.getProperty("file.separator");
-    public static boolean forcePhone = true;
     public static boolean useSmallSkin = false;
     public static DisplayType displayType = DisplayType.Normal;
     public static float displayDensity = 1;

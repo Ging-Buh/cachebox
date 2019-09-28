@@ -16,13 +16,13 @@
 
 package CB_Translation_Base.TranslationEngine;
 
-import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,26 +39,24 @@ public class Translation {
      * @uml.associationEnd
      */
     public static Translation that;
-    public final CB_List<MissingTranslation> mMissingStringList;
-    private final CB_List<Translations> mStringList;
-    private final CB_List<Translations> mRefTranslation;
+    public final Array<MissingTranslation> mMissingStringList;
+    private Array<Translations> translations;
+    private Array<Translations> references;
     private final String mWorkPath;
-    private FileType mFiletype = FileType.Internal;
+    private FileType mFiletype;
     private String mLangID;
-    private String mInitialLangPath;
+    private String langPath;
 
     /**
      * Constructor
      *
-     * @param WorkPath
+     * @param workPath
      * @param internal true for loading from asset
      */
-    public Translation(String WorkPath, FileType internal) {
+    public Translation(String workPath, FileType internal) {
         that = this;
-        mWorkPath = WorkPath;
-        mStringList = new CB_List<>();
-        mRefTranslation = new CB_List<>();
-        mMissingStringList = new CB_List<>();
+        mWorkPath = workPath;
+        mMissingStringList = new Array<>();
         mFiletype = internal;
     }
 
@@ -69,15 +67,12 @@ public class Translation {
     /**
      * Load the Translation from File
      *
-     * @param LangPath
+     * @param langPath
      * @throws IOException
      */
-    public static void LoadTranslation(String LangPath) throws IOException {
-        if (that == null)
-            return;
-        that.mInitialLangPath = LangPath;
-
-        that.ReadTranslationsFile(that.mInitialLangPath);
+    public void loadTranslation(String langPath) {
+        this.langPath = langPath;
+        readTranslationsFile(this.langPath);
     }
 
     /**
@@ -85,45 +80,13 @@ public class Translation {
      * with params ??????
      *
      * @param StringId as String
-     * @param params   With this a variable number of Strings can be definde Before returning the translation string there will be replaced
-     *                 predefined substrings by these parameters Example: the "{1}" will be replaced by the first param, the "{2}" by the
-     *                 second... Get("abc {1} def {3} ghi {2}", "123", "456", "789"); Result: "abc 123 def 789 ghi 456"
+     * @param params  The occurences of {n} in the translation will be replaced by the n'th param
      * @return String
      */
     public static String get(String StringId, String... params) {
         if (that == null)
             return "Translation not initial";
         return that.getTranslation(StringId, params);
-    }
-
-    /**
-     * Returns the translation from StringID </br>
-     * with params ??????
-     *
-     * @param hashCode hashCode String as String.hashCode()
-     * @param params   With this a variable number of Strings can be defined.<br>
-     *                 They replace the corresponding placeholders {*}<br>
-     *                 Example:<br>
-     *                 Get:("abc {1} def {3} ghi {2}", "123", "456", "789");<br>
-     *                 Result: "abc 123 def 789 ghi 456"<br>
-     * @return String
-     */
-    public static String get(int hashCode, String... params) {
-        if (that == null)
-            return "Translation not initial";
-        return that.getTranslation(hashCode, params);
-    }
-
-    /**
-     * Returns a list of languages found on Path
-     *
-     * @param FilePath as String
-     * @return ArrayList of Lang
-     */
-    public static ArrayList<Lang> GetLangs(String FilePath) {
-        if (that == null)
-            return null;
-        return that.getLangs(FilePath);
     }
 
     /**
@@ -152,14 +115,6 @@ public class Translation {
     }
 
     /**
-     * Read the missing StringID's from debug.txt
-     */
-    public static void readMissingStringsFile() throws IOException {
-        if (that != null)
-            that.readMissing();
-    }
-
-    /**
      * Return a String from File
      *
      * @param Name File Name
@@ -177,8 +132,8 @@ public class Translation {
      *
      * @return boolean
      */
-    public static boolean isInitial() {
-        if (that != null && that.mRefTranslation != null)
+    public static boolean isInitialized() {
+        if (that != null && that.references != null)
             return true;
         return false;
     }
@@ -200,38 +155,27 @@ public class Translation {
         return Value;
     }
 
-    private void ReadTranslationsFile(String FilePath) throws IOException {
-        if (FilePath.equals("")) {
+    private void readTranslationsFile(String filePath) {
+        if (filePath.equals("")) {
             return;
         }
 
-        readDefFile(FilePath);
+        translations = readFile(filePath, true);
 
-        {// read refFile (EN)
-            String FileName = FileIO.getFileName(FilePath);
-            int pos = FilePath.lastIndexOf("lang") + 4;
-            String LangFileName = FilePath.substring(0, pos) + "/en-GB/" + FileName;
-            readRefFile(LangFileName);
-        }
+        // read refFile (en-GB)
+        String fileName = FileIO.getFileName(filePath);
+        int pos = filePath.lastIndexOf("lang") + 4;
+        String LangFileName = filePath.substring(0, pos) + "/en-GB/" + fileName;
+        references = readFile(LangFileName, false);
 
-        mLangID = getLangNameFromFile(FilePath);
+        // mLangID = getLangNameFromFile(filePath);
+        mLangID = getTranslation("lang");
 
         SelectedLangChangedEventList.Call();
     }
 
-    private void readRefFile(String FilePath) {
-        readFile(FilePath, false);
-    }
-
-    private void readDefFile(String FilePath) {
-        readFile(FilePath, true);
-    }
-
-    private void readFile(String FilePath, boolean Default) {
-
-        CB_List<Translations> List = Default ? mStringList : mRefTranslation;
-        List.clear();
-
+    private Array<Translations> readFile(String FilePath, boolean asTranslation) {
+        Array<Translations> result = new Array<>();
         FileHandle file = Gdx.files.getFileHandle(FilePath, mFiletype);
 
         String text = file.readString("UTF-8");
@@ -262,23 +206,22 @@ public class Translation {
                 readTransl = line.substring(pos + 1, line.length() - 1);
             else
                 readTransl = line.substring(pos + 1);
-            String ReplacedRead = readTransl.trim().replace("\\n", "\n");
-            if (ReplacedRead.endsWith("\"")) {
-                ReplacedRead = ReplacedRead.substring(0, ReplacedRead.length() - 1);
+            String replacedRead = readTransl.trim().replace("\\n", "\n");
+            if (replacedRead.endsWith("\"")) {
+                replacedRead = replacedRead.substring(0, replacedRead.length() - 1);
             }
-            if (ReplacedRead.startsWith("\"")) {
-                ReplacedRead = ReplacedRead.substring(1);
+            if (replacedRead.startsWith("\"")) {
+                replacedRead = replacedRead.substring(1);
             }
-            ReplacedRead = ReplacedRead.replace("\\\"", "\"");
-            if (!Default) {
-                // dont add if added on Def
-                String contains = get(readID);
-                if (contains.startsWith("$ID: "))
-                    List.add(new Translations(readID, ReplacedRead));
+            replacedRead = replacedRead.replace("\\\"", "\"");
+            if (asTranslation) {
+                result.add(new Translations(readID, replacedRead));
             } else {
-                List.add(new Translations(readID, ReplacedRead));
+                if (getTranslation(readID).startsWith("$ID: "))
+                    result.add(new Translations(readID, replacedRead));
             }
         }
+        return result;
     }
 
     private String getTranslation(String StringId, String... params) {
@@ -287,7 +230,7 @@ public class Translation {
             retString = "$ID: " + StringId;// "No translation found";
 
             MissingTranslation notFound = new MissingTranslation(StringId, "??");
-            if (!mMissingStringList.contains(notFound)) {
+            if (!mMissingStringList.contains(notFound, true)) {
                 mMissingStringList.add(notFound);
             }
             return retString;
@@ -296,22 +239,11 @@ public class Translation {
     }
 
     private String getTranslation(int Id, String... params) {
-
-        if (mStringList == null || mRefTranslation == null)
-            return "Translation  not initial";
-
         String retString = "";
-        for (int i = 0, n = mStringList.size(); i < n; i++) {
-            Translations tmp = mStringList.get(i);
-            if (tmp.getIdString() == Id) {
-                retString = tmp.getTranslation();
-                break;
-            }
-        }
 
-        if (retString == "") {
-            for (int i = 0, n = mRefTranslation.size(); i < n; i++) {
-                Translations tmp = mRefTranslation.get(i);
+        if (translations != null) {
+            for (int i = 0, n = translations.size; i < n; i++) {
+                Translations tmp = translations.get(i);
                 if (tmp.getIdString() == Id) {
                     retString = tmp.getTranslation();
                     break;
@@ -319,12 +251,26 @@ public class Translation {
             }
         }
 
-        if (retString == "") {
-            return retString;
+        if (references != null) {
+            if (retString.length() == 0) {
+                for (int i = 0, n = references.size; i < n; i++) {
+                    Translations tmp = references.get(i);
+                    if (tmp.getIdString() == Id) {
+                        retString = tmp.getTranslation();
+                        break;
+                    }
+                }
+            }
         }
 
-        if (params != null && params.length > 0) {
-            retString = replaceParams(retString, params);
+        if (retString.length() == 0) {
+            if (translations == null || references == null)
+                retString = "Translation not initialized";
+        }
+        else {
+            if (params != null && params.length > 0) {
+                retString = replaceParams(retString, params);
+            }
         }
 
         return retString;
@@ -341,7 +287,7 @@ public class Translation {
         return retString;
     }
 
-    private ArrayList<Lang> getLangs(String FilePath) {
+    public ArrayList<Lang> getLangs(String FilePath) {
         ArrayList<Lang> Temp = new ArrayList<Lang>();
 
         FileHandle Dir = Gdx.files.getFileHandle(FilePath, mFiletype);
@@ -401,8 +347,8 @@ public class Translation {
                     sb.append(line + "\n\r");
                 if (line.contains("##########  Missing Lang Strings ######")) {
                     // Beginn des schreibbereichs
-                    for (int i = 0, n = mMissingStringList.size(); i < n; i++) {
-                        if (i >= mMissingStringList.size())
+                    for (int i = 0, n = mMissingStringList.size; i < n; i++) {
+                        if (i >= mMissingStringList.size)
                             break;
                         MissingTranslation tmp = mMissingStringList.get(i);
                         sb.append(tmp.getMissingString() + "\n\r");
@@ -426,6 +372,7 @@ public class Translation {
 
     }
 
+    /*
     private void readMissing() throws IOException {
         File file = FileFactory.createFile(mWorkPath + "/debug.txt");
         BufferedReader reader = new BufferedReader(file.getFileReader());
@@ -455,6 +402,7 @@ public class Translation {
         reader.close();
 
     }
+     */
 
     private String getTextFile(String Name, String overrideLangId) throws IOException {
 

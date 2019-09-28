@@ -62,5 +62,5 @@ public class MenuID {
     public static final int AID_SHOW_DescExt = 207;
     public static final int AID_SearchCoordinates = 208;
     public static final int AID_UPLOAD_LOGS = 209;
-    public static final int AID_URL_OpenAndroMaps = 210;
+    public static final int AID_WhatsApp = 210;
 }

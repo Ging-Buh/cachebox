@@ -53,7 +53,7 @@ public class ZuweisungEntity extends Entity {
                 firstChar = false;
             }
             if (ungueltig)
-                return Translation.get("InvalidVariableName".hashCode(), lLinks);
+                return Translation.get("InvalidVariableName", lLinks);
             // lLinks ist gueltiger Variablenname
             if (!solver.Variablen.containsKey(lLinks)) {
                 // neue Variable hinzfuegen
@@ -67,7 +67,7 @@ public class ZuweisungEntity extends Entity {
         } else if (links instanceof CoordinateEntity) {
             return ((CoordinateEntity) links).SetCoordinate(lRechts);
         } else
-            return Translation.get("LeftMustBeAVariable".hashCode(), lLinks);
+            return Translation.get("LeftMustBeAVariable", lLinks);
     }
 
     @Override

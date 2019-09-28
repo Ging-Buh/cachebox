@@ -18,31 +18,31 @@ public class FunctionDistance extends Function {
 
     @Override
     public String getName() {
-        return Translation.get("solverFuncDistance".hashCode());
+        return Translation.get("solverFuncDistance");
     }
 
     @Override
     public String getDescription() {
-        return Translation.get("solverDescDistance".hashCode());
+        return Translation.get("solverDescDistance");
     }
 
     @Override
     public String Calculate(String[] parameter) {
         if (parameter.length != 2) {
-            return Translation.get("solverErrParamCount".hashCode(), "2", "$solverFuncDistance");
+            return Translation.get("solverErrParamCount", "2", "$solverFuncDistance");
         }
         Coordinate[] coord = new Coordinate[2];
         for (int i = 0; i < 2; i++) {
             coord[i] = new CoordinateGPS(parameter[i]);
             if (!coord[i].isValid())
-                return Translation.get("solverErrParamType".hashCode(), "$solverFuncDistance", String.valueOf(i + 1), "$coordinate", "$coordinate", parameter[i]);
+                return Translation.get("solverErrParamType", "$solverFuncDistance", String.valueOf(i + 1), "$coordinate", "$coordinate", parameter[i]);
         }
         float[] dist = new float[2];
         try {
             MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, coord[0].getLatitude(), coord[0].getLongitude(), coord[1].getLatitude(), coord[1].getLongitude(), dist);
             return String.valueOf(dist[0]);
         } catch (Exception ex) {
-            return Translation.get("StdError".hashCode(), "$solverFuncDistance", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+            return Translation.get("StdError", "$solverFuncDistance", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
         }
     }
 

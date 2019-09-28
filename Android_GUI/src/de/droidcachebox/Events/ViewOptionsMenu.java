@@ -20,8 +20,6 @@ public interface ViewOptionsMenu {
 
     int GetContextMenuId();
 
-    void BeforeShowContextMenu(Menu menu);
-
     boolean ContextMenuItemSelected(MenuItem item);
 
     boolean dispatchTouchEvent(MotionEvent event);

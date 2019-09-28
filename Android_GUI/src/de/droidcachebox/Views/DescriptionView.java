@@ -76,10 +76,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
     }
 
     @Override
-    public void BeforeShowContextMenu(Menu menu) {
-    }
-
-    @Override
     public boolean ContextMenuItemSelected(MenuItem item) {
         return false;
     }
