@@ -3,7 +3,24 @@
 • Fixes = *
 • Deletions = -
 
-Current changes (3403):
+Recent changes:
+     + Share with (information about the selected cache + clipboard)
+     + Solver AlphaSum with umlauts
+     + Import zipped Mapsforge compatible maps from WebLinks (also orux, ...)
+     + Images Import from GSAK
+     + Upload all local log designs as a log.
+     + Upload photos to logs
+     ~ Android file explorer sorting, labeling directories
+     ~ Log drafts Click on Header, click on Log text
+     * Solver Mid
+     * Display of closed tracks
+     * Missing caches in live map
+     * Possibility to install older development versions
+     * CBServer import
+     - Long click on log draft (works, but does not have to)
+     • Must stay on Android API 27 (target) or install the latest Mapsforge version
+
+Changes up to version 3403:
 	+ Import at position accepts city/street names
     + Download oam + fzk renderthemes
 	+ Android 9 : (http no longer supported by default) API-Token,...

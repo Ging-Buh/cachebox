@@ -4,6 +4,7 @@ import CB_Core.Types.Cache;
 import CB_Locator.Formatter;
 import CB_Locator.Location;
 import CB_Locator.Locator;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.SpoilerView;
@@ -336,8 +337,8 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
             takePhoto();
         } else if (ID == ViewConst.VIDEO_REC) {
             recVideo();
-        } else if (ID == ViewConst.WhatsApp) {
-            callWhatsApp();
+        } else if (ID == ViewConst.Share) {
+            shareInfos();
         }
     }
 
@@ -858,20 +859,21 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
         }
     }
 
-    private void callWhatsApp() {
+    private void shareInfos() {
         String smiley = ((char) new BigInteger("1F604", 16).intValue()) + " ";
 
         PackageManager pm = mainActivity.getPackageManager();
         try {
 
-            Intent waIntent = new Intent(Intent.ACTION_SEND);
-            waIntent.setType("text/plain");
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
 
+            /*
             // PackageInfo info =
             pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-            //Check if package exists or not. If not then code
-            //in catch block will be called
+            //Check if package exists or not. If not then code in catch block will be called
             waIntent.setPackage("com.whatsapp");
+             */
 
             String text;
             Cache cache = GlobalCore.getSelectedCache();
@@ -890,11 +892,12 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
             }
             text += "\n" + GlobalCore.getDefaultClipboard().getContents();
             text += "\n" + smiley + "AndroidCacheBox";
-            waIntent.putExtra(Intent.EXTRA_TEXT, text);
-            mainActivity.startActivity(Intent.createChooser(waIntent, "Share with"));
-
-        } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(mainActivity, "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+            mainActivity.startActivity(Intent.createChooser(shareIntent, Translation.get("ShareWith")));
+            //} catch (PackageManager.NameNotFoundException e) {
+            //    Toast.makeText(mainActivity, "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
+        } catch (Exception ex) {
+            Toast.makeText(mainActivity, "Share App not installed", Toast.LENGTH_SHORT).show();
         }
 
     }

@@ -31,7 +31,7 @@ public class ViewID {
     public final static int VOICE_REC = AID_VOICE_REC;
     public final static int TAKE_PHOTO = AID_TAKE_PHOTO;
     public final static int VIDEO_REC = AID_VIDEO_REC;
-    public final static int WhatsApp = AID_WhatsApp;
+    public final static int WhatsApp = AID_Share;
 
     private final int Id;
     private final UI_Pos pos;

@@ -2842,6 +2842,13 @@ shaddowrect-selected
   orig: 48, 48
   offset: 0, 0
   index: -1
+share
+  rotate: false
+  xy: 1158, 910
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 small
   rotate: false
   xy: 506, 180
@@ -2928,7 +2935,7 @@ small4
   index: -1
 small4no
   rotate: false
-  xy: 1158, 927
+  xy: 1192, 927
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -2984,7 +2991,7 @@ small7
   index: -1
 small7no
   rotate: false
-  xy: 1158, 910
+  xy: 1192, 910
   size: 15, 15
   orig: 15, 15
   offset: 0, 0

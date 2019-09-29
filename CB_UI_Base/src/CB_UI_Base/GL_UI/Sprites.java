@@ -746,6 +746,7 @@ public class Sprites {
         friendsLogs,
         downloadFriendsLogs,
         downloadLogs,
+        share,
     }
 
     public static enum DialogElement {

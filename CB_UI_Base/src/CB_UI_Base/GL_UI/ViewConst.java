@@ -11,5 +11,5 @@ public class ViewConst {
     public static final ViewID VOICE_REC = new ViewID(ViewID.VOICE_REC, UI_Type.Activity, null, null);
     public static final ViewID TAKE_PHOTO = new ViewID(ViewID.TAKE_PHOTO, UI_Type.Activity, null, null);
     public static final ViewID VIDEO_REC = new ViewID(ViewID.VIDEO_REC, UI_Type.Activity, null, null);
-    public static final ViewID WhatsApp = new ViewID(ViewID.WhatsApp, UI_Type.Activity, null, null);
+    public static final ViewID Share = new ViewID(ViewID.WhatsApp, UI_Type.Activity, null, null);
 }
