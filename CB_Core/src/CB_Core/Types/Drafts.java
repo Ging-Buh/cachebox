@@ -18,19 +18,10 @@ package CB_Core.Types;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Core.LogTypes;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.IChanged;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import de.cb.sqlite.CoreCursor;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Drafts extends ArrayList<Draft> {
@@ -51,34 +42,6 @@ public class Drafts extends ArrayList<Draft> {
         CB_Core_Settings.DraftsLoadLength.addSettingChangedListener(settingsChangedListener);
     }
 
-    /**
-     * @param dirFileName Config.settings.DraftsGarminPath.getValue()
-     */
-    public static void CreateGeoCacheVisits(String dirFileName) {
-        Drafts drafts = new Drafts();
-        drafts.loadDrafts("", "Timestamp ASC", LoadingType.Loadall);
-
-        File txtFile = FileFactory.createFile(dirFileName);
-        FileOutputStream writer;
-        try {
-            writer = txtFile.getFileOutputStream();
-
-            // write utf8 bom EF BB BF
-            byte[] bom = {(byte) 239, (byte) 187, (byte) 191};
-            writer.write(bom);
-
-            for (Draft draft : drafts) {
-                String log = draft.gcCode + "," + draft.GetDateTimeString() + "," + draft.type.toString() + ",\"" + draft.comment + "\"\n";
-                writer.write((log + "\n").getBytes(StandardCharsets.UTF_8));
-            }
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            Log.err(log, e.toString() + " at\n" + dirFileName);
-            MessageBox.show(e.toString() + " at\n" + dirFileName, Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-        }
-    }
-
     public boolean isCropped() {
         return croppedList;
     }
@@ -89,7 +52,7 @@ public class Drafts extends ArrayList<Draft> {
         }
     }
 
-    private void loadDrafts(String where, String order, LoadingType loadingType) {
+    public void loadDrafts(String where, String order, LoadingType loadingType) {
         synchronized (this) {
             // List clear?
             if (loadingType == LoadingType.Loadall || loadingType == LoadingType.LoadNew || loadingType == LoadingType.loadNewLastLength) {

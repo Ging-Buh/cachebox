@@ -211,8 +211,13 @@ public class EditTextField extends EditTextFieldBase {
             textY += this.style.font.getLineHeight() * topLine;
             for (Line line : lines) {
                 // try hack : if (textY < this.getHeight() && textY > 0) {                    }
-                style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
-                textY -= this.style.font.getLineHeight();
+                if (line != null) {
+                    if (line.displayText == null) line.displayText = "";
+                    style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
+                    textY -= this.style.font.getLineHeight();
+                } else {
+                    Log.err(log, "a line of lines is null");
+                }
             }
 
             if (focused) {

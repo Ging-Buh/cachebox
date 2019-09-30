@@ -58,7 +58,12 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.http.WebbUtils;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static CB_Core.Api.GroundspeakAPI.OK;
 import static CB_Core.Database.Data;
@@ -262,7 +267,7 @@ public class DraftsView extends V_ListView {
                 tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
             }
 
-            Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
+            createGeoCacheVisits();
 
             if (that != null)
                 that.notifyDataSetChanged();
@@ -270,6 +275,37 @@ public class DraftsView extends V_ListView {
         } else {
             editDraft = new EditDraft(newDraft, returnListener, true);
             editDraft.show();
+        }
+    }
+
+    public static void createGeoCacheVisits() {
+        Drafts drafts = new Drafts();
+        drafts.loadDrafts("", "Timestamp ASC", LoadingType.Loadall);
+
+        File txtFile = FileFactory.createFile(Config.DraftsGarminPath.getValue());
+        FileOutputStream writer;
+        try {
+            writer = txtFile.getFileOutputStream();
+
+            // write utf8 bom EF BB BF
+            byte[] bom = {(byte) 239, (byte) 187, (byte) 191};
+            writer.write(bom);
+
+            for (Draft draft : drafts) {
+                SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+                datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                String sDate = datFormat.format(draft.timestamp) + "T";
+                datFormat = new SimpleDateFormat("HH:mm:ss");
+                datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                sDate += datFormat.format(draft.timestamp) + "Z";
+                String log = draft.gcCode + "," + sDate + "," + draft.type.toString() + ",\"" + draft.comment + "\"\n";
+                writer.write((log + "\n").getBytes(StandardCharsets.UTF_8));
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            Log.err(log, e.toString() + " at\n" + txtFile.getAbsolutePath());
+            MessageBox.show(e.toString() + " at\n" + txtFile.getAbsolutePath(), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
         }
     }
 
@@ -332,7 +368,7 @@ public class DraftsView extends V_ListView {
                     lDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
                 }
             }
-            Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
+            createGeoCacheVisits();
 
             // Reload List
             if (isNewDraft) {
@@ -782,7 +818,7 @@ public class DraftsView extends V_ListView {
                         lvAdapter = new CustomAdapter(lDrafts);
                         that.setBaseAdapter(lvAdapter);
 
-                        Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
+                        createGeoCacheVisits();
 
                         break;
                     case MessageBox.BUTTON_NEGATIVE:

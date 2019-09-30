@@ -18,13 +18,13 @@ package CB_UI.GL_UI.Activitys;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Core.Types.Draft;
-import CB_Core.Types.Drafts;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_UI.GL_UI.Views.DraftViewItem;
+import CB_UI.GL_UI.Views.DraftsView;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
@@ -225,7 +225,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 if (!altfieldNote.equals(draft)) {
                     draft.uploaded = false;
                     draft.UpdateDatabase();
-                    Drafts.CreateGeoCacheVisits(Config.DraftsGarminPath.getValue());
+                    DraftsView.createGeoCacheVisits();
                 }
 
                 boolean dl = false;

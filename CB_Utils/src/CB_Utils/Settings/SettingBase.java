@@ -149,7 +149,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
         return this.value.equals(newValue);
     }
 
-    public void ForceDefaultChange(T defaultValue) {
+    public void forceDefaultChange(T defaultValue) {
         if (this.defaultValue.equals(defaultValue))
             return;
         this.defaultValue = defaultValue;

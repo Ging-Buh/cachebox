@@ -917,7 +917,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         resortList();
                     }));
             icm.addMenuItem("ClearPath", null, () -> {
-                settingFile.setValue("");
+                settingFile.setValue(settingFile.getDefaultValue());
                 resortList();
             });
             icm.show();
