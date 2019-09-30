@@ -60,10 +60,9 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
     protected abstract Database_Core getDataDB();
 
-    protected SettingsDAO createSettingsDAO() {
-        return new SettingsDAO();
-    }
+    protected abstract SettingsDAO createSettingsDAO();
 
+    protected abstract boolean canUsePlatformSettings();
     /**
      * Return true, if setting changes need restart
      *
@@ -94,7 +93,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                 if (Local == setting.getStoreType()) {
                     if (Data != null)
                         dao.WriteToDatabase(Data, setting);
-                } else if (Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && Platform == setting.getStoreType())) {
+                } else if (Global == setting.getStoreType() || (!canUsePlatformSettings() && Platform == setting.getStoreType())) {
                     dao.WriteToDatabase(getSettingsDB(), setting);
                 } else if (Platform == setting.getStoreType()) {
                     dao.WriteToPlatformSettings(setting);
@@ -124,7 +123,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     public void ReadFromDB() {
         AtomicInteger tryCount = new AtomicInteger(0);
         while (tryCount.incrementAndGet() < 10) {
-            SettingsDAO dao = new SettingsDAO();
+            SettingsDAO dao = createSettingsDAO();
             try {
 
                 for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
@@ -139,7 +138,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                             setting.loadDefault();
                         else
                             setting = dao.ReadFromDatabase(getDataDB(), setting);
-                    } else if (Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && Platform == setting.getStoreType())) {
+                    } else if (Global == setting.getStoreType() || (!canUsePlatformSettings() && Platform == setting.getStoreType())) {
                         setting = dao.ReadFromDatabase(getSettingsDB(), setting);
                     } else if (Platform == setting.getStoreType()) {
                         isPlatform = true;

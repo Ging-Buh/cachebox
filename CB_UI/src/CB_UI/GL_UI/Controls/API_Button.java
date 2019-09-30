@@ -33,7 +33,7 @@ public class API_Button extends CB_Button {
 
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            PlatformConnector.callGetApiKey();
+            PlatformConnector.getApiKey();
             return true;
         }
     };

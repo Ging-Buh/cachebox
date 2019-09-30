@@ -343,7 +343,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
     }
 
     @Override
-    public void hide(final ViewID viewID) {
+    public void hideView(final ViewID viewID) {
 
         mainActivity.runOnUiThread(() -> {
             Log.info(sKlasse, "Hide View with ID = " + viewID.getID());
@@ -424,7 +424,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
         if (aktViewId == ViewConst.DESCRIPTION_VIEW || aktTabViewId == ViewConst.DESCRIPTION_VIEW) {
             if (descriptionView.getVisibility() == View.VISIBLE) {
                 if (aktView == descriptionView) {
-                    hide(ViewConst.DESCRIPTION_VIEW);
+                    hideView(ViewConst.DESCRIPTION_VIEW);
                     descriptionView = null;
                 }
             }

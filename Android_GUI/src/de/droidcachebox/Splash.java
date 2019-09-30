@@ -32,8 +32,6 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
-import CB_Utils.Settings.*;
-import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.StringH;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
@@ -328,10 +326,6 @@ public class Splash extends Activity {
 
         Global.initTheme(this);
         Global.initIcons(this);
-
-        CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
-        PlatformConnector.setGetFileListener(fileExplorer);
-        PlatformConnector.setGetFolderListener(fileExplorer);
 
         String languagePath = androidSetting.getString("Sel_LanguagePath", ""); // ""
         if (languagePath.length() == 0) {
@@ -747,41 +741,6 @@ public class Splash extends Activity {
             Log.info(log, "Settings read from configDB.");
         }
         Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
-        PlatformSettings.setPlatformSettings(new IPlatformSettings() {
-            @Override
-            public void Write(SettingBase<?> setting) {
-                if (androidSetting == null)
-                    androidSetting = Splash.this.getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
-                if (androidSettingEditor == null)
-                    androidSettingEditor = androidSetting.edit();
-                if (setting instanceof SettingBool) {
-                    androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-                } else if (setting instanceof SettingString) {
-                    androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
-                } else if (setting instanceof SettingInt) {
-                    androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
-                }
-                androidSettingEditor.apply();
-            }
-
-            @Override
-            public SettingBase<?> Read(SettingBase<?> setting) {
-                if (androidSetting == null)
-                    androidSetting = Splash.this.getSharedPreferences(Global.PreferencesNAME, 0);
-                if (setting instanceof SettingString) {
-                    String value = androidSetting.getString(setting.getName(), "");
-                    ((SettingString) setting).setValue(value);
-                } else if (setting instanceof SettingBool) {
-                    boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-                    ((SettingBool) setting).setValue(value);
-                } else if (setting instanceof SettingInt) {
-                    int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-                    ((SettingInt) setting).setValue(value);
-                }
-                setting.clearDirty();
-                return setting;
-            }
-        });
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 

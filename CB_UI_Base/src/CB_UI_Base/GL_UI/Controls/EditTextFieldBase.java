@@ -15,6 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
@@ -22,7 +23,6 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
-import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.Color;
@@ -55,7 +55,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
         super(rec, parent, Name);
         registerPopUpLongClick();
-        clipboard = Global.getDefaultClipboard();
+        clipboard = AbstractGlobal.getDefaultClipboard();
         this.setDoubleClickable(true);
     }
 

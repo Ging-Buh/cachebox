@@ -15,8 +15,8 @@
  */
 package CB_UI_Base.graphics;
 
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.Global;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -210,7 +210,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSerif_Bold(int textSize) {
         if (DroidSerif_Bold.containsKey(textSize))
             return DroidSerif_Bold.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-Bold.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSerif-Bold.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSerif_Bold.put(textSize, f);
         return f;
@@ -225,7 +225,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSerif_BoldItalic(int textSize) {
         if (DroidSerif_BoldItalic.containsKey(textSize))
             return DroidSerif_BoldItalic.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-BoldItalic.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSerif-BoldItalic.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSerif_BoldItalic.put(textSize, f);
         return f;
@@ -240,7 +240,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSerif_Italic(int textSize) {
         if (DroidSerif_Italic.containsKey(textSize))
             return DroidSerif_Italic.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-Italic.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSerif-Italic.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSerif_Italic.put(textSize, f);
         return f;
@@ -255,7 +255,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSerif_Regular(int textSize) {
         if (DroidSerif_Regular.containsKey(textSize))
             return DroidSerif_Regular.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-Regular.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSerif-Regular.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSerif_Regular.put(textSize, f);
         return f;
@@ -270,7 +270,7 @@ class GL_Fonts {
     private BitmapFont get_Roboto_Regular(int textSize) {
         if (Roboto_Regular.containsKey(textSize))
             return Roboto_Regular.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-Regular.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/Roboto-Regular.ttf");
         BitmapFont f = generateFont(fh, textSize);
         Roboto_Regular.put(textSize, f);
         return f;
@@ -285,7 +285,7 @@ class GL_Fonts {
     private BitmapFont get_Roboto_Bold(int textSize) {
         if (Roboto_Bold.containsKey(textSize))
             return Roboto_Bold.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-Bold.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/Roboto-Bold.ttf");
         BitmapFont f = generateFont(fh, textSize);
         Roboto_Bold.put(textSize, f);
         return f;
@@ -300,7 +300,7 @@ class GL_Fonts {
     private BitmapFont get_Roboto_Italic(int textSize) {
         if (Roboto_Italic.containsKey(textSize))
             return Roboto_Italic.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-Italic.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/Roboto-Italic.ttf");
         BitmapFont f = generateFont(fh, textSize);
         Roboto_Italic.put(textSize, f);
         return f;
@@ -315,7 +315,7 @@ class GL_Fonts {
     private BitmapFont get_Roboto_BoldItalic(int textSize) {
         if (Roboto_BoldItalic.containsKey(textSize))
             return Roboto_BoldItalic.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-BoldItalic.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/Roboto-BoldItalic.ttf");
         BitmapFont f = generateFont(fh, textSize);
         Roboto_BoldItalic.put(textSize, f);
         return f;
@@ -330,7 +330,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSans(int textSize) {
         if (DroidSans.containsKey(textSize))
             return DroidSans.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSans.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSans.put(textSize, f);
         return f;
@@ -345,7 +345,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSans_BoldItalic(int textSize) {
         if (DroidSans_BoldItalic.containsKey(textSize))
             return DroidSans_BoldItalic.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans-BoldItalic.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSans-BoldItalic.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSans_BoldItalic.put(textSize, f);
         return f;
@@ -360,7 +360,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSans_Italic(int textSize) {
         if (DroidSans_Italic.containsKey(textSize))
             return DroidSans_Italic.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans-Italic.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSans-Italic.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSans_Italic.put(textSize, f);
         return f;
@@ -375,7 +375,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSans_Bold(int textSize) {
         if (DroidSans_Bold.containsKey(textSize))
             return DroidSans_Bold.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans-Bold.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSans-Bold.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSans_Bold.put(textSize, f);
         return f;
@@ -390,7 +390,7 @@ class GL_Fonts {
     private BitmapFont get_DroidSansMono(int textSize) {
         if (DroidSansMono.containsKey(textSize))
             return DroidSansMono.get(textSize);
-        FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSansMono.ttf");
+        FileHandle fh = AbstractGlobal.getInternalFileHandle("data/fonts/DroidSansMono.ttf");
         BitmapFont f = generateFont(fh, textSize);
         DroidSansMono.put(textSize, f);
         return f;

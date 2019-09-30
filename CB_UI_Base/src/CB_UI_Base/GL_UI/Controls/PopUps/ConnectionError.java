@@ -16,11 +16,11 @@
 package CB_UI_Base.GL_UI.Controls.PopUps;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 
@@ -51,7 +51,7 @@ public class ConnectionError extends Toast {
         this.mTextField.setX(this.getHalfWidth() - mTextField.getHalfWidth());
         this.mTextField.setY(this.getHeight() - (mTextField.getHeight() + Dialog.margin));
 
-        this.setWrappedText(Translation.get("ConnectionError") + Global.br + msg);
+        this.setWrappedText(Translation.get("ConnectionError") + AbstractGlobal.br + msg);
 
         this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon", false);
         this.mIcon.setSprite(Sprites.getSprite("connection-error"), false);

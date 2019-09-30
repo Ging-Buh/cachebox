@@ -67,13 +67,13 @@ public class Action_ShowQuit extends AbstractAction {
                     if (which == MessageBox.BUTTON_POSITIVE) {
 
                         //Log.debug(log, "\r\n Quit");
-                        PlatformConnector.callQuit();
+                        PlatformConnector.quit();
                     }
                     return true;
                 }
             });
         } catch (Exception e) {
-            PlatformConnector.callQuit();
+            PlatformConnector.quit();
         }
     }
 

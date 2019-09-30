@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.Math;
 
-import CB_UI_Base.Global;
+import CB_UI_Base.AbstractGlobal;
 
 import java.util.ArrayList;
 
@@ -57,7 +57,7 @@ public class Stack<T> {
 
         sb.append("Stack of " + m_list.get(0).getClass().getName());
         for (T t : m_list) {
-            sb.append("  > " + t.toString() + Global.br);
+            sb.append("  > " + t.toString() + AbstractGlobal.br);
         }
         return sb.toString();
     }

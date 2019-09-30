@@ -1,13 +1,13 @@
 package CB_UI_Base.GL_UI.Controls.PopUps;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
-import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
@@ -46,7 +46,7 @@ public class CopyPastePopUp extends PopUp_Base {
                 close();
                 String Msg = copyPasteControl.pasteFromClipboard();
                 if (Msg != null)
-                    GL.that.Toast(Translation.get("PasteFromClipboard") + Global.br + Msg);
+                    GL.that.Toast(Translation.get("PasteFromClipboard") + AbstractGlobal.br + Msg);
                 return false;
             }
         });
@@ -65,7 +65,7 @@ public class CopyPastePopUp extends PopUp_Base {
                 close();
                 String Msg = copyPasteControl.copyToClipboard();
                 if (Msg != null)
-                    GL.that.Toast(Translation.get("CopyToClipboard") + Global.br + Msg);
+                    GL.that.Toast(Translation.get("CopyToClipboard") + AbstractGlobal.br + Msg);
                 return false;
             }
         });
@@ -88,7 +88,7 @@ public class CopyPastePopUp extends PopUp_Base {
                 close();
                 String Msg = copyPasteControl.cutToClipboard();
                 if (Msg != null)
-                    GL.that.Toast(Translation.get("CutToClipboard") + Global.br + Msg);
+                    GL.that.Toast(Translation.get("CutToClipboard") + AbstractGlobal.br + Msg);
                 return false;
             }
         });

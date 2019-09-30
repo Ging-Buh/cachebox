@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI;
 
-import CB_UI_Base.Global;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -82,7 +82,7 @@ public class Fonts {
 
         if (font == null || !font.exists()) {
             // no skin font found, use default font
-            font = Global.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
+            font = AbstractGlobal.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
         }
 
         Log.debug(log, "Generate scaled Fonts from " + font);
@@ -184,7 +184,7 @@ public class Fonts {
     }
 
     private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale) {
-        String fs = Global.fs;
+        String fs = AbstractGlobal.fs;
         String fontPath = "";
         // fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
 

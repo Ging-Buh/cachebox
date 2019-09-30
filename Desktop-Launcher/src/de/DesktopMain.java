@@ -9,7 +9,9 @@ import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.*;
+import CB_UI_Base.Events.PlatformConnector.IPlatformListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -18,8 +20,10 @@ import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Plattform;
-import CB_Utils.Settings.*;
-import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
+import CB_Utils.Settings.SettingBase;
+import CB_Utils.Settings.SettingBool;
+import CB_Utils.Settings.SettingInt;
+import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -65,46 +69,6 @@ public class DesktopMain {
 
         // Initial Desctop TexturePacker
         new Desktop_Packer();
-
-        PlatformSettings.setPlatformSettings(new IPlatformSettings() {
-
-            @Override
-            public void Write(SettingBase<?> setting) {
-
-                if (setting instanceof SettingBool) {
-                    prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-                } else if (setting instanceof SettingString) {
-                    prefs.put(setting.getName(), ((SettingString) setting).getValue());
-                } else if (setting instanceof SettingInt) {
-                    prefs.putInt(setting.getName(), ((SettingInt) setting).getValue());
-                }
-
-                // Commit the edits!
-                try {
-                    prefs.flush();
-                } catch (BackingStoreException e) {
-
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public SettingBase<?> Read(SettingBase<?> setting) {
-                if (setting instanceof SettingString) {
-                    String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
-                    ((SettingString) setting).setValue(value);
-                } else if (setting instanceof SettingBool) {
-                    boolean value = prefs.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-                    ((SettingBool) setting).setValue(value);
-                } else if (setting instanceof SettingInt) {
-                    int value = prefs.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-                    ((SettingInt) setting).setValue(value);
-                }
-                setting.clearDirty();
-                return setting;
-            }
-        });
 
         // has been done by launcher
         // InitialConfig();
@@ -201,20 +165,63 @@ public class DesktopMain {
         };
         timer.schedule(task, 600);
 
-        // ''''''''''''''''''''''
-        PlatformConnector.setisOnlineListener(new IHardwarStateListener() {
+        DesktopClipboard dcb = new DesktopClipboard();
+
+        if (dcb != null)
+            GlobalCore.setDefaultClipboard(dcb);
+
+        PlatformConnector.setPlatformListener(new IPlatformListener() {
+
+            @Override
+            public void writeSetting(SettingBase<?> setting) {
+
+                if (setting instanceof SettingBool) {
+                    prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+                } else if (setting instanceof SettingString) {
+                    prefs.put(setting.getName(), ((SettingString) setting).getValue());
+                } else if (setting instanceof SettingInt) {
+                    prefs.putInt(setting.getName(), ((SettingInt) setting).getValue());
+                }
+
+                // Commit the edits!
+                try {
+                    prefs.flush();
+                } catch (BackingStoreException e) {
+
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public SettingBase<?> readSetting(SettingBase<?> setting) {
+                if (setting instanceof SettingString) {
+                    String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
+                    ((SettingString) setting).setValue(value);
+                } else if (setting instanceof SettingBool) {
+                    boolean value = prefs.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+                    ((SettingBool) setting).setValue(value);
+                } else if (setting instanceof SettingInt) {
+                    int value = prefs.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+                    ((SettingInt) setting).setValue(value);
+                }
+                setting.clearDirty();
+                return setting;
+            }
 
             private boolean torchOn = false;
 
             @Override
-            public boolean isOnline() {
+            public void setScreenLockTime(int value) {
+            }
 
+            @Override
+            public boolean isOnline() {
                 return true;
             }
 
             @Override
             public boolean isGPSon() {
-
                 return true;
             }
 
@@ -241,17 +248,63 @@ public class DesktopMain {
 
             @Override
             public void switchToGpsMeasure() {
-
             }
 
             @Override
             public void switchtoGpsDefault() {
-
             }
 
-        });
+            @Override
+            public void callUrl(String url) {
+                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
-        PlatformConnector.setGetFileListener(new IgetFileListener() {
+                if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+
+                    System.err.println("Desktop doesn't support the browse action (fatal)");
+                    System.exit(1);
+                }
+
+                try {
+                    java.net.URI uri = null;
+                    if (url.startsWith("file://")) {
+                        File f = new File(url.replace("file://", ""));
+                        uri = f.toURI();
+                    } else {
+                        uri = new java.net.URI(url);
+                    }
+
+                    desktop.browse(uri);
+
+                } catch (Exception e) {
+
+                    System.err.println(e.getMessage());
+                }
+            }
+
+            @Override
+            public void handleExternalRequest() {
+            }
+
+            @Override
+            public void startPictureApp(String file) {
+            }
+
+            @Override
+            public SQLiteInterface getSQLInstance() {
+                return new SQLiteClass();
+            }
+
+            @Override
+            public void freeSQLInstance(SQLiteInterface sqlInstance) {
+                sqlInstance = null;
+            }
+
+            @Override
+            public void getApiKey() {
+                // Android : GetApiAuth();
+                (new GcApiLogin()).RunRequest();
+            }
+
             @Override
             public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
 
@@ -288,9 +341,6 @@ public class DesktopMain {
                 }
 
             }
-        });
-
-        PlatformConnector.setGetFolderListener(new IgetFolderListener() {
 
             @Override
             public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
@@ -307,14 +357,10 @@ public class DesktopMain {
                         returnListener.returnFolder(chooser.getSelectedFile().getAbsolutePath());
                     System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
                 }
-
             }
-        });
-
-        PlatformConnector.setQuitListener(new IQuit() {
 
             @Override
-            public void Quit() {
+            public void quit() {
                 if (GlobalCore.isSetSelectedCache()) {
                     // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
                     Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
@@ -322,77 +368,8 @@ public class DesktopMain {
                     Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
                 }
                 System.exit(0);
-
-            }
-        });
-
-        PlatformConnector.setConnection(new IConnection() {
-            @Override
-            public SQLiteInterface getSQLInstance() {
-                return new SQLiteClass();
             }
 
-            @Override
-            public void freeSQLInstance(SQLiteInterface sqlInstance) {
-                sqlInstance = null;
-            }
-        });
-
-        DesktopClipboard dcb = new DesktopClipboard();
-
-        if (dcb != null)
-            GlobalCore.setDefaultClipboard(dcb);
-
-        PlatformConnector.setPlatformDependantListener(new IPlatformDependant() {
-
-            /**
-             * call
-             */
-            @Override
-            public void callUrl(String url) {
-                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
-
-                if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
-
-                    System.err.println("Desktop doesn't support the browse action (fatal)");
-                    System.exit(1);
-                }
-
-                try {
-                    java.net.URI uri = null;
-                    if (url.startsWith("file://")) {
-                        File f = new File(url.replace("file://", ""));
-                        uri = f.toURI();
-                    } else {
-                        uri = new java.net.URI(url);
-                    }
-
-                    desktop.browse(uri);
-
-                } catch (Exception e) {
-
-                    System.err.println(e.getMessage());
-                }
-
-            }
-
-            @Override
-            public void handleExternalRequest() {
-
-            }
-
-            @Override
-            public void startPictureApp(String file) {
-
-            }
-        });
-
-        PlatformConnector.setGetApiKeyListener(new IGetApiKey() {
-            @Override
-            public void getApiKey() {
-                // Android : GetApiAuth();
-                (new GcApiLogin()).RunRequest();
-            }
         });
 
     }

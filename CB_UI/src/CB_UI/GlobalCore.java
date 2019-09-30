@@ -30,6 +30,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -58,7 +59,7 @@ import static CB_Core.Api.GroundspeakAPI.*;
  * @author arbor95
  * @author longri
  */
-public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
+public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     public static final String aboutMsg1 = "Team Cachebox (2011-2019)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";

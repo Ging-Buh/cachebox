@@ -16,6 +16,7 @@
 package CB_UI_Base.GL_UI.GL_Listener;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.Events.PlatformConnector;
@@ -26,7 +27,6 @@ import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
@@ -393,7 +393,7 @@ public class GL implements ApplicationListener {
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
         mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
 
-        if (Global.isTestVersion()) {
+        if (AbstractGlobal.isTestVersion()) {
             // TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
             float FpsInfoSize = 4 * UiSizes.getInstance().getScale();
             if (FpsInfoSprite != null) {

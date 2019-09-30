@@ -21,6 +21,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
@@ -34,7 +35,6 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.ViewConst;
-import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
@@ -298,13 +298,13 @@ public class DescriptionView extends CB_View_Base {
         }
 
         sb.append(Translation.get("LiveDescMessage", MemberType, limit));
-        sb.append(Global.br);
+        sb.append(AbstractGlobal.br);
         if (GroundspeakAPI.fetchMyUserInfos().remaining > 0)
             sb.append(Translation.get("LiveDescAfter", actLimit)); // "
 
         if (GroundspeakAPI.fetchMyUserInfos().remaining == 0) {
             sb.append(Translation.get("LiveDescLimit"));
-            sb.append(Global.br);
+            sb.append(AbstractGlobal.br);
             if (!premium)
                 sb.append(Translation.get("LiveDescLimitBasic"));
         }

@@ -15,11 +15,11 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
@@ -1287,7 +1287,7 @@ public class EditTextField extends EditTextFieldBase {
         int index = 0;
         for (Line line : lines) {
             if ((index > 0) && (!line.autoWrap)) {
-                sb.append(Global.br);
+                sb.append(AbstractGlobal.br);
             }
             sb.append(line.displayText);
             index++;
@@ -1362,7 +1362,7 @@ public class EditTextField extends EditTextFieldBase {
 
             sb.append(line.displayText, startPos, endPos);
             if (n < selectedArea.cursorEnd.y) {
-                sb.append(Global.br);
+                sb.append(AbstractGlobal.br);
             }
 
         }

@@ -17,6 +17,7 @@ package CB_UI_Base.Events;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ViewID;
+import CB_Utils.Settings.SettingBase;
 import de.cb.sqlite.SQLiteInterface;
 
 import java.util.ArrayList;
@@ -25,18 +26,11 @@ import java.util.ArrayList;
  * @author Longri
  */
 public class PlatformConnector {
-    static Thread threadVibrate;
-    static IQuit quitListener;
-    static IGetApiKey getApiKeyListener;
-    static IsetScreenLockTime setScreenLockTimeListener;
-    static IPlatformDependant PlatformDependantListener;
-    private static IShowViewListener showViewListener;
-    private static IHardwarStateListener hardwareListener;
-    private static IgetFileListener getFileListener;
-    private static IgetFolderListener getFolderListener;
-    private static ArrayList<String> sendToMediaScannerList;
-    private static IConnection connection;
     public static int AndroidVersion = 999;
+    private static Thread threadVibrate;
+    private static IPlatformListener platformListener;
+    private static IShowViewListener showViewListener;
+    private static ArrayList<String> sendToMediaScannerList;
 
     public static void setShowViewListener(IShowViewListener listener) {
         showViewListener = listener;
@@ -67,7 +61,7 @@ public class PlatformConnector {
 
     public static void hideView(ViewID viewID) {
         if (showViewListener != null) {
-            showViewListener.hide(viewID);
+            showViewListener.hideView(viewID);
         }
     }
 
@@ -90,135 +84,137 @@ public class PlatformConnector {
         }
     }
 
-    public static void setisOnlineListener(IHardwarStateListener listener) {
-        hardwareListener = listener;
+    public static SettingBase<?> ReadSetting(SettingBase<?> setting) {
+        if (platformListener != null)
+            setting = platformListener.readSetting(setting);
+        return setting;
+    }
+
+    public static <T> void WriteSetting(SettingBase<T> setting) {
+        if (platformListener != null)
+            platformListener.writeSetting(setting);
+    }
+
+    public static boolean canUsePlatformSettings() {
+        return (platformListener != null);
     }
 
     public static void vibrate() {
-        if (hardwareListener != null) {
-            if (threadVibrate == null)
+        if (platformListener != null) {
+            if (threadVibrate == null) {
                 threadVibrate = new Thread(new Runnable() {
-
                     @Override
                     public void run() {
-                        hardwareListener.vibrate();
+                        platformListener.vibrate();
                     }
                 });
+            }
             threadVibrate.run();
         }
-
     }
 
     public static boolean isOnline() {
-        if (hardwareListener != null) {
-            return hardwareListener.isOnline();
+        if (platformListener != null) {
+            return platformListener.isOnline();
         }
-
         return false;
     }
 
     public static boolean isGPSon() {
-        if (hardwareListener != null) {
-            return hardwareListener.isGPSon();
+        if (platformListener != null) {
+            return platformListener.isGPSon();
         }
 
         return false;
     }
 
     public static boolean isTorchAvailable() {
-        if (hardwareListener != null) {
-            return hardwareListener.isTorchAvailable();
+        if (platformListener != null) {
+            return platformListener.isTorchAvailable();
         }
         return false;
     }
 
     public static boolean isTorchOn() {
-        if (hardwareListener != null) {
-            return hardwareListener.isTorchOn();
+        if (platformListener != null) {
+            return platformListener.isTorchOn();
         }
         return false;
     }
 
     public static void switchTorch() {
-        if (hardwareListener != null) {
-            hardwareListener.switchTorch();
+        if (platformListener != null) {
+            platformListener.switchTorch();
         }
     }
 
-    public static void setGetFileListener(IgetFileListener listener) {
-        getFileListener = listener;
-    }
-
     public static void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
-        if (getFileListener != null)
-            getFileListener.getFile(initialPath, extension, TitleText, ButtonText, returnListener);
-    }
-
-    public static void setGetFolderListener(IgetFolderListener listener) {
-        getFolderListener = listener;
+        if (platformListener != null)
+            platformListener.getFile(initialPath, extension, TitleText, ButtonText, returnListener);
     }
 
     public static void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
-        if (getFolderListener != null)
-            getFolderListener.getFolder(initialPath, TitleText, ButtonText, returnListener);
+        if (platformListener != null)
+            platformListener.getFolder(initialPath, TitleText, ButtonText, returnListener);
     }
 
-    public static void setQuitListener(IQuit listener) {
-        quitListener = listener;
+    public static void quit() {
+        if (platformListener != null)
+            platformListener.quit();
     }
 
-    public static void callQuit() {
-        if (quitListener != null)
-            quitListener.Quit();
-    }
-
-    public static void setGetApiKeyListener(IGetApiKey listener) {
-        getApiKeyListener = listener;
-    }
-
-    public static void callGetApiKey() {
-        if (getApiKeyListener != null)
-            getApiKeyListener.getApiKey();
-    }
-
-    public static void setScreenLockTimeListener(IsetScreenLockTime listener) {
-        setScreenLockTimeListener = listener;
+    public static void getApiKey() {
+        if (platformListener != null)
+            platformListener.getApiKey();
     }
 
     public static void setScreenLockTime(int value) {
-        if (setScreenLockTimeListener != null)
-            setScreenLockTimeListener.setScreenLockTime(value);
+        if (platformListener != null)
+            platformListener.setScreenLockTime(value);
     }
 
-    public static void setPlatformDependantListener(IPlatformDependant listener) {
-        PlatformDependantListener = listener;
+    public static void setPlatformListener(IPlatformListener listener) {
+        platformListener = listener;
     }
 
     public static void handleExternalRequest() {
         // after ViewManager is initialized
-        if (PlatformDependantListener != null)
-            PlatformDependantListener.handleExternalRequest();
+        if (platformListener != null)
+            platformListener.handleExternalRequest();
     }
 
     public static void callUrl(String url) {
-        if (PlatformDependantListener != null)
-            PlatformDependantListener.callUrl(url);
+        if (platformListener != null)
+            platformListener.callUrl(url);
     }
 
     public static void startPictureApp(String file) {
-        if (PlatformDependantListener != null)
-            PlatformDependantListener.startPictureApp(file);
+        if (platformListener != null)
+            platformListener.startPictureApp(file);
     }
 
+    public static SQLiteInterface getSQLInstance() {
+        if (platformListener != null) {
+            return platformListener.getSQLInstance();
+        } else return null;
+    }
+
+    public static void freeSQLInstance(SQLiteInterface sqlInstance) {
+        if (platformListener != null) {
+            platformListener.freeSQLInstance(sqlInstance);
+        }
+    }
+
+
     public static void switchToGpsMeasure() {
-        if (hardwareListener != null) {
-            hardwareListener.switchToGpsMeasure();
+        if (platformListener != null) {
+            platformListener.switchToGpsMeasure();
         }
     }
 
     public static void switchToGpsDefault() {
-        if (hardwareListener != null) {
-            hardwareListener.switchtoGpsDefault();
+        if (platformListener != null) {
+            platformListener.switchtoGpsDefault();
         }
     }
 
@@ -234,34 +230,12 @@ public class PlatformConnector {
         sendToMediaScannerList.add(filename);
     }
 
-    public static void setConnection(IConnection c) {
-        connection = c;
-    }
-
-    public static SQLiteInterface getSQLInstance() {
-        if (connection != null) {
-            return connection.getSQLInstance();
-        }
-        else return null;
-    }
-
-    public static void freeSQLInstance(SQLiteInterface sqlInstance) {
-        if (connection != null) {
-            connection.freeSQLInstance(sqlInstance);
-        }
-    }
-
-    public interface IConnection {
-        SQLiteInterface getSQLInstance();
-        void freeSQLInstance(SQLiteInterface sqlInstance);
-    }
-
     public interface IShowViewListener {
         void show(ViewID viewID, int left, int top, int right, int bottom);
 
         void setContentSize(int left, int top, int right, int bottom);
 
-        void hide(ViewID viewID);
+        void hideView(ViewID viewID);
 
         void showForDialog();
 
@@ -280,7 +254,21 @@ public class PlatformConnector {
         void requestLayout();
     }
 
-    public interface IHardwarStateListener {
+    public interface IgetFileReturnListener {
+        void returnFile(String PathAndName);
+    }
+
+    public interface IgetFolderReturnListener {
+        void returnFolder(String Path);
+    }
+
+    public interface IPlatformListener {
+        SettingBase<?> readSetting(SettingBase<?> setting);
+
+        void writeSetting(SettingBase<?> setting);
+
+        void setScreenLockTime(int value);
+
         boolean isOnline();
 
         boolean isGPSon();
@@ -296,39 +284,23 @@ public class PlatformConnector {
         void switchToGpsMeasure();
 
         void switchtoGpsDefault();
-    }
 
-    public interface IgetFileReturnListener {
-        void returnFile(String PathAndName);
-    }
-
-    public interface IgetFileListener {
-        void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener);
-    }
-
-    public interface IgetFolderReturnListener {
-        void returnFolder(String Path);
-    }
-
-    public interface IgetFolderListener {
-        void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
-    }
-
-    public interface IQuit {
-        void Quit();
-    }
-
-    public interface IGetApiKey {
         void getApiKey();
-    }
 
-    public interface IsetScreenLockTime {
-        void setScreenLockTime(int value);
-    }
-
-    public interface IPlatformDependant {
         void callUrl(String url);
+
         void handleExternalRequest();
+
         void startPictureApp(String file);
+
+        SQLiteInterface getSQLInstance();
+
+        void freeSQLInstance(SQLiteInterface sqlInstance);
+
+        void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener);
+
+        void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
+
+        void quit();
     }
 }

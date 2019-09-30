@@ -12,10 +12,14 @@
 package ch.fhnw.imvs.gpssimulator;
 
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.*;
+import CB_UI_Base.Events.PlatformConnector.IPlatformListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
+import CB_Utils.Settings.SettingBase;
 import ch.fhnw.imvs.gpssimulator.components.*;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.nmea.*;
+import de.cb.sqlite.SQLiteInterface;
 import org.apache.log4j.Logger;
 import org.mapsforge.map.swing.view.MapPanel;
 
@@ -104,7 +108,108 @@ public class SimulatorMain {
 
         GPSData.start();
 
-        PlatformConnector.setGetFileListener(new IgetFileListener() {
+        PlatformConnector.setPlatformListener(new IPlatformListener() {
+
+            @Override
+            public SettingBase<?> readSetting(SettingBase<?> setting) {
+                return null;
+            }
+
+            @Override
+            public void writeSetting(SettingBase<?> setting) {
+
+            }
+
+            @Override
+            public void setScreenLockTime(int value) {
+
+            }
+
+            @Override
+            public boolean isOnline() {
+                return false;
+            }
+
+            @Override
+            public boolean isGPSon() {
+                return false;
+            }
+
+            @Override
+            public void vibrate() {
+
+            }
+
+            @Override
+            public boolean isTorchAvailable() {
+                return false;
+            }
+
+            @Override
+            public boolean isTorchOn() {
+                return false;
+            }
+
+            @Override
+            public void switchTorch() {
+
+            }
+
+            @Override
+            public void switchToGpsMeasure() {
+
+            }
+
+            @Override
+            public void switchtoGpsDefault() {
+
+            }
+
+            @Override
+            public void getApiKey() {
+
+            }
+
+            @Override
+            public void callUrl(String url) {
+                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+                if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+
+                    System.err.println("Desktop doesn't support the browse action (fatal)");
+                    System.exit(1);
+                }
+
+                try {
+
+                    java.net.URI uri = new java.net.URI(url);
+                    desktop.browse(uri);
+                } catch (Exception e) {
+
+                    System.err.println(e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void handleExternalRequest() {
+
+            }
+
+            @Override
+            public void startPictureApp(String file) {
+
+            }
+
+            @Override
+            public SQLiteInterface getSQLInstance() {
+                return null;
+            }
+
+            @Override
+            public void freeSQLInstance(SQLiteInterface sqlInstance) {
+            }
+
             @Override
             public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
 
@@ -141,9 +246,6 @@ public class SimulatorMain {
                 }
 
             }
-        });
-
-        PlatformConnector.setGetFolderListener(new IgetFolderListener() {
 
             @Override
             public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
@@ -162,43 +264,11 @@ public class SimulatorMain {
                 }
 
             }
-        });
-
-        PlatformConnector.setPlatformDependantListener(new IPlatformDependant() {
-
-            /**
-             * call
-             */
-            @Override
-            public void callUrl(String url) {
-                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
-
-                if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
-
-                    System.err.println("Desktop doesn't support the browse action (fatal)");
-                    System.exit(1);
-                }
-
-                try {
-
-                    java.net.URI uri = new java.net.URI(url);
-                    desktop.browse(uri);
-                } catch (Exception e) {
-
-                    System.err.println(e.getMessage());
-                }
-
-            }
 
             @Override
-            public void handleExternalRequest() {
-
+            public void quit() {
             }
 
-            @Override
-            public void startPictureApp(String file) {
-
-            }
         });
 
         return f;

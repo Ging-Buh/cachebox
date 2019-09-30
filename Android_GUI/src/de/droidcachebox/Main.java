@@ -41,9 +41,7 @@ import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IConnection;
-import CB_UI_Base.Events.PlatformConnector.IHardwarStateListener;
-import CB_UI_Base.Events.PlatformConnector.IPlatformDependant;
+import CB_UI_Base.Events.PlatformConnector.IPlatformListener;
 import CB_UI_Base.Events.PlatformConnector.IShowViewListener;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -62,10 +60,14 @@ import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
-import CB_Utils.Settings.*;
-import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
+import CB_Utils.Settings.SettingBase;
+import CB_Utils.Settings.SettingBool;
+import CB_Utils.Settings.SettingInt;
+import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.*;
@@ -130,18 +132,13 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     private SensorManager mSensorManager;
     private Sensor accelerometer;
     private Sensor magnetometer;
-    private SharedPreferences androidSetting;
     private SharedPreferences.Editor androidSettingEditor;
     private boolean lostCheck = false;
     private Dialog pWaitD;
     private LastState lastState;
     private IChanged handleSuppressPowerSavingConfigChanged, handleRunOverLockScreenConfigChanged, handleGpsUpdateTimeConfigChanged, handleImperialUnitsConfigChanged;
-    private IHardwarStateListener hardwarStateListener;
     private IShowViewListener showViewListener;
-    private IConnection connection;
-    private IPlatformDependant platformDependant;
-    private CB_Android_FileExplorer fileExplorer;
-    private IPlatformSettings platformSettings;
+    private IPlatformListener platformListener;
     private boolean mustShowCacheList = true;
     private CancelWaitDialog wd;
 
@@ -216,10 +213,48 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             }
         };
 
-        hardwarStateListener = new IHardwarStateListener() {
-
+        platformListener = new IPlatformListener() {
             private AtomicBoolean torchAvailable = null;
             private Camera deviceCamera;
+            private SharedPreferences androidSetting;
+
+            @Override
+            public void writeSetting(SettingBase<?> setting) {
+                if (androidSetting == null)
+                    androidSetting = Main.this.getSharedPreferences(Global.PreferencesNAME, 0);
+                if (androidSettingEditor == null)
+                    androidSettingEditor = androidSetting.edit();
+                if (setting instanceof SettingBool) {
+                    androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+                } else if (setting instanceof SettingString) {
+                    androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
+                } else if (setting instanceof SettingInt) {
+                    androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
+                }
+                androidSettingEditor.apply();
+            }
+
+            @Override
+            public SettingBase<?> readSetting(SettingBase<?> setting) {
+                if (androidSetting == null)
+                    androidSetting = Main.this.getSharedPreferences(Global.PreferencesNAME, 0);
+                if (setting instanceof SettingString) {
+                    String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
+                    ((SettingString) setting).setValue(value);
+                } else if (setting instanceof SettingBool) {
+                    boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+                    ((SettingBool) setting).setValue(value);
+                } else if (setting instanceof SettingInt) {
+                    int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+                    ((SettingInt) setting).setValue(value);
+                }
+                setting.clearDirty();
+                return setting;
+            }
+
+            @Override
+            public void setScreenLockTime(int value) {
+            }
 
             @Override
             public boolean isOnline() {
@@ -292,19 +327,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 }
             }
 
-        };
-        connection = new IConnection() {
             @Override
-            public SQLiteInterface getSQLInstance() {
-                return new SQLiteClass(mainActivity);
+            public void getApiKey() {
+                Main.this.getApiKey();
             }
 
-            @Override
-            public void freeSQLInstance(SQLiteInterface sqlInstance) {
-                // sqlInstance = null;
-            }
-        };
-        platformDependant = new IPlatformDependant() {
             @Override
             public void callUrl(String url) {
                 try {
@@ -331,7 +358,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
             @Override
             public void handleExternalRequest() {
-                Log.info(sKlasse, "checkExternalRequest from PlatformConnector");
                 checkExternalRequest();
             }
 
@@ -342,43 +368,47 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 shareIntent.setDataAndType(uriToImage, "image/*");
                 Main.mainActivity.startActivity(Intent.createChooser(shareIntent, Main.this.getResources().getText(R.string.app_name)));
             }
-        };
-        fileExplorer = new CB_Android_FileExplorer(this);
-        platformSettings = new IPlatformSettings() {
+
             @Override
-            public void Write(SettingBase<?> setting) {
-                if (androidSetting == null)
-                    androidSetting = Main.this.getSharedPreferences(Global.PreferencesNAME, 0);
-                if (androidSettingEditor == null)
-                    androidSettingEditor = androidSetting.edit();
-                if (setting instanceof SettingBool) {
-                    androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-                } else if (setting instanceof SettingString) {
-                    androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
-                } else if (setting instanceof SettingInt) {
-                    androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
-                }
-                androidSettingEditor.apply();
+            public SQLiteInterface getSQLInstance() {
+                return new SQLiteClass(mainActivity);
             }
 
             @Override
-            public SettingBase<?> Read(SettingBase<?> setting) {
-                if (androidSetting == null)
-                    androidSetting = Main.this.getSharedPreferences(Global.PreferencesNAME, 0);
-                if (setting instanceof SettingString) {
-                    String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
-                    ((SettingString) setting).setValue(value);
-                } else if (setting instanceof SettingBool) {
-                    boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-                    ((SettingBool) setting).setValue(value);
-                } else if (setting instanceof SettingInt) {
-                    int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-                    ((SettingInt) setting).setValue(value);
+            public void freeSQLInstance(SQLiteInterface sqlInstance) {
+                // sqlInstance = null;
+            }
+
+            @Override
+            public void getFile(String initialPath, String extension, String TitleText, String ButtonText, PlatformConnector.IgetFileReturnListener returnListener) {
+                File mPath = FileFactory.createFile(initialPath);
+                Android_FileExplorer fileDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
+                fileDialog.setFileReturnListener(returnListener);
+                fileDialog.showDialog();
+            }
+
+            @Override
+            public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformConnector.IgetFolderReturnListener returnListener) {
+                File mPath = FileFactory.createFile(initialPath);
+                Android_FileExplorer folderDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
+                folderDialog.setSelectDirectoryOption();
+                folderDialog.setFolderReturnListener(returnListener);
+                folderDialog.showDialog();
+            }
+
+            @Override
+            public void quit() {
+                if (GlobalCore.isSetSelectedCache()) {
+                    // speichere selektierten Cache, da nicht alles über die
+                    // SelectedCacheEventList läuft
+                    Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
+                    Config.AcceptChanges();
+                    Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
                 }
-                setting.clearDirty();
-                return setting;
+                finish();
             }
         };
+
     }
 
     @Override
@@ -446,22 +476,14 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             Config.gpsUpdateTime.addSettingChangedListener(handleGpsUpdateTimeConfigChanged);
             Config.ImperialUnits.addSettingChangedListener(handleImperialUnitsConfigChanged);
 
-            Plattform.used = Plattform.Android;
-            PlatformConnector.AndroidVersion = Build.VERSION.SDK_INT;
-
             initLocatorBase();
 
+            Plattform.used = Plattform.Android;
+            PlatformConnector.AndroidVersion = Build.VERSION.SDK_INT;
             PlatformConnector.setShowViewListener(showViewListener);
-            PlatformConnector.setConnection(connection);
-            PlatformConnector.setGetFileListener(fileExplorer);
-            PlatformConnector.setGetFolderListener(fileExplorer);
-            PlatformConnector.setGetApiKeyListener(this::getApiKey);
-            PlatformConnector.setPlatformDependantListener(platformDependant);
-            PlatformConnector.setQuitListener(this::quit);
-            PlatformSettings.setPlatformSettings(platformSettings);
-            PlatformConnector.setisOnlineListener(hardwarStateListener);
+            PlatformConnector.setPlatformListener(platformListener);
 
-            // set AndroidContentClipboard
+            // init Clipboard
             Object clipboardService = getSystemService(CLIPBOARD_SERVICE);
             if (clipboardService != null) {
                 if (clipboardService instanceof android.content.ClipboardManager) {
@@ -572,7 +594,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         super.onNewIntent(intent);
     }
 
-    public void checkExternalRequest() {
+    private void checkExternalRequest() {
         final Bundle extras = mainActivity.getIntent().getExtras();
         if (extras != null) {
             Log.info(sKlasse, "prepared Request from splash");
@@ -1178,17 +1200,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         } else {
             Log.err(sKlasse, "GcApiLogin class not found");
         }
-    }
-
-    private void quit() {
-        if (GlobalCore.isSetSelectedCache()) {
-            // speichere selektierten Cache, da nicht alles über die
-            // SelectedCacheEventList läuft
-            Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
-            Config.AcceptChanges();
-            Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
-        }
-        finish();
     }
 
     private void initLocatorBase() {

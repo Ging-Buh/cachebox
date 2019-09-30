@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.graphics.Geometry;
 
-import CB_UI_Base.Global;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.graphics.GL_Cap;
 import CB_UI_Base.graphics.Join;
@@ -335,7 +335,7 @@ public class Quadrangle implements IGeometry {
     public String toString() {
         String ret = "";
         if (cor != null) {
-            ret = "[l " + cor[0] + "," + cor[1] + "-" + cor[2] + "," + cor[3] + "]" + Global.br;
+            ret = "[l " + cor[0] + "," + cor[1] + "-" + cor[2] + "," + cor[3] + "]" + AbstractGlobal.br;
         }
         return ret + "[" + vertices[0] + "," + vertices[1] + " | " + vertices[2] + "," + vertices[3] + " | " + vertices[4] + "," + vertices[5] + " | " + vertices[6] + "," + vertices[7] + "]";
     }

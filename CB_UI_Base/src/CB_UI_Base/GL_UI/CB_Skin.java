@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI;
 
-import CB_UI_Base.Global;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.HSV_Color;
@@ -45,17 +45,17 @@ public class CB_Skin {
     private void init() {
 
         if (CB_UI_Base_Settings.SkinFolder.getValue().equals("default")) {
-            SkinFolder = Global.getInternalFileHandle("skins/default");
+            SkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
         } else if (CB_UI_Base_Settings.SkinFolder.getValue().equals("small")) {
-            SkinFolder = Global.getInternalFileHandle("skins/small");
+            SkinFolder = AbstractGlobal.getInternalFileHandle("skins/small");
         } else {
             SkinFolder = Gdx.files.absolute(CB_UI_Base_Settings.SkinFolder.getValue());
             if (!SkinFolder.isDirectory()) {
-                SkinFolder = Global.getInternalFileHandle("skins/default");
+                SkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
             }
         }
 
-        DefaultSkinFolder = Global.getInternalFileHandle("skins/default");
+        DefaultSkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
 
         SizeBiggest = CB_UI_Base_Settings.FONT_SIZE_COMPASS_DISTANCE.getValue();
         SizeBig = CB_UI_Base_Settings.FONT_SIZE_BIG.getValue();
@@ -66,9 +66,9 @@ public class CB_Skin {
 
         NightMode = CB_UI_Base_Settings.nightMode.getValue();
 
-        FileHandle default_day_skinPath = Global.getInternalFileHandle("skins/default/day/skin.json");
+        FileHandle default_day_skinPath = AbstractGlobal.getInternalFileHandle("skins/default/day/skin.json");
         default_day_skin = new Skin(default_day_skinPath);
-        FileHandle default_night_skinPath = Global.getInternalFileHandle("skins/default/night/skin.json");
+        FileHandle default_night_skinPath = AbstractGlobal.getInternalFileHandle("skins/default/night/skin.json");
         default_night_skin = new Skin(default_night_skinPath);
         try {
             String day_skinPath = SkinFolder + "/day/skin.json";

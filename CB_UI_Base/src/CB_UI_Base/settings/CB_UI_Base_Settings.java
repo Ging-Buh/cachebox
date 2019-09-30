@@ -20,7 +20,7 @@ import CB_Utils.Log.LogLevel;
 import CB_Utils.Settings.*;
 import CB_Utils.Util.HSV_Color;
 
-import static CB_UI_Base.Global.displayDensity;
+import static CB_UI_Base.AbstractGlobal.displayDensity;
 import static CB_Utils.Settings.SettingCategory.*;
 import static CB_Utils.Settings.SettingModus.*;
 import static CB_Utils.Settings.SettingStoreType.*;

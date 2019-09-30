@@ -142,7 +142,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKey();
+                                PlatformConnector.getApiKey();
                             return true;
                         });
                     }
@@ -162,7 +162,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKey();
+                                PlatformConnector.getApiKey();
                             return true;
                         });
                     }
@@ -183,7 +183,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKey();
+                                PlatformConnector.getApiKey();
                             return true;
                         }, Config.RememberAsk_Get_API_Key);
                     }

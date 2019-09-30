@@ -2,7 +2,7 @@ package CB_Utils.Settings;
 
 import de.cb.sqlite.Database_Core;
 
-public class SettingsDAO {
+public abstract class SettingsDAO {
     public void WriteToDatabase(Database_Core database, SettingBase<?> setting) {
         String dbString = setting.toDBString();
         if (setting instanceof SettingLongString || setting instanceof SettingStringList) {
@@ -47,13 +47,7 @@ public class SettingsDAO {
         return setting;
     }
 
-    public void WriteToPlatformSettings(SettingBase<?> setting) {
-        // to use the PlatformSettings -> a new class must be generated on base of this
-        PlatformSettings.WriteSetting(setting);
-    }
+    public abstract void WriteToPlatformSettings(SettingBase<?> setting);
 
-    public SettingBase<?> ReadFromPlatformSetting(SettingBase<?> setting) {
-        setting = PlatformSettings.ReadSetting(setting);
-        return setting;
-    }
+    public abstract SettingBase<?> ReadFromPlatformSetting(SettingBase<?> setting);
 }
