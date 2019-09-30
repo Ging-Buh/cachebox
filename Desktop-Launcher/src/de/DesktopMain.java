@@ -375,6 +375,16 @@ public class DesktopMain {
                 }
 
             }
+
+            @Override
+            public void handleExternalRequest() {
+
+            }
+
+            @Override
+            public void startPictureApp(String file) {
+
+            }
         });
 
         PlatformConnector.setGetApiKeyListener(new IGetApiKey() {

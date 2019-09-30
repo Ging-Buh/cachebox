@@ -139,7 +139,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     private IHardwarStateListener hardwarStateListener;
     private IShowViewListener showViewListener;
     private IConnection connection;
-    private IPlatformDependant callUrl;
+    private IPlatformDependant platformDependant;
     private CB_Android_FileExplorer fileExplorer;
     private IPlatformSettings platformSettings;
     private boolean mustShowCacheList = true;
@@ -304,7 +304,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 // sqlInstance = null;
             }
         };
-        callUrl = new IPlatformDependant() {
+        platformDependant = new IPlatformDependant() {
             @Override
             public void callUrl(String url) {
                 try {
@@ -456,7 +456,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             PlatformConnector.setGetFileListener(fileExplorer);
             PlatformConnector.setGetFolderListener(fileExplorer);
             PlatformConnector.setGetApiKeyListener(this::getApiKey);
-            PlatformConnector.setPlatformDependantListener(callUrl);
+            PlatformConnector.setPlatformDependantListener(platformDependant);
             PlatformConnector.setQuitListener(this::quit);
             PlatformSettings.setPlatformSettings(platformSettings);
             PlatformConnector.setisOnlineListener(hardwarStateListener);

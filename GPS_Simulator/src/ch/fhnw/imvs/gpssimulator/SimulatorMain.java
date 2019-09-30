@@ -189,6 +189,16 @@ public class SimulatorMain {
                 }
 
             }
+
+            @Override
+            public void handleExternalRequest() {
+
+            }
+
+            @Override
+            public void startPictureApp(String file) {
+
+            }
         });
 
         return f;
