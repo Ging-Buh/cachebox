@@ -24,7 +24,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.ICancelRunnable;
 
 public class DeleteDialog extends ButtonDialog {
@@ -40,7 +40,7 @@ public class DeleteDialog extends ButtonDialog {
 
         float innerWidth = msgBoxContentSize.width;
 
-        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.ui_size_base.getButtonHeight() * 2);
+        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getInstance().getButtonHeight() * 2);
 
         btDelFilter = new ImageButton(MTBRec, "btSetGPS");
         btDelArchived = new ImageButton(MTBRec, "btSelectWP");
@@ -54,7 +54,7 @@ public class DeleteDialog extends ButtonDialog {
         lblDelArchived = new CB_Label(Translation.get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
         lblDelFounds = new CB_Label(Translation.get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 
-        Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight()), "");
+        Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight()), "");
         box.initRow(BOTTOMUP);
         box.addNext(lblDelFilter);
         box.addNext(lblDelArchived);

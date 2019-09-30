@@ -33,7 +33,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
     private LogView() {
         super(ViewManager.leftTab.getContentRec(), "LogView");
         setForceHandleTouchEvents(true);
-        ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
+        ItemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
         this.setBaseAdapter(null);
@@ -130,8 +130,8 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
     private float MeasureItemHeight(LogEntry logEntry) {
         // object ist nicht von Dialog abgeleitet, daher
-        float margin = UI_Size_Base.ui_size_base.getMargin();
-        float headHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + margin;
+        float margin = UiSizes.getInstance().getMargin();
+        float headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + margin;
 
         float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (margin * 2);
 

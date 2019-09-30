@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.MoveableList;
 import com.badlogic.gdx.Gdx;
@@ -1068,7 +1068,7 @@ public abstract class GL_View_Base extends CB_RectF {
         // wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
         // innerhalb dem erstmal kein onTouchDragged aufgerufen wird
         if (isClickable())
-            return UI_Size_Base.ui_size_base.getClickToleranz();
+            return UiSizes.getInstance().getClickToleranz();
         else
             // Wenn aber eine View nicht clickable ist dann darf der onTouchDragged sofort aufgerufen werden
             return 1;

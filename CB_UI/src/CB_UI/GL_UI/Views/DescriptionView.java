@@ -37,7 +37,6 @@ import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.Geometry.Line;
@@ -57,6 +56,7 @@ public class DescriptionView extends CB_View_Base {
     final static String PREMIUM = "Premium";
     final static String BASIC_LIMIT = "3";
     final static String PREMIUM_LIMIT = "6000";
+    private static DescriptionView that;
     final static OnClickListener downloadClicked = (v, x, y, pointer, button) -> {
         GL.that.RunOnGL(() -> CacheContextMenu.ReloadSelectedCache());
         return true;
@@ -70,11 +70,11 @@ public class DescriptionView extends CB_View_Base {
     private float margin;
     private Cache sel;
 
-    private static DescriptionView that;
     private DescriptionView() {
         super(ViewManager.leftTab.getContentRec(), "DescriptionView");
         STRING_POWERD_BY = Translation.get("GC_title");
     }
+
     public static DescriptionView getInstance() {
         if (that == null) that = new DescriptionView();
         return that;
@@ -217,8 +217,7 @@ public class DescriptionView extends CB_View_Base {
             if (fetchMyUserInfos().remaining <= 0) {
                 if (isPremiumMember()) {
                     MessageBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
-                }
-                else {
+                } else {
                     MessageBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                 }
                 return;
@@ -266,7 +265,7 @@ public class DescriptionView extends CB_View_Base {
 
         if (PowerdBy != null) {
             if (Line == null) {
-                float strokeWidth = 3 * UI_Size_Base.ui_size_base.getScale();
+                float strokeWidth = 3 * UiSizes.getInstance().getScale();
 
                 Line l1 = new Line(margin, PowerdBy.getY() - margin, this.getWidth() - margin, PowerdBy.getY() - margin);
 

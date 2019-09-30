@@ -28,7 +28,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -63,7 +63,7 @@ public class ButtonDialog extends Dialog {
         setButtonCaptions(buttons);
         SizeF contentSize = getContentSize();
 
-        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
 
         if (icon != MessageBoxIcon.None && icon != null) {
             Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
@@ -72,7 +72,7 @@ public class ButtonDialog extends Dialog {
         }
 
         label = new CB_Label(contentSize.getBounds());
-        label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.ui_size_base.getButtonHeight());
+        label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getInstance().getButtonHeight());
         label.setX(imageRec.getMaxX() + 5);
         label.setY(-margin);
         label.setWrappedText(msg);

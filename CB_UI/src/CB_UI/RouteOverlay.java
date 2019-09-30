@@ -25,7 +25,7 @@ import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
@@ -420,7 +420,7 @@ public class RouteOverlay {
                 float overlap = rt.overlap;
                 ArrowSprite.setColor(rt.mColor);
                 PointSprite.setColor(rt.mColor);
-                float scale = UI_Size_Base.ui_size_base.getScale();
+                float scale = UiSizes.getInstance().getScale();
 
                 for (int ii = 0; ii < rt.Points.size() - 1; ii++) {
 

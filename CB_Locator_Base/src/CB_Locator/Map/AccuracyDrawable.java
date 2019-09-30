@@ -15,7 +15,7 @@
  */
 package CB_Locator.Map;
 
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.CircleDrawable;
 import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.GL_Style;
@@ -54,7 +54,7 @@ public class AccuracyDrawable {
         GL_Paint paint = new GL_Paint();
         paint.setColor(Color.BLUE);
         paint.setStyle(GL_Style.STROKE);
-        paint.setStrokeWidth(3 * UI_Size_Base.ui_size_base.getScale());
+        paint.setStrokeWidth(3 * UiSizes.getInstance().getScale());
         strokes[index] = new CircleDrawable(0, 0, radius, paint, size, size);
 
         GL_Paint paint2 = new GL_Paint();

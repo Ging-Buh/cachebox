@@ -10,7 +10,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -68,7 +68,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     public FilterSetListViewItem(CB_RectF rec, int Index, FilterSetEntry fne) {
         super(rec, Index, fne.getName());
         this.mFilterSetEntry = fne;
-        MARGIN = UI_Size_Base.ui_size_base.getMargin();
+        MARGIN = UiSizes.getInstance().getMargin();
         BUTTON_MARGIN = -(MARGIN / 10);
     }
 

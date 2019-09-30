@@ -19,7 +19,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.Fader;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -111,7 +111,7 @@ public class Scrollbar extends CB_View_Base {
         SliderRec.setX(this.getWidth() - (minWidth / 1.35f));
         SliderRec.setWidth(minWidth);
 
-        mPushSliderIstHight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.8f;
+        mPushSliderIstHight = UiSizes.getInstance().getButtonHeight() * 0.8f;
 
         SliderPuchRec.setX(SliderRec.getX() - mPushSliderIstHight + Slider.getLeftWidth());
         SliderPuchRec.setY(mSliderPos);
@@ -166,7 +166,7 @@ public class Scrollbar extends CB_View_Base {
     private float getMinSliderHeight() {
         if (mMinSliderHeight > 0)
             return mMinSliderHeight;
-        return mMinSliderHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.5f;
+        return mMinSliderHeight = UiSizes.getInstance().getButtonHeight() * 0.5f;
     }
 
     @Override

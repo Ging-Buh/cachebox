@@ -17,7 +17,6 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.MoveableList;
@@ -257,7 +256,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 
         @Override
         public float getItemSize(int position) {
-            return UI_Size_Base.ui_size_base.getButtonHeight();
+            return UiSizes.getInstance().getButtonHeight();
         }
 
         @Override

@@ -53,7 +53,7 @@ import CB_UI_Base.GL_UI.utils.KineticZoom;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.Geometry.GeometryList;
 import CB_UI_Base.graphics.Geometry.Line;
@@ -161,7 +161,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // initial Zoom Buttons
         zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
 
-        zoomBtn.setX(getWidth() - (zoomBtn.getWidth() + UI_Size_Base.ui_size_base.getMargin()));
+        zoomBtn.setX(getWidth() - (zoomBtn.getWidth() + UiSizes.getInstance().getMargin()));
 
         zoomBtn.setOnClickListenerDown((v, x, y, pointer, button) -> {
             // bei einer Zoom Animation in negativer Richtung muss der setDiffCameraZoom gesetzt werden!
@@ -497,7 +497,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (getMapState() == MapState.FREE) {
                 if (CrossLines == null) {
                     float crossSize = Math.min(mapIntHeight / 3.0f, mapIntWidth / 3.0f) / 2;
-                    float strokeWidth = 2 * UI_Size_Base.ui_size_base.getScale();
+                    float strokeWidth = 2 * UiSizes.getInstance().getScale();
 
                     GeometryList geomList = new GeometryList();
                     Line l1 = new Line(mapIntWidth / 2.0f - crossSize, mapIntHeight / 2.0f, mapIntWidth / 2.0f + crossSize, mapIntHeight / 2.0f);
@@ -624,7 +624,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // FIXME create a LineDrawable class for create one times and set the Coordinates with calculated Triangles
         if (myPointOnScreen != null && showDirectLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
             // FIXME render only if visible on screen (intersect the screen rec)
-            Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UI_Size_Base.ui_size_base.getScale());
+            Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UiSizes.getInstance().getScale());
             if (paint == null) {
                 paint = new GL_Paint();
                 paint.setGLColor(Color.RED);
@@ -1147,7 +1147,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
             showAccuracyCircle = Mode == MapMode.Compass ? false : Config.ShowAccuracyCircle.getValue();
             showMapCenterCross = Mode == MapMode.Compass ? false : Config.ShowMapCenterCross.getValue();
-            showAtOriginalPosition  = Mode == MapMode.Compass ? false : Config.ShowAtOriginalPosition.getValue();
+            showAtOriginalPosition = Mode == MapMode.Compass ? false : Config.ShowAtOriginalPosition.getValue();
 
             if (Mode == MapMode.Track) {
                 showMapCenterCross = true;
@@ -1219,7 +1219,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 data.hideMyFinds = hideMyFinds;
                 showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
                 data.showAllWaypoints = showAllWaypoints;
-                showAtOriginalPosition  = Mode == MapMode.Compass ? false : Config.ShowAtOriginalPosition.getValue();
+                showAtOriginalPosition = Mode == MapMode.Compass ? false : Config.ShowAtOriginalPosition.getValue();
                 data.showAtOriginalPosition = showAtOriginalPosition;
                 mapCacheList.update(data);
             }

@@ -36,7 +36,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 import com.badlogic.gdx.Gdx;
@@ -89,9 +89,9 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     private void createControls() {
         float btWidth = innerWidth / 3;
 
-        btnOk = new CB_Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), onOkClick);
-        btnAdd = new CB_Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), onAddClick);
-        btnCancel = new CB_Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), onCancelClik);
+        btnOk = new CB_Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), onOkClick);
+        btnAdd = new CB_Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), onAddClick);
+        btnCancel = new CB_Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), onCancelClik);
 
         // translations
         btnOk.setText(Translation.get("ok"));

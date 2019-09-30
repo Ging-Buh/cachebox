@@ -3,7 +3,7 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -14,7 +14,7 @@ public class CB_CheckBox extends CB_Button {
     protected OnCheckChangedListener changeListener;
 
     public CB_CheckBox(String name) {
-        super(new CB_RectF(UI_Size_Base.ui_size_base.getChkBoxSize()), name);
+        super(new CB_RectF(UiSizes.getInstance().getChkBoxSize()), name);
         this.setClickable(true);
     }
 

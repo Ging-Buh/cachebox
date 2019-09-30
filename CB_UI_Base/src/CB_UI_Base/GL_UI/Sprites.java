@@ -17,7 +17,7 @@
 package CB_UI_Base.GL_UI;
 
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.Files.FileType;
@@ -371,7 +371,7 @@ public class Sprites {
             Arrows = new ArrayList<Sprite>();
         synchronized (Arrows) {
 
-            float scale = UI_Size_Base.ui_size_base.getScale();
+            float scale = UiSizes.getInstance().getScale();
 
             Arrows.clear();
             Arrows.add(getSprite("arrow-Compass")); // 0

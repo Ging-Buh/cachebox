@@ -20,7 +20,7 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -36,7 +36,7 @@ public class Spinner extends CB_Button {
     private ISelectionChangedListener mListener;
 
     public Spinner(String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-        super(new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidthWide(), UI_Size_Base.ui_size_base.getButtonHeight()), TranslationId);
+        super(new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight()), TranslationId);
         mAdapter = adapter;
         mListener = listener;
     }
@@ -121,7 +121,7 @@ public class Spinner extends CB_Button {
                     icon = new Image(rec, "", false);
                     icon.setY(this.getHalfHeight() - icon.getHalfHeight());
 
-                    float margin = UI_Size_Base.ui_size_base.getMargin();
+                    float margin = UiSizes.getInstance().getMargin();
 
                     icon.setX(margin * 2);
 
@@ -129,7 +129,7 @@ public class Spinner extends CB_Button {
 
                     lblTxt.setX(icon.getMaxX() + margin);
                 }
-                float margin = UI_Size_Base.ui_size_base.getMargin();
+                float margin = UiSizes.getInstance().getMargin();
 
                 icon.setX(margin * 2);
 

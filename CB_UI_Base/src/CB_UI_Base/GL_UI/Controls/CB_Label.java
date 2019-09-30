@@ -22,7 +22,7 @@ import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.Geometry.GeometryList;
 import CB_UI_Base.graphics.Geometry.Line;
@@ -73,7 +73,7 @@ public class CB_Label extends CB_View_Base {
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
     public CB_Label() {
-        super(0, 0, UI_Size_Base.ui_size_base.getButtonWidthWide(), UI_Size_Base.ui_size_base.getButtonHeight(), "Label");
+        super(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight(), "Label");
         setText();
     }
 
@@ -81,7 +81,7 @@ public class CB_Label extends CB_View_Base {
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
     public CB_Label(String Text) {
-        super(0, 0, UI_Size_Base.ui_size_base.getButtonWidthWide(), UI_Size_Base.ui_size_base.getButtonHeight(), "Label");
+        super(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight(), "Label");
         mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
     }
@@ -91,7 +91,7 @@ public class CB_Label extends CB_View_Base {
      * from UI_Size_Base
      **/
     public CB_Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType) {
-        super(0, 0, UI_Size_Base.ui_size_base.getButtonWidthWide(), UI_Size_Base.ui_size_base.getButtonHeight(), "Label");
+        super(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight(), "Label");
         mText = (Text == null ? "" : Text.replace("\r\n", "\n"));
         if (Font != null)
             mFont = Font;
@@ -189,7 +189,7 @@ public class CB_Label extends CB_View_Base {
             if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
 
                 if (scrollstep <= 0) {
-                    scrollstep = DEFAULTSCROLLSTEP * UI_Size_Base.ui_size_base.getScale();
+                    scrollstep = DEFAULTSCROLLSTEP * UiSizes.getInstance().getScale();
                 }
 
                 int max = (int) (bounds.width - innerWidth) + 20;

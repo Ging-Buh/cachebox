@@ -7,7 +7,7 @@ import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 
 import java.text.SimpleDateFormat;
 
@@ -35,7 +35,7 @@ public class Import_PqListItem extends ListViewItemBackground {
 
         chk = new CB_CheckBox("");
         chk.setRec(chk.ScaleCenter(0.6f));
-        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.ui_size_base.getMargin());
+        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
         chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
         chk.setChecked(pq.doDownload);
         chk.setOnCheckChangedListener((view, isChecked) -> pq.doDownload = isChecked);

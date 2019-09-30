@@ -2,7 +2,7 @@ package de.droidcachebox;
 
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.MoveableList;
 import android.content.Context;
 import android.content.res.Resources;
@@ -447,7 +447,7 @@ public class Global {
             // calc sizes
 
             measurePaint = new Paint();
-            measurePaint.setTextSize(UI_Size_Base.ui_size_base.getScaledFontSize());
+            measurePaint.setTextSize(UiSizes.getInstance().getScaledFontSize());
 
             ListBackground = new Paint();
             Night.ListBackground_second = new Paint();

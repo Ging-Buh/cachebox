@@ -49,7 +49,6 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
@@ -137,10 +136,10 @@ public class SearchDialog extends PopUp_Base {
 
         this.setBackground(Sprites.ListBack);
 
-        float margin = UI_Size_Base.ui_size_base.getMargin();
+        float margin = UiSizes.getInstance().getMargin();
         float btnWidth = (this.getWidth() - (margin * 7)) / 4;
 
-        CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.ui_size_base.getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, 0, btnWidth, UiSizes.getInstance().getButtonHeight());
 
         mTglBtnTitle = new MultiToggleButton(rec, "mTglBtnTitle");
         mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");

@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.GL_UI.Controls.CB_Label.HAlignment;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -30,11 +30,11 @@ public class RadioButton extends CB_CheckBox {
 
     public RadioButton(String Name) {
         super(Name);
-        radioBack = new Image(new CB_RectF(UI_Size_Base.ui_size_base.getChkBoxSize()), name, false);
+        radioBack = new Image(new CB_RectF(UiSizes.getInstance().getChkBoxSize()), name, false);
         radioBack.setDrawable(Sprites.radioBack);
         this.addChild(radioBack);
 
-        radioSet = new Image(new CB_RectF(UI_Size_Base.ui_size_base.getChkBoxSize()), name, false);
+        radioSet = new Image(new CB_RectF(UiSizes.getInstance().getChkBoxSize()), name, false);
         radioSet.setDrawable(Sprites.radioOn);
         this.addChild(radioSet);
     }
@@ -46,7 +46,7 @@ public class RadioButton extends CB_CheckBox {
     @Override
     protected void render(Batch batch) {
         if (lblTxt != null && lblTxt.getX() < radioBack.getMaxX()) {
-            lblTxt.setX(radioBack.getMaxX() + UI_Size_Base.ui_size_base.getMargin());
+            lblTxt.setX(radioBack.getMaxX() + UiSizes.getInstance().getMargin());
         }
 
         if (isChk && !radioSet.isVisible()) {

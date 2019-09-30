@@ -27,7 +27,7 @@ import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.GL_UI.utils.GradiantFill;
 import CB_UI_Base.GL_UI.utils.GradiantFilledRectangle;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -74,8 +74,8 @@ public class ColorPicker extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("ok"));
@@ -106,7 +106,7 @@ public class ColorPicker extends ActivityBase {
     }
 
     private void createColorPreviewLine() {
-        CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UI_Size_Base.ui_size_base.getButtonWidthWide(), UI_Size_Base.ui_size_base.getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight());
         lastColorBox = new Box(rec, "LastColor");
         actColorBox = new Box(rec, "aktColor");
 

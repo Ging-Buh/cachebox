@@ -25,12 +25,11 @@ import java.util.ArrayList;
  * @author Longri
  */
 public class PlatformConnector {
-    public static IStartPictureApp startPictureApp;
     static Thread threadVibrate;
     static IQuit quitListener;
     static IGetApiKey getApiKeyListener;
     static IsetScreenLockTime setScreenLockTimeListener;
-    static ICallUrl CallUrlListener;
+    static IPlatformDependant PlatformDependantListener;
     private static IShowViewListener showViewListener;
     private static IHardwarStateListener hardwareListener;
     private static IgetFileListener getFileListener;
@@ -191,22 +190,24 @@ public class PlatformConnector {
             setScreenLockTimeListener.setScreenLockTime(value);
     }
 
-    public static void setCallUrlListener(ICallUrl listener) {
-        CallUrlListener = listener;
+    public static void setPlatformDependantListener(IPlatformDependant listener) {
+        PlatformDependantListener = listener;
+    }
+
+    public static void handleExternalRequest() {
+        // after ViewManager is initialized
+        if (PlatformDependantListener != null)
+            PlatformDependantListener.handleExternalRequest();
     }
 
     public static void callUrl(String url) {
-        if (CallUrlListener != null)
-            CallUrlListener.call(url);
+        if (PlatformDependantListener != null)
+            PlatformDependantListener.callUrl(url);
     }
 
-    public static void setStartPictureApp(IStartPictureApp listener) {
-        startPictureApp = listener;
-    }
-
-    public static void StartPictureApp(String file) {
-        if (startPictureApp != null)
-            startPictureApp.start(file);
+    public static void startPictureApp(String file) {
+        if (PlatformDependantListener != null)
+            PlatformDependantListener.startPictureApp(file);
     }
 
     public static void switchToGpsMeasure() {
@@ -227,7 +228,7 @@ public class PlatformConnector {
 
     public static void addToMediaScannerList(String filename) {
         if (sendToMediaScannerList == null) {
-            sendToMediaScannerList = new ArrayList<String>();
+            sendToMediaScannerList = new ArrayList<>();
         }
         if (sendToMediaScannerList.contains(filename)) return;
         sendToMediaScannerList.add(filename);
@@ -325,11 +326,9 @@ public class PlatformConnector {
         void setScreenLockTime(int value);
     }
 
-    public interface ICallUrl {
-        void call(String url);
-    }
-
-    public interface IStartPictureApp {
-        void start(String file);
+    public interface IPlatformDependant {
+        void callUrl(String url);
+        void handleExternalRequest();
+        void startPictureApp(String file);
     }
 }

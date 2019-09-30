@@ -343,13 +343,13 @@ public class DesktopMain {
         if (dcb != null)
             GlobalCore.setDefaultClipboard(dcb);
 
-        PlatformConnector.setCallUrlListener(new ICallUrl() {
+        PlatformConnector.setPlatformDependantListener(new IPlatformDependant() {
 
             /**
              * call
              */
             @Override
-            public void call(String url) {
+            public void callUrl(String url) {
                 java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
                 if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {

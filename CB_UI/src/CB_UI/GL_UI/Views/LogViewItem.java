@@ -26,7 +26,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -54,7 +54,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         this.logEntry = logEntry;
         mBackIsInitial = false;
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
-        headHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + (UI_Size_Base.ui_size_base.getMargin());
+        headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 
         iniImage();
         iniFoundLabel();
@@ -63,14 +63,14 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     }
 
     private void iniImage() {
-        ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f / 2), UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f, UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f, "", false);
+        ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
         this.addChild(ivTyp);
         ivTyp.setDrawable(new SpriteDrawable(Sprites.LogIcons.get(logEntry.Type.getIconID())));
-        secondTab = ivTyp.getMaxX() + (UI_Size_Base.ui_size_base.getMargin() * 2);
+        secondTab = ivTyp.getMaxX() + (UiSizes.getInstance().getMargin() * 2);
     }
 
     private void iniFoundLabel() {
-        lblFinder = new CB_Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UI_Size_Base.ui_size_base.getMargin(), MeasuredLabelHeight, logEntry.Finder);
+        lblFinder = new CB_Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UiSizes.getInstance().getMargin(), MeasuredLabelHeight, logEntry.Finder);
         this.addChild(lblFinder);
     }
 
@@ -87,7 +87,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     // static Member
 
     private void iniCommentLabel() {
-        CB_RectF rectF = new CB_RectF(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UI_Size_Base.ui_size_base.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.ui_size_base.getMargin());
+        CB_RectF rectF = new CB_RectF(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2), this.getHeight() - headHeight - UiSizes.getInstance().getMargin());
         mComment = new EditTextField(rectF, this, "mComment");
         mComment.setWrapType(WrapType.WRAPPED);
         mComment.setText(logEntry.Comment);

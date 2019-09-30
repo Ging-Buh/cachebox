@@ -222,7 +222,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         }
 
         GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
-
         filterSetChanged();
         GL.that.removeRenderView(this);
 
@@ -232,6 +231,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             API_ErrorEventHandlerList.handleApiKeyError(API_ERROR.NO);
 
         isInitial = true;
+
+        PlatformConnector.handleExternalRequest();
 
     }
 

@@ -22,7 +22,7 @@ import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 
 public class SolverViewItem extends ListViewItemBackground {
     protected boolean isPressed = false;
@@ -39,7 +39,7 @@ public class SolverViewItem extends ListViewItemBackground {
         super.initialize();
         lblSolverZeile = new CB_Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
         lblSolverZeile.setHeight(this.getHeight()); // todo ob das immer passt?
-        this.setBorders(UI_Size_Base.ui_size_base.getMargin(), UI_Size_Base.ui_size_base.getMargin());
+        this.setBorders(UiSizes.getInstance().getMargin(), UiSizes.getInstance().getMargin());
         this.addLast(lblSolverZeile);
     }
 

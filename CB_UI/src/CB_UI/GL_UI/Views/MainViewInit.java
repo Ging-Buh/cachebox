@@ -36,7 +36,7 @@ import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingString;
@@ -133,7 +133,7 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_Progressbar() {
 
-        float ref = UI_Size_Base.ui_size_base.getWindowHeight() / 13;
+        float ref = UiSizes.getInstance().getWindowHeight() / 13;
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
         CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
         CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));

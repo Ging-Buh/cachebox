@@ -10,7 +10,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -128,7 +128,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
         colorReck.draw(batch);
 
-        left += lBounds.getWidth() + UI_Size_Base.ui_size_base.getMargin();
+        left += lBounds.getWidth() + UiSizes.getInstance().getMargin();
 
     }
 

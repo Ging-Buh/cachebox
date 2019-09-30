@@ -19,7 +19,7 @@ package de.droidcachebox.Views.Forms;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import android.app.Activity;
 import android.app.Dialog;
@@ -70,11 +70,11 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      * @param msg Die Message, welche ausgegeben werden soll.
      *
      *            <pre>
-     *                       Beispiel:</b>
-     *                       {@code
-     *                       MessageBox.Show("Test");
-     *                       }
-     *                                  </pre>
+     *                                  Beispiel:</b>
+     *                                  {@code
+     *                                  MessageBox.Show("Test");
+     *                                  }
+     *                                             </pre>
      */
     public static Dialog Show(String msg) {
         listener = null;
@@ -93,42 +93,42 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      * @param Listener Welcher die Events der Buttons behandelt
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     *                                 {@code
-     *                                 MessageBox.Show("Test",null);
-     *                                 }
-     *                                            </pre>
+     *                                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
+     *                                                 {@code
+     *                                                 MessageBox.Show("Test",null);
+     *                                                 }
+     *                                                            </pre>
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
-     *                                 {@code
-     *                                 	MessageBox.Show("Test",DialogListener)
+     *                                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
+     *                                                 {@code
+     *                                                 	MessageBox.Show("Test",DialogListener)
      *
-     *                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
-     *                                   {
-     *                                 	&#64;Override
-     *                                 	public void onClick(DialogInterface dialog, int button)
-     *                                 	{
-     *                                 		// Behandle das ergebniss
-     *                                 		switch (button)
-     *                                 		{
-     *                                 			case -1:
-     *                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -2:
-     *                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -3:
-     *                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 		}
+     *                                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
+     *                                                   {
+     *                                                 	&#64;Override
+     *                                                 	public void onClick(DialogInterface dialog, int button)
+     *                                                    {
+     *                                                 		// Behandle das ergebniss
+     *                                                 		switch (button)
+     *                                                        {
+     *                                                 			case -1:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -2:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -3:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                        }
      *
-     *                                 		dialog.dismiss();
-     *                                 	}
+     *                                                 		dialog.dismiss();
+     *                                                    }
      *
-     *                                    };
-     *                                 }
-     *                                            </pre>
+     *                                                    };
+     *                                                 }
+     *                                                            </pre>
      */
     public static Dialog Show(String msg, DialogInterface.OnClickListener Listener) {
         listener = Listener;
@@ -148,42 +148,42 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      * @param Listener Welcher die Events der Buttons behandelt
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     *                                 {@code
-     *                                 MessageBox.Show("Test", "Titel" ,null);
-     *                                 }
-     *                                            </pre>
+     *                                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
+     *                                                 {@code
+     *                                                 MessageBox.Show("Test", "Titel" ,null);
+     *                                                 }
+     *                                                            </pre>
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
-     *                                 {@code
-     *                                 	MessageBox.Show("Test", "Titel",DialogListener)
+     *                                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
+     *                                                 {@code
+     *                                                 	MessageBox.Show("Test", "Titel",DialogListener)
      *
-     *                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
-     *                                   {
-     *                                 	&#64;Override
-     *                                 	public void onClick(DialogInterface dialog, int button)
-     *                                 	{
-     *                                 		// Behandle das ergebniss
-     *                                 		switch (button)
-     *                                 		{
-     *                                 			case -1:
-     *                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -2:
-     *                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -3:
-     *                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 		}
+     *                                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
+     *                                                   {
+     *                                                 	&#64;Override
+     *                                                 	public void onClick(DialogInterface dialog, int button)
+     *                                                    {
+     *                                                 		// Behandle das ergebniss
+     *                                                 		switch (button)
+     *                                                        {
+     *                                                 			case -1:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -2:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -3:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                        }
      *
-     *                                 		dialog.dismiss();
-     *                                 	}
+     *                                                 		dialog.dismiss();
+     *                                                    }
      *
-     *                                    };
-     *                                 }
-     *                                            </pre>
+     *                                                    };
+     *                                                 }
+     *                                                            </pre>
      */
     public static Dialog Show(String msg, String title, DialogInterface.OnClickListener Listener) {
         listener = Listener;
@@ -205,42 +205,42 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      * @param Listener Welcher die Events der Buttons behandelt
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     *                                 {@code
-     *                                 MessageBox.Show("Test", "Titel" ,null);
-     *                                 }
-     *                                            </pre>
+     *                                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
+     *                                                 {@code
+     *                                                 MessageBox.Show("Test", "Titel" ,null);
+     *                                                 }
+     *                                                            </pre>
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
-     *                                 {@code
-     *                                 	MessageBox.Show("Test", "Titel",DialogListener)
+     *                                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
+     *                                                 {@code
+     *                                                 	MessageBox.Show("Test", "Titel",DialogListener)
      *
-     *                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
-     *                                   {
-     *                                 	&#64;Override
-     *                                 	public void onClick(DialogInterface dialog, int button)
-     *                                 	{
-     *                                 		// Behandle das ergebniss
-     *                                 		switch (button)
-     *                                 		{
-     *                                 			case -1:
-     *                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -2:
-     *                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -3:
-     *                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 		}
+     *                                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
+     *                                                   {
+     *                                                 	&#64;Override
+     *                                                 	public void onClick(DialogInterface dialog, int button)
+     *                                                    {
+     *                                                 		// Behandle das ergebniss
+     *                                                 		switch (button)
+     *                                                        {
+     *                                                 			case -1:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -2:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -3:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                        }
      *
-     *                                 		dialog.dismiss();
-     *                                 	}
+     *                                                 		dialog.dismiss();
+     *                                                    }
      *
-     *                                    };
-     *                                 }
-     *                                            </pre>
+     *                                                    };
+     *                                                 }
+     *                                                            </pre>
      */
 
     public static Dialog Show(String msg, String title, MessageBoxButtons buttons, DialogInterface.OnClickListener Listener) {
@@ -270,42 +270,42 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      * @param Listener Welcher die Events der Buttons behandelt
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     *                                 {@code
-     *                                 MessageBox.Show("Test", "Titel" ,null);
-     *                                 }
-     *                                            </pre>
+     *                                                 <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
+     *                                                 {@code
+     *                                                 MessageBox.Show("Test", "Titel" ,null);
+     *                                                 }
+     *                                                            </pre>
      *
      *                 <pre>
-     *                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
-     *                                 {@code
-     *                                 	MessageBox.Show("Test", "Titel",DialogListener)
+     *                                                 <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
+     *                                                 {@code
+     *                                                 	MessageBox.Show("Test", "Titel",DialogListener)
      *
-     *                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
-     *                                   {
-     *                                 	&#64;Override
-     *                                 	public void onClick(DialogInterface dialog, int button)
-     *                                 	{
-     *                                 		// Behandle das ergebniss
-     *                                 		switch (button)
-     *                                 		{
-     *                                 			case -1:
-     *                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -2:
-     *                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 			case -3:
-     *                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-     *                                 				break;
-     *                                 		}
+     *                                                  private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
+     *                                                   {
+     *                                                 	&#64;Override
+     *                                                 	public void onClick(DialogInterface dialog, int button)
+     *                                                    {
+     *                                                 		// Behandle das ergebniss
+     *                                                 		switch (button)
+     *                                                        {
+     *                                                 			case -1:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -2:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                 			case -3:
+     *                                                 				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                                 				break;
+     *                                                        }
      *
-     *                                 		dialog.dismiss();
-     *                                 	}
+     *                                                 		dialog.dismiss();
+     *                                                    }
      *
-     *                                    };
-     *                                 }
-     *                                            </pre>
+     *                                                    };
+     *                                                 }
+     *                                                            </pre>
      */
 
     public static Dialog Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
@@ -645,7 +645,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
             // set the dialog title
             if (title != null && !title.equals("")) {
                 ((TextView) layout.findViewById(R.id.title)).setText(title);
-                ((TextView) layout.findViewById(R.id.title)).setTextSize((UI_Size_Base.ui_size_base.getScaledFontSize_btn()));
+                ((TextView) layout.findViewById(R.id.title)).setTextSize((UiSizes.getInstance().getScaledFontSize_btn()));
             } else {
                 ((TextView) layout.findViewById(R.id.title)).setVisibility(View.GONE);
             }
@@ -698,14 +698,14 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
             // set the content message
             if (message != null) {
                 ((TextView) layout.findViewById(R.id.message)).setText(message);
-                ((TextView) layout.findViewById(R.id.message)).setTextSize((UI_Size_Base.ui_size_base.getScaledFontSize_small()));
+                ((TextView) layout.findViewById(R.id.message)).setTextSize((UiSizes.getInstance().getScaledFontSize_small()));
 
-                ((TextView) layout.findViewById(R.id.message)).measure(UI_Size_Base.ui_size_base.getWindowWidth() - 100, UI_Size_Base.ui_size_base.getWindowHeight() - 100);
+                ((TextView) layout.findViewById(R.id.message)).measure(UiSizes.getInstance().getWindowWidth() - 100, UiSizes.getInstance().getWindowHeight() - 100);
                 int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
                 LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-                if (height > UI_Size_Base.ui_size_base.getWindowHeight() - (UI_Size_Base.ui_size_base.getButtonHeight() * 4)) {
-                    height = UI_Size_Base.ui_size_base.getWindowHeight() - (UI_Size_Base.ui_size_base.getButtonHeight() * 4);
+                if (height > UiSizes.getInstance().getWindowHeight() - (UiSizes.getInstance().getButtonHeight() * 4)) {
+                    height = UiSizes.getInstance().getWindowHeight() - (UiSizes.getInstance().getButtonHeight() * 4);
                     params.height = height;
                     ((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
                 }

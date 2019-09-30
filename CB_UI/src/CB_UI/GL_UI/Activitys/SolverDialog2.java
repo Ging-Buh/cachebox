@@ -22,7 +22,7 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
 import com.badlogic.gdx.graphics.Color;
 
@@ -261,7 +261,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             if (btn == buttons.Operator)
                 continue; // Operator erstmal noch nicht anzeigen
             if ((dataType == null) || btn.hasDataType(dataType)) {
-                MultiToggleButton button = new MultiToggleButton(0, 0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), btn.description);
+                MultiToggleButton button = new MultiToggleButton(0, 0, 0, UiSizes.getInstance().getButtonHeight(), btn.description);
                 button.addState(btn.description, new HSV_Color(Color.GRAY));
                 button.addState(btn.description, new HSV_Color(Color.GREEN));
                 button.setOnStateChangedListener(this);
@@ -414,8 +414,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("ok"));
@@ -463,7 +463,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private void createTitleLine() {
         // Title+Progressbar
 
-        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
+        float lineHeight = UiSizes.getInstance().getButtonHeight() * 0.75f;
 
         lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());

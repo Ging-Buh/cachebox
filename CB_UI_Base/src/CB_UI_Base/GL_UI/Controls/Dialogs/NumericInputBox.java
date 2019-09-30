@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.Input.Keys;
 
 public class NumericInputBox extends CB_View_Base {
@@ -35,7 +35,7 @@ public class NumericInputBox extends CB_View_Base {
 
         Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
-        float margin = UI_Size_Base.ui_size_base.getMargin();
+        float margin = UiSizes.getInstance().getMargin();
         MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
 
         editText = new EditTextField(null, "NumerikInputBox editText");
@@ -45,7 +45,7 @@ public class NumericInputBox extends CB_View_Base {
 
         CB_Label label = new CB_Label("MsgBoxLabel");
 
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.ui_size_base.getButtonHeight() * 6);
+        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
         msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
 
         msgBox.setMargins(0, margin);
@@ -85,11 +85,11 @@ public class NumericInputBox extends CB_View_Base {
         mType = type.doubleType;
         Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
-        float margin = UI_Size_Base.ui_size_base.getMargin();
+        float margin = UiSizes.getInstance().getMargin();
         MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.ui_size_base.getButtonHeight() * 6);
+        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
 
         CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -144,11 +144,11 @@ public class NumericInputBox extends CB_View_Base {
 
         Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
 
-        float margin = UI_Size_Base.ui_size_base.getMargin();
+        float margin = UiSizes.getInstance().getMargin();
         MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.ui_size_base.getButtonHeight() * 6);
+        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
 
         CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 

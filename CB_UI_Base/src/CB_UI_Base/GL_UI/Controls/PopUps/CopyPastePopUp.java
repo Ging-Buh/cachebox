@@ -9,7 +9,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -22,7 +22,7 @@ public class CopyPastePopUp extends PopUp_Base {
     private ImageButton btnPaste;
 
     public CopyPastePopUp(String Name, final ICopyPaste copyPasteControl) {
-        super(new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidth() * 3.2f, UI_Size_Base.ui_size_base.getButtonHeight() * 1.5f), Name);
+        super(new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidth() * 3.2f, UiSizes.getInstance().getButtonHeight() * 1.5f), Name);
 
         int p = Sprites.patch;
 
@@ -30,7 +30,7 @@ public class CopyPastePopUp extends PopUp_Base {
 
         this.setClickable(true);
 
-        CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonHeight(), UI_Size_Base.ui_size_base.getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
 
         btnPaste = new ImageButton(rec, "PasteButton");
         btnPaste.setFont(Fonts.getBubbleNormal());

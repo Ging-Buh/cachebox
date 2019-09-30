@@ -22,7 +22,7 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 
 public class ConnectionError extends Toast {
     public static ConnectionError INSTANCE = new ConnectionError();
@@ -40,9 +40,9 @@ public class ConnectionError extends Toast {
     }
 
     private void createContent(String msg) {
-        float wh = UI_Size_Base.ui_size_base.getButtonWidth() * 4f;
+        float wh = UiSizes.getInstance().getButtonWidth() * 4f;
 
-        CB_RectF posRec = new CB_RectF((UI_Size_Base.ui_size_base.getWindowWidth() / 2) - (wh / 2), UI_Size_Base.ui_size_base.getWindowHeight() - wh - Dialog.margin, wh, wh / 2);
+        CB_RectF posRec = new CB_RectF((UiSizes.getInstance().getWindowWidth() / 2) - (wh / 2), UiSizes.getInstance().getWindowHeight() - wh - Dialog.margin, wh, wh / 2);
 
         this.setRec(posRec);
 

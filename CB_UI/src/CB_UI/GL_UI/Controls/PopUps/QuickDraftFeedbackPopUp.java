@@ -4,7 +4,7 @@ import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.Timer;
@@ -18,7 +18,7 @@ public class QuickDraftFeedbackPopUp extends PopUp_Base {
     TimerTask AnimateTimertask;
 
     public QuickDraftFeedbackPopUp(boolean found) {
-        super(new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidth() * 2.5f, UI_Size_Base.ui_size_base.getButtonWidth() * 2.5f), "QuickDraftFeedbackPopUp");
+        super(new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidth() * 2.5f, UiSizes.getInstance().getButtonWidth() * 2.5f), "QuickDraftFeedbackPopUp");
         counter = 0;
         toSmall = true;
         if (found) {

@@ -21,7 +21,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.utils.GifDecoder;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -344,8 +344,8 @@ public class ImageLoader {
 
         if (this.resizeListener != null) {
             float proportionWidth = resizeWidth / spriteWidth;
-            if (proportionWidth > UI_Size_Base.ui_size_base.getScale()) {
-                proportionWidth = UI_Size_Base.ui_size_base.getScale();
+            if (proportionWidth > UiSizes.getInstance().getScale()) {
+                proportionWidth = UiSizes.getInstance().getScale();
             }
 
             float newWidth = spriteWidth * proportionWidth;//* UI_Size_Base.that.getScale();
@@ -466,8 +466,8 @@ public class ImageLoader {
 
                 if (this.resizeListener != null) {
                     float proportionWidth = resizeWidth / spriteWidth;
-                    if (proportionWidth > UI_Size_Base.ui_size_base.getScale()) {
-                        proportionWidth = UI_Size_Base.ui_size_base.getScale();
+                    if (proportionWidth > UiSizes.getInstance().getScale()) {
+                        proportionWidth = UiSizes.getInstance().getScale();
                     }
 
                     float newWidth = spriteWidth * proportionWidth;

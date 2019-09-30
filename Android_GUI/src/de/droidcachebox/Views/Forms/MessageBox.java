@@ -20,7 +20,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -55,11 +55,11 @@ public class MessageBox {
      * @param msg Die Message, welche ausgegeben werden soll.
      *
      *            <pre>
-     *                           Beispiel:</b>
-     *                           {@code
-     *                           MessageBox.show("Test");
-     *                           }
-     *                       </pre>
+     *                                                 Beispiel:</b>
+     *                                                 {@code
+     *                                                 MessageBox.show("Test");
+     *                                                 }
+     *                                             </pre>
      */
     public static void show(Activity activity, String msg) {
         Bundle b = new Bundle();
@@ -78,40 +78,40 @@ public class MessageBox {
      * @param listener handling all button events
      *
      *                 <pre>
-     *                                     <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     *                                     {@code
-     *                                     MessageBox.show("Test", "Titel" ,null);
-     *                                     }
-     *                                 </pre>
+     *                                                                     <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
+     *                                                                     {@code
+     *                                                                     MessageBox.show("Test", "Titel" ,null);
+     *                                                                     }
+     *                                                                 </pre>
      *
      *                 <pre>
-     *                                     <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
-     *                                     {@code
-     *                                     MessageBox.show("Test", "Titel",DialogListener)
-     *                                     private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
-     *                                     {
-     *                                     &#64;return
-     *                                     @Override
-     *                                     public void onClick(DialogInterface dialog, int button)
-     *                                     {
-     *                                     // Behandle das ergebniss
-     *                                     switch (button)
-     *                                     {
-     *                                     case -1:
-     *                                     Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-     *                                     break;
-     *                                     case -2:
-     *                                     Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-     *                                     break;
-     *                                     case -3:
-     *                                     Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-     *                                     break;
-     *                                     }
-     *                                     dialog.dismiss();
-     *                                     }
-     *                                     };
-     *                                     }
-     *                                 </pre>
+     *                                                                     <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
+     *                                                                     {@code
+     *                                                                     MessageBox.show("Test", "Titel",DialogListener)
+     *                                                                     private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
+     *                                                                     {
+     *                                                                     &#64;return
+     *                                                                     @Override
+     *                                                                     public void onClick(DialogInterface dialog, int button)
+     *                                                                     {
+     *                                                                     // Behandle das ergebniss
+     *                                                                     switch (button)
+     *                                                                     {
+     *                                                                     case -1:
+     *                                                                     Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                                                     break;
+     *                                                                     case -2:
+     *                                                                     Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                                                     break;
+     *                                                                     case -3:
+     *                                                                     Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                                                     break;
+     *                                                                     }
+     *                                                                     dialog.dismiss();
+     *                                                                     }
+     *                                                                     };
+     *                                                                     }
+     *                                                                 </pre>
      */
     public static Dialog show(Activity activity, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener listener) {
         Bundle b = new Bundle();
@@ -265,9 +265,9 @@ public class MessageBox {
 
         @SuppressWarnings("deprecation")
         public Dialog create() {
-            int winWidth = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getWindowWidth() : WindowWidth;
-            int winHeight = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getWindowHeight() : WindowHeight;
-            int Buttonheight = UI_Size_Base.ui_size_base != null ? UI_Size_Base.ui_size_base.getButtonHeight() : ButtonHeight;
+            int winWidth = UiSizes.getInstance().isInitialized() ? UiSizes.getInstance().getWindowWidth() : WindowWidth;
+            int winHeight = UiSizes.getInstance().isInitialized() ? UiSizes.getInstance().getWindowHeight() : WindowHeight;
+            int buttonHeight = UiSizes.getInstance().isInitialized() ? UiSizes.getInstance().getButtonHeight() : ButtonHeight;
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // instantiate the dialog with the custom Theme
@@ -339,8 +339,8 @@ public class MessageBox {
                 int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
                 LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-                if (height > winHeight - (Buttonheight * 4)) {
-                    height = winHeight - (Buttonheight * 4);
+                if (height > winHeight - (buttonHeight * 4)) {
+                    height = winHeight - (buttonHeight * 4);
                     params.height = height;
                     ((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
                 }

@@ -27,7 +27,7 @@ import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.GL_UI.utils.KineticPan;
 import CB_UI_Base.GL_UI.utils.KineticZoom;
 import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointL;
@@ -79,7 +79,7 @@ public class ImageActivity extends ActivityBase {
     public ImageActivity(Image selectionImage) {
         super("ImageActivity");
 
-        float wh = 30 * UI_Size_Base.ui_size_base.getScale();
+        float wh = 30 * UiSizes.getInstance().getScale();
         deleteImage = new Image(this.getWidth() - wh, this.getHeight() - wh, wh, wh, "", false);
         deleteImage.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.closeIcon.name())));
         this.addChild(deleteImage);
@@ -97,7 +97,7 @@ public class ImageActivity extends ActivityBase {
 
         // initial Zoom Buttons
         zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
-        zoomBtn.setX(this.getWidth() - (zoomBtn.getWidth() + UI_Size_Base.ui_size_base.getMargin()));
+        zoomBtn.setX(this.getWidth() - (zoomBtn.getWidth() + UiSizes.getInstance().getMargin()));
         zoomBtn.setMinimumFadeValue(0.3f);
         zoomBtn.setMaxZoom(MAX_MAP_ZOOM);
         zoomBtn.setMinZoom(0);

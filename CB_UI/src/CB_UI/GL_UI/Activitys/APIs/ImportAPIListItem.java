@@ -7,7 +7,7 @@ import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 
 public class ImportAPIListItem extends ListViewItemBackground {
     private CB_CheckBox chk;
@@ -34,7 +34,7 @@ public class ImportAPIListItem extends ListViewItemBackground {
         // lblInfo.setText("---");
 
         chk = new CB_CheckBox("");
-        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.ui_size_base.getMargin());
+        chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
         chk.setY(this.getHalfHeight() - chk.getHalfHeight());
         chk.setChecked(false);
         chk.setOnCheckChangedListener(new OnCheckChangedListener() {

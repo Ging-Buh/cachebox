@@ -26,7 +26,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 
 /**
  * @author Longri
@@ -67,10 +67,10 @@ public class TextFilterView extends CB_View_Base {
 
         that = this;
 
-        float margin = UI_Size_Base.ui_size_base.getMargin() * 2;
+        float margin = UiSizes.getInstance().getMargin() * 2;
         float btnWidth = (this.getWidth() - (margin * 7)) / 3;
 
-        CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.ui_size_base.getButtonHeight());
+        CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UiSizes.getInstance().getButtonHeight());
 
         mTglBtnTitle = new MultiToggleButton(btnRrec, "mTglBtnTitle");
         mTglBtnGc = new MultiToggleButton(btnRrec, "mTglBtnGc");

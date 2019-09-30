@@ -14,7 +14,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -124,8 +124,8 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         CB_RectF world = getWorldRec();
 
         // not enough place on Top?
-        float windowH = UI_Size_Base.ui_size_base.getWindowHeight();
-        float windowW = UI_Size_Base.ui_size_base.getWindowWidth();
+        float windowH = UiSizes.getInstance().getWindowHeight();
+        float windowW = UiSizes.getInstance().getWindowWidth();
         float worldY = world.getY();
 
         if (popUp.getHeight() + worldY > windowH * 0.8f) {

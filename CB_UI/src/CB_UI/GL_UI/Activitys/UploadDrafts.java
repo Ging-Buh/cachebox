@@ -39,7 +39,6 @@ public class UploadDrafts {
                 ProgresssChangedEventList.Call("Upload", "", 0);
 
                 Drafts drafts = new Drafts();
-
                 drafts.loadDrafts("(Uploaded=0 or Uploaded is null)", Drafts.LoadingType.Loadall);
 
                 int count = 0;

@@ -245,24 +245,24 @@ public class GL_UISizes implements SizeChangedEvent {
     private static void calcSizes() {
         Log.debug(log, "GL_UISizes.calcSizes()");
         // größe der Frames berechnen
-        int frameLeftwidth = UI_Size_Base.ui_size_base.RefWidth;
+        int frameLeftwidth = UiSizes.getInstance().RefWidth;
         // private static int BottomButtonHeight = convertDip2Pix(65);
         int MainButtonSideLength = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
         MainBtnSize = new CB_RectF(0, 0, MainButtonSideLength, MainButtonSideLength);
 
         margin = (float) (6.6666667 * DPI);
 
-        frameHeight = UI_Size_Base.ui_size_base.getWindowHeight() - convertDip2Pix(35) - MainButtonSideLength;
+        frameHeight = UiSizes.getInstance().getWindowHeight() - convertDip2Pix(35) - MainButtonSideLength;
 
         UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
         UI_Right = UI_Left.copy();
 
 
         infoShadowHeight = (float) (3.333333 * defaultDPI);
-        Info.setSize((UI_Size_Base.ui_size_base.RefWidth - (UI_Size_Base.ui_size_base.getButtonWidth() * 1.1f) - (margin * 3)), UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f);
+        Info.setSize((UiSizes.getInstance().RefWidth - (UiSizes.getInstance().getButtonWidth() * 1.1f) - (margin * 3)), UiSizes.getInstance().getButtonHeight() * 1.1f);
         Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
         halfCompass = Compass.getHeight() / 2;
-        Toggle.setSize(UI_Size_Base.ui_size_base.getButtonWidth() * 1.1f, UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f);
+        Toggle.setSize(UiSizes.getInstance().getButtonWidth() * 1.1f, UiSizes.getInstance().getButtonHeight() * 1.1f);
         ZoomBtn.setSize((158 * defaultDPI), 48 * defaultDPI);
         PosMarkerSize = (float) (46.666667 * DPI);
         halfPosMarkerSize = PosMarkerSize / 2;
@@ -301,7 +301,7 @@ public class GL_UISizes implements SizeChangedEvent {
     public static int convertDip2Pix(float dips) {
         // Converting dips to pixels
         if (scale == 0)
-            scale = UI_Size_Base.ui_size_base.getScale();
+            scale = UiSizes.getInstance().getScale();
         return Math.round(dips * scale);
     }
 

@@ -3,7 +3,7 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Math.Point;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -47,7 +47,7 @@ public class SelectionMarker extends CB_View_Base {
         // Orginalgröße des Marker-Sprites
         float orgWidth = marker.getMinWidth();
         float orgHeight = marker.getMinHeight();
-        float size = UI_Size_Base.ui_size_base.getButtonHeight();
+        float size = UiSizes.getInstance().getButtonHeight();
         float width = size / orgHeight * orgWidth;
         // markerXPos ist der Einfügepunkt rel. der linken Seite
         switch (type) {

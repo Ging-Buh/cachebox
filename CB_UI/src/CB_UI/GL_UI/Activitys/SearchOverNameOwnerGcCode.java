@@ -36,7 +36,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -80,7 +80,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     public SearchOverNameOwnerGcCode() {
         super(ActivityRec(), "searchOverPosActivity");
 
-        lineHeight = UI_Size_Base.ui_size_base.getButtonHeight();
+        lineHeight = UiSizes.getInstance().getButtonHeight();
 
         createOkCancelBtn();
         createBox();
@@ -100,8 +100,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bImport = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bImport.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
+        bImport = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bImport.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         // Translations
         bImport.setText(Translation.get("import"));
@@ -150,7 +150,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 
     private void createTitleLine() {
 
-        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
+        float lineHeight = UiSizes.getInstance().getButtonHeight() * 0.75f;
 
         gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight, lineHeight, "", false);
         gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.dayGcLiveIcon.name())));
@@ -194,11 +194,11 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void createtoggleButtonLine() {
-        CB_RectF rec = new CB_RectF(0, 0, box.getWidth() - (margin * 2), UI_Size_Base.ui_size_base.getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, 0, box.getWidth() - (margin * 2), UiSizes.getInstance().getButtonHeight());
 
         Box line = new Box(rec, "ToggLeButtonLine");
 
-        line.setHeight(UI_Size_Base.ui_size_base.getButtonHeight() * 2 + margin);
+        line.setHeight(UiSizes.getInstance().getButtonHeight() * 2 + margin);
 
         mTglBtnTitle = new MultiToggleButton(rec, "mTglBtnTitle");
         mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");

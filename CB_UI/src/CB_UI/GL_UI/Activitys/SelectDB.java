@@ -38,7 +38,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.Action_ShowQuit;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
@@ -154,7 +153,7 @@ public class SelectDB extends ActivityBase {
         super(rec, Name);
         MustSelect = mustSelect;
 
-        lvDBSelection = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.ui_size_base.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.ui_size_base.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
+        lvDBSelection = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UiSizes.getInstance().getButtonHeight() * 2, innerWidth, getHeight() - (UiSizes.getInstance().getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
                 "DB File ListView");
         dbFiles = new FileList(Config.mWorkPath, "DB3", true);
         dbItemAdapter = new DBItemAdapter(lvDBSelection, dbFiles);
@@ -176,10 +175,10 @@ public class SelectDB extends ActivityBase {
 
         float btWidth = innerWidth / 3;
 
-        bNew = new CB_Button(new CB_RectF(leftBorder, getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), "selectDB.bNew");
-        bSelect = new CB_Button(new CB_RectF(bNew.getMaxX(), getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), "selectDB.bSelect");
-        bCancel = new CB_Button(new CB_RectF(bSelect.getMaxX(), getBottomHeight(), btWidth, UI_Size_Base.ui_size_base.getButtonHeight()), "selectDB.bCancel");
-        bAutostart = new CB_Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UI_Size_Base.ui_size_base.getButtonHeight()), "selectDB.bAutostart");
+        bNew = new CB_Button(new CB_RectF(leftBorder, getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bNew");
+        bSelect = new CB_Button(new CB_RectF(bNew.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bSelect");
+        bCancel = new CB_Button(new CB_RectF(bSelect.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bCancel");
+        bAutostart = new CB_Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bAutostart");
 
         addChild(bSelect);
         addChild(bNew);

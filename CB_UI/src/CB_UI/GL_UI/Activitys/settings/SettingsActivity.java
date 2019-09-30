@@ -41,7 +41,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Config_Core;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Settings.*;
@@ -95,9 +95,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private void initial() {
         this.setLongClickable(true);
         Config.settings.SaveToLastValue();
-        ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.ui_size_base.getButtonHeight());
+        ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
 
-        itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.ui_size_base.getButtonHeight());
+        itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
 
         createButtons();
         fillContent();
@@ -116,11 +116,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private void createButtons() {
-        float btnW = (innerWidth - UI_Size_Base.ui_size_base.getButtonWidth()) / 2;
+        float btnW = (innerWidth - UiSizes.getInstance().getButtonWidth()) / 2;
 
-        btnOk = new CB_Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
-        btnMenu = new CB_Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.ui_size_base.getButtonWidth(), UI_Size_Base.ui_size_base.getButtonHeight(), "Menu Button");
-        btnCancel = new CB_Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
+        btnOk = new CB_Button(leftBorder, this.getBottomHeight(), btnW, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        btnMenu = new CB_Button(btnOk.getMaxX(), this.getBottomHeight(), UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight(), "Menu Button");
+        btnCancel = new CB_Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         btnOk.setText(Translation.get("save"));
         btnCancel.setText(Translation.get("cancel"));
@@ -949,10 +949,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         String info = "";
 
                         info += "Density= " + String.valueOf(GL_UISizes.DPI) + GlobalCore.br;
-                        info += "Height= " + String.valueOf(UI_Size_Base.ui_size_base.getWindowHeight()) + GlobalCore.br;
-                        info += "Width= " + String.valueOf(UI_Size_Base.ui_size_base.getWindowWidth()) + GlobalCore.br;
-                        info += "Scale= " + String.valueOf(UI_Size_Base.ui_size_base.getScale()) + GlobalCore.br;
-                        info += "FontSize= " + String.valueOf(UI_Size_Base.ui_size_base.getScaledFontSize()) + GlobalCore.br;
+                        info += "Height= " + String.valueOf(UiSizes.getInstance().getWindowHeight()) + GlobalCore.br;
+                        info += "Width= " + String.valueOf(UiSizes.getInstance().getWindowWidth()) + GlobalCore.br;
+                        info += "Scale= " + String.valueOf(UiSizes.getInstance().getScale()) + GlobalCore.br;
+                        info += "FontSize= " + String.valueOf(UiSizes.getInstance().getScaledFontSize()) + GlobalCore.br;
                         info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
                         info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime) + GlobalCore.br;
 
@@ -1210,7 +1210,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         File dir = FileFactory.createFile(SkinFolder);
         final ArrayList<String> skinFolders = new ArrayList<>();
         dir.listFiles((f, name) -> {
-            File found = FileFactory.createFile(f,name);
+            File found = FileFactory.createFile(f, name);
             if (found.isDirectory()) {
                 String Path = f.getAbsolutePath();
                 if (!Path.contains(".svn")) {

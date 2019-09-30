@@ -32,7 +32,6 @@ import CB_UI.SelectedCacheChangedEventListener;
 import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Math.CB_Rect;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
@@ -63,13 +62,13 @@ import java.util.Iterator;
 
 public final class DownSlider extends View implements SelectedCacheChangedEventListener, GpsStateChangeEvent {
     private static final String log = "downSlider";
-    private LinearLayout strengthLayout = findViewById(R.id.main_strength_control);
-
     private static boolean isInitialized = false;
     private static int QuickButtonHeight;
     private static DownSlider Me;
     private final int AnimationTime = 50;
     private final double AnimationMulti = 1.4;
+    boolean mGpsStateChabgedListenerRegistred = false;
+    private LinearLayout strengthLayout = findViewById(R.id.main_strength_control);
     private int attCompleadHeight = 0;
     private int topCalc = -1;
     private int attLineHeight = -1;
@@ -80,7 +79,6 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     private Handler handler = new Handler();
     private Runnable task = () -> {
     };
-    boolean mGpsStateChabgedListenerRegistred = false;
     /*
      * Private Member
      */
@@ -313,19 +311,19 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             yPos = QuickButtonHeight = Config.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
         }
 
-        float FSize = ((float) (UI_Size_Base.ui_size_base.getScaledFontSize_big() * 1.3));
+        float FSize = ((float) (UiSizes.getInstance().getScaledFontSize_big() * 1.3));
 
         if (paint == null || Config.nightMode.getValue() != initialNight) {
             paint = new Paint();
             paint.setColor(Global.getColor(R.attr.TextColor));
-            paint.setTextSize((float) (UI_Size_Base.ui_size_base.getScaledFontSize() * 1.3));
+            paint.setTextSize((float) (UiSizes.getInstance().getScaledFontSize() * 1.3));
             paint.setAntiAlias(true);
             initialNight = Config.nightMode.getValue();
         }
 
         final Drawable Slide = Global.BtnIcons[0];
 
-        mBtnRec.set(-10, yPos - UI_Size_Base.ui_size_base.getMargin(), width + 10, (int) (yPos + UI_Size_Base.ui_size_base.getMargin() + 10 * 3.3));
+        mBtnRec.set(-10, yPos - UiSizes.getInstance().getMargin(), width + 10, (int) (yPos + UiSizes.getInstance().getMargin() + 10 * 3.3));
         Log.trace(log, "AndroidSlider bound: " + mBtnRec.toShortString());
 
         Slide.setBounds(mBtnRec);
@@ -418,7 +416,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
                 if (iterator != null && iterator.hasNext()) {
                     if (attHeight == -1)
-                        attHeight = (int) (UI_Size_Base.ui_size_base.getIconSize() * 0.75);
+                        attHeight = (int) (UiSizes.getInstance().getIconSize() * 0.75);
 
                     lines = 1 + (mCache.getAttributes().size() / 8);
                     attCompleadHeight = (int) (lines * attHeight * 1.3);
@@ -427,11 +425,11 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             }
 
             if (attLineHeight == -1)
-                attLineHeight = attHeight + (UI_Size_Base.ui_size_base.getScaledFontSize() / 3);
+                attLineHeight = attHeight + (UiSizes.getInstance().getScaledFontSize() / 3);
 
             if (CacheInfoHeight == 0) {
                 CacheInfoHeight = (int) (FSize * 9) + attCompleadHeight;
-                topCalc = CacheInfoHeight - (attLineHeight * lines) - attLineHeight + UI_Size_Base.ui_size_base.getScaledFontSize();
+                topCalc = CacheInfoHeight - (attLineHeight * lines) - attLineHeight + UiSizes.getInstance().getScaledFontSize();
             }
 
             versatz += CacheInfoHeight;
@@ -615,13 +613,13 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
                         if (swipeUp) {
                             startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
                         } else {
-                            startAnimationTo((int) (height - (UI_Size_Base.ui_size_base.getScaledFontSize() * 2.2)));
+                            startAnimationTo((int) (height - (UiSizes.getInstance().getScaledFontSize() * 2.2)));
                         }
                         swipeUp = swipeDown = false;
 
                     } else {
                         if (yPos > height * 0.7) {
-                            startAnimationTo((int) (height - (UI_Size_Base.ui_size_base.getScaledFontSize() * 2.2)));
+                            startAnimationTo((int) (height - (UiSizes.getInstance().getScaledFontSize() * 2.2)));
                         } else {
                             startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
                             // isVisible=false;
@@ -673,7 +671,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
             Rect bounds = new Rect();
             WPLayoutTextPaint = new TextPaint();
-            WPLayoutTextPaint.setTextSize((float) (UI_Size_Base.ui_size_base.getScaledFontSize() * 1.3));
+            WPLayoutTextPaint.setTextSize((float) (UiSizes.getInstance().getScaledFontSize() * 1.3));
             WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
             LineSep = bounds.height() / 3;
 
@@ -716,7 +714,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         if (GPSLayoutTextPaint == null) {
             GPSLayoutTextPaint = new TextPaint();
-            GPSLayoutTextPaint.setTextSize((float) (UI_Size_Base.ui_size_base.getScaledFontSize() * 1.3));
+            GPSLayoutTextPaint.setTextSize((float) (UiSizes.getInstance().getScaledFontSize() * 1.3));
             GPSLayoutTextPaint.setAntiAlias(true);
             GPSLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
         }

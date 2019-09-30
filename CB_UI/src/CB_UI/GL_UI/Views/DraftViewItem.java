@@ -27,7 +27,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -63,7 +63,7 @@ public class DraftViewItem extends ListViewItemBackground {
         this.draft = draft;
         mBackIsInitial = false;
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
-        headHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + (UI_Size_Base.ui_size_base.getMargin());
+        headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 
         header = new Box(getWidth(), headHeight);
         header.addClickHandler(new OnClickListener() {
@@ -131,7 +131,7 @@ public class DraftViewItem extends ListViewItemBackground {
     private void iniImage() {
         if (this.draft == null)
             return;
-        ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f / 2), UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f, UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f, "", false);
+        ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
         //header.addChild(ivTyp);
         ivTyp.setDrawable(getTypeIcon(this.draft));
     }
@@ -164,8 +164,8 @@ public class DraftViewItem extends ListViewItemBackground {
     private void iniCacheTypeImage() {
         if (this.draft == null)
             return;
-        ivCacheType = new Image(getLeftWidth() + UI_Size_Base.ui_size_base.getMargin(), this.getHeight() - headHeight - (UI_Size_Base.ui_size_base.getButtonHeight()) - UI_Size_Base.ui_size_base.getMargin(), UI_Size_Base.ui_size_base.getButtonHeight(),
-                UI_Size_Base.ui_size_base.getButtonHeight(), "", false);
+        ivCacheType = new Image(getLeftWidth() + UiSizes.getInstance().getMargin(), this.getHeight() - headHeight - (UiSizes.getInstance().getButtonHeight()) - UiSizes.getInstance().getMargin(), UiSizes.getInstance().getButtonHeight(),
+                UiSizes.getInstance().getButtonHeight(), "", false);
         this.addChild(ivCacheType);
 
         if (draft.isTbDraft) {
@@ -178,8 +178,8 @@ public class DraftViewItem extends ListViewItemBackground {
     private void iniCacheNameLabel() {
         if (this.draft == null)
             return;
-        CB_RectF rectF = new CB_RectF(ivCacheType.getMaxX() + UI_Size_Base.ui_size_base.getMargin(), this.getHeight() - headHeight - MeasuredLabelHeight - UI_Size_Base.ui_size_base.getMargin(),
-                this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.ui_size_base.getMargin() * 2), MeasuredLabelHeight);
+        CB_RectF rectF = new CB_RectF(ivCacheType.getMaxX() + UiSizes.getInstance().getMargin(), this.getHeight() - headHeight - MeasuredLabelHeight - UiSizes.getInstance().getMargin(),
+                this.getWidth() - ivCacheType.getMaxX() - (UiSizes.getInstance().getMargin() * 2), MeasuredLabelHeight);
         mCacheName = new EditTextField(rectF, this, "lblCacheName");
         mCacheName.setText(draft.isTbDraft ? draft.TbName : draft.CacheName);
         mCacheName.setEditable(false);
@@ -192,7 +192,7 @@ public class DraftViewItem extends ListViewItemBackground {
     private void iniGcCodeLabel() {
         if (this.draft == null)
             return;
-        CB_RectF rectF = new CB_RectF(mCacheName.getX(), mCacheName.getY() - MeasuredLabelHeight - UI_Size_Base.ui_size_base.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.ui_size_base.getMargin() * 2), MeasuredLabelHeight);
+        CB_RectF rectF = new CB_RectF(mCacheName.getX(), mCacheName.getY() - MeasuredLabelHeight - UiSizes.getInstance().getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UiSizes.getInstance().getMargin() * 2), MeasuredLabelHeight);
         mGcCode = new EditTextField(rectF, this, "lblGcCode");
         mGcCode.setText(draft.gcCode);
         mGcCode.setEditable(false);
@@ -203,8 +203,8 @@ public class DraftViewItem extends ListViewItemBackground {
     private void iniCommentLabel() {
         if (this.draft == null)
             return;
-        CB_RectF rectF = new CB_RectF(getLeftWidth() + UI_Size_Base.ui_size_base.getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth() - (UI_Size_Base.ui_size_base.getMargin() * 2),
-                this.getHeight() - (this.getHeight() - mGcCode.getY()) - UI_Size_Base.ui_size_base.getMargin());
+        CB_RectF rectF = new CB_RectF(getLeftWidth() + UiSizes.getInstance().getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth() - (UiSizes.getInstance().getMargin() * 2),
+                this.getHeight() - (this.getHeight() - mGcCode.getY()) - UiSizes.getInstance().getMargin());
         mComment = new EditTextField(rectF, this, "Comment");
         mComment.setWrapType(WrapType.WRAPPED);
         mComment.setText(draft.comment);

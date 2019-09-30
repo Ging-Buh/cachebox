@@ -29,7 +29,6 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
@@ -67,6 +66,7 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_FAST_ACTION = 40;
     public static GL that;
     public TextInputInterface textInput;
+    public GL_Listener_Interface mGL_Listener_Interface; // implementation in Android_GUI/ViewGL : Desktop-Launcher/DesktopMain/start
     private AsyncExecutor asyncExecutor;
     private int width, height;
     private MainViewBase mSplash;
@@ -81,7 +81,6 @@ public class GL implements ApplicationListener {
     private ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
     private AtomicBoolean started = new AtomicBoolean(false);
     private PolygonSpriteBatch mPolygonSpriteBatch;
-    public GL_Listener_Interface mGL_Listener_Interface; // implementation in Android_GUI/ViewGL : Desktop-Launcher/DesktopMain/start
     private int FpsInfoPos = 0;
     private ParentInfo prjMatrix;
     private Sprite FpsInfoSprite;
@@ -396,7 +395,7 @@ public class GL implements ApplicationListener {
 
         if (Global.isTestVersion()) {
             // TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
-            float FpsInfoSize = 4 * UI_Size_Base.ui_size_base.getScale();
+            float FpsInfoSize = 4 * UiSizes.getInstance().getScale();
             if (FpsInfoSprite != null) {
                 mPolygonSpriteBatch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
             } else {
@@ -408,8 +407,8 @@ public class GL implements ApplicationListener {
                 }
             }
 
-            FpsInfoPos += UI_Size_Base.ui_size_base.getScale();
-            if (FpsInfoPos > 60 * UI_Size_Base.ui_size_base.getScale()) {
+            FpsInfoPos += UiSizes.getInstance().getScale();
+            if (FpsInfoPos > 60 * UiSizes.getInstance().getScale()) {
                 FpsInfoPos = 0;
             }
 
@@ -1232,7 +1231,7 @@ public class GL implements ApplicationListener {
         GlyphLayout bounds = Fonts.MeasureWrapped(string, UiSizes.getInstance().getWindowWidth());
 
         // float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
-        float border = +(toast.getLeftWidth() * 2) + (UI_Size_Base.ui_size_base.getMargin() * 2);
+        float border = +(toast.getLeftWidth() * 2) + (UiSizes.getInstance().getMargin() * 2);
         toast.setWidth(bounds.width + border);
         toast.setHeight(bounds.height + border);
 

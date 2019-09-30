@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Iterator;
@@ -25,7 +25,7 @@ public class TrackListView extends V_ListView {
     private TrackListView() {
         super(ViewManager.leftTab.getContentRec(), "TrackListView");
 
-        ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f);
+        ItemRec = new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
 
         this.setEmptyMsg(Translation.get("EmptyTrackList"));
 

@@ -38,7 +38,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.ICancelRunnable;
 
 import java.util.Date;
@@ -46,8 +46,8 @@ import java.util.Date;
 import static CB_Core.Api.GroundspeakAPI.*;
 
 public class TB_Log extends ActivityBase {
-    private static TB_Log that;
     static WaitDialog wd;
+    private static TB_Log that;
     private Trackable TB;
     private CB_Button btnClose;
     private ImageButton btnAction;
@@ -97,7 +97,7 @@ public class TB_Log extends ActivityBase {
         contentBox.setHeight(this.getHeight() - (btnClose.getHeight() - margin) * 2.5f);
         contentBox.setBackground(Sprites.activityBackground);
 
-        CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidth(), UI_Size_Base.ui_size_base.getButtonHeight());
+        CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight());
         iconRec = iconRec.ScaleCenter(0.8f);
 
         icon = new Image(iconRec, "Icon", false);

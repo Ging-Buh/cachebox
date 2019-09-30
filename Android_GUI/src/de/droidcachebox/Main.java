@@ -41,9 +41,9 @@ import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.ICallUrl;
 import CB_UI_Base.Events.PlatformConnector.IConnection;
 import CB_UI_Base.Events.PlatformConnector.IHardwarStateListener;
+import CB_UI_Base.Events.PlatformConnector.IPlatformDependant;
 import CB_UI_Base.Events.PlatformConnector.IShowViewListener;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -51,7 +51,10 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.Math.*;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.DevicesSizes;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.CB_SLF4J;
@@ -136,9 +139,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     private IHardwarStateListener hardwarStateListener;
     private IShowViewListener showViewListener;
     private IConnection connection;
-    private ICallUrl callUrl;
+    private IPlatformDependant callUrl;
     private CB_Android_FileExplorer fileExplorer;
-    private PlatformConnector.IStartPictureApp startPictureApp;
     private IPlatformSettings platformSettings;
     private boolean mustShowCacheList = true;
     private CancelWaitDialog wd;
@@ -302,35 +304,46 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 // sqlInstance = null;
             }
         };
-        callUrl = url -> {
-            try {
-                url = url.trim();
-                if (url.startsWith("www.")) {
-                    url = "http://" + url;
+        callUrl = new IPlatformDependant() {
+            @Override
+            public void callUrl(String url) {
+                try {
+                    url = url.trim();
+                    if (url.startsWith("www.")) {
+                        url = "http://" + url;
+                    }
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(ACTION_VIEW);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setDataAndType(uri, "text/html");
+                    if (intent.resolveActivity(Main.this.getPackageManager()) != null) {
+                        Log.info(sKlasse, "Start activity for " + uri.toString());
+                        mainActivity.startActivity(intent);
+                    } else {
+                        Log.err(sKlasse, "Activity for " + url + " not installed.");
+                        Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception exc) {
+                    Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
                 }
-                Uri uri = Uri.parse(url);
-                Intent intent = new Intent(ACTION_VIEW);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setDataAndType(uri, "text/html");
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    Log.info(sKlasse, "Start activity for " + uri.toString());
-                    mainActivity.startActivity(intent);
-                } else {
-                    Log.err(sKlasse, "Activity for " + url + " not installed.");
-                    Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception exc) {
-                Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
+            }
+
+            @Override
+            public void handleExternalRequest() {
+                Log.info(sKlasse, "checkExternalRequest from PlatformConnector");
+                checkExternalRequest();
+            }
+
+            @Override
+            public void startPictureApp(String fileName) {
+                Uri uriToImage = Uri.fromFile(new java.io.File(fileName));
+                Intent shareIntent = new Intent(ACTION_VIEW);
+                shareIntent.setDataAndType(uriToImage, "image/*");
+                Main.mainActivity.startActivity(Intent.createChooser(shareIntent, Main.this.getResources().getText(R.string.app_name)));
             }
         };
         fileExplorer = new CB_Android_FileExplorer(this);
-        startPictureApp = fileName -> {
-            Uri uriToImage = Uri.fromFile(new java.io.File(fileName));
-            Intent shareIntent = new Intent(ACTION_VIEW);
-            shareIntent.setDataAndType(uriToImage, "image/*");
-            Main.mainActivity.startActivity(Intent.createChooser(shareIntent, Main.this.getResources().getText(R.string.app_name)));
-        };
         platformSettings = new IPlatformSettings() {
             @Override
             public void Write(SettingBase<?> setting) {
@@ -413,8 +426,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             layoutTop = findViewById(R.id.layoutTop);
 
             // initialize GL the gdx ApplicationListener (Window Size, load Sprites, ...)
-            int width = UI_Size_Base.ui_size_base.getWindowWidth();
-            int height = UI_Size_Base.ui_size_base.getWindowHeight();
+            int width = UiSizes.getInstance().getWindowWidth();
+            int height = UiSizes.getInstance().getWindowHeight();
             CB_RectF rec = new CB_RectF(0, 0, width, height);
             new GL(width, height, new MainViewInit(rec), new ViewManager(rec));
             GL.that.textInput = new Android_TextInput(this);
@@ -443,9 +456,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             PlatformConnector.setGetFileListener(fileExplorer);
             PlatformConnector.setGetFolderListener(fileExplorer);
             PlatformConnector.setGetApiKeyListener(this::getApiKey);
-            PlatformConnector.setCallUrlListener(callUrl);
+            PlatformConnector.setPlatformDependantListener(callUrl);
             PlatformConnector.setQuitListener(this::quit);
-            PlatformConnector.setStartPictureApp(startPictureApp);
             PlatformSettings.setPlatformSettings(platformSettings);
             PlatformConnector.setisOnlineListener(hardwarStateListener);
 
@@ -530,6 +542,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 input = new AndroidInput(this, inflater.getContext(), graphics.getView(), gdxConfig);
                  */
         }
+
         Log.info(sKlasse, "onCreate <=");
     }
 
@@ -539,8 +552,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
         savedInstanceState.putString("WorkPath", Config.mWorkPath);
 
-        savedInstanceState.putInt("WindowWidth", UI_Size_Base.ui_size_base.getWindowWidth());
-        savedInstanceState.putInt("WindowHeight", UI_Size_Base.ui_size_base.getWindowHeight());
+        savedInstanceState.putInt("WindowWidth", UiSizes.getInstance().getWindowWidth());
+        savedInstanceState.putInt("WindowHeight", UiSizes.getInstance().getWindowHeight());
 
         if (GlobalCore.isSetSelectedCache())
             savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
@@ -555,7 +568,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     protected void onNewIntent(Intent intent) {
         // setIntent(intent) here to make future calls (from external) to getIntent() get the most recent Intent data
         // is not necessary for us, I think
-        checkExternalRequest();
         Log.info(sKlasse, "=> onNewIntent");
         super.onNewIntent(intent);
     }
@@ -745,10 +757,14 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (wakeLock != null) wakeLock.acquire();
 
+        Log.info(sKlasse, "checkExternalRequest from onResume");
+        checkExternalRequest();
+
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
         // to have a protokoll of the program start independant of Config.AktLogLevel
         CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+
 
         super.onResume();
     }

@@ -2,7 +2,7 @@ package CB_UI_Base.GL_UI.Menu;
 
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.DialogElement;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,7 +17,7 @@ public class MenuItemDivider extends MenuItem {
 
     public MenuItemDivider() {
         super(0, "Separator");
-        setHeight(UI_Size_Base.ui_size_base.getButtonHeight() / 5);
+        setHeight(UiSizes.getInstance().getButtonHeight() / 5);
         setEnabled(false);
     }
 

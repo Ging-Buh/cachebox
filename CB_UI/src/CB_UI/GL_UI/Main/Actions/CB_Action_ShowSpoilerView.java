@@ -102,7 +102,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
         contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), () -> {
             String file = SpoilerView.getInstance().getSelectedFilePath();
-            if (file != null) PlatformConnector.StartPictureApp(file);
+            if (file != null) PlatformConnector.startPictureApp(file);
         });
     }
 

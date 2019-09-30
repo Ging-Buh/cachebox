@@ -23,27 +23,44 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
  *
  * @author Longri
  */
-public class UiSizes extends UI_Size_Base {
+public class UiSizes {
 
     private static UiSizes uiSizes;
-    Size QuickButtonList;
-    int CacheInfoHeight;
-    int scaledIconSize;
-    int CornerSize;
-    int infoSliderHeight;
-    int spaceWidth;
-    int tabWidth;
-    int halfCornerSize;
-    Size CacheListItemSize;
+    private int ButtonWidth;
+    private int ButtonHeight;
+    private int WideButtonWidth;
+    private int scaledFontSize_normal;
+    private int iconSize;
+    private int windowWidth;
+    private int windowHeight;
+    private int scaledFontSize_big;
+    private int scaledFontSize_btn;
+    private int ScaledFontSize_small;
+    private int ScaledFontSize_supersmall;
+    private int IconContextMenuHeight;
+    private float scale;
+    private int margin;
+    private double calcBase;
+    public  int RefWidth;
+    private int mClickToleranz;
+    private DevicesSizes devicesSizes;
+    private Size QuickButtonList;
+    private int CacheInfoHeight;
+    private int scaledIconSize;
+    private int CornerSize;
+    private int infoSliderHeight;
+    private int spaceWidth;
+    private int tabWidth;
+    private int halfCornerSize;
+    private Size CacheListItemSize;
     // private Rect CacheListDrawRec;
-    CB_Rect CacheListDrawRec;
-    int StrengthHeightMultipler;
-    int arrowScaleList;
-    int arrowScaleMap;
-    int TB_icon_Size;
-    int QuickButtonRef;
-    CB_RectF ButtonRectF;
-    CB_RectF WideButtonRectF;
+    private CB_Rect CacheListDrawRec;
+    private int StrengthHeightMultipler;
+    private int arrowScaleList;
+    private int arrowScaleMap;
+    private int TB_icon_Size;
+    private CB_RectF ButtonRectF;
+    private CB_RectF WideButtonRectF;
     private boolean isInitialized;
 
     private UiSizes() {
@@ -89,8 +106,8 @@ public class UiSizes extends UI_Size_Base {
 
         IconContextMenuHeight = (int) (calcBase / 11.1);
 
-        QuickButtonRef = 320;
-        QuickButtonList = new Size((int) (QuickButtonRef * scale - (13.3333f * scale)), (int) (((QuickButtonRef * scale) / 5) - 4 * scale));
+        int quickButtonRef = 320;
+        QuickButtonList = new Size((int) (quickButtonRef * scale - (13.3333f * scale)), (int) (((quickButtonRef * scale) / 5) - 4 * scale));
 
         scaledIconSize = (int) (10 * scale);
 
@@ -116,6 +133,71 @@ public class UiSizes extends UI_Size_Base {
 
         isInitialized = true;
         return new Size(windowWidth, windowHeight);
+    }
+
+    public int getMargin() {
+        return margin;
+    }
+
+    public int getWindowHeight() {
+        return windowHeight;
+    }
+
+    public int getWindowWidth() {
+        return windowWidth;
+    }
+
+    public int getButtonHeight() {
+        return ButtonHeight;
+    }
+
+    public int getButtonWidth() {
+        return ButtonWidth;
+    }
+
+    public int getButtonWidthWide() {
+        return WideButtonWidth;
+    }
+
+    public SizeF getChkBoxSize() {
+        float h = ButtonWidth * 0.88f;
+        return new SizeF(h, h);
+    }
+
+    public int getScaledFontSize() {
+        return scaledFontSize_normal;
+    }
+
+    public int getScaledFontSize_btn() {
+        return scaledFontSize_btn;
+    }
+
+    public int getScaledFontSize_big() {
+        return scaledFontSize_big;
+    }
+
+    public int getScaledFontSize_small() {
+        return ScaledFontSize_small;
+    }
+
+    public int getIconSize() {
+        return iconSize;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public float getSmallestWidth() {
+        return Math.min(windowHeight, windowWidth);
+    }
+
+    public int getClickToleranz() {
+        return mClickToleranz;
     }
 
     public int getTbIconSize() {

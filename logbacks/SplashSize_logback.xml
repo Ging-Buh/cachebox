@@ -85,11 +85,6 @@
 	<logger name="de.cachebox_test.splash" level="ALL">
 		<appender-ref ref="SplashLog" />
 	</logger>
-	
-<!-- Write messages from class CB_UI.GL_UI.Controls.Slider to SliderLog -->
-	<logger name="CB_UI_Base.Math.UI_Size_Base" level="ALL">
-		<appender-ref ref="SplashLog" />
-	</logger>
 
 <!-- Write messages from class CB_UI.GL_UI.Controls.Slider to SliderLog -->
 	<logger name="CB_UI_Base.Math.GL_UISizes" level="ALL">

@@ -21,7 +21,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 
 public class ActivityBase extends CB_View_Base {
     protected float MeasuredLabelHeight;
@@ -40,14 +40,14 @@ public class ActivityBase extends CB_View_Base {
 
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
         MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
-        ButtonHeight = UI_Size_Base.ui_size_base.getButtonHeight();
+        ButtonHeight = UiSizes.getInstance().getButtonHeight();
         this.registerSkinChangedEvent();
     }
 
     public static CB_RectF ActivityRec() {
-        float w = Math.min(UI_Size_Base.ui_size_base.getSmallestWidth(), UI_Size_Base.ui_size_base.getWindowHeight() * 0.66f);
+        float w = Math.min(UiSizes.getInstance().getSmallestWidth(), UiSizes.getInstance().getWindowHeight() * 0.66f);
 
-        return new CB_RectF(0, 0, w, UI_Size_Base.ui_size_base.getWindowHeight());
+        return new CB_RectF(0, 0, w, UiSizes.getInstance().getWindowHeight());
     }
 
     @Override

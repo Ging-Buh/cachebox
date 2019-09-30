@@ -18,7 +18,7 @@ import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -74,7 +74,7 @@ public class Menu extends ButtonDialog {
         singleSelection = false;
 
         if (ItemHeight == -1f)
-            ItemHeight = UI_Size_Base.ui_size_base.getButtonHeight();
+            ItemHeight = UiSizes.getInstance().getButtonHeight();
         mListView = new V_ListView(this, "MenuList");
         mListView.setSize(this.getContentSize());
         mListView.setZeroPos();
@@ -192,8 +192,8 @@ public class Menu extends ButtonDialog {
                     higherValue += item.getHeight() + mListView.getDividerHeight();
                 }
                 float freiraumObenPlusUnten = 0; // x * UI_Size_Base.that.getButtonHeight();
-                if (higherValue > UI_Size_Base.ui_size_base.getWindowHeight() - freiraumObenPlusUnten) {
-                    higherValue = UI_Size_Base.ui_size_base.getWindowHeight() - freiraumObenPlusUnten;
+                if (higherValue > UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten) {
+                    higherValue = UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten;
                 }
                 float MenuWidth = GL_UISizes.UI_Left.getWidth();
                 this.setSize(MenuWidth, higherValue);
@@ -258,8 +258,8 @@ public class Menu extends ButtonDialog {
         }
 
         // set display center pos
-        float cx = (UI_Size_Base.ui_size_base.getWindowWidth() / 2) - this.getHalfWidth();
-        float cy = (UI_Size_Base.ui_size_base.getWindowHeight() / 2) - this.getHalfHeight();
+        float cx = (UiSizes.getInstance().getWindowWidth() / 2) - this.getHalfWidth();
+        float cy = (UiSizes.getInstance().getWindowHeight() / 2) - this.getHalfHeight();
         this.setPos(cx, cy);
 
         layout();

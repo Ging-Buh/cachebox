@@ -24,7 +24,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -59,11 +59,26 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
         this.setDoubleClickable(true);
     }
 
+    public static TextFieldStyle getDefaultStyle() {
+        TextFieldStyle ret = new TextFieldStyle();
+
+        ret.setBackground(Sprites.textFieldBackground, Sprites.textFieldBackgroundFocus);
+        ret.font = Fonts.getNormal();
+        ret.fontColor = COLOR.getFontColor();
+
+        ret.messageFont = Fonts.getSmall();
+        ret.messageFontColor = COLOR.getDisableFontColor();
+
+        ret.cursor = Sprites.textFieldCursor;
+
+        ret.selection = Sprites.selection;
+
+        return ret;
+    }
+
     public abstract boolean keyTyped(char character);
 
     public abstract boolean keyUp(int KeyCode);
-
-    public abstract boolean keyDown(int KeyCode);
 
 	/*
 	public void disable() {
@@ -74,6 +89,8 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	disabled = false;
 	}
 	*/
+
+    public abstract boolean keyDown(int KeyCode);
 
     protected void blinkStart() {
         blinkTimer = new Timer();
@@ -141,8 +158,8 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
         CB_RectF world = getWorldRec();
 
         // not enough place on Top?
-        float windowH = UI_Size_Base.ui_size_base.getWindowHeight();
-        float windowW = UI_Size_Base.ui_size_base.getWindowWidth();
+        float windowH = UiSizes.getInstance().getWindowHeight();
+        float windowW = UiSizes.getInstance().getWindowWidth();
         float worldY = world.getY();
 
         if (popUp.getHeight() + worldY > windowH * 0.8f) {
@@ -282,23 +299,6 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     public interface IBecomesFocus {
         void becomesFocus();
-    }
-
-    public static TextFieldStyle getDefaultStyle() {
-        TextFieldStyle ret = new TextFieldStyle();
-
-        ret.setBackground(Sprites.textFieldBackground, Sprites.textFieldBackgroundFocus);
-        ret.font = Fonts.getNormal();
-        ret.fontColor = COLOR.getFontColor();
-
-        ret.messageFont = Fonts.getSmall();
-        ret.messageFontColor = COLOR.getDisableFontColor();
-
-        ret.cursor = Sprites.textFieldCursor;
-
-        ret.selection = Sprites.selection;
-
-        return ret;
     }
 
     /**

@@ -9,7 +9,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -138,13 +138,13 @@ public class CategorieListViewItem extends ListViewItemBackground {
 
             EntryName = new BitmapFontCache(Fonts.getNormal());
             EntryName.setColor(COLOR.getFontColor());
-            EntryName.setText(Name, left + UI_Size_Base.ui_size_base.getMargin(), top);
+            EntryName.setText(Name, left + UiSizes.getInstance().getMargin(), top);
 
             top = margin + margin + Fonts.MeasureSmall(Count).height;
 
             EntryDate = new BitmapFontCache(Fonts.getSmall());
             EntryDate.setColor(COLOR.getFontColor());
-            EntryDate.setText(Date, left + UI_Size_Base.ui_size_base.getMargin(), top);
+            EntryDate.setText(Date, left + UiSizes.getInstance().getMargin(), top);
 
             float measure = Fonts.Measure(Count).width;
             EntryCount = new BitmapFontCache(Fonts.getSmall());
@@ -193,27 +193,27 @@ public class CategorieListViewItem extends ListViewItemBackground {
     }
 
     private void drawPin(Batch batch) {
-        margin = UI_Size_Base.ui_size_base.getMargin();
+        margin = UiSizes.getInstance().getMargin();
         float iconHeight = this.getHeight() * 0.6f;
         float iconWidth = iconHeight;
 
         if (this.getCategorieEntry().getCat().pinned) {
             if (sPinOn == null) {
                 sPinOn = Sprites.getSprite("pin-icon");
-                sPinOn.setBounds(left, UI_Size_Base.ui_size_base.getMargin(), iconWidth, iconHeight);
+                sPinOn.setBounds(left, UiSizes.getInstance().getMargin(), iconWidth, iconHeight);
             }
 
             sPinOn.draw(batch);
         } else {
             if (sPinOff == null) {
                 sPinOff = Sprites.getSprite("pin-icon-disable");
-                sPinOff.setBounds(left, UI_Size_Base.ui_size_base.getMargin(), iconWidth, iconHeight);
+                sPinOff.setBounds(left, UiSizes.getInstance().getMargin(), iconWidth, iconHeight);
             }
             sPinOff.draw(batch);
 
         }
 
-        left += iconWidth + UI_Size_Base.ui_size_base.getMargin();
+        left += iconWidth + UiSizes.getInstance().getMargin();
 
     }
 
@@ -237,8 +237,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
                 chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
             }
             chkOn.draw(batch);
-        }
-        else if (ChkState == -1) {
+        } else if (ChkState == -1) {
             if (chkOff == null) {
                 chkOff = Sprites.getSprite("check-disable");
                 chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
@@ -306,6 +305,14 @@ public class CategorieListViewItem extends ListViewItemBackground {
         this.categorieEntry.stateClick();
     }
 
+    public int getChecked() {
+        return categorieEntry.getState();
+    }
+
+    public float getValue() {
+        return (float) categorieEntry.getNumState();
+    }
+
     public void setValue(int value) {
 
         this.categorieEntry.setState(value);
@@ -315,14 +322,6 @@ public class CategorieListViewItem extends ListViewItemBackground {
     public void setValue(float value) {
         this.categorieEntry.setState(value);
 
-    }
-
-    public int getChecked() {
-        return categorieEntry.getState();
-    }
-
-    public float getValue() {
-        return (float) categorieEntry.getNumState();
     }
 
     public void setValue(boolean b) {

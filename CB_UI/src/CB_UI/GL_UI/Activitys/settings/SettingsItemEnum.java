@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Activitys.settings;
 
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 
 public class SettingsItemEnum extends SettingsItemBase {
 
@@ -13,7 +13,7 @@ public class SettingsItemEnum extends SettingsItemBase {
 
         spinner = new Spinner(lblDefault, Name, null, null);
 
-        spinner.setHeight(UI_Size_Base.ui_size_base.getButtonHeight());
+        spinner.setHeight(UiSizes.getInstance().getButtonHeight());
 
         this.addChild(spinner);
 
@@ -27,7 +27,7 @@ public class SettingsItemEnum extends SettingsItemBase {
     protected void layout() {
         lblDefault.setHeight(spinner.getHeight());
         super.layout();
-        spinner.setY(lblDefault.getY() + UI_Size_Base.ui_size_base.getMargin());
+        spinner.setY(lblDefault.getY() + UiSizes.getInstance().getMargin());
 
     }
 

@@ -20,7 +20,7 @@ import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class TrackableListViewItem extends ListViewItemBackground {
@@ -34,13 +34,13 @@ public class TrackableListViewItem extends ListViewItemBackground {
         this.topBorder = this.getTopHeight();
         this.bottomBorder = this.getBottomHeight();
         this.leftBorder = this.getLeftWidth();
-        this.rightBorder=this.getRightWidth();
+        this.rightBorder = this.getRightWidth();
 
         img = new Image(0, 0, hw, hw, "img", false);
         img.setImageURL(TB.getIconUrl());
-        addNext(img,FIXED);
+        addNext(img, FIXED);
 
-        lblName = new CB_Label("lblName", 0, 0, this.getWidth() - img.getMaxX() - UI_Size_Base.ui_size_base.getMargin(), img.getHeight());
+        lblName = new CB_Label("lblName", 0, 0, this.getWidth() - img.getMaxX() - UiSizes.getInstance().getMargin(), img.getHeight());
         lblName.setWrappedText(TB.getName());
         addLast(lblName);
     }

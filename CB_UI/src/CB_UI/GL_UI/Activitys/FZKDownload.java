@@ -18,7 +18,7 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
@@ -87,8 +87,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         // Translations
         bOK.setText(Translation.get("import"));
@@ -125,7 +125,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private void createTitleLine() {
         // Title+Progressbar
 
-        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
+        float lineHeight = UiSizes.getInstance().getButtonHeight() * 0.75f;
 
         CB_Label lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());

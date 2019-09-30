@@ -47,7 +47,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -120,8 +120,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
             return;
 
         this.setBackground(Sprites.AboutBack);
-        float ref = UI_Size_Base.ui_size_base.getWindowHeight() / 13f;
-        margin = UI_Size_Base.ui_size_base.getMargin();
+        float ref = UiSizes.getInstance().getWindowHeight() / 13f;
+        margin = UiSizes.getInstance().getMargin();
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
         //Log.debug(log, "CB_Logo" + CB_LogoRec.toString());
         CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
@@ -213,7 +213,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
 
     private void createTable() {
         float leftMaxWidth = 0;
-        CB_RectF lblRec = new CB_RectF(0, 0, UI_Size_Base.ui_size_base.getButtonWidth(), UI_Size_Base.ui_size_base.getButtonHeight() / 2.5f);
+        CB_RectF lblRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight() / 2.5f);
 
         lblGPS = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.get("gps")).getTextWidth());

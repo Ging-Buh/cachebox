@@ -24,7 +24,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -44,7 +44,7 @@ public class CreditsView extends CB_View_Base {
         super(ViewManager.leftTab.getContentRec(), "CreditsView");
         CB_RectF rec = this;
         this.setBackground(Sprites.AboutBack);
-        ref = UI_Size_Base.ui_size_base.getWindowHeight() / 13f;
+        ref = UiSizes.getInstance().getWindowHeight() / 13f;
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 
         logo = new Image(CB_LogoRec, "Logo", false);
@@ -93,7 +93,7 @@ public class CreditsView extends CB_View_Base {
         list.add(new Person("Eifelgold", Job.tester));
         list.add(new Person("Homer-S", Job.tester));
         list.add(new Person("Mozartkugel", Job.tester));
-        list.add(new Person("TA 93", Job.tester));
+        list.add(new Person("Timo TA93", Job.tester));
         list.add(new Person("CacheBoxer", Job.tester));
         list.add(new Person("Nothelfer", Job.tester));
         list.add(new Person("Lady-in-blue", Job.tester));
@@ -111,7 +111,7 @@ public class CreditsView extends CB_View_Base {
 
     @Override
     protected void initialize() {
-        margin = UI_Size_Base.ui_size_base.getMargin();
+        margin = UiSizes.getInstance().getMargin();
 
         lineHeight = Fonts.Measure("Tg").height * 1.6f;
         layout.removeChilds();

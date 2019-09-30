@@ -50,7 +50,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_FixSizeList;
 import CB_Utils.Log.Log;
@@ -84,7 +84,7 @@ public class DraftsView extends V_ListView {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
         this.mCanDispose = false;
         this.setForceHandleTouchEvents(true);
-        ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.ui_size_base.getButtonHeight() * 1.1f);
+        ItemRec = new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
 
         setBackground(Sprites.ListBack);
 
@@ -846,9 +846,9 @@ public class DraftsView extends V_ListView {
         }
 
         private float MeasureItemHeight(Draft fne) {
-            float headHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + (UI_Size_Base.ui_size_base.getMargin());
-            float cacheIfoHeight = (UI_Size_Base.ui_size_base.getButtonHeight() / 1.5f) + UI_Size_Base.ui_size_base.getMargin() + Fonts.Measure("T").height;
-            float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.ui_size_base.getMargin() * 2);
+            float headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
+            float cacheIfoHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + UiSizes.getInstance().getMargin() + Fonts.Measure("T").height;
+            float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2);
 
             float mh = 0;
             if (fne != null) {
@@ -861,7 +861,7 @@ public class DraftsView extends V_ListView {
                     e.printStackTrace();
                 }
             }
-            float commentHeight = (UI_Size_Base.ui_size_base.getMargin() * 3) + mh;
+            float commentHeight = (UiSizes.getInstance().getMargin() * 3) + mh;
 
             return headHeight + cacheIfoHeight + commentHeight;
         }

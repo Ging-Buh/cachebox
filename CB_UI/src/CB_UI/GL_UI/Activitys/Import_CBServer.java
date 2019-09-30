@@ -45,7 +45,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
@@ -99,8 +99,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "OK Button");
-        CB_Button bCancel = new CB_Button(0, 0, innerWidth / 2, UI_Size_Base.ui_size_base.getButtonHeight(), "Cancel Button");
+        bOK = new CB_Button(0, 0, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        CB_Button bCancel = new CB_Button(0, 0, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         this.initRow(BOTTOMUP);
         // Translations
@@ -146,7 +146,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private void createTitleLine() {
         CB_Label lblTitle = new CB_Label(Translation.get("export"), Fonts.getBig(), null, null);
 
-        float lineHeight = UI_Size_Base.ui_size_base.getButtonHeight() * 0.75f;
+        float lineHeight = UiSizes.getInstance().getButtonHeight() * 0.75f;
         CB_RectF rec = new CB_RectF(0, 0, 0, lineHeight);
         pgBar = new ProgressBar(rec, "ProgressBar");
         pgBar.setProgress(0, "");
@@ -395,7 +395,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         public ListViewItemBase getView(int position) {
             final ExportEntry it = exportList.get(position);
             if (itemRecCBServer == null) {
-                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
                 float itemWidth = scrollBox.getInnerWidth();
 
                 itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -407,7 +407,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         @Override
         public float getItemSize(int position) {
             if (itemHeight == -1)
-                itemHeight = UI_Size_Base.ui_size_base.getChkBoxSize().height + UI_Size_Base.ui_size_base.getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
             return itemHeight;
         }
 

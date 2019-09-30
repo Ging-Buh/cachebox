@@ -21,7 +21,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -58,7 +58,7 @@ public class MultiToggleButton extends CB_Button {
     }
 
     public MultiToggleButton(String Name) {
-        super(0, 0, UI_Size_Base.ui_size_base.getButtonWidth(), UI_Size_Base.ui_size_base.getButtonHeight(), Name);
+        super(0, 0, UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight(), Name);
     }
 
     @Override
