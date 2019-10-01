@@ -65,36 +65,31 @@ public class MapTileLoader {
 
     private void startAliveCheck(final int index) {
 
-        queueProcessorAliveCheck[index] = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                do {
+        queueProcessorAliveCheck[index] = new Thread(() -> {
+            do {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ignored) {
+                }
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (!queueProcessor[index].Alive()) {
-                        Log.info(log, "MapTileLoader Restart queueProcessor[" + index + "]");
-                        queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
-                        queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
-                        queueProcessor[index].start();
-                    }
-                } while (true);
-            }
+                if (!queueProcessor[index].isAlive()) {
+                    Log.err(log, "MapTileLoader Restart queueProcessor[" + index + "]");
+                    queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
+                    queueProcessor[index].setPriority(Thread.NORM_PRIORITY);
+                    queueProcessor[index].start();
+                }
+            } while (true);
         });
 
         queueProcessorAliveCheck[index].setPriority(Thread.MIN_PRIORITY);
         queueProcessorAliveCheck[index].start();
     }
 
-    public int QueuedTilesSize() {
+    int queuedTilesSize() {
         return queueData.queuedTiles.size();
     }
 
-    public int LoadedTilesSize() {
+    public int loadedTilesSize() {
         return queueData.loadedTiles.size();
     }
 
@@ -111,7 +106,7 @@ public class MapTileLoader {
                 initialize(Thread.NORM_PRIORITY);
             } else if (queueProcessorIndex >= ManagerBase.PROCESSOR_COUNT && !isThreadPrioSet) {
                 for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++) {
-                    queueProcessor[i].setPriority(Thread.MIN_PRIORITY);
+                    queueProcessor[i].setPriority(Thread.NORM_PRIORITY);
                     isThreadPrioSet = true;
                     CombleadInitial = true;
                 }
@@ -143,7 +138,7 @@ public class MapTileLoader {
         // auch nicht mehr geladen werden
         // dabei aber die MapView ber�cksichtigen, die die queuedTiles angefordert hat
         // queuedTiles.clear();
-        ArrayList<Descriptor> toDelete = new ArrayList<Descriptor>();
+        ArrayList<Descriptor> toDelete = new ArrayList<>();
         for (Descriptor desc : queueData.queuedTiles.values()) {
             if (desc.Data == mapView) {
                 toDelete.add(desc);
@@ -162,28 +157,27 @@ public class MapTileLoader {
             for (Descriptor desc : toDelete) {
                 queueData.queuedOverlayTiles.remove(desc.GetHashCode());
             }
-
         }
 
-        CB_List<Descriptor> trueZommDescList = new CB_List<Descriptor>();
-        // // CB_List<Descriptor> biggerZommDescList = new CB_List<Descriptor>();
+        CB_List<Descriptor> trueZoomDescList = new CB_List<>();
+        // // CB_List<Descriptor> biggerZoomDescList = new CB_List<Descriptor>();
         //
         for (int i = lo.getX(); i <= ru.getX(); i++) {
             for (int j = lo.getY(); j <= ru.getY(); j++) {
-                Descriptor desc = new Descriptor(i, j, aktZoom, lo.NightMode);
+                Descriptor descriptor = new Descriptor(i, j, aktZoom, lo.NightMode);
 
-                // speichern, zu welche MapView diese Descriptor angefordert hat
-                desc.Data = mapView;
+                // remember which mapView ordered this descriptor
+                descriptor.Data = mapView;
 
-                trueZommDescList.add(desc);
-                neadedTiles.add(desc.GetHashCode());
+                trueZoomDescList.add(descriptor);
+                neadedTiles.add(descriptor.GetHashCode());
 
             }
         }
 
         // then true zoom level
-        for (int i = 0, n = trueZommDescList.size(); i < n; i++) {
-            Descriptor desc = trueZommDescList.get(i);
+        for (int i = 0, n = trueZoomDescList.size(); i < n; i++) {
+            Descriptor desc = trueZoomDescList.get(i);
             if (!queueData.loadedTiles.containsKey(desc.GetHashCode())) {
                 if (!queueData.queuedTiles.containsKey(desc.GetHashCode())) {
                     queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);

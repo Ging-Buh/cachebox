@@ -545,7 +545,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
         font.draw(batch, str, 20, 80);
 
-        str = "lTiles: " + mapTileLoader.LoadedTilesSize() + " - qTiles: " + mapTileLoader.QueuedTilesSize();
+        str = "lTiles: " + mapTileLoader.loadedTilesSize() + " - qTiles: " + mapTileLoader.queuedTilesSize();
         font.draw(batch, str, 20, 60);
 
         str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;

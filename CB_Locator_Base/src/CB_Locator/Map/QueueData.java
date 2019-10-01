@@ -26,8 +26,8 @@ import java.util.concurrent.locks.ReentrantLock;
 class QueueData {
     final Lock loadedTilesLock = new ReentrantLock();
     final Lock loadedOverlayTilesLock = new ReentrantLock();
-    final SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
-    final SortedMap<Long, Descriptor> queuedOverlayTiles = new TreeMap<Long, Descriptor>();
+    final SortedMap<Long, Descriptor> queuedTiles = new TreeMap<>();
+    final SortedMap<Long, Descriptor> queuedOverlayTiles = new TreeMap<>();
     final Lock queuedTilesLock = new ReentrantLock();
     final Lock queuedOverlayTilesLock = new ReentrantLock();
     MapTileCache loadedTiles = new MapTileCache((short) 10);
@@ -35,9 +35,8 @@ class QueueData {
     Layer CurrentLayer = null;
     Layer CurrentOverlayLayer = null;
 
-    public void setLoadedTilesCacheCapacity(int capacity) {
+    void setLoadedTilesCacheCapacity(int capacity) {
         loadedTiles = new MapTileCache((short) capacity);
         loadedOverlayTiles = new MapTileCache((short) capacity);
-
     }
 }

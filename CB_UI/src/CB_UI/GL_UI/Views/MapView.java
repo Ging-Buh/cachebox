@@ -1246,7 +1246,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
                     mapTileLoader.loadTiles(MapView.this, lo, lo, aktZoom);
                     new Thread(() -> {
-                        while (mapTileLoader.LoadedTilesSize() <= 0) {
+                        while (mapTileLoader.loadedTilesSize() <= 0) {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException ignored) {

@@ -222,7 +222,6 @@ public abstract class ManagerBase {
         }
 
         try {
-            Log.info(log, "Caching " + url + " to " + filename);
             FileOutputStream stream = new FileOutputStream(filename, false);
             InputStream fromUrl;
             // 15 sec
@@ -268,7 +267,7 @@ public abstract class ManagerBase {
             layer.languages = mapFile.getMapLanguages();
             layers.add(layer);
         } catch (Exception e) {
-            Log.err(log, "Load mapsforge for " + pathAndName + ":\n" + e.toString());
+            Log.err(log, "Load mapsforge for " + pathAndName + ":\n" + e.toString(), e);
         }
     }
 
@@ -330,9 +329,9 @@ public abstract class ManagerBase {
         }
 
         Array<String> alreadyAdded = new Array<>(); // avoid same file in different directories
-        Log.debug(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
+        Log.info(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
         addToLayers(LocatorSettings.MapPackFolderLocal.getValue(), alreadyAdded);
-        Log.debug(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
+        Log.info(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
         addToLayers(LocatorSettings.MapPackFolder.getValue(), alreadyAdded);
         mayAddLayer = false;
     }
@@ -360,7 +359,7 @@ public abstract class ManagerBase {
 
     private Layer getUserMap(String url, String name) {
         try {
-            Log.info(log, "getUserMap by url=" + url + " Name=" + name);
+            //Log.info(log, "getUserMap by url=" + url + " Name=" + name);
             Layer.StorageType storageType = Layer.StorageType.PNG;
             if (url.contains("{name:")) {
                 //replace name
@@ -454,7 +453,7 @@ public abstract class ManagerBase {
             return null;
         // create bitmap from tile-definition
         try {
-            Log.info(log, "get Tile for " + layer.FriendlyName + " / " + desc.toString() + " on thread " + threadIndex);
+            Log.trace(log, "get Tile for " + layer.FriendlyName + " / " + desc.toString() + " on thread " + threadIndex);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
             RendererJob rendererJob = new RendererJob(tile, mapDatabase[threadIndex], renderThemeFuture, displayModel, textScale, false, false);
             TileBitmap bitmap = databaseRenderers[threadIndex].executeJob(rendererJob);
