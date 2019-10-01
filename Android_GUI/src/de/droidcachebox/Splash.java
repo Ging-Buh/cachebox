@@ -560,15 +560,18 @@ public class Splash extends Activity {
             btnCreateWorkpath.setOnClickListener(v -> {
                 // close select dialog
                 dialog.dismiss();
-                PlatformConnector.getFolder("", Translation.get("select_folder"), Translation.get("select"), Path -> {
-                    if (FileIO.canWrite(Path)) {
-                        AdditionalWorkPathArray.add(Path);
-                        writeAdditionalWorkPathArray(AdditionalWorkPathArray);
-                        // Start again to include the new Folder
-                        onStart();
-                    } else {
-                        String WriteProtectionMsg = Translation.get("NoWriteAcces");
-                        Toast.makeText(Splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+                getFolder("", Translation.get("select_folder"), Translation.get("select"), new PlatformConnector.IgetFolderReturnListener() {
+                    @Override
+                    public void returnFolder(String path) {
+                        if (FileIO.canWrite(path)) {
+                            AdditionalWorkPathArray.add(path);
+                            Splash.this.writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+                            // Start again to include the new Folder
+                            Splash.this.onStart();
+                        } else {
+                            String WriteProtectionMsg = Translation.get("NoWriteAcces");
+                            Toast.makeText(Splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             });
@@ -578,6 +581,15 @@ public class Splash extends Activity {
         } catch (Exception ex) {
             Log.err(log, "askForWorkPath Dialogs: " + ex.toString(), ex);
         }
+    }
+
+    // don't want to implement PlatformConnector for Splash, for only need of getFolder
+    public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformConnector.IgetFolderReturnListener returnListener) {
+        File mPath = FileFactory.createFile(initialPath);
+        Android_FileExplorer folderDialog = new Android_FileExplorer(this, mPath, TitleText, ButtonText);
+        folderDialog.setSelectDirectoryOption();
+        folderDialog.setFolderReturnListener(returnListener);
+        folderDialog.showDialog();
     }
 
     @Override

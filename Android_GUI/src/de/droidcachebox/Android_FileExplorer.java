@@ -26,8 +26,8 @@ class Android_FileExplorer {
     private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
     private String[] fileList;
     private File currentPath;
-    private IgetFileReturnListener CB_FileReturnListener;
-    private IgetFolderReturnListener CB_FolderReturnListener;
+    private IgetFileReturnListener fileReturnListener;
+    private IgetFolderReturnListener folderReturnListener;
     private boolean selectDirectoryOption;
     private String fileEndsWith;
     private String secondSDCard;
@@ -102,11 +102,11 @@ class Android_FileExplorer {
     }
 
     void setFileReturnListener(IgetFileReturnListener returnListener) {
-        CB_FileReturnListener = returnListener;
+        fileReturnListener = returnListener;
     }
 
     void setFolderReturnListener(IgetFolderReturnListener returnListener) {
-        CB_FolderReturnListener = returnListener;
+        folderReturnListener = returnListener;
     }
 
     /**
@@ -128,7 +128,7 @@ class Android_FileExplorer {
             }
 
             if (selectDirectoryOption) {
-                builder.setPositiveButton(ButtonText, (dialog12, which) -> CB_FolderReturnListener.returnFolder(currentPath.getAbsolutePath()));
+                builder.setPositiveButton(ButtonText, (dialog12, which) -> folderReturnListener.returnFolder(currentPath.getAbsolutePath()));
             }
 
             builder.setItems(fileList, (dialog1, which) -> {
@@ -142,7 +142,7 @@ class Android_FileExplorer {
                         dialog1.dismiss();
                         showDialog();
                     } else {
-                        CB_FileReturnListener.returnFile(chosenFile.getAbsolutePath());
+                        fileReturnListener.returnFile(chosenFile.getAbsolutePath());
                     }
 
                 } catch (Exception e) {

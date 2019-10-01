@@ -71,12 +71,12 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
     private AndroidApplicationConfiguration gdxConfig;
     private FrameLayout layoutContent;
     private DownSlider downSlider;
-    private ViewOptionsMenu aktView = null;
-    private ViewID aktViewId = null;
-    private ViewOptionsMenu aktTabView = null;
-    private ViewID aktTabViewId = null;
+    private ViewOptionsMenu aktView;
+    private ViewID aktViewId;
+    private ViewOptionsMenu aktTabView;
+    private ViewID aktTabViewId;
     private CacheNameView cacheNameView;
-    private DescriptionView descriptionView = null; // todo never created
+    private DescriptionView descriptionView;
     private FrameLayout layoutGlContent;
     private LayoutInflater inflater;
     private View gdxView;
