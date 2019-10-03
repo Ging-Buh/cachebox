@@ -19,8 +19,6 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 
 import java.util.ArrayList;
-import java.util.SortedMap;
-import java.util.concurrent.locks.Lock;
 
 /**
  * @author ging-buh
@@ -29,37 +27,32 @@ import java.util.concurrent.locks.Lock;
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     private final QueueData queueData;
-    private CB_List<Long> neadedTiles;
-    private int queueProcessorIndex;
+    private int threadIndex;
     private MultiThreadQueueProcessor[] queueProcessor;
     private Thread[] queueProcessorAliveCheck;
     private int maxNumTiles;
     private boolean isThreadPrioSet;
-    private boolean CombleadInitial;
-    private long lastLoadHash;
+    private boolean allThreadsAreRunning;
 
     MapTileLoader() {
-        super();
         queueData = new QueueData();
-        neadedTiles = new CB_List<>();
-        queueProcessorIndex = 0;
+        threadIndex = 0;
         maxNumTiles = 0;
         isThreadPrioSet = false;
-        CombleadInitial = false;
-        lastLoadHash = 0;
+        allThreadsAreRunning = false;
         queueProcessor = new MultiThreadQueueProcessor[ManagerBase.PROCESSOR_COUNT];
         queueProcessorAliveCheck = new Thread[ManagerBase.PROCESSOR_COUNT];
         initialize(Thread.NORM_PRIORITY); // first initialize only one thread(MultiThreadQueueProcessor)
     }
 
     private void initialize(int ThreadPriority) {
-        if (queueProcessorIndex < ManagerBase.PROCESSOR_COUNT) {
-            Log.info(log, "Start queueProcessor(thread) number " + queueProcessorIndex);
-            queueProcessor[queueProcessorIndex] = new MultiThreadQueueProcessor(queueData, queueProcessorIndex);
-            queueProcessor[queueProcessorIndex].setPriority(ThreadPriority);
-            queueProcessor[queueProcessorIndex].start();
-            startAliveCheck(queueProcessorIndex);
-            queueProcessorIndex++;
+        if (threadIndex < ManagerBase.PROCESSOR_COUNT) {
+            Log.info(log, "Start queueProcessor(thread) number " + threadIndex);
+            queueProcessor[threadIndex] = new MultiThreadQueueProcessor(queueData, threadIndex);
+            queueProcessor[threadIndex].setPriority(ThreadPriority);
+            queueProcessor[threadIndex].start();
+            startAliveCheck(threadIndex);
+            threadIndex++;
         }
     }
 
@@ -93,61 +86,51 @@ public class MapTileLoader {
         return queueData.loadedTiles.size();
     }
 
-    public void loadTiles(MapViewBase mapView, Descriptor lo, Descriptor ru, int aktZoom) {
-
-        long hash = lo.GetHashCode() * ru.GetHashCode();
-        if (lastLoadHash == hash)
-            return; // we have loaded!
-        lastLoadHash = hash;
+    public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
 
         // Initial Threads?
-        if (!CombleadInitial) {
-            if (queueProcessorIndex < ManagerBase.PROCESSOR_COUNT && queueProcessorIndex > 0 && queueData.loadedTiles.size() > 1) {
+        if (!allThreadsAreRunning) {
+            if (threadIndex < ManagerBase.PROCESSOR_COUNT && threadIndex > 0 && queueData.loadedTiles.size() > 1) {
                 initialize(Thread.NORM_PRIORITY);
-            } else if (queueProcessorIndex >= ManagerBase.PROCESSOR_COUNT && !isThreadPrioSet) {
+            } else if (threadIndex >= ManagerBase.PROCESSOR_COUNT && !isThreadPrioSet) {
                 for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++) {
+                    // was to lowest priority
                     queueProcessor[i].setPriority(Thread.NORM_PRIORITY);
                     isThreadPrioSet = true;
-                    CombleadInitial = true;
+                    allThreadsAreRunning = true;
                 }
             }
         }
 
-        // {// DEBUG
-        //
-        // String tre = String.valueOf(((queueProcessor == null) ? 0 : queueProcessor.length));
-        // String text = "Threads:" + tre + " | MaxCache:" + maxNumTiles + " " + " loaded:" + queueData.loadedTiles.size() + " life:"
-        // + TileGL_Bmp.LifeCount;
-        // GL.MaptileLoaderDebugString = text;
-        // }
-
         if (ManagerBase.manager == null)
             return; // Kann nichts laden, wenn der Manager Null ist!
 
-        // alle notwendigen Tiles zum Laden einstellen in die Queue
-
+        Log.info(log, "Re/Create q");
         queueData.loadedTilesLock.lock();
         queueData.queuedTilesLock.lock();
-        if (queueData.CurrentOverlayLayer != null) {
+        if (queueData.currentOverlayLayer != null) {
             queueData.loadedOverlayTilesLock.lock();
             queueData.queuedOverlayTilesLock.lock();
         }
-        // Queue jedesmal l�schen, damit die Tiles, die eigentlich
-        // mal
-        // gebraucht wurden aber trotzdem noch nicht geladen sind
-        // auch nicht mehr geladen werden
-        // dabei aber die MapView ber�cksichtigen, die die queuedTiles angefordert hat
-        // queuedTiles.clear();
+        // clear Queue, to remove not yet loaded (previously needed) tiles
+        // don't use clear because  of the mapview.
+        // Only remove descriptors for this mapview (map,compass,track, ?)
         ArrayList<Descriptor> toDelete = new ArrayList<>();
         for (Descriptor desc : queueData.queuedTiles.values()) {
             if (desc.Data == mapView) {
                 toDelete.add(desc);
             }
         }
-        for (Descriptor desc : toDelete) {
-            queueData.queuedTiles.remove(desc.GetHashCode());
+        if (toDelete.size() == queueData.queuedTiles.size()) {
+            Log.info(log, "clear complete q.");
+        } else {
+            Log.info(log, "counted to remove " + toDelete.size() + " of " + queueData.queuedTiles.size());
         }
-        if (queueData.CurrentOverlayLayer != null) {
+        for (Descriptor desc : toDelete) {
+            queueData.queuedTiles.remove(desc.getHashCode());
+        }
+
+        if (queueData.currentOverlayLayer != null) {
             toDelete.clear();
             for (Descriptor desc : queueData.queuedOverlayTiles.values()) {
                 if (desc.Data == mapView) {
@@ -155,61 +138,57 @@ public class MapTileLoader {
                 }
             }
             for (Descriptor desc : toDelete) {
-                queueData.queuedOverlayTiles.remove(desc.GetHashCode());
+                queueData.queuedOverlayTiles.remove(desc.getHashCode());
             }
         }
 
-        CB_List<Descriptor> trueZoomDescList = new CB_List<>();
-        // // CB_List<Descriptor> biggerZoomDescList = new CB_List<Descriptor>();
-        //
-        for (int i = lo.getX(); i <= ru.getX(); i++) {
-            for (int j = lo.getY(); j <= ru.getY(); j++) {
-                Descriptor descriptor = new Descriptor(i, j, aktZoom, lo.NightMode);
-
-                // remember which mapView ordered this descriptor
+        CB_List<Descriptor> wantedTiles = new CB_List<>();
+        for (int i = upperLeftTile.getX(); i <= lowerRightTile.getX(); i++) {
+            for (int j = upperLeftTile.getY(); j <= lowerRightTile.getY(); j++) {
+                Descriptor descriptor = new Descriptor(i, j, aktZoom);
                 descriptor.Data = mapView;
-
-                trueZoomDescList.add(descriptor);
-                neadedTiles.add(descriptor.GetHashCode());
-
+                wantedTiles.add(descriptor);
             }
         }
 
         // then true zoom level
-        for (int i = 0, n = trueZoomDescList.size(); i < n; i++) {
-            Descriptor desc = trueZoomDescList.get(i);
-            if (!queueData.loadedTiles.containsKey(desc.GetHashCode())) {
-                if (!queueData.queuedTiles.containsKey(desc.GetHashCode())) {
-                    queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
+        for (int i = 0, n = wantedTiles.size(); i < n; i++) {
+            Descriptor desc = wantedTiles.get(i);
+            if (!queueData.loadedTiles.containsKey(desc.getHashCode())) {
+                if (!queueData.queuedTiles.containsKey(desc.getHashCode())) {
+                    queueData.queuedTiles.put(desc.getHashCode(), desc);
                 }
-            } else if (queueData.queuedTiles.containsKey(desc.GetHashCode())) {
-                queueData.queuedTiles.remove(desc.GetHashCode());
+            } else if (queueData.queuedTiles.containsKey(desc.getHashCode())) {
+                // should never happen! did only add descriptors, that are not in loaded tiles, which are locked
+                Log.err(log, desc + " already loaded. Should not be in queuedTiles");
+                queueData.queuedTiles.remove(desc.getHashCode());
             }
 
-            if (queueData.CurrentOverlayLayer != null) {
-                if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode())) {
+            if (queueData.currentOverlayLayer != null) {
+                if (queueData.loadedOverlayTiles.containsKey(desc.getHashCode())) {
                     continue;
                 }
-                if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode()))
+                if (queueData.queuedOverlayTiles.containsKey(desc.getHashCode()))
                     continue;
-                queueTile(desc, queueData.queuedOverlayTiles, queueData.queuedOverlayTilesLock);
+                if (!queueData.queuedOverlayTiles.containsKey(desc.getHashCode()))
+                    queueData.queuedOverlayTiles.put(desc.getHashCode(), desc);
             }
         }
 
         try {
             queueData.queuedTilesLock.unlock();
             queueData.loadedTilesLock.unlock();
-            if (queueData.CurrentOverlayLayer != null) {
+            if (queueData.currentOverlayLayer != null) {
                 queueData.queuedOverlayTilesLock.unlock();
                 queueData.loadedOverlayTilesLock.unlock();
             }
         } catch (Exception e) {
         }
-        neadedTiles.truncate(0);
-    }
 
-    int numLoadedTiles() {
-        return queueData.loadedTiles.size();
+        for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++) {
+            if (queueProcessor[i] != null)
+                queueProcessor[i].interrupt();
+        }
     }
 
     public void setMaxNumTiles(int maxNumTiles2) {
@@ -218,48 +197,35 @@ public class MapTileLoader {
         queueData.setLoadedTilesCacheCapacity(maxNumTiles);
     }
 
-    private void queueTile(Descriptor desc, SortedMap<Long, Descriptor> queuedTiles, Lock queuedTilesLock) {
-        queuedTilesLock.lock();
-        try {
-            if (queuedTiles.containsKey(desc.GetHashCode()))
-                return;
-
-            queuedTiles.put(desc.GetHashCode(), desc);
-        } finally {
-            queuedTilesLock.unlock();
-        }
-
-    }
-
-    public void clearLoadedTiles() {
-        lastLoadHash = 0;
+    void clearLoadedTiles() {
         queueData.loadedTilesLock.lock();
         queueData.loadedTiles.clear();
         queueData.loadedTilesLock.unlock();
 
-        if (queueData.CurrentOverlayLayer != null) {
+        if (queueData.currentOverlayLayer != null) {
             queueData.loadedOverlayTilesLock.lock();
             queueData.loadedOverlayTiles.clear();
             queueData.loadedOverlayTilesLock.unlock();
-
         }
     }
 
     public void increaseLoadedTilesAge() {
-        // das Alter aller Tiles um 1 erh�hen
+        queueData.loadedTilesLock.lock();
         queueData.loadedTiles.increaseLoadedTilesAge();
-
-        if (queueData.CurrentOverlayLayer != null) {
+        queueData.loadedTilesLock.unlock();
+        if (queueData.currentOverlayLayer != null) {
+            queueData.loadedOverlayTilesLock.lock();
             queueData.loadedOverlayTiles.increaseLoadedTilesAge();
+            queueData.loadedOverlayTilesLock.unlock();
         }
     }
 
     public TileGL getLoadedTile(Descriptor desc) {
-        return queueData.loadedTiles.get(desc.GetHashCode());
+        return queueData.loadedTiles.get(desc.getHashCode());
     }
 
     public boolean markToDraw(Descriptor desc) {
-        return queueData.loadedTiles.markToDraw(desc.GetHashCode());
+        return queueData.loadedTiles.markToDraw(desc.getHashCode());
     }
 
     public int getDrawingSize() {
@@ -276,21 +242,13 @@ public class MapTileLoader {
 
     public void sort() {
         queueData.loadedTiles.sort();
-        if (queueData.CurrentOverlayLayer != null) {
+        if (queueData.currentOverlayLayer != null) {
             queueData.loadedOverlayTiles.sort();
         }
     }
 
-    public TileGL getLoadedOverlayTile(Descriptor desc) {
-        // Overlay Tiles liefern
-        if (queueData.CurrentOverlayLayer == null) {
-            return null;
-        }
-        return queueData.loadedOverlayTiles.get(desc.GetHashCode());
-    }
-
     public boolean markToDrawOverlay(Descriptor desc) {
-        return queueData.loadedOverlayTiles.markToDraw(desc.GetHashCode());
+        return queueData.loadedOverlayTiles.markToDraw(desc.getHashCode());
     }
 
     public int getDrawingSizeOverlay() {
@@ -306,43 +264,42 @@ public class MapTileLoader {
     }
 
     public Layer getCurrentLayer() {
-        return queueData.CurrentLayer;
+        return queueData.currentLayer;
     }
 
     public void setCurrentLayer(Layer layer) {
-        queueData.CurrentLayer = layer;
+        queueData.currentLayer = layer;
     }
 
     public Layer getCurrentOverlayLayer() {
-        return queueData.CurrentOverlayLayer;
+        return queueData.currentOverlayLayer;
     }
 
     // #######################################################################################################
     // Static
 
     public void setCurrentOverlayLayer(Layer layer) {
-        queueData.CurrentOverlayLayer = layer;
+        queueData.currentOverlayLayer = layer;
     }
 
     public int getCacheSize() {
         return queueData.loadedTiles.getCapacity();
     }
 
-    public void reloadTile(MapViewBase mapViewBase, Descriptor desc, int aktZoom) {
+    public void reloadTile(Descriptor desc) {
         // queue only if no Tile on Work
         if (queueData.queuedTiles.size() != 0)
             return;
-
         queueData.loadedTilesLock.lock();
         queueData.queuedTilesLock.lock();
-
-        if (!queueData.loadedTiles.containsKey(desc.GetHashCode())) {
-            if (!queueData.queuedTiles.containsKey(desc.GetHashCode())) {
-                queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
+        if (!queueData.loadedTiles.containsKey(desc.getHashCode())) {
+            if (!queueData.queuedTiles.containsKey(desc.getHashCode())) {
+                if (!queueData.queuedTiles.containsKey(desc.getHashCode()))
+                    queueData.queuedTiles.put(desc.getHashCode(), desc);
             }
         }
-        queueData.loadedTilesLock.unlock();
         queueData.queuedTilesLock.unlock();
+        queueData.loadedTilesLock.unlock();
     }
 
 }

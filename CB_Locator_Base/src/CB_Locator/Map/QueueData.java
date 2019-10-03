@@ -30,10 +30,10 @@ class QueueData {
     final SortedMap<Long, Descriptor> queuedOverlayTiles = new TreeMap<>();
     final Lock queuedTilesLock = new ReentrantLock();
     final Lock queuedOverlayTilesLock = new ReentrantLock();
-    MapTileCache loadedTiles = new MapTileCache((short) 10);
-    MapTileCache loadedOverlayTiles = new MapTileCache((short) 10);
-    Layer CurrentLayer = null;
-    Layer CurrentOverlayLayer = null;
+    MapTileCache loadedTiles = new MapTileCache((short) 20);
+    MapTileCache loadedOverlayTiles = new MapTileCache((short) 20);
+    Layer currentLayer = null;
+    Layer currentOverlayLayer = null;
 
     void setLoadedTilesCacheCapacity(int capacity) {
         loadedTiles = new MapTileCache((short) capacity);

@@ -32,7 +32,7 @@ public abstract class TileGL implements Disposable {
     // / <summary>
     // / Frames seit dem letzten Zugriff auf die Textur
     // / </summary>
-    public long Age = 0;
+    public long age = 0;
     protected boolean isDisposed = false;
 
     public abstract boolean isDisposed();

@@ -89,11 +89,9 @@ public class ImageActivity extends ActivityBase {
         this.setBackground(new ColorDrawable(new HSV_Color(Color.BLACK)));
         img = selectionImage;
         mapIntHeight = (int) this.getHeight();
-        screenCenterW.x = (long) (this.getHalfWidth());
-        screenCenterW.y = (long) -(this.getHalfHeight()); //-(img.getImageLoader().getSpriteHeight() / 2);
+        screenCenterW.set((long) (this.getHalfWidth()), (long) -(this.getHalfHeight())); //-(img.getImageLoader().getSpriteHeight() / 2);
 
-        screenCenterT.x = 0;
-        screenCenterT.y = 0;
+        screenCenterT.set(0, 0);
 
         // initial Zoom Buttons
         zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
@@ -264,8 +262,8 @@ public class ImageActivity extends ActivityBase {
 
             long posFactor = getPosFactor(0);
 
-            float xPos = -(screenCenterW.x * posFactor) - (screenCenterT.x * camera.zoom);
-            float yPos = (screenCenterW.y * posFactor) - (screenCenterT.y * camera.zoom);
+            float xPos = -(screenCenterW.getX() * posFactor) - (screenCenterT.getX() * camera.zoom);
+            float yPos = (screenCenterW.getY() * posFactor) - (screenCenterT.getY() * camera.zoom);
             float xSize = drawwidth * posFactor;
             float ySize = drawHeight * posFactor;
 
@@ -384,8 +382,7 @@ public class ImageActivity extends ActivityBase {
                     while (tmpZoom > ffaktor) {
                         tmpZoom /= 2;
                     }
-                    screenCenterT.x += (dxr);
-                    screenCenterT.y += (dyr);
+                    screenCenterT.set(screenCenterT.getX() + dxr, screenCenterT.getY() + dyr);
                 }
 
                 lastPoint.x = x;

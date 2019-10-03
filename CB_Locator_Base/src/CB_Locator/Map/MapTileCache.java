@@ -15,9 +15,6 @@
  */
 package CB_Locator.Map;
 
-/**
- * @author Longri
- */
 public class MapTileCache {
 
     private final long[] EMPTY_HashList;
@@ -25,16 +22,16 @@ public class MapTileCache {
     private final short[] EMPTY_IndexList;
 
     private final long[] HashList;
-    private final TileGL[] TileList;
+    private final TileGL[] tileList;
     private final short[] IndexList;
     private final short Capacity;
     private final short[] DrawingIndexList;
     private short Size = 0;
-    private short TilesToDrawSize = 0;
+    private short tilesToDrawSize = 0;
 
-    public MapTileCache(short capacity) {
+    MapTileCache(short capacity) {
         this.HashList = new long[capacity];
-        this.TileList = new TileGL[capacity];
+        this.tileList = new TileGL[capacity];
         this.IndexList = new short[capacity];
         this.DrawingIndexList = new short[capacity];
 
@@ -45,7 +42,7 @@ public class MapTileCache {
         this.Capacity = capacity;
 
         // Initial Empty Lists
-        for (short i = 0, n = Capacity; i < n; i++) {
+        for (short i = 0; i < Capacity; i++) {
             this.EMPTY_HashList[i] = 0;
             this.EMPTY_TileList[i] = null;
             this.EMPTY_IndexList[i] = i;
@@ -63,11 +60,11 @@ public class MapTileCache {
             return;
         short freeIndex = addIndex();
         // Destroy the holden Tile on this now FreeIndex
-        if (this.TileList[freeIndex] != null) {
-            this.TileList[freeIndex].dispose();
+        if (this.tileList[freeIndex] != null) {
+            this.tileList[freeIndex].dispose();
         }
         this.HashList[freeIndex] = Hash;
-        this.TileList[freeIndex] = tile;
+        this.tileList[freeIndex] = tile;
         this.IndexList[0] = freeIndex;
         this.Size++;
         if (this.Size > this.Capacity)
@@ -84,7 +81,7 @@ public class MapTileCache {
 
     public boolean containsKey(Long Hash) {
         boolean cont = false;
-        for (int i = 0, n = this.Capacity; i < n; i++) {
+        for (int i = 0; i < (int) this.Capacity; i++) {
             if (this.HashList[i] == Hash) {
                 cont = true;
                 break;
@@ -95,7 +92,7 @@ public class MapTileCache {
 
     public TileGL get(Long Hash) {
         int HashIndex = getIndex(Hash);
-        return this.TileList[HashIndex];
+        return this.tileList[HashIndex];
     }
 
     private short getIndex(Long Hash) {
@@ -114,7 +111,7 @@ public class MapTileCache {
      */
     public void sort() {
 
-        boolean inSort = true;
+        boolean inSort;
 
         try {
             do {
@@ -126,11 +123,11 @@ public class MapTileCache {
                     short index2 = IndexList[i + 1];
 
                     // null check
-                    if (TileList[index1] == null && TileList[index2] == null)
+                    if (tileList[index1] == null && tileList[index2] == null)
                         continue;
-                    if (TileList[index1] != null && TileList[index2] == null)
+                    if (tileList[index1] != null && tileList[index2] == null)
                         continue;
-                    if (TileList[index1] == null && TileList[index2] != null) {
+                    if (tileList[index1] == null && tileList[index2] != null) {
                         // swap
                         IndexList[i] = index2;
                         IndexList[i + 1] = index1;
@@ -138,9 +135,9 @@ public class MapTileCache {
                         break; // sort changed, begin new
                     }
 
-                    if (TileList[index1].Age == TileList[index2].Age)
+                    if (tileList[index1].age == tileList[index2].age)
                         continue;
-                    if (TileList[index1].Age < TileList[index2].Age)
+                    if (tileList[index1].age < tileList[index2].age)
                         continue;
 
                     // swap
@@ -165,64 +162,64 @@ public class MapTileCache {
         clearIndexList();
         clearDrawingList();
         System.arraycopy(this.EMPTY_HashList, 0, this.HashList, 0, Capacity - 1);
-        for (int i = 0, n = this.TileList.length; i < n; i++) {
-            if (this.TileList[i] != null) {
-                this.TileList[i].dispose();
-                this.TileList[i] = null;
+        for (int i = 0, n = this.tileList.length; i < n; i++) {
+            if (this.tileList[i] != null) {
+                this.tileList[i].dispose();
+                this.tileList[i] = null;
             }
         }
-        System.arraycopy(this.EMPTY_TileList, 0, this.TileList, 0, Capacity - 1);
+        System.arraycopy(this.EMPTY_TileList, 0, this.tileList, 0, Capacity - 1);
         Size = 0;
     }
 
     public void increaseLoadedTilesAge() {
-        for (short i = 0, n = (short) this.TileList.length; i < n; i++) {
-            if (this.TileList[i] != null)
-                this.TileList[i].Age++;
+        for (short i = 0, n = (short) this.tileList.length; i < n; i++) {
+            if (this.tileList[i] != null)
+                this.tileList[i].age++;
         }
     }
 
     public TileGL get(int i) {
-        return this.TileList[this.IndexList[i]];
+        return this.tileList[this.IndexList[i]];
     }
 
     // #############################################################################
     // Inherited drawing list!
 
-    public boolean markToDraw(Long HashCode) {
+    boolean markToDraw(Long hashCode) {
         try {
-            short index = getIndex(HashCode);
+            short index = getIndex(hashCode);
             if (index == -1)
                 return false;
-            if (!this.TileList[index].canDraw())
+            if (!this.tileList[index].canDraw())
                 return false;
-            this.TileList[index].Age = 0;
-            this.DrawingIndexList[this.TilesToDrawSize++] = index;
+            this.tileList[index].age = 0;
+            this.DrawingIndexList[this.tilesToDrawSize++] = index;
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    public void clearDrawingList() {
+    void clearDrawingList() {
         // System.out.print("LOADED_TILES clearDrawingList() " + Logger.getCallerName(1) + Global.br);
-        this.TilesToDrawSize = 0;
+        this.tilesToDrawSize = 0;
     }
 
-    public TileGL getDrawingTile(int index) {
+    TileGL getDrawingTile(int index) {
         try {
             int drawingIndex = this.DrawingIndexList[index];
-            return this.TileList[drawingIndex];
+            return this.tileList[drawingIndex];
         } catch (Exception e) {
             return null;
         }
     }
 
-    public int DrawingSize() {
-        return this.TilesToDrawSize;
+    int DrawingSize() {
+        return this.tilesToDrawSize;
     }
 
-    public int getCapacity() {
+    int getCapacity() {
         return Capacity;
     }
 

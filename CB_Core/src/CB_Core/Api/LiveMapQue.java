@@ -266,7 +266,7 @@ public class LiveMapQue {
         CB_List<Descriptor> descList = new CB_List<Descriptor>();
         for (int i = lo.getX(); i <= ru.getX(); i++) {
             for (int j = lo.getY(); j <= ru.getY(); j++) {
-                Descriptor desc = new Descriptor(i, j, lo.getZoom(), lo.NightMode);
+                Descriptor desc = new Descriptor(i, j, lo.getZoom());
 
                 CB_List<Descriptor> descAddList = desc.AdjustZoom(Used_Zoom);
 

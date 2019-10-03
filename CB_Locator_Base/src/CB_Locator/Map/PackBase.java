@@ -194,7 +194,7 @@ public abstract class PackBase implements Comparable<PackBase> {
                     // Offset zum Bild absaven
                     writer.writeLong(Long.reverseBytes(offset));
 
-                    Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
+                    Descriptor desc = new Descriptor(x, y, bbox.Zoom);
 
                     // Dateigröße ermitteln
                     String local = layer.GetLocalFilename(desc);
@@ -233,7 +233,7 @@ public abstract class PackBase implements Comparable<PackBase> {
 
             for (int y = bbox.MinY; y <= bbox.MaxY && !Cancel; y++) {
                 for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++) {
-                    Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
+                    Descriptor desc = new Descriptor(x, y, bbox.Zoom);
 
                     String local = layer.GetLocalFilename(desc);
                     File f = FileFactory.createFile(local);

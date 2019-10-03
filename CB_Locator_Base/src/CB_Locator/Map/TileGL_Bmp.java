@@ -102,7 +102,7 @@ public class TileGL_Bmp extends TileGL {
 
     @Override
     public String toString() {
-        return "[Age: " + Age + " " + State.toString() + ", " + Descriptor.toString();
+        return "[Age: " + age + " " + State.toString() + ", " + Descriptor.toString();
     }
 
      @Override
