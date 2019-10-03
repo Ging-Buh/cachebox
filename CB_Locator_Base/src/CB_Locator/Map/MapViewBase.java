@@ -152,6 +152,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             setActZoom();
             calcPixelsPerMeter(); // uses camera
         }
+        isCreated = true;
     }
 
     @Override
@@ -1270,7 +1271,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
         renderOnce();
         calcPixelsPerMeter();
-        isCreated = true;
     }
 
     protected void renderOnce() {
