@@ -258,17 +258,13 @@ public class NumPad extends CB_View_Base {
             }
         });
 
-        btn_Bck.addClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (mKeyPressedListener != null) {
-                    PlatformConnector.vibrate();
-                    mKeyPressedListener.KeyPressed("B");
-                    return true;
-                }
-                return false;
+        btn_Bck.addClickHandler((v, x, y, pointer, button) -> {
+            if (mKeyPressedListener != null) {
+                PlatformConnector.vibrate();
+                mKeyPressedListener.KeyPressed("B");
+                return true;
             }
+            return false;
         });
 
     }

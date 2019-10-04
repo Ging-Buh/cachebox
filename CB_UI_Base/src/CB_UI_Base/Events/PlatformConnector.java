@@ -104,9 +104,11 @@ public class PlatformConnector {
     public static void vibrate() {
         if (platformListener != null) {
             if (threadVibrate == null) {
-                threadVibrate = new Thread(() -> platformListener.vibrate());
+                threadVibrate = new Thread(() -> {
+                    platformListener.vibrate();
+                });
             }
-            threadVibrate.start();
+            threadVibrate.run();
         }
     }
 
