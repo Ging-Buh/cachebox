@@ -25,8 +25,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author ging-buh
- * @author Longri
+* insert sleeping with wakeup from maptileloader loadTiles(...
+ * Logging with threadID
  */
 class MultiThreadQueueProcessor extends Thread {
     private static final Lock inLoadDescLock = new ReentrantLock();
@@ -93,10 +93,12 @@ class MultiThreadQueueProcessor extends Thread {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException ignored) {
+                                // Log.info(log, "returned from powernapping");
                             }
                         } else {
                             // nothing to do, so we can sleep
                             try {
+                                Log.err(log, "Descriptor = null");
                                 Thread.sleep(10000);
                             } catch (InterruptedException ignored) {
                             }
@@ -111,7 +113,7 @@ class MultiThreadQueueProcessor extends Thread {
                         }
                         while (Energy.DisplayOff() || ((queueData.queuedTiles.size() <= 0) && (queueData.queuedOverlayTiles.size() <= 0)));
                     } catch (InterruptedException i) {
-                        Log.info(log, "returned from sleeping");
+                        // Log.info(log, "returned from sleeping");
                     }
                 }
             } while (true);
