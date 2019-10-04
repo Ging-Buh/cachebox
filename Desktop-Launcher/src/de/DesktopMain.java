@@ -164,11 +164,7 @@ public class DesktopMain {
             }
         };
         timer.schedule(task, 600);
-
-        DesktopClipboard dcb = new DesktopClipboard();
-
-        if (dcb != null)
-            GlobalCore.setDefaultClipboard(dcb);
+        PlatformConnector.setClipboard(new DesktopClipboard());
 
         PlatformConnector.setPlatformListener(new IPlatformListener() {
 
@@ -279,10 +275,6 @@ public class DesktopMain {
 
                     System.err.println(e.getMessage());
                 }
-            }
-
-            @Override
-            public void handleExternalRequest() {
             }
 
             @Override

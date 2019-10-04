@@ -20,6 +20,7 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.ViewConst;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -28,7 +29,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import de.droidcachebox.Global;
-import de.droidcachebox.Main;
 import de.droidcachebox.R;
 
 import java.util.Timer;
@@ -43,20 +43,26 @@ public final class InvertViewControl extends View {
     LinearLayout WebViewLayout = null;
     Bitmap b = null;
     boolean firstDraw = true;
+    Activity mainActivity;
 
     public InvertViewControl(Context context) {
         super(context);
+        if (context instanceof Activity)
+            mainActivity = (Activity) context;
         Me = this;
     }
 
     public InvertViewControl(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        if (context instanceof Activity)
+            mainActivity = (Activity) context;
         Me = this;
     }
 
     public InvertViewControl(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        if (context instanceof Activity)
+            mainActivity = (Activity) context;
         Me = this;
     }
 
@@ -86,14 +92,11 @@ public final class InvertViewControl extends View {
                 public void run() {
                     Thread t = new Thread() {
                         public void run() {
-                            Main.mainActivity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (firstDraw) {
-                                        firstDraw = false;
-                                        DescriptionView dv = DescriptionView.getInstance();
-                                        PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), dv.getWidth(), dv.getHeight());
-                                    }
+                            mainActivity.runOnUiThread(() -> {
+                                if (firstDraw) {
+                                    firstDraw = false;
+                                    DescriptionView dv = DescriptionView.getInstance();
+                                    PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), dv.getWidth(), dv.getHeight());
                                 }
                             });
                         }

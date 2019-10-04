@@ -27,6 +27,7 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.QuickButtonList;
+import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheChangedEventListener;
 import CB_UI.SelectedCacheChangedEventListeners;
@@ -35,6 +36,7 @@ import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
@@ -218,13 +220,19 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             }
         }
     };
+    private Main main;
+    private Activity mainActivity;
 
     public DownSlider(Context context) {
         super(context);
+        if (context instanceof Activity)
+            mainActivity = (Activity) context;
     }
 
     public DownSlider(Context context, AttributeSet attrs) {
         super(context, attrs);
+        if (context instanceof Activity)
+            mainActivity = (Activity) context;
         SelectedCacheChangedEventListeners.getInstance().add(this);
 
         mGestureDetector = new GestureDetector(context, new LearnGestureListener());
@@ -237,7 +245,6 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
     public DownSlider(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
     }
 
     public static void ButtonShowStateChanged() {
@@ -340,7 +347,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         if (!isInitialized) {
 
-            if (CB_UI.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height())) {
+            if (Slider.setAndroidSliderHeight(mBtnRec.height())) {
                 isInitialized = true;
             }
         }
@@ -449,7 +456,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
                         Attributes att = iterator.next();
                         String uri = "drawable/" + att.getImageName();
 
-                        int imageResource = getResources().getIdentifier(uri, null, Main.mainActivity.getPackageName());
+                        int imageResource = getResources().getIdentifier(uri, null, mainActivity.getPackageName());
                         Drawable image = null;
                         try {
                             image = getResources().getDrawable(imageResource);
@@ -557,7 +564,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             } else {
                 QuickButtonHeight = 0;
             }
-            Main.mainActivity.setQuickButtonHeight(QuickButtonHeight);
+            main.setQuickButtonHeight(QuickButtonHeight);
 
         } else {
             yPos = 0;
@@ -589,8 +596,8 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     public void ActionUp() // Slider zurück scrolllen lassen
     {
 
-        if (Main.mainActivity != null) {
-            Main.mainActivity.runOnUiThread(new Runnable() {
+        if (mainActivity != null) {
+            mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
@@ -607,7 +614,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
                         Config.AcceptChanges();
                     }
 
-                    Main.mainActivity.setQuickButtonHeight(QuickButtonHeight);
+                    main.setQuickButtonHeight(QuickButtonHeight);
 
                     if (swipeUp || swipeDown) {
                         if (swipeUp) {
@@ -655,7 +662,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         }
 
-        Main.mainActivity.runOnUiThread(() -> {
+        mainActivity.runOnUiThread(() -> {
             mCache = cache;
             if (waypoint == null) {
                 mWaypoint = null;
@@ -753,6 +760,11 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     private void unregisterGpsStateChangedListener() {
         GpsStateChangeEventList.Remove(this);
         mGpsStateChabgedListenerRegistred = false;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+        mainActivity = main;
     }
 
     class LearnGestureListener extends GestureDetector.SimpleOnGestureListener {

@@ -73,21 +73,18 @@ public class GcApiLogin extends Activity {
         }
 
         // Instanz new WebView
-        webView = new WebView(Main.mainActivity, null, android.R.attr.webViewStyle);
+        webView = new WebView(Main.getInstance(), null, android.R.attr.webViewStyle);
         webView.requestFocus(View.FOCUS_DOWN);
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_UP:
-                        if (!v.hasFocus()) {
-                            v.requestFocus();
-                        }
-                        break;
-                }
-                return false;
+        webView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_UP:
+                    if (!v.hasFocus()) {
+                        v.requestFocus();
+                    }
+                    break;
             }
+            return false;
         });
         webViewLayout.addView(webView);
 

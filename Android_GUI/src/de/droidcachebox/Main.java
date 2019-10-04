@@ -18,11 +18,6 @@ package de.droidcachebox;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
-import CB_Core.FilterInstances;
-import CB_Core.FilterProperties;
-import CB_Core.Import.GPXFileImporter;
-import CB_Core.Import.Importer;
-import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Events.GpsStateChangeEventList;
@@ -32,19 +27,11 @@ import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
-import CB_UI.GL_UI.Activitys.FZKDownload;
-import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
-import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.ViewManager;
-import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IPlatformListener;
-import CB_UI_Base.Events.PlatformConnector.IShowViewListener;
 import CB_UI_Base.Events.invalidateTextureEventList;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -53,78 +40,67 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
-import CB_Utils.Settings.SettingBase;
-import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.hardware.*;
-import android.hardware.Camera.Parameters;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.*;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.os.Vibrator;
 import android.view.Menu;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidEventListener;
 import de.cb.sqlite.AndroidDB;
-import de.cb.sqlite.SQLiteClass;
-import de.cb.sqlite.SQLiteInterface;
 import de.droidcachebox.CB_Texturepacker.AndroidTexturePacker;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AndroidContentClipboard;
 import de.droidcachebox.Ui.AndroidTextClipboard;
-import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 import de.droidcachebox.Views.ShowViewListener;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static CB_Core.Api.GroundspeakAPI.GetSettingsAccessToken;
-import static android.content.Intent.ACTION_VIEW;
 
 @SuppressWarnings("deprecation")
 public class Main extends AndroidApplication implements SelectedCacheChangedEventListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
     private static final String sKlasse = "Main";
-    private static final int REQUEST_GET_APIKEY = 987654321;
-    public static Main mainActivity;
+    static boolean isCreated = false;
     private static Boolean isRestart = false;
-    private static LocationManager locationManager;
     private final AtomicBoolean waitForGL = new AtomicBoolean(false);
     private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<>(14);
     private SensorEventListener mSensorEventListener;
     private ScreenBroadcastReceiver screenBroadcastReceiver;
-    private AndroidEventListener handlingGetApiAuth;
     private HorizontalListView quickButtonListView;
     private PowerManager.WakeLock wakeLock;
     private int horizontalListViewHeight;
@@ -132,15 +108,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     private SensorManager mSensorManager;
     private Sensor accelerometer;
     private Sensor magnetometer;
-    private SharedPreferences.Editor androidSettingEditor;
     private boolean lostCheck = false;
     private Dialog pWaitD;
     private LastState lastState;
-    private IChanged handleSuppressPowerSavingConfigChanged, handleRunOverLockScreenConfigChanged, handleGpsUpdateTimeConfigChanged, handleImperialUnitsConfigChanged;
-    private IShowViewListener showViewListener;
-    private IPlatformListener platformListener;
-    private boolean mustShowCacheList = true;
-    private CancelWaitDialog wd;
+    private IChanged handleSuppressPowerSavingConfigChanged, handleGpsUpdateTimeConfigChanged, handleImperialUnitsConfigChanged;
+    private ShowViewListener showViewListener;
+    private PlatformListener platformListener;
 
     public Main() {
 
@@ -193,14 +166,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             }
         };
 
-        mainActivity = this;
-
         handleImperialUnitsConfigChanged = () -> Locator.getInstance().setUseImperialUnits(Config.ImperialUnits.getValue());
-        handleRunOverLockScreenConfigChanged = this::handleRunOverLockScreenConfig;
         handleGpsUpdateTimeConfigChanged = () -> {
             int updateTime1 = Config.gpsUpdateTime.getValue();
             try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime1, 1, Main.this);
+                platformListener.getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime1, 1, Main.this);
             } catch (SecurityException sex) {
                 Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
             }
@@ -212,203 +182,14 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 setWakeLockLevelToOnlyCPUOn();
             }
         };
+    }
 
-        platformListener = new IPlatformListener() {
-            private AtomicBoolean torchAvailable = null;
-            private Camera deviceCamera;
-            private SharedPreferences androidSetting;
-
-            @Override
-            public void writeSetting(SettingBase<?> setting) {
-                if (androidSetting == null)
-                    androidSetting = Main.this.getSharedPreferences(Global.PreferencesNAME, 0);
-                if (androidSettingEditor == null)
-                    androidSettingEditor = androidSetting.edit();
-                if (setting instanceof SettingBool) {
-                    androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-                } else if (setting instanceof SettingString) {
-                    androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
-                } else if (setting instanceof SettingInt) {
-                    androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
-                }
-                androidSettingEditor.apply();
-            }
-
-            @Override
-            public SettingBase<?> readSetting(SettingBase<?> setting) {
-                if (androidSetting == null)
-                    androidSetting = Main.this.getSharedPreferences(Global.PreferencesNAME, 0);
-                if (setting instanceof SettingString) {
-                    String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
-                    ((SettingString) setting).setValue(value);
-                } else if (setting instanceof SettingBool) {
-                    boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-                    ((SettingBool) setting).setValue(value);
-                } else if (setting instanceof SettingInt) {
-                    int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-                    ((SettingInt) setting).setValue(value);
-                }
-                setting.clearDirty();
-                return setting;
-            }
-
-            @Override
-            public void setScreenLockTime(int value) {
-            }
-
-            @Override
-            public boolean isOnline() {
-                // isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
-                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                assert cm != null;
-                NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                return netInfo != null && netInfo.isConnectedOrConnecting();
-            }
-
-            @Override
-            public boolean isGPSon() {
-                return GpsOn();
-            }
-
-            @Override
-            public void vibrate() {
-                if (Config.vibrateFeedback.getValue())
-                    ((Vibrator) Objects.requireNonNull(getSystemService(Context.VIBRATOR_SERVICE))).vibrate(Config.VibrateTime.getValue());
-            }
-
-            @Override
-            public boolean isTorchAvailable() {
-                if (torchAvailable == null) {
-                    torchAvailable = new AtomicBoolean();
-                    torchAvailable.set(getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
-                }
-                return torchAvailable.get();
-            }
-
-            @Override
-            public boolean isTorchOn() {
-                return deviceCamera != null;
-            }
-
-            @Override
-            public void switchTorch() {
-                if (deviceCamera == null) {
-                    deviceCamera = Camera.open();
-                    Parameters p = deviceCamera.getParameters();
-                    p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-                    deviceCamera.setParameters(p);
-                    deviceCamera.startPreview();
-                } else {
-                    deviceCamera.stopPreview();
-                    deviceCamera.release();
-                    deviceCamera = null;
-                }
-            }
-
-            @Override
-            public void switchToGpsMeasure() {
-                Log.info(sKlasse, "switchToGpsMeasure()");
-                int updateTime = Config.gpsUpdateTime.getValue();
-                try {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, Main.this);
-                } catch (SecurityException sex) {
-                    Log.err(sKlasse, "switchToGpsMeasure: " + sex.getLocalizedMessage());
-                }
-            }
-
-            @Override
-            public void switchtoGpsDefault() {
-                Log.info(sKlasse, "switchtoGpsDefault()");
-                int updateTime = Config.gpsUpdateTime.getValue();
-                try {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, Main.this);
-                } catch (SecurityException sex) {
-                    Log.err(sKlasse, "switchtoGpsDefault: " + sex.getLocalizedMessage());
-                }
-            }
-
-            @Override
-            public void getApiKey() {
-                Main.this.getApiKey();
-            }
-
-            @Override
-            public void callUrl(String url) {
-                try {
-                    url = url.trim();
-                    if (url.startsWith("www.")) {
-                        url = "http://" + url;
-                    }
-                    Uri uri = Uri.parse(url);
-                    Intent intent = new Intent(ACTION_VIEW);
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    intent.setDataAndType(uri, "text/html");
-                    if (intent.resolveActivity(Main.this.getPackageManager()) != null) {
-                        Log.info(sKlasse, "Start activity for " + uri.toString());
-                        mainActivity.startActivity(intent);
-                    } else {
-                        Log.err(sKlasse, "Activity for " + url + " not installed.");
-                        Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
-                    }
-                } catch (Exception exc) {
-                    Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
-                }
-            }
-
-            @Override
-            public void handleExternalRequest() {
-                checkExternalRequest();
-            }
-
-            @Override
-            public void startPictureApp(String fileName) {
-                Uri uriToImage = Uri.fromFile(new java.io.File(fileName));
-                Intent shareIntent = new Intent(ACTION_VIEW);
-                shareIntent.setDataAndType(uriToImage, "image/*");
-                Main.mainActivity.startActivity(Intent.createChooser(shareIntent, Main.this.getResources().getText(R.string.app_name)));
-            }
-
-            @Override
-            public SQLiteInterface getSQLInstance() {
-                return new SQLiteClass(mainActivity);
-            }
-
-            @Override
-            public void freeSQLInstance(SQLiteInterface sqlInstance) {
-                // sqlInstance = null;
-            }
-
-            @Override
-            public void getFile(String initialPath, String extension, String TitleText, String ButtonText, PlatformConnector.IgetFileReturnListener returnListener) {
-                File mPath = FileFactory.createFile(initialPath);
-                Android_FileExplorer fileDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
-                fileDialog.setFileReturnListener(returnListener);
-                fileDialog.showDialog();
-            }
-
-            @Override
-            public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformConnector.IgetFolderReturnListener returnListener) {
-                File mPath = FileFactory.createFile(initialPath);
-                Android_FileExplorer folderDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
-                folderDialog.setSelectDirectoryOption();
-                folderDialog.setFolderReturnListener(returnListener);
-                folderDialog.showDialog();
-            }
-
-            @Override
-            public void quit() {
-                if (GlobalCore.isSetSelectedCache()) {
-                    // speichere selektierten Cache, da nicht alles über die
-                    // SelectedCacheEventList läuft
-                    Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
-                    Config.AcceptChanges();
-                    Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
-                }
-                finish();
-            }
-        };
-
+    public static Activity getInstance() {
+        if (isCreated) {
+            if (Gdx.app instanceof Activity)
+                return (Activity) Gdx.app;
+        }
+        return null;
     }
 
     @Override
@@ -462,8 +243,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             new GL(width, height, new MainViewInit(rec), new ViewManager(rec));
             GL.that.textInput = new Android_TextInput(this);
 
-            showViewListener = new ShowViewListener(this);
-
             // registerReceiver receiver for screen switched on/off
             IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
             intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -472,7 +251,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             ActivityUtils.onActivityCreateSetTheme(this);
 
             Config.SuppressPowerSaving.addSettingChangedListener(handleSuppressPowerSavingConfigChanged);
-            Config.RunOverLockScreen.addSettingChangedListener(handleRunOverLockScreenConfigChanged);
             Config.gpsUpdateTime.addSettingChangedListener(handleGpsUpdateTimeConfigChanged);
             Config.ImperialUnits.addSettingChangedListener(handleImperialUnitsConfigChanged);
 
@@ -480,17 +258,17 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
             Plattform.used = Plattform.Android;
             PlatformConnector.AndroidVersion = Build.VERSION.SDK_INT;
+            showViewListener = new ShowViewListener(this);
             PlatformConnector.setShowViewListener(showViewListener);
+            platformListener = new PlatformListener(this);
             PlatformConnector.setPlatformListener(platformListener);
-
-            // init Clipboard
             Object clipboardService = getSystemService(CLIPBOARD_SERVICE);
             if (clipboardService != null) {
                 if (clipboardService instanceof android.content.ClipboardManager) {
-                    GlobalCore.setDefaultClipboard(new AndroidContentClipboard((android.content.ClipboardManager) clipboardService));
+                    PlatformConnector.setClipboard(new AndroidContentClipboard((android.content.ClipboardManager) clipboardService));
                     Log.info(sKlasse, "got AndroidContentClipboard");
                 } else if (clipboardService instanceof android.text.ClipboardManager) {
-                    GlobalCore.setDefaultClipboard(new AndroidTextClipboard((android.text.ClipboardManager) clipboardService));
+                    PlatformConnector.setClipboard(new AndroidTextClipboard((android.text.ClipboardManager) clipboardService));
                     Log.info(sKlasse, "got AndroidTextClipboard");
                 }
             }
@@ -504,8 +282,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
             new AndroidTexturePacker();
 
-            initialLocationManager();
-
             GL.that.onStart();
 
             int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
@@ -517,12 +293,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 askToGetApiKey();
             }
             if (!GlobalCore.restartAfterKill)
-                if (!GpsOn()) askToSwitchGpsOn();
+                if (!platformListener.isGPSon()) askToSwitchGpsOn();
 
             if (Config.newInstall.getValue()) {
                 // wait for Copy Asset is closed
                 checkTranslationIsLoaded();
-
+                final Activity me = this;
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -535,7 +311,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                                 Welcome += Translation.GetTextFile("changelog", LangId);
                             } catch (IOException ignored) {
                             }
-                            MessageBox.show(Main.mainActivity, Welcome, Translation.get("welcome"), MessageBoxIcon.None);
+                            MessageBox.show(me, Welcome, Translation.get("welcome"), MessageBoxIcon.None);
                         });
                     }
                 }, 5000);
@@ -565,6 +341,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                  */
         }
 
+        isCreated = true;
         Log.info(sKlasse, "onCreate <=");
     }
 
@@ -592,132 +369,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         // is not necessary for us, I think
         Log.info(sKlasse, "=> onNewIntent");
         super.onNewIntent(intent);
-    }
-
-    private void checkExternalRequest() {
-        final Bundle extras = mainActivity.getIntent().getExtras();
-        if (extras != null) {
-            Log.info(sKlasse, "prepared Request from splash");
-            if (ViewManager.that.isInitialized()) {
-                String ExternalRequestGCCode = extras.getString("GcCode");
-                if (ExternalRequestGCCode != null) {
-                    Log.info(sKlasse, "importCacheByGCCode");
-                    mainActivity.getIntent().removeExtra("GcCode");
-                    importCacheByGCCode(ExternalRequestGCCode);
-                }
-                String ExternalRequestGpxPath = extras.getString("GpxPath");
-                if (ExternalRequestGpxPath != null) {
-                    Log.info(sKlasse, "importGPXFile");
-                    mainActivity.getIntent().removeExtra("GpxPath");
-                    importGPXFile(ExternalRequestGpxPath);
-                }
-                String ExternalRequestGuid = extras.getString("Guid");
-                if (ExternalRequestGuid != null) {
-                    Log.info(sKlasse, "importCacheByGuid");
-                    mainActivity.getIntent().removeExtra("Guid");
-                    importCacheByGuid();
-                }
-                String ExternalRequestLatLon = extras.getString("LatLon");
-                if (ExternalRequestLatLon != null) {
-                    Log.info(sKlasse, "positionLatLon");
-                    mainActivity.getIntent().removeExtra("LatLon");
-                    positionLatLon();
-                }
-                String ExternalRequestMapDownloadPath = extras.getString("MapDownloadPath");
-                if (ExternalRequestMapDownloadPath != null) {
-                    Log.info(sKlasse, "MapDownload");
-                    mainActivity.getIntent().removeExtra("MapDownloadPath");
-                    FZKDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
-                    GL.that.showActivity(FZKDownload.getInstance());
-                    FZKDownload.getInstance().importByUrlFinished();
-                }
-                String ExternalRequestName = extras.getString("Name");
-                if (ExternalRequestName != null) {
-                    Log.info(sKlasse, "importCacheByName");
-                    mainActivity.getIntent().removeExtra("Name");
-                    importCacheByName();
-                }
-            }
-        }
-    }
-
-    private void positionLatLon() {
-    }
-
-    private void importCacheByGuid() {
-    }
-
-    private void importCacheByGCCode(final String ExternalRequestGCCode) {
-        TimerTask runTheSearchTasks = new TimerTask() {
-            @Override
-            public void run() {
-                if (ExternalRequestGCCode != null) {
-                    mainActivity.runOnUiThread(() -> {
-                        if (mustShowCacheList) {
-                            // show cachelist first then search dialog
-                            mustShowCacheList = false;
-                            ViewManager.leftTab.ShowView(CacheListView.getInstance());
-                            importCacheByGCCode(ExternalRequestGCCode); // now the search can start (doSearchOnline)
-                        } else {
-                            mustShowCacheList = true;
-                            if (SearchDialog.that == null) {
-                                new SearchDialog();
-                            }
-                            SearchDialog.that.showNotCloseAutomaticly();
-                            SearchDialog.that.doSearchOnline(ExternalRequestGCCode, SearchDialog.SearchMode.GcCode);
-                        }
-                    });
-                }
-            }
-        };
-        new Timer().schedule(runTheSearchTasks, 500);
-    }
-
-    private void importGPXFile(final String ExternalRequestGpxPath) {
-        TimerTask gpxImportTask = new TimerTask() {
-            @Override
-            public void run() {
-                Log.info(sKlasse, "ImportGPXFile");
-                mainActivity.runOnUiThread(() -> wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), () -> wd.close(), new ICancelRunnable() {
-                    @Override
-                    public void run() {
-                        Log.info(sKlasse, "Import GPXFile from " + ExternalRequestGpxPath + " started");
-                        Date ImportStart = new Date();
-                        Importer importer = new Importer();
-                        ImporterProgress ip = new ImporterProgress();
-
-                        Database.Data.sql.beginTransaction();
-                        try {
-                            importer.importGpx(ExternalRequestGpxPath, ip);
-                        } catch (Exception ignored) {
-                        }
-                        Database.Data.sql.setTransactionSuccessful();
-                        Database.Data.sql.endTransaction();
-
-                        wd.close();
-                        CacheListChangedEventList.Call();
-                        FilterProperties props = FilterInstances.getLastFilter();
-                        EditFilterSettings.ApplyFilter(props);
-
-                        long ImportZeit = new Date().getTime() - ImportStart.getTime();
-                        String Msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
-                        Log.info(sKlasse, Msg.replace("\n", "\n\r") + " from " + ExternalRequestGpxPath);
-                        GL.that.Toast(Msg, 3000);
-                    }
-
-                    @Override
-                    public boolean doCancel() {
-                        return false;
-                    }
-                }));
-
-            }
-        };
-
-        new Timer().schedule(gpxImportTask, 500);
-    }
-
-    private void importCacheByName() {
     }
 
     @Override
@@ -780,7 +431,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (wakeLock != null) wakeLock.acquire();
 
         Log.info(sKlasse, "checkExternalRequest from onResume");
-        checkExternalRequest();
+        platformListener.handleExternalRequest();
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
@@ -854,10 +505,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
                     TrackRecorder.StopRecording();
                     // GPS Verbindung beenden
-                    locationManager.removeUpdates(this);
+                    platformListener.getLocationManager().removeUpdates(this);
                     SelectedCacheChangedEventListeners.getInstance().clear();
                     CacheListChangedEventList.list.clear();
-                    mainActivity = null;
                     showViewListener.onDestroyWithFinishing();
 
                     Config.AcceptChanges();
@@ -962,7 +612,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     // Log.info(sKlasse, "AltCorrection: " + String.valueOf(altCorrection));
                     Locator.getInstance().setAltCorrection(altCorrection);
                     // Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
-                    locationManager.removeNmeaListener(this);
+                    platformListener.getLocationManager().removeNmeaListener(this);
                 } catch (Exception ignored) {
                     // keine Höhenkorrektur vorhanden
                 }
@@ -973,7 +623,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     public void restartFromSplash() {
-        mainActivity = null;
         Log.info(sKlasse, "=> Must restart from splash!");
         Intent splashIntent = new Intent().setClass(this, Splash.class);
         startActivity(splashIntent);
@@ -986,7 +635,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     switch (button) {
                         case -1:
                             // yes get Api key
-                            getApiKey();
+                            platformListener.getApiKey();
                             break;
                         case -2:
                             // now, we check GPS
@@ -998,20 +647,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     }
                     dialog.dismiss();
                 });
-    }
-
-    public void handleRunOverLockScreenConfig() {
-        // add flags for run over lock screen
-        runOnUiThread(() -> {
-            Window window = getWindow();
-            if (window != null) {
-                if (Config.RunOverLockScreen.getValue()) {
-                    window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-                } else {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-                }
-            }
-        });
     }
 
     @SuppressLint("WakelockTimeout")
@@ -1074,56 +709,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
      */
 
-    private void initialLocationManager() {
-
-        try {
-            if (locationManager != null) {
-                // ist schon initialisiert
-                return;
-            }
-
-            // GPS
-            // Get the location manager
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            // // Define the criteria how to select the locatioin provider ->
-            // use
-            // // default
-            // Criteria criteria = new Criteria(); // noch nötig ???
-            // criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            // criteria.setAltitudeRequired(false);
-            // criteria.setBearingRequired(false);
-            // criteria.setCostAllowed(true);
-            // criteria.setPowerRequirement(Criteria.POWER_LOW);
-
-            /*
-             * Longri: Ich habe die Zeiten und Distanzen der Location Updates
-             * angepasst. Der Network Provider hat eine schlechte genauigkeit,
-             * darher reicht es wenn er alle 10sec einen wert liefert, wenn der
-             * alte um 500m abweicht. Beim GPS Provider habe ich die
-             * Aktualiesierungszeit verkürzt, damit bei deaktiviertem Hardware
-             * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis
-             * zwichen Performance und Stromverbrauch, geliefert werden. Andere
-             * apps haben hier 0.
-             */
-
-            int updateTime = Config.gpsUpdateTime.getValue();
-
-            try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, this);
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 300, this);
-                locationManager.addNmeaListener(this); //
-                locationManager.addGpsStatusListener(this);
-            } catch (SecurityException sex) {
-                Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
-            }
-
-        } catch (Exception e) {
-            Log.err(sKlasse, "Main.initialLocationManager()", "", e);
-            e.printStackTrace();
-        }
-
-    }
-
     public void setQuickButtonHeight(int value) {
         horizontalListViewHeight = value;
         runOnUiThread(() -> {
@@ -1132,7 +717,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             layoutTop.requestLayout();
             showViewListener.requestLayout();
         });
-
     }
 
     /**
@@ -1143,7 +727,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         try {
             if (Config.Ask_Switch_GPS_ON.getValue()) {
                 checkTranslationIsLoaded();
-                runOnUiThread(() -> MessageBox.show(Main.mainActivity, Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (dialog, button) -> {
+                final Activity me = this;
+                runOnUiThread(() -> MessageBox.show(me, Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (dialog, button) -> {
                     // Behandle das ergebniss
                     switch (button) {
                         case -1:
@@ -1175,30 +760,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             } catch (Exception e) {
                 Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
             }
-        }
-    }
-
-    private boolean GpsOn() {
-        LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        assert locManager != null;
-        return locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-    private void getApiKey() {
-        Intent intent = new Intent().setClass(mainActivity, GcApiLogin.class);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            if (handlingGetApiAuth == null)
-                handlingGetApiAuth = (requestCode, resultCode, data) -> {
-                    Main.this.removeAndroidEventListener(handlingGetApiAuth);
-                    if (requestCode == REQUEST_GET_APIKEY) {
-                        GL.that.RunIfInitial(SettingsActivity::resortList);
-                        Config.AcceptChanges();
-                    }
-                };
-            addAndroidEventListener(handlingGetApiAuth);
-            mainActivity.startActivityForResult(intent, REQUEST_GET_APIKEY);
-        } else {
-            Log.err(sKlasse, "GcApiLogin class not found");
         }
     }
 
@@ -1258,13 +819,13 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     @Override
     public void onGpsStatusChanged(int event) {
-        if (locationManager == null)
+        if (platformListener.getLocationManager() == null)
             return;
 
         if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
             GpsStatus status;
             try {
-                status = locationManager.getGpsStatus(null);
+                status = platformListener.getLocationManager().getGpsStatus(null);
             } catch (SecurityException sex) {
                 Log.err(sKlasse, "onGpsStatusChanged: " + sex.getLocalizedMessage());
                 return;

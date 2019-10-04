@@ -97,6 +97,7 @@ public class Splash extends Activity {
     private Bundle bundeledData;
     private boolean askForWorkpath;
     private FrameLayout frame;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +129,7 @@ public class Splash extends Activity {
     protected void onStart() {
         super.onStart();
         Log.info(log, "onStart");
-        if (Main.mainActivity == null) {
+        if (!Main.isCreated) {
             startInitialization();
             if (askForWorkpath) {
                 askForWorkPath(); // does finishInitializationAndStartMain()
@@ -143,11 +144,11 @@ public class Splash extends Activity {
     private void startMain() {
         GlobalCore.RunFromSplash = true;
         Intent mainIntent;
-        if (Main.mainActivity == null) {
+        if (!Main.isCreated) {
             Log.info(log, "Start Main");
             mainIntent = new Intent().setClass(this, Main.class);
         } else {
-            mainIntent = Main.mainActivity.getIntent();
+            mainIntent = Main.getInstance().getIntent();
             Log.info(log, "Connect to Main to onNewIntent(Intent)");
         }
         int width = frame.getMeasuredWidth();
@@ -681,8 +682,7 @@ public class Splash extends Activity {
         File sandbox = getExternalSandbox();
         if (sandbox != null) {
             return sandbox.getAbsolutePath();
-        }
-        else {
+        } else {
             return null;
         }
     }

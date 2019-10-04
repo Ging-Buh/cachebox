@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_UI_Base.AbstractGlobal;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
@@ -55,7 +55,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
         super(rec, parent, Name);
         registerPopUpLongClick();
-        clipboard = AbstractGlobal.getDefaultClipboard();
+        clipboard = PlatformConnector.getClipboard();
         this.setDoubleClickable(true);
     }
 

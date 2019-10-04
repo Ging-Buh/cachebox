@@ -16,8 +16,8 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Types.LogEntry;
-import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -46,7 +46,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     private CB_Label lblDate;
     private EditTextField mComment;
     private float secondTab = 0;
-    private Clipboard clipboard = GlobalCore.getDefaultClipboard();
+    private Clipboard clipboard = PlatformConnector.getClipboard();
 
     public LogViewItem(CB_RectF rec, int Index, LogEntry logEntry) {
         super(rec, Index, "");

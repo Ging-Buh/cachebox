@@ -7,6 +7,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.EditCoord;
 import CB_UI.GL_UI.Activitys.EditCoord.ReturnListener;
 import CB_UI.GlobalCore;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
@@ -49,7 +50,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         setText();
         this.addClickHandler(click);
         this.setOnLongClickListener(longCLick);
-        clipboard = GlobalCore.getDefaultClipboard();
+        clipboard = PlatformConnector.getClipboard();
     }
 
     public CoordinateButton(String name) {
@@ -57,7 +58,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         mActCoord = new CoordinateGPS(0, 0);
         this.addClickHandler(click);
         this.setOnLongClickListener(longCLick);
-        clipboard = GlobalCore.getDefaultClipboard();
+        clipboard = PlatformConnector.getClipboard();
     }
 
     public void setCoordinateChangedListener(ICoordinateChangedListener listener) {

@@ -16,6 +16,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Log;
 import CB_Utils.http.Download;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,7 +30,6 @@ import android.view.MotionEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Main;
 import de.droidcachebox.Views.Forms.MessageBox;
 
 import java.io.File;
@@ -106,7 +106,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
                             s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-                            MessageBox.show(Main.mainActivity, s, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                            MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
                         }
                     }
 
@@ -127,12 +127,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 }
                 case 2: {
                     pd.dismiss();
-                    MessageBox.show(Main.mainActivity, message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
                     break;
                 }
                 case 3: {
                     pd.dismiss();
-                    MessageBox.show(Main.mainActivity, message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
+                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
                     break;
                 }
                 case 4: {
@@ -153,7 +153,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 int pos = url.indexOf("+"); // the Blank is converted to + in url
                 // 25 is the length of "fake://fake.de?GetAttInfo"
                 if (pos > 0)
-                    MessageBox.show(Main.mainActivity, Translation.get(url.substring(25, pos)));
+                    MessageBox.show(staticMainActivity, Translation.get(url.substring(25, pos)));
                 return true;
             } else if (url.contains("fake://fake.de/download")) {
 
@@ -222,17 +222,21 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    if (Main.mainActivity == null) return;
-                    Main.mainActivity.runOnUiThread(() -> scrollTo(0, 0));
+                    if (staticMainActivity == null) return;
+                    staticMainActivity.runOnUiThread(() -> scrollTo(0, 0));
                 }
             };
             timer.schedule(task, 100);
         }
     };
 
+    private Activity mainActivity;
+    private static Activity staticMainActivity;
+
     public DescriptionViewControl(Context context) {
         super(context);
-
+        mainActivity = (Activity) context;
+        staticMainActivity = mainActivity;
         this.setDrawingCacheEnabled(false);
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
             this.setAlwaysDrawnWithCacheEnabled(false);
@@ -251,6 +255,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     public DescriptionViewControl(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mainActivity = (Activity) context;
+        staticMainActivity = mainActivity;
 
         this.setDrawingCacheEnabled(false);
         this.setAlwaysDrawnWithCacheEnabled(false);
@@ -292,7 +298,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
 
             final String FinalHtml = html;
-            Main.mainActivity.runOnUiThread(() -> {
+            staticMainActivity.runOnUiThread(() -> {
                 try {
                     DescriptionViewControl.that.loadDataWithBaseURL("fake://fake.de", FinalHtml, "text/html", "utf-8", null);
                 } catch (Exception ignored) {
@@ -301,7 +307,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         }
 
         try {
-            Main.mainActivity.runOnUiThread(() -> {
+            staticMainActivity.runOnUiThread(() -> {
                 if (DescriptionViewControl.that.getSettings() != null)
                     DescriptionViewControl.that.getSettings().setLightTouchEnabled(true);
             });
@@ -400,7 +406,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     @Override
     public void OnShow() {
-        Main.mainActivity.runOnUiThread(() -> {
+        mainActivity.runOnUiThread(() -> {
             if (GlobalCore.isSetSelectedCache()) {
                 // aktCache = GlobalCore.getSelectedCache();
 

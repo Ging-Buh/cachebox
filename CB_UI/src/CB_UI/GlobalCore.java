@@ -348,11 +348,6 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         return "Version: " + CurrentVersion + CurrentRevision + "  (" + VersionPrefix + ")";
     }
 
-    @Override
-    protected String getVersionPrefix() {
-        return VersionPrefix;
-    }
-
     public Integer getCurrentRevision() {
         return CurrentRevision;
     }

@@ -20,19 +20,17 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewParent;
+import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -56,7 +54,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.view.MotionEvent.ACTION_POINTER_ID_MASK;
 
 public class ShowViewListener implements PlatformConnector.IShowViewListener {
     private final static String sKlasse = "ShowViewListener";
@@ -66,6 +63,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
     private static CB_Locator.Location recordingStartCoordinate;
     private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
     private int lastLeft, lastTop, lastRight, lastBottom;
+    private AndroidApplication androidApplication;
     private Activity mainActivity;
     private Main mainMain;
     private AndroidApplicationConfiguration gdxConfig;
@@ -89,9 +87,10 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
     private ExtAudioRecorder extAudioRecorder;
     private View.OnTouchListener onTouchListener;
 
-    public ShowViewListener(AndroidApplication main) {
+    public ShowViewListener(Main main) {
+        androidApplication = main;
         mainActivity = main;
-        mainMain = (Main) main;
+        mainMain = main;
 
         gdxConfig = new AndroidApplicationConfiguration();
         gdxConfig.numSamples = 2;
@@ -104,6 +103,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
         downSlider = main.findViewById(R.id.downSlider);
         downSlider.invalidate();
         downSlider.setVisibility(View.INVISIBLE);
+        downSlider.setMain(mainMain);
         cacheNameView = main.findViewById(R.id.cacheNameView);
         cacheNameView.setVisibility(View.INVISIBLE);
 
@@ -121,6 +121,8 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
             v.performClick();
             return sendMotionEvent(event);
         };
+
+        Config.RunOverLockScreen.addSettingChangedListener(this::handleRunOverLockScreenConfig);
 
     }
 
@@ -383,7 +385,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
                 downSlider.setVisibility(View.INVISIBLE);
             if (cacheNameView != null)
                 cacheNameView.setVisibility(View.INVISIBLE);
-            mainMain.handleRunOverLockScreenConfig();
+            handleRunOverLockScreenConfig();
             // Log.info(sKlasse, "Show AndroidView");
         });
     }
@@ -451,7 +453,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
     private void initializeGDXAndroidApplication() {
         try {
             Log.info(sKlasse, "initialize GDXAndroidApplication (gdxView = graphics.getView()");
-            gdxView = mainMain.initializeForView(GL.that, gdxConfig);
+            gdxView = androidApplication.initializeForView(GL.that, gdxConfig);
             int GlSurfaceType = -1;
             if (gdxView instanceof GLSurfaceView20)
                 GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
@@ -707,7 +709,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 if (handlingTakePhoto == null) {
                     handlingTakePhoto = (requestCode, resultCode, data) -> {
-                        mainMain.removeAndroidEventListener(handlingTakePhoto);
+                        androidApplication.removeAndroidEventListener(handlingTakePhoto);
                         // Intent Result Take Photo
                         if (requestCode == REQUEST_CAPTURE_IMAGE) {
                             if (resultCode == Activity.RESULT_OK) {
@@ -756,7 +758,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
                         }
                     };
                 }
-                mainMain.addAndroidEventListener(handlingTakePhoto);
+                androidApplication.addAndroidEventListener(handlingTakePhoto);
                 mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
             } else {
                 Log.err(sKlasse, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
@@ -801,7 +803,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 if (handlingRecordedVideo == null)
                     handlingRecordedVideo = (requestCode, resultCode, data) -> {
-                        mainMain.removeAndroidEventListener(handlingRecordedVideo);
+                        androidApplication.removeAndroidEventListener(handlingRecordedVideo);
                         // Intent Result Record Video
                         if (requestCode == REQUEST_CAPTURE_VIDEO) {
                             if (resultCode == Activity.RESULT_OK) {
@@ -849,7 +851,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
                             }
                         }
                     };
-                mainMain.addAndroidEventListener(handlingRecordedVideo);
+                androidApplication.addAndroidEventListener(handlingRecordedVideo);
                 mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_VIDEO);
             } else {
                 Log.err(sKlasse, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
@@ -862,7 +864,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
     private void shareInfos() {
         String smiley = ((char) new BigInteger("1F604", 16).intValue()) + " ";
 
-        PackageManager pm = mainActivity.getPackageManager();
+        // PackageManager pm = mainActivity.getPackageManager();
         try {
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -875,23 +877,22 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
             waIntent.setPackage("com.whatsapp");
              */
 
-            String text;
             Cache cache = GlobalCore.getSelectedCache();
-            text = cache.getGcCode() + " - " + cache.getName();
-            text += "\n" + "https://coord.info/" + cache.getGcCode();
+            String text = cache.getGcCode() + " - " + cache.getName() + ("\n" + "https://coord.info/" + cache.getGcCode());
             if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-                text += "\n\n" + "Location (corrected)";
+                text = text + ("\n\n" + "Location (corrected)");
                 if (cache.hasCorrectedCoordinates()) {
-                    text += "\n" + Formatter.FormatCoordinate(cache.Pos, "");
+                    text = text + ("\n" + Formatter.FormatCoordinate(cache.Pos, ""));
                 } else {
-                    text += "\n" + Formatter.FormatCoordinate(cache.getCorrectedFinal().Pos, "");
+                    text = text + ("\n" + Formatter.FormatCoordinate(cache.getCorrectedFinal().Pos, ""));
                 }
             } else {
-                text += "\n\n" + "Location";
-                text += "\n" + Formatter.FormatCoordinate(cache.Pos, "");
+                text = text + ("\n\n" + "Location");
+                text = text + ("\n" + Formatter.FormatCoordinate(cache.Pos, ""));
             }
-            text += "\n" + GlobalCore.getDefaultClipboard().getContents();
-            text += "\n" + smiley + "AndroidCacheBox";
+            if (PlatformConnector.getClipboard() != null)
+                text = text + ("\n" + PlatformConnector.getClipboard().getContents());
+            text = text + ("\n" + smiley + "AndroidCacheBox");
             shareIntent.putExtra(Intent.EXTRA_TEXT, text);
             mainActivity.startActivity(Intent.createChooser(shareIntent, Translation.get("ShareWith")));
             //} catch (PackageManager.NameNotFoundException e) {
@@ -902,9 +903,30 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
 
     }
 
+    private void handleRunOverLockScreenConfig() {
+        // add flags for run over lock screen
+        if (Build.VERSION.SDK_INT >= 27) {
+            mainActivity.setShowWhenLocked(true);
+            mainActivity.setTurnScreenOn(true);
+            KeyguardManager keyguardManager = (KeyguardManager) mainActivity.getSystemService(Context.KEYGUARD_SERVICE);
+            keyguardManager.requestDismissKeyguard(mainActivity, null);
+        } else {
+            mainActivity.runOnUiThread(() -> {
+                Window window = mainActivity.getWindow();
+                if (window != null) {
+                    if (Config.RunOverLockScreen.getValue()) {
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+                    } else {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+                    }
+                }
+            });
+        }
+    }
+
     private boolean sendMotionEvent(final MotionEvent event) {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
-        final int pointerIndex = (event.getAction() & ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+        final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
         try {
             switch (action & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_POINTER_DOWN:

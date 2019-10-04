@@ -18,6 +18,7 @@ package CB_UI_Base.Events;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_Utils.Settings.SettingBase;
+import com.badlogic.gdx.utils.Clipboard;
 import de.cb.sqlite.SQLiteInterface;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class PlatformConnector {
     private static IPlatformListener platformListener;
     private static IShowViewListener showViewListener;
     private static ArrayList<String> sendToMediaScannerList;
+    private static Clipboard clipBoard;
 
     public static void setShowViewListener(IShowViewListener listener) {
         showViewListener = listener;
@@ -84,13 +86,13 @@ public class PlatformConnector {
         }
     }
 
-    public static SettingBase<?> ReadSetting(SettingBase<?> setting) {
+    public static SettingBase<?> readSetting(SettingBase<?> setting) {
         if (platformListener != null)
             setting = platformListener.readSetting(setting);
         return setting;
     }
 
-    public static <T> void WriteSetting(SettingBase<T> setting) {
+    public static <T> void writeSetting(SettingBase<T> setting) {
         if (platformListener != null)
             platformListener.writeSetting(setting);
     }
@@ -102,14 +104,9 @@ public class PlatformConnector {
     public static void vibrate() {
         if (platformListener != null) {
             if (threadVibrate == null) {
-                threadVibrate = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        platformListener.vibrate();
-                    }
-                });
+                threadVibrate = new Thread(() -> platformListener.vibrate());
             }
-            threadVibrate.run();
+            threadVibrate.start();
         }
     }
 
@@ -177,12 +174,6 @@ public class PlatformConnector {
         platformListener = listener;
     }
 
-    public static void handleExternalRequest() {
-        // after ViewManager is initialized
-        if (platformListener != null)
-            platformListener.handleExternalRequest();
-    }
-
     public static void callUrl(String url) {
         if (platformListener != null)
             platformListener.callUrl(url);
@@ -218,6 +209,13 @@ public class PlatformConnector {
         }
     }
 
+    public static void handleExternalRequest() {
+        if (platformListener != null) {
+            platformListener.handleExternalRequest();
+        }
+    }
+
+
     public static ArrayList<String> getMediaScannerList() {
         return sendToMediaScannerList;
     }
@@ -228,6 +226,18 @@ public class PlatformConnector {
         }
         if (sendToMediaScannerList.contains(filename)) return;
         sendToMediaScannerList.add(filename);
+    }
+
+    public static Clipboard getClipboard() {
+        if (clipBoard == null) {
+            return null;
+        } else {
+            return clipBoard;
+        }
+    }
+
+    public static void setClipboard(Clipboard clipBoard) {
+        PlatformConnector.clipBoard = clipBoard;
     }
 
     public interface IShowViewListener {
@@ -243,23 +253,9 @@ public class PlatformConnector {
 
         void dayNightSwitched();
 
-        void onResume();
-
-        void onDestroyWithFinishing();
-
-        void onDestroyWithoutFinishing();
-
         int getAktViewId();
 
         void requestLayout();
-    }
-
-    public interface IgetFileReturnListener {
-        void returnFile(String PathAndName);
-    }
-
-    public interface IgetFolderReturnListener {
-        void returnFolder(String Path);
     }
 
     public interface IPlatformListener {
@@ -289,8 +285,6 @@ public class PlatformConnector {
 
         void callUrl(String url);
 
-        void handleExternalRequest();
-
         void startPictureApp(String file);
 
         SQLiteInterface getSQLInstance();
@@ -302,5 +296,15 @@ public class PlatformConnector {
         void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
 
         void quit();
+
+        void handleExternalRequest();
+    }
+
+    public interface IgetFileReturnListener {
+        void returnFile(String PathAndName);
+    }
+
+    public interface IgetFolderReturnListener {
+        void returnFolder(String Path);
     }
 }

@@ -4,7 +4,6 @@ import CB_UI_Base.GL_UI.DisplayType;
 import CB_Utils.Plattform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Clipboard;
 
 public abstract class AbstractGlobal {
     public static final String br = System.getProperty("line.separator");
@@ -13,7 +12,6 @@ public abstract class AbstractGlobal {
     public static DisplayType displayType = DisplayType.Normal;
     public static float displayDensity = 1;
     protected static AbstractGlobal Instance;
-    private static Clipboard defaultClipBoard;
 
     protected AbstractGlobal() {
         Instance = this;
@@ -40,19 +38,5 @@ public abstract class AbstractGlobal {
             return ret;
         }
     }
-
-    public static Clipboard getDefaultClipboard() {
-        if (defaultClipBoard == null) {
-            return null;
-        } else {
-            return defaultClipBoard;
-        }
-    }
-
-    public static void setDefaultClipboard(Clipboard clipBoard) {
-        defaultClipBoard = clipBoard;
-    }
-
-    protected abstract String getVersionPrefix();
 
 }
