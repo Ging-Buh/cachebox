@@ -20,10 +20,6 @@ import CB_Utils.Log.Log;
 
 import java.util.ArrayList;
 
-/**
- * @author ging-buh
- * @author Longri
- */
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     private final QueueData queueData;
@@ -47,7 +43,6 @@ public class MapTileLoader {
 
     private void initialize(int ThreadPriority) {
         if (threadIndex < ManagerBase.PROCESSOR_COUNT) {
-            Log.info(log, "Start queueProcessor(thread) number " + threadIndex);
             queueProcessor[threadIndex] = new MultiThreadQueueProcessor(queueData, threadIndex);
             queueProcessor[threadIndex].setPriority(ThreadPriority);
             queueProcessor[threadIndex].start();
@@ -66,9 +61,8 @@ public class MapTileLoader {
                 }
 
                 if (!queueProcessor[index].isAlive()) {
-                    Log.err(log, "MapTileLoader Restart queueProcessor[" + index + "]");
                     queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
-                    queueProcessor[index].setPriority(Thread.NORM_PRIORITY);
+                    queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
                     queueProcessor[index].start();
                 }
             } while (true);
@@ -88,14 +82,13 @@ public class MapTileLoader {
 
     public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
 
-        // Initial Threads?
         if (!allThreadsAreRunning) {
-            if (threadIndex < ManagerBase.PROCESSOR_COUNT && threadIndex > 0 && queueData.loadedTiles.size() > 1) {
+            if (threadIndex < ManagerBase.PROCESSOR_COUNT && threadIndex > 0) {
+                queueProcessor[threadIndex - 1].setPriority(Thread.MIN_PRIORITY);
                 initialize(Thread.NORM_PRIORITY);
             } else if (threadIndex >= ManagerBase.PROCESSOR_COUNT && !isThreadPrioSet) {
                 for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++) {
-                    // was to lowest priority
-                    queueProcessor[i].setPriority(Thread.NORM_PRIORITY);
+                    queueProcessor[i].setPriority(Thread.MIN_PRIORITY);
                     isThreadPrioSet = true;
                     allThreadsAreRunning = true;
                 }
@@ -105,7 +98,6 @@ public class MapTileLoader {
         if (ManagerBase.manager == null)
             return; // Kann nichts laden, wenn der Manager Null ist!
 
-        Log.info(log, "Re/Create q");
         queueData.loadedTilesLock.lock();
         queueData.queuedTilesLock.lock();
         if (queueData.currentOverlayLayer != null) {
@@ -121,11 +113,7 @@ public class MapTileLoader {
                 toDelete.add(desc);
             }
         }
-        if (toDelete.size() == queueData.queuedTiles.size()) {
-            Log.info(log, "clear complete q.");
-        } else {
-            Log.info(log, "counted to remove " + toDelete.size() + " of " + queueData.queuedTiles.size());
-        }
+
         for (Descriptor desc : toDelete) {
             queueData.queuedTiles.remove(desc.getHashCode());
         }
@@ -151,7 +139,6 @@ public class MapTileLoader {
             }
         }
 
-        // then true zoom level
         for (int i = 0, n = wantedTiles.size(); i < n; i++) {
             Descriptor desc = wantedTiles.get(i);
             if (!queueData.loadedTiles.containsKey(desc.getHashCode())) {
@@ -182,9 +169,8 @@ public class MapTileLoader {
                 queueData.queuedOverlayTilesLock.unlock();
                 queueData.loadedOverlayTilesLock.unlock();
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
-
         for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++) {
             if (queueProcessor[i] != null)
                 queueProcessor[i].interrupt();

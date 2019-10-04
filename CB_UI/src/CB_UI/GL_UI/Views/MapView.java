@@ -385,7 +385,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                             }
                         } else {
                             String msg = "No Cache loaded: \n remaining Full:" + GroundspeakAPI.fetchMyUserInfos().remaining + "\n remaining Lite:" + GroundspeakAPI.fetchMyUserInfos().remainingLite;
-                            Log.debug(log, msg);
+                            Log.info(log, msg);
                             GL.that.Toast(msg);
                         }
 
@@ -916,7 +916,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             }
             lastLoadHash = hash;
 
-            Log.info(log, "loadTiles from " + upperLeftTile + " to " + lowerRightTile);
             mapTileLoader.loadTiles(this, upperLeftTile, lowerRightTile, aktZoom);
 
             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
@@ -1109,9 +1108,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 }
             }
 
-            if (camera == null) {
-                Log.debug(log, "Why is camera null");
-            } else {
+            if (camera != null) {
                 if (setZoomTo != lastCompassMapZoom) {
                     lastCompassMapZoom = setZoomTo;
                     zoomBtn.setZoom(setZoomTo);

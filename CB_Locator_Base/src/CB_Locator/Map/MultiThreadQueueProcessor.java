@@ -49,17 +49,14 @@ class MultiThreadQueueProcessor extends Thread {
                 if (!Energy.DisplayOff() && ((queueData.queuedTiles.size() > 0) || (queueData.queuedOverlayTiles.size() > 0))) {
                     try {
                         boolean calcOverlay = false;
-                        Log.info(log, "blocking q size = " + queueData.queuedTiles.size());
                         queueData.queuedTilesLock.lock();
                         if (queueData.currentOverlayLayer != null) {
                             if (queueData.queuedTiles.size() == 0)
                                 calcOverlay = true;
-                            Log.info(log, "blocking oq size = " + queueData.queuedOverlayTiles.size());
                             queueData.queuedOverlayTilesLock.lock();
                         }
-
                         try {
-                            descriptor = calcNext((queueData.queuedTiles.size() > 0) ? queueData.queuedTiles : queueData.queuedOverlayTiles);
+                            descriptor = calcNextAndRemove((queueData.queuedTiles.size() > 0) ? queueData.queuedTiles : queueData.queuedOverlayTiles);
                         } finally {
                             queueData.queuedTilesLock.unlock();
                             if (queueData.currentOverlayLayer != null)
@@ -70,7 +67,6 @@ class MultiThreadQueueProcessor extends Thread {
                             inLoadDescLock.lock();
                             if (inLoadDesc.contains(descriptor)) {
                                 // Other thread is loading this Desc. Skip!
-                                Log.info(log, "Is in load: " + descriptor);
                                 continue;
                             }
                             inLoadDescLock.unlock();
@@ -87,34 +83,30 @@ class MultiThreadQueueProcessor extends Thread {
                                 inLoadDescLock.unlock();
                             }
 
-                            long startTime = System.currentTimeMillis();
+                            // long startTime = System.currentTimeMillis();
                             loadTile(descriptor);
-                            long lasts = (System.currentTimeMillis() - startTime) / 1000; // seconds
-                            Log.info(log, "tile: " + descriptor + " lasts: " + lasts + " todo: " + queueData.queuedTiles.size());
+                            // long lasts = (System.currentTimeMillis() - startTime);
+
                             inLoadDescLock.lock();
                             inLoadDesc.remove(descriptor);
                             inLoadDescLock.unlock();
-
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException ignored) {
+                            }
                         } else {
                             // nothing to do, so we can sleep
                             try {
-                                Log.info(log, "inner sleeping");
                                 Thread.sleep(10000);
-                            } catch (InterruptedException i) {
-                                Log.info(log, "returned from inner sleeping");
+                            } catch (InterruptedException ignored) {
                             }
                         }
                     } catch (Exception ex1) {
                         Log.err(log, "getting Descriptor: " + descriptor + " : " + ex1.toString());
-                        if (descriptor != null) {
-                            // cause expecting the same error again
-                            removeFromQueuedTiles(descriptor);
-                        }
                     }
                 } else {
                     try {
                         do {
-                            Log.info(log, "sleeping long");
                             Thread.sleep(100000);
                         }
                         while (Energy.DisplayOff() || ((queueData.queuedTiles.size() <= 0) && (queueData.queuedOverlayTiles.size() <= 0)));
@@ -135,7 +127,7 @@ class MultiThreadQueueProcessor extends Thread {
         }
     }
 
-    private Descriptor calcNext(SortedMap<Long, Descriptor> tmpQueuedTiles) {
+    private Descriptor calcNextAndRemove(SortedMap<Long, Descriptor> tmpQueuedTiles) {
         if (tmpQueuedTiles == null) return null;
         Descriptor nearestDesc = null;
         double nearestDist = Double.MAX_VALUE;
@@ -169,7 +161,8 @@ class MultiThreadQueueProcessor extends Thread {
             }
         }
         if (nearestDesc != null) {
-            queueData.queuedTiles.remove(nearestDesc.getHashCode());
+            // if we don't remove here, the desc can be picked by another thread
+            tmpQueuedTiles.remove(nearestDesc.getHashCode());
         }
         return nearestDesc;
     }
@@ -184,16 +177,12 @@ class MultiThreadQueueProcessor extends Thread {
                 // Redraw Map after a new Tile was loaded or generated
                 GL.that.renderOnce();
             } else {
-                Log.info(log, "fetch tile into cache (not for mapsforge)");
                 if (ManagerBase.manager.cacheTile(queueData.currentLayer, desc)) {
                     tile = ManagerBase.manager.getTileGL(queueData.currentLayer, desc, threadId);
                     addLoadedTile(desc, tile);
                     // Redraw Map after a new Tile was loaded or generated
                     GL.that.renderOnce();
                 }
-                // to avoid endless trys
-                if (tile != null)
-                    removeFromQueuedTiles(desc);
             }
         }
     }
@@ -214,19 +203,6 @@ class MultiThreadQueueProcessor extends Thread {
             GL.that.renderOnce();
         } else {
             ManagerBase.manager.cacheTile(queueData.currentOverlayLayer, desc);
-            // to avoid endless tries
-            removeFromQueuedTiles(desc);
-        }
-    }
-
-    private void removeFromQueuedTiles(Descriptor desc) {
-        queueData.queuedTilesLock.lock();
-        try {
-            if (queueData.queuedTiles.containsKey(desc.getHashCode())) {
-                queueData.queuedTiles.remove(desc.getHashCode());
-            }
-        } finally {
-            queueData.queuedTilesLock.unlock();
         }
     }
 
@@ -234,7 +210,7 @@ class MultiThreadQueueProcessor extends Thread {
         queueData.loadedTilesLock.lock();
         try {
             if (queueData.loadedTiles.containsKey(desc.getHashCode())) {
-                tile.dispose(); // das war dann umsonnst
+                tile.dispose(); // das war dann umsonst
             } else {
                 queueData.loadedTiles.add(desc.getHashCode(), tile);
             }
@@ -242,16 +218,6 @@ class MultiThreadQueueProcessor extends Thread {
         } finally {
             queueData.loadedTilesLock.unlock();
         }
-
-        queueData.queuedTilesLock.lock();
-        try {
-            if (queueData.queuedTiles.containsKey(desc.getHashCode())) {
-                queueData.queuedTiles.remove(desc.getHashCode());
-            }
-        } finally {
-            queueData.queuedTilesLock.unlock();
-        }
-
     }
 
     private void addLoadedOverlayTile(Descriptor desc, TileGL tile) {
@@ -263,16 +229,5 @@ class MultiThreadQueueProcessor extends Thread {
         } finally {
             queueData.loadedOverlayTilesLock.unlock();
         }
-
-        queueData.queuedOverlayTilesLock.lock();
-        try {
-            if (queueData.queuedOverlayTiles.containsKey(desc.getHashCode())) {
-                queueData.queuedOverlayTiles.remove(desc.getHashCode());
-            }
-        } finally {
-            queueData.queuedOverlayTilesLock.unlock();
-        }
-
     }
-
 }

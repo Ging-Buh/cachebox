@@ -362,6 +362,11 @@ public class DesktopMain {
                 System.exit(0);
             }
 
+            @Override
+            public void handleExternalRequest() {
+
+            }
+
         });
 
     }

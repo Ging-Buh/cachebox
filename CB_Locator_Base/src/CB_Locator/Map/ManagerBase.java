@@ -195,13 +195,15 @@ public abstract class ManagerBase {
             return false;
         }
 
-        // get mapPack from layer and check, if tile is covered (can be generated) from mapPack then simply return
+        if (layer.isMapsForge()) return false;
+
+        // get mapPack from layer and check, if tile is covered (can be generated) from mapPack then simply return true
         for (PackBase pack : mapPacks)
             if (pack.layer == layer)
                 if (pack.contains(tile) != null)
                     return true;
 
-        // Download from url into cache
+        // Download from url into cache (also from url for mapPack, if tile not inside)
         String filename = layer.GetLocalFilename(tile);
         String url = layer.GetUrl(tile);
         if (!url.startsWith("http")) {
