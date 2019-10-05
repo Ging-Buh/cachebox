@@ -41,6 +41,7 @@ import CB_UI.GL_UI.Controls.MapInfoPanel;
 import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
+import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -64,6 +65,7 @@ import CB_Utils.Log.Log;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.HSV_Color;
+import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -457,6 +459,16 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         Config.MapNorthOriented.addSettingChangedListener(() -> {
             SetNorthOriented(Config.MapNorthOriented.getValue());
             PositionChanged();
+        });
+        Energy.addChangedEventListener(new IChanged() {
+            @Override
+            public void handleChange() {
+                if (!Energy.DisplayOff()) {
+                    // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
+                    lastZoom = 0;
+                    lastLoadHash = 0;
+                }
+            }
         });
     }
 

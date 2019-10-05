@@ -308,8 +308,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if (reduceFps) {
             GL.that.removeRenderView(this);
         }
-        loadTiles();
         camera.update();
+        loadTiles();
         renderMapTiles(batch);
         renderSynchronOverlay(batch);
         renderNonSynchronOverlay(batch);

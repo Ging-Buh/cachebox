@@ -86,7 +86,6 @@ public interface CB_UI_Settings {
     SettingBool CompassShowLastFound = new SettingBool("CompassShowLastFound", Compass, NEVER, true, Global, ACB);
 
     SettingInt installedRev = new SettingInt("installRev", Misc, NEVER, 0, Global, ACB);
-    SettingInt VibrateTime = new SettingInt("VibrateTime", Misc, EXPERT, 20, Global, ACB);
     SettingInt FoundOffset = new SettingInt("FoundOffset", Misc, NEVER, 0, Global, ACB);
     SettingString LastSelectedCache = new SettingString("LastSelectedCache", Misc, NEVER, "", SettingStoreType.Local, ALL);
     SettingStringArray Navis = new SettingStringArray("Navis", Misc, NORMAL, "Google", Global, ACB, navis);
@@ -100,6 +99,7 @@ public interface CB_UI_Settings {
     SettingBool ImperialUnits = new SettingBool("ImperialUnits", Misc, NORMAL, false, Global, ACB);
     SettingBool switchViewApproach = new SettingBool("switchViewApproach", Misc, EXPERT, false, Global, ACB);
     SettingBool vibrateFeedback = new SettingBool("vibrateFeedback", Misc, EXPERT, true, Global, ACB);
+    SettingInt VibrateTime = new SettingInt("VibrateTime", Misc, EXPERT, 20, Global, ACB);
 
     SettingsAudio Approach = new SettingsAudio("Approach", Sounds, EXPERT, new Audio("data/sound/Approach.ogg", false, false, 1.0f), Global, ACB);
     SettingsAudio GPS_lose = new SettingsAudio("GPS_lose", Sounds, EXPERT, new Audio("data/sound/GPS_lose.ogg", false, false, 1.0f), Global, ACB);

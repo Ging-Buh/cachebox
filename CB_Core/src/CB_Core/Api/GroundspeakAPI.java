@@ -1655,6 +1655,8 @@ public class GroundspeakAPI {
             expandString = new StringBuilder();
             maxToFetch = 1;
             descriptor = null;
+            // addSearchFilter("hcc");
+            // addSearchFilter("hn");
         }
 
         @Override
