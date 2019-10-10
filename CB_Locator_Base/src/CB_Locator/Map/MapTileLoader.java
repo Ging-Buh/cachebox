@@ -78,7 +78,7 @@ public class MapTileLoader {
     }
 
     int queuedTilesSize() {
-        return queueData.queuedTiles.size();
+        return queueData.wantedTiles.size();
     }
 
     int getNumberOfLoadedTiles() {
@@ -109,26 +109,26 @@ public class MapTileLoader {
         // clear Queue, to remove not yet loaded (previously needed) tiles
         // don't use clear because  of the mapview.
         // Only remove descriptors for this mapview (map,compass,track, ?)
-        ArrayList<Descriptor> toDelete = new ArrayList<>();
-        for (Descriptor desc : queueData.queuedTiles.values()) {
+        ArrayList<Descriptor> toDeleteOfThisMapView = new ArrayList<>();
+        for (Descriptor desc : queueData.wantedTiles.values()) {
             if (desc.Data == mapView) {
-                toDelete.add(desc);
+                toDeleteOfThisMapView.add(desc);
             }
         }
 
-        for (Descriptor desc : toDelete) {
-            queueData.queuedTiles.remove(desc.getHashCode());
+        for (Descriptor desc : toDeleteOfThisMapView) {
+            queueData.wantedTiles.remove(desc.getHashCode());
         }
 
         if (queueData.currentOverlayLayer != null) {
-            toDelete.clear();
-            for (Descriptor desc : queueData.queuedOverlayTiles.values()) {
+            toDeleteOfThisMapView.clear();
+            for (Descriptor desc : queueData.wantedOverlayTiles.values()) {
                 if (desc.Data == mapView) {
-                    toDelete.add(desc);
+                    toDeleteOfThisMapView.add(desc);
                 }
             }
-            for (Descriptor desc : toDelete) {
-                queueData.queuedOverlayTiles.remove(desc.getHashCode());
+            for (Descriptor desc : toDeleteOfThisMapView) {
+                queueData.wantedOverlayTiles.remove(desc.getHashCode());
             }
         }
 
@@ -141,26 +141,32 @@ public class MapTileLoader {
             }
         }
 
-        for (int i = 0, n = wantedTiles.size(); i < n; i++) {
-            Descriptor desc = wantedTiles.get(i);
-            if (!queueData.loadedTiles.containsKey(desc.getHashCode())) {
-                if (!queueData.queuedTiles.containsKey(desc.getHashCode())) {
-                    queueData.queuedTiles.put(desc.getHashCode(), desc);
+        for (Descriptor descriptor : wantedTiles) {
+            if (queueData.loadedTiles.containsKey(descriptor.getHashCode())) {
+                Log.info(log,"loaded: " + descriptor + " Age: " + queueData.loadedTiles.get(descriptor.getHashCode()).age);
+                if (queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
+                    // should never happen! did only add descriptors, that are not in loaded tiles, which are locked
+                    Log.err(log, descriptor + " already loaded. Should not be in queuedTiles");
+                    queueData.wantedTiles.remove(descriptor.getHashCode());
                 }
-            } else if (queueData.queuedTiles.containsKey(desc.getHashCode())) {
-                // should never happen! did only add descriptors, that are not in loaded tiles, which are locked
-                Log.err(log, desc + " already loaded. Should not be in queuedTiles");
-                queueData.queuedTiles.remove(desc.getHashCode());
+            } else {
+                if (!queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
+                    Log.info(log, "wanted: " + descriptor);
+                    queueData.wantedTiles.put(descriptor.getHashCode(), descriptor);
+                }
+                else {
+                    Log.err(log, "already in wanted Tiles" + descriptor);
+                }
             }
 
             if (queueData.currentOverlayLayer != null) {
-                if (queueData.loadedOverlayTiles.containsKey(desc.getHashCode())) {
+                if (queueData.loadedOverlayTiles.containsKey(descriptor.getHashCode())) {
                     continue;
                 }
-                if (queueData.queuedOverlayTiles.containsKey(desc.getHashCode()))
+                if (queueData.wantedOverlayTiles.containsKey(descriptor.getHashCode()))
                     continue;
-                if (!queueData.queuedOverlayTiles.containsKey(desc.getHashCode()))
-                    queueData.queuedOverlayTiles.put(desc.getHashCode(), desc);
+                if (!queueData.wantedOverlayTiles.containsKey(descriptor.getHashCode()))
+                    queueData.wantedOverlayTiles.put(descriptor.getHashCode(), descriptor);
             }
         }
 
@@ -216,8 +222,8 @@ public class MapTileLoader {
         }
     }
 
-    boolean markTilesToDraw(Descriptor desc) {
-        return queueData.loadedTiles.markTilesToDraw(desc.getHashCode());
+    boolean markTilesToDraw(Descriptor descriptor) {
+        return queueData.loadedTiles.markTilesToDraw(descriptor.getHashCode());
     }
 
     public int getTilesToDrawCounter() {
@@ -259,8 +265,17 @@ public class MapTileLoader {
         return queueData.currentLayer;
     }
 
-    public void setCurrentLayer(Layer layer) {
-        queueData.currentLayer = layer;
+    public boolean setCurrentLayer(Layer layer) {
+        if (layer != queueData.currentLayer) {
+            clearLoadedTiles();
+            queueData.currentLayer = layer;
+            return true;
+        }
+        return false;
+    }
+
+    public void changeCurrentLayer(Layer layer) {
+        clearLoadedTiles();
     }
 
     public Layer getCurrentOverlayLayer() {
@@ -278,9 +293,9 @@ public class MapTileLoader {
     void reloadTile(Descriptor desc) {
         // called only, if not in loaded tiles
         queueData.queuedTilesLock.lock();
-        if (!queueData.queuedTiles.containsKey(desc.getHashCode())) {
-            if (!queueData.queuedTiles.containsKey(desc.getHashCode()))
-                queueData.queuedTiles.put(desc.getHashCode(), desc);
+        if (!queueData.wantedTiles.containsKey(desc.getHashCode())) {
+            if (!queueData.wantedTiles.containsKey(desc.getHashCode()))
+                queueData.wantedTiles.put(desc.getHashCode(), desc);
         }
         queueData.queuedTilesLock.unlock();
     }
@@ -288,8 +303,7 @@ public class MapTileLoader {
     public boolean isLoadingChanged() {
         if (queueData.loadedTiles.changeCounter == lastLoadingChangedCounter) {
             return false;
-        }
-        else {
+        } else {
             lastLoadingChangedCounter = queueData.loadedTiles.changeCounter;
             return true;
         }

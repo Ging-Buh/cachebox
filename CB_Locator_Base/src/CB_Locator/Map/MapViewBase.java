@@ -211,32 +211,31 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         } else {
             LocatorSettings.currentMapLayer.setValue(newLayer.getAllLayerNames());
         }
-        mapTileLoader.setCurrentLayer(newLayer);
-        mapTileLoader.clearLoadedTiles();
+        if (mapTileLoader.setCurrentLayer(newLayer)) renderOnce();
     }
 
     public void addAdditionalLayer(Layer layer) {
         Layer currentLayer = mapTileLoader.getCurrentLayer();
         currentLayer.addAdditionalMap(layer);
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.setCurrentLayer(currentLayer);
         mapTileLoader.clearLoadedTiles();
+        renderOnce();
     }
 
     public void clearAdditionalLayers() {
         Layer currentLayer = mapTileLoader.getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.setCurrentLayer(currentLayer);
         mapTileLoader.clearLoadedTiles();
+        renderOnce();
     }
 
     public void removeAdditionalLayer() {
         Layer currentLayer = mapTileLoader.getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.setCurrentLayer(currentLayer);
         mapTileLoader.clearLoadedTiles();
+        renderOnce();
     }
 
     public void setCurrentOverlayLayer(Layer newLayer) {
@@ -303,7 +302,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             GL.that.removeRenderView(this);
         }
         camera.update();
-        loadTiles(); // check and possibly recreate queue of tiles to load
         renderMapTiles(batch);
         renderSynchronOverlay(batch);
         renderNonSynchronOverlay(batch);
@@ -359,7 +357,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             // if (mapTileLoader.isLoadingChanged() || tilesWantedToDrawCount > mapTileLoader.getTilesToDrawCounter())
             {
                 // determine again the tiles to draw from loaded tiles (mostly the same as in last render step)
-                Log.info(log, "determine tiles to draw");
+                // Log.info(log, "determine tiles to draw");
                 mapTileLoader.resetTilesToDrawCounter();
                 if (mapTileLoader.getCurrentOverlayLayer() != null) {
                     mapTileLoader.resetOverlayTilesToDrawCounter();
@@ -562,7 +560,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     private boolean renderBiggerTiles(Batch batch, int i, int j, int zoom2) {
-        // f�r den aktuellen Zoom ist kein Tile vorhanden -> kleinere
+        // cause no tile for the actual zoom exists -> kleinere
         // Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
         // von dem gefundenen Tile mu� dann nur ein Ausschnitt gezeichnet werden
         int ii = i / 2;
@@ -575,7 +573,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if (canDraw) {
             // das Alter der benutzten Tiles nicht auf 0 setzen, da dies
             // eigentlich nicht das richtige Tile ist!!!
-            // tile.Age = 0;
+            // tile.age = 0;
 
             return true;
         } else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom())) {

@@ -42,14 +42,15 @@ public class MapsForgeLayer extends Layer {
     private final ArrayList<Layer> additionalMapsforgeLayer; //actually there is only a mapsforge one
     private final TileCache firstLevelTileCache; //mapsforge
     private MapFile mapFile;
-    private MultiMapDataStore[] mapDatabase;
-    private DatabaseRenderer[] databaseRenderers;
-    private RenderThemeFuture renderThemeFuture;
+    private static MultiMapDataStore[] multiMapDataStores; // ? static
+    private static DatabaseRenderer[] databaseRenderers; //
+    private static RenderThemeFuture renderThemeFuture;
     private float textScale;
     private String pathAndName;
     private String mapsforgeThemesStyle;
     private String mapsforgeTheme;
     private boolean isSetRenderTheme;
+    private int threadCount;
 
     MapsForgeLayer(String pathAndName) {
         this.pathAndName = pathAndName;
@@ -67,6 +68,7 @@ public class MapsForgeLayer extends Layer {
         data = null;
         languages = mapFile.getMapLanguages();
 
+        threadCount=-1;
         firstLevelTileCache = new InMemoryTileCache(128);
         textScale = 1;
 
@@ -129,31 +131,34 @@ public class MapsForgeLayer extends Layer {
     }
 
     @Override
-    TileGL getTileGL(Descriptor desc, int threadIndex) {
+    TileGL getTileGL(Descriptor desc) {
 
-        if ((mapDatabase == null)) {
+        if ((multiMapDataStores == null)) {
             initMapDatabase();
         }
 
         if (databaseRenderers == null)
             databaseRenderers = new DatabaseRenderer[MapTileLoader.PROCESSOR_COUNT];
 
-        if (databaseRenderers[threadIndex] == null) {
-            databaseRenderers[threadIndex] = new DatabaseRenderer(mapDatabase[threadIndex], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
+        threadCount = threadCount + 1;
+        if (threadCount == MapTileLoader.PROCESSOR_COUNT) threadCount = 0;
+
+        if (databaseRenderers[threadCount] == null) {
+            databaseRenderers[threadCount] = new DatabaseRenderer(multiMapDataStores[threadCount], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
         }
-        if (databaseRenderers[threadIndex] == null)
+        if (databaseRenderers[threadCount] == null)
             return null;
 
         if (renderThemeFuture == null) {
-            // renderThemeFuture setzen
+            initTheme(false);
         }
 
         // create bitmap from tile-definition
         try {
-            Log.trace(log, "get Tile for " + getFriendlyName() + " / " + desc.toString() + " on thread " + threadIndex);
+            Log.trace(log, "get Tile for " + getFriendlyName() + " / " + desc.toString() + " on thread " + threadCount);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
-            RendererJob rendererJob = new RendererJob(tile, mapDatabase[threadIndex], renderThemeFuture, displayModel, textScale, false, false);
-            TileBitmap bitmap = databaseRenderers[threadIndex].executeJob(rendererJob);
+            RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[threadCount], renderThemeFuture, displayModel, textScale, false, false);
+            TileBitmap bitmap = databaseRenderers[threadCount].executeJob(rendererJob);
             if (bitmap == null) return null;
             /*
               // direct Buffer swap
@@ -198,21 +203,21 @@ public class MapsForgeLayer extends Layer {
                 }
             }
 
-            if (mapDatabase == null)
-                mapDatabase = new MultiMapDataStore[MapTileLoader.PROCESSOR_COUNT];
+            if (multiMapDataStores == null)
+                multiMapDataStores = new MultiMapDataStore[MapTileLoader.PROCESSOR_COUNT];
 
             for (int i = 0; i < MapTileLoader.PROCESSOR_COUNT; i++) {
-                if (mapDatabase[i] == null) {
-                    mapDatabase[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
+                if (multiMapDataStores[i] == null) {
+                    multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
                 } else {
-                    mapDatabase[i].clearMapDataStore();
+                    multiMapDataStores[i].clearMapDataStore();
                 }
 
-                mapDatabase[i].addMapDataStore(mapFile, false, false);
+                multiMapDataStores[i].addMapDataStore(mapFile, false, false);
                 if (hasAdditionalMaps()) {
                     assert additionalMapFiles != null;
                     for (MapFile mf : additionalMapFiles) {
-                        mapDatabase[i].addMapDataStore(mf, false, false);
+                        multiMapDataStores[i].addMapDataStore(mf, false, false);
                     }
                 }
             }

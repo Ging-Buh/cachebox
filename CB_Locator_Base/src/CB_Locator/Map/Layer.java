@@ -120,7 +120,7 @@ public class Layer {
         return friendlyName;
     }
 
-    TileGL getTileGL(Descriptor desc, int ThreadIndex) {
+    TileGL getTileGL(Descriptor desc) {
         Pixmap.Format format = isOverlay() ? Pixmap.Format.RGBA4444 : Pixmap.Format.RGB565;
         try {
             String cachedTileFilename = getLocalFilename(desc);

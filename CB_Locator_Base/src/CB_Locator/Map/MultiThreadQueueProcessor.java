@@ -46,17 +46,17 @@ class MultiThreadQueueProcessor extends Thread {
         try {
             do {
                 Descriptor descriptor = null;
-                if (!Energy.isDisplayOff() && ((queueData.queuedTiles.size() > 0) || (queueData.queuedOverlayTiles.size() > 0))) {
+                if (!Energy.isDisplayOff() && ((queueData.wantedTiles.size() > 0) || (queueData.wantedOverlayTiles.size() > 0))) {
                     try {
                         boolean calcOverlay = false;
                         queueData.queuedTilesLock.lock();
                         if (queueData.currentOverlayLayer != null) {
-                            if (queueData.queuedTiles.size() == 0)
+                            if (queueData.wantedTiles.size() == 0)
                                 calcOverlay = true;
                             queueData.queuedOverlayTilesLock.lock();
                         }
                         try {
-                            descriptor = calcNextAndRemove((queueData.queuedTiles.size() > 0) ? queueData.queuedTiles : queueData.queuedOverlayTiles);
+                            descriptor = calcNextAndRemove((queueData.wantedTiles.size() > 0) ? queueData.wantedTiles : queueData.wantedOverlayTiles);
                         } finally {
                             queueData.queuedTilesLock.unlock();
                             if (queueData.currentOverlayLayer != null)
@@ -112,7 +112,7 @@ class MultiThreadQueueProcessor extends Thread {
                         do {
                             Thread.sleep(100000);
                         }
-                        while (Energy.isDisplayOff() || ((queueData.queuedTiles.size() <= 0) && (queueData.queuedOverlayTiles.size() <= 0)));
+                        while (Energy.isDisplayOff() || ((queueData.wantedTiles.size() <= 0) && (queueData.wantedOverlayTiles.size() <= 0)));
                     } catch (InterruptedException i) {
                         Log.info(log, "returned from sleeping");
                     }
@@ -168,7 +168,7 @@ class MultiThreadQueueProcessor extends Thread {
     }
 
     private void loadTile(final Descriptor desc) {
-        final TileGL tile = queueData.currentLayer.getTileGL(desc, threadId);
+        final TileGL tile = queueData.currentLayer.getTileGL(desc);
         if (tile != null) {
             addLoadedTileWithLock(desc, tile);
             // Redraw Map after a new Tile was loaded or generated
@@ -177,7 +177,7 @@ class MultiThreadQueueProcessor extends Thread {
             new Thread(() -> {
                 // download in separate thread
                 if (queueData.currentLayer.cacheTile(desc)) {
-                    addLoadedTileWithLock(desc, queueData.currentLayer.getTileGL(desc, threadId));
+                    addLoadedTileWithLock(desc, queueData.currentLayer.getTileGL(desc));
                     // Redraw Map after a new Tile was loaded or generated
                     GL.that.renderOnce();
                 }
@@ -189,7 +189,7 @@ class MultiThreadQueueProcessor extends Thread {
         if (queueData.currentOverlayLayer == null)
             return;
 
-        TileGL tile = queueData.currentOverlayLayer.getTileGL(desc, threadId);
+        TileGL tile = queueData.currentOverlayLayer.getTileGL(desc);
 
         if (tile != null) {
             addLoadedOverlayTileWithLock(desc, tile);
