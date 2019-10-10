@@ -61,8 +61,6 @@ public class CacheList extends MoveableList<Cache> {
      *            Config.settings.ParkingLatitude.getValue()
      * @param ParkingLongitude
      *            Config.settings.ParkingLongitude.getValue()
-     * @param DisplayOff
-     *            Energy.DisplayOff()
      * @return CacheWithWP [null posible] set To<br>
      *         GlobalCore.setSelectedWaypoint(nextCache, waypoint, false);<br>
      *         GlobalCore.NearestCache(nextCache);

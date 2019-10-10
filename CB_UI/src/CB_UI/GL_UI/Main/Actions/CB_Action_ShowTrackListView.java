@@ -30,8 +30,8 @@ import CB_UI.GL_UI.Views.TrackListViewItem;
 import CB_UI.GlobalCore;
 import CB_UI.RouteOverlay;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformUIBase;
+import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
@@ -94,7 +94,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListViewContextMenuTitle");
         cm.addMenuItem("load", null, () -> {
-            PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
+            PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
                 if (Path != null) {
                     TrackColor = RouteOverlay.getNextColor();
                     RouteOverlay.MultiLoadRoute(Path, TrackColor);
@@ -125,7 +125,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
                 });
                 TrackListView.getInstance().notifyDataSetChanged();
             });
-            cm.addMenuItem("save", null, () -> PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(),
+            cm.addMenuItem("save", null, () -> PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(),
                     "*.gpx",
                     Translation.get("SaveTrack"),
                     Translation.get("save"),

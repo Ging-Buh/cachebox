@@ -1,7 +1,7 @@
 package CB_UI_Base.GL_UI.GL_Listener;
 
 import CB_UI_Base.Events.KeyCodes;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
@@ -253,7 +253,7 @@ public class GL_Input implements InputProcessor {
                     if (first.view.isDoubleClickable() && (System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null) && (distance(akt, lastClickPoint) < first.view.getClickTolerance())) {
                         boolean handled = first.view.doubleClick(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
                         if (handled)
-                            PlatformConnector.vibrate();
+                            PlatformUIBase.vibrate();
 
                         lastClickTime = 0;
                         lastClickPoint = null;
@@ -261,7 +261,7 @@ public class GL_Input implements InputProcessor {
                         // normaler Click
                         boolean handled = first.view.click(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
                         if (handled)
-                            PlatformConnector.vibrate();
+                            PlatformUIBase.vibrate();
 
                         lastClickTime = System.currentTimeMillis();
                         lastClickPoint = akt;
@@ -332,7 +332,7 @@ public class GL_Input implements InputProcessor {
                         first.view.touchUp(x, (int) GL.that.getChild().getHeight() - y, pointer, 0);
                         // Log.debug(log, "GL_Listener => onTouchUpBase : " + first.view.getName());
                         if (handled)
-                            PlatformConnector.vibrate();
+                            PlatformUIBase.vibrate();
                     }
                 }
             }

@@ -41,7 +41,7 @@ import CB_UI.GL_UI.Controls.MapInfoPanel;
 import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
-import CB_UI_Base.Energy;
+import CB_UI_Base.Events.OnResumeListeners;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -65,7 +65,6 @@ import CB_Utils.Log.Log;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -143,6 +142,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             maxNumTiles = 60;
         }
 
+        Log.info(log, "empty created tiles");
         maxNumTiles = Math.min(maxNumTiles, 60);
         maxNumTiles = Math.max(maxNumTiles, 20);
         // maxNumTiles between 20 and 60
@@ -285,25 +285,19 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         drawingWidth = mapIntWidth;
         drawingHeight = mapIntHeight;
 
-        InitializeMap();
+
+        if (mapTileLoader.getCurrentLayer() == null) {
+            mapTileLoader.setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()));
+        }
+        String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayer.getValue()};
+        if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
+            mapTileLoader.setCurrentOverlayLayer(LayerManager.getInstance().getOverlayLayer(currentOverlayLayerName));
+        initializeMap();
 
         // initial Zoom Scale
         // zoomScale = new GL_ZoomScale(6, 20, 13);
 
         // from create
-
-        String[] currentLayerNames = Config.CurrentMapLayer.getValue();
-        if (ManagerBase.manager != null) {
-            if (mapTileLoader.getCurrentLayer() == null) {
-                mapTileLoader.setCurrentLayer(ManagerBase.manager.getOrAddLayer(currentLayerNames, ""));
-            }
-        }
-
-        String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayer.getValue()};
-        if (ManagerBase.manager != null) {
-            if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
-                mapTileLoader.setCurrentOverlayLayer(ManagerBase.manager.getOrAddLayer(currentOverlayLayerName, ""));
-        }
 
         iconFactor = Config.MapViewDPIFaktor.getValue();
 
@@ -460,15 +454,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             SetNorthOriented(Config.MapNorthOriented.getValue());
             PositionChanged();
         });
-        Energy.addChangedEventListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                if (!Energy.DisplayOff()) {
-                    // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
-                    lastZoom = 0;
-                    lastLoadHash = 0;
-                }
-            }
+        OnResumeListeners.getInstance().add(() -> {
+            // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
+            Log.info(log, "MapView on resume");
+            lastZoom = 0;
+            lastLoadHash = 0;
         });
     }
 
@@ -610,7 +600,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     if (wpi.Selected) {
                         // wenn der Wp selectiert ist, dann immer in der größten Darstellung
                         renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
-                    } else if (CarMode) {
+                    } else if (isCarMode) {
                         // wenn CarMode dann immer in der größten Darstellung
                         renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
                     } else {
@@ -884,49 +874,67 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     protected void loadTiles() {
-        if (isCreated) {
+        if (isCreated && !isLoadingTiles) {
+            isLoadingTiles = true;
 
             synchronized (screenCenterT) {
-                if (screenCenterW.equals(screenCenterT) && lastZoom == aktZoom) return;
-                screenCenterW.set(screenCenterT);
+                if (screenCenterWorld.equals(screenCenterT) && lastZoom == aktZoom) {
+                    // Log.info(log, "screen center / Zoom not changed");
+                    // todo return;
+                }
+                if (lastZoom != aktZoom) {
+                    Log.info(log, "Zoom changed");
+                }
+                if (!screenCenterT.equals(screenCenterWorld)) {
+                    Log.info(log, "screen center changed");
+                }
+                screenCenterWorld.set(screenCenterT);
             }
             lastZoom = aktZoom;
 
-            int halfMapIntWidth = mapIntWidth / 2;
-            int halfMapIntHeight = mapIntHeight / 2;
+            float halfMapIntWidth = (float) mapIntWidth / 2;
+            float halfMapIntHeight = (float) mapIntHeight / 2;
+            float halfdrawingWidth = (float) drawingWidth / 2;
+            float halfdrawingHeight = (float) drawingHeight / 2;
 
-            int extensionTop = (int) ((halfMapIntHeight - ySpeedVersatz) * 1.5);
-            int extensionBottom = (int) ((halfMapIntHeight + ySpeedVersatz) * 1.5);
-            int extensionLeft = (int) (halfMapIntWidth * 1.5);
-            int extensionRight = (int) (halfMapIntWidth * 1.5);
+            float extensionTop = (halfMapIntHeight - ySpeedVersatz) * 1.5f;
+            float extensionBottom = (halfMapIntHeight + ySpeedVersatz) * 1.5f;
+            float extensionLeft = halfMapIntWidth * 1.5f;
+            float extensionRight = halfMapIntWidth * 1.5f;
 
-            loVector.set(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight - drawingHeight / 2 - extensionTop);
-            ruVector.set(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight + drawingHeight / 2 + extensionBottom);
+            loVector.set(halfMapIntWidth - halfdrawingWidth - extensionLeft, halfMapIntHeight - halfdrawingHeight - extensionTop);
+            ruVector.set(halfMapIntWidth + halfdrawingWidth + extensionRight, halfMapIntHeight + halfdrawingHeight + extensionBottom);
             Descriptor upperLeftTile = screenToDescriptor(loVector, aktZoom);
             Descriptor lowerRightTile = screenToDescriptor(ruVector, aktZoom);
 
+            long hash = upperLeftTile.getHashCode() * lowerRightTile.getHashCode();
+            Log.info(log, "hashes from " + upperLeftTile + " / " + lowerRightTile);
+            if (lastLoadHash == hash) {
+                Log.info(log, "screen center changed only a little bit.");
+                // todo return; // we have loaded!
+            }
+            lastLoadHash = hash;
+
             // check count of Tiles
-            boolean CacheisToSmall = true;
-            int cacheSize = mapTileLoader.getCacheSize();
+            int cacheSize;
+            int numberOfTilesWanted;
+            boolean CacheisToSmall;
+            cacheSize = mapTileLoader.getCacheSize();
+            CacheisToSmall = true;
             do {
                 int x = lowerRightTile.X - upperLeftTile.X + 1;
                 int y = lowerRightTile.Y - upperLeftTile.Y + 1;
-                int numberOfTilesWanted = x * y;
+                numberOfTilesWanted = x * y;
                 if (numberOfTilesWanted <= cacheSize) {
                     CacheisToSmall = false;
                 } else {
-                    upperLeftTile.X++;
-                    upperLeftTile.Y++;
-                    lowerRightTile.X--;
-                    lowerRightTile.Y--;
+                    upperLeftTile.X = upperLeftTile.X + 1;
+                    upperLeftTile.Y = upperLeftTile.Y + 1;
+                    lowerRightTile.X = lowerRightTile.X - 1;
+                    lowerRightTile.Y = lowerRightTile.Y - 1;
                 }
             } while (CacheisToSmall);
-
-            long hash = upperLeftTile.getHashCode() * lowerRightTile.getHashCode();
-            if (lastLoadHash == hash) {
-                return; // we have loaded!
-            }
-            lastLoadHash = hash;
+            Log.info(log, "Center:" + screenCenterWorld + " Tiles wanted: " + numberOfTilesWanted + " / " + cacheSize + " / " + mapTileLoader.getTilesToDrawCounter());
 
             mapTileLoader.loadTiles(this, upperLeftTile, lowerRightTile, aktZoom);
 
@@ -936,13 +944,14 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             data.showAtOriginalPosition = showAtOriginalPosition;
             mapCacheList.update(data);
 
-            if (CarMode && CB_UI_Settings.LiveMapEnabeld.getValue()) {
+            if (isCarMode && CB_UI_Settings.LiveMapEnabeld.getValue()) {
                 LiveMapQue.setCenterDescriptor(center);
                 // LiveMap queue complete screen
                 upperLeftTile.Data = center;
                 LiveMapQue.queScreen(upperLeftTile, lowerRightTile);
             }
 
+            isLoadingTiles = false;
         }
     }
 
@@ -984,9 +993,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    public void InitializeMap() {
+    public void initializeMap() {
         zoomCross = Config.ZoomCross.getValue();
-        super.InitializeMap();
+        super.initializeMap();
     }
 
     @Override
@@ -1051,7 +1060,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         Config.LastMapToggleBtnState.setValue(state.ordinal());
         Config.AcceptChanges();
 
-        boolean wasCarMode = CarMode;
+        boolean wasCarMode = isCarMode;
 
         if (Mode == MapMode.Normal) {
             info.setCoordType(CoordType.Map);
@@ -1074,7 +1083,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     @Override
     public void PositionChanged() {
 
-        if (CarMode) {
+        if (isCarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
             if (!Locator.getInstance().isGPSprovided())
                 return;
@@ -1218,29 +1227,16 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         }
 
         if ((InitialFlags & INITIAL_THEME) != 0) {
-            String mapsforgeThemesStyle;
-            mapsForgeThemePath = "";
-            if (CarMode) {
-                ManagerBase.manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
-                mapsForgeThemePath = ManagerBase.INTERNAL_THEME_CAR;
-                if (Config.nightMode.getValue()) {
-                    mapsforgeThemesStyle = Config.MapsforgeCarNightStyle.getValue();
-                    setTheme(Config.MapsforgeCarNightTheme.getValue());
-                } else {
-                    mapsforgeThemesStyle = Config.MapsforgeCarDayStyle.getValue();
-                    setTheme(Config.MapsforgeCarDayTheme.getValue());
-                }
-            } else {
-                ManagerBase.manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
-                if (Config.nightMode.getValue()) {
-                    mapsforgeThemesStyle = Config.MapsforgeNightStyle.getValue();
-                    setTheme(Config.MapsforgeNightTheme.getValue());
-                } else {
-                    mapsforgeThemesStyle = Config.MapsforgeDayStyle.getValue();
-                    setTheme(Config.MapsforgeDayTheme.getValue());
+            if (mapTileLoader.getCurrentLayer() != null) {
+                if (mapTileLoader.getCurrentLayer().isMapsForge()) {
+                    ((MapsForgeLayer) mapTileLoader.getCurrentLayer()).initTheme(isCarMode);
                 }
             }
-            ManagerBase.manager.setRenderTheme(mapsForgeThemePath, mapsforgeThemesStyle);
+            if (mapTileLoader.getCurrentOverlayLayer() != null) {
+                if (mapTileLoader.getCurrentOverlayLayer().isMapsForge()) {
+                    ((MapsForgeLayer) mapTileLoader.getCurrentOverlayLayer()).initTheme(isCarMode);
+                }
+            }
         }
 
         if ((InitialFlags & INITIAL_WP_LIST) != 0) {

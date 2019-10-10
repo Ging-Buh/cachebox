@@ -1,8 +1,8 @@
 package de.droidcachebox;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
+import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformUIBase.IgetFolderReturnListener;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;

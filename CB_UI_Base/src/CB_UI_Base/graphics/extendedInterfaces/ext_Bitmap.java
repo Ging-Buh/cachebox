@@ -33,3 +33,4 @@ public interface ext_Bitmap extends ResourceBitmap {
 
     Texture getTexture();
 }
+

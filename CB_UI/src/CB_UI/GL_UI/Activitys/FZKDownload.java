@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Activitys;
 
 import CB_Core.CB_Core_Settings;
 import CB_Core.Import.BreakawayImportThread;
-import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.LayerManager;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
@@ -282,8 +282,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             lblProgressMsg.setText(Translation.get("DownloadCanceld"));
 
         bOK.enable();
-        if (ManagerBase.manager != null)
-            ManagerBase.manager.initMapPacks();
+        LayerManager.getInstance().initLayers();
     }
 
     private void chkRepository() {
@@ -326,8 +325,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             isChkRepository = false;
             lblProgressMsg.setText("");
 
-            if (ManagerBase.manager != null)
-                ManagerBase.manager.initMapPacks();
+            LayerManager.getInstance().initLayers();
         }).start();
 
     }

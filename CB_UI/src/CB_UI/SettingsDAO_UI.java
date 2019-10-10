@@ -1,19 +1,19 @@
 package CB_UI;
 
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingsDAO;
 
 public class SettingsDAO_UI extends SettingsDAO {
     @Override
-    public void WriteToPlatformSettings(SettingBase<?> setting) {
-        PlatformConnector.writeSetting(setting);
+    public void writePlatformSetting(SettingBase<?> setting) {
+        PlatformUIBase.writePlatformSetting(setting);
     }
 
     @Override
-    public SettingBase<?> ReadFromPlatformSetting(SettingBase<?> setting) {
+    public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
         try {
-            PlatformConnector.readSetting(setting);
+            PlatformUIBase.readPlatformSetting(setting);
             setting.clearDirty();
         } catch (Exception e) {
             setting.loadDefault();

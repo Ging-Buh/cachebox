@@ -1,53 +1,54 @@
 package CB_Locator.Map;
 
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
+import CB_Utils.Util.FileIO;
+import CB_Utils.Util.HSV_Color;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.http.Download;
+import CB_Utils.http.Webb;
+import CB_Utils.http.WebbUtils;
+import com.badlogic.gdx.graphics.Pixmap;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static CB_UI_Base.Events.PlatformUIBase.*;
 
 public class Layer {
+    private static final String log = "Layer";
+    protected String name = "";
+    protected String url;
+    protected Object data;
+    MapType mapType;
+    StorageType storageType;
+    String friendlyName = "";
+    String[] languages;
+    LayerUsage mLayerUsage;
 
-    private final MapType mapType;
-    private final ArrayList<Layer> additionalMapsforgeLayer = new ArrayList<Layer>();
-    private final StorageType storageType;
-    public String Name = "";
-    public String FriendlyName = "";
-    public String Url = ""; // is used as complete path and name for mapsforge files
-    public String[] languages;
-    private LayerType mLayerType = LayerType.normal;
+    public Layer() {
+    }
 
-    public Layer(MapType mapType, LayerType LayerType, StorageType storageType, String name, String friendlyName, String url) {
+    public Layer(MapType mapType, LayerUsage LayerUsage, StorageType storageType, String name, String friendlyName, String url) {
         this.mapType = mapType;
-        this.Name = name;
-        this.FriendlyName = friendlyName;
-        this.Url = url;
-        this.mLayerType = LayerType;
+        this.name = name;
+        this.friendlyName = friendlyName;
+        this.url = url;
+        this.mLayerUsage = LayerUsage;
         this.storageType = storageType;
+        data = null;
     }
 
-    public static boolean DownloadFile(String Url, String Filename) {
-        return false;
-        /*
-         * String path = Filename.Substring(0, Filename.LastIndexOf("\\")); // Verzeichnis anlegen if (!Directory.Exists(path))
-         * Directory.CreateDirectory(path); // Kachel laden HttpWebRequest webRequest = null; WebResponse webResponse = null; Stream stream
-         * = null; Stream responseStream = null; try { webRequest = (HttpWebRequest)WebRequest.Create(Url); webRequest.Timeout = 15000;
-         * webResponse = webRequest.GetResponse(); webRequest.Proxy = Global.Proxy; if (!webRequest.HaveResponse) return false;
-         * responseStream = webResponse.GetResponseStream(); byte[] result = Global.ReadFully(responseStream, 64000); // Datei schreiben
-         * stream = new FileStream(Filename, FileMode.Create); stream.Write(result, 0, result.Length); } catch (Exception) {
-         * //System.Windows.Forms.MessageBox.Show(exc.ToString()); return false; } finally { if (stream != null) { stream.Close(); stream =
-         * null; } if (responseStream != null) { responseStream.Close(); responseStream = null; } if (webResponse != null) {
-         * webResponse.Close(); webResponse = null; } if (webRequest != null) { webRequest.Abort(); webRequest = null; } GC.Collect(); }
-         * return true;
-         */
+    boolean downloadTile(Descriptor desc) {
+        return Download.download(getUrl(desc), getLocalFilename(desc));
     }
 
-    public boolean DownloadTile(Descriptor desc) {
-        // return DownloadFile(GetUrl(desc), GetLocalFilename(desc));
-        return false;
-    }
-
-    public String GetUrl(Descriptor desc) {
+    public String getUrl(Descriptor desc) {
         if (desc == null)
             return null;
-        String lUrl = Url;
+        String lUrl = url;
         if (lUrl.contains("{z}")) {
             int max = 0;
             if (lUrl.contains("{1}")) {
@@ -59,21 +60,22 @@ public class Layer {
             if (lUrl.contains("{3}")) {
                 max = 3;
             }
-            int randomNum = ThreadLocalRandom.current().nextInt(0, max + 1);
+            // int randomNum = ThreadLocalRandom.current().nextInt(0, max + 1);
+            int randomNum = (int) (Math.random() * max);
             lUrl = lUrl.replace("{" + max + "}", "" + randomNum);
             return lUrl.replace("{x}", "" + desc.getX()).replace("{y}", "" + desc.getY()).replace("{z}", "" + desc.getZoom());
         } else
-            return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + this.storageType.extension; // now obsolete
+            return url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + this.storageType.extension; // now obsolete
     }
 
-    public String GetLocalFilename(Descriptor desc) {
+    String getLocalFilename(Descriptor desc) {
         if (desc == null)
             return null;
-        return desc.getLocalCachePath(Name) + this.storageType.extension;
+        return desc.getLocalCachePath(name) + this.storageType.extension;
     }
 
     public boolean isOverlay() {
-        return mLayerType == LayerType.overlay;
+        return mLayerUsage == LayerUsage.overlay;
     }
 
     public boolean isMapsForge() {
@@ -84,90 +86,177 @@ public class Layer {
         return this.mapType;
     }
 
-    // public String GetLocalPath(Descriptor desc)
-    // {
-    // if (desc == null) return null;
-    //
-    // String TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
-    // if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
-    //
-    // return TileCacheFolder + "/" + Name + "/" + desc.getZoom() + "/" + desc.getX();
-    // }
-
-    /*
-     * Mapsforge may have several layers!
-     */
     public void addAdditionalMap(Layer layer) {
-        if (!this.isMapsForge() || !layer.isMapsForge())
-            throw new RuntimeException("Can't add this Layer");
-        if (!additionalMapsforgeLayer.contains(layer))
-            additionalMapsforgeLayer.add(layer);
-    }
-
-    public void removeAdditionalMap(Layer layer) {
-        additionalMapsforgeLayer.remove(layer);
+        throw new RuntimeException("Can't add this Layer");
     }
 
     public void clearAdditionalMaps() {
-        additionalMapsforgeLayer.clear();
     }
 
     public boolean hasAdditionalMaps() {
-        return additionalMapsforgeLayer != null && additionalMapsforgeLayer.size() > 0;
+        return false;
     }
 
-    public ArrayList<Layer> getAdditionalMaps() {
-        return additionalMapsforgeLayer;
-    }
-
-    public String[] getNames() {
-        String[] ret = new String[additionalMapsforgeLayer.size() + 1];
-
-        ret[0] = this.Name;
-        int idx = 1;
-        for (Layer addLayer : additionalMapsforgeLayer) {
-            ret[idx++] = addLayer.Name;
-        }
+    public String[] getAllLayerNames() {
+        String[] ret = new String[1];
+        ret[0] = name;
         return ret;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Layer [");
-        sb.append(this.Name);
-        sb.append("] additional Layer:");
+        return "Layer [" + name + "]";
+    }
 
-        if (additionalMapsforgeLayer == null || additionalMapsforgeLayer.isEmpty()) {
-            sb.append("--");
-        } else {
-            for (Layer addLayer : additionalMapsforgeLayer) {
-                sb.append(addLayer.Name + ", ");
+    public String getName() {
+        return name;
+    }
+
+    public String[] getLanguages() {
+        return languages;
+    }
+
+    public String getFriendlyName() {
+        return friendlyName;
+    }
+
+    TileGL getTileGL(Descriptor desc, int ThreadIndex) {
+        Pixmap.Format format = isOverlay() ? Pixmap.Format.RGBA4444 : Pixmap.Format.RGB565;
+        try {
+            String cachedTileFilename = getLocalFilename(desc);
+            long cachedTileAge = 0;
+            if (FileIO.fileExists(cachedTileFilename)) {
+                File info = FileFactory.createFile(cachedTileFilename);
+                cachedTileAge = info.lastModified();
+            }
+
+            if (getMapType() == MapType.MapPack) {
+                MapPackLayer mapPack = (MapPackLayer) this;
+                if (mapPack.maxAge >= cachedTileAge) {
+                    BoundingBox bbox = mapPack.contains(desc);
+                    if (bbox != null) {
+                        byte[] b = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
+                        if (CB_UI_Base_Settings.nightMode.getValue()) {
+                            b = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(b)));
+                        }
+                        return new TileGL_Bmp(desc, b, TileGL.TileState.Present, format);
+                    }
+                }
+            }
+
+            if (cachedTileAge != 0) {
+                if (FileIO.fileExistsNotEmpty(cachedTileFilename)) {
+                    byte[] b = getImageFromFile(cachedTileFilename);
+                    if (CB_UI_Base_Settings.nightMode.getValue()) {
+                        b = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(b)));
+                    }
+                    return new TileGL_Bmp(desc, b, TileGL.TileState.Present, format);
+                }
+                else {
+                    FileFactory.createFile(cachedTileFilename).delete();
+                }
+            }
+
+        } catch (Exception ex) {
+            Log.err(log, "getTileGL", ex);
+        }
+        return null;
+    }
+
+    /**
+     * for night modus
+     * <p>
+     * The matrix is stored in a single array, and its treated as follows: [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] <br>
+     * <br>
+     * When applied to a color [r, g, b, a], the resulting color is computed as (after clamping) <br>
+     * R' = a*R + b*G + c*B + d*A + e;<br>
+     * G' = f*R + g*G + h*B + i*A + j;<br>
+     * B' = k*R + l*G + m*B + n*A + o;<br>
+     * A' = p*R + q*G + r*B + s*A + t;<br>
+     *
+     * @return ImageData
+     */
+    private ImageData getImageDataWithColorMatrixManipulation(ImageData imgData) {
+
+        int[] data = imgData.PixelColorArray;
+        for (int i = 0; i < data.length; i++) {
+            data[i] = HSV_Color.colorMatrixManipulation(data[i], HSV_Color.NIGHT_COLOR_MATRIX);
+        }
+        return imgData;
+    }
+
+
+    /**
+     * Load Tile from URL and save to MapTile-Cache
+     *
+     * @param descriptor Descriptor
+     * @return boolean
+     */
+    boolean cacheTile(Descriptor descriptor) {
+
+        if (isMapsForge()) return false;
+
+        // get mapPack from layer and check, if tile is covered (can be generated) from mapPack then simply return true
+        if (getMapType() == MapType.MapPack) {
+            MapPackLayer pack = (MapPackLayer) data;
+            if (pack.contains(descriptor) != null)
+                return true;
+        }
+
+        // (the online layers, and MapPack contains a url) Download from url into cache (also from url for mapPack, if tile not inside)
+        String filename = getLocalFilename(descriptor);
+        String url = getUrl(descriptor);
+        if (!url.startsWith("http")) {
+            return false;
+        }
+
+        // Falls Kachel schon geladen wurde, kann sie übersprungen werden
+        synchronized (this) {
+            if (FileIO.fileExistsNotEmpty(filename))
+                return true;
+            else {
+                try {
+                    FileFactory.createFile(filename).delete();
+                    if (!FileIO.createDirectory(filename))
+                        return false;
+                    // todo redirect from http to https and vice-versa (auto does not work in these cases)
+                    FileOutputStream stream = new FileOutputStream(filename, false);
+                    InputStream fromUrl;
+                    // 15 sec
+                    int CONECTION_TIME_OUT = 15000;
+                    fromUrl = Webb.create()
+                            .get(url)
+                            .connectTimeout(CONECTION_TIME_OUT)
+                            .ensureSuccess()
+                            .asStream()
+                            .getBody();
+                    WebbUtils.copyStream(fromUrl, stream);
+                    fromUrl.close();
+                    stream.close();
+                    return true;
+                } catch (Exception ex) {
+                    Log.err(log, "Download from url (into cache) " + url, ex);
+                    try {
+                        FileFactory.createFile(filename).delete();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }
             }
         }
-        return sb.toString();
     }
 
-    /**
-     * ONLINE, MAPSFORGE, FREIZEITKARTE, BITMAP
-     */
     public enum MapType {
-        ONLINE, MAPSFORGE, FREIZEITKARTE, BITMAP
+        ONLINE, MAPSFORGE, FREIZEITKARTE, MapPack
     }
 
-    /**
-     * normal, overlay
-     */
-    public enum LayerType {
+    public enum LayerUsage {
         normal, overlay
     }
 
-    /**
-     * PNG, JPG
-     */
     public enum StorageType {
         PNG(".png"), JPG(".jpg");
-
         private final String extension;
 
         StorageType(String extension) {

@@ -374,8 +374,8 @@ public class CB_List<T> implements Serializable, Iterable<T> {
             return;
         try {
             Arrays.sort(items, 0, size - 1);
-        } catch (Exception e) {
-            Log.err(log, "Sort", e);
+        } catch (Exception ex) {
+            Log.err(log, "Sort", ex);
         }
     }
 

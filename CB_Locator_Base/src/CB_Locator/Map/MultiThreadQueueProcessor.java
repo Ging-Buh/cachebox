@@ -25,7 +25,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
-* insert sleeping with wakeup from maptileloader loadTiles(...
+ * insert sleeping with wakeup from maptileloader loadTiles(...
  * Logging with threadID
  */
 class MultiThreadQueueProcessor extends Thread {
@@ -46,7 +46,7 @@ class MultiThreadQueueProcessor extends Thread {
         try {
             do {
                 Descriptor descriptor = null;
-                if (!Energy.DisplayOff() && ((queueData.queuedTiles.size() > 0) || (queueData.queuedOverlayTiles.size() > 0))) {
+                if (!Energy.isDisplayOff() && ((queueData.queuedTiles.size() > 0) || (queueData.queuedOverlayTiles.size() > 0))) {
                     try {
                         boolean calcOverlay = false;
                         queueData.queuedTilesLock.lock();
@@ -108,12 +108,13 @@ class MultiThreadQueueProcessor extends Thread {
                     }
                 } else {
                     try {
+                        Log.info(log, "Do a long sleep");
                         do {
                             Thread.sleep(100000);
                         }
-                        while (Energy.DisplayOff() || ((queueData.queuedTiles.size() <= 0) && (queueData.queuedOverlayTiles.size() <= 0)));
+                        while (Energy.isDisplayOff() || ((queueData.queuedTiles.size() <= 0) && (queueData.queuedOverlayTiles.size() <= 0)));
                     } catch (InterruptedException i) {
-                        // Log.info(log, "returned from sleeping");
+                        Log.info(log, "returned from sleeping");
                     }
                 }
             } while (true);
@@ -123,9 +124,6 @@ class MultiThreadQueueProcessor extends Thread {
                 Thread.sleep(200);
             } catch (InterruptedException ignored) {
             }
-        } finally {
-            // damit im Falle einer Exception der Thread neu gestartet wird
-            // queueProcessor = null;
         }
     }
 
@@ -135,15 +133,15 @@ class MultiThreadQueueProcessor extends Thread {
         double nearestDist = Double.MAX_VALUE;
         int nearestZoom = 0;
         for (Descriptor tmpDesc : tmpQueuedTiles.values()) {
-            MapViewBase mapView = null;
-            if ((tmpDesc.Data != null) && (tmpDesc.Data instanceof MapViewBase))
+            MapViewBase mapView;
+            if (tmpDesc.Data instanceof MapViewBase)
                 mapView = (MapViewBase) tmpDesc.Data;
-            if (mapView == null)
+            else
                 continue;
 
             long posFactor = mapView.getMapTilePosFactor(tmpDesc.zoom);
 
-            double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor - mapView.screenCenterW.getX(), 2) + Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterW.getY(), 2));
+            double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor - mapView.screenCenterWorld.getX(), 2) + Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterWorld.getY(), 2));
 
             if (Math.abs(mapView.aktZoom - nearestZoom) > Math.abs(mapView.aktZoom - tmpDesc.zoom)) {
                 // der Zoomfaktor des bisher besten Tiles ist weiter entfernt vom aktuellen Zoom als der vom tmpDesc -> tmpDesc verwenden
@@ -169,23 +167,21 @@ class MultiThreadQueueProcessor extends Thread {
         return nearestDesc;
     }
 
-    private void loadTile(Descriptor desc) {
-
-        TileGL tile = null;
-        if (ManagerBase.manager != null) {
-            tile = ManagerBase.manager.getTileGL(queueData.currentLayer, desc, threadId);
-            if (tile != null) {
-                addLoadedTile(desc, tile);
-                // Redraw Map after a new Tile was loaded or generated
-                GL.that.renderOnce();
-            } else {
-                if (ManagerBase.manager.cacheTile(queueData.currentLayer, desc)) {
-                    tile = ManagerBase.manager.getTileGL(queueData.currentLayer, desc, threadId);
-                    addLoadedTile(desc, tile);
+    private void loadTile(final Descriptor desc) {
+        final TileGL tile = queueData.currentLayer.getTileGL(desc, threadId);
+        if (tile != null) {
+            addLoadedTileWithLock(desc, tile);
+            // Redraw Map after a new Tile was loaded or generated
+            GL.that.renderOnce();
+        } else {
+            new Thread(() -> {
+                // download in separate thread
+                if (queueData.currentLayer.cacheTile(desc)) {
+                    addLoadedTileWithLock(desc, queueData.currentLayer.getTileGL(desc, threadId));
                     // Redraw Map after a new Tile was loaded or generated
                     GL.that.renderOnce();
                 }
-            }
+            }).start();
         }
     }
 
@@ -193,22 +189,21 @@ class MultiThreadQueueProcessor extends Thread {
         if (queueData.currentOverlayLayer == null)
             return;
 
-        TileGL tile = null;
-        if (ManagerBase.manager != null) {
-            // Load Overlay never inverted !!!
-            tile = ManagerBase.manager.getTileGL(queueData.currentOverlayLayer, desc, threadId);
-        }
+        TileGL tile = queueData.currentOverlayLayer.getTileGL(desc, threadId);
 
         if (tile != null) {
-            addLoadedOverlayTile(desc, tile);
+            addLoadedOverlayTileWithLock(desc, tile);
             // Redraw Map after a new Tile was loaded or generated
             GL.that.renderOnce();
         } else {
-            ManagerBase.manager.cacheTile(queueData.currentOverlayLayer, desc);
+            new Thread(() -> {
+                // download in separate thread
+                queueData.currentOverlayLayer.cacheTile(desc);
+            }).start();
         }
     }
 
-    private void addLoadedTile(Descriptor desc, TileGL tile) {
+    private void addLoadedTileWithLock(Descriptor desc, TileGL tile) {
         queueData.loadedTilesLock.lock();
         try {
             if (queueData.loadedTiles.containsKey(desc.getHashCode())) {
@@ -222,7 +217,7 @@ class MultiThreadQueueProcessor extends Thread {
         }
     }
 
-    private void addLoadedOverlayTile(Descriptor desc, TileGL tile) {
+    private void addLoadedOverlayTileWithLock(Descriptor desc, TileGL tile) {
         queueData.loadedOverlayTilesLock.lock();
         try {
             if (!queueData.loadedOverlayTiles.containsKey(desc.getHashCode())) {

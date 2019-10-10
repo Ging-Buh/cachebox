@@ -208,8 +208,8 @@ public class GcApiLogin extends Activity {
                 }
 
                 return GC_AuthUrl;
-            } catch (Exception e) {
-                Log.err(sKlasse, "", e);
+            } catch (Exception ex) {
+                Log.err(sKlasse, "", ex);
                 return "";
             }
         }

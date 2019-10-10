@@ -296,7 +296,7 @@ public class ImageLoader {
                     Thread DLThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Download.Download(iconUrl, CachePath + LocalPath);
+                            Download.download(iconUrl, CachePath + LocalPath);
                             inLoad = false;
 
                             // chk if Download complied

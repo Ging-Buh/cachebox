@@ -31,7 +31,7 @@ import CB_Locator.Coordinate;
 import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.AbstractGlobal;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
@@ -194,7 +194,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         if (GroundspeakAPI.GetSettingsAccessToken().length() == 0) {
             return false;
         }
-        return PlatformConnector.isOnline();
+        return PlatformUIBase.isOnline();
     }
 
     public static Coordinate getSelectedCoord() {

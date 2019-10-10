@@ -117,8 +117,8 @@ public class Action_SelectDBDialog extends AbstractAction {
                                 Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
                                 c.loadDetail();
                                 GlobalCore.setSelectedCache(c);
-                            } catch (Exception e) {
-                                Log.err(log, "set last selected Cache", e);
+                            } catch (Exception ex) {
+                                Log.err(log, "set last selected Cache", ex);
                             }
                             break;
                         }

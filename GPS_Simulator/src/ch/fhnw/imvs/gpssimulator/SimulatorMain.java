@@ -11,10 +11,11 @@
 
 package ch.fhnw.imvs.gpssimulator;
 
-import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IPlatformListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
+import CB_UI_Base.Events.PlatformUIBase;
+import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformUIBase.IgetFolderReturnListener;
+import CB_UI_Base.Events.PlatformUIBase.Methods;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Settings.SettingBase;
 import ch.fhnw.imvs.gpssimulator.components.*;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
@@ -108,21 +109,15 @@ public class SimulatorMain {
 
         GPSData.start();
 
-        PlatformConnector.setPlatformListener(new IPlatformListener() {
+        PlatformUIBase.setMethods(new Methods() {
 
             @Override
-            public SettingBase<?> readSetting(SettingBase<?> setting) {
+            public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
                 return null;
             }
 
             @Override
-            public void writeSetting(SettingBase<?> setting) {
-
-            }
-
-            @Override
-            public void setScreenLockTime(int value) {
-
+            public void writePlatformSetting(SettingBase<?> setting) {
             }
 
             @Override
@@ -194,6 +189,26 @@ public class SimulatorMain {
             @Override
             public void handleExternalRequest() {
 
+            }
+
+            @Override
+            public byte[] getImageFromFile(String cachedTileFilename) throws IOException {
+                return new byte[0];
+            }
+
+            @Override
+            public PlatformUIBase.ImageData getImagePixel(byte[] img) {
+                return null;
+            }
+
+            @Override
+            public byte[] getImageFromData(PlatformUIBase.ImageData imgData) {
+                return new byte[0];
+            }
+
+            @Override
+            public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
+                return null;
             }
 
             @Override

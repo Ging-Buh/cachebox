@@ -28,7 +28,7 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.*;
@@ -426,7 +426,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
 
         btnSelectFile.addClickHandler((v, x, y, pointer, button) -> {
-            PlatformConnector.getFile("", "", "", "", this::copyGPX2PQ_Folder);
+            PlatformUIBase.getFile("", "", "", "", this::copyGPX2PQ_Folder);
             return true;
         });
 

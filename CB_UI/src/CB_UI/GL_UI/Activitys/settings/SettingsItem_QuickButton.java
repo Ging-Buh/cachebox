@@ -4,7 +4,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.QuickButtonList;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
@@ -58,7 +58,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         for (QuickActions item : tmp) {
             // don't show QuickButton Torch if Torch not available
             if (item == QuickActions.torch) {
-                if (!PlatformConnector.isTorchAvailable())
+                if (!PlatformUIBase.isTorchAvailable())
                     continue;
             }
 

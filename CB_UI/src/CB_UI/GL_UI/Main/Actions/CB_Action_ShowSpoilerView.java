@@ -3,7 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -102,7 +102,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
         contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), () -> {
             String file = SpoilerView.getInstance().getSelectedFilePath();
-            if (file != null) PlatformConnector.startPictureApp(file);
+            if (file != null) PlatformUIBase.startPictureApp(file);
         });
     }
 

@@ -18,7 +18,7 @@ package de.droidcachebox.Custom_Controls;
 
 import CB_UI.Config;
 import CB_UI.GL_UI.Views.DescriptionView;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.ViewConst;
 import android.app.Activity;
 import android.content.Context;
@@ -96,7 +96,7 @@ public final class InvertViewControl extends View {
                                 if (firstDraw) {
                                     firstDraw = false;
                                     DescriptionView dv = DescriptionView.getInstance();
-                                    PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), dv.getWidth(), dv.getHeight());
+                                    PlatformUIBase.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), dv.getWidth(), dv.getHeight());
                                 }
                             });
                         }

@@ -166,7 +166,7 @@ public class CB_Label extends CB_View_Base {
                     try {
                         mTextObject.draw(batch);
                     } catch (Exception ex) {
-                        Log.err(log, "Rendering " + mText + "\r\n" + ex.getLocalizedMessage());
+                        Log.err(log, "Rendering " + mText + "\r\n" + mTextObject.toString() + "\r\n" + ex.toString() + "\r\n" + ex.getLocalizedMessage());
                     }
             }
 

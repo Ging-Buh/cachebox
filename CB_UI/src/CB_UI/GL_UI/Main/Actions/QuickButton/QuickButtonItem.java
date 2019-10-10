@@ -17,7 +17,7 @@
 package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -129,10 +129,10 @@ public class QuickButtonItem extends ListViewItemBase {
             }
         } else if (mAction.getId() == MenuID.AID_TORCH) {
 
-            if (PlatformConnector.isTorchOn() && torchState != 1) {
+            if (PlatformUIBase.isTorchOn() && torchState != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHON.name())));
                 torchState = 1;
-            } else if (!PlatformConnector.isTorchOn() && torchState != 0) {
+            } else if (!PlatformUIBase.isTorchOn() && torchState != 0) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHOFF.name())));
                 torchState = 0;
             }

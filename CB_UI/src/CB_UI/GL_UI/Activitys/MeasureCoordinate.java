@@ -26,7 +26,7 @@ import CB_Locator.Locator;
 import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.SatBarChart;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
@@ -329,7 +329,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         if (chart != null) {
             chart.onShow();
             chart.setDrawWithAlpha(false);
-            PlatformConnector.switchToGpsMeasure();
+            PlatformUIBase.switchToGpsMeasure();
         }
 
     }
@@ -339,7 +339,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         PositionChangedEventList.Remove(this);
         if (chart != null)
             chart.onHide();
-        PlatformConnector.switchToGpsDefault();
+        PlatformUIBase.switchToGpsDefault();
     }
 
     @Override

@@ -119,8 +119,8 @@ public class EditTextField extends EditTextFieldBase {
                 }
             }
             thisInvalidate = true;
-        } catch (Exception e) {
-            Log.err(log, "onResized", e);
+        } catch (Exception ex) {
+            Log.err(log, "onResized", ex);
         }
     }
 
@@ -240,8 +240,8 @@ public class EditTextField extends EditTextFieldBase {
                     blinkStop();
             }
 
-        } catch (Exception e) {
-            Log.err(log, "render ", e);
+        } catch (Exception ex) {
+            Log.err(log, "render ", ex);
         } finally {
             displayTextLock.unlock();
         }
@@ -529,8 +529,8 @@ public class EditTextField extends EditTextFieldBase {
                 callListPosChangedEvent();
             }
             GL.that.renderOnce();
-        } catch (Exception e) {
-            Log.err(log, "onTouchDragged", e);
+        } catch (Exception ex) {
+            Log.err(log, "onTouchDragged", ex);
         }
 
         // Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
@@ -1001,8 +1001,8 @@ public class EditTextField extends EditTextFieldBase {
                     leftPos = 0;
                 }
             }
-        } catch (Exception e) {
-            Log.err(log, this.name + " setTextAtCursorVisible", e);
+        } catch (Exception ex) {
+            Log.err(log, this.name + " setTextAtCursorVisible", ex);
             if (cursor.x == -1)
                 setCursorPosition(0);
         }

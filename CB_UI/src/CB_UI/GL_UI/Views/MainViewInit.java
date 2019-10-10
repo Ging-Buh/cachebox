@@ -21,7 +21,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListDAO;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.LayerManager;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.SelectDB;
@@ -111,7 +111,7 @@ public class MainViewInit extends MainViewBase {
                     progress.setProgress(80, "initial Map layer");
                     break;
                 case 8:
-                    ini_MapPacks();
+                    initLayers();
                     progress.setProgress(100, "Run");
                     break;
                 case 100:
@@ -403,9 +403,9 @@ public class MainViewInit extends MainViewBase {
      * Step 7 <br>
      * chk installed map packs/layers
      */
-    private void ini_MapPacks() {
+    private void initLayers() {
         Log.info(log, "ini_MapPacks");
-        ManagerBase.manager.initMapPacks();
+        LayerManager.getInstance().initLayers();
     }
 
     /**

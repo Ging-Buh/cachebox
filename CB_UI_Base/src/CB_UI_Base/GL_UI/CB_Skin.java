@@ -77,8 +77,8 @@ public class CB_Skin {
             } else {
                 day_skin = new Skin(Gdx.files.internal(day_skinPath));
             }
-        } catch (Exception e) {
-            Log.err(sKlasse, "Load Custom Skin", e);
+        } catch (Exception ex) {
+            Log.err(sKlasse, "Load Custom Skin", ex);
         }
         try {
             String night_skinPath = SkinFolder + "/night/skin.json";
@@ -87,8 +87,8 @@ public class CB_Skin {
             } else {
                 night_skin = new Skin(Gdx.files.internal(night_skinPath));
             }
-        } catch (Exception e) {
-            Log.err(sKlasse, "Load Custom Night Skin", e);
+        } catch (Exception ex) {
+            Log.err(sKlasse, "Load Custom Night Skin", ex);
         }
 
     }

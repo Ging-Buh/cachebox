@@ -19,7 +19,6 @@ import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
 import CB_Core.CacheListChangedEventList;
-import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.Types.Cache;
@@ -31,8 +30,7 @@ import CB_UI.*;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.*;
 import CB_UI.GL_UI.Views.CompassView;
-import CB_UI_Base.Energy;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
@@ -123,13 +121,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             CB_Action_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
         });
 
-        CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
-        CoreSettingsForward.DisplayOff = Energy.DisplayOff();
-        Energy.addChangedEventListener(() -> {
-            CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
-            CoreSettingsForward.DisplayOff = Energy.DisplayOff();
-        });
-
         API_ErrorEventHandlerList.addHandler(new API_ErrorEventHandler() {
             @Override
             public void InvalidAPI_Key() {
@@ -142,7 +133,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
-                                PlatformConnector.getApiKey();
+                                PlatformUIBase.getApiKey();
                             return true;
                         });
                     }
@@ -162,7 +153,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
-                                PlatformConnector.getApiKey();
+                                PlatformUIBase.getApiKey();
                             return true;
                         });
                     }
@@ -183,7 +174,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
-                                PlatformConnector.getApiKey();
+                                PlatformUIBase.getApiKey();
                             return true;
                         }, Config.RememberAsk_Get_API_Key);
                     }
@@ -202,7 +193,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         autoLoadTrack();
 
-        if (Config.TrackRecorderStartup.getValue() && PlatformConnector.isGPSon()) {
+        if (Config.TrackRecorderStartup.getValue() && PlatformUIBase.isGPSon()) {
             TrackRecorder.StartRecording();
         }
 
@@ -232,7 +223,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         isInitial = true;
 
-        PlatformConnector.handleExternalRequest();
+        PlatformUIBase.handleExternalRequest();
 
     }
 
@@ -371,7 +362,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 
-            PlatformConnector.dayNightSwitched();
+            PlatformUIBase.dayNightSwitched();
 
             synchronized (childs) {
                 for (int i = 0, n = childs.size(); i < n; i++) {

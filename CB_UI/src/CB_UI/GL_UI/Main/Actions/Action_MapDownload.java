@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Activitys.FZKDownload;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Sprites;
@@ -39,7 +39,7 @@ public class Action_MapDownload extends AbstractAction {
 
     public void callMapUrl(String url) {
         try {
-            PlatformConnector.callUrl(url);
+            PlatformUIBase.callUrl(url);
         } catch (Exception ignored) {
         }
     }

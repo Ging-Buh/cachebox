@@ -36,7 +36,7 @@ public class TileGL_Bmp extends TileGL {
     private boolean inCreation = false;
 
     public TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state, Format format) {
-        Descriptor = desc;
+        descriptor = desc;
         this.texture = null;
         this.bytes = bytes;
         this.format = format;
@@ -102,7 +102,7 @@ public class TileGL_Bmp extends TileGL {
 
     @Override
     public String toString() {
-        return "[Age: " + age + " " + State.toString() + ", " + Descriptor.toString();
+        return "[Age: " + age + " " + State.toString() + ", " + descriptor.toString();
     }
 
      @Override

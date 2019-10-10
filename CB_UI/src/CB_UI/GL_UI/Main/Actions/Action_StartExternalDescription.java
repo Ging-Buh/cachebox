@@ -19,7 +19,7 @@ import CB_Core.Database;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
@@ -83,11 +83,10 @@ public class Action_StartExternalDescription extends AbstractAction {
                 out.write(html);
                 out.close();
 
-                PlatformConnector.callUrl("file://" + filePath);
+                PlatformUIBase.callUrl("file://" + filePath);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.err(log, "Write Temp HTML:", e);
+            } catch (IOException ex) {
+                Log.err(log, "Write Temp HTML", ex);
             }
         }
     }

@@ -22,7 +22,7 @@ import CB_UI.GL_UI.Controls.PopUps.QuickDraftFeedbackPopUp;
 import CB_UI.GL_UI.Views.DraftsView;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheChangedEventListeners;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -99,7 +99,7 @@ public class Action_QuickDraft extends AbstractAction {
         SelectedCacheChangedEventListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
         QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(found);
         pop.show(PopUp_Base.SHOW_TIME_SHORT);
-        PlatformConnector.vibrate();
+        PlatformUIBase.vibrate();
     }
 
 }

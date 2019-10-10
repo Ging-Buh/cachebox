@@ -47,7 +47,7 @@ public abstract class SettingsDAO {
         return setting;
     }
 
-    public abstract void WriteToPlatformSettings(SettingBase<?> setting);
+    public abstract void writePlatformSetting(SettingBase<?> setting);
 
-    public abstract SettingBase<?> ReadFromPlatformSetting(SettingBase<?> setting);
+    public abstract SettingBase<?> readPlatformSetting(SettingBase<?> setting);
 }

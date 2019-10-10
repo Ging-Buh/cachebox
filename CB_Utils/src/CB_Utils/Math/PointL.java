@@ -1,9 +1,6 @@
 package CB_Utils.Math;
 
 public class PointL {
-    final static String POINT = "Point x/y ";
-    final static String SLASH = "/";
-
     private long x;
     private long y;
 
@@ -48,6 +45,6 @@ public class PointL {
 
 
     public String toString() {
-        return POINT + this.x + SLASH + this.y;
+        return this.x + "/" + this.y;
     }
 }

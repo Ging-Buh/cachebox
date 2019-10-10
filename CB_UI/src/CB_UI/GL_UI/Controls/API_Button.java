@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Controls;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -33,7 +33,7 @@ public class API_Button extends CB_Button {
 
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            PlatformConnector.getApiKey();
+            PlatformUIBase.getApiKey();
             return true;
         }
     };

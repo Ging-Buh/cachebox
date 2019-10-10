@@ -5,8 +5,10 @@ import CB_Utils.Settings.*;
 
 import static CB_Utils.Settings.SettingCategory.*;
 import static CB_Utils.Settings.SettingModus.*;
-import static CB_Utils.Settings.SettingStoreType.*;
-import static CB_Utils.Settings.SettingUsage.*;
+import static CB_Utils.Settings.SettingStoreType.Global;
+import static CB_Utils.Settings.SettingStoreType.Local;
+import static CB_Utils.Settings.SettingUsage.ACB;
+import static CB_Utils.Settings.SettingUsage.ALL;
 
 public interface LocatorSettings {
 
@@ -27,7 +29,7 @@ public interface LocatorSettings {
     SettingString UserMap1 = new SettingString("UserMap1", Map, EXPERT, "{JPG}{name:ESRI World_Imagery}http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", Global, ALL);
     SettingString UserMap2 = new SettingString("UserMap2", Map, EXPERT, "", Global, ALL);
     SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", Map, NEVER, Config_Core.mWorkPath + "/repository/maps", Local, ALL, false);
-    SettingStringList CurrentMapLayer = new SettingStringList("CurrentMapLayer", Map, NEVER, new String[]{"Mapnik"}, Global, ACB);
+    SettingStringList currentMapLayer = new SettingStringList("CurrentMapLayer", Map, NEVER, new String[]{"Mapnik"}, Global, ACB);
     SettingString CurrentMapOverlayLayer = new SettingString("CurrentMapOverlayLayer", Map, NEVER, "", Global, ACB);
     SettingInt lastZoomLevel = new SettingInt("lastZoomLevel", Map, NEVER, 14, Global, ALL);
     SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", Map, NEVER, true, Global, ACB);

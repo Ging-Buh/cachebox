@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public abstract class TileGL implements Disposable {
     private final int DEFAULT_TILE_SIZE = 256;
-    public Descriptor Descriptor = null;
+    public Descriptor descriptor = null;
     public TileState State;
     // zum speichern beliebiger Zusatzinfos
     public Object data;

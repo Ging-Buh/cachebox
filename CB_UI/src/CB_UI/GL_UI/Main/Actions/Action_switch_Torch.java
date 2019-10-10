@@ -15,7 +15,7 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
@@ -37,12 +37,12 @@ public class Action_switch_Torch extends AbstractAction {
 
     @Override
     public boolean getEnabled() {
-        return PlatformConnector.isTorchAvailable();
+        return PlatformUIBase.isTorchAvailable();
     }
 
     @Override
     public Sprite getIcon() {
-        if (PlatformConnector.isTorchOn()) {
+        if (PlatformUIBase.isTorchOn()) {
             return Sprites.getSprite(IconName.TORCHON.name());
         } else {
             return Sprites.getSprite(IconName.TORCHOFF.name());
@@ -51,6 +51,6 @@ public class Action_switch_Torch extends AbstractAction {
 
     @Override
     public void Execute() {
-        PlatformConnector.switchTorch();
+        PlatformUIBase.switchTorch();
     }
 }

@@ -31,7 +31,7 @@ import CB_UI.GL_UI.Main.Actions.Action_UploadLogs;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
@@ -139,7 +139,7 @@ public class DraftsView extends V_ListView {
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(true);
                     pop.show(PopUp_Base.SHOW_TIME_SHORT);
-                    PlatformConnector.vibrate();
+                    PlatformUIBase.vibrate();
                 }
             } else if (type == LogTypes.didnt_find) {
                 // DidNotFound -> fremden Cache als nicht gefunden markieren
@@ -149,7 +149,7 @@ public class DraftsView extends V_ListView {
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     QuickDraftFeedbackPopUp pop2 = new QuickDraftFeedbackPopUp(false);
                     pop2.show(PopUp_Base.SHOW_TIME_SHORT);
-                    PlatformConnector.vibrate();
+                    PlatformUIBase.vibrate();
                 }
             }
 
@@ -598,7 +598,7 @@ public class DraftsView extends V_ListView {
                 cm.addMenuItem("edit", null, this::editDraft);
                 if (aktDraft.GcId.startsWith("GL")) {
                     cm.addMenuItem("uploadLogImage", Sprites.getSprite(IconName.imagesIcon.name()), this::uploadLogImage);
-                    cm.addMenuItem("BrowseLog", null, () -> PlatformConnector.callUrl("https://coord.info/" + aktDraft.GcId));
+                    cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
                 }
                 cm.addMenuItem("uploadDrafts", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
                 cm.addMenuItem("directLog", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
@@ -626,7 +626,7 @@ public class DraftsView extends V_ListView {
             if (mPath.length() == 0) {
                 mPath = Config.mWorkPath + "/User/Media/";
             }
-            PlatformConnector.getFile(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), PathAndName -> {
+            PlatformUIBase.getFile(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), PathAndName -> {
                 InputString inputDescription = new InputString("imageDescription") {
                     public void callBack(String description) {
                         GL.that.postAsync(() -> {

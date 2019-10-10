@@ -19,13 +19,15 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_Core.Import.UnZip;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer;
-import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.LayerManager;
+import CB_Locator.Map.MapsForgeLayer;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.TrackRecorder;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -52,7 +54,6 @@ import com.badlogic.gdx.utils.Array;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
-import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 
@@ -60,6 +61,7 @@ import java.io.ByteArrayInputStream;
 import java.util.*;
 
 import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
+import static CB_Locator.Map.MapsForgeLayer.*;
 
 /**
  * @author Longri
@@ -130,44 +132,39 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void showMapLayerMenu() {
         Menu icm = new Menu("MapViewLayerMenuTitle");
 
-        // Sorting (perhaps use an arraylist of layers without the overlay layers)
-        Collections.sort(ManagerBase.manager.getLayers(), (layer1, layer2) -> layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase()));
+        String[] curentLayerNames = MapView.mapTileLoader.getCurrentLayer().getAllLayerNames();
+        for (Layer layer : LayerManager.getInstance().getLayers()) {
+            //set icon (Online, Mapsforge or Freizeitkarte)
+            Sprite sprite = null;
+            switch (layer.getMapType()) {
+                case FREIZEITKARTE:
+                    sprite = Sprites.getSprite(IconName.freizeit.name());
+                    break;
+                case MAPSFORGE:
+                    sprite = Sprites.getSprite(IconName.mapsforge_logo.name());
+                    break;
+                case ONLINE:
+                    sprite = Sprites.getSprite(IconName.download.name());
+                    break;
+                default:
+                    // case BITMAP:
+                    break;
+            }
 
-        String[] curentLayerNames = MapView.mapTileLoader.getCurrentLayer().getNames();
-        for (Layer layer : ManagerBase.manager.getLayers()) {
-            if (!layer.isOverlay()) {
-                //set icon (Online, Mapsforge or Freizeitkarte)
-                Sprite sprite = null;
-                switch (layer.getMapType()) {
-                    case FREIZEITKARTE:
-                        sprite = Sprites.getSprite(IconName.freizeit.name());
-                        break;
-                    case MAPSFORGE:
-                        sprite = Sprites.getSprite(IconName.mapsforge_logo.name());
-                        break;
-                    case ONLINE:
-                        sprite = Sprites.getSprite(IconName.download.name());
-                        break;
-                    default:
-                        // case BITMAP:
-                        break;
-                }
-
-                MenuItem mi = icm.addMenuItem("", layer.Name,
-                        (sprite == null) ? null : new SpriteDrawable(sprite),
-                        (v, x, y, pointer, button) -> {
-                            icm.close();
-                            selectLayer(layer);
-                            showLanguageSelectionMenu(layer);
-                            return true;
-                        }); // == friendlyName == FileName !!! ohne Translation
-                mi.setData(layer);
-                mi.setCheckable(true);
-                for (String str : curentLayerNames) {
-                    if (str.equals(layer.Name)) {
-                        mi.setChecked(true);
-                        break;
-                    }
+            MenuItem mi = icm.addMenuItem("", layer.getName(),
+                    (sprite == null) ? null : new SpriteDrawable(sprite),
+                    (v, x, y, pointer, button) -> {
+                        icm.close();
+                        selectLayer(layer);
+                        showLanguageSelectionMenu(layer);
+                        return true;
+                    }); // == friendlyName == FileName !!! ohne Translation
+            mi.setData(layer);
+            mi.setCheckable(true);
+            for (String str : curentLayerNames) {
+                if (str.equals(layer.getName())) {
+                    mi.setChecked(true);
+                    break;
                 }
             }
         }
@@ -176,7 +173,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private void selectLayer(Layer layer) {
-        if (layer.Name.equals(normalMapView.getCurrentLayer().Name)) {
+        if (layer.getName().equals(normalMapView.getCurrentLayer().getName())) {
             normalMapView.clearAdditionalLayers();
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
@@ -215,10 +212,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private boolean showLanguageSelectionMenu(Layer layer) {
         boolean hasLanguage = false;
         if (layer.isMapsForge()) {
-            if (layer.languages != null)
-                if (layer.languages.length > 1) {
+            if (layer.getLanguages() != null)
+                if (layer.getLanguages().length > 1) {
                     final Menu lsm = new Menu("MapViewLayerSelectLanguageTitle");
-                    for (String lang : layer.languages) {
+                    for (String lang : layer.getLanguages()) {
                         lsm.addMenuItem("", lang, null, (v, x, y, pointer, button) -> {
                             lsm.close();
                             String selectedLanguage = ((MenuItem) v).getTitle();
@@ -237,24 +234,22 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private void showMapOverlayMenu() {
         final OptionMenu icm = new OptionMenu("MapViewOverlayMenuTitle");
         icm.setSingleSelection();
-        for (Layer layer : ManagerBase.manager.getLayers()) {
-            if (layer.isOverlay()) {
-                MenuItem mi = icm.addMenuItem(layer.FriendlyName, "", null,
-                        (v, x, y, pointer, button) -> {
-                            Layer layer1 = (Layer) v.getData();
-                            if (layer1 == MapView.mapTileLoader.getCurrentOverlayLayer()) {
-                                // switch off Overlay
-                                normalMapView.SetCurrentOverlayLayer(null);
-                            } else {
-                                normalMapView.SetCurrentOverlayLayer(layer1);
-                            }
-                            icm.tickCheckBoxes((MenuItem) v);
-                            return true;
-                        });
-                mi.setCheckable(true);
-                mi.setChecked(layer == MapView.mapTileLoader.getCurrentOverlayLayer());
-                mi.setData(layer);
-            }
+        for (Layer layer : LayerManager.getInstance().getOverlayLayers()) {
+            MenuItem mi = icm.addMenuItem(layer.getFriendlyName(), "", null,
+                    (v, x, y, pointer, button) -> {
+                        Layer layer1 = (Layer) v.getData();
+                        if (layer1 == MapView.mapTileLoader.getCurrentOverlayLayer()) {
+                            // switch off Overlay
+                            normalMapView.setCurrentOverlayLayer(null);
+                        } else {
+                            normalMapView.setCurrentOverlayLayer(layer1);
+                        }
+                        icm.tickCheckBoxes((MenuItem) v);
+                        return true;
+                    });
+            mi.setCheckable(true);
+            mi.setChecked(layer == MapView.mapTileLoader.getCurrentOverlayLayer());
+            mi.setData(layer);
         }
         icm.show();
     }
@@ -348,7 +343,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             GL.that.postAsync(() -> {
                                 ((MenuItem) v).setDisabled(false);
                                 GL.that.renderOnce();
-                                Download.Download("http://download.openandromaps.org/themes/Elevate4.zip", target);
+                                Download.download("http://download.openandromaps.org/themes/Elevate4.zip", target);
                                 try {
                                     UnZip.extractFolder(target, false);
                                 } catch (Exception ex) {
@@ -415,7 +410,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                             String zipFile = fzkThemesInfo.Url.substring(fzkThemesInfo.Url.lastIndexOf("/") + 1);
                             String target = themesPath + "/" + zipFile;
 
-                            Download.Download(fzkThemesInfo.Url, target);
+                            Download.download(fzkThemesInfo.Url, target);
                             try {
                                 UnZip.extractFolder(target);
                             } catch (Exception ex) {
@@ -494,19 +489,19 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         Menu themeMenu = new Menu("MapViewThemeMenuTitle");
         RenderThemes = getRenderThemes();
 
-        addThemeMenuItem(themeMenu, ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT);
+        addThemeMenuItem(themeMenu, INTERNAL_THEME_DEFAULT, INTERNAL_THEME_DEFAULT);
         ArrayList<String> themes = new ArrayList<>(RenderThemes.keySet());
         Collections.sort(themes, (s1, s2) -> s1.toLowerCase().compareTo(s2.toLowerCase()));
         for (String theme : themes) {
             addThemeMenuItem(themeMenu, theme, RenderThemes.get(theme));
         }
-        addThemeMenuItem(themeMenu, ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
-        addThemeMenuItem(themeMenu, ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
+        addThemeMenuItem(themeMenu, INTERNAL_THEME_CAR, INTERNAL_THEME_CAR);
+        addThemeMenuItem(themeMenu, INTERNAL_THEME_OSMARENDER, INTERNAL_THEME_OSMARENDER);
 
         // for showMapStyleSelection to work
-        RenderThemes.put(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT);
-        RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
-        RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
+        RenderThemes.put(INTERNAL_THEME_DEFAULT, INTERNAL_THEME_DEFAULT);
+        RenderThemes.put(INTERNAL_THEME_CAR, INTERNAL_THEME_CAR);
+        RenderThemes.put(INTERNAL_THEME_OSMARENDER, INTERNAL_THEME_OSMARENDER);
 
         themeMenu.show();
         return true;
@@ -665,15 +660,15 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private HashMap<String, String> getMapStyles(String selectedTheme) {
         if (selectedTheme.length() > 0) {
             try {
-                GetStylesCallback getStylesCallBack = new GetStylesCallback();
-                XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getStylesCallBack);
+                StylesCallback stylesCallBack = new StylesCallback();
+                XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, stylesCallBack);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.manager.getGraphicFactory(ManagerBase.manager.getDisplayModel().getScaleFactor()), new DisplayModel(), renderTheme);
+                    CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
-                return getStylesCallBack.getStyles();
+                return stylesCallBack.getStyles();
             } catch (Exception ignored) {
             }
         }
@@ -688,7 +683,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 getOverlaysCallback.setLayer(mapStyleId);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    CB_RenderThemeHandler.getRenderTheme(ManagerBase.manager.getGraphicFactory(ManagerBase.manager.getDisplayModel().getScaleFactor()), new DisplayModel(), renderTheme);
+                    CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
@@ -699,7 +694,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return new HashMap<>();
     }
 
-    private class GetStylesCallback implements XmlRenderThemeMenuCallback {
+    private static class StylesCallback implements XmlRenderThemeMenuCallback {
         private HashMap<String, String> styles;
 
         @Override

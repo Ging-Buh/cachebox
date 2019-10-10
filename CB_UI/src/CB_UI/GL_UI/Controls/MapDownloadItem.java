@@ -148,7 +148,7 @@ public class MapDownloadItem extends CB_View_Base {
 
             progressBar.setProgress(lastProgress, lastProgress + " %");
 
-            if (Download.Download(mapInfo.Url, target)) {
+            if (Download.download(mapInfo.Url, target)) {
                 Log.info(log, "Unzip " + target + " start.");
                 try {
                     UnZip.extractFolder(target);

@@ -64,8 +64,8 @@ public class Android_TextInput implements TextInputInterface {
                     manager.showSoftInput(input, 0);
                 }, 100);
             });
-        } catch (Exception e) {
-            Log.err("Android_TextInput", e.getLocalizedMessage(), e);
+        } catch (Exception ex) {
+            Log.err("Android_TextInput", "requestKeyboard", ex);
         }
     }
 }

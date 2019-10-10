@@ -10,7 +10,7 @@ import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
 import CB_UI.TrackRecorder;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.ViewConst;
@@ -55,7 +55,7 @@ import java.util.TimerTask;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public class ShowViewListener implements PlatformConnector.IShowViewListener {
+public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private final static String sKlasse = "ShowViewListener";
     private static final int REQUEST_CAPTURE_IMAGE = 61216516;
     private static final int REQUEST_CAPTURE_VIDEO = 61216517;
@@ -132,7 +132,7 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
             gdxView.setOnTouchListener(onTouchListener);
             downSlider.invalidate();
         } catch (Exception ex) {
-            Log.err(sKlasse, "onResume: " + ex.toString(), ex);
+            Log.err(sKlasse, "onResume", ex);
         }
     }
 
@@ -890,8 +890,8 @@ public class ShowViewListener implements PlatformConnector.IShowViewListener {
                 text = text + ("\n\n" + "Location");
                 text = text + ("\n" + Formatter.FormatCoordinate(cache.Pos, ""));
             }
-            if (PlatformConnector.getClipboard() != null)
-                text = text + ("\n" + PlatformConnector.getClipboard().getContents());
+            if (PlatformUIBase.getClipboard() != null)
+                text = text + ("\n" + PlatformUIBase.getClipboard().getContents());
             text = text + ("\n" + smiley + "AndroidCacheBox");
             shareIntent.putExtra(Intent.EXTRA_TEXT, text);
             mainActivity.startActivity(Intent.createChooser(shareIntent, Translation.get("ShareWith")));

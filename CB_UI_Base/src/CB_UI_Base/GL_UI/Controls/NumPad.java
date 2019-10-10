@@ -1,7 +1,7 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
@@ -225,7 +225,7 @@ public class NumPad extends CB_View_Base {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
-                    PlatformConnector.vibrate();
+                    PlatformUIBase.vibrate();
                     mKeyPressedListener.KeyPressed("O");
                     return true;
                 }
@@ -237,7 +237,7 @@ public class NumPad extends CB_View_Base {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
-                    PlatformConnector.vibrate();
+                    PlatformUIBase.vibrate();
                     mKeyPressedListener.KeyPressed("C");
                     return true;
                 }
@@ -250,7 +250,7 @@ public class NumPad extends CB_View_Base {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
-                    PlatformConnector.vibrate();
+                    PlatformUIBase.vibrate();
                     mKeyPressedListener.KeyPressed("D");
                     return true;
                 }
@@ -260,7 +260,7 @@ public class NumPad extends CB_View_Base {
 
         btn_Bck.addClickHandler((v, x, y, pointer, button) -> {
             if (mKeyPressedListener != null) {
-                PlatformConnector.vibrate();
+                PlatformUIBase.vibrate();
                 mKeyPressedListener.KeyPressed("B");
                 return true;
             }

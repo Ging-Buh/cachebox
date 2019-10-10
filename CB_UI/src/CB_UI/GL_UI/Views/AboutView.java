@@ -33,7 +33,6 @@ import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheChangedEventListener;
 import CB_UI.SelectedCacheChangedEventListeners;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
@@ -53,6 +52,9 @@ import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import static CB_UI_Base.Events.PlatformUIBase.callUrl;
+import static CB_UI_Base.Events.PlatformUIBase.hideForDialog;
 
 public class AboutView extends CB_View_Base implements SelectedCacheChangedEventListener, GpsStateChangeEvent, PositionChangedEvent {
     private static AboutView that;
@@ -91,7 +93,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
             chart.onShow();
         refreshText();
 
-        PlatformConnector.hideForDialog();
+        hideForDialog();
     }
 
     @Override
@@ -276,7 +278,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
         WaypointLabel.addClickHandler((v, x, y, pointer, button) -> {
             if (GlobalCore.getSelectedCache() == null)
                 return true;
-            PlatformConnector.callUrl(GlobalCore.getSelectedCache().getUrl());
+            callUrl(GlobalCore.getSelectedCache().getUrl());
             return true;
         });
 

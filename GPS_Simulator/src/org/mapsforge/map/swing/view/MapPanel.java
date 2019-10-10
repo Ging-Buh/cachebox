@@ -3,8 +3,8 @@ package org.mapsforge.map.swing.view;
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
-import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformUIBase;
+import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
 import CB_Utils.fileProvider.FileFactory;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
@@ -122,7 +122,7 @@ public class MapPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getActionCommand().equals("Load Map")) {
             // load Map
-            PlatformConnector.getFile("", "", "Load Map", "Load", new IgetFileReturnListener() {
+            PlatformUIBase.getFile("", "", "Load Map", "Load", new IgetFileReturnListener() {
                 @Override
                 public void returnFile(String Path) {
                     SimulatorMain.prefs.put("loadedMap", Path);

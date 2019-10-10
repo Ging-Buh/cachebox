@@ -85,8 +85,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         boolean needRestart = false;
 
         try {
-            for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
-                SettingBase<?> setting = it.next();
+            for (SettingBase<?> setting : this) {
                 if (!setting.isDirty())
                     continue; // is not changed -> do not
 
@@ -96,7 +95,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                 } else if (Global == setting.getStoreType() || (!canUsePlatformSettings() && Platform == setting.getStoreType())) {
                     dao.WriteToDatabase(getSettingsDB(), setting);
                 } else if (Platform == setting.getStoreType()) {
-                    dao.WriteToPlatformSettings(setting);
+                    dao.writePlatformSetting(setting);
                     dao.WriteToDatabase(getSettingsDB(), setting);
                 }
 
@@ -144,7 +143,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                         isPlatform = true;
                         SettingBase<?> cpy = setting.copy();
                         cpy = dao.ReadFromDatabase(getSettingsDB(), cpy);
-                        setting = dao.ReadFromPlatformSetting(setting);
+                        setting = dao.readPlatformSetting(setting);
 
                         // chk for Value on User.db3 and cleared Platform Value
 
@@ -154,13 +153,13 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                             if (st.value.length() == 0) {
                                 // Platform Settings are empty use db3 value or default
                                 setting = dao.ReadFromDatabase(getSettingsDB(), setting);
-                                dao.WriteToPlatformSettings(setting);
+                                dao.writePlatformSetting(setting);
                             }
                         } else if (!cpy.value.equals(setting.value)) {
                             if (setting.value.equals(setting.defaultValue)) {
                                 // override Platformsettings with UserDBSettings
                                 setting.setValueFrom(cpy);
-                                dao.WriteToPlatformSettings(setting);
+                                dao.writePlatformSetting(setting);
                                 setting.clearDirty();
                                 isPlattformoverride = true;
                             } else {

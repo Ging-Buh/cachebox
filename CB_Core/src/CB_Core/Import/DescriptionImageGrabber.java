@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import static CB_Core.Api.GroundspeakAPI.*;
-import static CB_Utils.http.Download.Download;
+import static CB_Utils.http.Download.download;
 
 public class DescriptionImageGrabber {
     private static final String log = "DescriptionImageGrabber";
@@ -289,7 +289,7 @@ public class DescriptionImageGrabber {
                 ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                 // direkt download
-                if (Download(uri.toString(), local)) {
+                if (download(uri.toString(), local)) {
                     // there could be an pseudo image indicating a pprevious error
                     // this file must be deleted
                     DeleteMissingImageInformation(local);
@@ -357,7 +357,7 @@ public class DescriptionImageGrabber {
                             continue; // dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
                         }
                         // todo first look for an image from gsak
-                        if (Download(imageEntry.ImageUrl, imageEntry.LocalPath)) {
+                        if (download(imageEntry.ImageUrl, imageEntry.LocalPath)) {
                             // there could be an pseudo image indicating a pprevious error
                             // this file must be deleted
                             DeleteMissingImageInformation(imageEntry.LocalPath);

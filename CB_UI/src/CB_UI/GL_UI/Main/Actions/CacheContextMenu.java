@@ -121,8 +121,8 @@ public class CacheContextMenu {
                     if (geoCacheRelateds.size() > 0) {
                         try {
                             WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
-                        } catch (InterruptedException e) {
-                            Log.err(ClassName, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                        } catch (InterruptedException ex) {
+                            Log.err(ClassName, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
                         }
 
                         // Reload result from DB

@@ -1,5 +1,6 @@
 package cb_rpc;
 
+import CB_Utils.Log.Log;
 import cb_rpc.Functions.RpcAnswer;
 import cb_rpc.Functions.RpcMessage;
 import cb_rpc.Settings.CB_Rpc_Settings;
@@ -72,7 +73,7 @@ public class Rpc_Client {
                 return (RpcAnswer) obj;
             }
         } catch (Exception ex) {
-            System.out.println(ex.toString() + " - " + ex.getMessage());
+            Log.err("Rpc_Client","",ex);
             return null;
         }
 

@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class API_ErrorEventHandlerList {
     private static final long MIN_CALL_TIME = 5000;
 
-    private static ArrayList<API_ErrorEventHandler> list = new ArrayList<API_ErrorEventHandler>();
+    private static ArrayList<API_ErrorEventHandler> list = new ArrayList<>();
     private static Thread threadCall;
     private static long lastCall;
 

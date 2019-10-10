@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import static CB_Utils.http.Download.Download;
+import static CB_Utils.http.Download.download;
 
 public class ImportCBServer {
     private static final String log = "ImportCBServer";
@@ -149,7 +149,7 @@ public class ImportCBServer {
                                     file = FileFactory.createFile(imagePath);
                                     if (!file.exists()) {
                                         Log.info(log, "Download " + imagePath + " from " + url);
-                                        Download(url, imagePath);
+                                        download(url, imagePath);
                                     } else {
                                         Log.info(log, "already downloaded " + imagePath + " from " + url);
                                     }

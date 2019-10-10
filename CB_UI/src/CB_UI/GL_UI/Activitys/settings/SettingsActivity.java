@@ -19,7 +19,7 @@ import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
@@ -870,7 +870,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             final String absolutePath = (file != null) ? file.getAbsolutePath() : "";
             Menu icm = new Menu("SelectPathTitle");
             icm.addMenuItem("select_folder", null,
-                    () -> PlatformConnector.getFolder(absolutePath, Translation.get("select_folder"), Translation.get("select"), Path -> {
+                    () -> PlatformUIBase.getFolder(absolutePath, Translation.get("select_folder"), Translation.get("select"), Path -> {
                         // check WriteProtection
                         if (needWritePermission && !FileIO.canWrite(Path)) {
                             String WriteProtectionMsg = Translation.get("NoWriteAcces");
@@ -912,7 +912,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             Menu icm = new Menu("SelectFileTitle");
 
             icm.addMenuItem("select_file", null,
-                    () -> PlatformConnector.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), Path1 -> {
+                    () -> PlatformUIBase.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), Path1 -> {
                         settingFile.setValue(Path1);
                         resortList();
                     }));

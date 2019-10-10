@@ -17,6 +17,7 @@ package CB_Core;
 
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Types.Cache;
+import CB_UI_Base.Energy;
 
 import java.util.ArrayList;
 
@@ -41,7 +42,7 @@ public class CacheListChangedEventList {
     }
 
     public static void Call() {
-        if (CoreSettingsForward.DisplayOff)
+        if (Energy.isDisplayOff())
             return;
 
         synchronized (Database.Data.cacheList) {

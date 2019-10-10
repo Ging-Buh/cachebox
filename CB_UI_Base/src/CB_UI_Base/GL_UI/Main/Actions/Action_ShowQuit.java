@@ -16,7 +16,7 @@
 package CB_UI_Base.GL_UI.Main.Actions;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -67,13 +67,13 @@ public class Action_ShowQuit extends AbstractAction {
                     if (which == MessageBox.BUTTON_POSITIVE) {
 
                         //Log.debug(log, "\r\n Quit");
-                        PlatformConnector.quit();
+                        PlatformUIBase.quit();
                     }
                     return true;
                 }
             });
         } catch (Exception e) {
-            PlatformConnector.quit();
+            PlatformUIBase.quit();
         }
     }
 

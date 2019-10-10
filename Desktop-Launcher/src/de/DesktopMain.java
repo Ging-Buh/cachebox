@@ -8,16 +8,17 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.IPlatformListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
+import CB_UI_Base.Events.PlatformUIBase;
+import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformUIBase.IgetFolderReturnListener;
+import CB_UI_Base.Events.PlatformUIBase.Methods;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.UiSizes;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Log.Log;
 import CB_Utils.Plattform;
 import CB_Utils.Settings.SettingBase;
@@ -25,21 +26,26 @@ import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.FileFactory;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import de.CB_Texturepacker.Desktop_Packer;
-import de.Map.DesktopManager;
 import de.cb.sqlite.DesktopDB;
 import de.cb.sqlite.SQLiteClass;
 import de.cb.sqlite.SQLiteInterface;
-import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.awt.graphics.ext_AwtGraphicFactory;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.io.File;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
+import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -89,8 +95,6 @@ public class DesktopMain {
             Config.newInstall.setValue(false);
             Config.AcceptChanges();
         }
-
-        new DesktopManager().setDisplayModel(new DisplayModel());
 
         int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 
@@ -164,12 +168,12 @@ public class DesktopMain {
             }
         };
         timer.schedule(task, 600);
-        PlatformConnector.setClipboard(new DesktopClipboard());
+        PlatformUIBase.setClipboard(new DesktopClipboard());
 
-        PlatformConnector.setPlatformListener(new IPlatformListener() {
+        PlatformUIBase.setMethods(new Methods() {
 
             @Override
-            public void writeSetting(SettingBase<?> setting) {
+            public void writePlatformSetting(SettingBase<?> setting) {
 
                 if (setting instanceof SettingBool) {
                     prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
@@ -190,7 +194,7 @@ public class DesktopMain {
             }
 
             @Override
-            public SettingBase<?> readSetting(SettingBase<?> setting) {
+            public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
                 if (setting instanceof SettingString) {
                     String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
                     ((SettingString) setting).setValue(value);
@@ -206,10 +210,6 @@ public class DesktopMain {
             }
 
             private boolean torchOn = false;
-
-            @Override
-            public void setScreenLockTime(int value) {
-            }
 
             @Override
             public boolean isOnline() {
@@ -365,6 +365,63 @@ public class DesktopMain {
             @Override
             public void handleExternalRequest() {
 
+            }
+
+            @Override
+            public byte[] getImageFromFile(String cachedTileFilename) throws IOException {
+                CB_Utils.fileProvider.File myImageFile = FileFactory.createFile(cachedTileFilename);
+                BufferedImage img = ImageIO.read(myImageFile.getFileInputStream());
+                ByteArrayOutputStream bas = new ByteArrayOutputStream();
+                ImageIO.write(img, "png", bas);
+                byte[] data = bas.toByteArray();
+                return data;
+            }
+
+            @Override
+            public PlatformUIBase.ImageData getImagePixel(byte[] img) {
+                InputStream in = new ByteArrayInputStream(img);
+                BufferedImage bImage;
+                try {
+                    bImage = ImageIO.read(in);
+                } catch (IOException e) {
+                    return null;
+                }
+
+                PlatformUIBase.ImageData imgData = new PlatformUIBase.ImageData();
+                imgData.width = bImage.getWidth();
+                imgData.height = bImage.getHeight();
+
+                BufferedImage intimg = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                ColorConvertOp op = new ColorConvertOp(null);
+                op.filter(bImage, intimg);
+
+                Raster ras = intimg.getData();
+                DataBufferInt db = (DataBufferInt) ras.getDataBuffer();
+                imgData.PixelColorArray = db.getData();
+
+                return imgData;
+
+            }
+
+            @Override
+            public byte[] getImageFromData(PlatformUIBase.ImageData imgData) {
+
+                BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
+
+                dstImage.getRaster().setDataElements(0, 0, imgData.width, imgData.height, imgData.PixelColorArray);
+                ByteArrayOutputStream bas = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(dstImage, "png", bas);
+                } catch (IOException e) {
+                    return null;
+                }
+                return bas.toByteArray();
+            }
+
+            @Override
+            public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
+                return ext_AwtGraphicFactory.getInstance(Scalefactor);
             }
 
         });

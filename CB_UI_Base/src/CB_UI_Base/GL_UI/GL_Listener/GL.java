@@ -19,7 +19,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.Controls.Animation.Fader;
@@ -54,7 +54,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static CB_UI_Base.Math.GL_UISizes.MainBtnSize;
@@ -198,7 +201,7 @@ public class GL implements ApplicationListener {
             return;
         }
 
-        if (Energy.DisplayOff())
+        if (Energy.isDisplayOff())
             return;
 
         if (!started.get() || renderingIsStopped)
@@ -326,12 +329,12 @@ public class GL implements ApplicationListener {
 
         if (currentActivityIsShown && mActivity.getCildCount() <= 0) {
             currentActivityIsShown = false;
-            PlatformConnector.hideForDialog();
+            PlatformUIBase.hideForDialog();
             renderOnce();
         }
         if (currentDialogIsShown && mDialog.getCildCount() <= 0) {
             currentDialogIsShown = false;
-            PlatformConnector.hideForDialog();
+            PlatformUIBase.hideForDialog();
             renderOnce();
         }
 
@@ -470,7 +473,7 @@ public class GL implements ApplicationListener {
             mGL_Listener_Interface.RenderDirty();
 
         if (currentActivityIsShown || currentDialogIsShown) {
-            PlatformConnector.showForDialog();
+            PlatformUIBase.showForDialog();
         } else if (child != null) {
             child.onShow();
         }
@@ -564,7 +567,7 @@ public class GL implements ApplicationListener {
         } catch (Exception e) {
 
         }
-        PlatformConnector.showForDialog();
+        PlatformUIBase.showForDialog();
 
         renderOnce();
     }
@@ -601,7 +604,7 @@ public class GL implements ApplicationListener {
         }
 
         if (MsgToPlatformConector)
-            PlatformConnector.hideForDialog();
+            PlatformUIBase.hideForDialog();
         if (currentDialog != null) {
             //check if KeyboardFocus on this Dialog
             if (focusedEditTextField != null && focusedEditTextField.getParent() == currentDialog) {
@@ -638,7 +641,7 @@ public class GL implements ApplicationListener {
 
         clearRenderViews();
         if (currentActivityIsShown) {
-            PlatformConnector.showForDialog();
+            PlatformUIBase.showForDialog();
 
         }
         renderOnce();
@@ -662,7 +665,7 @@ public class GL implements ApplicationListener {
     public void showActivity(final ActivityBase activity) {
         setFocusedEditTextField(null);
         clearRenderViews();
-        PlatformConnector.showForDialog();
+        PlatformUIBase.showForDialog();
 
         if (aktPopUp != null) {
             closePopUp(aktPopUp);
@@ -697,7 +700,7 @@ public class GL implements ApplicationListener {
         child.onHide();
         currentActivity.onShow();
 
-        PlatformConnector.showForDialog();
+        PlatformUIBase.showForDialog();
     }
 
     public void closeActivity() {
@@ -724,7 +727,7 @@ public class GL implements ApplicationListener {
             currentActivityIsShown = true;
             mActivity.addChildDirekt(currentActivity);
             if (MsgToPlatformConector)
-                PlatformConnector.showForDialog();
+                PlatformUIBase.showForDialog();
         } else {
             currentActivity.onHide();
 
@@ -746,7 +749,7 @@ public class GL implements ApplicationListener {
             currentActivityIsShown = false;
             darknessAlpha = 0f;
             if (MsgToPlatformConector)
-                PlatformConnector.hideForDialog();
+                PlatformUIBase.hideForDialog();
             child.onShow();
         }
 
@@ -1117,9 +1120,7 @@ public class GL implements ApplicationListener {
     private void calcNewRenderSpeed() {
         synchronized (renderViews) {
             int minDelay = 0;
-            Iterator<Integer> it = renderViews.values().iterator();
-            while (it.hasNext()) {
-                int delay = it.next();
+            for (int delay : renderViews.values()) {
                 if (delay > minDelay)
                     minDelay = delay;
             }

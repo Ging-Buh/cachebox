@@ -29,7 +29,7 @@ import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
@@ -340,7 +340,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 mPath = Config.mWorkPath + "/User";
             }
             mPath = mPath + "/" + Config.TemplateLastUsedName.getValue();
-            PlatformConnector.getFile(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), PathAndName -> {
+            PlatformUIBase.getFile(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), PathAndName -> {
                 File file = FileFactory.createFile(PathAndName);
                 BufferedReader br = null;
                 String strLine;

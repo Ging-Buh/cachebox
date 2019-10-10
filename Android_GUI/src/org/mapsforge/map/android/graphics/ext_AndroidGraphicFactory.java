@@ -39,7 +39,7 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
         this.ScaleFactor = 1f;
     }
 
-    protected ext_AndroidGraphicFactory(float scaleFactor) {
+    private ext_AndroidGraphicFactory(float scaleFactor) {
         super(aplication);
         DisplayModel.setDeviceScaleFactor(scaleFactor);
         this.ScaleFactor = scaleFactor;
@@ -50,10 +50,6 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
         INSTANCE = new AndroidGraphicFactory(app);
     }
 
-    // ############################################################################################
-    // Overrides for CB.ext_GraphicFactory
-    // ############################################################################################
-
     public static ext_GraphicFactory getInstance(float ScaleFactor) {
         if (FactoryList.containsKey(ScaleFactor))
             return FactoryList.get(ScaleFactor);
@@ -62,6 +58,10 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
         FactoryList.put(ScaleFactor, factory);
         return factory;
     }
+
+    // ############################################################################################
+    // Overrides for CB.ext_GraphicFactory
+    // ############################################################################################
 
     @Override
     public ext_Matrix createMatrix(ext_Matrix matrix) {

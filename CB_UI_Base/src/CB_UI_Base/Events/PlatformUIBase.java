@@ -17,19 +17,22 @@ package CB_UI_Base.Events;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ViewID;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Settings.SettingBase;
 import com.badlogic.gdx.utils.Clipboard;
 import de.cb.sqlite.SQLiteInterface;
+import org.mapsforge.core.graphics.GraphicFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * @author Longri
+ * This is the possibility of static access to functions that are specific to the platform the app is running on
  */
-public class PlatformConnector {
+public class PlatformUIBase {
     public static int AndroidVersion = 999;
     private static Thread threadVibrate;
-    private static IPlatformListener platformListener;
+    private static Methods methods;
     private static IShowViewListener showViewListener;
     private static ArrayList<String> sendToMediaScannerList;
     private static Clipboard clipBoard;
@@ -86,26 +89,30 @@ public class PlatformConnector {
         }
     }
 
-    public static SettingBase<?> readSetting(SettingBase<?> setting) {
-        if (platformListener != null)
-            setting = platformListener.readSetting(setting);
+    public static void setMethods(Methods methods) {
+        PlatformUIBase.methods = methods;
+    }
+
+    public static SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
+        if (methods != null)
+            setting = methods.readPlatformSetting(setting);
         return setting;
     }
 
-    public static <T> void writeSetting(SettingBase<T> setting) {
-        if (platformListener != null)
-            platformListener.writeSetting(setting);
+    public static <T> void writePlatformSetting(SettingBase<T> setting) {
+        if (methods != null)
+            methods.writePlatformSetting(setting);
     }
 
     public static boolean canUsePlatformSettings() {
-        return (platformListener != null);
+        return (methods != null);
     }
 
     public static void vibrate() {
-        if (platformListener != null) {
+        if (methods != null) {
             if (threadVibrate == null) {
                 threadVibrate = new Thread(() -> {
-                    platformListener.vibrate();
+                    methods.vibrate();
                 });
             }
             threadVibrate.run();
@@ -113,107 +120,98 @@ public class PlatformConnector {
     }
 
     public static boolean isOnline() {
-        if (platformListener != null) {
-            return platformListener.isOnline();
+        if (methods != null) {
+            return methods.isOnline();
         }
         return false;
     }
 
     public static boolean isGPSon() {
-        if (platformListener != null) {
-            return platformListener.isGPSon();
+        if (methods != null) {
+            return methods.isGPSon();
         }
 
         return false;
     }
 
     public static boolean isTorchAvailable() {
-        if (platformListener != null) {
-            return platformListener.isTorchAvailable();
+        if (methods != null) {
+            return methods.isTorchAvailable();
         }
         return false;
     }
 
     public static boolean isTorchOn() {
-        if (platformListener != null) {
-            return platformListener.isTorchOn();
+        if (methods != null) {
+            return methods.isTorchOn();
         }
         return false;
     }
 
     public static void switchTorch() {
-        if (platformListener != null) {
-            platformListener.switchTorch();
+        if (methods != null) {
+            methods.switchTorch();
         }
     }
 
     public static void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
-        if (platformListener != null)
-            platformListener.getFile(initialPath, extension, TitleText, ButtonText, returnListener);
+        if (methods != null)
+            methods.getFile(initialPath, extension, TitleText, ButtonText, returnListener);
     }
 
     public static void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
-        if (platformListener != null)
-            platformListener.getFolder(initialPath, TitleText, ButtonText, returnListener);
+        if (methods != null)
+            methods.getFolder(initialPath, TitleText, ButtonText, returnListener);
     }
 
     public static void quit() {
-        if (platformListener != null)
-            platformListener.quit();
+        if (methods != null)
+            methods.quit();
     }
 
     public static void getApiKey() {
-        if (platformListener != null)
-            platformListener.getApiKey();
-    }
-
-    public static void setScreenLockTime(int value) {
-        if (platformListener != null)
-            platformListener.setScreenLockTime(value);
-    }
-
-    public static void setPlatformListener(IPlatformListener listener) {
-        platformListener = listener;
+        if (methods != null)
+            methods.getApiKey();
     }
 
     public static void callUrl(String url) {
-        if (platformListener != null)
-            platformListener.callUrl(url);
+        if (methods != null)
+            methods.callUrl(url);
     }
 
     public static void startPictureApp(String file) {
-        if (platformListener != null)
-            platformListener.startPictureApp(file);
+        if (methods != null)
+            methods.startPictureApp(file);
     }
 
     public static SQLiteInterface getSQLInstance() {
-        if (platformListener != null) {
-            return platformListener.getSQLInstance();
+        if (methods != null) {
+            return methods.getSQLInstance();
         } else return null;
     }
 
     public static void freeSQLInstance(SQLiteInterface sqlInstance) {
-        if (platformListener != null) {
-            platformListener.freeSQLInstance(sqlInstance);
+        if (methods != null) {
+            methods.freeSQLInstance(sqlInstance);
         }
     }
 
 
     public static void switchToGpsMeasure() {
-        if (platformListener != null) {
-            platformListener.switchToGpsMeasure();
+        if (methods != null) {
+            methods.switchToGpsMeasure();
         }
     }
 
     public static void switchToGpsDefault() {
-        if (platformListener != null) {
-            platformListener.switchtoGpsDefault();
+        if (methods != null) {
+            methods.switchtoGpsDefault();
         }
     }
 
     public static void handleExternalRequest() {
-        if (platformListener != null) {
-            platformListener.handleExternalRequest();
+        if (methods != null) {
+            methods.handleExternalRequest();
         }
     }
 
@@ -239,7 +237,23 @@ public class PlatformConnector {
     }
 
     public static void setClipboard(Clipboard clipBoard) {
-        PlatformConnector.clipBoard = clipBoard;
+        PlatformUIBase.clipBoard = clipBoard;
+    }
+
+    public static byte[] getImageFromFile(String cachedTileFilename) throws IOException {
+        return methods.getImageFromFile(cachedTileFilename);
+    }
+
+    public static ImageData getImagePixel(byte[] b) {
+        return methods.getImagePixel(b);
+    }
+
+    public static byte[] getImageFromData(ImageData imageDataWithColorMatrixManipulation) {
+        return methods.getImageFromData(imageDataWithColorMatrixManipulation);
+    }
+
+    public static GraphicFactory getGraphicFactory(float scaleFactor) {
+        return methods.getGraphicFactory(scaleFactor);
     }
 
     public interface IShowViewListener {
@@ -260,12 +274,10 @@ public class PlatformConnector {
         void requestLayout();
     }
 
-    public interface IPlatformListener {
-        SettingBase<?> readSetting(SettingBase<?> setting);
+    public interface Methods {
+        SettingBase<?> readPlatformSetting(SettingBase<?> setting);
 
-        void writeSetting(SettingBase<?> setting);
-
-        void setScreenLockTime(int value);
+        void writePlatformSetting(SettingBase<?> setting);
 
         boolean isOnline();
 
@@ -300,6 +312,14 @@ public class PlatformConnector {
         void quit();
 
         void handleExternalRequest();
+
+        byte[] getImageFromFile(String cachedTileFilename) throws IOException;
+
+        ImageData getImagePixel(byte[] img);
+
+        byte[] getImageFromData(ImageData imgData);
+
+        ext_GraphicFactory getGraphicFactory(float Scalefactor);
     }
 
     public interface IgetFileReturnListener {
@@ -309,4 +329,11 @@ public class PlatformConnector {
     public interface IgetFolderReturnListener {
         void returnFolder(String Path);
     }
+
+    public static class ImageData {
+        public int[] PixelColorArray;
+        public int width;
+        public int height;
+    }
+
 }

@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.ViewID;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,7 +17,7 @@ public class Action_PlatformActivity extends AbstractAction {
 
     @Override
     public void Execute() {
-        PlatformConnector.showView(viewID, 0, 0, 0, 0);
+        PlatformUIBase.showView(viewID, 0, 0, 0, 0);
     }
 
     @Override

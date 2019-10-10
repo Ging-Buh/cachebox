@@ -15,43 +15,47 @@
  */
 package CB_Locator.Map;
 
+import CB_Utils.Log.Log;
+
 public class MapTileCache {
 
     private final long[] EMPTY_HashList;
     private final TileGL[] EMPTY_TileList;
     private final short[] EMPTY_IndexList;
 
-    private final long[] HashList;
+    private final long[] hashList;
     private final TileGL[] tileList;
-    private final short[] IndexList;
-    private final short Capacity;
-    private final short[] DrawingIndexList;
-    private short Size = 0;
-    private short tilesToDrawSize = 0;
+    private final short[] indexList;
+    private final short capacity;
+    private final short[] tilesToDraw;
+    private short numberOfLoadedTiles = 0;
+    private short tilesToDrawCounter = 0;
+    int changeCounter;
 
     MapTileCache(short capacity) {
-        HashList = new long[capacity];
+        hashList = new long[capacity];
         tileList = new TileGL[capacity];
-        IndexList = new short[capacity];
-        DrawingIndexList = new short[capacity];
+        indexList = new short[capacity];
+        tilesToDraw = new short[capacity];
 
         EMPTY_HashList = new long[capacity];
         EMPTY_TileList = new TileGL[capacity];
         EMPTY_IndexList = new short[capacity];
 
-        Capacity = capacity;
+        this.capacity = capacity;
 
         // Initial Empty Lists
-        for (short i = 0; i < Capacity; i++) {
+        for (short i = 0; i < this.capacity; i++) {
             EMPTY_HashList[i] = 0;
             EMPTY_TileList[i] = null;
             EMPTY_IndexList[i] = i;
         }
         clearIndexList();
+        changeCounter = 0;
     }
 
     private void clearIndexList() {
-        System.arraycopy(EMPTY_IndexList, 0, IndexList, 0, Capacity);
+        System.arraycopy(EMPTY_IndexList, 0, indexList, 0, capacity);
     }
 
     public void add(Long Hash, TileGL tile) {
@@ -63,26 +67,26 @@ public class MapTileCache {
         if (tileList[freeIndex] != null) {
             tileList[freeIndex].dispose();
         }
-        HashList[freeIndex] = Hash;
+        hashList[freeIndex] = Hash;
         tileList[freeIndex] = tile;
-        IndexList[0] = freeIndex;
-        Size++;
-        if (Size > Capacity)
-            Size = (Capacity);
-
+        indexList[0] = freeIndex;
+        numberOfLoadedTiles++;
+        if (numberOfLoadedTiles > capacity)
+            numberOfLoadedTiles = capacity;
+        changeCounter++;
     }
 
     private short addIndex() {
-        short ret = IndexList[Capacity - 1];
+        short ret = indexList[capacity - 1];
         // Move IndexList
-        System.arraycopy(IndexList, 0, IndexList, 1, Capacity - 1);
+        System.arraycopy(indexList, 0, indexList, 1, capacity - 1);
         return ret;
     }
 
     public boolean containsKey(Long Hash) {
         boolean cont = false;
-        for (int i = 0; i < (int) Capacity; i++) {
-            if (HashList[i] == Hash) {
+        for (int i = 0; i < (int) capacity; i++) {
+            if (hashList[i] == Hash) {
                 cont = true;
                 break;
             }
@@ -97,8 +101,8 @@ public class MapTileCache {
 
     private short getIndex(Long Hash) {
         short HashIndex = -1;
-        for (short i = 0, n = (short) HashList.length; i < n; i++) {
-            if (HashList[i] == Hash) {
+        for (short i = 0, n = (short) hashList.length; i < n; i++) {
+            if (hashList[i] == Hash) {
                 HashIndex = i;
                 break;
             }
@@ -109,7 +113,7 @@ public class MapTileCache {
     /**
      * Sort this Map with TileGL.Age
      */
-    public void sort() {
+    void sortByAge() {
 
         boolean inSort;
 
@@ -117,10 +121,10 @@ public class MapTileCache {
             do {
                 inSort = false;
 
-                for (int i = 0, n = Capacity - 1; i < n; i++) {
+                for (int i = 0, n = capacity - 1; i < n; i++) {
 
-                    short index1 = IndexList[i];
-                    short index2 = IndexList[i + 1];
+                    short index1 = indexList[i];
+                    short index2 = indexList[i + 1];
 
                     // null check
                     if (tileList[index1] == null && tileList[index2] == null)
@@ -129,8 +133,8 @@ public class MapTileCache {
                         continue;
                     if (tileList[index1] == null && tileList[index2] != null) {
                         // swap
-                        IndexList[i] = index2;
-                        IndexList[i + 1] = index1;
+                        indexList[i] = index2;
+                        indexList[i + 1] = index1;
                         inSort = true;
                         break; // sort changed, begin new
                     }
@@ -141,8 +145,8 @@ public class MapTileCache {
                         continue;
 
                     // swap
-                    IndexList[i] = index2;
-                    IndexList[i + 1] = index1;
+                    indexList[i] = index2;
+                    indexList[i + 1] = index1;
                     inSort = true;
                     break; // sort changed, begin new
                 }
@@ -153,40 +157,40 @@ public class MapTileCache {
 
     }
 
-    public int size() {
-        return Size;
+    int getNumberOfLoadedTiles() {
+        return numberOfLoadedTiles;
     }
 
     public void clear() {
-        // System.out.print("LOADED_TILES clear() " + Logger.getCallerName(1) + Global.br);
+        Log.info("mapTileCache", "empty,clear");
         clearIndexList();
-        clearDrawingList();
-        System.arraycopy(EMPTY_HashList, 0, HashList, 0, Capacity - 1);
+        resetTilesToDrawCounter();
+        System.arraycopy(EMPTY_HashList, 0, hashList, 0, capacity - 1);
         for (int i = 0, n = tileList.length; i < n; i++) {
             if (tileList[i] != null) {
                 tileList[i].dispose();
                 tileList[i] = null;
             }
         }
-        System.arraycopy(EMPTY_TileList, 0, tileList, 0, Capacity - 1);
-        Size = 0;
+        System.arraycopy(EMPTY_TileList, 0, tileList, 0, capacity - 1);
+        numberOfLoadedTiles = 0;
+        changeCounter = 0;
     }
 
-    public void increaseLoadedTilesAge() {
+    void increaseLoadedTilesAge() {
         for (short i = 0, n = (short) tileList.length; i < n; i++) {
             if (tileList[i] != null)
                 tileList[i].age++;
         }
     }
 
+    /*
     public TileGL get(int i) {
-        return tileList[IndexList[i]];
+        return tileList[indexList[i]];
     }
+     */
 
-    // #############################################################################
-    // Inherited drawing list!
-
-    boolean markToDraw(Long hashCode) {
+    boolean markTilesToDraw(Long hashCode) {
         try {
             short index = getIndex(hashCode);
             if (index == -1)
@@ -194,33 +198,32 @@ public class MapTileCache {
             if (!tileList[index].canDraw())
                 return false;
             tileList[index].age = 0;
-            DrawingIndexList[tilesToDrawSize++] = index;
+            tilesToDraw[tilesToDrawCounter++] = index;
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    void clearDrawingList() {
-        // System.out.print("LOADED_TILES clearDrawingList() " + Logger.getCallerName(1) + Global.br);
-        tilesToDrawSize = 0;
+    void resetTilesToDrawCounter() {
+        tilesToDrawCounter = 0;
     }
 
     TileGL getDrawingTile(int index) {
         try {
-            int drawingIndex = DrawingIndexList[index];
+            int drawingIndex = tilesToDraw[index];
             return tileList[drawingIndex];
         } catch (Exception e) {
             return null;
         }
     }
 
-    int DrawingSize() {
-        return tilesToDrawSize;
+    int getTilesToDrawCounter() {
+        return tilesToDrawCounter;
     }
 
     int getCapacity() {
-        return Capacity;
+        return capacity;
     }
 
 }

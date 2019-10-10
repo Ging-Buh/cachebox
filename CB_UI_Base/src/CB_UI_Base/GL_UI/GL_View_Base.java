@@ -672,7 +672,8 @@ public abstract class GL_View_Base extends CB_RectF {
         boolean handled = false;
         try {
             if (childs != null && childs.size() > 0) {
-                for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                Iterator<GL_View_Base> iterator = childs.reverseIterator();
+                while (iterator.hasNext()) {
                     // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
                     if (view != null && view.isClickable() && view.isVisible() && view.contains(x, y)) {
@@ -702,7 +703,8 @@ public abstract class GL_View_Base extends CB_RectF {
         boolean behandelt = false;
         try {
             if (childs != null && childs.size() > 0) {
-                for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                Iterator<GL_View_Base> iterator = childs.reverseIterator();
+                while (iterator.hasNext()) {
                     // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
 
@@ -743,7 +745,8 @@ public abstract class GL_View_Base extends CB_RectF {
 
         try {
             if (childs != null && childs.size() > 0) {
-                for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                Iterator<GL_View_Base> iterator = childs.reverseIterator();
+                while (iterator.hasNext()) {
                     // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
 
@@ -780,7 +783,8 @@ public abstract class GL_View_Base extends CB_RectF {
 
         if (childs != null && childs.size() > 0) {
             try {
-                for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                Iterator<GL_View_Base> iterator = childs.reverseIterator();
+                while (iterator.hasNext()) {
                     // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
 
@@ -824,7 +828,8 @@ public abstract class GL_View_Base extends CB_RectF {
 
         if (childs != null && childs.size() > 0) {
             try {
-                for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                Iterator<GL_View_Base> iterator = childs.reverseIterator();
+                while (iterator.hasNext()) {
                     GL_View_Base view = iterator.next();
 
                     if (view != null && view.contains(x, y)) {
@@ -852,7 +857,8 @@ public abstract class GL_View_Base extends CB_RectF {
 
         if (childs != null && childs.size() > 0) {
             try {
-                for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                Iterator<GL_View_Base> iterator = childs.reverseIterator();
+                while (iterator.hasNext()) {
                     GL_View_Base view = iterator.next();
                     if (view != null && view.contains(x, y)) {
                         // touch innerhalb des Views

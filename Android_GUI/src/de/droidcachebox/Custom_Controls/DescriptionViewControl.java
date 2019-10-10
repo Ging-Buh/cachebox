@@ -10,7 +10,7 @@ import CB_Core.Types.*;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -207,7 +207,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 return true;
             } else if (url.startsWith("http://")) {
                 // Load Url in ext Browser
-                PlatformConnector.callUrl(url);
+                PlatformUIBase.callUrl(url);
                 return true;
             }
             // never reached?
@@ -336,7 +336,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             url = NonLocalImagesUrl.poll();
 
 
-                            if (Download.Download(url, local)) {
+                            if (Download.download(url, local)) {
                                 anyImagesLoaded = true;
                             }
                         } catch (Exception e) {

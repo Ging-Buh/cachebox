@@ -1,6 +1,6 @@
 package CB_Core.Import;
 
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -37,7 +37,8 @@ public class UnZip {
         int BUFFER = 2048;
         File file = FileFactory.createFile(zipFile);
         ZipFile zip;
-        if (PlatformConnector.AndroidVersion >= 24) {
+        if (PlatformUIBase.AndroidVersion >= 24) {
+            // todo Android has nothing to do in Core
             zip = new ZipFile(file.getAbsolutePath(), Charset.forName("ISO-8859-1"));
         }
         else {

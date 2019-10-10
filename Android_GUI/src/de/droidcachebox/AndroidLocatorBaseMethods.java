@@ -1,8 +1,8 @@
-package de.droidcachebox.Map;
+package de.droidcachebox;
 
+import CB_Locator.LocatorBasePlatFormMethods;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
-import CB_Locator.Map.PackBase;
 import CB_Utils.Log.Log;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,38 +10,17 @@ import android.graphics.BitmapFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
-public class AndroidPack extends PackBase {
-    private static final String log = "AndroidPack";
+public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Methods {
+    private static final String sKlasse = "AndroidLocatorBaseMethods";
+    public AndroidLocatorBaseMethods() {
 
-    public AndroidPack(CB_Locator.Map.Layer layer) {
-        super(layer);
     }
 
-    public AndroidPack(String file) throws IOException {
-        super(file);
-    }
-
-    // LoadFromBoundingBoxByteArray
-    /*
-     * public int CompareTo(object obj) { Pack cmp = obj as Pack; if (this.MaxAge < cmp.MaxAge) return -1;
-     *
-     * if (this.MaxAge > cmp.MaxAge) return 1;
-     *
-     * return 0; }
-     */
-    // / <summary>
-    // /
-    // / </summary>
-    // / <param name="bbox">Bounding Box</param>
-    // / <param name="desc">Descriptor</param>
-    // / <returns>Bitmap der Kachel</returns>
-    public Bitmap LoadFromBoundingBox(BoundingBox bbox, Descriptor desc) {
-        Log.debug(log, "LoadFromBoundingBox");
+    public Bitmap loadFromBoundingBox(String filename, BoundingBox bbox, Descriptor desc) {
         try {
-            byte[] buffer = LoadFromBoundingBoxByteArray(bbox, desc);
+            byte[] buffer = loadFromBoundingBoxByteArray(filename, bbox, desc);
             if (buffer == null)
                 return null;
 
@@ -53,16 +32,14 @@ public class AndroidPack extends PackBase {
             result.recycle();
             baos.close();
             return bitj;
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(sKlasse, "LoadFromBoundingBox");
         }
-
         return null;
-
     }
 
     @Override
-    public byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc) {
+    public byte[] loadFromBoundingBoxByteArray(String filename, BoundingBox bbox, Descriptor desc) {
         try {
             if (bbox.Zoom != desc.getZoom())
                 return null;
@@ -70,7 +47,7 @@ public class AndroidPack extends PackBase {
             int index = (desc.getY() - bbox.MinY) * bbox.Stride + (desc.getX() - bbox.MinX) - 1;
             long offset = bbox.OffsetToIndex + index * 8;
 
-            FileInputStream stream = new FileInputStream(Filename);
+            FileInputStream stream = new FileInputStream(filename);
             /* Stream stream = new FileStream(Filename, FileMode.Open, FileAccess.Read); */
             // stream.Seek(offset, SeekOrigin.Begin);
             stream.skip(offset);
@@ -121,14 +98,21 @@ public class AndroidPack extends PackBase {
                 }
             }
             return buffer;
-        } catch (Exception exc) {
-            /*
-             * #if DEBUG Global.AddLog("Pack.LoadFromBoundingBox: Out of memory!" + exc.ToString()); Global.AddMemoryLog(); #endif
-             */
+        } catch (Exception ex) {
+            Log.err(sKlasse, "LoadFromBoundingBoxByteArray", ex);
         }
 
         return null;
 
+    }
+
+    /**
+     * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
+     */
+    private static byte[] get(byte[] array, int offset, int length) {
+        byte[] result = new byte[length];
+        System.arraycopy(array, offset, result, 0, length);
+        return result;
     }
 
 }

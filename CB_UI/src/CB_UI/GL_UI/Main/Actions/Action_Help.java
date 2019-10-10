@@ -1,11 +1,12 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Main.Actions.AbstractAction;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import static CB_UI_Base.Events.PlatformUIBase.callUrl;
 
 public class Action_Help extends AbstractAction {
 
@@ -27,7 +28,7 @@ public class Action_Help extends AbstractAction {
 
     @Override
     public void Execute() {
-        PlatformConnector.callUrl("http://www.team-cachebox.de/index.php/de/kurzanleitung");
+        callUrl("http://www.team-cachebox.de/index.php/de/kurzanleitung");
     }
 
 }

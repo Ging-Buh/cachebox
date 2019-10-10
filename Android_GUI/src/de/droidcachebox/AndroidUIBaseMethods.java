@@ -16,9 +16,10 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingBase;
@@ -32,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -45,7 +47,9 @@ import com.badlogic.gdx.backends.android.AndroidEventListener;
 import de.cb.sqlite.SQLiteClass;
 import de.cb.sqlite.SQLiteInterface;
 import de.droidcachebox.Views.Forms.GcApiLogin;
+import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Timer;
@@ -54,7 +58,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public class PlatformListener implements PlatformConnector.IPlatformListener {
+public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private static final String sKlasse = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
     private AndroidApplication androidApplication;
@@ -69,14 +73,14 @@ public class PlatformListener implements PlatformConnector.IPlatformListener {
     private CancelWaitDialog wd;
     private LocationManager locationManager;
 
-    public PlatformListener(Main main) {
+    public AndroidUIBaseMethods(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
     }
 
     @Override
-    public void writeSetting(SettingBase<?> setting) {
+    public void writePlatformSetting(SettingBase<?> setting) {
         if (androidSetting == null)
             androidSetting = mainActivity.getSharedPreferences(Global.PreferencesNAME, 0);
         if (androidSettingEditor == null)
@@ -92,7 +96,7 @@ public class PlatformListener implements PlatformConnector.IPlatformListener {
     }
 
     @Override
-    public SettingBase<?> readSetting(SettingBase<?> setting) {
+    public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
         if (androidSetting == null)
             androidSetting = mainActivity.getSharedPreferences(Global.PreferencesNAME, 0);
         if (setting instanceof SettingString) {
@@ -107,10 +111,6 @@ public class PlatformListener implements PlatformConnector.IPlatformListener {
         }
         setting.clearDirty();
         return setting;
-    }
-
-    @Override
-    public void setScreenLockTime(int value) {
     }
 
     @Override
@@ -222,8 +222,8 @@ public class PlatformListener implements PlatformConnector.IPlatformListener {
                 Log.err(sKlasse, "Activity for " + url + " not installed.");
                 Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
             }
-        } catch (Exception exc) {
-            Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
+        } catch (Exception ex) {
+            Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", ex);
         }
     }
 
@@ -246,7 +246,7 @@ public class PlatformListener implements PlatformConnector.IPlatformListener {
     }
 
     @Override
-    public void getFile(String initialPath, String extension, String TitleText, String ButtonText, PlatformConnector.IgetFileReturnListener returnListener) {
+    public void getFile(String initialPath, String extension, String TitleText, String ButtonText, PlatformUIBase.IgetFileReturnListener returnListener) {
         File mPath = FileFactory.createFile(initialPath);
         Android_FileExplorer fileDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
         fileDialog.setFileReturnListener(returnListener);
@@ -254,7 +254,7 @@ public class PlatformListener implements PlatformConnector.IPlatformListener {
     }
 
     @Override
-    public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformConnector.IgetFolderReturnListener returnListener) {
+    public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformUIBase.IgetFolderReturnListener returnListener) {
         File mPath = FileFactory.createFile(initialPath);
         Android_FileExplorer folderDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
         folderDialog.setSelectDirectoryOption();
@@ -321,6 +321,50 @@ public class PlatformListener implements PlatformConnector.IPlatformListener {
                 }
             }
         }
+    }
+
+
+    @Override
+    public byte[] getImageFromFile(String cachedTileFilename) {
+        android.graphics.Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
+        if (result != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] b = stream.toByteArray();
+            return b;
+        }
+        return null;
+    }
+
+
+    @Override
+    public PlatformUIBase.ImageData getImagePixel(byte[] img) {
+        android.graphics.Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+        // Buffer dst = null;
+        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+        // bitmap.getPixels(pixels, 0, 0, 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        PlatformUIBase.ImageData imgData = new PlatformUIBase.ImageData();
+        imgData.width = bitmap.getWidth();
+        imgData.height = bitmap.getHeight();
+        imgData.PixelColorArray = pixels;
+
+        return imgData;
+    }
+
+    @Override
+    public byte[] getImageFromData(PlatformUIBase.ImageData imgData) {
+        android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height, android.graphics.Bitmap.Config.RGB_565);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    @Override
+    public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
+        return ext_AndroidGraphicFactory.getInstance(Scalefactor);
     }
 
     private void positionLatLon() {

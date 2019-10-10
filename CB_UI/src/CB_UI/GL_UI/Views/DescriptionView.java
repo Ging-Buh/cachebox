@@ -22,7 +22,7 @@ import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GlobalCore;
 import CB_UI_Base.AbstractGlobal;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.CB_Button;
 import CB_UI_Base.GL_UI.Controls.CB_Label;
@@ -143,13 +143,13 @@ public class DescriptionView extends CB_View_Base {
         infoHeight += margin * 2;
         CB_RectF world = this.getWorldRec();
 
-        PlatformConnector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+        PlatformUIBase.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 
     }
 
     @Override
     public void onHide() {
-        PlatformConnector.hideView(ViewConst.DESCRIPTION_VIEW);
+        PlatformUIBase.hideView(ViewConst.DESCRIPTION_VIEW);
     }
 
     private void showWebView() {
@@ -161,7 +161,7 @@ public class DescriptionView extends CB_View_Base {
                 float infoHeight = 0;
                 if (cacheInfo != null)
                     infoHeight = cacheInfo.getHeight();
-                PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, that.getX(), that.getY(), that.getWidth(), that.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
+                PlatformUIBase.showView(ViewConst.DESCRIPTION_VIEW, that.getX(), that.getY(), that.getWidth(), that.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
             }
         };
         timer.schedule(task, 50);

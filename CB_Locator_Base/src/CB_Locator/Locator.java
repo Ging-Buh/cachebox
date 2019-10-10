@@ -18,7 +18,9 @@ package CB_Locator;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Location.ProviderType;
+import CB_UI_Base.Energy;
 import CB_Utils.Log.Log;
+import CB_Utils.Util.IChanged;
 import CB_Utils.Util.UnitFormatter;
 
 import java.util.Date;
@@ -29,14 +31,13 @@ import java.util.Date;
 public class Locator {
     private static final String log = "Locator";
     private static Locator locator;
-    private long lastFixLose = 0;
     private boolean fix = false;
     private long minGpsUpdateTime = 125;
     private double altCorrection = 0;
     private boolean mUseImperialUnits = false;
     private boolean mUseMagneticCompass = false;
     private int mMagneticCompassLevel = 5;
-    private boolean DisplayOff = false;
+    private boolean isDisplayOff = false;
     private boolean hasSpeed = false;
     private Location mFineLocation;
     private Location mLastSavedFineLocation;
@@ -49,6 +50,13 @@ public class Locator {
     private CompassType mLastUsedCompassType = CompassType.any;
 
     private Locator() {
+        Energy.addChangedEventListener(new IChanged() {
+            @Override
+            public void handleChange() {
+                isDisplayOff = Energy.isDisplayOff();
+                Log.info(log, "Display off: " + isDisplayOff);
+            }
+        });
     }
 
     public static Locator getInstance() {
@@ -64,14 +72,14 @@ public class Locator {
      * Set Display Off. </br>Only events with priority High will fire!
      */
     public void setDisplayOff() {
-        DisplayOff = true;
+        isDisplayOff = true;
     }
 
     /**
      * Set Display on. </br> All events will fire!
      */
     public void setDisplayOn() {
-        DisplayOff = false;
+        isDisplayOff = false;
     }
 
     /**
@@ -81,7 +89,7 @@ public class Locator {
      * @uml.property name="displayOff"
      */
     public boolean isDisplayOff() {
-        return DisplayOff;
+        return isDisplayOff;
     }
 
     /**
@@ -361,7 +369,6 @@ public class Locator {
             }
 
             Log.debug(log, "Falback2Network");
-            lastFixLose = System.currentTimeMillis();
             fix = false;
             locator.mFineLocation = null;
         }

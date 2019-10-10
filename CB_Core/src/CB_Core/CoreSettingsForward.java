@@ -6,11 +6,8 @@ package CB_Core;
  * @author Longri
  */
 public class CoreSettingsForward {
-    public static String VersionString;
 
     public static CB_Core.Types.Categories Categories;
-
-    public static boolean DisplayOff;
 
     public static String cacheHistory = "";
 

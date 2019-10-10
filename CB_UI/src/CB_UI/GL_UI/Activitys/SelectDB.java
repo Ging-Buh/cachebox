@@ -21,7 +21,7 @@ import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Types.CacheListDAO;
 import CB_Core.Types.Categories;
-import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.LayerManager;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.Dialogs.NewDB_InputBox;
@@ -355,7 +355,7 @@ public class SelectDB extends ActivityBase {
         Config.DatabaseName.setValue(AktFile.getName());
         Config.AcceptChanges();
 
-        ManagerBase.manager.initMapPacks();
+        LayerManager.getInstance().initLayers();
 
         finish();
         if (returnListener != null)

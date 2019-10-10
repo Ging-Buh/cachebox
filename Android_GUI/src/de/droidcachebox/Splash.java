@@ -20,7 +20,7 @@ import CB_Core.Database.DatabaseType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.DisplayType;
@@ -65,8 +65,6 @@ import de.CB_Utils.fileProvider.AndroidFileFactory;
 import de.cb.sqlite.AndroidDB;
 import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.Views.Forms.MessageBox;
-import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
-import org.mapsforge.map.model.DisplayModel;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -561,7 +559,7 @@ public class Splash extends Activity {
             btnCreateWorkpath.setOnClickListener(v -> {
                 // close select dialog
                 dialog.dismiss();
-                getFolder("", Translation.get("select_folder"), Translation.get("select"), new PlatformConnector.IgetFolderReturnListener() {
+                getFolder("", Translation.get("select_folder"), Translation.get("select"), new PlatformUIBase.IgetFolderReturnListener() {
                     @Override
                     public void returnFolder(String path) {
                         if (FileIO.canWrite(path)) {
@@ -580,12 +578,12 @@ public class Splash extends Activity {
             dialog.show();
 
         } catch (Exception ex) {
-            Log.err(log, "askForWorkPath Dialogs: " + ex.toString(), ex);
+            Log.err(log, "askForWorkPath Dialogs", ex);
         }
     }
 
     // don't want to implement PlatformConnector for Splash, for only need of getFolder
-    public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformConnector.IgetFolderReturnListener returnListener) {
+    public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformUIBase.IgetFolderReturnListener returnListener) {
         File mPath = FileFactory.createFile(initialPath);
         Android_FileExplorer folderDialog = new Android_FileExplorer(this, mPath, TitleText, ButtonText);
         folderDialog.setSelectDirectoryOption();
@@ -788,12 +786,6 @@ public class Splash extends Activity {
         Config.AcceptChanges();
 
         Log.info(log, GlobalCore.getInstance().getVersionString());
-
-        // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
-        ext_AndroidGraphicFactory.createInstance(this.getApplication());
-        float restrictedScaleFactor = 1f;
-        DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
-        new de.droidcachebox.Map.AndroidManager().setDisplayModel(new DisplayModel());
 
         Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
         Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);

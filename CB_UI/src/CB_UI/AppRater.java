@@ -1,7 +1,7 @@
 package CB_UI;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -78,7 +78,7 @@ public class AppRater {
 
                     sb.append(APP_PACKAGE_NAME);
 
-                    PlatformConnector.callUrl(sb.toString());
+                    PlatformUIBase.callUrl(sb.toString());
                     break;
                 case 2:
                     // later

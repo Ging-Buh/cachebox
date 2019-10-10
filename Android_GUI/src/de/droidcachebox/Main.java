@@ -30,7 +30,8 @@ import CB_UI.*;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI_Base.Energy;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.OnResumeListeners;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -82,6 +83,7 @@ import de.droidcachebox.Ui.AndroidTextClipboard;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 import de.droidcachebox.Views.ShowViewListener;
+import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -113,7 +115,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     private LastState lastState;
     private IChanged handleSuppressPowerSavingConfigChanged, handleGpsUpdateTimeConfigChanged, handleImperialUnitsConfigChanged;
     private ShowViewListener showViewListener;
-    private PlatformListener platformListener;
+    private AndroidUIBaseMethods androidUIBaseMethods;
 
     public Main() {
 
@@ -170,7 +172,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         handleGpsUpdateTimeConfigChanged = () -> {
             int updateTime1 = Config.gpsUpdateTime.getValue();
             try {
-                platformListener.getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime1, 1, Main.this);
+                androidUIBaseMethods.getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime1, 1, Main.this);
             } catch (SecurityException sex) {
                 Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
             }
@@ -257,18 +259,18 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             initLocatorBase();
 
             Plattform.used = Plattform.Android;
-            PlatformConnector.AndroidVersion = Build.VERSION.SDK_INT;
+            PlatformUIBase.AndroidVersion = Build.VERSION.SDK_INT;
             showViewListener = new ShowViewListener(this);
-            PlatformConnector.setShowViewListener(showViewListener);
-            platformListener = new PlatformListener(this);
-            PlatformConnector.setPlatformListener(platformListener);
+            PlatformUIBase.setShowViewListener(showViewListener);
+            androidUIBaseMethods = new AndroidUIBaseMethods(this);
+            PlatformUIBase.setMethods(androidUIBaseMethods);
             Object clipboardService = getSystemService(CLIPBOARD_SERVICE);
             if (clipboardService != null) {
                 if (clipboardService instanceof android.content.ClipboardManager) {
-                    PlatformConnector.setClipboard(new AndroidContentClipboard((android.content.ClipboardManager) clipboardService));
+                    PlatformUIBase.setClipboard(new AndroidContentClipboard((android.content.ClipboardManager) clipboardService));
                     Log.info(sKlasse, "got AndroidContentClipboard");
                 } else if (clipboardService instanceof android.text.ClipboardManager) {
-                    PlatformConnector.setClipboard(new AndroidTextClipboard((android.text.ClipboardManager) clipboardService));
+                    PlatformUIBase.setClipboard(new AndroidTextClipboard((android.text.ClipboardManager) clipboardService));
                     Log.info(sKlasse, "got AndroidTextClipboard");
                 }
             }
@@ -293,7 +295,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 askToGetApiKey();
             }
             if (!GlobalCore.restartAfterKill)
-                if (!platformListener.isGPSon()) askToSwitchGpsOn();
+                if (!androidUIBaseMethods.isGPSon()) askToSwitchGpsOn();
 
             if (Config.newInstall.getValue()) {
                 // wait for Copy Asset is closed
@@ -340,6 +342,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 input = new AndroidInput(this, inflater.getContext(), graphics.getView(), gdxConfig);
                  */
         }
+
+        initializeMapsForge();
 
         isCreated = true;
         Log.info(sKlasse, "onCreate <=");
@@ -431,13 +435,14 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (wakeLock != null) wakeLock.acquire();
 
         Log.info(sKlasse, "checkExternalRequest from onResume");
-        platformListener.handleExternalRequest();
+        androidUIBaseMethods.handleExternalRequest();
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
         // to have a protokoll of the program start independant of Config.AktLogLevel
         CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
 
+        OnResumeListeners.getInstance().fireEvent();
 
         super.onResume();
     }
@@ -472,10 +477,10 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     public void onDestroy() {
         Log.info(sKlasse, "=> onDestroy AndroidApplication");
         try {
-            PlatformConnector.addToMediaScannerList(Config.DraftsGarminPath.getValue());
-            PlatformConnector.addToMediaScannerList(CB_SLF4J.logfile);
+            PlatformUIBase.addToMediaScannerList(Config.DraftsGarminPath.getValue());
+            PlatformUIBase.addToMediaScannerList(CB_SLF4J.logfile);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            for (String fn : PlatformConnector.getMediaScannerList()) {
+            for (String fn : PlatformUIBase.getMediaScannerList()) {
                 intent.setData(Uri.fromFile(new java.io.File(fn)));
                 sendBroadcast(intent);
                 Log.info(sKlasse, "Send " + fn + " to MediaScanner.");
@@ -505,7 +510,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
                     TrackRecorder.StopRecording();
                     // GPS Verbindung beenden
-                    platformListener.getLocationManager().removeUpdates(this);
+                    androidUIBaseMethods.getLocationManager().removeUpdates(this);
                     SelectedCacheChangedEventListeners.getInstance().clear();
                     CacheListChangedEventList.list.clear();
                     showViewListener.onDestroyWithFinishing();
@@ -612,7 +617,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     // Log.info(sKlasse, "AltCorrection: " + String.valueOf(altCorrection));
                     Locator.getInstance().setAltCorrection(altCorrection);
                     // Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
-                    platformListener.getLocationManager().removeNmeaListener(this);
+                    androidUIBaseMethods.getLocationManager().removeNmeaListener(this);
                 } catch (Exception ignored) {
                     // keine Höhenkorrektur vorhanden
                 }
@@ -635,7 +640,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     switch (button) {
                         case -1:
                             // yes get Api key
-                            platformListener.getApiKey();
+                            androidUIBaseMethods.getApiKey();
                             break;
                         case -2:
                             // now, we check GPS
@@ -819,13 +824,13 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     @Override
     public void onGpsStatusChanged(int event) {
-        if (platformListener.getLocationManager() == null)
+        if (androidUIBaseMethods.getLocationManager() == null)
             return;
 
         if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
             GpsStatus status;
             try {
-                status = platformListener.getLocationManager().getGpsStatus(null);
+                status = androidUIBaseMethods.getLocationManager().getGpsStatus(null);
             } catch (SecurityException sex) {
                 Log.err(sKlasse, "onGpsStatusChanged: " + sex.getLocalizedMessage());
                 return;
@@ -884,6 +889,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     }
 
+    private void initializeMapsForge() {
+        // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
+        ext_AndroidGraphicFactory.createInstance(this.getApplication());
+    }
+
     private enum LastState {
         onResume, onStop, onDestroy
     }
@@ -895,10 +905,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 if (intent.getAction() != null) {
                     if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                         Energy.setDisplayOff();
-                        Locator.getInstance().setDisplayOff();
                     } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                         Energy.setDisplayOn();
-                        Locator.getInstance().setDisplayOn();
                     }
                 }
             }

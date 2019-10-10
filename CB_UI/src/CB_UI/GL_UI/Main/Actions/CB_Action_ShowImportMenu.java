@@ -8,7 +8,7 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.*;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
@@ -127,7 +127,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     }
 
     private void ExportgetFolderStep(final String FileName) {
-        PlatformConnector.getFolder(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
+        PlatformUIBase.getFolder(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
                 Translation.get("selectExportFolder"),
                 Translation.get("select"),
                 Path -> GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path)));
@@ -135,7 +135,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
     private void ausgebenDatei(final String FileName, String Path) {
         String exportPath = Path + "/" + FileName;
-        PlatformConnector.addToMediaScannerList(exportPath);
+        PlatformUIBase.addToMediaScannerList(exportPath);
         File exportFile = FileFactory.createFile(exportPath);
         Config.gpxExportFileName.setValue(exportFile.getPath());
         Config.AcceptChanges();

@@ -3,7 +3,7 @@ package CB_UI;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Locator.LocatorSettings;
-import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Settings.SettingsDAO;
 import CB_Utils.Settings.SettingsList;
@@ -36,7 +36,7 @@ public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_
 
     @Override
     protected boolean canUsePlatformSettings() {
-        return PlatformConnector.canUsePlatformSettings();
+        return PlatformUIBase.canUsePlatformSettings();
     }
 
 }

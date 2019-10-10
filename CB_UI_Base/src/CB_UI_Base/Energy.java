@@ -29,28 +29,28 @@ import java.util.ArrayList;
  */
 public class Energy {
     private static final String log = "Energy";
-    protected static ArrayList<IChanged> ChangedEventList = new ArrayList<>();
-    private static boolean displayOff = false;
+    protected static final ArrayList<IChanged> ChangedEventList = new ArrayList<>();
+    private static boolean isDisplayOff = false;
     private static boolean sliderIsShown = false;
 
-    public static boolean DisplayOff() {
-        return displayOff;
+    public static boolean isDisplayOff() {
+        return isDisplayOff;
     }
 
     public static void setDisplayOff() {
-        displayOff = true;
+        isDisplayOff = true;
         fireChangedEvent();
         Log.info(log, "ENERGY setDisplayOff");
     }
 
     public static void setDisplayOn() {
-        displayOff = false;
+        isDisplayOff = false;
         fireChangedEvent();
         Log.info(log, "ENERGY setDisplayOn");
     }
 
     public static boolean SliderIsShown() {
-        if (displayOff)
+        if (isDisplayOff)
             return true;
         return sliderIsShown;
     }
@@ -63,7 +63,7 @@ public class Energy {
         sliderIsShown = false;
     }
 
-    protected static void fireChangedEvent() {
+    private static void fireChangedEvent() {
         synchronized (ChangedEventList) {
             for (IChanged event : ChangedEventList) {
                 event.handleChange();
