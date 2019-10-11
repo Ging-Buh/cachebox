@@ -100,41 +100,28 @@ public class MapTileLoader {
             }
         }
 
-        queueData.loadedTilesLock.lock();
-        queueData.queuedTilesLock.lock();
-        if (queueData.currentOverlayLayer != null) {
-            queueData.loadedOverlayTilesLock.lock();
-            queueData.queuedOverlayTilesLock.lock();
-        }
-        // clear Queue, to remove not yet loaded (previously needed) tiles
-        // don't use clear because  of the mapview.
-        // Only remove descriptors for this mapview (map,compass,track, ?)
-        ArrayList<Descriptor> toDeleteOfThisMapView = new ArrayList<>();
-        for (Descriptor desc : queueData.wantedTiles.values()) {
-            if (desc.Data == mapView) {
-                toDeleteOfThisMapView.add(desc);
-            }
-        }
-
-        for (Descriptor desc : toDeleteOfThisMapView) {
-            queueData.wantedTiles.remove(desc.getHashCode());
-        }
-
-        if (queueData.currentOverlayLayer != null) {
-            toDeleteOfThisMapView.clear();
-            for (Descriptor desc : queueData.wantedOverlayTiles.values()) {
-                if (desc.Data == mapView) {
-                    toDeleteOfThisMapView.add(desc);
+        clearOrderQueue(); // perhaps new orders
+        /*
+        if (MultiThreadQueueProcessor.inLoadDesc.size() > 0) {
+            for (Descriptor descriptor : MultiThreadQueueProcessor.inLoadDesc) {
+                if (descriptor.Data == mapView) {
+                    releaseOrderQueue();
+                    // this order is ignored
+                    return;
                 }
             }
-            for (Descriptor desc : toDeleteOfThisMapView) {
-                queueData.wantedOverlayTiles.remove(desc.getHashCode());
-            }
+        }
+         */
+
+        queueData.loadedTilesLock.lock();
+        if (queueData.currentOverlayLayer != null) {
+            queueData.loadedOverlayTilesLock.lock();
         }
 
         CB_List<Descriptor> wantedTiles = new CB_List<>();
         for (int i = upperLeftTile.getX(); i <= lowerRightTile.getX(); i++) {
             for (int j = upperLeftTile.getY(); j <= lowerRightTile.getY(); j++) {
+                // attention this new Descriptor can not be compared with previous one in  corresponding lists
                 Descriptor descriptor = new Descriptor(i, j, aktZoom);
                 descriptor.Data = mapView;
                 wantedTiles.add(descriptor);
@@ -143,7 +130,7 @@ public class MapTileLoader {
 
         for (Descriptor descriptor : wantedTiles) {
             if (queueData.loadedTiles.containsKey(descriptor.getHashCode())) {
-                Log.info(log,"loaded: " + descriptor + " Age: " + queueData.loadedTiles.get(descriptor.getHashCode()).age);
+                Log.info(log, "loaded: " + descriptor + " Age: " + queueData.loadedTiles.get(descriptor.getHashCode()).age);
                 if (queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
                     // should never happen! did only add descriptors, that are not in loaded tiles, which are locked
                     Log.err(log, descriptor + " already loaded. Should not be in queuedTiles");
@@ -153,8 +140,7 @@ public class MapTileLoader {
                 if (!queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
                     Log.info(log, "wanted: " + descriptor);
                     queueData.wantedTiles.put(descriptor.getHashCode(), descriptor);
-                }
-                else {
+                } else {
                     Log.err(log, "already in wanted Tiles" + descriptor);
                 }
             }
@@ -182,6 +168,45 @@ public class MapTileLoader {
         for (int i = 0; i < PROCESSOR_COUNT; i++) {
             if (queueProcessor[i] != null)
                 queueProcessor[i].interrupt();
+        }
+    }
+
+    private void releaseOrderQueue() {
+        queueData.queuedTilesLock.unlock();
+        if (queueData.currentOverlayLayer != null) {
+            queueData.queuedOverlayTilesLock.unlock();
+        }
+    }
+
+    private void clearOrderQueue() {
+        queueData.queuedTilesLock.lock();
+        if (queueData.currentOverlayLayer != null) {
+            queueData.queuedOverlayTilesLock.lock();
+        }
+        // clear Queue, to remove not yet loaded (previously needed) tiles
+        // don't use clear because  of the mapview.
+        // Only remove descriptors for this mapview (map,compass,track, ?)
+        ArrayList<Descriptor> toDeleteOfThisMapView = new ArrayList<>();
+        for (Descriptor desc : queueData.wantedTiles.values()) {
+            // if (desc.Data == mapView) {
+            toDeleteOfThisMapView.add(desc);
+            // }
+        }
+
+        for (Descriptor desc : toDeleteOfThisMapView) {
+            queueData.wantedTiles.remove(desc.getHashCode());
+        }
+
+        if (queueData.currentOverlayLayer != null) {
+            toDeleteOfThisMapView.clear();
+            for (Descriptor desc : queueData.wantedOverlayTiles.values()) {
+                // if (desc.Data == mapView) {
+                toDeleteOfThisMapView.add(desc);
+                // }
+            }
+            for (Descriptor desc : toDeleteOfThisMapView) {
+                queueData.wantedOverlayTiles.remove(desc.getHashCode());
+            }
         }
     }
 

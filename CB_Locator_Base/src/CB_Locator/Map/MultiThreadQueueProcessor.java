@@ -30,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 class MultiThreadQueueProcessor extends Thread {
     private static final Lock inLoadDescLock = new ReentrantLock();
-    private static final CB_List<Descriptor> inLoadDesc = new CB_List<>();
+    public static final CB_List<Descriptor> inLoadDesc = new CB_List<>();
     private final int threadId;
     private final QueueData queueData;
     private String log = "MapTileQueueThread";
@@ -87,9 +87,6 @@ class MultiThreadQueueProcessor extends Thread {
                             loadTile(descriptor);
                             // long lasts = (System.currentTimeMillis() - startTime);
 
-                            inLoadDescLock.lock();
-                            inLoadDesc.remove(descriptor);
-                            inLoadDescLock.unlock();
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException ignored) {
@@ -167,17 +164,28 @@ class MultiThreadQueueProcessor extends Thread {
         return nearestDesc;
     }
 
-    private void loadTile(final Descriptor desc) {
-        final TileGL tile = queueData.currentLayer.getTileGL(desc);
+    private void loadTile(final Descriptor descriptor) {
+        TileGL tile;
+        try {
+            tile = queueData.currentLayer.getTileGL(descriptor);
+        }
+        catch (Exception ex) {
+            Log.err(log, "loadTile", ex);
+            tile = null;
+        }
+        inLoadDescLock.lock();
+        inLoadDesc.remove(descriptor);
+        inLoadDescLock.unlock();
+
         if (tile != null) {
-            addLoadedTileWithLock(desc, tile);
+            addLoadedTileWithLock(descriptor, tile);
             // Redraw Map after a new Tile was loaded or generated
             GL.that.renderOnce();
         } else {
             new Thread(() -> {
                 // download in separate thread
-                if (queueData.currentLayer.cacheTile(desc)) {
-                    addLoadedTileWithLock(desc, queueData.currentLayer.getTileGL(desc));
+                if (queueData.currentLayer.cacheTile(descriptor)) {
+                    addLoadedTileWithLock(descriptor, queueData.currentLayer.getTileGL(descriptor));
                     // Redraw Map after a new Tile was loaded or generated
                     GL.that.renderOnce();
                 }

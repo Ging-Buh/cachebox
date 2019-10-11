@@ -40,10 +40,10 @@ public class PermissionCheck {
     static final String VIBRATE = "android.permission.VIBRATE";
     static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
     static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
-    static ArrayList<String> NEEDED_PERMISSIONS;
+    public static ArrayList<String> neededPermissions;
 
     public static void checkNeededPermissions(Activity context) {
-        NEEDED_PERMISSIONS = new ArrayList<String>(
+        neededPermissions = new ArrayList<String>(
                 Arrays.asList(
                         ACCESS_FINE_LOCATION,
                         ACCESS_COARSE_LOCATION,
@@ -59,7 +59,7 @@ public class PermissionCheck {
 
         ArrayList<String> DENIED_List = new ArrayList<>();
 
-        for (String permission : NEEDED_PERMISSIONS) {
+        for (String permission : neededPermissions) {
             if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                 DENIED_List.add(permission);
             }

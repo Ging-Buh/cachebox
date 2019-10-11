@@ -1,4 +1,4 @@
-package de.droidcachebox.Views.Forms;
+package de.droidcachebox.Activities;
 
 import CB_Core.Api.CB_Api;
 import CB_Core.CB_Core_Settings;

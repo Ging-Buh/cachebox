@@ -96,7 +96,7 @@ public final class InvertViewControl extends View {
                                 if (firstDraw) {
                                     firstDraw = false;
                                     DescriptionView dv = DescriptionView.getInstance();
-                                    PlatformUIBase.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), dv.getWidth(), dv.getHeight());
+                                    PlatformUIBase.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), 0, 0, 0, 0);
                                 }
                             });
                         }

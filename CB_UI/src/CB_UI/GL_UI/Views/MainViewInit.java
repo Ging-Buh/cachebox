@@ -58,13 +58,16 @@ import java.io.IOException;
  */
 public class MainViewInit extends MainViewBase {
     private static final String log = "MainViewInit";
-    TextureAtlas atlas;
-    ProgressBar progress;
-    Image CB_Logo, OSM_Logo, Route_Logo, Mapsforge_Logo, LibGdx_Logo, GC_Logo;
-    CB_Label descTextView;
-    int step = 0;
-    boolean switcher = false;
-    boolean breakForWait = false;
+    private TextureAtlas atlas;
+    private ProgressBar progress;
+    private Image CB_Logo;
+    private Image Mapsforge_Logo;
+    private Image LibGdx_Logo;
+    private Image GC_Logo;
+    private CB_Label descTextView;
+    private int step = 0;
+    private boolean switcher = false;
+    private boolean breakForWait = false;
 
     public MainViewInit(CB_RectF rec) {
         super(rec);
@@ -180,10 +183,10 @@ public class MainViewInit extends MainViewBase {
         LibGdx_Logo = new Image(rec_LibGdx_Logo, "LibGdx_Logo", false);
         LibGdx_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("libgdx")));
 
-        Route_Logo = new Image(rec_OSM, "Route_Logo", false);
-        Route_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("openrouteservice_logo")));
+        Image route_Logo = new Image(rec_OSM, "Route_Logo", false);
+        route_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("openrouteservice_logo")));
 
-        OSM_Logo = new Image(rec_Route, "OSM_Logo", false);
+        Image OSM_Logo = new Image(rec_Route, "OSM_Logo", false);
         OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
 
         float yPos = descTextView.getY() - GC_Logo.getHeight();
@@ -199,11 +202,11 @@ public class MainViewInit extends MainViewBase {
         LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
 
         yPos -= GC_Logo.getHeight();//
-        xPos = (this.getWidth() - (ref) - Route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
+        xPos = (this.getWidth() - (ref) - route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
 
-        Route_Logo.setPos(xPos, yPos);
+        route_Logo.setPos(xPos, yPos);
 
-        xPos += Route_Logo.getWidth() + ref;
+        xPos += route_Logo.getWidth() + ref;
         OSM_Logo.setPos(xPos, yPos);
 
         this.addChild(GC_Logo);

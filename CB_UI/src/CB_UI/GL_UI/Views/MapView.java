@@ -454,7 +454,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             SetNorthOriented(Config.MapNorthOriented.getValue());
             PositionChanged();
         });
-        OnResumeListeners.getInstance().add(() -> {
+        OnResumeListeners.getInstance().addListener(() -> {
             // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
             Log.info(log, "MapView on resume");
             lastZoom = 0;

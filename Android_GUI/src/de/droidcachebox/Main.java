@@ -75,6 +75,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import de.cb.sqlite.AndroidDB;
+import de.droidcachebox.Activities.Splash;
 import de.droidcachebox.CB_Texturepacker.AndroidTexturePacker;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.droidcachebox.Ui.ActivityUtils;
@@ -82,7 +83,6 @@ import de.droidcachebox.Ui.AndroidContentClipboard;
 import de.droidcachebox.Ui.AndroidTextClipboard;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
-import de.droidcachebox.Views.ShowViewListener;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 
 import java.io.IOException;
@@ -97,7 +97,7 @@ import static CB_Core.Api.GroundspeakAPI.GetSettingsAccessToken;
 @SuppressWarnings("deprecation")
 public class Main extends AndroidApplication implements SelectedCacheChangedEventListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
     private static final String sKlasse = "Main";
-    static boolean isCreated = false;
+    public static boolean isCreated = false;
     private static Boolean isRestart = false;
     private final AtomicBoolean waitForGL = new AtomicBoolean(false);
     private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<>(14);
@@ -343,7 +343,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                  */
         }
 
-        initializeMapsForge();
+        initializeMapsForgeExtensions();
 
         isCreated = true;
         Log.info(sKlasse, "onCreate <=");
@@ -395,8 +395,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     @SuppressLint("WakelockTimeout")
     @Override
     protected void onResume() {
-        Log.info(sKlasse, "=> onResume");
-
         if (GL.that == null) {
             Log.err("onResume", "GL.that == null");
             restartFromSplash();
@@ -405,13 +403,20 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 Log.err("onResume", "mGL_Listener_Interface == null");
                 restartFromSplash();
             }
-            GL.that.restartRendering(); // does ViewGL.RenderContinous();
-            if (lastState == LastState.onStop) {
-                Log.info(sKlasse, "Resume from Stop");
-                showWaitToRenderStarted();
-                invalidateTextureEventList.Call();
-            }
         }
+
+        GL.that.restartRendering(); // does ViewGL.RenderContinous();
+
+        if (lastState == LastState.onStop) {
+            Log.info(sKlasse, "=> Resume from Stop");
+            showWaitToRenderStarted();
+            invalidateTextureEventList.Call();
+        }
+        else {
+            Log.info(sKlasse, "=> onResume");
+        }
+
+        OnResumeListeners.getInstance().fireEvent();
 
         if (input == null) {
             Log.info(sKlasse, "(input == null) : init input needed for super.onResume()");
@@ -430,19 +435,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         int lQuickButtonHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
         setQuickButtonHeight(lQuickButtonHeight);
 
-        showViewListener.onResume();
-
         if (wakeLock != null) wakeLock.acquire();
-
-        Log.info(sKlasse, "checkExternalRequest from onResume");
-        androidUIBaseMethods.handleExternalRequest();
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
-        // to have a protokoll of the program start independant of Config.AktLogLevel
+        // having a protokoll of the program start: but now reset to Config.AktLogLevel
         CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-
-        OnResumeListeners.getInstance().fireEvent();
 
         super.onResume();
     }
@@ -889,7 +887,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     }
 
-    private void initializeMapsForge() {
+    private void initializeMapsForgeExtensions() {
         // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
         ext_AndroidGraphicFactory.createInstance(this.getApplication());
     }

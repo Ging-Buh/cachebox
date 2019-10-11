@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Splash" android:launchMode="singleTask">
+        <activity android:name=".Activities.Splash" android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -139,7 +139,7 @@
 
         </activity>
 
-        <activity android:name="de.droidcachebox.Views.Forms.GcApiLogin" android:screenOrientation="behind"
+        <activity android:name="de.droidcachebox.Activities.GcApiLogin" android:screenOrientation="behind"
                   android:theme="@style/Theme_day_transparent"/>
 
         <provider

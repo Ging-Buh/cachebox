@@ -1,4 +1,4 @@
-package de.droidcachebox.Views;
+package de.droidcachebox;
 
 import CB_Core.Types.Cache;
 import CB_Locator.Formatter;
@@ -10,6 +10,7 @@ import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI.GlobalCore;
 import CB_UI.TrackRecorder;
+import CB_UI_Base.Events.OnResumeListeners;
 import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
@@ -42,10 +43,8 @@ import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DownSlider;
 import de.droidcachebox.Custom_Controls.MicrophoneView;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.ExtAudioRecorder;
-import de.droidcachebox.Global;
-import de.droidcachebox.Main;
-import de.droidcachebox.R;
+import de.droidcachebox.Views.DescriptionView;
+import de.droidcachebox.Views.ViewGL;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -54,6 +53,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Intent.ACTION_VIEW;
+import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.O_MR1;
 
 public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private final static String sKlasse = "ShowViewListener";
@@ -124,10 +125,12 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
         Config.RunOverLockScreen.addSettingChangedListener(this::handleRunOverLockScreenConfig);
 
+        OnResumeListeners.getInstance().addListener(this::onResume);
+
     }
 
     // all you have to do on Main onResume
-    public void onResume() {
+    private void onResume() {
         try {
             gdxView.setOnTouchListener(onTouchListener);
             downSlider.invalidate();
@@ -188,7 +191,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
     @Override
-    public void show(final ViewID viewID, final int left, final int top, final int right, final int bottom) {
+    public void showView(final ViewID viewID, final int left, final int top, final int right, final int bottom) {
         mainActivity.runOnUiThread(() -> {
             Log.info(sKlasse, "Show View with ID = " + viewID.getID());
 
@@ -516,9 +519,9 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             Intent intent = null;
             switch (selectedNavi) {
                 case "Navigon":
-                    intent = getIntent("android.intent.action.navigon.START_PUBLIC", "");
+                    intent = getNavigationIntent("android.intent.action.navigon.START_PUBLIC", "");
                     if (intent == null) {
-                        intent = getIntent("", "com.navigon.navigator"); // get the launch-intent from package
+                        intent = getNavigationIntent("", "com.navigon.navigator"); // get the launch-intent from package
                     }
                     if (intent != null) {
                         intent.putExtra("latitude", (float) lat);
@@ -526,7 +529,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                     }
                     break;
                 case "Orux":
-                    intent = getIntent("com.oruxmaps.VIEW_MAP_ONLINE", "");
+                    intent = getNavigationIntent("com.oruxmaps.VIEW_MAP_ONLINE", "");
                     // from http://www.oruxmaps.com/oruxmapsmanual_en.pdf
                     if (intent != null) {
                         double[] targetLat = {lat};
@@ -539,21 +542,21 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                     }
                     break;
                 case "OsmAnd":
-                    intent = getIntent(ACTION_VIEW, "geo:" + lat + "," + lon);
+                    intent = getNavigationIntent(ACTION_VIEW, "geo:" + lat + "," + lon);
                     break;
                 case "OsmAnd2":
-                    intent = getIntent(ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
+                    intent = getNavigationIntent(ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
                     break;
                 case "Waze":
-                    intent = getIntent(ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
+                    intent = getNavigationIntent(ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
                     break;
                 case "Sygic":
-                    intent = getIntent(ACTION_VIEW, "com.sygic.aura://coordinate|" + lon + "|" + lat + "|drive");
+                    intent = getNavigationIntent(ACTION_VIEW, "com.sygic.aura://coordinate|" + lon + "|" + lat + "|drive");
                     break;
             }
             if (intent == null) {
                 // "default" or "no longer existing selection" or "fallback" to google
-                intent = getIntent(ACTION_VIEW, "http://maps.google.com/maps?daddr=" + lat + "," + lon);
+                intent = getNavigationIntent(ACTION_VIEW, "http://maps.google.com/maps?daddr=" + lat + "," + lon);
             }
             try {
                 if (intent != null)
@@ -564,7 +567,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         }
     }
 
-    private Intent getIntent(String action, String data) {
+    private Intent getNavigationIntent(String action, String data) {
         Intent intent;
         try {
             if (action.length() > 0) {
@@ -698,7 +701,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             Uri uri;
-            if (android.os.Build.VERSION.SDK_INT >= 24) {
+            if (android.os.Build.VERSION.SDK_INT >= N) {
                 uri = FileProvider.getUriForFile(mainActivity, "de.droidcachebox.android.fileprovider", new java.io.File(tempMediaPathAndName));
             } else {
                 uri = Uri.fromFile(new java.io.File(tempMediaPathAndName));
@@ -905,10 +908,11 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
     private void handleRunOverLockScreenConfig() {
         // add flags for run over lock screen
-        if (Build.VERSION.SDK_INT >= 27) {
+        if (Build.VERSION.SDK_INT >= O_MR1) {
             mainActivity.setShowWhenLocked(true);
             mainActivity.setTurnScreenOn(true);
             KeyguardManager keyguardManager = (KeyguardManager) mainActivity.getSystemService(Context.KEYGUARD_SERVICE);
+            assert keyguardManager != null;
             keyguardManager.requestDismissKeyguard(mainActivity, null);
         } else {
             mainActivity.runOnUiThread(() -> {

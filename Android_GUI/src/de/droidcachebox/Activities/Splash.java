@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox;
+package de.droidcachebox.Activities;
 
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -36,11 +37,10 @@ import CB_Utils.StringH;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -52,19 +52,18 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StatFs;
 import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.Window;
+import android.view.*;
 import android.widget.*;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 import de.CB_Utils.fileProvider.AndroidFileFactory;
 import de.cb.sqlite.AndroidDB;
+import de.droidcachebox.*;
 import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.Views.Forms.MessageBox;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -73,6 +72,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static android.os.Build.VERSION_CODES.KITKAT;
 
 /**
  * what is this good for:
@@ -84,13 +85,12 @@ import java.util.Map;
 public class Splash extends Activity {
     private static final String log = "CB2 Splash";
     private Bitmap bitmap;
-    private Dialog pleaseWaitDialog;
+    private AlertDialog pleaseWaitDialog; // private Dialog pleaseWaitDialog;
     private String workPath;
     private int AdditionalWorkPathCount;
     private Dialog msg;
     private ArrayList<String> AdditionalWorkPathArray;
     private SharedPreferences androidSetting;
-    private SharedPreferences.Editor androidSettingEditor;
     private Boolean showSandbox;
     private Bundle bundeledData;
     private boolean askForWorkpath;
@@ -99,7 +99,6 @@ public class Splash extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         androidSetting = getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
         if (!FileFactory.isInitialized()) {
             // so Main has not been started
@@ -141,12 +140,13 @@ public class Splash extends Activity {
 
     private void startMain() {
         GlobalCore.RunFromSplash = true;
+        Activity main = Main.getInstance();
         Intent mainIntent;
-        if (!Main.isCreated) {
+        if (main == null) {
             Log.info(log, "Start Main");
             mainIntent = new Intent().setClass(this, Main.class);
         } else {
-            mainIntent = Main.getInstance().getIntent();
+            mainIntent = main.getIntent();
             Log.info(log, "Connect to Main to onNewIntent(Intent)");
         }
         int width = frame.getMeasuredWidth();
@@ -156,6 +156,9 @@ public class Splash extends Activity {
         new Handler().postDelayed(() -> {
             // could bundle ui too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
+            if (Database.Settings.isDbNew()) {
+                Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+            }
             Global.Paints.init(this);
             mainIntent.putExtras(bundeledData); // the prepared Data
             startActivity(mainIntent);
@@ -175,65 +178,62 @@ public class Splash extends Activity {
 
         final Bundle intentExtras = getIntent().getExtras();
         if (intentExtras != null) {
-            // todo ask André what is the intention for this
+            // ask André what is the intention for this
             GcCode = intentExtras.getString("geocode");
             name = intentExtras.getString("name");
             guid = intentExtras.getString("guid");
         }
 
-        final Uri intentData = getIntent().getData();
-        if (intentData != null) {
-            final Uri uri = intentData;
-            String scheme = intentData.getScheme();
+        final Uri uri = getIntent().getData();
+        if (uri != null) {
+            String scheme = uri.getScheme();
             if (scheme != null) {
                 scheme = scheme.toLowerCase();
                 switch (scheme) {
                     case "file":
-                        if (uri.getEncodedPath().endsWith(".gpx") || uri.getEncodedPath().endsWith(".zip")) {
-                            GpxPath = uri.getEncodedPath();
+                        if (uri.getEncodedPath() != null) {
+                            if (uri.getEncodedPath().endsWith(".gpx") || uri.getEncodedPath().endsWith(".zip")) {
+                                GpxPath = uri.getEncodedPath();
+                            }
                         }
                         break;
                     case "http":
                     case "https":
-                        String uriHost = uri.getHost().toLowerCase(Locale.US);
-                        String uriPath = uri.getPath().toLowerCase(Locale.US);
-                        if (uriHost.contains("geocaching.com")) {
-                            GcCode = uri.getQueryParameter("wp");
-                            if (StringH.isEmpty(GcCode)) {
-                                int i1 = uriPath.indexOf("/gc") + 1;
-                                int i2 = uriPath.indexOf("_");
-                                if (i2 > i1) {
-                                    GcCode = uriPath.substring(i1, i2);
-                                } else if (i1 > 0) {
-                                    GcCode = uriPath.substring(i1);
-                                }
-                            }
-                            if (StringH.isEmpty(GcCode)) {
-                                // todo guid not yet implemented : implement fetch cache by  guid in main
-                                guid = uri.getQueryParameter("guid");
-                                if (!StringH.isEmpty(guid)) {
-                                    guid = guid.toLowerCase(Locale.US);
-                                    if (guid.endsWith("#")) {
-                                        guid = guid.substring(0, guid.length() - 1);
+                        if (uri.getHost() != null && uri.getPath() != null) {
+                            String uriHost = uri.getHost().toLowerCase(Locale.US);
+                            String uriPath = uri.getPath().toLowerCase(Locale.US);
+                            if (uriHost.contains("geocaching.com")) {
+                                GcCode = uri.getQueryParameter("wp");
+                                if (StringH.isEmpty(GcCode)) {
+                                    int i1 = uriPath.indexOf("/gc") + 1;
+                                    int i2 = uriPath.indexOf("_");
+                                    if (i2 > i1) {
+                                        GcCode = uriPath.substring(i1, i2);
+                                    } else if (i1 > 0) {
+                                        GcCode = uriPath.substring(i1);
                                     }
                                 }
+                                if (StringH.isEmpty(GcCode)) {
+                                    guid = uri.getQueryParameter("guid");
+                                    if (!StringH.isEmpty(guid)) {
+                                        guid = guid.toLowerCase(Locale.US);
+                                        if (guid.endsWith("#")) {
+                                            guid = guid.substring(0, guid.length() - 1);
+                                        }
+                                    }
+                                }
+                            } else if (uriHost.contains("coord.info")) {
+                                if (uriPath.startsWith("/gc")) {
+                                    GcCode = uriPath.substring(1).toUpperCase(Locale.US);
+                                }
+                            } else if (uriHost.contains("download.openandromaps.org") || uriHost.contains("download.freizeitkarte-osm.de")) {
+                                downloadPath = uri.toString();
+                                if (!downloadPath.endsWith("zip")) downloadPath = null;
                             }
-                        } else if (uriHost.contains("coord.info")) {
-                            if (uriPath != null && uriPath.startsWith("/gc")) {
-                                GcCode = uriPath.substring(1).toUpperCase(Locale.US);
-                            }
-                        } else if (uriHost.contains("download.openandromaps.org") || uriHost.contains("download.freizeitkarte-osm.de")) {
-                            downloadPath = uri.toString();
-                            if (!downloadPath.endsWith("zip")) downloadPath = null;
                         }
                         break;
                     case "geo":
-                        LatLon = uri.getSchemeSpecificPart();
-                        // todo
-                        // we have no navigation but we can
-                        // create a tempory waypoint on the map and go there
-                        // or
-                        // show map and center map there
+                        LatLon = uri.getSchemeSpecificPart(); // will copy to clipboard
                         break;
                     default:
                         // download.openandromaps.org -> orux-map, backcountrynav-action-map, bikecomputer-map
@@ -362,6 +362,7 @@ public class Splash extends Activity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void askForWorkPath() {
         workPath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
 
@@ -371,7 +372,7 @@ public class Splash extends Activity {
         try {
             final Dialog dialog = new Dialog(this) {
                 @Override
-                public boolean onKeyDown(int keyCode, KeyEvent event) {
+                public boolean onKeyDown(int keyCode, @NotNull KeyEvent event) {
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
                         Splash.this.finish();
                     }
@@ -390,7 +391,8 @@ public class Splash extends Activity {
                 dialog.dismiss();
 
                 // show please wait dialog
-                showPleaseWaitDialog();
+                runOnUiThread(this::showPleaseWaitDialog);
+
 
                 // use internal SD -> nothing to change
                 new Thread() {
@@ -433,7 +435,7 @@ public class Splash extends Activity {
                                     dialog12.dismiss();
 
                                     // show please wait dialog
-                                    showPleaseWaitDialog();
+                                    runOnUiThread(this::showPleaseWaitDialog);
 
                                     // use external SD -> change workPath
                                     new Thread() {
@@ -444,13 +446,10 @@ public class Splash extends Activity {
                                             finishInitializationAndStartMain();
                                         }
                                     }.start();
-                                }).setNegativeButton(Translation.get("no"), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog13, int id) {
-                                // if this button is clicked, just close
-                                // the dialog box and do nothing
-                                dialog13.cancel();
-                            }
+                                }).setNegativeButton(Translation.get("no"), (dialog13, id) -> {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog13.cancel();
                         });
 
                         // create alert dialog
@@ -463,7 +462,7 @@ public class Splash extends Activity {
                         dialog.dismiss();
 
                         // show please wait dialog
-                        showPleaseWaitDialog();
+                        runOnUiThread(this::showPleaseWaitDialog);
 
                         // use external SD -> change workPath
                         new Thread() {
@@ -535,7 +534,7 @@ public class Splash extends Activity {
                     dialog.dismiss();
 
                     // show please wait dialog
-                    showPleaseWaitDialog();
+                    runOnUiThread(this::showPleaseWaitDialog);
 
                     // use external SD -> change workPath
                     new Thread() {
@@ -559,18 +558,15 @@ public class Splash extends Activity {
             btnCreateWorkpath.setOnClickListener(v -> {
                 // close select dialog
                 dialog.dismiss();
-                getFolder("", Translation.get("select_folder"), Translation.get("select"), new PlatformUIBase.IgetFolderReturnListener() {
-                    @Override
-                    public void returnFolder(String path) {
-                        if (FileIO.canWrite(path)) {
-                            AdditionalWorkPathArray.add(path);
-                            Splash.this.writeAdditionalWorkPathArray(AdditionalWorkPathArray);
-                            // Start again to include the new Folder
-                            Splash.this.onStart();
-                        } else {
-                            String WriteProtectionMsg = Translation.get("NoWriteAcces");
-                            Toast.makeText(Splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
-                        }
+                getFolder(Translation.get("select_folder"), Translation.get("select"), path -> {
+                    if (FileIO.canWrite(path)) {
+                        AdditionalWorkPathArray.add(path);
+                        Splash.this.writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+                        // Start again to include the new Folder
+                        Splash.this.onStart();
+                    } else {
+                        String WriteProtectionMsg = Translation.get("NoWriteAcces");
+                        Toast.makeText(Splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
                     }
                 });
             });
@@ -583,9 +579,8 @@ public class Splash extends Activity {
     }
 
     // don't want to implement PlatformConnector for Splash, for only need of getFolder
-    public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformUIBase.IgetFolderReturnListener returnListener) {
-        File mPath = FileFactory.createFile(initialPath);
-        Android_FileExplorer folderDialog = new Android_FileExplorer(this, mPath, TitleText, ButtonText);
+    private void getFolder(String TitleText, String ButtonText, PlatformUIBase.IgetFolderReturnListener returnListener) {
+        Android_FileExplorer folderDialog = new Android_FileExplorer(this, FileFactory.createFile(""), TitleText, ButtonText);
         folderDialog.setSelectDirectoryOption();
         folderDialog.setFolderReturnListener(returnListener);
         folderDialog.showDialog();
@@ -603,7 +598,6 @@ public class Splash extends Activity {
             pleaseWaitDialog.dismiss();
             pleaseWaitDialog = null;
         }
-
     }
 
     @Override
@@ -614,13 +608,85 @@ public class Splash extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
+    /*
     private void showPleaseWaitDialog() {
         pleaseWaitDialog = ProgressDialog.show(Splash.this, "In progress", "Copy resources");
         pleaseWaitDialog.show();
         TextView tv1 = pleaseWaitDialog.findViewById(android.R.id.message);
         tv1.setTextColor(Color.WHITE);
+
+    }
+     */
+    /*
+    private void showPleaseWaitDialog() {
+        // to handle deprecation
+        RelativeLayout layout = (RelativeLayout) findViewById(R.layout.splash);
+        ProgressBar progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleLarge);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        layout.addView(progressBar, params);
+        // To show the progress bar
+        progressBar.setVisibility(View.VISIBLE);
+        // To hide the progress bar
+        progressBar.setVisibility(View.GONE);
+        // To disable the user interaction you just need to add the following code
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        // To get user interaction back you just need to add the following code
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        // Just for future reference, change the android.R.attr.progressBarStyleSmall to android.R.attr.progressBarStyleHorizontal.
+        //        The code below only works above API level 21
+        // progressBar.setProgressTintList(ColorStateList.valueOf(Color.RED));
+    }
+     */
+
+    @SuppressLint("SetTextI18n")
+    private void showPleaseWaitDialog() {
+        int llPadding = 30;
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding);
+        ll.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        llParam.gravity = Gravity.CENTER;
+        ll.setLayoutParams(llParam);
+
+        ProgressBar progressBar = new ProgressBar(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setPadding(0, 0, llPadding, 0);
+        progressBar.setLayoutParams(llParam);
+
+        llParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        llParam.gravity = Gravity.CENTER;
+        TextView tvText = new TextView(this);
+        tvText.setText("Copy resources");
+        tvText.setTextColor(Color.parseColor("#000000"));
+        tvText.setTextSize(20);
+        tvText.setLayoutParams(llParam);
+
+        ll.addView(progressBar);
+        ll.addView(tvText);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setView(ll);
+
+        pleaseWaitDialog = builder.create();
+        pleaseWaitDialog.setTitle("Please wait! Bitte warten!"); // Copy resources
+        pleaseWaitDialog.show();
+        Window window = pleaseWaitDialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(pleaseWaitDialog.getWindow().getAttributes());
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            pleaseWaitDialog.getWindow().setAttributes(layoutParams);
+        }
     }
 
+
+    /*
     private String testExtSdPath(String extPath) {
         // this will test whether the extPath is an existing path to an external sd card
         if (extPath.equalsIgnoreCase(workPath))
@@ -664,6 +730,8 @@ public class Splash extends Activity {
         return null;
     }
 
+     */
+
     private void saveWorkPath() {
 
         SharedPreferences settings = this.getSharedPreferences(Global.PreferencesNAME, 0);
@@ -672,7 +740,7 @@ public class Splash extends Activity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("WorkPath", workPath);
         // Commit the edits!
-        editor.commit();
+        editor.apply();
     }
 
     private String getExternalSdPath() {
@@ -686,7 +754,7 @@ public class Splash extends Activity {
     }
 
     private ArrayList<String> getAdditionalWorkPathArray() {
-        ArrayList<String> retList = new ArrayList<String>();
+        ArrayList<String> retList = new ArrayList<>();
         AdditionalWorkPathCount = androidSetting.getInt("AdditionalWorkPathCount", 0);
         for (int i = 0; i < AdditionalWorkPathCount; i++) {
             retList.add(androidSetting.getString("AdditionalWorkPath" + i, ""));
@@ -702,7 +770,7 @@ public class Splash extends Activity {
             String delWorkPath = "AdditionalWorkPath" + i;
             editor.remove(delWorkPath);
         }
-        editor.commit();
+        editor.apply();
 
         int index = 0;
         for (String workpath : list) {
@@ -727,7 +795,7 @@ public class Splash extends Activity {
 
         // show wait dialog if not running
         if (pleaseWaitDialog == null)
-            showPleaseWaitDialog();
+            runOnUiThread(this::showPleaseWaitDialog);
 
         CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO);
 
@@ -766,7 +834,6 @@ public class Splash extends Activity {
 
                 Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
                 Config.newInstall.setValue(true);
-                Config.AcceptChanges();
 
                 // create .nomedia Files
                 FileIO.createFile(workPath + "/data/.nomedia");
@@ -783,7 +850,6 @@ public class Splash extends Activity {
         }
 
         Config.showSandbox.setValue(showSandbox);
-        Config.AcceptChanges();
 
         Log.info(log, GlobalCore.getInstance().getVersionString());
 
@@ -817,51 +883,43 @@ public class Splash extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PermissionCheck.MY_PERMISSIONS_REQUEST: {
-                Map<String, Integer> perms = new HashMap<String, Integer>();
-                // Initial
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+        if (requestCode == PermissionCheck.MY_PERMISSIONS_REQUEST) {
+            Map<String, Integer> receivedPermissions = new HashMap<>();
 
-                for (String permission : PermissionCheck.NEEDED_PERMISSIONS) {
-                    perms.put(permission, PackageManager.PERMISSION_GRANTED);
-                }
+            for (String permission : PermissionCheck.neededPermissions) {
+                receivedPermissions.put(permission, PackageManager.PERMISSION_GRANTED);
+            }
 
-                // Fill with results
-                for (int i = 0; i < permissions.length; i++)
-                    perms.put(permissions[i], grantResults[i]);
+            for (int i = 0; i < permissions.length; i++)
+                receivedPermissions.put(permissions[i], grantResults[i]);
 
-                // check all
-                ArrayList<String> deniedList = new ArrayList<String>();
-                for (String permission : PermissionCheck.NEEDED_PERMISSIONS) {
-                    if (perms.get(permission) != PackageManager.PERMISSION_GRANTED)
+            ArrayList<String> deniedList = new ArrayList<>();
+            for (String permission : PermissionCheck.neededPermissions) {
+                Integer receivedPermission = receivedPermissions.get(permission);
+                if (receivedPermission != null) {
+                    if (receivedPermission != PackageManager.PERMISSION_GRANTED)
                         deniedList.add(permission);
                 }
-
-                if (!deniedList.isEmpty()) {
-                    // Permission Denied
-                    String br = System.getProperty("line.separator");
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Some Permission is Denied");
-                    sb.append(br);
-
-                    for (String denied : deniedList) {
-                        sb.append(denied);
-                        sb.append(br);
-                    }
-                    sb.append(br);
-
-                    sb.append("Cachbox will close");
-
-                    Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
-
-                    // close
-                    this.finish();
-                }
             }
-            break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            if (!deniedList.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Some Permission is Denied\n");
+
+                for (String denied : deniedList) {
+                    sb.append(denied).append("\n");
+                }
+
+                sb.append("\nCachbox will close");
+
+                Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
+
+                // close
+                this.finish();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -883,8 +941,7 @@ public class Splash extends Activity {
             Log.info(log, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
             Log.info(log, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
 
-            java.io.File[] dirss = getExternalFilesDirs(null);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            if (android.os.Build.VERSION.SDK_INT >= KITKAT) {
                 // normally [0] is the internal SD, [1] is the external SD
                 java.io.File[] dirs = getExternalFilesDirs(null);
                 for (int i = 0; i < dirs.length; i++) {
@@ -892,7 +949,7 @@ public class Splash extends Activity {
                 }
                 // will be automatically created
 				/*
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+				if (android.os.Build.VERSION.SDK_INT >= LOLLIPOP) {
 					dirs = getExternalMediaDirs();
 					for (int i = 0; i < dirs.length; i++) {
 						Log.info(log, "getExternalMediaDirs[" + i + "]= " + dirs[i].getAbsolutePath());

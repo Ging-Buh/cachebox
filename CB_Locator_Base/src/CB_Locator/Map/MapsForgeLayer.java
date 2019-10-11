@@ -155,7 +155,7 @@ public class MapsForgeLayer extends Layer {
 
         // create bitmap from tile-definition
         try {
-            Log.trace(log, "get Tile for " + getFriendlyName() + " / " + desc.toString() + " on thread " + threadCount);
+            Log.info(log, "getTileGL: " + desc);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
             RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[threadCount], renderThemeFuture, displayModel, textScale, false, false);
             TileBitmap bitmap = databaseRenderers[threadCount].executeJob(rendererJob);

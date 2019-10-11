@@ -41,11 +41,7 @@ public class PlatformUIBase {
         showViewListener = listener;
     }
 
-    public static void showView(ViewID viewID, float x, float y, float width, float height) {
-        showView(viewID, x, y, width, height, 0, 0, 0, 0);
-    }
-
-    public static void showView(ViewID viewID, float x, float y, float width, float height, float leftMargin, float topMargin, float rightMargin, float bottomMargin) {
+    public static void showView(ViewID viewID, float x, float y, float leftMargin, float topMargin, float rightMargin, float bottomMargin) {
         if (showViewListener != null) {
             GL.that.clearRenderViews();
 
@@ -54,7 +50,7 @@ public class PlatformUIBase {
             int bottom = (int) (y + bottomMargin);
             int top = (int) topMargin;
 
-            showViewListener.show(viewID, left, top, right, bottom);
+            showViewListener.showView(viewID, left, top, right, bottom);
         }
     }
 
@@ -111,11 +107,9 @@ public class PlatformUIBase {
     public static void vibrate() {
         if (methods != null) {
             if (threadVibrate == null) {
-                threadVibrate = new Thread(() -> {
-                    methods.vibrate();
-                });
+                threadVibrate = new Thread(() -> methods.vibrate());
             }
-            threadVibrate.run();
+            threadVibrate.run(); // do not replace with start()
         }
     }
 
@@ -209,13 +203,6 @@ public class PlatformUIBase {
         }
     }
 
-    public static void handleExternalRequest() {
-        if (methods != null) {
-            methods.handleExternalRequest();
-        }
-    }
-
-
     public static ArrayList<String> getMediaScannerList() {
         return sendToMediaScannerList;
     }
@@ -256,8 +243,12 @@ public class PlatformUIBase {
         return methods.getGraphicFactory(scaleFactor);
     }
 
+    public static void handleExternalRequest() {
+        methods.handleExternalRequest();
+    }
+
     public interface IShowViewListener {
-        void show(ViewID viewID, int left, int top, int right, int bottom);
+        void showView(ViewID viewID, int left, int top, int right, int bottom);
 
         void setContentSize(int left, int top, int right, int bottom);
 
@@ -311,8 +302,6 @@ public class PlatformUIBase {
 
         void quit();
 
-        void handleExternalRequest();
-
         byte[] getImageFromFile(String cachedTileFilename) throws IOException;
 
         ImageData getImagePixel(byte[] img);
@@ -320,6 +309,8 @@ public class PlatformUIBase {
         byte[] getImageFromData(ImageData imgData);
 
         ext_GraphicFactory getGraphicFactory(float Scalefactor);
+
+        void handleExternalRequest();
     }
 
     public interface IgetFileReturnListener {

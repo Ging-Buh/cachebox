@@ -11,7 +11,7 @@ public class OnResumeListeners extends CopyOnWriteArrayList<CB_UI_Base.Events.On
         return onResumeListeners;
     }
 
-    public boolean add(OnResumeListener listener) {
+    public boolean addListener(OnResumeListener listener) {
         if (!contains(listener))
             return super.add(listener);
         else

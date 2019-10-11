@@ -12,8 +12,8 @@ import static CB_Utils.Settings.SettingUsage.ALL;
 
 public interface LocatorSettings {
 
-    Integer Level[] = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
-    Integer CrossLevel[] = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
+    Integer[] Level = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
+    Integer[] CrossLevel = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
 
     SettingFolder TileCacheFolder = new SettingFolder("TileCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Global, ALL, true);
     SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", Folder, NEVER, "", Local, ALL, true);

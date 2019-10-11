@@ -16,6 +16,7 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
+import CB_UI_Base.Events.OnResumeListeners;
 import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -46,7 +47,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
 import de.cb.sqlite.SQLiteClass;
 import de.cb.sqlite.SQLiteInterface;
-import de.droidcachebox.Views.Forms.GcApiLogin;
+import de.droidcachebox.Activities.GcApiLogin;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -77,6 +78,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
+        OnResumeListeners.getInstance().addListener(this::handleExternalRequest);
     }
 
     @Override

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 
-class Android_FileExplorer {
+public class Android_FileExplorer {
     private static final String log = "Android_FileExplorer";
     private static final String PARENT_DIR = "..";
     private final Activity activity;
@@ -32,7 +32,7 @@ class Android_FileExplorer {
     private String fileEndsWith;
     private String secondSDCard;
 
-    Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText) {
+    public Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText) {
         this(activity, initialPath, TitleText, ButtonText, null);
     }
 
@@ -105,7 +105,7 @@ class Android_FileExplorer {
         fileReturnListener = returnListener;
     }
 
-    void setFolderReturnListener(IgetFolderReturnListener returnListener) {
+    public void setFolderReturnListener(IgetFolderReturnListener returnListener) {
         folderReturnListener = returnListener;
     }
 
@@ -158,14 +158,14 @@ class Android_FileExplorer {
 
     }
 
-    void setSelectDirectoryOption() {
+    public void setSelectDirectoryOption() {
         this.selectDirectoryOption = true;
     }
 
     /**
      * Show file dialog
      */
-    void showDialog() {
+    public void showDialog() {
         try {
             activity.runOnUiThread(this::createFileDialog);
         } catch (Exception e) {
