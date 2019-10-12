@@ -44,7 +44,7 @@ public class Draft implements Serializable {
         this.Id = fne.Id;
         this.CacheId = fne.CacheId;
         this.gcCode = fne.gcCode;
-        GcId=fne.GcId;
+        GcId = fne.GcId;
         this.timestamp = fne.timestamp;
         this.typeString = fne.typeString;
         this.type = fne.type;
@@ -219,8 +219,10 @@ public class Draft implements Serializable {
 
     public boolean equals(Draft fne) {
         boolean ret = true;
-        if (!GcId.equals(fne.GcId))
-            ret = false;
+        if (GcId != null && fne.GcId != null) {
+            if (!GcId.equals(fne.GcId))
+                ret = false;
+        }
         if (this.Id != fne.Id)
             ret = false;
         if (this.CacheId != fne.CacheId)

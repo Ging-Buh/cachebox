@@ -448,7 +448,8 @@ public class DraftsView extends V_ListView {
         cm.addDivider();
 
         cm.addMenuItem("uploadDrafts", Action_UploadDrafts.getInstance().getIcon(), () -> Action_UploadDrafts.getInstance().Execute());
-        cm.addMenuItem("directLog", Action_UploadLogs.getInstance().getIcon(), () -> Action_UploadLogs.getInstance().Execute());
+        if (CB_Core_Settings.DirectOnlineLog.getValue())
+            cm.addMenuItem("directLog", Action_UploadLogs.getInstance().getIcon(), () -> Action_UploadLogs.getInstance().Execute());
         //
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
@@ -601,7 +602,8 @@ public class DraftsView extends V_ListView {
                     cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
                 }
                 cm.addMenuItem("uploadDrafts", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
-                cm.addMenuItem("directLog", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
+                if (CB_Core_Settings.DirectOnlineLog.getValue())
+                    cm.addMenuItem("directLog", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
                 cm.addMenuItem("SelectCache", null, this::selectCacheFromDraft);
                 cm.addMenuItem("delete", Sprites.getSprite(IconName.DELETE.name()), this::deleteDraft);
                 cm.show();
