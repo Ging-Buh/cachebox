@@ -30,7 +30,7 @@ public class Action_Mail extends AbstractAction {
     @Override
     public void Execute() {
         try {
-            PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + URLEncoder.encode(GlobalCore.getSelectedCache().getPlacedBy(), "UTF-8"));
+            PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + URLEncoder.encode(GlobalCore.getSelectedCache().getOwner(), "UTF-8"));
         }
         catch (Exception ignored) {
         }
