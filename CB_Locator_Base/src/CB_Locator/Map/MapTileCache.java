@@ -165,14 +165,14 @@ public class MapTileCache {
         Log.info("mapTileCache", "empty,clear");
         clearIndexList();
         resetTilesToDrawCounter();
-        System.arraycopy(EMPTY_HashList, 0, hashList, 0, capacity - 1);
+        System.arraycopy(EMPTY_HashList, 0, hashList, 0, capacity);
         for (int i = 0, n = tileList.length; i < n; i++) {
             if (tileList[i] != null) {
                 tileList[i].dispose();
                 tileList[i] = null;
             }
         }
-        System.arraycopy(EMPTY_TileList, 0, tileList, 0, capacity - 1);
+        System.arraycopy(EMPTY_TileList, 0, tileList, 0, capacity);
         numberOfLoadedTiles = 0;
         changeCounter = 0;
     }
