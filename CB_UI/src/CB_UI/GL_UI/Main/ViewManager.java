@@ -293,7 +293,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         misc_button.addAction(Action_SettingsActivity.getInstance(), false, GestureDirection.Left);
         misc_button.addAction(Action_switch_DayNight.getInstance(), false);
         misc_button.addAction(Action_Help.getInstance(), false);
-        misc_button.addAction(Action_Mail.getInstance(), false);
+        misc_button.addAction(Action_ContactOwner.getInstance(), false);
         misc_button.addAction(Action_switch_Torch.getInstance(), false);
         misc_button.addAction(CB_Action_ShowAbout.getInstance(), true, GestureDirection.Up);
         misc_button.addAction(Action_ShowQuit.getInstance(), false, GestureDirection.Down);

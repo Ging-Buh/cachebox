@@ -52,7 +52,7 @@ public class MenuID {
     public static final int AID_SHOW_PARKING_DIALOG = 140;
     public static final int AID_SHOW_DELETE_DIALOG = 141;
     public static final int AID_HELP = 209;
-    public static final int AID_MAIL = 212;
+    public static final int AID_ContactOwner = 212;
     public static final int AID_SHOW_FILTER_DIALOG = 159;
     public static final int AID_ADD_WP = 176;
     public static final int AID_UPLOAD_DRAFT = 177;

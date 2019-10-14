@@ -56,7 +56,7 @@ public class GroundspeakAPI {
     private static int retryCount;
     private static boolean active = false;
 
-    private static Webb getNetz() {
+    public static Webb getNetz() {
         if (netz == null) {
             netz = Webb.create();
             netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
@@ -1000,7 +1000,7 @@ public class GroundspeakAPI {
         /* */
     }
 
-    static String getUrl(int version, String command) {
+    public static String getUrl(int version, String command) {
         String ApiUrl = "https://api.groundspeak.com/";
         String StagingApiUrl = "https://staging.api.groundspeak.com/";
         String mPath;
@@ -1749,6 +1749,11 @@ public class GroundspeakAPI {
 
         public Query resultForStatusFields() {
             addResultField(StatusFields);
+            return this;
+        }
+
+        public Query resultFields(String resultFields) {
+            addResultField(resultFields);
             return this;
         }
 
