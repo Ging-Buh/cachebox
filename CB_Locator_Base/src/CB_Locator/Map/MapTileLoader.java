@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     static int PROCESSOR_COUNT; // == nr of threads for getting tiles
