@@ -22,13 +22,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     static int PROCESSOR_COUNT; // == nr of threads for getting tiles
+    private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
     private final QueueData queueData;
     private int threadIndex;
-    private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
     private int maxNumTiles;
 
     MapTileLoader() {
@@ -50,16 +49,16 @@ public class MapTileLoader {
                     boolean isHanging = (System.currentTimeMillis() - threadToCheck.startTime > 30000) && threadToCheck.isWorking; // or less or more??
                     if (!threadToCheck.isAlive() || isHanging) {
                         try {
-                        Log.trace(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
-                        queueProcessors.remove(threadToCheck);
-                        MultiThreadQueueProcessor.inLoadDescLock.lock();
-                        MultiThreadQueueProcessor.inLoadDesc.remove(threadToCheck.actualDescriptor);
-                        MultiThreadQueueProcessor.inLoadDescLock.unlock();
-                        MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData, threadToCheck.threadIndex);
-                        queueProcessors.add(newThread);
-                        newThread.setPriority(Thread.MIN_PRIORITY);
-                        newThread.start();}
-                        catch (Exception ex) {
+                            Log.trace(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
+                            queueProcessors.remove(threadToCheck);
+                            MultiThreadQueueProcessor.inLoadDescLock.lock();
+                            MultiThreadQueueProcessor.inLoadDesc.remove(threadToCheck.actualDescriptor);
+                            MultiThreadQueueProcessor.inLoadDescLock.unlock();
+                            MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData, threadToCheck.threadIndex);
+                            queueProcessors.add(newThread);
+                            newThread.setPriority(Thread.MIN_PRIORITY);
+                            newThread.start();
+                        } catch (Exception ex) {
                             Log.err(log, "Started a new thread with index: " + threadToCheck.threadIndex);
                         }
                     }
