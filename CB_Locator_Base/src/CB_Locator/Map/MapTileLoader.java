@@ -20,13 +20,14 @@ import CB_Utils.Log.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     static int PROCESSOR_COUNT; // == nr of threads for getting tiles
     private final QueueData queueData;
     private int threadIndex;
-    private static ArrayList<MultiThreadQueueProcessor> queueProcessors;
+    private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
     private int maxNumTiles;
 
     MapTileLoader() {
@@ -35,7 +36,7 @@ public class MapTileLoader {
         maxNumTiles = 0;
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
         Log.trace(log, "Number of processors: " + PROCESSOR_COUNT);
-        queueProcessors = new ArrayList<>();
+        queueProcessors = new CopyOnWriteArrayList<>();
         Thread queueProcessorAliveCheck = new Thread(() -> {
             do {
                 Log.trace(log, "queueProcessors alive checking");
