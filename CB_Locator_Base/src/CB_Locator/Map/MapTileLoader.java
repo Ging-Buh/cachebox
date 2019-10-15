@@ -19,62 +19,62 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     static int PROCESSOR_COUNT; // == nr of threads for getting tiles
     private final QueueData queueData;
     private int threadIndex;
-    private MultiThreadQueueProcessor[] queueProcessor;
-    private Thread[] queueProcessorAliveCheck;
+    private static ArrayList<MultiThreadQueueProcessor> queueProcessors;
     private int maxNumTiles;
-    private boolean isThreadPrioSet;
-    private boolean allThreadsAreRunning;
-    private int lastLoadingChangedCounter;
 
     MapTileLoader() {
         queueData = new QueueData();
         threadIndex = 0;
         maxNumTiles = 0;
-        isThreadPrioSet = false;
-        allThreadsAreRunning = false;
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-        Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
-        queueProcessor = new MultiThreadQueueProcessor[PROCESSOR_COUNT];
-        queueProcessorAliveCheck = new Thread[PROCESSOR_COUNT];
-        initialize(); // first initialize only one thread(MultiThreadQueueProcessor)
-        lastLoadingChangedCounter = -1;
-    }
-
-    private void initialize() {
-        if (threadIndex < PROCESSOR_COUNT) {
-            queueProcessor[threadIndex] = new MultiThreadQueueProcessor(queueData, threadIndex);
-            queueProcessor[threadIndex].setPriority(Thread.NORM_PRIORITY);
-            queueProcessor[threadIndex].start();
-            startAliveCheck(threadIndex);
-            threadIndex++;
-        }
-    }
-
-    private void startAliveCheck(final int index) {
-
-        queueProcessorAliveCheck[index] = new Thread(() -> {
+        Log.trace(log, "Number of processors: " + PROCESSOR_COUNT);
+        queueProcessors = new ArrayList<>();
+        Thread queueProcessorAliveCheck = new Thread(() -> {
             do {
+                Log.trace(log, "queueProcessors alive checking");
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ignored) {
                 }
-
-                if (!queueProcessor[index].isAlive()) {
-                    queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
-                    queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
-                    queueProcessor[index].start();
+                for (Iterator<MultiThreadQueueProcessor> iterator = queueProcessors.iterator(); iterator.hasNext(); ) {
+                    MultiThreadQueueProcessor threadToCheck = iterator.next();
+                    boolean isHanging = (System.currentTimeMillis() - threadToCheck.startTime > 30000) && threadToCheck.isWorking; // or less or more??
+                    if (!threadToCheck.isAlive() || isHanging) {
+                        try {
+                        Log.trace(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
+                        queueProcessors.remove(threadToCheck);
+                        MultiThreadQueueProcessor.inLoadDescLock.lock();
+                        MultiThreadQueueProcessor.inLoadDesc.remove(threadToCheck.actualDescriptor);
+                        MultiThreadQueueProcessor.inLoadDescLock.unlock();
+                        MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData, threadToCheck.threadIndex);
+                        queueProcessors.add(newThread);
+                        newThread.setPriority(Thread.MIN_PRIORITY);
+                        newThread.start();}
+                        catch (Exception ex) {
+                            Log.err(log, "Started a new thread with index: " + threadToCheck.threadIndex);
+                        }
+                    }
                 }
             } while (true);
         });
+        startQueueProzessors();
+        queueProcessorAliveCheck.start();
+    }
 
-        queueProcessorAliveCheck[index].setPriority(Thread.MIN_PRIORITY);
-        queueProcessorAliveCheck[index].start();
+    private void startQueueProzessors() {
+        for (threadIndex = 0; threadIndex < PROCESSOR_COUNT; threadIndex++) {
+            MultiThreadQueueProcessor thread = new MultiThreadQueueProcessor(queueData, threadIndex);
+            queueProcessors.add(thread);
+            thread.setPriority(Thread.MIN_PRIORITY);
+            thread.start();
+        }
     }
 
     int queuedTilesSize() {
@@ -87,32 +87,7 @@ public class MapTileLoader {
 
     public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
 
-        if (!allThreadsAreRunning) {
-            if (threadIndex < PROCESSOR_COUNT && threadIndex > 0) {
-                queueProcessor[threadIndex - 1].setPriority(Thread.MIN_PRIORITY);
-                initialize();
-            } else if (threadIndex >= PROCESSOR_COUNT && !isThreadPrioSet) {
-                for (int i = 0; i < PROCESSOR_COUNT; i++) {
-                    queueProcessor[i].setPriority(Thread.MIN_PRIORITY);
-                    isThreadPrioSet = true;
-                    allThreadsAreRunning = true;
-                }
-            }
-        }
-
         clearOrderQueue(); // perhaps new orders
-        /*
-        if (MultiThreadQueueProcessor.inLoadDesc.size() > 0) {
-            for (Descriptor descriptor : MultiThreadQueueProcessor.inLoadDesc) {
-                if (descriptor.Data == mapView) {
-                    releaseOrderQueue();
-                    // this order is ignored
-                    return;
-                }
-            }
-        }
-         */
-
         queueData.loadedTilesLock.lock();
         if (queueData.currentOverlayLayer != null) {
             queueData.loadedOverlayTilesLock.lock();
@@ -130,7 +105,7 @@ public class MapTileLoader {
 
         for (Descriptor descriptor : wantedTiles) {
             if (queueData.loadedTiles.containsKey(descriptor.getHashCode())) {
-                Log.info(log, "loaded: " + descriptor + " Age: " + queueData.loadedTiles.get(descriptor.getHashCode()).age);
+                Log.trace(log, "loaded: " + descriptor + " Age: " + queueData.loadedTiles.get(descriptor.getHashCode()).age);
                 if (queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
                     // should never happen! did only add descriptors, that are not in loaded tiles, which are locked
                     Log.err(log, descriptor + " already loaded. Should not be in queuedTiles");
@@ -138,7 +113,7 @@ public class MapTileLoader {
                 }
             } else {
                 if (!queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
-                    Log.info(log, "wanted: " + descriptor);
+                    Log.trace(log, "wanted: " + descriptor);
                     queueData.wantedTiles.put(descriptor.getHashCode(), descriptor);
                 } else {
                     Log.err(log, "already in wanted Tiles" + descriptor);
@@ -165,10 +140,11 @@ public class MapTileLoader {
             }
         } catch (Exception ignored) {
         }
-        for (int i = 0; i < PROCESSOR_COUNT; i++) {
-            if (queueProcessor[i] != null)
-                queueProcessor[i].interrupt();
+
+        for (MultiThreadQueueProcessor thread : queueProcessors) {
+            thread.interrupt();
         }
+
     }
 
     private void releaseOrderQueue() {
@@ -323,14 +299,5 @@ public class MapTileLoader {
                 queueData.wantedTiles.put(desc.getHashCode(), desc);
         }
         queueData.queuedTilesLock.unlock();
-    }
-
-    public boolean isLoadingChanged() {
-        if (queueData.loadedTiles.changeCounter == lastLoadingChangedCounter) {
-            return false;
-        } else {
-            lastLoadingChangedCounter = queueData.loadedTiles.changeCounter;
-            return true;
-        }
     }
 }

@@ -142,7 +142,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             maxNumTiles = 60;
         }
 
-        Log.info(log, "empty created tiles");
+        Log.trace(log, "empty created tiles");
         maxNumTiles = Math.min(maxNumTiles, 60);
         maxNumTiles = Math.max(maxNumTiles, 20);
         // maxNumTiles between 20 and 60
@@ -229,7 +229,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 }
                 // empty mapCacheList
                 if (minWpi == null || minWpi.Cache == null) {
-                    // Log.info(log, "empty click");
+                    // Log.trace(log, "empty click");
                     return true;
                 }
                 // always hide the bubble
@@ -240,7 +240,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 if (minDist < 40) {
                     if (minWpi.Waypoint != null) {
                         if (GlobalCore.getSelectedCache() != minWpi.Cache) {
-                            // Log.info(log, "Waypoint clicked: " + minWpi.Cache.getGcCode() + "/" + minWpi.Waypoint.getGcCode());
+                            // Log.trace(log, "Waypoint clicked: " + minWpi.Cache.getGcCode() + "/" + minWpi.Waypoint.getGcCode());
                             // show bubble at the location of the waypoint!!!
                             infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
                             infoBubble.setVisible();
@@ -255,7 +255,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                             mapCacheList.update(data);
                         }
                     } else {
-                        // Log.info(log, "Cache clicked: " + minWpi.Cache.getGcCode());
+                        // Log.trace(log, "Cache clicked: " + minWpi.Cache.getGcCode());
                         // show bubble
                         infoBubble.setCache(minWpi.Cache, null);
                         infoBubble.setVisible();
@@ -381,7 +381,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                             }
                         } else {
                             String msg = "No Cache loaded: \n remaining Full:" + GroundspeakAPI.fetchMyUserInfos().remaining + "\n remaining Lite:" + GroundspeakAPI.fetchMyUserInfos().remainingLite;
-                            Log.info(log, msg);
+                            Log.trace(log, msg);
                             GL.that.Toast(msg);
                         }
 
@@ -456,7 +456,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         });
         OnResumeListeners.getInstance().addListener(() -> {
             // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
-            Log.info(log, "MapView on resume");
+            Log.trace(log, "MapView on resume");
             lastZoom = 0;
             lastLoadHash = 0;
         });
@@ -879,14 +879,14 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
             synchronized (screenCenterT) {
                 if (screenCenterWorld.equals(screenCenterT) && lastZoom == aktZoom) {
-                    // Log.info(log, "screen center / Zoom not changed");
+                    // Log.trace(log, "screen center / Zoom not changed");
                     // todo return;
                 }
                 if (lastZoom != aktZoom) {
-                    Log.info(log, "Zoom changed");
+                    Log.trace(log, "Zoom changed");
                 }
                 if (!screenCenterT.equals(screenCenterWorld)) {
-                    Log.info(log, "screen center changed");
+                    Log.trace(log, "screen center changed");
                 }
                 screenCenterWorld.set(screenCenterT);
             }
@@ -908,9 +908,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             Descriptor lowerRightTile = screenToDescriptor(ruVector, aktZoom);
 
             long hash = upperLeftTile.getHashCode() * lowerRightTile.getHashCode();
-            Log.info(log, "hashes from " + upperLeftTile + " / " + lowerRightTile);
+            Log.trace(log, "hashes from " + upperLeftTile + " / " + lowerRightTile);
             if (lastLoadHash == hash) {
-                Log.info(log, "screen center changed only a little bit.");
+                Log.trace(log, "screen center changed only a little bit.");
                 // todo return; // we have loaded!
             }
             lastLoadHash = hash;
@@ -934,7 +934,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     lowerRightTile.Y = lowerRightTile.Y - 1;
                 }
             } while (CacheisToSmall);
-            Log.info(log, "Center:" + screenCenterWorld + " Tiles wanted: " + numberOfTilesWanted + " / " + cacheSize + " / " + mapTileLoader.getTilesToDrawCounter());
+            Log.trace(log, "Center:" + screenCenterWorld + " Tiles wanted: " + numberOfTilesWanted + " / " + cacheSize + " / " + mapTileLoader.getTilesToDrawCounter());
 
             mapTileLoader.loadTiles(this, upperLeftTile, lowerRightTile, aktZoom);
 

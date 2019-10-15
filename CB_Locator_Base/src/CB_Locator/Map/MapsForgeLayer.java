@@ -155,7 +155,7 @@ public class MapsForgeLayer extends Layer {
 
         // create bitmap from tile-definition
         try {
-            Log.info(log, "getTileGL: " + desc);
+            Log.trace(log, "getTileGL: " + desc);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
             RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[threadCount], renderThemeFuture, displayModel, textScale, false, false);
             TileBitmap bitmap = databaseRenderers[threadCount].executeJob(rendererJob);
@@ -260,19 +260,19 @@ public class MapsForgeLayer extends Layer {
         mapsforgeTheme = theme;
         XmlRenderTheme renderTheme;
         if (mapsforgeTheme.length() == 0) {
-            Log.info(log, "Use RenderTheme CB_InternalRenderTheme.DEFAULT");
+            Log.trace(log, "Use RenderTheme CB_InternalRenderTheme.DEFAULT");
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         } else if (mapsforgeTheme.equals(INTERNAL_THEME_OSMARENDER)) {
-            Log.info(log, "Use CB_InternalRenderTheme OSMARENDER");
+            Log.trace(log, "Use CB_InternalRenderTheme OSMARENDER");
             renderTheme = CB_InternalRenderTheme.OSMARENDER;
         } else if (mapsforgeTheme.equals(INTERNAL_THEME_CAR)) {
-            Log.info(log, "Use CB_InternalRenderTheme CAR");
+            Log.trace(log, "Use CB_InternalRenderTheme CAR");
             renderTheme = CB_InternalRenderTheme.CAR;
         } else if (mapsforgeTheme.equals(INTERNAL_THEME_DEFAULT)) {
-            Log.info(log, "Use CB_InternalRenderTheme DEFAULT");
+            Log.trace(log, "Use CB_InternalRenderTheme DEFAULT");
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         } else {
-            Log.info(log, "Use RenderTheme " + mapsforgeTheme + " with " + mapsforgeThemesStyle);
+            Log.trace(log, "Use RenderTheme " + mapsforgeTheme + " with " + mapsforgeThemesStyle);
             try {
                 File file = FileFactory.createFile(mapsforgeTheme);
                 if (file.exists()) {

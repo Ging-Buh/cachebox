@@ -39,8 +39,8 @@ public interface CB_UI_Base_Settings {
     SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, true, Global, ACB, true);
     SettingBool GestureOn = new SettingBool("GestureOn", Skin, EXPERT, true, Global, ACB,true);
     SettingBool useMipMap = new SettingBool("useMipMap", Skin, DEVELOPER, false, Global, ACB);
-    SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", Skin, DEVELOPER, true, Global, ACB, false);
-    SettingInt ambientTime = new SettingInt("ambientTime", Skin, DEVELOPER, 10, Global, ACB);
+    SettingBool useGrayFader = new SettingBool("useGrayFader", Skin, EXPERT, false, Global, ACB, false);
+    SettingInt fadeToGrayAfterXSeconds = new SettingInt("fadeToGrayAfterXSeconds", Skin, EXPERT, 10, Global, ACB);
     SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", Skin, DEVELOPER, new HSV_Color(0.2f, 1f, 0.2f, 1f), Global, ACB);
 
     SettingInt FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", Skin, EXPERT, 25, Global, ACB);

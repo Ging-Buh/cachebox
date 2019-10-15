@@ -209,15 +209,15 @@ public class GL implements ApplicationListener {
 
         if (grayFader == null) {
             grayFader = new Fader(); // !!! is calling GL.that.GLrenderOnce(true)
-            grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
-            grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
+            grayFader.setAlwaysOn(!CB_UI_Base_Settings.useGrayFader.getValue());
+            grayFader.setTimeToFadeOut(CB_UI_Base_Settings.fadeToGrayAfterXSeconds.getValue() * 1000);
             IChanged ce = () -> {
-                grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
-                grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
+                grayFader.setAlwaysOn(!CB_UI_Base_Settings.useGrayFader.getValue());
+                grayFader.setTimeToFadeOut(CB_UI_Base_Settings.fadeToGrayAfterXSeconds.getValue() * 1000);
                 grayFader.resetFadeOut();
             };
-            CB_UI_Base_Settings.dontUseAmbient.addSettingChangedListener(ce);
-            CB_UI_Base_Settings.ambientTime.addSettingChangedListener(ce);
+            CB_UI_Base_Settings.useGrayFader.addSettingChangedListener(ce);
+            CB_UI_Base_Settings.fadeToGrayAfterXSeconds.addSettingChangedListener(ce);
         }
         setGrayscale(grayFader.getValue());
 

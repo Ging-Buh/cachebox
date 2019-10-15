@@ -273,6 +273,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
             Config.AcceptChanges();
             Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
         }
+        Database.Data.sql.close();
         mainActivity.finish();
     }
 
@@ -281,7 +282,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         // viewmanager must have been initialized
         final Bundle extras = mainActivity.getIntent().getExtras();
         if (extras != null) {
-            Log.info(sKlasse, "prepared Request from splash");
+            Log.trace(sKlasse, "prepared Request from splash");
             if (ViewManager.that.isInitialized()) {
                 String ExternalRequestGCCode = extras.getString("GcCode");
                 if (ExternalRequestGCCode != null) {

@@ -85,7 +85,7 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 public class Splash extends Activity {
     private static final String log = "CB2 Splash";
     private Bitmap bitmap;
-    private AlertDialog pleaseWaitDialog; // private Dialog pleaseWaitDialog;
+    private AlertDialog pleaseWaitDialog;
     private String workPath;
     private int AdditionalWorkPathCount;
     private Dialog msg;

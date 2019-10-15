@@ -162,7 +162,7 @@ public class MapTileCache {
     }
 
     public void clear() {
-        Log.info("mapTileCache", "empty,clear");
+        Log.trace("mapTileCache", "empty,clear");
         clearIndexList();
         resetTilesToDrawCounter();
         System.arraycopy(EMPTY_HashList, 0, hashList, 0, capacity);

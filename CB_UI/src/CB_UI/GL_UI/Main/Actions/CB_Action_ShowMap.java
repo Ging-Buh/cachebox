@@ -289,6 +289,27 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         else
             cm2.addMenuItem("pause", null, TrackRecorder::PauseRecording).setEnabled(TrackRecorder.recording);
         cm2.addMenuItem("stop", null, TrackRecorder::StopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
+        cm2.addMenuItem("TrackDistance", null, () -> {
+            OptionMenu tdMenu = new OptionMenu("TrackDistance");
+            tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {
+                Config.TrackDistance.setValue((Integer) data);
+                Config.AcceptChanges();
+                showMenuTrackRecording();
+                return true;
+            };
+            tdMenu.setSingleSelection();
+            for (int i : Config.trackDistanceArray) {
+                final int selected = i;
+                MenuItem mi = tdMenu.addMenuItem("","" + i, null, () -> {
+                    tdMenu.setData(selected);
+                });
+                mi.setCheckable(true);
+                if (i == Config.TrackDistance.getValue())
+                    mi.setChecked(true);
+                else mi.setChecked(false);
+            }
+            tdMenu.show();
+        });
         cm2.show();
     }
 
@@ -653,10 +674,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         }
     }
 
-    private enum ThemeIsFor {
-        day, night, carday, carnight
-    }
-
     private HashMap<String, String> getMapStyles(String selectedTheme) {
         if (selectedTheme.length() > 0) {
             try {
@@ -694,6 +711,16 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return new HashMap<>();
     }
 
+    private enum ThemeIsFor {
+        day, night, carday, carnight
+    }
+
+    interface OverlaysCallback extends XmlRenderThemeMenuCallback {
+        HashMap<String, String> getOverlays();
+
+        void setLayer(String layer);
+    }
+
     private static class StylesCallback implements XmlRenderThemeMenuCallback {
         private HashMap<String, String> styles;
 
@@ -717,12 +744,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
             return styles;
         }
-    }
-
-    interface OverlaysCallback extends XmlRenderThemeMenuCallback {
-        HashMap<String, String> getOverlays();
-
-        void setLayer(String layer);
     }
 
     private class GetOverlaysCallback implements OverlaysCallback {

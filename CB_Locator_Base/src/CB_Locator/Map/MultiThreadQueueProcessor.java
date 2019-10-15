@@ -29,23 +29,28 @@ import java.util.concurrent.locks.ReentrantLock;
  * Logging with threadID
  */
 class MultiThreadQueueProcessor extends Thread {
-    private static final Lock inLoadDescLock = new ReentrantLock();
-    public static final CB_List<Descriptor> inLoadDesc = new CB_List<>();
-    private final int threadId;
+    static final Lock inLoadDescLock = new ReentrantLock();
+    static final CB_List<Descriptor> inLoadDesc = new CB_List<>();
+    final int threadIndex;
     private final QueueData queueData;
+    public Descriptor actualDescriptor;
+    long startTime;
+    boolean isWorking;
     private String log = "MapTileQueueThread";
 
     MultiThreadQueueProcessor(QueueData queueData, int threadID) {
         log = log + "[" + threadID + "]";
-        this.threadId = threadID;
+        this.threadIndex = threadID;
         this.queueData = queueData;
+        isWorking = false;
+        startTime = System.currentTimeMillis();
     }
 
     @Override
     public void run() {
         try {
             do {
-                Descriptor descriptor = null;
+                actualDescriptor = null;
                 if (!Energy.isDisplayOff() && ((queueData.wantedTiles.size() > 0) || (queueData.wantedOverlayTiles.size() > 0))) {
                     try {
                         boolean calcOverlay = false;
@@ -56,44 +61,51 @@ class MultiThreadQueueProcessor extends Thread {
                             queueData.queuedOverlayTilesLock.lock();
                         }
                         try {
-                            descriptor = calcNextAndRemove((queueData.wantedTiles.size() > 0) ? queueData.wantedTiles : queueData.wantedOverlayTiles);
+                            actualDescriptor = calcNextAndRemove((queueData.wantedTiles.size() > 0) ? queueData.wantedTiles : queueData.wantedOverlayTiles);
                         } finally {
                             queueData.queuedTilesLock.unlock();
                             if (queueData.currentOverlayLayer != null)
                                 queueData.queuedOverlayTilesLock.unlock();
                         }
 
-                        if (descriptor != null) {
+                        if (actualDescriptor != null) {
                             inLoadDescLock.lock();
-                            if (inLoadDesc.contains(descriptor)) {
+                            if (inLoadDesc.contains(actualDescriptor)) {
                                 // Other thread is loading this Desc. Skip!
+                                inLoadDescLock.unlock();
                                 continue;
                             }
                             inLoadDescLock.unlock();
 
-                            if (calcOverlay && queueData.currentOverlayLayer != null)
-                                loadOverlayTile(descriptor);
+                            if (calcOverlay && queueData.currentOverlayLayer != null) {
+                                startTime = System.currentTimeMillis();
+                                isWorking = true;
+                                loadOverlayTile(actualDescriptor);
+                                isWorking = false;
+                            }
                             else if (queueData.currentLayer != null) {
                                 inLoadDescLock.lock();
-                                if (inLoadDesc.contains(descriptor)) {
+                                if (inLoadDesc.contains(actualDescriptor)) {
                                     inLoadDescLock.unlock();
                                     continue;// Other thread is loading this Desc. Skip!
                                 }
-                                inLoadDesc.add(descriptor);
+                                inLoadDesc.add(actualDescriptor);
                                 inLoadDescLock.unlock();
                             }
 
-                            // long startTime = System.currentTimeMillis();
-                            loadTile(descriptor);
+                            startTime = System.currentTimeMillis();
+                            isWorking = true;
+                            loadTile(actualDescriptor);
+                            isWorking = false;
                             // long lasts = (System.currentTimeMillis() - startTime);
 
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException ignored) {
-                                // Log.info(log, "returned from powernapping");
+                                // Log.trace(log, "returned from powernapping");
                             }
                         } else {
-                            // nothing to do, so we can sleep
+                            // no next descriptor calculated, so we can sleep
                             try {
                                 Log.err(log, "Descriptor = null");
                                 Thread.sleep(10000);
@@ -101,17 +113,17 @@ class MultiThreadQueueProcessor extends Thread {
                             }
                         }
                     } catch (Exception ex1) {
-                        Log.err(log, "getting Descriptor: " + descriptor + " : " + ex1.toString());
+                        Log.err(log, "getting Descriptor: " + actualDescriptor + " : " + ex1.toString());
                     }
                 } else {
                     try {
-                        Log.info(log, "Do a long sleep");
+                        Log.trace(log, "Do a long sleep");
                         do {
                             Thread.sleep(100000);
                         }
                         while (Energy.isDisplayOff() || ((queueData.wantedTiles.size() <= 0) && (queueData.wantedOverlayTiles.size() <= 0)));
                     } catch (InterruptedException i) {
-                        Log.info(log, "returned from sleeping");
+                        Log.trace(log, "returned from sleeping");
                     }
                 }
             } while (true);

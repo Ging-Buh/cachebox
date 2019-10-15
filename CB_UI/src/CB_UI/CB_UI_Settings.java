@@ -91,7 +91,7 @@ public interface CB_UI_Settings {
     SettingStringArray Navis = new SettingStringArray("Navis", Misc, NORMAL, "Google", Global, ACB, navis);
     SettingBool TrackRecorderStartup = new SettingBool("TrackRecorderStartup", Misc, NORMAL, false, Global, ACB);
     SettingIntArray SoundApproachDistance = new SettingIntArray("SoundApproachDistance", Misc, NORMAL, 50, Global, ACB, approachDistanceArray);
-    SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", Misc, NORMAL, 3, Global, ACB, trackDistanceArray);
+    SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", Misc, NEVER, 3, Global, ACB, trackDistanceArray);
     SettingLongString FilterNew = new SettingLongString("FilterNew", Misc, NEVER, "", SettingStoreType.Local, ALL);
     SettingLongString UserFilter = new SettingLongString("UserFilter", Misc, NEVER, "", Global, ACB);
     SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", Misc, EXPERT, true, Global, ACB);
