@@ -39,18 +39,20 @@ public class MapsForgeLayer extends Layer {
     private static final float DEFAULT_TEXT_SCALE = 1;
     private static final String log = "MapsForgeLayer";
     public static DisplayModel displayModel;
-    private final ArrayList<Layer> additionalMapsforgeLayer; //actually there is only a mapsforge one
-    private final TileCache firstLevelTileCache; //mapsforge
-    private MapFile mapFile;
-    private static MultiMapDataStore[] multiMapDataStores; // ? static
-    private static DatabaseRenderer[] databaseRenderers; //
+    private static MultiMapDataStore[] multiMapDataStores;
+    private static DatabaseRenderer[] databaseRenderers;
     private static RenderThemeFuture renderThemeFuture;
+    private static int PROCESSOR_COUNT;
+    private static boolean mustInitialize = true;
+    private final ArrayList<Layer> additionalMapsforgeLayer;
+    private final TileCache firstLevelTileCache; // perhaps static?
+    private MapFile mapFile;
     private float textScale;
     private String pathAndName;
     private String mapsforgeThemesStyle;
     private String mapsforgeTheme;
     private boolean isSetRenderTheme;
-    private int threadCount;
+    private int mDataStoreNumber;
 
     MapsForgeLayer(String pathAndName) {
         this.pathAndName = pathAndName;
@@ -68,7 +70,7 @@ public class MapsForgeLayer extends Layer {
         data = null;
         languages = mapFile.getMapLanguages();
 
-        threadCount=-1;
+        mDataStoreNumber = -1;
         firstLevelTileCache = new InMemoryTileCache(128);
         textScale = 1;
 
@@ -81,19 +83,39 @@ public class MapsForgeLayer extends Layer {
         float restrictedScaleFactor = 1f;
         DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
         displayModel = new DisplayModel();
+
+        if (mustInitialize) {
+            // initialize these static things only once
+            mustInitialize = false;
+            PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
+            multiMapDataStores = new MultiMapDataStore[PROCESSOR_COUNT];
+            databaseRenderers = new DatabaseRenderer[PROCESSOR_COUNT];
+            for (int i = 0; i < PROCESSOR_COUNT; i++)
+                multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
+        }
+
     }
 
     @Override
     public void addAdditionalMap(Layer layer) {
         if (!this.isMapsForge() || !layer.isMapsForge())
             throw new RuntimeException("Can't add this Layer");
-        if (!additionalMapsforgeLayer.contains(layer))
-            additionalMapsforgeLayer.add(layer);
+        MapsForgeLayer mapsforgeLayer = (MapsForgeLayer) layer;
+        if (!additionalMapsforgeLayer.contains(mapsforgeLayer)) {
+            additionalMapsforgeLayer.add(mapsforgeLayer);
+            for (MultiMapDataStore mmds : multiMapDataStores) {
+                mmds.addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
+            }
+        }
     }
 
     @Override
     public void clearAdditionalMaps() {
         additionalMapsforgeLayer.clear();
+        for (MultiMapDataStore mmds : multiMapDataStores) {
+            mmds.clearMapDataStore();
+            mmds.addMapDataStore(mapFile, false, false);
+        }
     }
 
     @Override
@@ -130,35 +152,35 @@ public class MapsForgeLayer extends Layer {
         return sb.toString();
     }
 
+    public void prepareLayer(boolean isCarMode) {
+        try {
+            for (int i = 0; i < PROCESSOR_COUNT; i++) {
+                Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
+                multiMapDataStores[i].clearMapDataStore();
+                multiMapDataStores[i].addMapDataStore(mapFile, false, false);
+                for (Layer layer : additionalMapsforgeLayer) {
+                    MapsForgeLayer mapsforgeLayer = (MapsForgeLayer) layer;
+                    multiMapDataStores[i].addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
+                }
+                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
+            }
+            Log.debug(log, "Open MapsForge Map: " + getName());
+        } catch (Exception e) {
+            Log.err(log, "ERROR with Open MapsForge Map: " + getName(), e);
+        }
+
+        initTheme(isCarMode);
+    }
+
     @Override
     TileGL getTileGL(Descriptor desc) {
-
-        if ((multiMapDataStores == null)) {
-            initMapDatabase();
-        }
-
-        if (databaseRenderers == null)
-            databaseRenderers = new DatabaseRenderer[MapTileLoader.PROCESSOR_COUNT];
-
-        threadCount = threadCount + 1;
-        if (threadCount == MapTileLoader.PROCESSOR_COUNT) threadCount = 0;
-
-        if (databaseRenderers[threadCount] == null) {
-            databaseRenderers[threadCount] = new DatabaseRenderer(multiMapDataStores[threadCount], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
-        }
-        if (databaseRenderers[threadCount] == null)
-            return null;
-
-        if (renderThemeFuture == null) {
-            initTheme(false);
-        }
-
         // create bitmap from tile-definition
         try {
             Log.trace(log, "getTileGL: " + desc);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
-            RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[threadCount], renderThemeFuture, displayModel, textScale, false, false);
-            TileBitmap bitmap = databaseRenderers[threadCount].executeJob(rendererJob);
+            mDataStoreNumber = (mDataStoreNumber + 1) % PROCESSOR_COUNT;
+            RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[mDataStoreNumber], renderThemeFuture, displayModel, textScale, false, false);
+            TileBitmap bitmap = databaseRenderers[mDataStoreNumber].executeJob(rendererJob);
             if (bitmap == null) return null;
             /*
               // direct Buffer swap
@@ -180,6 +202,7 @@ public class MapsForgeLayer extends Layer {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(baos);
                 byte[] byteArray = baos.toByteArray(); // takes long
+                baos.close();
                 ((ext_Bitmap) bitmap).recycle();
                 return new TileGL_Bmp(desc, byteArray, TileGL.TileState.Present, Pixmap.Format.RGB565);
             } catch (Exception e) {
@@ -189,42 +212,6 @@ public class MapsForgeLayer extends Layer {
         } catch (Exception e) {
             Log.err(log, "get mapsfore tile: " + e.toString(), e);
             return null;
-        }
-    }
-
-    private void initMapDatabase() {
-        try {
-
-            ArrayList<MapFile> additionalMapFiles = null;
-            if (hasAdditionalMaps()) {
-                additionalMapFiles = new ArrayList<>();
-                for (Layer addLayer : additionalMapsforgeLayer) {
-                    additionalMapFiles.add(((MapsForgeLayer) addLayer).mapFile);
-                }
-            }
-
-            if (multiMapDataStores == null)
-                multiMapDataStores = new MultiMapDataStore[MapTileLoader.PROCESSOR_COUNT];
-
-            for (int i = 0; i < MapTileLoader.PROCESSOR_COUNT; i++) {
-                if (multiMapDataStores[i] == null) {
-                    multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
-                } else {
-                    multiMapDataStores[i].clearMapDataStore();
-                }
-
-                multiMapDataStores[i].addMapDataStore(mapFile, false, false);
-                if (hasAdditionalMaps()) {
-                    assert additionalMapFiles != null;
-                    for (MapFile mf : additionalMapFiles) {
-                        multiMapDataStores[i].addMapDataStore(mf, false, false);
-                    }
-                }
-            }
-
-            Log.debug(log, "Open MapsForge Map: " + getName());
-        } catch (Exception e) {
-            Log.err(log, "ERROR with Open MapsForge Map: " + getName(), e);
         }
     }
 
@@ -249,6 +236,10 @@ public class MapsForgeLayer extends Layer {
                     mapFile = new MapFile(file);
             }
         }
+    }
+
+    public MapFile getMapFile() {
+        return mapFile;
     }
 
     private void setRenderTheme(String theme, String themestyle) {

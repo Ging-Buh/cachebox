@@ -148,13 +148,6 @@ public class MapTileLoader {
 
     }
 
-    private void releaseOrderQueue() {
-        queueData.queuedTilesLock.unlock();
-        if (queueData.currentOverlayLayer != null) {
-            queueData.queuedOverlayTilesLock.unlock();
-        }
-    }
-
     private void clearOrderQueue() {
         queueData.queuedTilesLock.lock();
         if (queueData.currentOverlayLayer != null) {
@@ -267,17 +260,19 @@ public class MapTileLoader {
         return queueData.currentLayer;
     }
 
-    public boolean setCurrentLayer(Layer layer) {
+    public boolean setCurrentLayer(Layer layer, boolean isCarMode) {
         if (layer != queueData.currentLayer) {
             clearLoadedTiles();
+            layer.prepareLayer(isCarMode);
             queueData.currentLayer = layer;
             return true;
         }
         return false;
     }
 
-    public void changeCurrentLayer(Layer layer) {
+    public void modifyCurrentLayer(boolean isCarMode) {
         clearLoadedTiles();
+        queueData.currentLayer.prepareLayer(isCarMode);
     }
 
     public Layer getCurrentOverlayLayer() {

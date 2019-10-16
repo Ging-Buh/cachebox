@@ -199,7 +199,7 @@ public class LayerManager {
             for (String fileName : fileNames) {
                 if (!alreadyAdded.contains(fileName, false)) {
                     try {
-                        Layer layer = null;
+                        Layer layer;
                         String lowerCaseFileName = fileName.toLowerCase();
                         String pathAndName = directoryName + "/" + fileName;
                         if (lowerCaseFileName.endsWith("pack")) {

@@ -211,7 +211,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         } else {
             LocatorSettings.currentMapLayer.setValue(newLayer.getAllLayerNames());
         }
-        if (mapTileLoader.setCurrentLayer(newLayer)) renderOnce();
+        if (mapTileLoader.setCurrentLayer(newLayer, isCarMode)) renderOnce();
     }
 
     public void addAdditionalLayer(Layer layer) {

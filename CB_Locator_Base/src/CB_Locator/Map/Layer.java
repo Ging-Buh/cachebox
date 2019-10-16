@@ -120,6 +120,9 @@ public class Layer {
         return friendlyName;
     }
 
+    public void prepareLayer(boolean isCarMode) {
+    }
+
     TileGL getTileGL(Descriptor desc) {
         Pixmap.Format format = isOverlay() ? Pixmap.Format.RGBA4444 : Pixmap.Format.RGB565;
         try {
@@ -151,8 +154,7 @@ public class Layer {
                         b = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(b)));
                     }
                     return new TileGL_Bmp(desc, b, TileGL.TileState.Present, format);
-                }
-                else {
+                } else {
                     FileFactory.createFile(cachedTileFilename).delete();
                 }
             }

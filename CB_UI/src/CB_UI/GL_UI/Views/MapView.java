@@ -287,7 +287,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
 
         if (mapTileLoader.getCurrentLayer() == null) {
-            mapTileLoader.setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()));
+            mapTileLoader.setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()), isCarMode);
         }
         String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayer.getValue()};
         if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
@@ -1229,11 +1229,13 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if ((InitialFlags & INITIAL_THEME) != 0) {
             if (mapTileLoader.getCurrentLayer() != null) {
                 if (mapTileLoader.getCurrentLayer().isMapsForge()) {
-                    ((MapsForgeLayer) mapTileLoader.getCurrentLayer()).initTheme(isCarMode);
+                    mapTileLoader.modifyCurrentLayer(isCarMode);
+                    renderOnce();
                 }
             }
             if (mapTileLoader.getCurrentOverlayLayer() != null) {
                 if (mapTileLoader.getCurrentOverlayLayer().isMapsForge()) {
+                    // until now there are only Online Overlays
                     ((MapsForgeLayer) mapTileLoader.getCurrentOverlayLayer()).initTheme(isCarMode);
                 }
             }
