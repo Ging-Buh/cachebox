@@ -18,6 +18,7 @@ package CB_Utils.Settings;
 
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.IChanged;
+import android.util.Log;
 
 /**
  * @author ging-buh
@@ -123,6 +124,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
                     for (int i = 0, n = SettingChangedListeners.size(); i < n; i++) {
                         IChanged listener = SettingChangedListeners.get(i);
                         listener.handleChange();
+                        // CB_Utils.Log.Log.info("Setting ", "Setting " + name + " changed");
                     }
                 }
             });

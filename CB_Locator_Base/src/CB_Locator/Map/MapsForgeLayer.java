@@ -155,7 +155,7 @@ public class MapsForgeLayer extends Layer {
     public void prepareLayer(boolean isCarMode) {
         try {
             for (int i = 0; i < PROCESSOR_COUNT; i++) {
-                Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
+                // Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
                 multiMapDataStores[i].clearMapDataStore();
                 multiMapDataStores[i].addMapDataStore(mapFile, false, false);
                 for (Layer layer : additionalMapsforgeLayer) {
@@ -164,7 +164,7 @@ public class MapsForgeLayer extends Layer {
                 }
                 databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
             }
-            Log.debug(log, "Open MapsForge Map: " + getName());
+            Log.info (log, "prepareLayer " + getName()+ " : " + mapFile.getMapFileInfo().comment);
         } catch (Exception e) {
             Log.err(log, "ERROR with Open MapsForge Map: " + getName(), e);
         }

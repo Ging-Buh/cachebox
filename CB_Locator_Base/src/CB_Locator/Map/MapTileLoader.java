@@ -263,6 +263,7 @@ public class MapTileLoader {
     public boolean setCurrentLayer(Layer layer, boolean isCarMode) {
         if (layer != queueData.currentLayer) {
             clearLoadedTiles();
+            Log.info(log, "set layer to " + layer.name);
             layer.prepareLayer(isCarMode);
             queueData.currentLayer = layer;
             return true;

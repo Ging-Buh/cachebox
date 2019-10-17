@@ -107,7 +107,7 @@ class MultiThreadQueueProcessor extends Thread {
                         } else {
                             // no next descriptor calculated, so we can sleep
                             try {
-                                Log.err(log, "Descriptor = null");
+                                Log.err(log, "calcNextAndRemove could not determine a tile to load, although wanted Lists are not empty");
                                 Thread.sleep(10000);
                             } catch (InterruptedException ignored) {
                             }

@@ -104,6 +104,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     public MapView(CB_RectF cb_RectF, MapMode Mode) {
         super(cb_RectF, Mode.name());
         this.Mode = Mode;
+        Log.info(log, "creating Mapview for " + Mode + " map");
         mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
         if (Mode != MapMode.Normal) {
@@ -122,10 +123,13 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
         Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
 
+        /*
+        // Theme and Style are always changed together: so one event is enough else will overlap initialization
         Config.MapsforgeDayStyle.addSettingChangedListener(themeChangedEventHandler);
         Config.MapsforgeNightStyle.addSettingChangedListener(themeChangedEventHandler);
         Config.MapsforgeCarDayStyle.addSettingChangedListener(themeChangedEventHandler);
         Config.MapsforgeCarNightStyle.addSettingChangedListener(themeChangedEventHandler);
+         */
 
         registerSkinChangedEvent();
 
@@ -1229,6 +1233,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if ((InitialFlags & INITIAL_THEME) != 0) {
             if (mapTileLoader.getCurrentLayer() != null) {
                 if (mapTileLoader.getCurrentLayer().isMapsForge()) {
+                    Log.info(log, "modify layer " + mapTileLoader.getCurrentLayer().getName() + " for mapview " + Mode);
                     mapTileLoader.modifyCurrentLayer(isCarMode);
                     renderOnce();
                 }
@@ -1236,7 +1241,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (mapTileLoader.getCurrentOverlayLayer() != null) {
                 if (mapTileLoader.getCurrentOverlayLayer().isMapsForge()) {
                     // until now there are only Online Overlays
-                    ((MapsForgeLayer) mapTileLoader.getCurrentOverlayLayer()).initTheme(isCarMode);
+                    // ((MapsForgeLayer) mapTileLoader.getCurrentOverlayLayer()).initTheme(isCarMode);
                 }
             }
         }

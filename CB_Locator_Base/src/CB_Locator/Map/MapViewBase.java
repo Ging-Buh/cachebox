@@ -218,7 +218,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         Layer currentLayer = mapTileLoader.getCurrentLayer();
         currentLayer.addAdditionalMap(layer);
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.clearLoadedTiles();
+        mapTileLoader.modifyCurrentLayer(isCarMode);
         renderOnce();
     }
 
@@ -226,7 +226,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         Layer currentLayer = mapTileLoader.getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.clearLoadedTiles();
+        mapTileLoader.modifyCurrentLayer(isCarMode);
         renderOnce();
     }
 
@@ -234,7 +234,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         Layer currentLayer = mapTileLoader.getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.clearLoadedTiles();
+        mapTileLoader.modifyCurrentLayer(isCarMode);
         renderOnce();
     }
 
@@ -402,6 +402,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         CB_List<TileGL_RotateDrawables> rotateList = new CB_List<>();
 
         synchronized (screenCenterWorld) {
+            // Log.info(log, "Number of tiles to Draw: " + mapTileLoader.getTilesToDrawCounter());
             for (int i = mapTileLoader.getTilesToDrawCounter() - 1; i > -1; i--) {
                 TileGL tile = mapTileLoader.getDrawingTile(i);
                 if (tile != null) {
@@ -1150,8 +1151,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     @Override
     public void invalidateTexture() {
         Log.info(log, "invalidateTexture");
-        setNewSettings(INITIAL_THEME); // todo only if theme changed
-        // mapTileLoader.clearLoadedTiles(); // why (the tiles are just created. if they are not usable they are not used) or copy these away
+        setNewSettings(INITIAL_THEME);
         mapScale.ZoomChanged();
 
         GL.that.RunOnGLWithThreadCheck(() -> {

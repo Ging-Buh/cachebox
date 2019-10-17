@@ -216,7 +216,7 @@ public class LayerManager {
                             alreadyAdded.add(fileName);
                         }
                     } catch (Exception ex) {
-                        Log.err(log, "addToLayers: " + directoryName + "/" + fileName, ex);
+                        Log.err(log, "addToLayers: " + directoryName + "/" + fileName + ex.toString());
                     }
                 }
             }
