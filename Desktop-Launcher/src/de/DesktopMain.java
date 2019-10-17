@@ -4,6 +4,7 @@ import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
 import CB_Locator.Location;
 import CB_Locator.Locator;
+import CB_Locator.LocatorBasePlatFormMethods;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MainViewInit;
@@ -172,6 +173,8 @@ public class DesktopMain {
 
         PlatformUIBase.setMethods(new Methods() {
 
+            private boolean torchOn = false;
+
             @Override
             public void writePlatformSetting(SettingBase<?> setting) {
 
@@ -208,8 +211,6 @@ public class DesktopMain {
                 setting.clearDirty();
                 return setting;
             }
-
-            private boolean torchOn = false;
 
             @Override
             public boolean isOnline() {
@@ -367,64 +368,8 @@ public class DesktopMain {
 
             }
 
-            @Override
-            public byte[] getImageFromFile(String cachedTileFilename) throws IOException {
-                CB_Utils.fileProvider.File myImageFile = FileFactory.createFile(cachedTileFilename);
-                BufferedImage img = ImageIO.read(myImageFile.getFileInputStream());
-                ByteArrayOutputStream bas = new ByteArrayOutputStream();
-                ImageIO.write(img, "png", bas);
-                byte[] data = bas.toByteArray();
-                return data;
-            }
-
-            @Override
-            public PlatformUIBase.ImageData getImagePixel(byte[] img) {
-                InputStream in = new ByteArrayInputStream(img);
-                BufferedImage bImage;
-                try {
-                    bImage = ImageIO.read(in);
-                } catch (IOException e) {
-                    return null;
-                }
-
-                PlatformUIBase.ImageData imgData = new PlatformUIBase.ImageData();
-                imgData.width = bImage.getWidth();
-                imgData.height = bImage.getHeight();
-
-                BufferedImage intimg = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-                ColorConvertOp op = new ColorConvertOp(null);
-                op.filter(bImage, intimg);
-
-                Raster ras = intimg.getData();
-                DataBufferInt db = (DataBufferInt) ras.getDataBuffer();
-                imgData.PixelColorArray = db.getData();
-
-                return imgData;
-
-            }
-
-            @Override
-            public byte[] getImageFromData(PlatformUIBase.ImageData imgData) {
-
-                BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
-
-                dstImage.getRaster().setDataElements(0, 0, imgData.width, imgData.height, imgData.PixelColorArray);
-                ByteArrayOutputStream bas = new ByteArrayOutputStream();
-                try {
-                    ImageIO.write(dstImage, "png", bas);
-                } catch (IOException e) {
-                    return null;
-                }
-                return bas.toByteArray();
-            }
-
-            @Override
-            public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
-                return ext_AwtGraphicFactory.getInstance(Scalefactor);
-            }
-
         });
+        LocatorBasePlatFormMethods.setMethods(new DesktopLocatorBaseMethods());
 
     }
 

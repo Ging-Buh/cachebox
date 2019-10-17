@@ -17,13 +17,10 @@ package CB_UI_Base.Events;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ViewID;
-import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Settings.SettingBase;
 import com.badlogic.gdx.utils.Clipboard;
 import de.cb.sqlite.SQLiteInterface;
-import org.mapsforge.core.graphics.GraphicFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -227,22 +224,6 @@ public class PlatformUIBase {
         PlatformUIBase.clipBoard = clipBoard;
     }
 
-    public static byte[] getImageFromFile(String cachedTileFilename) throws IOException {
-        return methods.getImageFromFile(cachedTileFilename);
-    }
-
-    public static ImageData getImagePixel(byte[] b) {
-        return methods.getImagePixel(b);
-    }
-
-    public static byte[] getImageFromData(ImageData imageDataWithColorMatrixManipulation) {
-        return methods.getImageFromData(imageDataWithColorMatrixManipulation);
-    }
-
-    public static GraphicFactory getGraphicFactory(float scaleFactor) {
-        return methods.getGraphicFactory(scaleFactor);
-    }
-
     public static void handleExternalRequest() {
         methods.handleExternalRequest();
     }
@@ -302,14 +283,6 @@ public class PlatformUIBase {
 
         void quit();
 
-        byte[] getImageFromFile(String cachedTileFilename) throws IOException;
-
-        ImageData getImagePixel(byte[] img);
-
-        byte[] getImageFromData(ImageData imgData);
-
-        ext_GraphicFactory getGraphicFactory(float Scalefactor);
-
         void handleExternalRequest();
     }
 
@@ -319,12 +292,6 @@ public class PlatformUIBase {
 
     public interface IgetFolderReturnListener {
         void returnFolder(String Path);
-    }
-
-    public static class ImageData {
-        public int[] PixelColorArray;
-        public int width;
-        public int height;
     }
 
 }

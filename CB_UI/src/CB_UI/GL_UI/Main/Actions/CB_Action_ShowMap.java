@@ -60,6 +60,7 @@ import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 
+import static CB_Locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
 import static CB_Locator.Map.MapViewBase.INITIAL_WP_LIST;
 import static CB_Locator.Map.MapsForgeLayer.*;
 
@@ -681,7 +682,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, stylesCallBack);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
+                    // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
+                    CB_RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
@@ -700,7 +702,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 getOverlaysCallback.setLayer(mapStyleId);
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
+                    // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
+                    CB_RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }

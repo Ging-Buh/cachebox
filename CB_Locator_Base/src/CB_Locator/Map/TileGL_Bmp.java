@@ -15,7 +15,9 @@
  */
 package CB_Locator.Map;
 
+import CB_Locator.LocatorBasePlatFormMethods;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
@@ -23,6 +25,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import org.mapsforge.core.graphics.TileBitmap;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author ging-buh
@@ -31,15 +36,36 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 public class TileGL_Bmp extends TileGL {
     private static final String log = "TileGL_Bmp";
     private final Format format;
+    byte[] bytes;
     private Texture texture;
-    private byte[] bytes;
+    private TileBitmap bitmap;
     private boolean inCreation = false;
+
+    public TileGL_Bmp(Descriptor desc, TileBitmap bitmap, TileState state, Format format) {
+        descriptor = desc;
+        this.texture = null;
+        this.format = format;
+        this.bitmap = bitmap;
+        if (bitmap instanceof ext_Bitmap) {
+            bytes = getByteArray();
+            this.bitmap = null;
+        } else {
+            // remove else part, if checked (and implemented for DCB or use method with Pixmap)
+            /* */
+            bytes = getByteArray();
+            this.bitmap = null;
+            /* */
+        }
+        State = state;
+        createTexture();
+    }
 
     public TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state, Format format) {
         descriptor = desc;
         this.texture = null;
-        this.bytes = bytes;
         this.format = format;
+        this.bytes = bytes;
+        this.bitmap = null;
         State = state;
         createTexture();
     }
@@ -48,8 +74,6 @@ public class TileGL_Bmp extends TileGL {
     public boolean canDraw() {
         if (texture != null)
             return true;
-        if (bytes == null)
-            return false;
         if (inCreation)
             return false;
         Log.info(log, "can draw create Texture once more!?");
@@ -61,43 +85,58 @@ public class TileGL_Bmp extends TileGL {
         if (inCreation)
             return;
         inCreation = true;
+        if (isDisposed)
+            return;
+        if (texture != null)
+            return;
+        if (bitmap == null && bytes == null)
+            return;
 
         if (GL.that.isGlThread()) {
-            if (texture != null)
-                return;
-            if (bytes == null)
-                return;
-            try {
-                Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-                texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
-                pixmap.dispose();
-            } catch (Exception ex) {
-                Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+            if (bitmap == null)
+                getTexture();
+            else {
+                texture = LocatorBasePlatFormMethods.getTexture(bitmap);
+                bitmap = null;
             }
-            bytes = null;
-            inCreation = false;
         } else {
             // create Texture on next GlThread
             GL.that.RunOnGL(() -> {
-                if (isDisposed)
-                    return;
-                if (texture != null)
-                    return;
-                if (bytes == null)
-                    return;
-                try {
-                    Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-                    texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
-                    pixmap.dispose();
-                } catch (Exception ex) {
-                    Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+                if (bitmap == null)
+                    getTexture();
+                else {
+                    texture = LocatorBasePlatFormMethods.getTexture(bitmap);
+                    bitmap = null;
                 }
-                bytes = null;
-                inCreation = false;
                 GL.that.renderOnce();
             });
         }
+    }
 
+    private void getTexture() {
+        try {
+            Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
+            texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
+            pixmap.dispose();
+        } catch (Exception ex) {
+            Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.toString());
+        }
+        bitmap = null;
+        inCreation = false;
+    }
+
+    private byte[] getByteArray() {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(baos);
+            byte[] byteArray = baos.toByteArray(); // takes long
+            baos.close();
+            if (bitmap instanceof ext_Bitmap) ((ext_Bitmap) bitmap).recycle();
+            return byteArray;
+        } catch (Exception e) {
+            Log.err(log, "convert mapsfore tile to bmpTile: " + e.toString(), e);
+            return null;
+        }
     }
 
     @Override
@@ -105,17 +144,12 @@ public class TileGL_Bmp extends TileGL {
         return "[Age: " + age + " " + State.toString() + ", " + descriptor.toString();
     }
 
-     @Override
+    @Override
     public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> rotateList) {
         if (texture != null)
             batch.draw(texture, x, y, width, height);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see CB_Locator.Map.TileGL#getWidth()
-     */
     @Override
     public long getWidth() {
         if (texture != null)
@@ -123,11 +157,6 @@ public class TileGL_Bmp extends TileGL {
         return 0;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see CB_Locator.Map.TileGL#getHeight()
-     */
     @Override
     public long getHeight() {
         if (texture != null)
@@ -159,8 +188,6 @@ public class TileGL_Bmp extends TileGL {
                 texture = null;
             });
         }
-
-        bytes = null;
         isDisposed = true;
     }
 

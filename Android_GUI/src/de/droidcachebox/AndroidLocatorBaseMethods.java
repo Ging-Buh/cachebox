@@ -3,19 +3,47 @@ package de.droidcachebox;
 import CB_Locator.LocatorBasePlatFormMethods;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Log.Log;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLUtils;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.util.Arrays;
 
+import static org.mapsforge.map.android.graphics.AndroidGraphicFactory.getBitmap;
+
 public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Methods {
     private static final String sKlasse = "AndroidLocatorBaseMethods";
-    public AndroidLocatorBaseMethods() {
+    private AndroidApplication androidApplication;
+    private Activity mainActivity;
+    private Main mainMain;
 
+    public AndroidLocatorBaseMethods(Main main) {
+        androidApplication = main;
+        mainActivity = main;
+        mainMain = main;
+    }
+
+    /**
+     * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
+     */
+    private static byte[] get(byte[] array, int offset, int length) {
+        byte[] result = new byte[length];
+        System.arraycopy(array, offset, result, 0, length);
+        return result;
     }
 
     public Bitmap loadFromBoundingBox(String filename, BoundingBox bbox, Descriptor desc) {
@@ -106,13 +134,84 @@ public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
 
     }
 
-    /**
-     * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
-     */
-    private static byte[] get(byte[] array, int offset, int length) {
-        byte[] result = new byte[length];
-        System.arraycopy(array, offset, result, 0, length);
-        return result;
+    @Override
+    public byte[] getImageFromFile(String cachedTileFilename) {
+        android.graphics.Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
+        if (result != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] b = stream.toByteArray();
+            return b;
+        }
+        return null;
     }
 
+
+    @Override
+    public LocatorBasePlatFormMethods.ImageData getImagePixel(byte[] img) {
+        android.graphics.Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+        // Buffer dst = null;
+        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+        // bitmap.getPixels(pixels, 0, 0, 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        LocatorBasePlatFormMethods.ImageData imgData = new LocatorBasePlatFormMethods.ImageData();
+        imgData.width = bitmap.getWidth();
+        imgData.height = bitmap.getHeight();
+        imgData.PixelColorArray = pixels;
+
+        return imgData;
+    }
+
+    @Override
+    public byte[] getImageFromData(LocatorBasePlatFormMethods.ImageData imgData) {
+        android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height, android.graphics.Bitmap.Config.RGB_565);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    @Override
+    public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
+        // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
+        if (AndroidGraphicFactory.INSTANCE == null) {
+            ext_AndroidGraphicFactory.createInstance(mainActivity.getApplication());
+        }
+        return ext_AndroidGraphicFactory.getInstance(Scalefactor);
+    }
+
+    @Override
+    public GraphicFactory getMapsForgeGraphicFactory() {
+        if (AndroidGraphicFactory.INSTANCE == null) {
+            AndroidGraphicFactory.createInstance(mainActivity.getApplication());
+        }
+        return AndroidGraphicFactory.INSTANCE;
+    }
+
+    @Override
+    public Texture getTexture(TileBitmap bitmap) {
+            /*
+              // direct Buffer swap
+              If the goal is to convert an Android Bitmap to a libgdx Texture, you don't need to use Pixmap at all. You can do it directly with
+              the help of simple OpenGL and Android GLUtils. Try the followings; it is 100x faster than your solution. I assume that you are
+              not in the rendering thread (you should not most likely). If you are, you don't need to call postRunnable().
+              Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Format.RGBA8888);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle());
+                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+                    bitmap.recycle(); // now you have the texture to do whatever you want
+                }
+              });
+            */
+        Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Pixmap.Format.RGBA8888);
+        Gdx.gl20.glBindTexture(Gdx.gl20.GL_TEXTURE_2D, tex.getTextureObjectHandle());
+        GLUtils.texImage2D(Gdx.gl20.GL_TEXTURE_2D, 0, getBitmap(bitmap), 0);
+        Gdx.gl20.glBindTexture(Gdx.gl20.GL_TEXTURE_2D, 0);
+        // bitmap.recycle(); // now you have the texture to do whatever you want
+        return tex;
+    }
 }

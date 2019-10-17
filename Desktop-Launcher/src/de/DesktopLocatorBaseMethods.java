@@ -3,17 +3,30 @@ package de;
 import CB_Locator.LocatorBasePlatFormMethods;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
+import CB_Utils.fileProvider.FileFactory;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
+import org.mapsforge.map.awt.graphics.ext_AwtGraphicFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
 import java.io.*;
 import java.util.Arrays;
 
 public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Methods {
-private static final String sKlasse = "DesktopLocatorBaseMethods";
-public DesktopLocatorBaseMethods() {
+    private static final String sKlasse = "DesktopLocatorBaseMethods";
 
-        }
+    public DesktopLocatorBaseMethods() {
+
+    }
 
     // // unpack all files to cache
     // // extractImages();
@@ -50,6 +63,15 @@ public DesktopLocatorBaseMethods() {
     // }
     //
     // }
+
+    /**
+     * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
+     */
+    private static byte[] get(byte[] array, int offset, int length) {
+        byte[] result = new byte[length];
+        System.arraycopy(array, offset, result, 0, length);
+        return result;
+    }
 
     @Override
     public byte[] loadFromBoundingBoxByteArray(String filename, BoundingBox bbox, Descriptor desc) {
@@ -121,13 +143,71 @@ public DesktopLocatorBaseMethods() {
 
     }
 
-    /**
-     * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
-     */
-    private static byte[] get(byte[] array, int offset, int length) {
-        byte[] result = new byte[length];
-        System.arraycopy(array, offset, result, 0, length);
-        return result;
+    @Override
+    public byte[] getImageFromFile(String cachedTileFilename) throws IOException {
+        CB_Utils.fileProvider.File myImageFile = FileFactory.createFile(cachedTileFilename);
+        BufferedImage img = ImageIO.read(myImageFile.getFileInputStream());
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        ImageIO.write(img, "png", bas);
+        byte[] data = bas.toByteArray();
+        return data;
     }
 
+    @Override
+    public LocatorBasePlatFormMethods.ImageData getImagePixel(byte[] img) {
+        InputStream in = new ByteArrayInputStream(img);
+        BufferedImage bImage;
+        try {
+            bImage = ImageIO.read(in);
+        } catch (IOException e) {
+            return null;
+        }
+
+        LocatorBasePlatFormMethods.ImageData imgData = new LocatorBasePlatFormMethods.ImageData();
+        imgData.width = bImage.getWidth();
+        imgData.height = bImage.getHeight();
+
+        BufferedImage intimg = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        ColorConvertOp op = new ColorConvertOp(null);
+        op.filter(bImage, intimg);
+
+        Raster ras = intimg.getData();
+        DataBufferInt db = (DataBufferInt) ras.getDataBuffer();
+        imgData.PixelColorArray = db.getData();
+
+        return imgData;
+
+    }
+
+    @Override
+    public byte[] getImageFromData(LocatorBasePlatFormMethods.ImageData imgData) {
+
+        BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
+
+        dstImage.getRaster().setDataElements(0, 0, imgData.width, imgData.height, imgData.PixelColorArray);
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(dstImage, "png", bas);
+        } catch (IOException e) {
+            return null;
+        }
+        return bas.toByteArray();
+    }
+
+    @Override
+    public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
+        return ext_AwtGraphicFactory.getInstance(Scalefactor);
+    }
+
+    @Override
+    public GraphicFactory getMapsForgeGraphicFactory() {
+        return AwtGraphicFactory.INSTANCE;
+    }
+
+    @Override
+    public Texture getTexture(TileBitmap bitmap) {
+        // see AndroidLocatorBaseMethods
+        return null;
+    }
 }

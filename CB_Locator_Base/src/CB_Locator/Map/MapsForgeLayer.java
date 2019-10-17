@@ -1,7 +1,6 @@
 package CB_Locator.Map;
 
 import CB_Locator.LocatorSettings;
-import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -22,11 +21,10 @@ import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static CB_UI_Base.Events.PlatformUIBase.getGraphicFactory;
+import static CB_Locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
 
 /**
  * MapsForge (Offline): getting tiles from a file in mapsforge format (one of these can be taken from Freizeitkarte)
@@ -162,9 +160,10 @@ public class MapsForgeLayer extends Layer {
                     MapsForgeLayer mapsforgeLayer = (MapsForgeLayer) layer;
                     multiMapDataStores[i].addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
                 }
-                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
+                // databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
+                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true);
             }
-            Log.info (log, "prepareLayer " + getName()+ " : " + mapFile.getMapFileInfo().comment);
+            Log.info(log, "prepareLayer " + getName() + " : " + mapFile.getMapFileInfo().comment);
         } catch (Exception e) {
             Log.err(log, "ERROR with Open MapsForge Map: " + getName(), e);
         }
@@ -181,33 +180,10 @@ public class MapsForgeLayer extends Layer {
             mDataStoreNumber = (mDataStoreNumber + 1) % PROCESSOR_COUNT;
             RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[mDataStoreNumber], renderThemeFuture, displayModel, textScale, false, false);
             TileBitmap bitmap = databaseRenderers[mDataStoreNumber].executeJob(rendererJob);
-            if (bitmap == null) return null;
-            /*
-              // direct Buffer swap
-              If the goal is to convert an Android Bitmap to a libgdx Texture, you don't need to use Pixmap at all. You can do it directly with
-              the help of simple OpenGL and Android GLUtils. Try the followings; it is 100x faster than your solution. I assume that you are
-              not in the rendering thread (you should not most likely). If you are, you don't need to call postRunnable().
-              Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Format.RGBA8888);
-                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle());
-                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-                    bitmap.recycle(); // now you have the texture to do whatever you want
-                }
-              });
-            */
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(baos);
-                byte[] byteArray = baos.toByteArray(); // takes long
-                baos.close();
-                ((ext_Bitmap) bitmap).recycle();
-                return new TileGL_Bmp(desc, byteArray, TileGL.TileState.Present, Pixmap.Format.RGB565);
-            } catch (Exception e) {
-                Log.err(log, "convert mapsfore tile to bmpTile: " + e.toString(), e);
+            if (bitmap == null)
                 return null;
+            else {
+                return new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
             }
         } catch (Exception e) {
             Log.err(log, "get mapsfore tile: " + e.toString(), e);
@@ -280,13 +256,15 @@ public class MapsForgeLayer extends Layer {
         }
 
         try {
-            CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(displayModel.getScaleFactor()), displayModel, renderTheme);
+            // CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(displayModel.getScaleFactor()), displayModel, renderTheme);
+            CB_RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), displayModel, renderTheme);
         } catch (Exception e) {
             Log.err(log, "Error in checking RenderTheme " + mapsforgeTheme, e);
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         }
 
-        renderThemeFuture = new RenderThemeFuture(getGraphicFactory(displayModel.getScaleFactor()), renderTheme, displayModel);
+        // renderThemeFuture = new RenderThemeFuture(getGraphicFactory(displayModel.getScaleFactor()), renderTheme, displayModel);
+        renderThemeFuture = new RenderThemeFuture(getMapsForgeGraphicFactory(), renderTheme, displayModel);
 
         new Thread(renderThemeFuture).start();
 

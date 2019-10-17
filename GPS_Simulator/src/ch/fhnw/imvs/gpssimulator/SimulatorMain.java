@@ -192,26 +192,6 @@ public class SimulatorMain {
             }
 
             @Override
-            public byte[] getImageFromFile(String cachedTileFilename) throws IOException {
-                return new byte[0];
-            }
-
-            @Override
-            public PlatformUIBase.ImageData getImagePixel(byte[] img) {
-                return null;
-            }
-
-            @Override
-            public byte[] getImageFromData(PlatformUIBase.ImageData imgData) {
-                return new byte[0];
-            }
-
-            @Override
-            public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
-                return null;
-            }
-
-            @Override
             public void startPictureApp(String file) {
 
             }

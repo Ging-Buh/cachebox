@@ -25,6 +25,7 @@ import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
+import CB_Locator.LocatorBasePlatFormMethods;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
 import CB_UI.GL_UI.Main.ViewManager;
@@ -83,7 +84,6 @@ import de.droidcachebox.Ui.AndroidContentClipboard;
 import de.droidcachebox.Ui.AndroidTextClipboard;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
-import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -343,7 +343,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                  */
         }
 
-        initializeMapsForgeExtensions();
+        initializeLocatorBaseMethods();
 
         isCreated = true;
         Log.info(sKlasse, "onCreate <=");
@@ -887,9 +887,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     }
 
-    private void initializeMapsForgeExtensions() {
-        // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
-        ext_AndroidGraphicFactory.createInstance(this.getApplication());
+    private void initializeLocatorBaseMethods() {
+        LocatorBasePlatFormMethods.setMethods(new AndroidLocatorBaseMethods(this));
     }
 
     private enum LastState {

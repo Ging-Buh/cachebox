@@ -1,5 +1,6 @@
 package CB_Locator.Map;
 
+import CB_Locator.LocatorBasePlatFormMethods;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -15,7 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static CB_UI_Base.Events.PlatformUIBase.*;
+import static CB_Locator.LocatorBasePlatFormMethods.*;
 
 public class Layer {
     private static final String log = "Layer";
@@ -178,7 +179,7 @@ public class Layer {
      *
      * @return ImageData
      */
-    private ImageData getImageDataWithColorMatrixManipulation(ImageData imgData) {
+    private LocatorBasePlatFormMethods.ImageData getImageDataWithColorMatrixManipulation(LocatorBasePlatFormMethods.ImageData imgData) {
 
         int[] data = imgData.PixelColorArray;
         for (int i = 0; i < data.length; i++) {
