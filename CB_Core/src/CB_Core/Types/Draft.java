@@ -182,6 +182,7 @@ public class Draft implements Serializable {
         Parameters args = new Parameters();
         args.put("cacheid", CacheId);
         args.put("gccode", gcCode);
+        if (GcId == null) GcId = "";
         args.put("GcId", GcId);
         args.put("name", CacheName);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

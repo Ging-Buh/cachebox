@@ -597,9 +597,11 @@ public class DraftsView extends V_ListView {
                 draftViewItem.headerClicked = false;
                 Menu cm = new Menu("DraftItemMenuTitle");
                 cm.addMenuItem("edit", null, this::editDraft);
-                if (aktDraft.GcId.startsWith("GL")) {
-                    cm.addMenuItem("uploadLogImage", Sprites.getSprite(IconName.imagesIcon.name()), this::uploadLogImage);
-                    cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
+                if (aktDraft.GcId != null) {
+                    if (aktDraft.GcId.startsWith("GL")) {
+                        cm.addMenuItem("uploadLogImage", Sprites.getSprite(IconName.imagesIcon.name()), this::uploadLogImage);
+                        cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
+                    }
                 }
                 cm.addMenuItem("uploadDrafts", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
                 if (CB_Core_Settings.DirectOnlineLog.getValue())

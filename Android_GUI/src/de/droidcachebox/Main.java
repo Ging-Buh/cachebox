@@ -177,13 +177,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
             }
         };
-        handleSuppressPowerSavingConfigChanged = () -> {
-            if (Config.SuppressPowerSaving.getValue()) {
-                setWakeLockLevelToScreenBright();
-            } else {
-                setWakeLockLevelToOnlyCPUOn();
-            }
-        };
+        handleSuppressPowerSavingConfigChanged = () -> setWakeLock();
     }
 
     public static Activity getInstance() {
@@ -324,7 +318,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             SelectedCacheChangedEventListeners.getInstance().add(this);
 
             if (Config.SuppressPowerSaving.getValue()) {
-                setWakeLockLevelToScreenBright();
+                setWakeLock();
             }
 
             Config.AcceptChanges();
@@ -384,8 +378,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         super.onStop();
 
-        if (Config.SuppressPowerSaving.getValue()) {
-            setWakeLockLevelToOnlyCPUOn();
+        if (wakeLock != null) {
+            wakeLock.release();
         }
 
         Log.info(sKlasse, "onStop <=");
@@ -435,7 +429,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         int lQuickButtonHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
         setQuickButtonHeight(lQuickButtonHeight);
 
-        if (wakeLock != null) wakeLock.acquire();
+        if (Config.SuppressPowerSaving.getValue()) {
+            setWakeLock();
+        }
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
@@ -457,7 +453,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             Log.info(sKlasse, "is completely Finishing()");
         }
 
-        if (wakeLock != null) wakeLock.release();
+        if (wakeLock != null) {
+            wakeLock.release();
+        }
 
         if (input == null) {
             Log.info(sKlasse, "(input == null) : init input needed for super.onPause()");
@@ -504,7 +502,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 if (GlobalCore.RunFromSplash) {
                     Config.settings.WriteToDB();
 
-                    if (wakeLock != null) wakeLock.release();
+                    if (wakeLock != null) {
+                        wakeLock.release();
+                    }
 
                     TrackRecorder.StopRecording();
                     // GPS Verbindung beenden
@@ -653,20 +653,19 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     @SuppressLint("WakelockTimeout")
-    private void setWakeLockLevelToScreenBright() {
+    private void setWakeLock() {
         // Keep the device awake until OnStop() (=destroy) is called. remove there
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        assert pm != null;
-        wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CacheBox:WakeLock");
-        wakeLock.acquire();
-    }
-
-    @SuppressLint("WakelockTimeout")
-    private void setWakeLockLevelToOnlyCPUOn() {
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        assert pm != null;
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
-        wakeLock.acquire();
+        if (pm != null) {
+            if (Config.SuppressPowerSaving.getValue()) {
+                wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CacheBox:WakeLock");
+            }
+            else {
+                wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
+            }
+        }
+        if (wakeLock != null)
+            wakeLock.acquire();
     }
 
     private void showWaitToRenderStarted() {
