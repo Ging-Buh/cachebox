@@ -469,7 +469,7 @@ public class RouteOverlay {
                 reducedPoints = track.Points;
             } else {
                 reducedPoints = PolylineReduction.polylineReduction(track.Points, tolerance);
-                Log.info(log, "Track: " + track.FileName + " has " + track.Points.size() + ". reduced to " + reducedPoints.size() + " at Zoom = " + Zoom);
+                // Log.info(log, "Track: " + track.FileName + " has " + track.Points.size() + ". reduced to " + reducedPoints.size() + " at Zoom = " + Zoom);
                 if (reducedPoints.size() == 2) {
                     reducedPoints = track.Points;
                 }

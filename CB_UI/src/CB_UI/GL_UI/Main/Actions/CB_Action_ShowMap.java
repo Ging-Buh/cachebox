@@ -293,7 +293,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         cm2.addMenuItem("TrackDistance", null, () -> {
             OptionMenu tdMenu = new OptionMenu("TrackDistance");
             tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {
-                Config.TrackDistance.setValue((Integer) data);
+                int newValue = (Integer) data;
+                Config.TrackDistance.setValue(newValue);
                 Config.AcceptChanges();
                 showMenuTrackRecording();
                 return true;

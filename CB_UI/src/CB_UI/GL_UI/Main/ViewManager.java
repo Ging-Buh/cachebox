@@ -196,6 +196,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         if (Config.TrackRecorderStartup.getValue() && PlatformUIBase.isGPSon()) {
             TrackRecorder.StartRecording();
         }
+        Config.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Config.TrackDistance.getValue());
 
         // set last selected Cache
         String sGc = Config.LastSelectedCache.getValue();

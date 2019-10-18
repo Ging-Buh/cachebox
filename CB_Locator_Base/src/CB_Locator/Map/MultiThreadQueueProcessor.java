@@ -17,12 +17,9 @@ package CB_Locator.Map;
 
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 
 import java.util.SortedMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * insert sleeping with wakeup from maptileloader loadTiles(...
@@ -58,8 +55,8 @@ class MultiThreadQueueProcessor extends Thread {
                         Log.info(log, "tanked Energy");
                     }
                 } else {
-                    try {
-                        if (queueData.wantedTiles.size() > 0) {
+                    if (queueData.wantedTiles.size() > 0) {
+                        try {
                             queueData.wantedTilesLock.lock();
                             actualDescriptor = calcNextAndRemove(queueData.wantedTiles);
                             queueData.wantedTilesLock.unlock();
@@ -71,7 +68,12 @@ class MultiThreadQueueProcessor extends Thread {
                             } else {
                                 Log.err(log, "calcNextAndRemove for wantedTile");
                             }
-                        } else if (queueData.wantedOverlayTiles.size() > 0) {
+                        } catch (Exception ex) {
+                            Log.err(log, "calcNextAndRemove: " + ex, ex);
+                            queueData.wantedTilesLock.unlock();
+                        }
+                    } else if (queueData.wantedOverlayTiles.size() > 0) {
+                        try {
                             queueData.wantedOverlayTilesLock.lock();
                             actualDescriptor = calcNextAndRemove(queueData.wantedOverlayTiles);
                             queueData.wantedOverlayTilesLock.unlock();
@@ -83,18 +85,17 @@ class MultiThreadQueueProcessor extends Thread {
                             } else {
                                 Log.err(log, "calcNextAndRemove for wantedOverlayTile");
                             }
-                        } else {
-                            // nothing to do
-                            Log.info(log, "empty MapTileQueue: sleeping deep");
-                            try {
-                                Thread.sleep(100000);
-                            } catch (InterruptedException ignored) {
-                            }
+                        } catch (Exception ex) {
+                            Log.err(log, "calcNextAndRemove: " + ex, ex);
+                            queueData.wantedOverlayTilesLock.unlock();
                         }
-                    } catch (Exception ex) {
-                        Log.err(log, "calcNextAndRemove: " + ex.toString());
-                        queueData.wantedTilesLock.unlock();
-                        queueData.wantedOverlayTilesLock.unlock();
+                    } else {
+                        // nothing to do
+                        // Log.info(log, "empty MapTileQueue: sleeping deep");
+                        try {
+                            Thread.sleep(100000);
+                        } catch (InterruptedException ignored) {
+                        }
                     }
                     try {
                         Thread.sleep(100); // Let others work
@@ -155,10 +156,11 @@ class MultiThreadQueueProcessor extends Thread {
             try {
                 nearestDesc = tmpQueuedTiles.get(tmpQueuedTiles.firstKey());
                 Log.err(log, "could not determine the first mapTile to get");
-            }
-            catch (Exception ex) {
-                nearestDesc = tmpQueuedTiles.get(tmpQueuedTiles.firstKey());
-                Log.err(log, "could not determine the first mapTile to get" + ex);
+            } catch (Exception ex) {
+                if (tmpQueuedTiles.values().size() > 0)
+                    nearestDesc = tmpQueuedTiles.values().toArray(new Descriptor[0])[0];
+                else
+                    Log.err(log, "could not determine the first mapTile from NoTiles:" + tmpQueuedTiles.values().size() + " : ", ex);
             }
         }
         // if we don't remove here, the desc can be picked by another thread

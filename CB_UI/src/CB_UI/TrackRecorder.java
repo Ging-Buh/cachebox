@@ -58,8 +58,10 @@ public class TrackRecorder {
     private static boolean mustWriteMedia = false;
     private static boolean mustRecPos = false;
     private static boolean writePos = false;
+    public static int distanceForNextTrackpoint;
 
     public static void StartRecording() {
+        distanceForNextTrackpoint = Config.TrackDistance.getValue();
 
         GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
         GlobalCore.AktuelleRoute.ShowRoute = true;
@@ -208,7 +210,7 @@ public class TrackRecorder {
             MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
             float cachedDistance = dist[0];
 
-            if (cachedDistance > Config.TrackDistance.getValue()) {
+            if (cachedDistance > distanceForNextTrackpoint) {
                 StringBuilder sb = new StringBuilder();
 
                 sb.append("<trkpt lat=\"").append(Locator.getInstance().getLatitude(GPS)).append("\" lon=\"").append(Locator.getInstance().getLongitude(GPS)).append("\">\n")
