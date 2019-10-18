@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
-    static int PROCESSOR_COUNT; // == nr of threads for getting tiles
+    private static int PROCESSOR_COUNT; // == nr of threads for getting tiles
     private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
     private final QueueData queueData;
     private int threadIndex;
@@ -51,9 +51,6 @@ public class MapTileLoader {
                         try {
                             Log.trace(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
                             queueProcessors.remove(threadToCheck);
-                            MultiThreadQueueProcessor.inLoadDescLock.lock();
-                            MultiThreadQueueProcessor.inLoadDesc.remove(threadToCheck.actualDescriptor);
-                            MultiThreadQueueProcessor.inLoadDescLock.unlock();
                             MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData, threadToCheck.threadIndex);
                             queueProcessors.add(newThread);
                             newThread.setPriority(Thread.MIN_PRIORITY);
@@ -88,7 +85,7 @@ public class MapTileLoader {
 
     public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
 
-        clearOrderQueue(); // perhaps new orders
+        clearOrderQueues(); // perhaps new orders
         queueData.loadedTilesLock.lock();
         if (queueData.currentOverlayLayer != null) {
             queueData.loadedOverlayTilesLock.lock();
@@ -133,10 +130,10 @@ public class MapTileLoader {
         }
 
         try {
-            queueData.queuedTilesLock.unlock();
+            queueData.wantedTilesLock.unlock();
             queueData.loadedTilesLock.unlock();
             if (queueData.currentOverlayLayer != null) {
-                queueData.queuedOverlayTilesLock.unlock();
+                queueData.wantedOverlayTilesLock.unlock();
                 queueData.loadedOverlayTilesLock.unlock();
             }
         } catch (Exception ignored) {
@@ -148,10 +145,10 @@ public class MapTileLoader {
 
     }
 
-    private void clearOrderQueue() {
-        queueData.queuedTilesLock.lock();
+    private void clearOrderQueues() {
+        queueData.wantedTilesLock.lock();
         if (queueData.currentOverlayLayer != null) {
-            queueData.queuedOverlayTilesLock.lock();
+            queueData.wantedOverlayTilesLock.lock();
         }
         // clear Queue, to remove not yet loaded (previously needed) tiles
         // don't use clear because  of the mapview.
@@ -290,11 +287,11 @@ public class MapTileLoader {
 
     void reloadTile(Descriptor desc) {
         // called only, if not in loaded tiles
-        queueData.queuedTilesLock.lock();
+        queueData.wantedTilesLock.lock();
         if (!queueData.wantedTiles.containsKey(desc.getHashCode())) {
             if (!queueData.wantedTiles.containsKey(desc.getHashCode()))
                 queueData.wantedTiles.put(desc.getHashCode(), desc);
         }
-        queueData.queuedTilesLock.unlock();
+        queueData.wantedTilesLock.unlock();
     }
 }

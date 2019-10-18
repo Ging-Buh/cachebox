@@ -29,18 +29,14 @@ import java.util.concurrent.locks.ReentrantLock;
  * Logging with threadID
  */
 class MultiThreadQueueProcessor extends Thread {
-    static final Lock inLoadDescLock = new ReentrantLock();
-    static final CB_List<Descriptor> inLoadDesc = new CB_List<>();
-    final int threadIndex;
     private final QueueData queueData;
-    public Descriptor actualDescriptor;
+    int threadIndex;
     long startTime;
     boolean isWorking;
     private String log = "MapTileQueueThread";
 
-    MultiThreadQueueProcessor(QueueData queueData, int threadID) {
-        log = log + "[" + threadID + "]";
-        this.threadIndex = threadID;
+    MultiThreadQueueProcessor(QueueData queueData, int threadIndex) {
+        log = log + "[" + threadIndex + "]";
         this.queueData = queueData;
         isWorking = false;
         startTime = System.currentTimeMillis();
@@ -50,80 +46,59 @@ class MultiThreadQueueProcessor extends Thread {
     public void run() {
         try {
             do {
-                actualDescriptor = null;
-                if (!Energy.isDisplayOff() && ((queueData.wantedTiles.size() > 0) || (queueData.wantedOverlayTiles.size() > 0))) {
+                Descriptor actualDescriptor;
+                if (Energy.isDisplayOff()) {
                     try {
-                        boolean calcOverlay = false;
-                        queueData.queuedTilesLock.lock();
-                        if (queueData.currentOverlayLayer != null) {
-                            if (queueData.wantedTiles.size() == 0)
-                                calcOverlay = true;
-                            queueData.queuedOverlayTilesLock.lock();
+                        Log.info(log, "No Energy: I sleep");
+                        do {
+                            Thread.sleep(100000); // or longer
                         }
-                        try {
-                            actualDescriptor = calcNextAndRemove((queueData.wantedTiles.size() > 0) ? queueData.wantedTiles : queueData.wantedOverlayTiles);
-                        } finally {
-                            queueData.queuedTilesLock.unlock();
-                            if (queueData.currentOverlayLayer != null)
-                                queueData.queuedOverlayTilesLock.unlock();
-                        }
-
-                        if (actualDescriptor != null) {
-                            inLoadDescLock.lock();
-                            if (inLoadDesc.contains(actualDescriptor)) {
-                                // Other thread is loading this Desc. Skip!
-                                inLoadDescLock.unlock();
-                                continue;
+                        while (Energy.isDisplayOff());
+                    } catch (InterruptedException i) {
+                        Log.info(log, "tanked Energy");
+                    }
+                } else {
+                    try {
+                        if (queueData.wantedTiles.size() > 0) {
+                            queueData.wantedTilesLock.lock();
+                            actualDescriptor = calcNextAndRemove(queueData.wantedTiles);
+                            queueData.wantedTilesLock.unlock();
+                            if (actualDescriptor != null) {
+                                startTime = System.currentTimeMillis();
+                                isWorking = true;
+                                loadTile(actualDescriptor);
+                                isWorking = false;
+                            } else {
+                                Log.err(log, "calcNextAndRemove for wantedTile");
                             }
-                            inLoadDescLock.unlock();
-
-                            if (calcOverlay && queueData.currentOverlayLayer != null) {
+                        } else if (queueData.wantedOverlayTiles.size() > 0) {
+                            queueData.wantedOverlayTilesLock.lock();
+                            actualDescriptor = calcNextAndRemove(queueData.wantedOverlayTiles);
+                            queueData.wantedOverlayTilesLock.unlock();
+                            if (actualDescriptor != null) {
                                 startTime = System.currentTimeMillis();
                                 isWorking = true;
                                 loadOverlayTile(actualDescriptor);
                                 isWorking = false;
-                            }
-                            else if (queueData.currentLayer != null) {
-                                inLoadDescLock.lock();
-                                if (inLoadDesc.contains(actualDescriptor)) {
-                                    inLoadDescLock.unlock();
-                                    continue;// Other thread is loading this Desc. Skip!
-                                }
-                                inLoadDesc.add(actualDescriptor);
-                                inLoadDescLock.unlock();
-                            }
-
-                            startTime = System.currentTimeMillis();
-                            isWorking = true;
-                            loadTile(actualDescriptor);
-                            isWorking = false;
-                            // long lasts = (System.currentTimeMillis() - startTime);
-
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException ignored) {
-                                // Log.trace(log, "returned from powernapping");
+                            } else {
+                                Log.err(log, "calcNextAndRemove for wantedOverlayTile");
                             }
                         } else {
-                            // no next descriptor calculated, so we can sleep
+                            // nothing to do
+                            Log.info(log, "empty MapTileQueue: sleeping deep");
                             try {
-                                Log.err(log, "calcNextAndRemove could not determine a tile to load, although wanted Lists are not empty");
-                                Thread.sleep(10000);
+                                Thread.sleep(100000);
                             } catch (InterruptedException ignored) {
                             }
                         }
-                    } catch (Exception ex1) {
-                        Log.err(log, "getting Descriptor: " + actualDescriptor + " : " + ex1.toString());
+                    } catch (Exception ex) {
+                        Log.err(log, "calcNextAndRemove: " + ex.toString());
+                        queueData.wantedTilesLock.unlock();
+                        queueData.wantedOverlayTilesLock.unlock();
                     }
-                } else {
                     try {
-                        Log.trace(log, "Do a long sleep");
-                        do {
-                            Thread.sleep(100000);
-                        }
-                        while (Energy.isDisplayOff() || ((queueData.wantedTiles.size() <= 0) && (queueData.wantedOverlayTiles.size() <= 0)));
-                    } catch (InterruptedException i) {
-                        Log.trace(log, "returned from sleeping");
+                        Thread.sleep(100); // Let others work
+                    } catch (InterruptedException ignored) {
                     }
                 }
             } while (true);
@@ -137,7 +112,10 @@ class MultiThreadQueueProcessor extends Thread {
     }
 
     private Descriptor calcNextAndRemove(SortedMap<Long, Descriptor> tmpQueuedTiles) {
-        if (tmpQueuedTiles == null) return null;
+        if (tmpQueuedTiles == null) {
+            Log.err(log, "queue not initialized: no way");
+            return null;
+        }
         Descriptor nearestDesc = null;
         double nearestDist = Double.MAX_VALUE;
         int nearestZoom = 0;
@@ -145,8 +123,10 @@ class MultiThreadQueueProcessor extends Thread {
             MapViewBase mapView;
             if (tmpDesc.Data instanceof MapViewBase)
                 mapView = (MapViewBase) tmpDesc.Data;
-            else
+            else {
+                Log.err(log, "not for a map? for what shall i calc");
                 continue;
+            }
 
             long posFactor = mapView.getMapTilePosFactor(tmpDesc.zoom);
 
@@ -169,10 +149,20 @@ class MultiThreadQueueProcessor extends Thread {
                 nearestZoom = tmpDesc.zoom;
             }
         }
-        if (nearestDesc != null) {
-            // if we don't remove here, the desc can be picked by another thread
-            tmpQueuedTiles.remove(nearestDesc.getHashCode());
+
+        if (nearestDesc == null) {
+            // simply take the first from tmpQueuedTiles
+            try {
+                nearestDesc = tmpQueuedTiles.get(tmpQueuedTiles.firstKey());
+                Log.err(log, "could not determine the first mapTile to get");
+            }
+            catch (Exception ex) {
+                nearestDesc = tmpQueuedTiles.get(tmpQueuedTiles.firstKey());
+                Log.err(log, "could not determine the first mapTile to get" + ex);
+            }
         }
+        // if we don't remove here, the desc can be picked by another thread
+        tmpQueuedTiles.remove(nearestDesc.getHashCode());
         return nearestDesc;
     }
 
@@ -180,14 +170,10 @@ class MultiThreadQueueProcessor extends Thread {
         TileGL tile;
         try {
             tile = queueData.currentLayer.getTileGL(descriptor);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.err(log, "loadTile", ex);
             tile = null;
         }
-        inLoadDescLock.lock();
-        inLoadDesc.remove(descriptor);
-        inLoadDescLock.unlock();
 
         if (tile != null) {
             addLoadedTileWithLock(descriptor, tile);

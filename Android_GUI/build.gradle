@@ -72,6 +72,7 @@ android {
     packagingOptions {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
+
     defaultConfig {
         applicationId "de.droidcachebox"
         minSdkVersion 19
@@ -79,7 +80,7 @@ android {
         versionCode = Integer.decode(buildTime())
         versionName = buildTime()
         versionCode = 20191005
-        versionName = "Dvlpmnt RC4"
+        versionName = "Dvlpmnt RC5"
         multiDexEnabled true
     }
 
