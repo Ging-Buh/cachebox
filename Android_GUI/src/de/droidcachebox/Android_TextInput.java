@@ -2,6 +2,7 @@ package de.droidcachebox;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.TextInputInterface;
 import CB_Utils.Log.Log;
 import android.app.Activity;
@@ -45,8 +46,10 @@ public class Android_TextInput implements TextInputInterface {
             builder.setContentView(input);
             // Set up the buttons
             builder.setPositiveButton(Translation.get("ok"), (dialog, which) -> {
-                        editTextField.setText(input.getText().toString());
-                        editTextField.setFocus(false);
+                        GL.that.RunOnGL(() -> {
+                            editTextField.setText(input.getText().toString());
+                            editTextField.setFocus(false);
+                        });
                     }
             );
             builder.setNegativeButton(Translation.get("cancel"), (dialog, which) -> {

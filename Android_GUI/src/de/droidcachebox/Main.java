@@ -317,9 +317,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             // static Event Lists
             SelectedCacheChangedEventListeners.getInstance().add(this);
 
-            if (Config.SuppressPowerSaving.getValue()) {
-                setWakeLock();
-            }
+            setWakeLock();
 
             Config.AcceptChanges();
 
@@ -378,10 +376,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         super.onStop();
 
-        if (wakeLock != null) {
-            wakeLock.release();
-        }
-
         Log.info(sKlasse, "onStop <=");
         lastState = LastState.onStop;
     }
@@ -429,9 +423,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         int lQuickButtonHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
         setQuickButtonHeight(lQuickButtonHeight);
 
-        if (Config.SuppressPowerSaving.getValue()) {
-            setWakeLock();
-        }
+        setWakeLock();
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
@@ -451,10 +443,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (isFinishing()) {
             Log.info(sKlasse, "is completely Finishing()");
-        }
-
-        if (wakeLock != null) {
-            wakeLock.release();
         }
 
         if (input == null) {
@@ -654,7 +642,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     @SuppressLint("WakelockTimeout")
     private void setWakeLock() {
-        // Keep the device awake until OnStop() (=destroy) is called. remove there
+        // Keep the device awake until destroy is called. remove there
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (pm != null) {
             if (Config.SuppressPowerSaving.getValue()) {
@@ -663,9 +651,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             else {
                 wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
             }
+            if (wakeLock != null)
+                wakeLock.acquire();
         }
-        if (wakeLock != null)
-            wakeLock.acquire();
     }
 
     private void showWaitToRenderStarted() {
