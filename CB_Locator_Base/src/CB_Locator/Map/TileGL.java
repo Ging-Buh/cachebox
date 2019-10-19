@@ -19,10 +19,6 @@ import CB_Utils.Lists.CB_List;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Disposable;
 
-/**
- * @author ging-buh
- * @author Longri
- */
 public abstract class TileGL implements Disposable {
     private final int DEFAULT_TILE_SIZE = 256;
     public Descriptor descriptor = null;

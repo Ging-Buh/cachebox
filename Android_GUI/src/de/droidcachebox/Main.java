@@ -317,8 +317,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             // static Event Lists
             SelectedCacheChangedEventListeners.getInstance().add(this);
 
-            setWakeLock();
-
             Config.AcceptChanges();
 
         } else {
@@ -380,7 +378,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         lastState = LastState.onStop;
     }
 
-    @SuppressLint("WakelockTimeout")
     @Override
     protected void onResume() {
         if (GL.that == null) {

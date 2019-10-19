@@ -123,14 +123,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
         Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
 
-        /*
-        // Theme and Style are always changed together: so one event is enough else will overlap initialization
-        Config.MapsforgeDayStyle.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeNightStyle.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarDayStyle.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarNightStyle.addSettingChangedListener(themeChangedEventHandler);
-         */
-
         registerSkinChangedEvent();
 
         setBackground(ListBack);
@@ -146,7 +138,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             maxNumTiles = 60;
         }
 
-        Log.trace(log, "empty created tiles");
         maxNumTiles = Math.min(maxNumTiles, 60);
         maxNumTiles = Math.max(maxNumTiles, 20);
         // maxNumTiles between 20 and 60
@@ -233,7 +224,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 }
                 // empty mapCacheList
                 if (minWpi == null || minWpi.Cache == null) {
-                    // Log.trace(log, "empty click");
                     return true;
                 }
                 // always hide the bubble
@@ -244,7 +234,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 if (minDist < 40) {
                     if (minWpi.Waypoint != null) {
                         if (GlobalCore.getSelectedCache() != minWpi.Cache) {
-                            // Log.trace(log, "Waypoint clicked: " + minWpi.Cache.getGcCode() + "/" + minWpi.Waypoint.getGcCode());
                             // show bubble at the location of the waypoint!!!
                             infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
                             infoBubble.setVisible();
@@ -259,7 +248,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                             mapCacheList.update(data);
                         }
                     } else {
-                        // Log.trace(log, "Cache clicked: " + minWpi.Cache.getGcCode());
                         // show bubble
                         infoBubble.setCache(minWpi.Cache, null);
                         infoBubble.setVisible();
@@ -342,16 +330,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     info.setCoordType(CoordType.Map);
                     break;
                 case 1:
+                case 3:
+                case 4:
                     info.setCoordType(CoordType.GPS);
                     break;
                 case 2:
                     info.setCoordType(CoordType.Cache);
-                    break;
-                case 3:
-                    info.setCoordType(CoordType.GPS);
-                    break;
-                case 4:
-                    info.setCoordType(CoordType.GPS);
                     break;
             }
         }
@@ -380,12 +364,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                         if (geoCacheRelateds.size() > 0) {
                             try {
                                 WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
-                            } catch (InterruptedException e) {
-                                Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                            } catch (InterruptedException ex) {
+                                Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
                             }
                         } else {
                             String msg = "No Cache loaded: \n remaining Full:" + GroundspeakAPI.fetchMyUserInfos().remaining + "\n remaining Lite:" + GroundspeakAPI.fetchMyUserInfos().remainingLite;
-                            Log.trace(log, msg);
                             GL.that.Toast(msg);
                         }
 
@@ -432,8 +415,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         try {
             center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(log, "MapView/CoordinateGPS", ex);
         }
 
         // Info aktualisieren
@@ -458,12 +441,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             SetNorthOriented(Config.MapNorthOriented.getValue());
             PositionChanged();
         });
-        OnResumeListeners.getInstance().addListener(() -> {
-            // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
-            Log.trace(log, "MapView on resume");
-            lastZoom = 0;
-            lastLoadHash = 0;
-        });
+        // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
+        OnResumeListeners.getInstance().addListener(this::renderOnce);
     }
 
     @Override
@@ -882,19 +861,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             isLoadingTiles = true;
 
             synchronized (screenCenterT) {
-                if (screenCenterWorld.equals(screenCenterT) && lastZoom == aktZoom) {
-                    // Log.trace(log, "screen center / Zoom not changed");
-                    // todo return;
-                }
-                if (lastZoom != aktZoom) {
-                    Log.trace(log, "Zoom changed");
-                }
-                if (!screenCenterT.equals(screenCenterWorld)) {
-                    Log.trace(log, "screen center changed");
-                }
                 screenCenterWorld.set(screenCenterT);
             }
-            lastZoom = aktZoom;
 
             float halfMapIntWidth = (float) mapIntWidth / 2;
             float halfMapIntHeight = (float) mapIntHeight / 2;
@@ -910,35 +878,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             ruVector.set(halfMapIntWidth + halfdrawingWidth + extensionRight, halfMapIntHeight + halfdrawingHeight + extensionBottom);
             Descriptor upperLeftTile = screenToDescriptor(loVector, aktZoom);
             Descriptor lowerRightTile = screenToDescriptor(ruVector, aktZoom);
-
-            long hash = upperLeftTile.getHashCode() * lowerRightTile.getHashCode();
-            Log.trace(log, "hashes from " + upperLeftTile + " / " + lowerRightTile);
-            if (lastLoadHash == hash) {
-                Log.trace(log, "screen center changed only a little bit.");
-                // todo return; // we have loaded!
-            }
-            lastLoadHash = hash;
-
-            // check count of Tiles
-            int cacheSize;
-            int numberOfTilesWanted;
-            boolean CacheisToSmall;
-            cacheSize = mapTileLoader.getCacheSize();
-            CacheisToSmall = true;
-            do {
-                int x = lowerRightTile.X - upperLeftTile.X + 1;
-                int y = lowerRightTile.Y - upperLeftTile.Y + 1;
-                numberOfTilesWanted = x * y;
-                if (numberOfTilesWanted <= cacheSize) {
-                    CacheisToSmall = false;
-                } else {
-                    upperLeftTile.X = upperLeftTile.X + 1;
-                    upperLeftTile.Y = upperLeftTile.Y + 1;
-                    lowerRightTile.X = lowerRightTile.X - 1;
-                    lowerRightTile.Y = lowerRightTile.Y - 1;
-                }
-            } while (CacheisToSmall);
-            Log.trace(log, "Center:" + screenCenterWorld + " Tiles wanted: " + numberOfTilesWanted + " / " + cacheSize + " / " + mapTileLoader.getTilesToDrawCounter());
 
             mapTileLoader.loadTiles(this, upperLeftTile, lowerRightTile, aktZoom);
 
@@ -1004,7 +943,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     protected void setZoomScale(int zoom) {
-        // Log.debug(log, "set zoom");
         if (Mode == MapMode.Normal)
             zoomScale.setZoom(zoom);
         if (Mode == MapMode.Normal)
@@ -1024,7 +962,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         if (isDisposed()) return;
 
-        // Log.debug(log, "MapView clacLayout()");
         float margin = GL_UISizes.margin;
 
         float infoHeight = 0;

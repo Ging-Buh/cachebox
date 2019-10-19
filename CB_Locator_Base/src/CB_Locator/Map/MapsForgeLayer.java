@@ -214,6 +214,11 @@ public class MapsForgeLayer extends Layer {
         }
     }
 
+    boolean cacheTile(Descriptor descriptor) {
+        // don't want to cache for mapsforge
+        return false;
+    }
+
     public MapFile getMapFile() {
         return mapFile;
     }

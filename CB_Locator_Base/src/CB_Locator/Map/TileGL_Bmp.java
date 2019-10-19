@@ -29,10 +29,6 @@ import org.mapsforge.core.graphics.TileBitmap;
 
 import java.io.ByteArrayOutputStream;
 
-/**
- * @author ging-buh
- * @author Longri
- */
 public class TileGL_Bmp extends TileGL {
     private static final String log = "TileGL_Bmp";
     private final Format format;

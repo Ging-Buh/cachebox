@@ -56,15 +56,14 @@ class MultiThreadQueueProcessor extends Thread {
                     }
                 } else {
                     if (queueData.wantedTiles.size() > 0) {
+                        startTime = System.currentTimeMillis();
+                        isWorking = true;
                         try {
                             queueData.wantedTilesLock.lock();
                             actualDescriptor = calcNextAndRemove(queueData.wantedTiles);
                             queueData.wantedTilesLock.unlock();
                             if (actualDescriptor != null) {
-                                startTime = System.currentTimeMillis();
-                                isWorking = true;
                                 loadTile(actualDescriptor);
-                                isWorking = false;
                             } else {
                                 Log.err(log, "calcNextAndRemove for wantedTile");
                             }
@@ -72,16 +71,16 @@ class MultiThreadQueueProcessor extends Thread {
                             Log.err(log, "calcNextAndRemove: " + ex, ex);
                             queueData.wantedTilesLock.unlock();
                         }
+                        isWorking = false;
                     } else if (queueData.wantedOverlayTiles.size() > 0) {
+                        startTime = System.currentTimeMillis();
+                        isWorking = true;
                         try {
                             queueData.wantedOverlayTilesLock.lock();
                             actualDescriptor = calcNextAndRemove(queueData.wantedOverlayTiles);
                             queueData.wantedOverlayTilesLock.unlock();
                             if (actualDescriptor != null) {
-                                startTime = System.currentTimeMillis();
-                                isWorking = true;
                                 loadOverlayTile(actualDescriptor);
-                                isWorking = false;
                             } else {
                                 Log.err(log, "calcNextAndRemove for wantedOverlayTile");
                             }
@@ -89,6 +88,7 @@ class MultiThreadQueueProcessor extends Thread {
                             Log.err(log, "calcNextAndRemove: " + ex, ex);
                             queueData.wantedOverlayTilesLock.unlock();
                         }
+                        isWorking = false;
                     } else {
                         // nothing to do
                         // Log.info(log, "empty MapTileQueue: sleeping deep");
@@ -152,19 +152,21 @@ class MultiThreadQueueProcessor extends Thread {
         }
 
         if (nearestDesc == null) {
-            // simply take the first from tmpQueuedTiles
-            try {
-                nearestDesc = tmpQueuedTiles.get(tmpQueuedTiles.firstKey());
-                Log.err(log, "could not determine the first mapTile to get");
-            } catch (Exception ex) {
-                if (tmpQueuedTiles.values().size() > 0)
-                    nearestDesc = tmpQueuedTiles.values().toArray(new Descriptor[0])[0];
-                else
-                    Log.err(log, "could not determine the first mapTile from NoTiles:" + tmpQueuedTiles.values().size() + " : ", ex);
+            if (tmpQueuedTiles.values().size() > 0) {
+                // simply take the first from tmpQueuedTiles
+                nearestDesc = tmpQueuedTiles.values().toArray(new Descriptor[0])[0];
             }
         }
-        // if we don't remove here, the desc can be picked by another thread
-        tmpQueuedTiles.remove(nearestDesc.getHashCode());
+        if (nearestDesc == null) {
+            Log.err(log, "could not determine the first mapTile from number of tiles: " + tmpQueuedTiles.values().size());
+        } else {
+            // if we don't remove here, the desc can be picked by another thread
+            try {
+                tmpQueuedTiles.remove(nearestDesc.getHashCode());
+            } catch (Exception ex) {
+                Log.err(log, "tmpQueuedTiles.remove(nearestDesc.getHashCode())", ex);
+            }
+        }
         return nearestDesc;
     }
 
@@ -193,20 +195,20 @@ class MultiThreadQueueProcessor extends Thread {
         }
     }
 
-    private void loadOverlayTile(Descriptor desc) {
+    private void loadOverlayTile(final Descriptor descriptor) {
         if (queueData.currentOverlayLayer == null)
             return;
 
-        TileGL tile = queueData.currentOverlayLayer.getTileGL(desc);
+        TileGL tile = queueData.currentOverlayLayer.getTileGL(descriptor);
 
         if (tile != null) {
-            addLoadedOverlayTileWithLock(desc, tile);
+            addLoadedOverlayTileWithLock(descriptor, tile);
             // Redraw Map after a new Tile was loaded or generated
             GL.that.renderOnce();
         } else {
             new Thread(() -> {
                 // download in separate thread
-                queueData.currentOverlayLayer.cacheTile(desc);
+                queueData.currentOverlayLayer.cacheTile(descriptor);
             }).start();
         }
     }

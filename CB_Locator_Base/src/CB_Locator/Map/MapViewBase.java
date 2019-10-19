@@ -80,8 +80,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected float arrowHeading = 0;
     protected Vector2 myPointOnScreen;
     protected boolean showAccuracyCircle;
-    protected int aktZoom, lastZoom;
-    protected long lastLoadHash;
+    protected int aktZoom;
     protected KineticZoom kineticZoom = null;
     protected float maxTilesPerScreen = 0;
     protected int mapIntWidth;
@@ -114,8 +113,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         super(rec, Name);
         isCreated = false;
         isLoadingTiles = false;
-        lastZoom = -1;
-        lastLoadHash = -1;
         invalidateTextureEventList.Add(this);
     }
 

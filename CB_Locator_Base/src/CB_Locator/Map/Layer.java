@@ -197,8 +197,6 @@ public class Layer {
      */
     boolean cacheTile(Descriptor descriptor) {
 
-        if (isMapsForge()) return false;
-
         // get mapPack from layer and check, if tile is covered (can be generated) from mapPack then simply return true
         if (getMapType() == MapType.MapPack) {
             MapPackLayer pack = (MapPackLayer) data;

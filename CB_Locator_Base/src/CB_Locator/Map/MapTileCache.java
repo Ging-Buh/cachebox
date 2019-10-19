@@ -30,7 +30,6 @@ public class MapTileCache {
     private final short[] tilesToDraw;
     private short numberOfLoadedTiles = 0;
     private short tilesToDrawCounter = 0;
-    int changeCounter;
 
     MapTileCache(short capacity) {
         hashList = new long[capacity];
@@ -51,7 +50,6 @@ public class MapTileCache {
             EMPTY_IndexList[i] = i;
         }
         clearIndexList();
-        changeCounter = 0;
     }
 
     private void clearIndexList() {
@@ -73,7 +71,6 @@ public class MapTileCache {
         numberOfLoadedTiles++;
         if (numberOfLoadedTiles > capacity)
             numberOfLoadedTiles = capacity;
-        changeCounter++;
     }
 
     private short addIndex() {
@@ -174,7 +171,6 @@ public class MapTileCache {
         }
         System.arraycopy(EMPTY_TileList, 0, tileList, 0, capacity);
         numberOfLoadedTiles = 0;
-        changeCounter = 0;
     }
 
     void increaseLoadedTilesAge() {

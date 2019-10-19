@@ -85,6 +85,8 @@ public class MapTileLoader {
 
     public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
 
+        boolean continueThreads;
+
         clearOrderQueues(); // perhaps new orders
         queueData.loadedTilesLock.lock();
         if (queueData.currentOverlayLayer != null) {
@@ -129,6 +131,9 @@ public class MapTileLoader {
             }
         }
 
+        // before unlocking
+        continueThreads = queueData.wantedTiles.size() > 0 || queueData.wantedOverlayTiles.size() > 0;
+
         try {
             queueData.wantedTilesLock.unlock();
             queueData.loadedTilesLock.unlock();
@@ -139,8 +144,10 @@ public class MapTileLoader {
         } catch (Exception ignored) {
         }
 
-        for (MultiThreadQueueProcessor thread : queueProcessors) {
-            thread.interrupt();
+        if (continueThreads) {
+            for (MultiThreadQueueProcessor thread : queueProcessors) {
+                thread.interrupt();
+            }
         }
 
     }
