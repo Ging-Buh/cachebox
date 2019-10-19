@@ -98,6 +98,7 @@ public class Draft implements Serializable {
         isDirectLog = reader.getInt(17) != 0;
         fillType();
         GcId = reader.getString("GcId");
+        if (GcId == null) GcId = "";
     }
 
     public void fillType() {

@@ -28,6 +28,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.text.SimpleDateFormat;
 
 public class DraftViewItem extends ListViewItemBackground {
+    private static final String sKlasse = "DraftViewItem";
     public static BitmapFontCache cacheNamePaint;
     private static NinePatch backheader;
     private static float MeasuredLabelHeight = 0;
@@ -59,33 +61,8 @@ public class DraftViewItem extends ListViewItemBackground {
 
     public DraftViewItem(CB_RectF rec, int Index, Draft draft) {
         super(rec, Index, "");
-
         this.draft = draft;
-        mBackIsInitial = false;
-        MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
-        headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
-
-        header = new Box(getWidth(), headHeight);
-        header.addClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                headerClicked = true;
-                return false;
-            }
-        });
-        headerClicked = false;
-        iniImage();
-        header.addNext(ivTyp, FIXED);
-        iniDateLabel();
-        header.addLast(lblDate);
-        lblDate.setHAlignment(CB_Label.HAlignment.RIGHT);
-        this.addLast(header);
-        iniCacheTypeImage();
-        iniCacheNameLabel();
-        iniGcCodeLabel();
-        iniCommentLabel();
-
-        if (this.draft == null) {
+        if (draft == null) {
             CB_Button btnLoadMore = new CB_Button(Translation.get("LoadMore"));
             btnLoadMore.setWidth(this.getWidth());
             btnLoadMore.addClickHandler(new OnClickListener() {
@@ -97,7 +74,26 @@ public class DraftViewItem extends ListViewItemBackground {
                     return true;
                 }
             });
-            this.addChild(btnLoadMore);
+            addLast(btnLoadMore);
+        }
+        else {
+            mBackIsInitial = false;
+            MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+            headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
+
+            header = new Box(getWidth(), headHeight);
+            header.addClickHandler((v, x, y, pointer, button) -> {
+                headerClicked = true;
+                return false;
+            });
+            headerClicked = false;
+            iniImage();
+            iniDateLabel();
+            addLast(header);
+            iniCacheTypeImage();
+            iniCacheNameLabel();
+            iniGcCodeLabel();
+            iniCommentLabel();
         }
     }
 
@@ -132,7 +128,7 @@ public class DraftViewItem extends ListViewItemBackground {
         if (this.draft == null)
             return;
         ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
-        //header.addChild(ivTyp);
+        header.addNext(ivTyp, FIXED);
         ivTyp.setDrawable(getTypeIcon(this.draft));
     }
 
@@ -150,15 +146,15 @@ public class DraftViewItem extends ListViewItemBackground {
 
         try {
             DateLength = Fonts.Measure(dateString).width;
-        } catch (Exception e) {
-
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(sKlasse, "iniDateLabel", ex);
         }
 
         lblDate = new CB_Label(" lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight);
         lblDate.setFont(Fonts.getNormal());
         lblDate.setText(dateString);
-        // header.addChild(lblDate);
+        header.addLast(lblDate);
+        lblDate.setHAlignment(CB_Label.HAlignment.RIGHT);
     }
 
     private void iniCacheTypeImage() {

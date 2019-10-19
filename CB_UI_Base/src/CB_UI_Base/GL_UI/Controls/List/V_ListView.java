@@ -20,6 +20,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -255,7 +256,8 @@ public class V_ListView extends ListViewBase {
             } else {
                 this.setUnDraggable();
             }
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            Log.err("V_ListView", "calcDefaultPosList", ex);
         }
 
         isInCalculation.set(false);
