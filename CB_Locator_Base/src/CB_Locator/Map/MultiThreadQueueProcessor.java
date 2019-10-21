@@ -15,159 +15,107 @@
  */
 package CB_Locator.Map;
 
-import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Log;
+import com.badlogic.gdx.utils.Array;
 
-import java.util.SortedMap;
+import java.util.Iterator;
 
 /**
  * insert sleeping with wakeup from maptileloader loadTiles(...
  * Logging with threadID
  */
 class MultiThreadQueueProcessor extends Thread {
+    private static int newOrderGroup;
     private final QueueData queueData;
     int threadIndex;
     long startTime;
     boolean isWorking;
     private String log = "MapTileQueueThread";
+    final private Array<OrderData> orders;
+    private OrderData newOrder;
+    private int actualOrderGroup;
 
     MultiThreadQueueProcessor(QueueData queueData, int threadIndex) {
         log = log + "[" + threadIndex + "]";
+        this.threadIndex = threadIndex;
         this.queueData = queueData;
         isWorking = false;
         startTime = System.currentTimeMillis();
+        actualOrderGroup = -1;
+        newOrderGroup = -1;
+        orders = new Array<>(true, queueData.getCapacity());
+    }
+
+    /**
+     * used by MapTileLoader for ordering a new Tile (so a Texture to draw)
+     */
+    void addOrder(Descriptor descriptor, boolean forOverlay, int orderGroup, MapViewBase mapView) {
+        newOrderGroup = orderGroup;
+        removeOldOrders();
+        orders.add(new OrderData(descriptor, forOverlay, orderGroup, mapView));
+        // Log.info(log, "put Order: " + descriptor + " Distance: " + (Integer) descriptor.Data + " for " + orderGroup);
+    }
+
+    private boolean getNextOrder() {
+        removeOldOrders();
+        if (orders.size > 0) {
+            newOrder = orders.get(0);
+            orders.removeIndex(0);
+            actualOrderGroup = newOrderGroup;
+            return true;
+        }
+        return false;
+    }
+
+    private void removeOldOrders() {
+        synchronized (orders) {
+            if (orders.size > 0) {
+                if (actualOrderGroup != newOrderGroup) {
+                    while (orders.size > 0 && orders.get(0).orderGroup != newOrderGroup) {
+                        for (Iterator<OrderData> iterator = orders.iterator(); iterator.hasNext(); ) {
+                            OrderData od = iterator.next();
+                            if (od.orderGroup != newOrderGroup) {
+                                // Log.info(log, "remove " + od.descriptor + " of " + od.orderGroup);
+                                orders.removeValue(od, true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void run() {
         try {
             do {
-                Descriptor actualDescriptor;
-                if (Energy.isDisplayOff()) {
-                    try {
-                        Log.info(log, "No Energy: I sleep");
-                        do {
-                            Thread.sleep(100000); // or longer
-                        }
-                        while (Energy.isDisplayOff());
-                    } catch (InterruptedException i) {
-                        Log.info(log, "tanked Energy");
-                    }
-                } else {
-                    if (queueData.wantedTiles.size() > 0) {
-                        startTime = System.currentTimeMillis();
-                        isWorking = true;
-                        try {
-                            queueData.wantedTilesLock.lock();
-                            actualDescriptor = calcNextAndRemove(queueData.wantedTiles);
-                            queueData.wantedTilesLock.unlock();
-                            if (actualDescriptor != null) {
-                                loadTile(actualDescriptor);
-                            } else {
-                                Log.err(log, "calcNextAndRemove for wantedTile");
-                            }
-                        } catch (Exception ex) {
-                            Log.err(log, "calcNextAndRemove: " + ex, ex);
-                            queueData.wantedTilesLock.unlock();
-                        }
-                        isWorking = false;
-                    } else if (queueData.wantedOverlayTiles.size() > 0) {
-                        startTime = System.currentTimeMillis();
-                        isWorking = true;
-                        try {
-                            queueData.wantedOverlayTilesLock.lock();
-                            actualDescriptor = calcNextAndRemove(queueData.wantedOverlayTiles);
-                            queueData.wantedOverlayTilesLock.unlock();
-                            if (actualDescriptor != null) {
-                                loadOverlayTile(actualDescriptor);
-                            } else {
-                                Log.err(log, "calcNextAndRemove for wantedOverlayTile");
-                            }
-                        } catch (Exception ex) {
-                            Log.err(log, "calcNextAndRemove: " + ex, ex);
-                            queueData.wantedOverlayTilesLock.unlock();
-                        }
-                        isWorking = false;
+                if (getNextOrder()) {
+                    startTime = System.currentTimeMillis();
+                    isWorking = true;
+                    // Log.info(log, "got Order: " + newOrder.descriptor + " Distance: " + (Integer) newOrder.descriptor.Data + " for " + newOrder.orderGroup);
+                    newOrder.descriptor.Data = newOrder.mapView;
+                    if (newOrder.forOverlay) {
+                        loadOverlayTile(newOrder.descriptor);
                     } else {
-                        // nothing to do
-                        // Log.info(log, "empty MapTileQueue: sleeping deep");
-                        try {
-                            Thread.sleep(100000);
-                        } catch (InterruptedException ignored) {
-                        }
+                        loadTile(newOrder.descriptor);
                     }
+                    isWorking = false;
+                } else {
                     try {
-                        Thread.sleep(100); // Let others work
+                        // Log.info(log, "Wait for Order");
+                        Thread.sleep(100000);
                     } catch (InterruptedException ignored) {
                     }
                 }
             } while (true);
         } catch (Exception ex3) {
-            Log.err(log, "try over all " + ex3.toString(), ex3);
+            Log.err(log, log, ex3);
             try {
                 Thread.sleep(200);
             } catch (InterruptedException ignored) {
             }
         }
-    }
-
-    private Descriptor calcNextAndRemove(SortedMap<Long, Descriptor> tmpQueuedTiles) {
-        if (tmpQueuedTiles == null) {
-            Log.err(log, "queue not initialized: no way");
-            return null;
-        }
-        Descriptor nearestDesc = null;
-        double nearestDist = Double.MAX_VALUE;
-        int nearestZoom = 0;
-        for (Descriptor tmpDesc : tmpQueuedTiles.values()) {
-            MapViewBase mapView;
-            if (tmpDesc.Data instanceof MapViewBase)
-                mapView = (MapViewBase) tmpDesc.Data;
-            else {
-                Log.err(log, "not for a map? for what shall i calc");
-                continue;
-            }
-
-            long posFactor = mapView.getMapTilePosFactor(tmpDesc.zoom);
-
-            double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor - mapView.screenCenterWorld.getX(), 2) + Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterWorld.getY(), 2));
-
-            if (Math.abs(mapView.aktZoom - nearestZoom) > Math.abs(mapView.aktZoom - tmpDesc.zoom)) {
-                // der Zoomfaktor des bisher besten Tiles ist weiter entfernt vom aktuellen Zoom als der vom tmpDesc -> tmpDesc verwenden
-                nearestDist = dist;
-                nearestDesc = tmpDesc;
-                nearestZoom = tmpDesc.zoom;
-            }
-
-            if (dist < nearestDist) {
-                if (Math.abs(mapView.aktZoom - nearestZoom) < Math.abs(mapView.aktZoom - tmpDesc.zoom)) {
-                    // zuerst die Tiles, die dem aktuellen Zoom Faktor am n�chsten sind.
-                    continue;
-                }
-                nearestDist = dist;
-                nearestDesc = tmpDesc;
-                nearestZoom = tmpDesc.zoom;
-            }
-        }
-
-        if (nearestDesc == null) {
-            if (tmpQueuedTiles.values().size() > 0) {
-                // simply take the first from tmpQueuedTiles
-                nearestDesc = tmpQueuedTiles.values().toArray(new Descriptor[0])[0];
-            }
-        }
-        if (nearestDesc == null) {
-            Log.err(log, "could not determine the first mapTile from number of tiles: " + tmpQueuedTiles.values().size());
-        } else {
-            // if we don't remove here, the desc can be picked by another thread
-            try {
-                tmpQueuedTiles.remove(nearestDesc.getHashCode());
-            } catch (Exception ex) {
-                Log.err(log, "tmpQueuedTiles.remove(nearestDesc.getHashCode())", ex);
-            }
-        }
-        return nearestDesc;
     }
 
     private void loadTile(final Descriptor descriptor) {
@@ -235,6 +183,20 @@ class MultiThreadQueueProcessor extends Thread {
             }
         } finally {
             queueData.loadedOverlayTilesLock.unlock();
+        }
+    }
+
+    private static class OrderData {
+        Descriptor descriptor;
+        boolean forOverlay;
+        int orderGroup;
+        MapViewBase mapView;
+
+        OrderData(Descriptor actualDescriptor, boolean forOverlay, int orderGroup, MapViewBase mapView) {
+            this.descriptor = actualDescriptor;
+            this.forOverlay = forOverlay;
+            this.orderGroup = orderGroup;
+            this.mapView = mapView;
         }
     }
 }

@@ -52,6 +52,10 @@ public class MapTileCache {
         clearIndexList();
     }
 
+    public long[] getHashList() {
+        return hashList;
+    }
+
     private void clearIndexList() {
         System.arraycopy(EMPTY_IndexList, 0, indexList, 0, capacity);
     }

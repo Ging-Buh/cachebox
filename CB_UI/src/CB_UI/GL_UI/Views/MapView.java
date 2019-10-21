@@ -41,6 +41,7 @@ import CB_UI.GL_UI.Controls.MapInfoPanel;
 import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
+import CB_UI_Base.Energy;
 import CB_UI_Base.Events.OnResumeListeners;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -137,7 +138,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         } catch (Exception e) {
             maxNumTiles = 60;
         }
-
         maxNumTiles = Math.min(maxNumTiles, 60);
         maxNumTiles = Math.max(maxNumTiles, 20);
         // maxNumTiles between 20 and 60
@@ -388,7 +388,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
                     @Override
                     public boolean doCancel() {
-                        // TODO handle cancel
                         return false;
                     }
                 });
@@ -857,8 +856,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     protected void loadTiles() {
-        if (isCreated && !isLoadingTiles) {
-            isLoadingTiles = true;
+        if (Energy.isDisplayOff()) return;
+        if (isCreated) {
 
             synchronized (screenCenterT) {
                 screenCenterWorld.set(screenCenterT);
@@ -879,7 +878,20 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             Descriptor upperLeftTile = screenToDescriptor(loVector, aktZoom);
             Descriptor lowerRightTile = screenToDescriptor(ruVector, aktZoom);
 
+            MapTileLoader.finishYourself.set(true);
+            while (MapTileLoader.isWorking.get()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {
+                }
+            }
+            MapTileLoader.finishYourself.set(false);
+
+            MapTileLoader.isWorking.set(true);
+            // Log.info(log, "loadTiles for " + Mode);
             mapTileLoader.loadTiles(this, upperLeftTile, lowerRightTile, aktZoom);
+            // Log.info(log, "loadTiles for " + Mode + " done.");
+            MapTileLoader.isWorking.set(false);
 
             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
             data.hideMyFinds = hideMyFinds;
@@ -893,8 +905,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 upperLeftTile.Data = center;
                 LiveMapQue.queScreen(upperLeftTile, lowerRightTile);
             }
-
-            isLoadingTiles = false;
         }
     }
 

@@ -15,8 +15,6 @@
  */
 package CB_Locator.Map;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,14 +22,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Longri
  */
 class QueueData {
-    final Lock wantedTilesLock = new ReentrantLock();
-    final SortedMap<Long, Descriptor> wantedTiles = new TreeMap<>();
-    final Lock wantedOverlayTilesLock = new ReentrantLock();
-    final SortedMap<Long, Descriptor> wantedOverlayTiles = new TreeMap<>();
 
     final Lock loadedTilesLock = new ReentrantLock();
-    MapTileCache loadedTiles = new MapTileCache((short) 20);
     final Lock loadedOverlayTilesLock = new ReentrantLock();
+    MapTileCache loadedTiles = new MapTileCache((short) 20);
     MapTileCache loadedOverlayTiles = new MapTileCache((short) 20);
 
     Layer currentLayer = null;
@@ -40,5 +34,9 @@ class QueueData {
     void setLoadedTilesCacheCapacity(int capacity) {
         loadedTiles = new MapTileCache((short) capacity);
         loadedOverlayTiles = new MapTileCache((short) capacity);
+    }
+
+    int getCapacity() {
+        return loadedTiles.getCapacity();
     }
 }

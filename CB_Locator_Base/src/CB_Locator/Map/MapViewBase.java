@@ -25,7 +25,6 @@ import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
-import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Sprites;
@@ -42,11 +41,8 @@ import CB_Utils.Math.PointL;
 import CB_Utils.MathUtils;
 import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -100,7 +96,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected int outScreenDraw = 0;
     protected float lastDynamicZoom = -1;
     protected InputState inputState = InputState.Idle;
-    protected boolean isCreated, isLoadingTiles;
+    protected boolean isCreated;
     String str = "";
     private AccuracyDrawable accuracyDrawable = null;
     private boolean NightMode = false;
@@ -112,7 +108,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public MapViewBase(CB_RectF rec, String Name) {
         super(rec, Name);
         isCreated = false;
-        isLoadingTiles = false;
         invalidateTextureEventList.Add(this);
     }
 
@@ -369,7 +364,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                         }
                         if (!canDraw) {
                             desc.Data = this;
-                            mapTileLoader.reloadTile(desc); // add to queue
                             // at moment there is no suitable tile for this zoom, first try a bigger one, else try from smaller ones
                             if (!renderBiggerTiles(batch, i, j, aktZoom)) {
                                 renderSmallerTiles(batch, i, j, aktZoom);
@@ -448,6 +442,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         return (long) (Math.pow(2.0, MAX_MAP_ZOOM - tile.descriptor.getZoom()) / tile.getScaleFactor());
     }
 
+    /*
     protected void renderDebugInfo(Batch batch) {
 
         CB_RectF r = this.thisWorldRec;
@@ -478,6 +473,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         font.draw(batch, str, 20, 20);
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
     }
+     */
 
     // FIXME make point and vPoint final and setValues!
     protected void renderPositionMarker(Batch batch) {

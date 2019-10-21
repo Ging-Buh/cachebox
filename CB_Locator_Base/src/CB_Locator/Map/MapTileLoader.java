@@ -15,31 +15,45 @@
  */
 package CB_Locator.Map;
 
-import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
+import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
+    public static AtomicBoolean finishYourself, isWorking;
     private static int PROCESSOR_COUNT; // == nr of threads for getting tiles
+    private static int nextQueueProcessor;
     private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
     private final QueueData queueData;
     private int threadIndex;
     private int maxNumTiles;
+    private Comparator<Descriptor> byDistanceFromCenter;
+    private int orderGroup;
+    private Thread queueProcessorAliveCheck;
 
     MapTileLoader() {
         queueData = new QueueData();
         threadIndex = 0;
         maxNumTiles = 0;
+        finishYourself = new AtomicBoolean();
+        finishYourself.set(false);
+        isWorking = new AtomicBoolean();
+        isWorking.set(false);
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-        Log.trace(log, "Number of processors: " + PROCESSOR_COUNT);
+        Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
-        Thread queueProcessorAliveCheck = new Thread(() -> {
+        nextQueueProcessor = 0;
+        orderGroup = -1;
+        byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.Data, (Integer) o2.Data);
+
+        queueProcessorAliveCheck = new Thread(() -> {
             do {
-                Log.trace(log, "queueProcessors alive checking");
+                // Log.info(log, "queueProcessors alive checking");
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ignored) {
@@ -49,7 +63,7 @@ public class MapTileLoader {
                     boolean isHanging = (System.currentTimeMillis() - threadToCheck.startTime > 30000) && threadToCheck.isWorking; // or less or more??
                     if (!threadToCheck.isAlive() || isHanging) {
                         try {
-                            Log.trace(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
+                            //Log.info(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
                             queueProcessors.remove(threadToCheck);
                             MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData, threadToCheck.threadIndex);
                             queueProcessors.add(newThread);
@@ -62,8 +76,6 @@ public class MapTileLoader {
                 }
             } while (true);
         });
-        startQueueProzessors();
-        queueProcessorAliveCheck.start();
     }
 
     private void startQueueProzessors() {
@@ -73,115 +85,90 @@ public class MapTileLoader {
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();
         }
+        queueProcessorAliveCheck.start();
     }
 
-    int queuedTilesSize() {
-        return queueData.wantedTiles.size();
-    }
-
+    /*
     int getNumberOfLoadedTiles() {
         return queueData.loadedTiles.getNumberOfLoadedTiles();
     }
+     */
 
     public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
+        if (queueProcessors.size() ==  0) startQueueProzessors();
+        orderGroup++;
+        if (orderGroup == Integer.MAX_VALUE) orderGroup = -1;
+        // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
+        // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
 
-        boolean continueThreads;
-
-        clearOrderQueues(); // perhaps new orders
+        // make a copy of the loaded tiles (worst case an alrady generated Tile will be created again)
+        Array<Long> loadedTiles = new Array<>();
         queueData.loadedTilesLock.lock();
+        for (long hash : queueData.loadedTiles.getHashList()) {
+            if (hash != 0) loadedTiles.add(hash);
+        }
+        queueData.loadedTilesLock.unlock();
+
+        // make a copy of the loaded overlaytiles
+        Array<Long> loadedOverlayTiles = new Array<>();
         if (queueData.currentOverlayLayer != null) {
             queueData.loadedOverlayTilesLock.lock();
+            for (long hash : queueData.loadedOverlayTiles.getHashList()) {
+                if (hash != 0) loadedOverlayTiles.add(hash);
+            }
+            queueData.loadedOverlayTilesLock.unlock();
         }
 
-        CB_List<Descriptor> wantedTiles = new CB_List<>();
+
+        // calc nearest to middle and not yet handled
+        // get tiles from middle of rectangle to border and not yet created
+        // preparation
+        int midX = (lowerRightTile.getX() + upperLeftTile.getX()) / 2;
+        int midY = (lowerRightTile.getY() + upperLeftTile.getY()) / 2;
+        // Log.info(log, "Center: " + new Descriptor(midX, midY, aktZoom));
+
+        Array<Descriptor> wantedTiles = new Array<>();
+        Array<Descriptor> wantedOverlayTiles = new Array<>();
+
         for (int i = upperLeftTile.getX(); i <= lowerRightTile.getX(); i++) {
             for (int j = upperLeftTile.getY(); j <= lowerRightTile.getY(); j++) {
-                // attention this new Descriptor can not be compared with previous one in  corresponding lists
                 Descriptor descriptor = new Descriptor(i, j, aktZoom);
-                descriptor.Data = mapView;
-                wantedTiles.add(descriptor);
+                descriptor.Data = Math.abs(i - midX) + Math.abs(j - midY);
+                if (!loadedTiles.contains(descriptor.getHashCode(), false)) {
+                    wantedTiles.add(descriptor);
+                }
+                if (queueData.currentOverlayLayer != null) {
+                    if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false)) {
+                        wantedOverlayTiles.add(descriptor);
+                    }
+                }
             }
+        }
+        wantedTiles.sort(byDistanceFromCenter);
+        if (queueData.currentOverlayLayer != null) {
+            wantedOverlayTiles.sort(byDistanceFromCenter);
         }
 
         for (Descriptor descriptor : wantedTiles) {
-            if (queueData.loadedTiles.containsKey(descriptor.getHashCode())) {
-                Log.trace(log, "loaded: " + descriptor + " Age: " + queueData.loadedTiles.get(descriptor.getHashCode()).age);
-                if (queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
-                    // should never happen! did only add descriptors, that are not in loaded tiles, which are locked
-                    Log.err(log, descriptor + " already loaded. Should not be in queuedTiles");
-                    queueData.wantedTiles.remove(descriptor.getHashCode());
-                }
-            } else {
-                if (!queueData.wantedTiles.containsKey(descriptor.getHashCode())) {
-                    Log.trace(log, "wanted: " + descriptor);
-                    queueData.wantedTiles.put(descriptor.getHashCode(), descriptor);
-                } else {
-                    Log.err(log, "already in wanted Tiles" + descriptor);
-                }
+            if (finishYourself.get()) {
+                return;
             }
+            queueProcessors.get(nextQueueProcessor).addOrder(descriptor, false, orderGroup, mapView);
+            nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
+        }
 
-            if (queueData.currentOverlayLayer != null) {
-                if (queueData.loadedOverlayTiles.containsKey(descriptor.getHashCode())) {
-                    continue;
-                }
-                if (queueData.wantedOverlayTiles.containsKey(descriptor.getHashCode()))
-                    continue;
-                if (!queueData.wantedOverlayTiles.containsKey(descriptor.getHashCode()))
-                    queueData.wantedOverlayTiles.put(descriptor.getHashCode(), descriptor);
+        for (Descriptor descriptor : wantedOverlayTiles) {
+            if (finishYourself.get()) {
+                return;
             }
+            queueProcessors.get(nextQueueProcessor).addOrder(descriptor, true, orderGroup, mapView);
+            nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
         }
 
-        // before unlocking
-        continueThreads = queueData.wantedTiles.size() > 0 || queueData.wantedOverlayTiles.size() > 0;
-
-        try {
-            queueData.wantedTilesLock.unlock();
-            queueData.loadedTilesLock.unlock();
-            if (queueData.currentOverlayLayer != null) {
-                queueData.wantedOverlayTilesLock.unlock();
-                queueData.loadedOverlayTilesLock.unlock();
-            }
-        } catch (Exception ignored) {
+        for (MultiThreadQueueProcessor thread : queueProcessors) {
+            thread.interrupt();
         }
 
-        if (continueThreads) {
-            for (MultiThreadQueueProcessor thread : queueProcessors) {
-                thread.interrupt();
-            }
-        }
-
-    }
-
-    private void clearOrderQueues() {
-        queueData.wantedTilesLock.lock();
-        if (queueData.currentOverlayLayer != null) {
-            queueData.wantedOverlayTilesLock.lock();
-        }
-        // clear Queue, to remove not yet loaded (previously needed) tiles
-        // don't use clear because  of the mapview.
-        // Only remove descriptors for this mapview (map,compass,track, ?)
-        ArrayList<Descriptor> toDeleteOfThisMapView = new ArrayList<>();
-        for (Descriptor desc : queueData.wantedTiles.values()) {
-            // if (desc.Data == mapView) {
-            toDeleteOfThisMapView.add(desc);
-            // }
-        }
-
-        for (Descriptor desc : toDeleteOfThisMapView) {
-            queueData.wantedTiles.remove(desc.getHashCode());
-        }
-
-        if (queueData.currentOverlayLayer != null) {
-            toDeleteOfThisMapView.clear();
-            for (Descriptor desc : queueData.wantedOverlayTiles.values()) {
-                // if (desc.Data == mapView) {
-                toDeleteOfThisMapView.add(desc);
-                // }
-            }
-            for (Descriptor desc : toDeleteOfThisMapView) {
-                queueData.wantedOverlayTiles.remove(desc.getHashCode());
-            }
-        }
     }
 
     public void setMaxNumTiles(int maxNumTiles2) {
@@ -190,7 +177,7 @@ public class MapTileLoader {
         queueData.setLoadedTilesCacheCapacity(maxNumTiles);
     }
 
-    void clearLoadedTiles() {
+    private void clearLoadedTiles() {
         queueData.loadedTilesLock.lock();
         queueData.loadedTiles.clear();
         queueData.loadedTilesLock.unlock();
@@ -225,7 +212,7 @@ public class MapTileLoader {
         return queueData.loadedTiles.markTilesToDraw(descriptor.getHashCode());
     }
 
-    public int getTilesToDrawCounter() {
+    int getTilesToDrawCounter() {
         return queueData.loadedTiles.getTilesToDrawCounter();
     }
 
@@ -253,7 +240,7 @@ public class MapTileLoader {
         queueData.loadedOverlayTiles.resetTilesToDrawCounter();
     }
 
-    public void sortByAge() {
+    void sortByAge() {
         queueData.loadedTiles.sortByAge();
         if (queueData.currentOverlayLayer != null) {
             queueData.loadedOverlayTiles.sortByAge();
@@ -288,17 +275,4 @@ public class MapTileLoader {
         queueData.currentOverlayLayer = layer;
     }
 
-    public int getCacheSize() {
-        return queueData.loadedTiles.getCapacity();
-    }
-
-    void reloadTile(Descriptor desc) {
-        // called only, if not in loaded tiles
-        queueData.wantedTilesLock.lock();
-        if (!queueData.wantedTiles.containsKey(desc.getHashCode())) {
-            if (!queueData.wantedTiles.containsKey(desc.getHashCode()))
-                queueData.wantedTiles.put(desc.getHashCode(), desc);
-        }
-        queueData.wantedTilesLock.unlock();
-    }
 }
