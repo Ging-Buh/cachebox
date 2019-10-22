@@ -28,11 +28,11 @@ import java.util.Iterator;
 class MultiThreadQueueProcessor extends Thread {
     private static int newOrderGroup;
     private final QueueData queueData;
+    final private Array<OrderData> orders;
     int threadIndex;
     long startTime;
     boolean isWorking;
     private String log = "MapTileQueueThread";
-    final private Array<OrderData> orders;
     private OrderData newOrder;
     private int actualOrderGroup;
 
@@ -53,19 +53,23 @@ class MultiThreadQueueProcessor extends Thread {
     void addOrder(Descriptor descriptor, boolean forOverlay, int orderGroup, MapViewBase mapView) {
         newOrderGroup = orderGroup;
         removeOldOrders();
-        orders.add(new OrderData(descriptor, forOverlay, orderGroup, mapView));
+        synchronized (orders) {
+            orders.add(new OrderData(descriptor, forOverlay, orderGroup, mapView));
+        }
         // Log.info(log, "put Order: " + descriptor + " Distance: " + (Integer) descriptor.Data + " for " + orderGroup);
     }
 
     private boolean getNextOrder() {
         removeOldOrders();
-        if (orders.size > 0) {
-            newOrder = orders.get(0);
-            orders.removeIndex(0);
-            actualOrderGroup = newOrderGroup;
-            return true;
+        synchronized (orders) {
+            if (orders.size > 0) {
+                newOrder = orders.get(0);
+                orders.removeIndex(0);
+                actualOrderGroup = newOrderGroup;
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     private void removeOldOrders() {
@@ -96,9 +100,9 @@ class MultiThreadQueueProcessor extends Thread {
                     // Log.info(log, "got Order: " + newOrder.descriptor + " Distance: " + (Integer) newOrder.descriptor.Data + " for " + newOrder.orderGroup);
                     newOrder.descriptor.Data = newOrder.mapView;
                     if (newOrder.forOverlay) {
-                        loadOverlayTile(newOrder.descriptor);
+                        queueData.loadOverlayTile(newOrder.descriptor);
                     } else {
-                        loadTile(newOrder.descriptor);
+                        queueData.loadTile(newOrder.descriptor);
                     }
                     isWorking = false;
                 } else {
@@ -115,74 +119,6 @@ class MultiThreadQueueProcessor extends Thread {
                 Thread.sleep(200);
             } catch (InterruptedException ignored) {
             }
-        }
-    }
-
-    private void loadTile(final Descriptor descriptor) {
-        TileGL tile;
-        try {
-            tile = queueData.currentLayer.getTileGL(descriptor);
-        } catch (Exception ex) {
-            Log.err(log, "loadTile", ex);
-            tile = null;
-        }
-
-        if (tile != null) {
-            addLoadedTileWithLock(descriptor, tile);
-            // Redraw Map after a new Tile was loaded or generated
-            GL.that.renderOnce();
-        } else {
-            new Thread(() -> {
-                // download in separate thread
-                if (queueData.currentLayer.cacheTile(descriptor)) {
-                    addLoadedTileWithLock(descriptor, queueData.currentLayer.getTileGL(descriptor));
-                    // Redraw Map after a new Tile was loaded or generated
-                    GL.that.renderOnce();
-                }
-            }).start();
-        }
-    }
-
-    private void loadOverlayTile(final Descriptor descriptor) {
-        if (queueData.currentOverlayLayer == null)
-            return;
-
-        TileGL tile = queueData.currentOverlayLayer.getTileGL(descriptor);
-
-        if (tile != null) {
-            addLoadedOverlayTileWithLock(descriptor, tile);
-            // Redraw Map after a new Tile was loaded or generated
-            GL.that.renderOnce();
-        } else {
-            new Thread(() -> {
-                // download in separate thread
-                queueData.currentOverlayLayer.cacheTile(descriptor);
-            }).start();
-        }
-    }
-
-    private void addLoadedTileWithLock(Descriptor desc, TileGL tile) {
-        queueData.loadedTilesLock.lock();
-        try {
-            if (queueData.loadedTiles.containsKey(desc.getHashCode())) {
-                tile.dispose(); // das war dann umsonst
-            } else {
-                queueData.loadedTiles.add(desc.getHashCode(), tile);
-            }
-
-        } finally {
-            queueData.loadedTilesLock.unlock();
-        }
-    }
-
-    private void addLoadedOverlayTileWithLock(Descriptor desc, TileGL tile) {
-        queueData.loadedOverlayTilesLock.lock();
-        try {
-            if (!queueData.loadedOverlayTiles.containsKey(desc.getHashCode())) {
-                queueData.loadedOverlayTiles.add(desc.getHashCode(), tile);
-            }
-        } finally {
-            queueData.loadedOverlayTilesLock.unlock();
         }
     }
 

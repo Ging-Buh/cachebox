@@ -31,15 +31,13 @@ public class MapTileLoader {
     private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
     private final QueueData queueData;
     private int threadIndex;
-    private int maxNumTiles;
     private Comparator<Descriptor> byDistanceFromCenter;
     private int orderGroup;
     private Thread queueProcessorAliveCheck;
 
-    MapTileLoader() {
-        queueData = new QueueData();
+    public MapTileLoader(int capacity) {
+        queueData = new QueueData(capacity);
         threadIndex = 0;
-        maxNumTiles = 0;
         finishYourself = new AtomicBoolean();
         finishYourself.set(false);
         isWorking = new AtomicBoolean();
@@ -88,44 +86,25 @@ public class MapTileLoader {
         queueProcessorAliveCheck.start();
     }
 
-    /*
-    int getNumberOfLoadedTiles() {
-        return queueData.loadedTiles.getNumberOfLoadedTiles();
-    }
-     */
-
     public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
-        if (queueProcessors.size() ==  0) startQueueProzessors();
+        if (queueProcessors.size() == 0) startQueueProzessors();
         orderGroup++;
         if (orderGroup == Integer.MAX_VALUE) orderGroup = -1;
         // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
         // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
 
-        // make a copy of the loaded tiles (worst case an alrady generated Tile will be created again)
-        Array<Long> loadedTiles = new Array<>();
-        queueData.loadedTilesLock.lock();
-        for (long hash : queueData.loadedTiles.getHashList()) {
-            if (hash != 0) loadedTiles.add(hash);
-        }
-        queueData.loadedTilesLock.unlock();
+        // make a copy of the loaded tiles (worst case an already generated Tile will be created again)
+        Array<Long> loadedTiles = queueData.getTilesHashCopy();
 
         // make a copy of the loaded overlaytiles
-        Array<Long> loadedOverlayTiles = new Array<>();
-        if (queueData.currentOverlayLayer != null) {
-            queueData.loadedOverlayTilesLock.lock();
-            for (long hash : queueData.loadedOverlayTiles.getHashList()) {
-                if (hash != 0) loadedOverlayTiles.add(hash);
-            }
-            queueData.loadedOverlayTilesLock.unlock();
-        }
-
+        Array<Long> loadedOverlayTiles = queueData.getOverlayTilesHashCopy();
 
         // calc nearest to middle and not yet handled
         // get tiles from middle of rectangle to border and not yet created
         // preparation
         int midX = (lowerRightTile.getX() + upperLeftTile.getX()) / 2;
         int midY = (lowerRightTile.getY() + upperLeftTile.getY()) / 2;
-        // Log.info(log, "Center: " + new Descriptor(midX, midY, aktZoom));
+        Log.debug(log, "Center: " + new Descriptor(midX, midY, aktZoom));
 
         Array<Descriptor> wantedTiles = new Array<>();
         Array<Descriptor> wantedOverlayTiles = new Array<>();
@@ -133,7 +112,7 @@ public class MapTileLoader {
         for (int i = upperLeftTile.getX(); i <= lowerRightTile.getX(); i++) {
             for (int j = upperLeftTile.getY(); j <= lowerRightTile.getY(); j++) {
                 Descriptor descriptor = new Descriptor(i, j, aktZoom);
-                descriptor.Data = Math.abs(i - midX) + Math.abs(j - midY);
+                descriptor.Data = Math.max(Math.abs(i - midX), Math.abs(j - midY));
                 if (!loadedTiles.contains(descriptor.getHashCode(), false)) {
                     wantedTiles.add(descriptor);
                 }
@@ -144,6 +123,8 @@ public class MapTileLoader {
                 }
             }
         }
+        if (wantedTiles.size == 0)
+            return;
         wantedTiles.sort(byDistanceFromCenter);
         if (queueData.currentOverlayLayer != null) {
             wantedOverlayTiles.sort(byDistanceFromCenter);
@@ -171,80 +152,44 @@ public class MapTileLoader {
 
     }
 
-    public void setMaxNumTiles(int maxNumTiles2) {
-        if (maxNumTiles2 > maxNumTiles)
-            maxNumTiles = maxNumTiles2;
-        queueData.setLoadedTilesCacheCapacity(maxNumTiles);
-    }
-
-    private void clearLoadedTiles() {
-        queueData.loadedTilesLock.lock();
-        queueData.loadedTiles.clear();
-        queueData.loadedTilesLock.unlock();
-
-        if (queueData.currentOverlayLayer != null) {
-            queueData.loadedOverlayTilesLock.lock();
-            queueData.loadedOverlayTiles.clear();
-            queueData.loadedOverlayTilesLock.unlock();
-        }
-    }
-
-    void clearLoadedOverlayTiles() {
-        if (queueData.currentOverlayLayer != null) {
-            queueData.loadedOverlayTilesLock.lock();
-            queueData.loadedOverlayTiles.clear();
-            queueData.loadedOverlayTilesLock.unlock();
-        }
-    }
-
-    void increaseLoadedTilesAge() {
-        queueData.loadedTilesLock.lock();
-        queueData.loadedTiles.increaseLoadedTilesAge();
-        queueData.loadedTilesLock.unlock();
-        if (queueData.currentOverlayLayer != null) {
-            queueData.loadedOverlayTilesLock.lock();
-            queueData.loadedOverlayTiles.increaseLoadedTilesAge();
-            queueData.loadedOverlayTilesLock.unlock();
-        }
-    }
-
-    boolean markTilesToDraw(Descriptor descriptor) {
-        return queueData.loadedTiles.markTilesToDraw(descriptor.getHashCode());
+    int markTileToDraw(long hash) {
+        return queueData.markTileToDraw(hash);
     }
 
     int getTilesToDrawCounter() {
-        return queueData.loadedTiles.getTilesToDrawCounter();
+        return queueData.getTilesToDrawCounter();
     }
 
     TileGL getDrawingTile(int i) {
-        return queueData.loadedTiles.getDrawingTile(i);
+        return queueData.getDrawingTile(i);
     }
 
     void resetTilesToDrawCounter() {
-        queueData.loadedTiles.resetTilesToDrawCounter();
+        queueData.resetTilesToDrawCounter();
     }
 
-    boolean markOverlayTilesToDraw(Descriptor desc) {
-        return queueData.loadedOverlayTiles.markTilesToDraw(desc.getHashCode());
+    int markOverlayTileToDraw(long hash) {
+        return queueData.markOverlayTileToDraw(hash);
     }
 
     int getOverlayTilesToDrawCounter() {
-        return queueData.loadedOverlayTiles.getTilesToDrawCounter();
+        return queueData.getOverlayTilesToDrawCounter();
     }
 
     TileGL getOverlayDrawingTile(int i) {
-        return queueData.loadedOverlayTiles.getDrawingTile(i);
+        return queueData.getOverlayDrawingTile(i);
     }
 
     void resetOverlayTilesToDrawCounter() {
-        queueData.loadedOverlayTiles.resetTilesToDrawCounter();
+        queueData.resetOverlayTilesToDrawCounter();
+    }
+
+    void increaseAge() {
+        queueData.increaseAge();
     }
 
     void sortByAge() {
-        queueData.loadedTiles.sortByAge();
-        if (queueData.currentOverlayLayer != null) {
-            queueData.loadedOverlayTiles.sortByAge();
-        }
+        queueData.sortByAge();
     }
 
     public Layer getCurrentLayer() {
@@ -253,7 +198,7 @@ public class MapTileLoader {
 
     public boolean setCurrentLayer(Layer layer, boolean isCarMode) {
         if (layer != queueData.currentLayer) {
-            clearLoadedTiles();
+            queueData.clearTiles();
             Log.info(log, "set layer to " + layer.name);
             layer.prepareLayer(isCarMode);
             queueData.currentLayer = layer;
@@ -263,7 +208,7 @@ public class MapTileLoader {
     }
 
     public void modifyCurrentLayer(boolean isCarMode) {
-        clearLoadedTiles();
+        queueData.clearTiles();
         queueData.currentLayer.prepareLayer(isCarMode);
     }
 
@@ -273,6 +218,7 @@ public class MapTileLoader {
 
     public void setCurrentOverlayLayer(Layer layer) {
         queueData.currentOverlayLayer = layer;
+        queueData.clearOverlayTiles();
     }
 
 }

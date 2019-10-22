@@ -185,8 +185,8 @@ public class MapsForgeLayer extends Layer {
             else {
                 return new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
             }
-        } catch (Exception e) {
-            Log.err(log, "get mapsfore tile: " + e.toString(), e);
+        } catch (Exception ex) {
+            Log.err(log, "get mapsfore tile: ", ex);
             return null;
         }
     }
@@ -214,7 +214,7 @@ public class MapsForgeLayer extends Layer {
         }
     }
 
-    boolean cacheTile(Descriptor descriptor) {
+    boolean cacheTileToFile(Descriptor descriptor) {
         // don't want to cache for mapsforge
         return false;
     }
@@ -232,19 +232,14 @@ public class MapsForgeLayer extends Layer {
         mapsforgeTheme = theme;
         XmlRenderTheme renderTheme;
         if (mapsforgeTheme.length() == 0) {
-            Log.trace(log, "Use RenderTheme CB_InternalRenderTheme.DEFAULT");
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         } else if (mapsforgeTheme.equals(INTERNAL_THEME_OSMARENDER)) {
-            Log.trace(log, "Use CB_InternalRenderTheme OSMARENDER");
             renderTheme = CB_InternalRenderTheme.OSMARENDER;
         } else if (mapsforgeTheme.equals(INTERNAL_THEME_CAR)) {
-            Log.trace(log, "Use CB_InternalRenderTheme CAR");
             renderTheme = CB_InternalRenderTheme.CAR;
         } else if (mapsforgeTheme.equals(INTERNAL_THEME_DEFAULT)) {
-            Log.trace(log, "Use CB_InternalRenderTheme DEFAULT");
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         } else {
-            Log.trace(log, "Use RenderTheme " + mapsforgeTheme + " with " + mapsforgeThemesStyle);
             try {
                 File file = FileFactory.createFile(mapsforgeTheme);
                 if (file.exists()) {

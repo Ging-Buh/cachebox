@@ -30,7 +30,7 @@ public interface LocatorSettings {
     SettingString UserMap2 = new SettingString("UserMap2", Map, EXPERT, "", Global, ALL);
     SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", Map, NEVER, Config_Core.mWorkPath + "/repository/maps", Local, ALL, false);
     SettingStringList currentMapLayer = new SettingStringList("CurrentMapLayer", Map, NEVER, new String[]{"Mapnik"}, Global, ACB);
-    SettingString CurrentMapOverlayLayer = new SettingString("CurrentMapOverlayLayer", Map, NEVER, "", Global, ACB);
+    SettingString CurrentMapOverlayLayerName = new SettingString("CurrentMapOverlayLayer", Map, NEVER, "", Global, ACB);
     SettingInt lastZoomLevel = new SettingInt("lastZoomLevel", Map, NEVER, 14, Global, ALL);
     SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", Map, NEVER, true, Global, ACB);
     SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", Map, NEVER, true, Global, ACB);

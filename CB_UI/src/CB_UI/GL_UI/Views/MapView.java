@@ -128,7 +128,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         setBackground(ListBack);
 
-        int maxNumTiles;
         // calculate max Map Tile cache
         try {
             int aTile = 256 * 256;
@@ -141,7 +140,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         maxNumTiles = Math.min(maxNumTiles, 60);
         maxNumTiles = Math.max(maxNumTiles, 20);
         // maxNumTiles between 20 and 60
-        mapTileLoader.setMaxNumTiles(maxNumTiles);
+        mapTileLoader = new MapTileLoader(maxNumTiles);
 
         mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
 
@@ -167,7 +166,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
             kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
             GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-            renderOnce();
+            renderOnce("zoomBtn.setOnClickListenerDown");
             calcPixelsPerMeter();
             return true;
         });
@@ -180,7 +179,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
             kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
             GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-            renderOnce();
+            renderOnce("zoomBtn.setOnClickListenerUp");
             calcPixelsPerMeter();
             return true;
         });
@@ -281,7 +280,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if (mapTileLoader.getCurrentLayer() == null) {
             mapTileLoader.setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()), isCarMode);
         }
-        String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayer.getValue()};
+        String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayerName.getValue()};
         if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
             mapTileLoader.setCurrentOverlayLayer(LayerManager.getInstance().getOverlayLayer(currentOverlayLayerName));
         initializeMap();
@@ -440,8 +439,10 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             SetNorthOriented(Config.MapNorthOriented.getValue());
             PositionChanged();
         });
-        // to force generation of tiles in loadTiles(); called by MapViewBase:render(Batch batch)
-        OnResumeListeners.getInstance().addListener(this::renderOnce);
+        // to force generation of tiles in loadTiles();
+        OnResumeListeners.getInstance().addListener(() -> {
+            renderOnce("OnResumeListeners");
+        });
     }
 
     @Override
@@ -788,7 +789,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
                     GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-                    renderOnce();
+                    renderOnce("SpeedChanged");
                     calcPixelsPerMeter();
                 }
             }
@@ -888,9 +889,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             MapTileLoader.finishYourself.set(false);
 
             MapTileLoader.isWorking.set(true);
-            // Log.info(log, "loadTiles for " + Mode);
             mapTileLoader.loadTiles(this, upperLeftTile, lowerRightTile, aktZoom);
-            // Log.info(log, "loadTiles for " + Mode + " done.");
             MapTileLoader.isWorking.set(false);
 
             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
@@ -993,7 +992,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI), getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
-        renderOnce();
+        renderOnce("requestLayout");
     }
 
     @Override
@@ -1089,7 +1088,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(setZoomTo), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
                     GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-                    renderOnce();
+                    renderOnce("PositionChanged");
                     calcPixelsPerMeter();
                 }
             }
@@ -1182,7 +1181,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 if (mapTileLoader.getCurrentLayer().isMapsForge()) {
                     Log.info(log, "modify layer " + mapTileLoader.getCurrentLayer().getName() + " for mapview " + Mode);
                     mapTileLoader.modifyCurrentLayer(isCarMode);
-                    renderOnce();
+                    renderOnce("INITIAL_THEME");
                 }
             }
             if (mapTileLoader.getCurrentOverlayLayer() != null) {

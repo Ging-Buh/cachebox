@@ -30,7 +30,6 @@ import CB_Locator.Map.Descriptor;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
-import CB_Utils.Lists.CB_Stack.iCompare;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
@@ -41,6 +40,7 @@ import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static CB_Locator.Map.Descriptor.TileXToLongitude;
@@ -67,8 +67,8 @@ public class LiveMapQue {
     public static byte Used_Zoom;
     public static int Used_max_request_radius;
     public static AtomicBoolean DownloadIsActive = new AtomicBoolean(false);
-    public static CB_List<QueStateChanged> eventList = new CB_List<LiveMapQue.QueStateChanged>();
-    public static CB_Stack<Descriptor> descStack = new CB_Stack<Descriptor>();
+    public static CB_List<QueStateChanged> eventList = new CB_List<>();
+    public static CB_Stack<Descriptor> descStack = new CB_Stack<>();
     private static GpxFilename gpxFilename;
     private static LoopThread loop = new LoopThread(2000) {
         protected boolean LoopBreak() {
@@ -96,7 +96,7 @@ public class LiveMapQue {
                 double lon1 = DEG_RAD * TileXToLongitude(desc.getZoom(), desc.getX());
                 double lat1 = DEG_RAD * TileYToLatitude(desc.getZoom(), desc.getY());
                 double lon2 = DEG_RAD * TileXToLongitude(desc.getZoom(), desc.getX() + 1);
-                double lat2 = DEG_RAD * TileYToLatitude(desc.getZoom(), desc.getY()+ 1);
+                double lat2 = DEG_RAD * TileYToLatitude(desc.getZoom(), desc.getY() + 1);
                 Used_max_request_radius = (int) (WGS84_MAJOR_AXIS * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))) / 2 + 0.5); // round
 
                 GroundspeakAPI.Query q = new GroundspeakAPI.Query()
@@ -153,17 +153,12 @@ public class LiveMapQue {
             @Override
             public void handleChange() {
                 radius = CB_Core.CB_Core_Settings.LiveRadius.getEnumValue();
-
-                switch (radius) {
-                    case Zoom_13:
-                        Used_Zoom = DEFAULT_ZOOM_13;
-                        Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
-                        break;
-                    default:
-                        Used_Zoom = DEFAULT_ZOOM_14;
-                        Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
-                        break;
-
+                if (radius == Live_Radius.Zoom_13) {
+                    Used_Zoom = DEFAULT_ZOOM_13;
+                    Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
+                } else {
+                    Used_Zoom = DEFAULT_ZOOM_14;
+                    Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
                 }
             }
 
@@ -171,16 +166,12 @@ public class LiveMapQue {
 
         radius = CB_Core.CB_Core_Settings.LiveRadius.getEnumValue();
 
-        switch (radius) {
-            case Zoom_13:
-                Used_Zoom = DEFAULT_ZOOM_13;
-                Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
-                break;
-            default:
-                Used_Zoom = DEFAULT_ZOOM_14;
-                Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
-                break;
-
+        if (radius == Live_Radius.Zoom_13) {
+            Used_Zoom = DEFAULT_ZOOM_13;
+            Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
+        } else {
+            Used_Zoom = DEFAULT_ZOOM_14;
+            Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
         }
 
         int maxLiveCount = CB_Core.CB_Core_Settings.LiveMaxCount.getValue();
@@ -263,7 +254,7 @@ public class LiveMapQue {
         lastLo = lo;
         lastRu = ru;
 
-        CB_List<Descriptor> descList = new CB_List<Descriptor>();
+        CB_List<Descriptor> descList = new CB_List<>();
         for (int i = lo.getX(); i <= ru.getX(); i++) {
             for (int j = lo.getY(); j <= ru.getY(); j++) {
                 Descriptor desc = new Descriptor(i, j, lo.getZoom());
@@ -293,7 +284,7 @@ public class LiveMapQue {
                 center = (Coordinate) lo.Data;
             if (center != null) {
                 final Descriptor mapCenterDesc = new Descriptor(center, lo.getZoom());
-                descStack.sort(new iCompare<Descriptor>() {
+                descStack.sort(new Comparator<Descriptor>() {
                     @Override
                     public int compare(Descriptor item1, Descriptor item2) {
                         int distanceFromCenter1 = item1.getDistance(mapCenterDesc);

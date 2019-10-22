@@ -18,6 +18,7 @@ package CB_Locator.Map;
 import CB_Utils.Log.Log;
 
 public class MapTileCache {
+    private final static String sKlasse = "MapTileCache";
 
     private final long[] EMPTY_HashList;
     private final TileGL[] EMPTY_TileList;
@@ -52,7 +53,7 @@ public class MapTileCache {
         clearIndexList();
     }
 
-    public long[] getHashList() {
+    long[] getHashList() {
         return hashList;
     }
 
@@ -60,7 +61,7 @@ public class MapTileCache {
         System.arraycopy(EMPTY_IndexList, 0, indexList, 0, capacity);
     }
 
-    public void add(Long Hash, TileGL tile) {
+    public void add(long hash, TileGL tile) {
 
         if (tile == null)
             return;
@@ -69,7 +70,7 @@ public class MapTileCache {
         if (tileList[freeIndex] != null) {
             tileList[freeIndex].dispose();
         }
-        hashList[freeIndex] = Hash;
+        hashList[freeIndex] = hash;
         tileList[freeIndex] = tile;
         indexList[0] = freeIndex;
         numberOfLoadedTiles++;
@@ -84,10 +85,10 @@ public class MapTileCache {
         return ret;
     }
 
-    public boolean containsKey(Long Hash) {
+    public boolean containsKey(long hash) {
         boolean cont = false;
         for (int i = 0; i < (int) capacity; i++) {
-            if (hashList[i] == Hash) {
+            if (hashList[i] == hash) {
                 cont = true;
                 break;
             }
@@ -95,20 +96,20 @@ public class MapTileCache {
         return cont;
     }
 
-    public TileGL get(Long Hash) {
-        int HashIndex = getIndex(Hash);
-        return tileList[HashIndex];
+    public TileGL get(long hash) {
+        int hashIndex = getIndex(hash);
+        return tileList[hashIndex];
     }
 
-    private short getIndex(Long Hash) {
-        short HashIndex = -1;
+    private short getIndex(long hash) {
+        short hashIndex = -1;
         for (short i = 0, n = (short) hashList.length; i < n; i++) {
-            if (hashList[i] == Hash) {
-                HashIndex = i;
+            if (hashList[i] == hash) {
+                hashIndex = i;
                 break;
             }
         }
-        return HashIndex;
+        return hashIndex;
     }
 
     /**
@@ -152,14 +153,10 @@ public class MapTileCache {
                     break; // sort changed, begin new
                 }
             } while (inSort);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(sKlasse, "sort", ex);
         }
 
-    }
-
-    int getNumberOfLoadedTiles() {
-        return numberOfLoadedTiles;
     }
 
     public void clear() {
@@ -177,10 +174,12 @@ public class MapTileCache {
         numberOfLoadedTiles = 0;
     }
 
-    void increaseLoadedTilesAge() {
-        for (short i = 0, n = (short) tileList.length; i < n; i++) {
-            if (tileList[i] != null)
-                tileList[i].age++;
+    void increaseAge() {
+        synchronized (tileList) {
+            for (short i = 0, n = (short) tileList.length; i < n; i++) {
+                if (tileList[i] != null)
+                    tileList[i].age++;
+            }
         }
     }
 
@@ -190,18 +189,18 @@ public class MapTileCache {
     }
      */
 
-    boolean markTilesToDraw(Long hashCode) {
+    int markTileToDraw(long hashCode) {
         try {
             short index = getIndex(hashCode);
             if (index == -1)
-                return false;
+                return index;
             if (!tileList[index].canDraw())
-                return false;
+                return index;
             tileList[index].age = 0;
             tilesToDraw[tilesToDrawCounter++] = index;
-            return true;
+            return index;
         } catch (Exception e) {
-            return false;
+            return -2;
         }
     }
 
@@ -226,4 +225,9 @@ public class MapTileCache {
         return capacity;
     }
 
+    /*
+    int getNumberOfLoadedTiles() {
+        return numberOfLoadedTiles;
+    }
+     */
 }

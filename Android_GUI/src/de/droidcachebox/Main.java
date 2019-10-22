@@ -396,8 +396,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             Log.info(sKlasse, "=> Resume from Stop");
             showWaitToRenderStarted();
             invalidateTextureEventList.Call();
-        }
-        else {
+        } else {
             Log.info(sKlasse, "=> onResume");
         }
 
@@ -644,12 +643,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (pm != null) {
             if (Config.SuppressPowerSaving.getValue()) {
                 wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CacheBox:WakeLock");
-            }
-            else {
+            } else {
                 wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
             }
             if (wakeLock != null)
-                wakeLock.acquire();
+                if (wakeLock.isHeld())
+                    wakeLock.acquire();
         }
     }
 

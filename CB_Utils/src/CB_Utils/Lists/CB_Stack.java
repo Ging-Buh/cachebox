@@ -18,6 +18,8 @@ package CB_Utils.Lists;
 
 import CB_Utils.Util.MoveableList;
 
+import java.util.Comparator;
+
 /**
  * The Stack class represents a last-in-first-out (LIFO) stack of objects. With option for max item Size.
  *
@@ -120,14 +122,14 @@ public class CB_Stack<T> {
         }
     }
 
-    public void sort(iCompare<T> comparable) {
+    public void sort(Comparator<T> comparator) {
 
         boolean change = false;
 
         do {
             change = false;
             for (int i = 0; i < items.size - 1; i++) {
-                int compare = comparable.compare(items.get(i), items.get(i + 1));
+                int compare = comparator.compare(items.get(i), items.get(i + 1));
                 if (compare <= 0)
                     continue; // no changes
 
@@ -137,9 +139,5 @@ public class CB_Stack<T> {
             }
         } while (change);
 
-    }
-
-    public interface iCompare<T> {
-        public int compare(T item1, T item2);
     }
 }

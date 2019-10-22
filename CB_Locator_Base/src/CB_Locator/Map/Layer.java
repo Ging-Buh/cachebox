@@ -139,22 +139,22 @@ public class Layer {
                 if (mapPack.maxAge >= cachedTileAge) {
                     BoundingBox bbox = mapPack.contains(desc);
                     if (bbox != null) {
-                        byte[] b = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
+                        byte[] bytes = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
                         if (CB_UI_Base_Settings.nightMode.getValue()) {
-                            b = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(b)));
+                            bytes = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(bytes)));
                         }
-                        return new TileGL_Bmp(desc, b, TileGL.TileState.Present, format);
+                        return new TileGL_Bmp(desc, bytes, TileGL.TileState.Present, format);
                     }
                 }
             }
 
             if (cachedTileAge != 0) {
                 if (FileIO.fileExistsNotEmpty(cachedTileFilename)) {
-                    byte[] b = getImageFromFile(cachedTileFilename);
+                    byte[] bytes = getImageFromFile(cachedTileFilename);
                     if (CB_UI_Base_Settings.nightMode.getValue()) {
-                        b = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(b)));
+                        bytes = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(bytes)));
                     }
-                    return new TileGL_Bmp(desc, b, TileGL.TileState.Present, format);
+                    return new TileGL_Bmp(desc, bytes, TileGL.TileState.Present, format);
                 } else {
                     FileFactory.createFile(cachedTileFilename).delete();
                 }
@@ -190,12 +190,12 @@ public class Layer {
 
 
     /**
-     * Load Tile from URL and save to MapTile-Cache
+     * Load Tile from URL and save to local files (MapTile-Cache)
      *
      * @param descriptor Descriptor
      * @return boolean
      */
-    boolean cacheTile(Descriptor descriptor) {
+    boolean cacheTileToFile(Descriptor descriptor) {
 
         // get mapPack from layer and check, if tile is covered (can be generated) from mapPack then simply return true
         if (getMapType() == MapType.MapPack) {

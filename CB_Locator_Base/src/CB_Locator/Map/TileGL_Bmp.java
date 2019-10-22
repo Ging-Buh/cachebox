@@ -32,12 +32,12 @@ import java.io.ByteArrayOutputStream;
 public class TileGL_Bmp extends TileGL {
     private static final String log = "TileGL_Bmp";
     private final Format format;
-    byte[] bytes;
+    private byte[] bytes;
     private Texture texture;
     private TileBitmap bitmap;
     private boolean inCreation = false;
 
-    public TileGL_Bmp(Descriptor desc, TileBitmap bitmap, TileState state, Format format) {
+    TileGL_Bmp(Descriptor desc, TileBitmap bitmap, TileState state, Format format) {
         descriptor = desc;
         this.texture = null;
         this.format = format;
@@ -56,7 +56,7 @@ public class TileGL_Bmp extends TileGL {
         createTexture();
     }
 
-    public TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state, Format format) {
+    TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state, Format format) {
         descriptor = desc;
         this.texture = null;
         this.format = format;
@@ -72,7 +72,7 @@ public class TileGL_Bmp extends TileGL {
             return true;
         if (inCreation)
             return false;
-        Log.info(log, "can draw create Texture once more!?");
+        Log.err(log, "can draw create Texture once more!?");
         createTexture();
         return texture != null;
     }
@@ -118,6 +118,7 @@ public class TileGL_Bmp extends TileGL {
             Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.toString());
         }
         bitmap = null;
+        bytes = null;
         inCreation = false;
     }
 
@@ -129,8 +130,8 @@ public class TileGL_Bmp extends TileGL {
             baos.close();
             if (bitmap instanceof ext_Bitmap) ((ext_Bitmap) bitmap).recycle();
             return byteArray;
-        } catch (Exception e) {
-            Log.err(log, "convert mapsfore tile to bmpTile: " + e.toString(), e);
+        } catch (Exception ex) {
+            Log.err(log, "convert bitmap to byteArray", ex);
             return null;
         }
     }
