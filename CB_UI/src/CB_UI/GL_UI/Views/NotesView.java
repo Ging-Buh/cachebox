@@ -44,7 +44,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
     private EditTextField notes;
     private float notesDefaultYPos;
     private float notesHeight;
-    private CB_Button uploadButton;
+    private CB_Button btnUpload;
     private Cache aktCache;
 
     private NotesView() {
@@ -57,8 +57,8 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
         CB_Button getSolverButton = new CB_Button(Translation.get("getSolver"));
         // getSolverButton.disable();
         addNext(getSolverButton);
-        uploadButton = new CB_Button(Translation.get("Upload"));
-        addLast(uploadButton);
+        btnUpload = new CB_Button(Translation.get("Upload"));
+        addLast(btnUpload);
         notesHeight = getAvailableHeight();
         notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
         this.addLast(notes);
@@ -66,7 +66,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
 
         SelectedCacheChangedEventListeners.getInstance().add(this);
 
-        uploadButton.addClickHandler((v, x, y, pointer, button) -> {
+        btnUpload.addClickHandler((v, x, y, pointer, button) -> {
             final CB_Button b = (CB_Button) v;
             if (notes.getText().length() > 0) {
                 b.setText("Cancel");
@@ -118,14 +118,14 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
 
     @Override
     public void onResized(CB_RectF rec) {
-        notesHeight = rec.getHeight() - uploadButton.getHeight();
+        notesHeight = rec.getHeight() - btnUpload.getHeight();
         notes.setHeight(notesHeight);
     }
 
     @Override
     public void KeyboardFocusChanged(EditTextField editTextField) {
-        uploadButton.setText(Translation.get("Upload"));
-        uploadButton.enable();
+        btnUpload.setText(Translation.get("Upload"));
+        btnUpload.enable();
         if (editTextField == notes) {
             notes.setHeight(this.getHalfHeight());
             notes.setY(this.getHalfHeight());
@@ -145,6 +145,8 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
             notes.setText(text);
             notes.showFromLineNo(0);
             mustLoadNotes = false;
+            btnUpload.setText(Translation.get("Upload"));
+            btnUpload.enable();
         }
     }
 
