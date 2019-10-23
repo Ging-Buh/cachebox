@@ -22,8 +22,8 @@ package CB_Locator;
  * @author Longri
  */
 public class GpsStrength implements Comparable<GpsStrength> {
-    private boolean mFixed = false;
-    private float mSnr = 0.0f;
+    private boolean hasFix;
+    private float mStrength;
 
     /**
      * Constructor
@@ -32,8 +32,8 @@ public class GpsStrength implements Comparable<GpsStrength> {
      * @param value
      */
     public GpsStrength(boolean fixed, float value) {
-        mFixed = fixed;
-        mSnr = value;
+        hasFix = fixed;
+        mStrength = value;
     }
 
     /**
@@ -42,7 +42,7 @@ public class GpsStrength implements Comparable<GpsStrength> {
      * @return boolean
      */
     public boolean getFixed() {
-        return mFixed;
+        return hasFix;
     }
 
     /**
@@ -51,27 +51,17 @@ public class GpsStrength implements Comparable<GpsStrength> {
      * @return float
      */
     public float getStrength() {
-        return mSnr;
+        return mStrength;
     }
 
     @Override
     public int compareTo(GpsStrength c2) {
-        int ret = 0;
-
-        if (this.mFixed == c2.mFixed) {
-            if (this.mSnr > c2.mSnr) {
-                ret = -1;
-            } else if (this.mSnr < c2.mSnr) {
-                ret = 1;
-            }
+        if (hasFix == c2.hasFix) {
+            return Float.compare(mStrength, c2.mStrength);
         } else {
-            if (this.mFixed) {
-                ret = -1;
-            }
+            if (hasFix) return -1; // less
+            else return 1; // greater
         }
-
-        return ret;
-
     }
 
 }

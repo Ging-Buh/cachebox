@@ -393,7 +393,7 @@ public class CB_List<T> implements Serializable, Iterable<T> {
     /**
      * Get a Array Object[] from begin to end.
      *
-     * @param beginn
+     * @param begin
      * @param end
      * @return
      */

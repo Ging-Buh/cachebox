@@ -157,7 +157,7 @@ public class LayerManager {
         // after selection of Database
         layers.clear();
 
-        layers.add(new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "Mapnik", "Mapnik", "http://c.tile.openstreetmap.org/{z}/{x}/{y}.png"));
+        layers.add(new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "Mapnik", "Mapnik", "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"));
         layers.add(new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"));
         // layers.add(new Layer(MapType.ONLINE, Type.normal, "Esri", "", "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"));
         // layers.add(new Layer(MapType.ONLINE, Type.normal, "Google Hybrid", "", "http://mt0.google.com/vt/lyrs=y@142&x={x}&y={y}&z={z}"));
