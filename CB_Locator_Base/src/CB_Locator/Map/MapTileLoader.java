@@ -104,7 +104,7 @@ public class MapTileLoader {
         // preparation
         int midX = (lowerRightTile.getX() + upperLeftTile.getX()) / 2;
         int midY = (lowerRightTile.getY() + upperLeftTile.getY()) / 2;
-        Log.debug(log, "Center: " + new Descriptor(midX, midY, aktZoom));
+        // Log.trace(log, "Center: " + new Descriptor(midX, midY, aktZoom));
 
         Array<Descriptor> wantedTiles = new Array<>();
         Array<Descriptor> wantedOverlayTiles = new Array<>();

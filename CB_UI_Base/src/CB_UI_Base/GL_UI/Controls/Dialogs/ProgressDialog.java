@@ -139,7 +139,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
                 @Override
                 public void run() {
                     ProgressThread.run();
-                    ProgressThread.RunnableIsReady(ProgressThread.doCancel());
+                    ProgressThread.runnableIsReady(ProgressThread.doCancel());
                 }
             };
 

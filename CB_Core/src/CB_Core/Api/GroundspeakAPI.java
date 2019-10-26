@@ -830,40 +830,42 @@ public class GroundspeakAPI {
     }
 
     public static void uploadCorrectedCoordinates(String GcCode, Coordinate Pos) {
-        try {
-            getNetz().put(getUrl(1, "geocaches/" + GcCode + "/correctedcoordinates"))
-                    .body(new JSONObject().put("latitude", Pos.getLatitude()).put("longitude", Pos.getLongitude()))
-                    .ensureSuccess().asVoid();
-        } catch (Exception ex) {
-            retry(ex);
+        boolean doRetry;
+        do {
+            try {
+                getNetz().put(getUrl(1, "geocaches/" + GcCode + "/correctedcoordinates"))
+                        .body(new JSONObject().put("latitude", Pos.getLatitude()).put("longitude", Pos.getLongitude()))
+                        .ensureSuccess().asVoid();
+                retryCount = 0;
+                doRetry = false;
+            } catch (Exception ex) {
+                doRetry = retry(ex);
+            }
         }
+        while (doRetry);
     }
 
     public static int uploadCacheNote(String cacheCode, String notes) {
-        Log.info(log, "uploadCacheNote for " + cacheCode);
-        LastAPIError = "";
         if (cacheCode == null || cacheCode.length() == 0) return ERROR;
         if (!isPremiumMember()) return ERROR;
-        try {
-            getNetz()
-                    .put(getUrl(1, "geocaches/" + cacheCode + "/notes"))
-                    .body(new JSONObject().put("note", prepareNote(notes)))
-                    .ensureSuccess()
-                    .asVoid();
-            Log.info(log, "uploadCacheNote done");
-            return OK;
-        } catch (Exception ex) {
-            LastAPIError = ex.toString();
-            LastAPIError += "\n for " + getUrl(1, "geocaches/" + cacheCode + "/notes");
-            LastAPIError += "\n APIKey: " + GetSettingsAccessToken();
-            LastAPIError += "\n geocacheCode: " + cacheCode;
-            LastAPIError += "\n note: " + prepareNote(notes) + "\n";
-            LastAPIError += ((WebbException) ex).getResponse().getErrorBody().toString();
-            Log.err(log, "UpdateCacheNote \n" + LastAPIError, ex);
-            return ERROR;
+        boolean doRetry;
+        do {
+            try {
+                getNetz()
+                        .put(getUrl(1, "geocaches/" + cacheCode + "/notes"))
+                        .body(new JSONObject().put("note", prepareNote(notes)))
+                        .ensureSuccess()
+                        .asVoid();
+                doRetry = false;
+                retryCount = 0;
+            } catch (Exception ex) {
+                doRetry = retry(ex);
+            }
         }
+        while (doRetry);
+        if (APIError != OK) return ERROR;
+        else return OK;
     }
-
 
     private static String prepareNote(String note) {
         return note.replace("\r", "");

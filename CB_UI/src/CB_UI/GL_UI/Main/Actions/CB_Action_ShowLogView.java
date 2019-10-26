@@ -171,7 +171,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
                                 }
 
                                 @Override
-                                public void RunnableIsReady(boolean canceled) {
+                                public void runnableIsReady(boolean canceled) {
                                     String sCanceled = canceled ? Translation.get("isCanceled") + GlobalCore.br : "";
                                     pd.close();
                                     if (result != -1) {

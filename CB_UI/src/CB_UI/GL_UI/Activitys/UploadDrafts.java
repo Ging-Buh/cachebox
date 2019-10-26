@@ -107,7 +107,7 @@ public class UploadDrafts {
             }
 
             @Override
-            public void RunnableIsReady(boolean canceld) {
+            public void runnableIsReady(boolean canceld) {
                 if (!canceld) {
 
                     if (!UploadMeldung.equals("")) {

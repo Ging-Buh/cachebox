@@ -347,8 +347,8 @@ public class Webb {
             } else {
                 connection = (HttpURLConnection) apiUrl.openConnection();
             }
-            String forDebug =  URLDecoder.decode(uri, "UTF-8");
-            Log.debug("Webb", "url " + forDebug);
+            // String forDebug =  URLDecoder.decode(uri, "UTF-8");
+            // Log.trace("Webb", "url " + forDebug);
             prepareSslConnection(connection);
             connection.setRequestMethod(request.method.name());
             if (request.followRedirects != null) {

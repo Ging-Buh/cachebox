@@ -186,7 +186,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                 }
 
                 @Override
-                public void RunnableIsReady(boolean canceld) {
+                public void runnableIsReady(boolean canceld) {
                     System.out.print("Export READY");
                     if (pD != null) {
                         pD.close();
@@ -216,7 +216,5 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
         }
     }
-
-    private enum menuId {aktualisiereStatus, getFriends, downloadMap, importOverPosition, importByGcCode, importDiverse}
 
 }
