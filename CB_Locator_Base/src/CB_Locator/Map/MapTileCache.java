@@ -62,20 +62,23 @@ public class MapTileCache {
     }
 
     public void add(long hash, TileGL tile) {
-
         if (tile == null)
             return;
-        short freeIndex = addIndex();
-        // Destroy the holden Tile on this now FreeIndex
-        if (tileList[freeIndex] != null) {
-            tileList[freeIndex].dispose();
+        // first test, if the tile to dispose has not age 0: won't replace a tile with age 0
+        int toBeFreed = indexList[capacity - 1];
+        if (tileList[toBeFreed].age > 0) {
+            short freeIndex = addIndex();
+            // Destroy the holden Tile on this now FreeIndex
+            if (tileList[freeIndex] != null) {
+                tileList[freeIndex].dispose();
+            }
+            hashList[freeIndex] = hash;
+            tileList[freeIndex] = tile;
+            indexList[0] = freeIndex;
+            numberOfLoadedTiles++;
+            if (numberOfLoadedTiles > capacity)
+                numberOfLoadedTiles = capacity;
         }
-        hashList[freeIndex] = hash;
-        tileList[freeIndex] = tile;
-        indexList[0] = freeIndex;
-        numberOfLoadedTiles++;
-        if (numberOfLoadedTiles > capacity)
-            numberOfLoadedTiles = capacity;
     }
 
     private short addIndex() {

@@ -6,6 +6,19 @@
 • Offen = •
 
 Aktuelle Änderungen:
+    + Kontakt über das Nachrichtencenter
+	* Automatische Überwachung der Limitierungen (Err 429) beim Hochladen der Notizen und der Korrigierten Koordinaten
+	* Sortierung der Signalstärke der Sats
+	* mapnik url mit https
+	* Schaltfläche Hochladen für Notizen wird beim Wechsel eines Caches wieder aktiv
+	* Display AUS konnte ACB stoppen
+	* Blättern für nicht vollständig geladene Logentwürfe geht wieder
+	* Initialisierung von "gcid" vervollständigt (wird jetzt für Log referenceCode verwendet)
+	* richtiger Benutzername für E-Mail Kontakt
+	~ Die Entfernung zwischen Wegpunkten beim Weg aufzeichnen ist jetzt im Kartenmenü
+	~ Umbenennen von Ambient nach Graustufen
+
+Änderungen bis Version 3427:
     + Teilen über (Infos zum gewählten Cache + Zwischenablage)
 	+ Solver AlphaSum mit Umlauten
     + Import gezippte Mapsforge kompatible Karten aus WebLinks (auch orux,...)

@@ -52,9 +52,7 @@ class QueueData {
     private void addTile(Descriptor descriptor, TileGL tile) {
         if (tile != null) {
             synchronized (tiles) {
-                if (tiles.containsKey(descriptor.getHashCode())) {
-                    tile.dispose();
-                } else {
+                if (!tiles.containsKey(descriptor.getHashCode())) {
                     tiles.add(descriptor.getHashCode(), tile);
                     if (tile.canDraw())
                         GL.that.renderOnce();
@@ -81,9 +79,7 @@ class QueueData {
     private void addOverlayTile(Descriptor descriptor, TileGL tile) {
         if (tile != null) {
             synchronized (overlayTiles) {
-                if (overlayTiles.containsKey(descriptor.getHashCode())) {
-                    tile.dispose();
-                } else {
+                if (!overlayTiles.containsKey(descriptor.getHashCode())) {
                     overlayTiles.add(descriptor.getHashCode(), tile);
                     // Redraw Map after a new Tile was loaded or generated
                     if (tile.canDraw())
