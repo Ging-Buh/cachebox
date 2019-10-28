@@ -66,7 +66,7 @@ public class MapTileCache {
             return;
         // first test, if the tile to dispose has not age 0: won't replace a tile with age 0
         int toBeFreed = indexList[capacity - 1];
-        if (tileList[toBeFreed].age > 0) {
+        if (tileList[toBeFreed] == null || tileList[toBeFreed].age > 0) {
             short freeIndex = addIndex();
             // Destroy the holden Tile on this now FreeIndex
             if (tileList[freeIndex] != null) {

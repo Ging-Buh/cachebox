@@ -649,9 +649,17 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             } else {
                 wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
             }
-            if (wakeLock != null)
-                if (wakeLock.isHeld())
+            if (wakeLock != null) {
+                if (wakeLock.isHeld()) {
+                    Log.info(sKlasse, "wakeLock.acquire()");
                     wakeLock.acquire();
+                }
+                else {
+                    Log.info(sKlasse, "wakeLock is not held.");
+                    // even if not held, you must acquire to change behavior of powerservice
+                    wakeLock.acquire();
+                }
+            }
         }
     }
 
