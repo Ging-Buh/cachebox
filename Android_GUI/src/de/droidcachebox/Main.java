@@ -486,9 +486,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 if (GlobalCore.RunFromSplash) {
                     Config.settings.WriteToDB();
 
+                    /*
                     if (wakeLock != null) {
                         wakeLock.release();
                     }
+
+                     */
 
                     TrackRecorder.StopRecording();
                     // GPS Verbindung beenden
