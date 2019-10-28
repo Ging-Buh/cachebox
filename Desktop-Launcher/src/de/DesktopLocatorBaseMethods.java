@@ -3,7 +3,10 @@ package de;
 import CB_Locator.LocatorBasePlatFormMethods;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -207,7 +210,26 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
 
     @Override
     public Texture getTexture(TileBitmap bitmap) {
-        // see AndroidLocatorBaseMethods
+        byte[] byteArray;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(baos);
+            byteArray = baos.toByteArray(); // takes long
+            baos.close();
+            if (bitmap instanceof ext_Bitmap) ((ext_Bitmap) bitmap).recycle();
+        } catch (Exception ex) {
+            Log.err(sKlasse, "convert bitmap to byteArray", ex);
+            return null;
+        }
+
+        try {
+            Pixmap pixmap = new Pixmap(byteArray, 0, byteArray.length);
+            Texture texture = new Texture(pixmap, Pixmap.Format.RGB565, CB_UI_Base_Settings.useMipMap.getValue());
+            pixmap.dispose();
+            return texture;
+        } catch (Exception ex) {
+            Log.err(sKlasse, "[TileGL] can't create Pixmap or Texture: ", ex);
+        }
         return null;
     }
 }

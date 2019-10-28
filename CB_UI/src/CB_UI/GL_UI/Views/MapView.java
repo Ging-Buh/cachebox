@@ -851,6 +851,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void onHide() {
+        Log.info(log, "Map gets invisible");
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         super.onHide();
     }

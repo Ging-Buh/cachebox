@@ -107,47 +107,46 @@ public class MapTileLoader {
         // Log.trace(log, "Center: " + new Descriptor(midX, midY, aktZoom));
 
         Array<Descriptor> wantedTiles = new Array<>();
-        Array<Descriptor> wantedOverlayTiles = new Array<>();
 
         for (int i = upperLeftTile.getX(); i <= lowerRightTile.getX(); i++) {
             for (int j = upperLeftTile.getY(); j <= lowerRightTile.getY(); j++) {
                 Descriptor descriptor = new Descriptor(i, j, aktZoom);
                 descriptor.Data = Math.max(Math.abs(i - midX), Math.abs(j - midY));
-                if (!loadedTiles.contains(descriptor.getHashCode(), false)) {
-                    wantedTiles.add(descriptor);
-                }
-                if (queueData.currentOverlayLayer != null) {
-                    if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false)) {
-                        wantedOverlayTiles.add(descriptor);
-                    }
-                }
+                wantedTiles.add(descriptor);
             }
         }
         if (wantedTiles.size == 0)
             return;
         wantedTiles.sort(byDistanceFromCenter);
-        if (queueData.currentOverlayLayer != null) {
-            wantedOverlayTiles.sort(byDistanceFromCenter);
-        }
 
+        int orderCount = 0;
         for (Descriptor descriptor : wantedTiles) {
             if (finishYourself.get()) {
                 return;
             }
-            queueProcessors.get(nextQueueProcessor).addOrder(descriptor, false, orderGroup, mapView);
-            nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
-        }
-
-        for (Descriptor descriptor : wantedOverlayTiles) {
+            if (!loadedTiles.contains(descriptor.getHashCode(), false)) {
+                MultiThreadQueueProcessor thread = queueProcessors.get(nextQueueProcessor);
+                thread.addOrder(descriptor, false, orderGroup, mapView);
+                thread.interrupt();
+                nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
+                orderCount++;
+                if (orderCount == queueData.getCapacity())
+                    break;
+            }
             if (finishYourself.get()) {
                 return;
             }
-            queueProcessors.get(nextQueueProcessor).addOrder(descriptor, true, orderGroup, mapView);
-            nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
-        }
-
-        for (MultiThreadQueueProcessor thread : queueProcessors) {
-            thread.interrupt();
+            if (queueData.currentOverlayLayer != null) {
+                if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false)) {
+                    MultiThreadQueueProcessor thread = queueProcessors.get(nextQueueProcessor);
+                    thread.addOrder(descriptor, true, orderGroup, mapView);
+                    thread.interrupt();
+                    nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
+                    orderCount++;
+                    if (orderCount == queueData.getCapacity())
+                        break;
+                }
+            }
         }
 
     }
