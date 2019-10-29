@@ -17,12 +17,16 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Import.UnZip;
+import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.LayerManager;
+import CB_Locator.Map.MapViewBase;
 import CB_Locator.Map.MapsForgeLayer;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.GL_UI.Activitys.SearchCoordinates;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
@@ -76,6 +80,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     private Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     private ThemeIsFor whichCase;
     private Menu availableFZKThemesMenu;
+    private SearchCoordinates searchCoordinates;
 
     private CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -125,6 +130,19 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         icm.addMenuItem("view", null, this::showMapViewLayerMenu);
         icm.addCheckableMenuItem("AlignToCompass", normalMapView.GetAlignToCompass(), () -> normalMapView.SetAlignToCompass(!normalMapView.GetAlignToCompass()));
         icm.addMenuItem("CenterWP", null, () -> normalMapView.createWaypointAtCenter());
+        icm.addMenuItem("gotoPlace", null, () -> {
+            searchCoordinates = new SearchCoordinates() {
+                public void callBack(Coordinate coordinate) {
+                    if (coordinate != null) {
+                        normalMapView.setMapStateFree(); // btn
+                        normalMapView.setMapState(MapViewBase.MapState.FREE);
+                        normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+                    }
+                    searchCoordinates.doFinish();
+                }
+            };
+            searchCoordinates.doShow();
+        });
         icm.addMenuItem("RecTrack", null, this::showMenuTrackRecording);
         return icm;
     }

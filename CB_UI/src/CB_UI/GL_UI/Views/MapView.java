@@ -1002,7 +1002,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    protected void SetMapStateFree() {
+    public void setMapStateFree() {
         // setMapState(MapState.FREE);
         // Go over ToggelButton
         togBtn.setState(0);

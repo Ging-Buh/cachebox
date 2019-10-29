@@ -92,7 +92,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static CB_Core.Api.GroundspeakAPI.GetSettingsAccessToken;
+import static CB_Core.Api.GroundspeakAPI.getSettingsAccessToken;
 
 @SuppressWarnings("deprecation")
 public class Main extends AndroidApplication implements SelectedCacheChangedEventListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
@@ -285,7 +285,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             setQuickButtonHeight(sollHeight);
 
             // ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
-            if (Config.newInstall.getValue() && GetSettingsAccessToken().length() == 0) {
+            if (Config.newInstall.getValue() && getSettingsAccessToken().length() == 0) {
                 askToGetApiKey();
             }
             if (!GlobalCore.restartAfterKill)

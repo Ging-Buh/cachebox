@@ -937,7 +937,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                     return false;
                 } else {
                     // auf GPS oder WP ausgerichtet und wird jetzt auf Free gestellt
-                    SetMapStateFree();
+                    setMapStateFree();
                 }
 
                 // Fadein ZoomButtons!
@@ -1038,7 +1038,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         aktZoom = zoom;
     }
 
-    protected void SetMapStateFree() {
+    protected void setMapStateFree() {
         setMapState(MapState.FREE);
     }
 

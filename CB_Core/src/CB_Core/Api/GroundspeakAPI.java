@@ -59,7 +59,7 @@ public class GroundspeakAPI {
     public static Webb getNetz() {
         if (netz == null) {
             netz = Webb.create();
-            netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
+            netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getSettingsAccessToken());
             Webb.setReadTimeout(CB_Core_Settings.socket_timeout.getValue());
             Webb.setConnectTimeout(CB_Core_Settings.connection_timeout.getValue());
             startTs = System.currentTimeMillis();
@@ -84,7 +84,7 @@ public class GroundspeakAPI {
     // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
 
     public static void setAuthorization() {
-        getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
+        getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getSettingsAccessToken());
         me = null;
     }
 
@@ -746,7 +746,7 @@ public class GroundspeakAPI {
         } catch (Exception ex) {
             LastAPIError += ex.getLocalizedMessage();
             LastAPIError += "\n for " + getUrl(1, "trackablelogs");
-            LastAPIError += "\n APIKey: " + GetSettingsAccessToken();
+            LastAPIError += "\n APIKey: " + getSettingsAccessToken();
             LastAPIError += "\n trackingNumber: " + TrackingNummer;
             LastAPIError += "\n trackableCode: " + TBCode;
             LastAPIError += "\n geocacheCode: " + cacheCode;
@@ -964,7 +964,7 @@ public class GroundspeakAPI {
                         .getBody();
                 retryCount = 0;
                 ui.username = response.optString("username", "");
-                ui.memberShipType = MemberShipTypesFromInt(response.optInt("membershipLevelId", -1));
+                ui.memberShipType = memberShipTypesFromInt(response.optInt("membershipLevelId", -1));
                 ui.findCount = response.optInt("findCount", -1);
                 JSONObject geocacheLimits = response.optJSONObject("geocacheLimits");
                 if (geocacheLimits != null) {
@@ -983,7 +983,7 @@ public class GroundspeakAPI {
         while (true);
     }
 
-    public static String GetSettingsAccessToken() {
+    public static String getSettingsAccessToken() {
         /* */
         String act;
         if (CB_Core_Settings.UseTestUrl.getValue()) {
@@ -1025,7 +1025,7 @@ public class GroundspeakAPI {
         return url + command;
     }
 
-    private static MemberShipTypes MemberShipTypesFromInt(int value) {
+    private static MemberShipTypes memberShipTypesFromInt(int value) {
         switch (value) {
             case 1:
                 return MemberShipTypes.Basic;

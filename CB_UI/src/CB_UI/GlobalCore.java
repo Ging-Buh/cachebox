@@ -191,7 +191,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
      * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
      */
     public static boolean APIisOnline() {
-        if (GroundspeakAPI.GetSettingsAccessToken().length() == 0) {
+        if (GroundspeakAPI.getSettingsAccessToken().length() == 0) {
             return false;
         }
         return PlatformUIBase.isOnline();

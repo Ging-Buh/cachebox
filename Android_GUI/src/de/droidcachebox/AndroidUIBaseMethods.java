@@ -7,12 +7,16 @@ import CB_Core.FilterProperties;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
+import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
+import CB_Locator.Map.MapViewBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FZKDownload;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
@@ -280,40 +284,40 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         if (extras != null) {
             Log.trace(sKlasse, "prepared Request from splash");
             if (ViewManager.that.isInitialized()) {
-                String ExternalRequestGCCode = extras.getString("GcCode");
-                if (ExternalRequestGCCode != null) {
+                String externalRequestGCCode = extras.getString("GcCode");
+                if (externalRequestGCCode != null) {
                     Log.info(sKlasse, "importCacheByGCCode");
                     mainActivity.getIntent().removeExtra("GcCode");
-                    importCacheByGCCode(ExternalRequestGCCode);
+                    importCacheByGCCode(externalRequestGCCode);
                 }
-                String ExternalRequestGpxPath = extras.getString("GpxPath");
-                if (ExternalRequestGpxPath != null) {
+                String externalRequestGpxPath = extras.getString("GpxPath");
+                if (externalRequestGpxPath != null) {
                     Log.info(sKlasse, "importGPXFile");
                     mainActivity.getIntent().removeExtra("GpxPath");
-                    importGPXFile(ExternalRequestGpxPath);
+                    importGPXFile(externalRequestGpxPath);
                 }
-                String ExternalRequestGuid = extras.getString("Guid");
-                if (ExternalRequestGuid != null) {
+                String externalRequestGuid = extras.getString("Guid");
+                if (externalRequestGuid != null) {
                     Log.info(sKlasse, "importCacheByGuid");
                     mainActivity.getIntent().removeExtra("Guid");
                     importCacheByGuid();
                 }
-                String ExternalRequestLatLon = extras.getString("LatLon");
-                if (ExternalRequestLatLon != null) {
+                String externalRequestLatLon = extras.getString("LatLon");
+                if (externalRequestLatLon != null) {
                     Log.info(sKlasse, "positionLatLon");
                     mainActivity.getIntent().removeExtra("LatLon");
-                    positionLatLon();
+                    positionLatLon(externalRequestLatLon);
                 }
-                String ExternalRequestMapDownloadPath = extras.getString("MapDownloadPath");
-                if (ExternalRequestMapDownloadPath != null) {
+                String externalRequestMapDownloadPath = extras.getString("MapDownloadPath");
+                if (externalRequestMapDownloadPath != null) {
                     Log.info(sKlasse, "MapDownload");
                     mainActivity.getIntent().removeExtra("MapDownloadPath");
-                    FZKDownload.getInstance().importByUrl(ExternalRequestMapDownloadPath);
+                    FZKDownload.getInstance().importByUrl(externalRequestMapDownloadPath);
                     GL.that.showActivity(FZKDownload.getInstance());
                     FZKDownload.getInstance().importByUrlFinished();
                 }
-                String ExternalRequestName = extras.getString("Name");
-                if (ExternalRequestName != null) {
+                String externalRequestName = extras.getString("Name");
+                if (externalRequestName != null) {
                     Log.info(sKlasse, "importCacheByName");
                     mainActivity.getIntent().removeExtra("Name");
                     importCacheByName();
@@ -322,30 +326,39 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         }
     }
 
-    private void positionLatLon() {
+    private void positionLatLon(String externalRequestLatLon) {
+        String[] s = externalRequestLatLon.split(",");
+        Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
+        Log.info(sKlasse, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
+        if (coordinate.isValid()) {
+            CB_Action_ShowMap.getInstance().Execute();
+            CB_Action_ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
+            CB_Action_ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+            CB_Action_ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+        }
     }
 
     private void importCacheByGuid() {
     }
 
-    private void importCacheByGCCode(final String ExternalRequestGCCode) {
+    private void importCacheByGCCode(final String externalRequestGCCode) {
         TimerTask runTheSearchTasks = new TimerTask() {
             @Override
             public void run() {
-                if (ExternalRequestGCCode != null) {
+                if (externalRequestGCCode != null) {
                     mainActivity.runOnUiThread(() -> {
                         if (mustShowCacheList) {
                             // show cachelist first then search dialog
                             mustShowCacheList = false;
                             ViewManager.leftTab.ShowView(CacheListView.getInstance());
-                            importCacheByGCCode(ExternalRequestGCCode); // now the search can start (doSearchOnline)
+                            importCacheByGCCode(externalRequestGCCode); // now the search can start (doSearchOnline)
                         } else {
                             mustShowCacheList = true;
                             if (SearchDialog.that == null) {
                                 new SearchDialog();
                             }
                             SearchDialog.that.showNotCloseAutomaticly();
-                            SearchDialog.that.doSearchOnline(ExternalRequestGCCode, SearchDialog.SearchMode.GcCode);
+                            SearchDialog.that.doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
                         }
                     });
                 }
@@ -354,7 +367,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         new Timer().schedule(runTheSearchTasks, 500);
     }
 
-    private void importGPXFile(final String ExternalRequestGpxPath) {
+    private void importGPXFile(final String externalRequestGpxPath) {
         TimerTask gpxImportTask = new TimerTask() {
             @Override
             public void run() {
@@ -362,14 +375,14 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                 mainActivity.runOnUiThread(() -> wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), () -> wd.close(), new ICancelRunnable() {
                     @Override
                     public void run() {
-                        Log.info(sKlasse, "Import GPXFile from " + ExternalRequestGpxPath + " started");
+                        Log.info(sKlasse, "Import GPXFile from " + externalRequestGpxPath + " started");
                         Date ImportStart = new Date();
                         Importer importer = new Importer();
                         ImporterProgress ip = new ImporterProgress();
 
                         Database.Data.sql.beginTransaction();
                         try {
-                            importer.importGpx(ExternalRequestGpxPath, ip);
+                            importer.importGpx(externalRequestGpxPath, ip);
                         } catch (Exception ignored) {
                         }
                         Database.Data.sql.setTransactionSuccessful();
@@ -382,7 +395,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
 
                         long ImportZeit = new Date().getTime() - ImportStart.getTime();
                         String Msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
-                        Log.info(sKlasse, Msg.replace("\n", "\n\r") + " from " + ExternalRequestGpxPath);
+                        Log.info(sKlasse, Msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
                         GL.that.Toast(Msg, 3000);
                     }
 
