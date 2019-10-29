@@ -205,7 +205,7 @@ public class MultiToggleButton extends CB_Button {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         drawableNormal = null;
 
         drawablePressed = null;

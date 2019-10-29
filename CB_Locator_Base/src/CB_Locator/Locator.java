@@ -16,7 +16,7 @@
 package CB_Locator;
 
 import CB_Locator.Events.GPS_FallBackEventList;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.Location.ProviderType;
 import CB_UI_Base.Energy;
 import CB_Utils.Log.Log;
@@ -179,9 +179,9 @@ public class Locator {
                     break;
             }
 
-            if (location.getHasSpeed()) PositionChangedEventList.SpeedChanged();
-            PositionChangedEventList.PositionChanged();
-            if (location.getHasBearing()) PositionChangedEventList.OrientationChanged();
+            if (location.getHasSpeed()) PositionChangedListeners.SpeedChanged();
+            PositionChangedListeners.positionChanged();
+            if (location.getHasBearing()) PositionChangedListeners.orientationChanged();
         }
     }
 
@@ -505,7 +505,7 @@ public class Locator {
             locator.mLastUsedCompassType = CompassType.Magnetic;
         }
 
-        PositionChangedEventList.OrientationChanged();
+        PositionChangedListeners.orientationChanged();
     }
 
     /**

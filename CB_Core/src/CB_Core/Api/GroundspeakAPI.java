@@ -1172,7 +1172,9 @@ public class GroundspeakAPI {
                         // switch subValue
                         if (userData != null) {
                             // foundDate
-                            cache.setFound(userData.optString("foundDate", "").length() != 0);
+                            String sFound = userData.optString("foundDate", "");
+                            boolean didFind = sFound.length() != 0 && !sFound.contains("null");
+                            cache.setFound(didFind);
                             // correctedCoordinates
                             JSONObject correctedCoordinates = userData.optJSONObject("correctedCoordinates");
                             if (correctedCoordinates != null) {

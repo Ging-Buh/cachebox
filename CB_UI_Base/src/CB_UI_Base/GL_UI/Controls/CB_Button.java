@@ -278,7 +278,7 @@ public class CB_Button extends CB_View_Base {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         drawableNormal = null;
 
         drawablePressed = null;

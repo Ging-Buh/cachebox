@@ -538,7 +538,7 @@ public class CacheInfo extends CB_View_Base {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         mBitmapFont = Fonts.getNormal();
         mBitmapFontSmall = Fonts.getSmall();
         requestLayout();

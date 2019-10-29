@@ -556,7 +556,7 @@ public class CB_Label extends CB_View_Base {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         // todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
         mFont = Fonts.getNormal();
         mColor = COLOR.getFontColor();

@@ -72,7 +72,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         invalidateTexture();
         zoomChanged();
     }

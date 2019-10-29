@@ -5,7 +5,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.Locator;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI.GlobalCore;
@@ -51,7 +51,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         info.setZeroPos();
         distance.setColor(COLOR.getFontColor());
         this.addChild(info);
-        PositionChangedEventList.Add(this);
+        PositionChangedListeners.addListener(this);
 
         float size = this.getHeight() / 2.3f;
         ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
@@ -173,7 +173,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
     @Override
     public void dispose() {
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
         if (info != null)
             info.dispose();
         info = null;
@@ -206,12 +206,12 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
         setActLocator();
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
         this.heading = Locator.getInstance().getHeading();
         setActLocator();
     }
@@ -227,7 +227,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
     }
 
     /**

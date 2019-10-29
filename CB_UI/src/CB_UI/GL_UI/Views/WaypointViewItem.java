@@ -6,7 +6,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.Locator;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI_Base.GL_UI.COLOR;
@@ -83,7 +83,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
         //register pos changed event
         if ((ViewMode & CacheInfo.SHOW_COMPASS) == CacheInfo.SHOW_COMPASS)
-            PositionChangedEventList.Add(this);
+            PositionChangedListeners.addListener(this);
 
     }
 
@@ -161,7 +161,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
     @Override
     public void dispose() {
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
         if (extendedCacheInfo != null)
             extendedCacheInfo.dispose();
         extendedCacheInfo = null;
@@ -195,12 +195,12 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
         setActLocator();
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
         if (mCache == null)
             return;
         setActLocator();
@@ -317,7 +317,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
     }
 
     public float getAttributeHeight() {

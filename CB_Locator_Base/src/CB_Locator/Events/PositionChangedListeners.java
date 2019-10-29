@@ -2,12 +2,14 @@ package CB_Locator.Events;
 
 import CB_Locator.Events.PositionChangedEvent.Priority;
 import CB_Locator.Locator;
+import CB_Utils.Log.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PositionChangedEventList {
-    private static final ArrayList<PositionChangedEvent> list = new ArrayList<PositionChangedEvent>();
+public class PositionChangedListeners {
+    private static final String sKlasse = "PositionChangedListeners";
+    private static final ArrayList<PositionChangedEvent> list = new ArrayList<>();
     public static long minPosEventTime = Long.MAX_VALUE;
     public static long minOrientationEventTime = Long.MAX_VALUE;
     public static long lastPosTime = 0;
@@ -15,11 +17,10 @@ public class PositionChangedEventList {
     private static long lastPositionChanged = 0;
     private static long lastOrintationChangedEvent = 0;
 
-    public static void Add(PositionChangedEvent event) {
+    public static void addListener(PositionChangedEvent event) {
         synchronized (list) {
             if (!list.contains(event)) {
                 list.add(event);
-
                 Collections.sort(list, (arg0, arg1) -> {
                     int o2 = arg0.getPriority().ordinal();
                     int o1 = arg1.getPriority().ordinal();
@@ -31,13 +32,13 @@ public class PositionChangedEventList {
 
     }
 
-    public static void Remove(PositionChangedEvent event) {
+    public static void removeListener(PositionChangedEvent event) {
         synchronized (list) {
             list.remove(event);
         }
     }
 
-    public static void PositionChanged() {
+    public static void positionChanged() {
         minPosEventTime = Math.min(minPosEventTime, System.currentTimeMillis() - lastPosTime);
         lastPosTime = System.currentTimeMillis();
 
@@ -52,12 +53,9 @@ public class PositionChangedEventList {
                     if (Locator.getInstance().isDisplayOff() && (event.getPriority() != Priority.High))
                         continue;
                     try {
-                        event.PositionChanged();
-                    } catch (Exception e) {
-                        // TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(location)",
-                        // event.getReceiverName(),
-                        // e);
-                        e.printStackTrace();
+                        event.positionChanged();
+                    } catch (Exception ex) {
+                        Log.err(sKlasse, "positionChanged", ex);
                     }
                 }
             } catch (Exception e) {
@@ -67,7 +65,7 @@ public class PositionChangedEventList {
 
     }
 
-    public static void OrientationChanged() {
+    public static void orientationChanged() {
 
         if (Locator.getInstance().isDisplayOff())
             return; // Hier braucht niemand ein OriantationChangedEvent
@@ -82,7 +80,7 @@ public class PositionChangedEventList {
         synchronized (list) {
             for (PositionChangedEvent event : list) {
                 try {
-                    event.OrientationChanged();
+                    event.orientationChanged();
                 } catch (Exception e) {
                     // TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
                     e.printStackTrace();
@@ -99,7 +97,7 @@ public class PositionChangedEventList {
         synchronized (list) {
             for (PositionChangedEvent event : list) {
                 try {
-                    event.SpeedChanged();
+                    event.speedChanged();
                 } catch (Exception e) {
                     // TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
                     e.printStackTrace();

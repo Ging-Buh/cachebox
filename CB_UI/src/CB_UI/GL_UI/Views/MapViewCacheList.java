@@ -46,14 +46,14 @@ public class MapViewCacheList implements CacheListChangedEventListener {
      * State 1: Berechnen <br>
      * State 2: Berechnung in Gang <br>
      * State 3: Berechnung fertig - warten auf abholen <br>
-     * State 4: queueProcessor abgebrochen
+     * State 4: QueueProcessor abgebrochen
      */
     private final AtomicInteger state = new AtomicInteger(0);
     private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<>();
     public int anz = 0;
-    MapViewCacheListUpdateData savedQuery = null;
-    MapViewCacheListUpdateData LastUpdateData = null;
-    private queueProcessor queueProcessor = null;
+    private MapViewCacheListUpdateData savedQuery = null;
+    private MapViewCacheListUpdateData lastUpdateData = null;
+    private QueueProcessor queueProcessor = null;
     private Vector2 point1;
     private Vector2 point2;
     private int zoom = 15;
@@ -69,24 +69,24 @@ public class MapViewCacheList implements CacheListChangedEventListener {
         super();
         this.maxZoomLevel = maxZoomLevel;
 
-        StartQueueProcessor();
+        startQueueProcessor();
 
         // register as CacheListChangedEventListener
         CacheListChangedEventList.Add(this);
 
     }
 
-    private void StartQueueProcessor() {
+    private void startQueueProcessor() {
 
         try {
-            // Log.debug(log, "MapCacheList.queueProcessor Create");
-            queueProcessor = new queueProcessor();
+            // Log.debug(log, "MapCacheList.QueueProcessor Create");
+            queueProcessor = new QueueProcessor();
             queueProcessor.setPriority(Thread.MIN_PRIORITY);
         } catch (Exception ex) {
-            Log.err(log, "MapCacheList.queueProcessor", "onCreate", ex);
+            Log.err(log, "MapCacheList.QueueProcessor", "onCreate", ex);
         }
 
-        // Log.debug(log, "MapCacheList.queueProcessor Start");
+        // Log.debug(log, "MapCacheList.QueueProcessor Start");
         queueProcessor.start();
 
         state.set(0);
@@ -262,7 +262,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     }
 
     public void update(MapViewCacheListUpdateData data) {
-        LastUpdateData = data;
+        lastUpdateData = data;
         this.showAllWaypoints = data.showAllWaypoints;
         this.hideMyFinds = data.hideMyFinds;
         showAtOriginalPosition = data.showAtOriginalPosition;
@@ -271,12 +271,12 @@ public class MapViewCacheList implements CacheListChangedEventListener {
             return;
 
         if (state.get() == 4) {
-            // der queueProcessor wurde gestoppt und muss neu gestartet werden
-            StartQueueProcessor();
+            // der QueueProcessor wurde gestoppt und muss neu gestartet werden
+            startQueueProcessor();
         }
 
         if (state.get() != 0) {
-            // Speichere Update anfrage und führe sie aus, wenn der queueProcessor wieder bereit ist!
+            // Speichere Update anfrage und führe sie aus, wenn der QueueProcessor wieder bereit ist!
             savedQuery = data;
             return;
         }
@@ -314,9 +314,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 
     @Override
     public void CacheListChangedEvent() {
-        if (LastUpdateData != null) {
-            LastUpdateData.doNotCheck = true;
-            update(LastUpdateData);
+        if (lastUpdateData != null) {
+            lastUpdateData.doNotCheck = true;
+            update(lastUpdateData);
         }
     }
 
@@ -355,7 +355,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
         public Sprite OverlayIcon;
     }
 
-    private class queueProcessor extends Thread {
+    private class QueueProcessor extends Thread {
 
         @Override
         public void run() {
@@ -461,7 +461,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
                     }
                 } while (true);
             } catch (Exception ex3) {
-                Log.err(log, "MapCacheList.queueProcessor.doInBackground()", "3", ex3);
+                Log.err(log, "MapCacheList.QueueProcessor.doInBackground()", "3", ex3);
             } finally {
                 // wenn der Thread beendet wurde, muss er neu gestartet werden!
                 state.set(4);

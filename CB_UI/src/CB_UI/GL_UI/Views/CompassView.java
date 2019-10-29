@@ -22,7 +22,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -117,9 +117,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        PositionChanged();
+        positionChanged();
         SelectedCacheChangedEventListeners.getInstance().add(this);
-        PositionChangedEventList.Add(this);
+        PositionChangedListeners.addListener(this);
         CacheListChangedEventList.Add(this);
         invalidateTextureEventList.Add(this);
     }
@@ -129,7 +129,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (chart != null)
             chart.onHide();
         SelectedCacheChangedEventListeners.getInstance().remove(this);
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
         if (mCompassMapView != null) {
             mCompassMapView.onHide();
         }
@@ -631,7 +631,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
         if (this.isDisposed()) {
             return;
         }
@@ -715,7 +715,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
         if (this.isDisposed())
             return;
         if (aktCache == null)
@@ -799,7 +799,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
     }
 
     @Override
@@ -925,7 +925,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         settingChangedListener = null;
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         CacheListChangedEventList.Remove(this);
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
         invalidateTextureEventList.Remove(this);
 
         super.dispose();

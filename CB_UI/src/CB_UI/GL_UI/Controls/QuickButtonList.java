@@ -150,7 +150,7 @@ public class QuickButtonList extends H_ListView {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         quickButtonList = null;
         readQuickButtonItemsList();
         setBackground(Sprites.ButtonBack);

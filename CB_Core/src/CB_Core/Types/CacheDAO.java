@@ -403,6 +403,7 @@ public class CacheDAO {
         // chk of changes
         boolean changed = false;
         Cache fromDB = getFromDbByCacheId(writeTmp.Id);
+        Parameters args = new Parameters();
 
         if (fromDB == null)
             return false; // nichts zum Updaten gefunden
@@ -410,36 +411,33 @@ public class CacheDAO {
         if (fromDB.isArchived() != writeTmp.isArchived()) {
             changed = true;
             Replication.ArchivedChanged(writeTmp.Id, writeTmp.isArchived());
+            args.put("Archived", writeTmp.isArchived() ? 1 : 0);
         }
         if (fromDB.isAvailable() != writeTmp.isAvailable()) {
             changed = true;
             Replication.AvailableChanged(writeTmp.Id, writeTmp.isAvailable());
+            args.put("Available", writeTmp.isAvailable() ? 1 : 0);
         }
 
         if (fromDB.NumTravelbugs != writeTmp.NumTravelbugs) {
             changed = true;
             Replication.NumTravelbugsChanged(writeTmp.Id, writeTmp.NumTravelbugs);
+            args.put("NumTravelbugs", writeTmp.NumTravelbugs);
         }
 
         if (fromDB.favPoints != writeTmp.favPoints) {
             changed = true;
             Replication.NumFavPointsChanged(writeTmp.Id, writeTmp.favPoints);
+            args.put("FavPoints",writeTmp.favPoints);
         }
 
         if (fromDB.isFound() != writeTmp.isFound()) {
             changed = true;
             Replication.FoundChanged(writeTmp.Id, writeTmp.isFound());
+            args.put("Found", writeTmp.isFound());
         }
 
         if (changed) {
-
-            Parameters args = new Parameters();
-
-            args.put("Archived", writeTmp.isArchived() ? 1 : 0);
-            args.put("Available", writeTmp.isAvailable() ? 1 : 0);
-            args.put("NumTravelbugs", writeTmp.NumTravelbugs);
-            args.put("FavPoints",writeTmp.favPoints);
-            args.put("Found", writeTmp.isFound());
 
             try {
                 Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.Id)});

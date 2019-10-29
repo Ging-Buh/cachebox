@@ -347,7 +347,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         mSlideBox.setBackground(Sprites.ProgressBack);
 
     }

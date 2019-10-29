@@ -316,7 +316,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         CachedScaleSprite = null;
         ValueRec = null;
         storedRec = null;

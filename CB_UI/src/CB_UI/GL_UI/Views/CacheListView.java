@@ -22,7 +22,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.Actions.CacheContextMenu;
@@ -130,7 +130,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
         Log.debug(log, "CacheList onShow");
         setBackground(Sprites.ListBack);
 
-        PositionChangedEventList.Add(this);
+        PositionChangedListeners.addListener(this);
 
         synchronized (Database.Data.cacheList) {
             try {
@@ -218,7 +218,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     public void onHide() {
         isShown = false;
         Log.debug(log, "CacheList onHide");
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
 
         if (searchPlaceholder < 0) {
             // Blende Search Dialog aus
@@ -276,13 +276,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
             if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id) {
                 // TODO Run if ListView Initial and after showing
                 listView.RunIfListInitial(this::setSelectedCacheVisible);
-
             }
         }
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         if (listView != null)
             listView.reloadItems();
         setBackground(Sprites.ListBack);
@@ -290,12 +289,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
         GL.that.renderOnce();
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
         GL.that.renderOnce();
     }
 
@@ -328,7 +327,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
     }
 
     @Override
@@ -350,7 +349,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
         CacheListChangedEventList.Remove(this);
         SelectedCacheChangedEventListeners.getInstance().remove(this);
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
 
         super.dispose();
     }
@@ -389,9 +388,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
                 CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache);
                 v.setClickable(true);
+
                 v.addClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
-
                     Cache tmp;
                     synchronized (Database.Data.cacheList) {
                         tmp = Database.Data.cacheList.get(selectionIndex);
@@ -407,6 +406,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
                     setSelectedCacheVisible();
                     return true;
                 });
+
                 v.setOnLongClickListener((v12, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v12).getIndex();
 

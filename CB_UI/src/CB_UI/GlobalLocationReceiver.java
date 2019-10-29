@@ -22,7 +22,7 @@ import CB_Core.Types.CacheWithWP;
 import CB_Locator.Events.GPS_FallBackEvent;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -53,7 +53,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
     public GlobalLocationReceiver() {
 
-        PositionChangedEventList.Add(this);
+        PositionChangedListeners.addListener(this);
         GPS_FallBackEventList.Add(this);
         try {
             SoundCache.loadSounds();
@@ -80,7 +80,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
 
         PlaySounds = !CB_UI_Base_Settings.GlobalVolume.getValue().Mute;
 
@@ -216,7 +216,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
     }
 
     @Override
@@ -225,7 +225,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
     }
 
     @Override

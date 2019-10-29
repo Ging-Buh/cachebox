@@ -400,7 +400,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             Log.info(sKlasse, "=> onResume");
         }
 
-        OnResumeListeners.getInstance().fireEvent();
+        OnResumeListeners.getInstance().onResume();
 
         if (input == null) {
             Log.info(sKlasse, "(input == null) : init input needed for super.onResume()");

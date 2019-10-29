@@ -21,7 +21,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Events.GpsStateChangeEvent;
 import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -82,9 +82,9 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
         // add Event Handler
         SelectedCacheChangedEventListeners.getInstance().add(this);
         GpsStateChangeEventList.Add(this);
-        PositionChangedEventList.Add(this);
+        PositionChangedListeners.addListener(this);
 
-        PositionChanged();
+        positionChanged();
 
         if (!this.isInitial)
             initialize();
@@ -101,7 +101,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
         // remove Event Handler
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         GpsStateChangeEventList.Remove(this);
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
 
         if (chart != null)
             chart.onHide();
@@ -304,7 +304,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         createControls();
         setYpositions();
     }
@@ -378,12 +378,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
         GpsStateChanged();
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
     }
 
     @Override
@@ -397,7 +397,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
     }
 
     @Override
@@ -452,7 +452,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
 
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         GpsStateChangeEventList.Remove(this);
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
 
         super.dispose();
     }

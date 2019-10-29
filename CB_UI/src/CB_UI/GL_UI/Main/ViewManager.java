@@ -24,7 +24,7 @@ import CB_Core.FilterInstances;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListDAO;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
 import CB_UI.GL_UI.Controls.Slider;
@@ -92,7 +92,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     public ViewManager(CB_RectF rec) {
         super(rec);
-        PositionChangedEventList.Add(this);
+        PositionChangedListeners.addListener(this);
         that = this;
     }
 
@@ -369,7 +369,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                 for (int i = 0, n = childs.size(); i < n; i++) {
                     GL_View_Base view = childs.get(i);
                     if (view instanceof CB_TabView) {
-                        ((CB_TabView) view).SkinIsChanged();
+                        ((CB_TabView) view).skinIsChanged();
                     }
                 }
             }
@@ -427,7 +427,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
         try {
             TrackRecorder.recordPosition();
         } catch (Exception e) {
@@ -463,11 +463,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
     }
 
     public boolean isInitialized() {

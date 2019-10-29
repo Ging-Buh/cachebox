@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Translation_Base.TranslationEngine.Lang;
 import CB_Translation_Base.TranslationEngine.SelectedLangChangedEvent;
 import CB_Translation_Base.TranslationEngine.SelectedLangChangedEventList;
@@ -105,8 +105,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     @Override
-    protected void SkinIsChanged() {
-        super.SkinIsChanged();
+    protected void skinIsChanged() {
+        super.skinIsChanged();
         this.removeChild(btnOk);
         this.removeChild(btnCancel);
         this.removeChild(btnMenu);
@@ -953,8 +953,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         info += "Width= " + String.valueOf(UiSizes.getInstance().getWindowWidth()) + GlobalCore.br;
                         info += "Scale= " + String.valueOf(UiSizes.getInstance().getScale()) + GlobalCore.br;
                         info += "FontSize= " + String.valueOf(UiSizes.getInstance().getScaledFontSize()) + GlobalCore.br;
-                        info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
-                        info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime) + GlobalCore.br;
+                        info += "GPS min pos Time= " + String.valueOf(PositionChangedListeners.minPosEventTime) + GlobalCore.br;
+                        info += "GPS min Orientation Time= " + String.valueOf(PositionChangedListeners.minOrientationEventTime) + GlobalCore.br;
 
                         MessageBox.show(info, msgBoxReturnListener);
 

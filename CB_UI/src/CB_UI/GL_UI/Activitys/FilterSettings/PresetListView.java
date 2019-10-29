@@ -16,6 +16,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingString;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -88,8 +89,8 @@ public class PresetListView extends V_ListView {
                     FilterProperties fp = new FilterProperties(filter);
                     mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), fp));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                Log.err("PresetListView","", ex);
             }
         }
 

@@ -20,14 +20,14 @@ public class OnResumeListeners extends CopyOnWriteArrayList<CB_UI_Base.Events.On
             return false;
     }
 
-    public void fireEvent() {
+    public void onResume() {
         for (OnResumeListener listener : this) {
             Log.info("Fire OnResume for: ", listener.getClass().getName());
-            listener.fireEvent();
+            listener.onResume();
         }
     }
 
     public interface OnResumeListener {
-        void fireEvent();
+        void onResume();
     }
 }

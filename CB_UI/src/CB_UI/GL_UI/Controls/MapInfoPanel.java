@@ -233,7 +233,7 @@ public class MapInfoPanel extends CB_View_Base {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         initialize();
     }
 

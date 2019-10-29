@@ -129,7 +129,7 @@ public class InfoBubble extends CB_View_Base {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         if (cacheInfo != null) {
             cacheInfo.dispose();
             cacheInfo = null;

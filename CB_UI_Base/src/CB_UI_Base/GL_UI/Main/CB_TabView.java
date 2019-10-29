@@ -132,7 +132,7 @@ public class CB_TabView extends CB_View_Base {
     }
 
     @Override
-    public void SkinIsChanged() {
+    public void skinIsChanged() {
         ShowView(aktView);
     }
 

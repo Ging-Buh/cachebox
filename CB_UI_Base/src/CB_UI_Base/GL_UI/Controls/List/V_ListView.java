@@ -302,7 +302,7 @@ public class V_ListView extends ListViewBase {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         reloadItems();
     }
 

@@ -96,7 +96,7 @@ public class Spinner extends CB_Button {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         triangle = null;
         resetInitial();
     }

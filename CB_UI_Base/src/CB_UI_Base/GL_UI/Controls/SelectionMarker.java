@@ -22,7 +22,7 @@ public class SelectionMarker extends CB_View_Base {
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         init();
     }
 

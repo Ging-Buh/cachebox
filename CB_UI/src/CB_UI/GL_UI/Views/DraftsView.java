@@ -576,12 +576,8 @@ public class DraftsView extends V_ListView {
                     return true;
                 });
             } else {
-                v.addClickHandler((v12, x, y, pointer, button) -> {
-                    return onItemClicked((DraftViewItem) v12);
-                });
-                v.setOnLongClickListener((v13, x, y, pointer, button) -> {
-                    return onItemClicked((DraftViewItem) v13);
-                });
+                v.addClickHandler((v12, x, y, pointer, button) -> onItemClicked((DraftViewItem) v12));
+                v.setOnLongClickListener((v13, x, y, pointer, button) -> onItemClicked((DraftViewItem) v13));
             }
 
             fixViewList.addAndGetLastOut(v);

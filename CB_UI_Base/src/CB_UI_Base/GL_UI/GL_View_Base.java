@@ -79,7 +79,7 @@ public abstract class GL_View_Base extends CB_RectF {
     protected SkinChangedEventListener mSkinChangedEventListener = new SkinChangedEventListener() {
         @Override
         public void SkinChanged() {
-            SkinIsChanged();
+            skinIsChanged();
         }
     };
     protected Color mColorFilter = null;
@@ -1089,7 +1089,7 @@ public abstract class GL_View_Base extends CB_RectF {
         // }
     }
 
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
     }
 
     // ############# End Skin changed ############

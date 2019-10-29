@@ -18,7 +18,7 @@ package CB_Locator.Map;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.Locator;
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.Events.invalidateTextureEvent;
@@ -121,8 +121,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     @Override
     public void onShow() {
-        PositionChangedEventList.Add(this);
-        PositionChanged();
+        PositionChangedListeners.addListener(this);
+        positionChanged();
 
         isCarMode = (getMapState() == MapState.CAR);
         if (!isCarMode) {
@@ -144,7 +144,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     @Override
     public void onHide() {
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
         setInvisible();
         onStop();// save last zoom and position
     }
@@ -152,7 +152,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     @Override
     public void dispose() {
         // remove eventHandler
-        PositionChangedEventList.Remove(this);
+        PositionChangedListeners.removeListener(this);
         invalidateTextureEventList.Remove(this);
         super.dispose();
     }
@@ -762,7 +762,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
         if (isCarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
             if (!Locator.getInstance().isGPSprovided())
@@ -775,7 +775,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     @Override
-    public void OrientationChanged() {
+    public void orientationChanged() {
 
         float heading = Locator.getInstance().getHeading();
 
@@ -1131,7 +1131,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     @Override
-    protected void SkinIsChanged() {
+    protected void skinIsChanged() {
         setBackground(Sprites.ListBack);
         invalidateTexture();
     }

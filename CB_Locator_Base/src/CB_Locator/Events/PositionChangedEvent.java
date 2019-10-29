@@ -4,17 +4,17 @@ public interface PositionChangedEvent {
     /**
      * Position is changed! Get the new Location from Locator!!!
      */
-    void PositionChanged();
+    void positionChanged();
 
     /**
      * Orientation is changed! Get the new Orientation from Locator!!!
      */
-    void OrientationChanged();
+    void orientationChanged();
 
     /**
      * Speed is changed! Get the new Speed from Locator!!!
      */
-    void SpeedChanged();
+    void speedChanged();
 
     /**
      * Return the Name of this Receiver, for Debug

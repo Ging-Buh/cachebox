@@ -442,7 +442,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         SetNorthOriented(Config.MapNorthOriented.getValue());
         Config.MapNorthOriented.addSettingChangedListener(() -> {
             SetNorthOriented(Config.MapNorthOriented.getValue());
-            PositionChanged();
+            this.positionChanged();
         });
         // to force generation of tiles in loadTiles();
         OnResumeListeners.getInstance().addListener(() -> {
@@ -736,7 +736,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         mapCacheList.update(data);
 
         if (getCenterGps()) {
-            PositionChanged();
+            this.positionChanged();
             return;
         }
 
@@ -763,11 +763,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         Timer timer = new Timer();
         timer.schedule(task, 2000);
-        PositionChanged();
+        this.positionChanged();
     }
 
     @Override
-    public void SpeedChanged() {
+    public void speedChanged() {
         if (info != null) {
             info.setSpeed(Locator.getInstance().SpeedString());
 
@@ -921,8 +921,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    public void OrientationChanged() {
-        super.OrientationChanged();
+    public void orientationChanged() {
+        super.orientationChanged();
         if (info != null) {
             try {
                 Coordinate position = Locator.getInstance().getMyPosition();
@@ -1037,7 +1037,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    public void PositionChanged() {
+    public void positionChanged() {
 
         if (isCarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
@@ -1045,7 +1045,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 return;
         }
 
-        super.PositionChanged();
+        super.positionChanged();
 
         if (info != null) {
             if (center != null) {
@@ -1055,7 +1055,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (GlobalCore.getSelectedCoord() != null) {
                 info.setDistance(GlobalCore.getSelectedCoord().Distance(CalculationType.ACCURATE));
             }
-            OrientationChanged();
+            this.orientationChanged();
         }
 
         if (Mode == MapMode.Compass) {
@@ -1102,8 +1102,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    protected void SkinIsChanged() {
-        super.SkinIsChanged();
+    protected void skinIsChanged() {
+        super.skinIsChanged();
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
