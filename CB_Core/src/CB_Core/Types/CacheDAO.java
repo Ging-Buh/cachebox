@@ -426,6 +426,11 @@ public class CacheDAO {
             Replication.NumFavPointsChanged(writeTmp.Id, writeTmp.favPoints);
         }
 
+        if (fromDB.isFound() != writeTmp.isFound()) {
+            changed = true;
+            Replication.FoundChanged(writeTmp.Id, writeTmp.isFound());
+        }
+
         if (changed) {
 
             Parameters args = new Parameters();
@@ -434,6 +439,7 @@ public class CacheDAO {
             args.put("Available", writeTmp.isAvailable() ? 1 : 0);
             args.put("NumTravelbugs", writeTmp.NumTravelbugs);
             args.put("FavPoints",writeTmp.favPoints);
+            args.put("Found", writeTmp.isFound());
 
             try {
                 Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.Id)});

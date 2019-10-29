@@ -1644,7 +1644,7 @@ public class GroundspeakAPI {
     public static class Query {
         private static final String LiteFields = "referenceCode,favoritePoints,userData,name,difficulty,terrain,placedDate,geocacheType.id,geocacheSize.id,location,postedCoordinates,status,owner.username,ownerAlias";
         private static final String NotLiteFields = "hints,attributes,longDescription,shortDescription,additionalWaypoints,userWaypoints";
-        private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount";
+        private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount,userData.foundDate";
         private StringBuilder qString;
         private StringBuilder fieldsString;
         private StringBuilder expandString;
