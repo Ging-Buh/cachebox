@@ -22,7 +22,7 @@ public class OnResumeListeners extends CopyOnWriteArrayList<CB_UI_Base.Events.On
 
     public void fireEvent() {
         for (OnResumeListener listener : this) {
-            Log.info("Fire OnResume for: ", listener.toString());
+            Log.info("Fire OnResume for: ", listener.getClass().getName());
             listener.fireEvent();
         }
     }

@@ -15,6 +15,7 @@
  */
 package CB_UI_Base.Math;
 
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
@@ -137,6 +138,12 @@ public class GL_UISizes implements SizeChangedEvent {
 
         Log.debug(log, "Initial UISizes => " + width + "/" + height);
         Log.debug(log, "DPI = " + DPI);
+
+
+        if (CB_UI_Base_Settings.MapViewDPIFaktor.getValue() == 1) {
+            CB_UI_Base_Settings.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+        }
+
 
         if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue()) {
 

@@ -1215,8 +1215,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     protected void renderOnce(String debugInfo) {
         try {
-            // Log.info(log, debugInfo);
+            Log.info(log, "-> " + debugInfo);
             loadTiles();
+            Log.info(log, debugInfo + " <-");
             GL.that.renderOnce();
         } catch (Exception ex) {
             Log.err(log, "debugInfo", ex);

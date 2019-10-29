@@ -18,8 +18,8 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.*;
-import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
+import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -257,7 +257,7 @@ public class MapsForgeLayer extends Layer {
 
         try {
             // CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(displayModel.getScaleFactor()), displayModel, renderTheme);
-            CB_RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), displayModel, renderTheme);
+            RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), displayModel, renderTheme);
         } catch (Exception e) {
             Log.err(log, "Error in checking RenderTheme " + mapsforgeTheme, e);
             renderTheme = CB_InternalRenderTheme.DEFAULT;
@@ -286,7 +286,7 @@ public class MapsForgeLayer extends Layer {
                 path = LocatorSettings.MapsforgeCarDayTheme.getValue();
             }
         } else {
-            textScale = DEFAULT_TEXT_SCALE;
+            textScale = DEFAULT_TEXT_SCALE * 2.0f;
             if (CB_UI_Base_Settings.nightMode.getValue()) {
                 mapsforgeThemesStyle = LocatorSettings.MapsforgeNightStyle.getValue();
                 path = LocatorSettings.MapsforgeNightTheme.getValue();

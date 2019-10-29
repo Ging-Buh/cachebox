@@ -41,6 +41,7 @@ import CB_UI.GL_UI.Controls.MapInfoPanel;
 import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
+import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.OnResumeListeners;
 import CB_UI_Base.GL_UI.COLOR;
@@ -290,6 +291,10 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         // from create
 
+        if (Config.MapViewDPIFaktor.getValue() == 1) {
+            Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+            Config.AcceptChanges();
+        }
         iconFactor = Config.MapViewDPIFaktor.getValue();
 
         liveButton = new LiveButton();
@@ -1150,6 +1155,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 info.setVisible(Mode == MapMode.Compass ? false : Config.MapShowInfo.getValue());
 
             if (InitialFlags == INITIAL_ALL) {
+
+                if (Config.MapViewDPIFaktor.getValue() == 1) {
+                    Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+                    Config.AcceptChanges();
+                }
                 iconFactor = Config.MapViewDPIFaktor.getValue();
 
                 int setMaxZoom = Mode == MapMode.Compass ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();

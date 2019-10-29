@@ -94,7 +94,7 @@ public class TileGL_Bmp extends TileGL {
             else {
                 texture = LocatorBasePlatFormMethods.getTexture(bitmap);
                 bitmap = null;
-                Log.info(log, "created: " + this);
+                // Log.info(log, "created: " + this);
             }
         } else {
             // create Texture on next GlThread
@@ -104,7 +104,7 @@ public class TileGL_Bmp extends TileGL {
                 else {
                     texture = LocatorBasePlatFormMethods.getTexture(bitmap);
                     bitmap = null;
-                    Log.info(log, "created: " + this);
+                    // Log.info(log, "created: " + this);
                 }
                 GL.that.renderOnce();
             });
@@ -116,7 +116,7 @@ public class TileGL_Bmp extends TileGL {
             Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
             texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
             pixmap.dispose();
-            Log.info(log, "created: " + this);
+            // Log.info(log, "created: " + this);
         } catch (Exception ex) {
             Log.err(log, "[TileGL] can't create Pixmap or Texture: ", ex);
         }
@@ -168,7 +168,7 @@ public class TileGL_Bmp extends TileGL {
     public void dispose() {
         if (isDisposed)
             return;
-        Log.info(log, "dispose: " + this);
+        // Log.info(log, "dispose: " + this);
 
         if (GL.that.isGlThread()) {
             try {

@@ -27,7 +27,6 @@ import CB_UI.GL_UI.Main.ViewManager;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.TrackRecorder;
-import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -55,7 +54,7 @@ import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import org.mapsforge.map.rendertheme.*;
-import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
+import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -302,7 +301,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             tdMenu.setSingleSelection();
             for (int i : Config.trackDistanceArray) {
                 final int selected = i;
-                MenuItem mi = tdMenu.addMenuItem("","" + i, null, () -> {
+                MenuItem mi = tdMenu.addMenuItem("", "" + i, null, () -> {
                     tdMenu.setData(selected);
                 });
                 mi.setCheckable(true);
@@ -684,7 +683,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
                     // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
-                    CB_RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
+                    RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
@@ -704,7 +703,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 try {
                     // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
                     // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
-                    CB_RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
+                    RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
