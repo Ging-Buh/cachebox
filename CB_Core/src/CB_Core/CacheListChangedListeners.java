@@ -19,39 +19,40 @@ import CB_Core.Api.LiveMapQue;
 import CB_Core.Types.Cache;
 import CB_UI_Base.Energy;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * @author Longri
- */
-public class CacheListChangedEventList {
-    public static ArrayList<CacheListChangedEventListener> list = new ArrayList<>();
+public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListChangedListeners.CacheListChangedListener> {
+    private static CacheListChangedListeners cacheListChangedListeners;
     private static Thread threadCall;
 
-    public static void Add(CacheListChangedEventListener event) {
-        synchronized (list) {
-            if (!list.contains(event))
-                list.add(event);
-        }
+    public static CacheListChangedListeners getInstance() {
+        if (cacheListChangedListeners == null)
+            cacheListChangedListeners = new CacheListChangedListeners();
+        return cacheListChangedListeners;
     }
 
-    public static void Remove(CacheListChangedEventListener event) {
-        synchronized (list) {
-            list.remove(event);
-        }
+    public boolean addListener(CacheListChangedListener listener) {
+        if (!contains(listener))
+            return super.add(listener);
+        else
+            return false;
     }
 
-    public static void Call() {
+    public void removeListener(CacheListChangedListener listener) {
+        super.remove(listener);
+    }
+
+    public void cacheListChanged() {
         if (Energy.isDisplayOff())
             return;
 
         synchronized (Database.Data.cacheList) {
-            Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
 
+            // remove Parking Cache
+            Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache != null)
                 Database.Data.cacheList.remove(cache);
-
-            // add Parking Cache
+            // add Parking Cache from saved Config (ParkingLatitude, ParkingLongitude)
             if (CB_Core_Settings.ParkingLatitude.getValue() != 0) {
                 cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", CacheTypes.MyParking, "CBPark");
                 Database.Data.cacheList.add(0, cache);
@@ -59,10 +60,10 @@ public class CacheListChangedEventList {
 
             // add all Live Caches
             for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++) {
+                Cache ca = LiveMapQue.LiveCaches.get(i);
+                if (ca == null)
+                    continue;
                 if (FilterInstances.isLastFilterSet()) {
-                    Cache ca = LiveMapQue.LiveCaches.get(i);
-                    if (ca == null)
-                        continue;
                     if (!Database.Data.cacheList.contains(ca)) {
                         if (FilterInstances.getLastFilter().passed(ca)) {
                             ca.setLive(true);
@@ -70,9 +71,6 @@ public class CacheListChangedEventList {
                         }
                     }
                 } else {
-                    Cache ca = LiveMapQue.LiveCaches.get(i);
-                    if (ca == null)
-                        continue;
                     if (!Database.Data.cacheList.contains(ca)) {
                         ca.setLive(true);
                         Database.Data.cacheList.add(ca);
@@ -89,19 +87,18 @@ public class CacheListChangedEventList {
                 threadCall = null;
         }
 
-        if (threadCall == null)
-            threadCall = new Thread(() -> {
-                synchronized (list) {
-                    for (CacheListChangedEventListener event : list) {
-                        if (event == null)
-                            continue;
-                        event.CacheListChangedEvent();
-                    }
-                }
-
-            });
+        threadCall = new Thread(() -> {
+            for (CacheListChangedListener listener : this) {
+                if (listener == null)
+                    continue;
+                listener.cacheListChanged();
+            }
+        });
 
         threadCall.start();
     }
 
+    public interface CacheListChangedListener {
+        void cacheListChanged();
+    }
 }

@@ -17,7 +17,7 @@
 package CB_Core.Api;
 
 import CB_Core.CB_Core_Settings;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
@@ -133,7 +133,7 @@ public class LiveMapQue {
                         synchronized (Database.Data.cacheList) {
                             Database.Data.cacheList.removeAll(removedCaches);
                         }
-                        CacheListChangedEventList.Call();
+                        CacheListChangedListeners.getInstance().cacheListChanged();
                         for (int i = 0; i < eventList.size(); i++)
                             eventList.get(i).stateChanged();
                     }

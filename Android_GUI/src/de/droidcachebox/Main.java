@@ -15,7 +15,7 @@
  */
 package de.droidcachebox;
 
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
 import CB_Core.Types.Cache;
@@ -494,7 +494,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     // GPS Verbindung beenden
                     androidUIBaseMethods.getLocationManager().removeUpdates(this);
                     SelectedCacheChangedEventListeners.getInstance().clear();
-                    CacheListChangedEventList.list.clear();
+                    CacheListChangedListeners.getInstance().clear();
                     showViewListener.onDestroyWithFinishing();
 
                     Config.AcceptChanges();

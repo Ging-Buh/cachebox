@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CacheSizes;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
@@ -215,11 +215,11 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.setLongDescription(cacheDescription.getText());
             if (update) {
                 cacheDAO.UpdateDatabase(cache);
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
             } else {
                 Database.Data.cacheList.add(cache);
                 cacheDAO.WriteToDatabase(cache);
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
                 GlobalCore.setSelectedCache(cache);
                 CacheListView.getInstance().setSelectedCacheVisible();
             }

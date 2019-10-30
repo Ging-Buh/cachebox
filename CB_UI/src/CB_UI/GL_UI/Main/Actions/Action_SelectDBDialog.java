@@ -132,7 +132,7 @@ public class Action_SelectDBDialog extends AbstractAction {
 
                 GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
 
                 ViewManager.that.filterSetChanged();
 

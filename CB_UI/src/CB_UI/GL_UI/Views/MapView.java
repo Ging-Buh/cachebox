@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Views;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CacheTypes;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
@@ -382,7 +382,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                             CacheListDAO cacheListDAO = new CacheListDAO();
                             cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                         }
-                        CacheListChangedEventList.Call();
+                        CacheListChangedListeners.getInstance().cacheListChanged();
 
                         Cache selCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);

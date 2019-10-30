@@ -16,7 +16,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.CB_Core_Settings;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -368,7 +368,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             // }
 
             if (!threadCanceld) {
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
                 cancelImport();
                 finish();
             } else {

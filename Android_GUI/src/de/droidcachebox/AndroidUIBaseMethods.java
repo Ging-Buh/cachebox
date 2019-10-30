@@ -1,6 +1,6 @@
 package de.droidcachebox;
 
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
@@ -389,7 +389,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                         Database.Data.sql.endTransaction();
 
                         wd.close();
-                        CacheListChangedEventList.Call();
+                        CacheListChangedListeners.getInstance().cacheListChanged();
                         FilterProperties props = FilterInstances.getLastFilter();
                         EditFilterSettings.ApplyFilter(props);
 

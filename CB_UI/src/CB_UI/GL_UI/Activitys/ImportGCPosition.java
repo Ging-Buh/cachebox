@@ -16,7 +16,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.CB_Core_Settings;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -518,7 +518,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             }
 
             if (!threadCanceled) {
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
                 if (dis != null) {
                     removeChildsDirekt(dis);
                     dis.dispose();

@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.Types.Cache;
@@ -170,7 +170,7 @@ public class Action_chkState extends AbstractAction {
                     CacheListDAO cacheListDAO = new CacheListDAO();
                     cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                 }
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
                 synchronized (Database.Data.cacheList) {
                     MessageBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.get("chkState"), MessageBoxIcon.None);
                 }

@@ -16,7 +16,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Api.GroundspeakAPI.*;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
@@ -1132,7 +1132,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         // finish close activity and notify changes
 
-        CacheListChangedEventList.Call();
+        CacheListChangedListeners.getInstance().cacheListChanged();
         String Msg;
 
         if (ImportStart != null) {

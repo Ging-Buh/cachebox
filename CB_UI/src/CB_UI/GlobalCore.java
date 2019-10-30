@@ -17,7 +17,7 @@ package CB_UI;
 
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
 import CB_Core.Import.DescriptionImageGrabber;
@@ -362,13 +362,13 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     @Override
     public void sciSetSelectedCache(Cache cache) {
         setSelectedCache(cache);
-        CacheListChangedEventList.Call();
+        CacheListChangedListeners.getInstance().cacheListChanged();
     }
 
     @Override
     public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
         setSelectedWaypoint(cache, waypoint);
-        CacheListChangedEventList.Call();
+        CacheListChangedListeners.getInstance().cacheListChanged();
     }
 
     @Override

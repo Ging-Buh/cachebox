@@ -15,7 +15,7 @@
  */
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
@@ -266,7 +266,7 @@ public class EditFilterSettings extends ActivityBase {
                     cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
                 pd.dismis();
                 ViewManager.that.filterSetChanged();
 

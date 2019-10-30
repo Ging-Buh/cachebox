@@ -15,8 +15,7 @@
  */
 package CB_UI.GL_UI.Views;
 
-import CB_Core.CacheListChangedEventList;
-import CB_Core.CacheListChangedEventListener;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
@@ -37,7 +36,7 @@ import static CB_UI_Base.GL_UI.Sprites.*;
  * @author ging-buh
  * @author Longri
  */
-public class MapViewCacheList implements CacheListChangedEventListener {
+public class MapViewCacheList implements CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "MapViewCacheList";
     public final CB_List<WaypointRenderInfo> list = new CB_List<>();
     private final int maxZoomLevel;
@@ -71,8 +70,8 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 
         startQueueProcessor();
 
-        // register as CacheListChangedEventListener
-        CacheListChangedEventList.Add(this);
+        // register as CacheListChangedListener
+        CacheListChangedListeners.getInstance().addListener(this);
 
     }
 
@@ -313,7 +312,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     }
 
     @Override
-    public void CacheListChangedEvent() {
+    public void cacheListChanged() {
         if (lastUpdateData != null) {
             lastUpdateData.doNotCheck = true;
             update(lastUpdateData);

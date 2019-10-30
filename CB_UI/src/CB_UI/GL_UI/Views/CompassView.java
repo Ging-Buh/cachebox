@@ -15,8 +15,7 @@
  */
 package CB_UI.GL_UI.Views;
 
-import CB_Core.CacheListChangedEventList;
-import CB_Core.CacheListChangedEventListener;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -61,7 +60,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListener {
+public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, invalidateTextureEvent, CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "CompassView";
     private static CompassView that;
     private CB_RectF imageRec;
@@ -120,7 +119,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         positionChanged();
         SelectedCacheChangedEventListeners.getInstance().add(this);
         PositionChangedListeners.addListener(this);
-        CacheListChangedEventList.Add(this);
+        CacheListChangedListeners.getInstance().addListener(this);
         invalidateTextureEventList.Add(this);
     }
 
@@ -133,7 +132,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (mCompassMapView != null) {
             mCompassMapView.onHide();
         }
-        CacheListChangedEventList.Remove(this);
+        CacheListChangedListeners.getInstance().removeListener(this);
         invalidateTextureEventList.Remove(this);
     }
 
@@ -808,7 +807,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     }
 
     @Override
-    public void CacheListChangedEvent() {
+    public void cacheListChanged() {
         if (aktCache != GlobalCore.getSelectedCache() || aktWaypoint != GlobalCore.getSelectedWaypoint()) {
             aktCache = GlobalCore.getSelectedCache();
             aktWaypoint = GlobalCore.getSelectedWaypoint();
@@ -924,7 +923,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
         settingChangedListener = null;
         SelectedCacheChangedEventListeners.getInstance().remove(this);
-        CacheListChangedEventList.Remove(this);
+        CacheListChangedListeners.getInstance().removeListener(this);
         PositionChangedListeners.removeListener(this);
         invalidateTextureEventList.Remove(this);
 

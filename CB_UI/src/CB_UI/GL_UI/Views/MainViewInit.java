@@ -376,7 +376,7 @@ public class MainViewInit extends MainViewBase {
             cacheListDAO = null;
         }
 
-        CacheListChangedEventList.Call();
+        CacheListChangedListeners.getInstance().cacheListChanged();
 
         Database.Drafts.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
 

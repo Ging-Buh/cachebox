@@ -15,6 +15,7 @@
  */
 package CB_Core.Types;
 
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -153,7 +154,7 @@ public class CacheList extends MoveableList<Cache> {
             retValue = new CacheWithWP(nextCache, waypoint);
         }
 
-        CB_Core.CacheListChangedEventList.Call();
+        CacheListChangedListeners.getInstance().cacheListChanged();
 
         // vorhandenen Parkplatz Cache nach oben schieben
         Cache park = this.getCacheByGcCodeFromCacheList("CBPark");

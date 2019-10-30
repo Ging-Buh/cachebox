@@ -244,62 +244,65 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     @Override
     protected void render(Batch batch) {
+        try {
+            if (LocatorSettings.MoveMapCenterWithSpeed.getValue() && isCarMode && Locator.getInstance().hasSpeed()) {
 
-        if (LocatorSettings.MoveMapCenterWithSpeed.getValue() && isCarMode && Locator.getInstance().hasSpeed()) {
+                double maxSpeed = LocatorSettings.MoveMapCenterMaxSpeed.getValue();
 
-            double maxSpeed = LocatorSettings.MoveMapCenterMaxSpeed.getValue();
+                double percent = Locator.getInstance().SpeedOverGround() / maxSpeed;
 
-            double percent = Locator.getInstance().SpeedOverGround() / maxSpeed;
+                float diff = (float) ((this.getHeight()) / 3 * percent);
+                if (diff > this.getHeight() / 3)
+                    diff = this.getHeight() / 3;
 
-            float diff = (float) ((this.getHeight()) / 3 * percent);
-            if (diff > this.getHeight() / 3)
-                diff = this.getHeight() / 3;
+                ySpeedVersatz = diff;
 
-            ySpeedVersatz = diff;
+            } else
+                ySpeedVersatz = 0;
 
-        } else
-            ySpeedVersatz = 0;
+            boolean reduceFps = ((kineticZoom != null) || ((kineticPan != null) && (kineticPan.getStarted())));
+            if (kineticZoom != null) {
+                camera.zoom = kineticZoom.getAktZoom();
+                setActZoom();
 
-        boolean reduceFps = ((kineticZoom != null) || ((kineticPan != null) && (kineticPan.getStarted())));
-        if (kineticZoom != null) {
-            camera.zoom = kineticZoom.getAktZoom();
-            setActZoom();
+                if (kineticZoom.getFertig()) {
+                    setZoomScale(zoomBtn.getZoom());
+                    GL.that.removeRenderView(this);
+                    kineticZoom = null;
+                } else
+                    reduceFps = false;
 
-            if (kineticZoom.getFertig()) {
-                setZoomScale(zoomBtn.getZoom());
+                calcPixelsPerMeter();
+                if (mapScale != null)
+                    mapScale.ZoomChanged();
+                if (zoomScale != null)
+                    zoomScale.setZoom(convertCameraZoomToFloat(camera));
+
+            }
+
+            if ((kineticPan != null) && (kineticPan.getStarted())) {
+                long faktor = getMapTilePosFactor(aktZoom);
+                Point pan = kineticPan.getAktPan();
+                screenCenterT.set(screenCenterT.getX() + pan.x * faktor, screenCenterT.getY() + pan.y * faktor);
+                calcCenter();
+
+                if (kineticPan.getFertig()) {
+                    kineticPan = null;
+                } else
+                    reduceFps = false;
+            }
+
+            if (reduceFps) {
                 GL.that.removeRenderView(this);
-                kineticZoom = null;
-            } else
-                reduceFps = false;
-
-            calcPixelsPerMeter();
-            if (mapScale != null)
-                mapScale.ZoomChanged();
-            if (zoomScale != null)
-                zoomScale.setZoom(convertCameraZoomToFloat(camera));
-
+            }
+            camera.update();
+            // loadTiles();
+            renderMapTiles(batch);
+            renderSynchronOverlay(batch);
+            renderNonSynchronOverlay(batch);
+        } catch (Exception ex) {
+            Log.err(log, "render", ex);
         }
-
-        if ((kineticPan != null) && (kineticPan.getStarted())) {
-            long faktor = getMapTilePosFactor(aktZoom);
-            Point pan = kineticPan.getAktPan();
-            screenCenterT.set(screenCenterT.getX() + pan.x * faktor, screenCenterT.getY() + pan.y * faktor);
-            calcCenter();
-
-            if (kineticPan.getFertig()) {
-                kineticPan = null;
-            } else
-                reduceFps = false;
-        }
-
-        if (reduceFps) {
-            GL.that.removeRenderView(this);
-        }
-        camera.update();
-        // loadTiles();
-        renderMapTiles(batch);
-        renderSynchronOverlay(batch);
-        renderNonSynchronOverlay(batch);
     }
 
     protected abstract void renderSynchronOverlay(Batch batch);
@@ -722,29 +725,35 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
      * liefert die World-Koordinate in Pixel relativ zur Map in der höchsten Auflösung
      */
     protected Vector2 screenToWorld(Vector2 point) {
-        Vector2 result = new Vector2(point);
-        try {
-            synchronized (screenCenterWorld) {
-                result.x = screenCenterWorld.getX() + ((long) result.x - mapIntWidth / 2) * camera.zoom;
-                result.y = -screenCenterWorld.getY() + ((long) result.y - mapIntHeight / 2) * camera.zoom;
+        if (camera != null) {
+            try {
+                synchronized (screenCenterWorld) {
+                    float x = screenCenterWorld.getX() + (point.x - (float) mapIntWidth / 2f) * camera.zoom;
+                    float y = -screenCenterWorld.getY() + (point.y - (float) mapIntHeight / 2f) * camera.zoom;
+                    return new Vector2(x, y);
+                }
+            } catch (Exception ex) {
+                Log.err(log, "screenToWorld", ex);
             }
-        } catch (Exception e) {
-            result.x = 0;
-            result.y = 0;
         }
-        return result;
+        return new Vector2(0, 0);
     }
 
     public Vector2 worldToScreen(Vector2 point) {
-
         Vector2 result = new Vector2(0, 0);
-        result.x = ((long) point.x - screenCenterWorld.getX()) / camera.zoom + (float) mapIntWidth / 2;
-        result.y = -(-(long) point.y + screenCenterWorld.getY()) / camera.zoom + (float) mapIntHeight / 2;
-        result.add(-(float) mapIntWidth / 2, -(float) mapIntHeight / 2);
-        result.rotate(mapHeading);
-        result.add((float) mapIntWidth / 2, (float) mapIntHeight / 2);
+        if (camera != null) {
+            try {
+                result.x = ((long) point.x - screenCenterWorld.getX()) / camera.zoom + (float) mapIntWidth / 2;
+                result.y = -(-(long) point.y + screenCenterWorld.getY()) / camera.zoom + (float) mapIntHeight / 2;
+                result.add(-(float) mapIntWidth / 2, -(float) mapIntHeight / 2);
+                result.rotate(mapHeading);
+                result.add((float) mapIntWidth / 2, (float) mapIntHeight / 2);
+            }
+            catch (Exception ex) {
+                Log.err(log, "worldToScreen", ex);
+            }
+        }
         return result;
-
     }
 
     protected Descriptor screenToDescriptor(Vector2 point, int zoom) {
@@ -1215,9 +1224,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     protected void renderOnce(String debugInfo) {
         try {
-            Log.info(log, "-> " + debugInfo);
+            // Log.info(log, "-> " + debugInfo);
             loadTiles();
-            Log.info(log, debugInfo + " <-");
+            // Log.info(log, debugInfo + " <-");
             GL.that.renderOnce();
         } catch (Exception ex) {
             Log.err(log, "debugInfo", ex);

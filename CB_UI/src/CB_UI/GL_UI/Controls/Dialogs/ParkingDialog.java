@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Locator.Locator;
@@ -109,7 +109,7 @@ public class ParkingDialog extends ButtonDialog {
                 Config.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
                 Config.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
                 Config.AcceptChanges();
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
 
                 close();
                 return true;
@@ -137,7 +137,7 @@ public class ParkingDialog extends ButtonDialog {
                 Config.ParkingLatitude.setValue(0.0);
                 Config.ParkingLongitude.setValue(0.0);
                 Config.AcceptChanges();
-                CacheListChangedEventList.Call();
+                CacheListChangedListeners.getInstance().cacheListChanged();
                 close();
                 return true;
             }

@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
@@ -66,7 +66,7 @@ public class CacheContextMenu {
             Database.Data.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
             // Update View
             CB_Action_ShowDescriptionView.getInstance().updateDescriptionView(true);
-            CacheListChangedEventList.Call();
+            CacheListChangedListeners.getInstance().cacheListChanged();
         });
         mi.setEnabled(selectedCacheIsSet);
         mi.setCheckable(true);
@@ -131,7 +131,7 @@ public class CacheContextMenu {
                             CacheListDAO cacheListDAO = new CacheListDAO();
                             cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                         }
-                        CacheListChangedEventList.Call();
+                        CacheListChangedListeners.getInstance().cacheListChanged();
                         //
                         GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         GL.that.RunOnGL(() -> {

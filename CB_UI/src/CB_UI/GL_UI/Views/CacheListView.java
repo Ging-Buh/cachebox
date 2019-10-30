@@ -15,8 +15,7 @@
  */
 package CB_UI.GL_UI.Views;
 
-import CB_Core.CacheListChangedEventList;
-import CB_Core.CacheListChangedEventListener;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -50,7 +49,7 @@ import com.badlogic.gdx.utils.Align;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CacheListView extends CB_View_Base implements CacheListChangedEventListener, SelectedCacheChangedEventListener, PositionChangedEvent {
+public class CacheListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, SelectedCacheChangedEventListener, PositionChangedEvent {
     private static final String log = "CacheListView";
     private static CacheListView that;
     private V_ListView listView;
@@ -63,7 +62,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     private CacheListView() {
         super(ViewManager.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
-        CacheListChangedEventList.Add(this);
+        CacheListChangedListeners.getInstance().addListener(this);
         SelectedCacheChangedEventListeners.getInstance().add(this);
         listView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
         listView.setZeroPos();
@@ -230,7 +229,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     }
 
     @Override
-    public void CacheListChangedEvent() {
+    public void cacheListChanged() {
         Log.debug(log, "CacheListChangedEvent on Cache List");
         try {
             listView.setBaseAdapter(null);
@@ -347,7 +346,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
             emptyMsg.clear();
         emptyMsg = null;
 
-        CacheListChangedEventList.Remove(this);
+        CacheListChangedListeners.getInstance().removeListener(this);
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         PositionChangedListeners.removeListener(this);
 

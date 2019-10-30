@@ -15,7 +15,7 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.LogTypes;
 import CB_Core.Types.Cache;
 import CB_UI.GL_UI.Controls.PopUps.QuickDraftFeedbackPopUp;
@@ -95,7 +95,7 @@ public class Action_QuickDraft extends AbstractAction {
         DraftsView.getInstance().notifyDataSetChanged();
         // damit der Status geändert wird
         // damit die Icons in der Map aktualisiert werden
-        CacheListChangedEventList.Call();
+        CacheListChangedListeners.getInstance().cacheListChanged();
         SelectedCacheChangedEventListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
         QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(found);
         pop.show(PopUp_Base.SHOW_TIME_SHORT);

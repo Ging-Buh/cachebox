@@ -600,7 +600,7 @@ public class SearchDialog extends PopUp_Base {
 
                     Database.Data.GPXFilenameUpdateCacheCount();
 
-                    CacheListChangedEventList.Call();
+                    CacheListChangedListeners.getInstance().cacheListChanged();
 
                     if (counter == 1) {
                         // select this Cache

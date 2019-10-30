@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Main;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
-import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedListeners;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.Types.Cache;
@@ -102,7 +102,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             CacheListDAO cacheListDAO = new CacheListDAO();
             cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
         }
-        CacheListChangedEventList.Call();
+        CacheListChangedListeners.getInstance().cacheListChanged();
     }
 
 
