@@ -86,7 +86,7 @@ public class MapTileLoader {
         queueProcessorAliveCheck.start();
     }
 
-    public void loadTiles(MapViewBase mapView, Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom) {
+    public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
         if (queueProcessors.size() == 0) startQueueProzessors();
         orderGroup++;
         if (orderGroup == Integer.MAX_VALUE) orderGroup = -1;
@@ -102,14 +102,14 @@ public class MapTileLoader {
         // calc nearest to middle and not yet handled
         // get tiles from middle of rectangle to border and not yet created
         // preparation
-        int midX = (lowerRightTile.getX() + upperLeftTile.getX()) / 2;
-        int midY = (lowerRightTile.getY() + upperLeftTile.getY()) / 2;
+        int midX = (upperTile.getX() + lowerTile.getX()) / 2;
+        int midY = (upperTile.getY() + lowerTile.getY()) / 2;
         // Log.trace(log, "Center: " + new Descriptor(midX, midY, aktZoom));
 
         Array<Descriptor> wantedTiles = new Array<>();
 
-        for (int i = upperLeftTile.getX(); i <= lowerRightTile.getX(); i++) {
-            for (int j = upperLeftTile.getY(); j <= lowerRightTile.getY(); j++) {
+        for (int i = lowerTile.getX(); i <= upperTile.getX(); i++) {
+            for (int j = lowerTile.getY(); j <= upperTile.getY(); j++) {
                 Descriptor descriptor = new Descriptor(i, j, aktZoom);
                 descriptor.Data = Math.max(Math.abs(i - midX), Math.abs(j - midY));
                 wantedTiles.add(descriptor);
