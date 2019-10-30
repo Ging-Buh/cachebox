@@ -119,13 +119,26 @@ public class MapTileLoader {
             return;
         wantedTiles.sort(byDistanceFromCenter);
 
-        int orderCount = 0;
+        int orderCount = 0; // don't order more than want to be cached
+        int firstDistance = 0;
+        boolean isFirstOrdered = false;
         for (Descriptor descriptor : wantedTiles) {
             if (finishYourself.get()) {
                 return;
             }
             if (!loadedTiles.contains(descriptor.getHashCode(), false)) {
                 MultiThreadQueueProcessor thread = queueProcessors.get(nextQueueProcessor);
+                if (!isFirstOrdered) {
+                    firstDistance = (int) descriptor.Data;
+                    isFirstOrdered = true;
+                }
+                if (((int) descriptor.Data) - firstDistance > 1) {
+                    // first create the nearest tiles
+                    // if a tile is missing on rendering the load will be ordered there (again)
+                    Log.info(log, "ordered: " + orderCount + " Distance: " + ((int) descriptor.Data - 1));
+                    return;
+                }
+                Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " run: " + orderGroup + " on thread: " + nextQueueProcessor);
                 thread.addOrder(descriptor, false, orderGroup, mapView);
                 thread.interrupt();
                 nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;

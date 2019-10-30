@@ -47,4 +47,8 @@ public class PointL {
     public String toString() {
         return this.x + "/" + this.y;
     }
+
+    public boolean isNull() {
+        return (x == 0) && (y == 0);
+    }
 }

@@ -178,6 +178,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             }
         };
         handleSuppressPowerSavingConfigChanged = () -> setWakeLock();
+
     }
 
     public static Activity getInstance() {
@@ -371,6 +372,10 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (mSensorManager != null)
             mSensorManager.unregisterListener(mSensorEventListener);
+
+        if (wakeLock != null) {
+            wakeLock.release();
+        }
 
         super.onStop();
 

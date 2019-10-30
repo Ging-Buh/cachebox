@@ -56,6 +56,7 @@ public interface CB_UI_Base_Settings {
     SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), Global, ACB);
 
     SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, displayDensity, Global, ACB);
+    SettingFloat MapViewTextFaktor = new SettingFloat("MapViewTextFaktor", Map, EXPERT, 2f, Global, ACB);
 
     SettingFolder ImageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
 

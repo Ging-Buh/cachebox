@@ -96,7 +96,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected int outScreenDraw = 0;
     protected float lastDynamicZoom = -1;
     protected InputState inputState = InputState.Idle;
-    protected boolean isCreated;
+    protected boolean isShown, isCreated;
     protected int maxNumTiles;
     private AccuracyDrawable accuracyDrawable = null;
     private boolean NightMode = false;
@@ -104,10 +104,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     // protected boolean alignToCompass = false;
     private float mapHeading = 0;
     private KineticPan kineticPan = null;
+    Descriptor lastDescriptorOrdered;
 
     public MapViewBase(CB_RectF rec, String Name) {
         super(rec, Name);
         isCreated = false;
+        isShown = false;
+        lastDescriptorOrdered = new Descriptor(0, 0, 10);
         invalidateTextureEventList.Add(this);
     }
 
@@ -138,8 +141,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             setActZoom();
             calcPixelsPerMeter(); // uses camera
         }
-        isCreated = true;
-        renderOnce("OnShow");
+        isShown = true;
+        GL.that.renderOnce();
     }
 
     @Override
@@ -205,7 +208,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             LocatorSettings.currentMapLayer.setValue(newLayer.getAllLayerNames());
         }
         if (mapTileLoader.setCurrentLayer(newLayer, isCarMode)) {
-            renderOnce("setCurrentLayer");
+            renderOnce("setCurrentLayer", false);
         }
     }
 
@@ -214,7 +217,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         currentLayer.addAdditionalMap(layer);
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
         mapTileLoader.modifyCurrentLayer(isCarMode);
-        renderOnce("addAdditionalLayer");
+        renderOnce("addAdditionalLayer", false);
     }
 
     public void clearAdditionalLayers() {
@@ -222,7 +225,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
         mapTileLoader.modifyCurrentLayer(isCarMode);
-        renderOnce("clearAdditionalLayers");
+        renderOnce("clearAdditionalLayers", false);
     }
 
     public void removeAdditionalLayer() {
@@ -230,7 +233,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
         mapTileLoader.modifyCurrentLayer(isCarMode);
-        renderOnce("removeAdditionalLayer");
+        renderOnce("removeAdditionalLayer", false);
     }
 
     public void setCurrentOverlayLayer(Layer newLayer) {
@@ -296,7 +299,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 GL.that.removeRenderView(this);
             }
             camera.update();
-            // loadTiles();
             renderMapTiles(batch);
             renderSynchronOverlay(batch);
             renderNonSynchronOverlay(batch);
@@ -340,17 +342,20 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         batch.setProjectionMatrix(mat);
 
         mapTileLoader.increaseAge();
-
-        // if (mapTileLoader.isLoadingChanged())
-        {
+        if (screenCenterWorld.isNull()) {
+            synchronized (screenCenterT) {
+                screenCenterWorld.set(screenCenterT);
+            }
+        }
+        if (!screenCenterWorld.isNull()) {
             int halfMapIntWidth = mapIntWidth / 2;
             int halfMapIntHeight = mapIntHeight / 2;
             int halfDrawingtWidth = drawingWidth / 2;
             int halfDrawingHeight = drawingHeight / 2;
             loVector.set(halfMapIntWidth - halfDrawingtWidth, halfMapIntHeight - halfDrawingHeight - ySpeedVersatz);
             ruVector.set(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight + ySpeedVersatz);
-            Descriptor lo = screenToDescriptor(loVector, aktZoom);
-            Descriptor ru = screenToDescriptor(ruVector, aktZoom);
+            Descriptor lowerRightTile = screenToDescriptor(loVector, aktZoom);
+            Descriptor upperLeftTile = screenToDescriptor(ruVector, aktZoom);
             // int tilesWantedToDrawCount = (ru.getX() - lo.getX() + 1) * (ru.getY() - lo.getY() + 1);
             // if (mapTileLoader.isLoadingChanged() || tilesWantedToDrawCount > mapTileLoader.getTilesToDrawCounter())
             {
@@ -360,8 +365,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 if (mapTileLoader.getCurrentOverlayLayer() != null) {
                     mapTileLoader.resetOverlayTilesToDrawCounter();
                 }
-                for (int i = lo.getX(); i <= ru.getX(); i++) {
-                    for (int j = lo.getY(); j <= ru.getY(); j++) {
+                boolean tileOrdered = false;
+                int midX = (lowerRightTile.getX() + upperLeftTile.getX()) / 2;
+                int midY = (lowerRightTile.getY() + upperLeftTile.getY()) / 2;
+                for (int i = lowerRightTile.getX(); i <= upperLeftTile.getX(); i++) {
+                    for (int j = lowerRightTile.getY(); j <= upperLeftTile.getY(); j++) {
                         Descriptor desc = new Descriptor(i, j, aktZoom);
                         boolean canDraw;
                         canDraw = mapTileLoader.markTileToDraw(desc.getHashCode()) >= 0;
@@ -369,7 +377,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                         if (mapTileLoader.getCurrentOverlayLayer() != null) {
                             canDrawOverlay = mapTileLoader.markOverlayTileToDraw(desc.getHashCode()) >= 0;
                         }
+
                         if (!canDraw) {
+                            if (!tileOrdered && lastDescriptorOrdered.getHashCode() != desc.getHashCode()) {
+                                Log.info(log, "order: " + desc + " Distance: " + Math.max(Math.abs(i - midX), Math.abs(j - midY)));
+                                lastDescriptorOrdered = desc;
+                                directLoadTiles(desc, desc, aktZoom);
+                            }
+                            tileOrdered = true;
                             desc.Data = this;
                             // at moment there is no suitable tile for this zoom, first try a bigger one, else try from smaller ones
                             if (!renderBiggerTiles(batch, i, j, aktZoom)) {
@@ -668,6 +683,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     protected abstract void loadTiles();
 
+    protected abstract void directLoadTiles(Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom);
+
     public void initializeMap() {
         zoomBtn.setZoom(LocatorSettings.lastZoomLevel.getValue());
         // Bestimmung der ersten Position auf der Karte
@@ -706,7 +723,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         synchronized (screenCenterT) {
             screenCenterT.set((long) newCenter.x, (long) (-newCenter.y));
         }
-        renderOnce("setScreenCenter");
+        if (isShown) isCreated = true;
+        renderOnce("setScreenCenter", true);
     }
 
     public void setCenter(CoordinateGPS value) {
@@ -748,8 +766,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 result.add(-(float) mapIntWidth / 2, -(float) mapIntHeight / 2);
                 result.rotate(mapHeading);
                 result.add((float) mapIntWidth / 2, (float) mapIntHeight / 2);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.err(log, "worldToScreen", ex);
             }
         }
@@ -780,7 +797,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if (getCenterGps())
             setCenter(Locator.getInstance().getMyPosition());
 
-        renderOnce("PositionChanged");
+        renderOnce("PositionChanged", false);
     }
 
     @Override
@@ -821,7 +838,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             drawingHeight = mapIntHeight;
         }
 
-        renderOnce("OrientationChanged");
+        renderOnce("OrientationChanged", false);
     }
 
     public void SetAlignToCompass(boolean value) {
@@ -907,7 +924,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 // 1000);
 
                 GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
-                renderOnce("onTouchDragged lastDynamicZoom != dynZoom");
+                renderOnce("onTouchDragged lastDynamicZoom != dynZoom", false);
                 calcPixelsPerMeter();
             }
 
@@ -927,7 +944,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                     {
                         inputState = InputState.Pan;
                         // GL_Listener.glListener.addRenderView(this, frameRateAction);
-                        renderOnce("inputState = InputState.Pan");
+                        renderOnce("inputState = InputState.Pan", true);
                         // xxx startTimer(frameRateAction);
                         // xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
                     }
@@ -953,7 +970,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 zoomBtn.resetFadeOut();
 
                 // GL_Listener.glListener.addRenderView(this, frameRateAction);
-                renderOnce("onTouchDragged inputState == InputState.Pan");
+                renderOnce("onTouchDragged inputState == InputState.Pan", true);
                 // debugString = "";
                 long faktor = getMapTilePosFactor(aktZoom);
                 // debugString += faktor;
@@ -1087,7 +1104,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         else if (fingerDown.size() == 0) {
             inputState = InputState.Idle;
             // wieder langsam rendern
-            renderOnce("onTouchUp");
+            renderOnce("onTouchUp", false);
 
             if ((kineticZoom == null) && (kineticPan == null))
                 GL.that.removeRenderView(this);
@@ -1218,15 +1235,17 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
         kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(newZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
         GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
-        renderOnce("SetZoom");
+        renderOnce("SetZoom", false);
         calcPixelsPerMeter();
     }
 
-    protected void renderOnce(String debugInfo) {
+    protected void renderOnce(String debugInfo, boolean loadTiles) {
         try {
-            // Log.info(log, "-> " + debugInfo);
-            loadTiles();
-            // Log.info(log, debugInfo + " <-");
+            if (loadTiles) {
+                Log.info(log, "-> " + debugInfo);
+                loadTiles();
+                Log.info(log, debugInfo + " <-");
+            }
             GL.that.renderOnce();
         } catch (Exception ex) {
             Log.err(log, "debugInfo", ex);

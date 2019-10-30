@@ -286,7 +286,7 @@ public class MapsForgeLayer extends Layer {
                 path = LocatorSettings.MapsforgeCarDayTheme.getValue();
             }
         } else {
-            textScale = DEFAULT_TEXT_SCALE * 2.0f;
+            textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.MapViewTextFaktor.getValue();
             if (CB_UI_Base_Settings.nightMode.getValue()) {
                 mapsforgeThemesStyle = LocatorSettings.MapsforgeNightStyle.getValue();
                 path = LocatorSettings.MapsforgeNightTheme.getValue();
