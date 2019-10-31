@@ -177,7 +177,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
             }
         };
-        handleSuppressPowerSavingConfigChanged = () -> setWakeLock();
+        handleSuppressPowerSavingConfigChanged = () -> setWakeLock(Config.SuppressPowerSaving.getValue());
 
     }
 
@@ -373,9 +373,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (mSensorManager != null)
             mSensorManager.unregisterListener(mSensorEventListener);
 
-        if (wakeLock != null) {
-            wakeLock.release();
-        }
+        setWakeLock(false);
 
         super.onStop();
 
@@ -424,7 +422,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         int lQuickButtonHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
         setQuickButtonHeight(lQuickButtonHeight);
 
-        setWakeLock();
+        setWakeLock(Config.SuppressPowerSaving.getValue());
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
@@ -642,11 +640,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     @SuppressLint("WakelockTimeout")
-    private void setWakeLock() {
+    private void setWakeLock(boolean suppress) {
         // Keep the device awake until destroy is called. remove there
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (pm != null) {
-            if (Config.SuppressPowerSaving.getValue()) {
+            if (suppress) {
                 wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CacheBox:WakeLock");
             } else {
                 wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
