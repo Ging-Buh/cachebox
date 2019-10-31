@@ -3,7 +3,6 @@ package de.droidcachebox;
 import CB_Locator.LocatorBasePlatFormMethods;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
-import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Log.Log;
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.graphics.Texture;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -170,15 +168,6 @@ public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
         return baos.toByteArray();
-    }
-
-    @Override
-    public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
-        // restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
-        if (AndroidGraphicFactory.INSTANCE == null) {
-            ext_AndroidGraphicFactory.createInstance(mainActivity.getApplication());
-        }
-        return ext_AndroidGraphicFactory.getInstance(Scalefactor);
     }
 
     @Override

@@ -32,10 +32,6 @@ public class LocatorBasePlatFormMethods {
         return methods.getImageFromData(imageDataWithColorMatrixManipulation);
     }
 
-    public static GraphicFactory getGraphicFactory(float scaleFactor) {
-        return methods.getGraphicFactory(scaleFactor);
-    }
-
     public static GraphicFactory getMapsForgeGraphicFactory() {
         return methods.getMapsForgeGraphicFactory();
     }
@@ -52,8 +48,6 @@ public class LocatorBasePlatFormMethods {
         ImageData getImagePixel(byte[] img);
 
         byte[] getImageFromData(ImageData imgData);
-
-        ext_GraphicFactory getGraphicFactory(float Scalefactor);
 
         GraphicFactory getMapsForgeGraphicFactory();
 

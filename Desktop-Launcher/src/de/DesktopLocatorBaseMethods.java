@@ -4,17 +4,14 @@ import CB_Locator.LocatorBasePlatFormMethods;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
-import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.FileFactory;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
-import org.mapsforge.map.awt.graphics.ext_AwtGraphicFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -196,11 +193,6 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
             return null;
         }
         return bas.toByteArray();
-    }
-
-    @Override
-    public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
-        return ext_AwtGraphicFactory.getInstance(Scalefactor);
     }
 
     @Override
