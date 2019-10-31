@@ -867,8 +867,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    protected void updateCacheList() {
-        if (lastScreenCenter.equals(screenCenterWorld)) {
+    protected void updateCacheList(boolean force) {
+        // force is for zoom
+        if (lastScreenCenter.equals(screenCenterWorld) && !force) {
             return;
         }
         lastScreenCenter.set(screenCenterWorld);

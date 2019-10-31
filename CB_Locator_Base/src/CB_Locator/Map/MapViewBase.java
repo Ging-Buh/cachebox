@@ -683,7 +683,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         }
     }
 
-    protected abstract void updateCacheList();
+    protected abstract void updateCacheList(boolean force);
 
     protected abstract void directLoadTiles(Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom);
 
@@ -1251,7 +1251,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 lastDescriptorOrdered = midTile;
                 Log.info(log, "order: " + midTile);
                 directLoadTiles(midTile, midTile, aktZoom);
-                updateCacheList();
+                updateCacheList(debugInfo.contains("oom"));
             }
             GL.that.renderOnce();
         } catch (Exception ex) {
