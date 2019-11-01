@@ -27,22 +27,9 @@ public interface ext_Path extends org.mapsforge.core.graphics.Path {
     @Override
     void moveTo(float x, float y);
 
-    /**
-     * Set the beginning of the next contour relative to the last point on the previous contour. If there is no previous contour, this is
-     * treated the same as moveTo().Parameters
-     *
-     * @param x The amount to add to the x-coordinate of the end of the previous contour, to specify the start of a new contour
-     * @param y The amount to add to the y-coordinate of the end of the previous contour, to specify the start of a new contour
-     */
-    void rMoveTo(float x, float y);
-
     void close();
 
-    void rLineTo(float x, float y);
-
     void cubicTo(float x1, float y1, float x2, float y2, float x, float y);
-
-    void addArc(RectF oval, float angleStart, float angleExtent);
 
     void transform(ext_Matrix currentMatrix, ext_Path transformedPath);
 
@@ -60,7 +47,7 @@ public interface ext_Path extends org.mapsforge.core.graphics.Path {
 
     void transform(ext_Matrix transform);
 
-    public enum FillType {
+    enum FillType {
         WINDING, EVEN_ODD
 
     }

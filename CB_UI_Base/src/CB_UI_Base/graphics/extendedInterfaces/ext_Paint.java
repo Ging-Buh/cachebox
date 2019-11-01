@@ -15,7 +15,9 @@
  */
 package CB_UI_Base.graphics.extendedInterfaces;
 
-import CB_UI_Base.graphics.*;
+import CB_UI_Base.graphics.GL_Paint;
+import CB_UI_Base.graphics.Join;
+import CB_UI_Base.graphics.TileMode;
 import CB_Utils.Util.HSV_Color;
 
 /**
@@ -33,9 +35,8 @@ public interface ext_Paint extends org.mapsforge.core.graphics.Paint {
 
     void setLinearGradient(float x1, float y1, float x2, float y2, int[] colors, float[] positions, TileMode tileMode);
 
-    GL_Style getGL_Style();
+    GL_Paint.GL_Style getGL_Style();
 
-    @Override
     float getTextSize();
 
     void setDashPathEffect(float[] strokeDasharray, float offset);
@@ -44,11 +45,11 @@ public interface ext_Paint extends org.mapsforge.core.graphics.Paint {
 
     ext_Matrix getGradiantMatrix();
 
-    void setStyle(GL_Style fill);
+    void setStyle(GL_Paint.GL_Style fill);
 
-    GL_FontStyle getGLFontStyle();
+    GL_Paint.GL_FontStyle getGLFontStyle();
 
-    GL_FontFamily getGLFontFamily();
+    GL_Paint.GL_FontFamily getGLFontFamily();
 
     HSV_Color getHSV_Color();
 

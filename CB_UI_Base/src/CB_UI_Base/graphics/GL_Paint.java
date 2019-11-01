@@ -33,14 +33,14 @@ import org.mapsforge.core.model.Point;
 public class GL_Paint implements ext_Paint {
     protected HSV_Color color;
     protected GL_Align align;
-    protected GL_Cap cap;
     protected Join join;
-    protected float[] strokeDasharray = null;
     protected float strokeWidth = 1f;
     protected float textSize;
-    protected BitmapDrawable bitmapShader;
-    protected GL_FontStyle fontStyle = GL_FontStyle.NORMAL;
-    GlyphLayout layout;
+    GL_Cap cap;
+    float[] strokeDasharray = null;
+    private BitmapDrawable bitmapShader;
+    private GL_FontStyle fontStyle = GL_FontStyle.NORMAL;
+    private GlyphLayout layout;
     private GL_Style style;
     private GL_FontFamily fontFamily = GL_FontFamily.DEFAULT;
     private BitmapFont font;
@@ -68,9 +68,6 @@ public class GL_Paint implements ext_Paint {
                 case BUTT:
                     this.cap = GL_Cap.BUTT;
                     break;
-                case ROUND:
-                    this.cap = GL_Cap.ROUND;
-                    break;
                 case SQUARE:
                     this.cap = GL_Cap.SQUARE;
                     break;
@@ -82,16 +79,10 @@ public class GL_Paint implements ext_Paint {
             this.color = new HSV_Color(paint.getColor());
 
             Style style = paint.getStyle();
-            switch (style) {
-                case FILL:
-                    this.style = GL_Style.FILL;
-                    break;
-                case STROKE:
-                    this.style = GL_Style.STROKE;
-                    break;
-                default:
-                    this.style = GL_Style.FILL;
-                    break;
+            if (style == Style.STROKE) {
+                this.style = GL_Style.STROKE;
+            } else {
+                this.style = GL_Style.FILL;
             }
         }
         this.textSize = paint.getTextSize();
@@ -138,16 +129,6 @@ public class GL_Paint implements ext_Paint {
         this.strokeDasharray = strokeDasharray;
     }
 
-    public void setTextAlign(GL_Align align) {
-        this.align = align;
-    }
-
-    public void setTypeface(GL_FontFamily fontFamily, GL_FontStyle fontStyle) {
-        this.setFontFamily(fontFamily);
-        this.fontStyle = fontStyle;
-        createFont();
-    }
-
     private void createFont() {
         if (this.textSize > 0) {
             GL.that.RunOnGL(() -> GL_Paint.this.font = FontCache.get(GL_Paint.this.getGLFontFamily(), GL_Paint.this.getGLFontStyle(), GL_Paint.this.getTextSize()));
@@ -172,12 +153,8 @@ public class GL_Paint implements ext_Paint {
         this.strokeWidth = strokeWidth;
     }
 
-    public BitmapDrawable getBitmapShader() {
+    BitmapDrawable getBitmapShader() {
         return bitmapShader;
-    }
-
-    public void setBitmapShader(BitmapDrawable bitmap) {
-        bitmapShader = bitmap;
     }
 
     @Override
@@ -185,10 +162,6 @@ public class GL_Paint implements ext_Paint {
         if (bitmap instanceof BitmapDrawable) {
             bitmapShader = (BitmapDrawable) bitmap;
         }
-    }
-
-    public GL_Cap getGL_Cap() {
-        return cap;
     }
 
     @Override
@@ -211,10 +184,6 @@ public class GL_Paint implements ext_Paint {
 
     @Override
     public void setRadialGradiant(float x, float y, float radius, int[] colors, float[] positions, TileMode tileMode) {
-
-    }
-
-    public void setGradientMatrix(GL_Matrix matrix) {
 
     }
 
@@ -289,10 +258,6 @@ public class GL_Paint implements ext_Paint {
         return this.style;
     }
 
-    public FontFamily getFontFamly() {
-        return getFontFamily();
-    }
-
     @Override
     public GL_FontStyle getGLFontStyle() {
         return fontStyle;
@@ -316,10 +281,6 @@ public class GL_Paint implements ext_Paint {
         switch (cap) {
             case BUTT:
                 return Cap.BUTT;
-            case DEFAULT:
-                return Cap.ROUND;
-            case ROUND:
-                return Cap.ROUND;
             case SQUARE:
                 return Cap.SQUARE;
             default:
@@ -328,24 +289,16 @@ public class GL_Paint implements ext_Paint {
         }
     }
 
-    public void setCap(GL_Cap cap) {
-        this.cap = cap;
-    }
-
-    public HSV_Color getGlColor() {
+    HSV_Color getGlColor() {
         return this.color;
     }
 
     @Override
     public Style getStyle() {
-        switch (this.style) {
-            case FILL:
-                return Style.FILL;
-            case STROKE:
-                return Style.STROKE;
-            default:
-                return Style.FILL;
+        if (this.style == GL_Style.STROKE) {
+            return Style.STROKE;
         }
+        return Style.FILL;
     }
 
     @Override
@@ -355,53 +308,10 @@ public class GL_Paint implements ext_Paint {
 
     @Override
     public void setStyle(Style style) {
-        switch (style) {
-            case FILL:
-                this.style = GL_Style.FILL;
-                break;
-            case STROKE:
-                this.style = GL_Style.STROKE;
-                break;
-            default:
-                this.style = GL_Style.FILL;
-                break;
-
-        }
-    }
-
-    public FontFamily getFontFamily() {
-        switch (this.fontFamily) {
-            case DEFAULT:
-                return FontFamily.DEFAULT;
-            case MONOSPACE:
-                return FontFamily.MONOSPACE;
-            case SANS_SERIF:
-                return FontFamily.SANS_SERIF;
-            case SERIF:
-                return FontFamily.SERIF;
-            default:
-                return FontFamily.DEFAULT;
-
-        }
-    }
-
-    public void setFontFamily(GL_FontFamily fontFamily) {
-        this.fontFamily = fontFamily;
-    }
-
-    public FontStyle getFontStyle() {
-        switch (this.fontStyle) {
-            case BOLD:
-                return FontStyle.BOLD;
-            case BOLD_ITALIC:
-                return FontStyle.BOLD_ITALIC;
-            case ITALIC:
-                return FontStyle.ITALIC;
-            case NORMAL:
-                return FontStyle.NORMAL;
-            default:
-                return FontStyle.NORMAL;
-
+        if (style == Style.STROKE) {
+            this.style = GL_Style.STROKE;
+        } else {
+            this.style = GL_Style.FILL;
         }
     }
 
@@ -409,22 +319,16 @@ public class GL_Paint implements ext_Paint {
         this.color = new HSV_Color(color);
     }
 
-    //################################################
     @Override
     public void setBitmapShaderShift(Point origin) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void setStrokeJoin(org.mapsforge.core.graphics.Join join) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public int getColor() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -442,7 +346,7 @@ public class GL_Paint implements ext_Paint {
         this.color = new HSV_Color(getColor(color));
     }
 
-    HSV_Color getColor(org.mapsforge.core.graphics.Color color) {
+    private HSV_Color getColor(org.mapsforge.core.graphics.Color color) {
         switch (color) {
             case BLACK:
                 return new HSV_Color(com.badlogic.gdx.graphics.Color.BLACK);
@@ -459,6 +363,26 @@ public class GL_Paint implements ext_Paint {
         }
 
         throw new IllegalArgumentException("unknown color: " + color);
+    }
+
+    public enum GL_Cap {
+        BUTT, ROUND, SQUARE, DEFAULT
+    }
+
+    public enum GL_Align {
+        CENTER, LEFT, RIGHT
+    }
+
+    public enum GL_FontStyle {
+        BOLD, BOLD_ITALIC, ITALIC, NORMAL
+    }
+
+    public enum GL_FontFamily {
+        DEFAULT, MONOSPACE, SANS_SERIF, SERIF
+    }
+
+    public enum GL_Style {
+        FILL, STROKE
     }
 
 }

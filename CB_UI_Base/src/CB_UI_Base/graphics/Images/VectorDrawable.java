@@ -465,12 +465,6 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
     // FIXME create BitmapDrawable from FMBO
 
     @Override
-    public BitmapDrawable getGlBmpHandle() {
-
-        return null;
-    }
-
-    @Override
     public Texture getTexture() {
 
         return null;

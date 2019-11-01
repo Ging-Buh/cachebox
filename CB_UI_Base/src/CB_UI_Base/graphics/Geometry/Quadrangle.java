@@ -17,7 +17,7 @@ package CB_UI_Base.graphics.Geometry;
 
 import CB_UI_Base.AbstractGlobal;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.graphics.GL_Cap;
+import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.Join;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 import com.badlogic.gdx.math.Intersector;
@@ -227,7 +227,7 @@ public class Quadrangle implements IGeometry {
         }
     }
 
-    public static IGeometry getCap(Quadrangle qua, GL_Cap cap, boolean beginn) {
+    public static IGeometry getCap(Quadrangle qua, GL_Paint.GL_Cap cap, boolean beginn) {
         if (qua.cor == null)
             return null;// Can't calculate
 

@@ -15,7 +15,10 @@
  */
 package com.badlogic.gdx.graphics.g2d;
 
-import CB_UI_Base.graphics.*;
+import CB_UI_Base.graphics.FontCache;
+import CB_UI_Base.graphics.GL_Matrix;
+import CB_UI_Base.graphics.GL_Paint;
+import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.Geometry.Circle;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
 import com.badlogic.gdx.graphics.Color;
@@ -65,8 +68,8 @@ public class TextOnPath implements Disposable {
         }
 
         // Convert Paint values to used GL_PaintValues
-        GL_FontFamily fontFamily = fill2.getGLFontFamily();
-        GL_FontStyle fontStyle = fill2.getGLFontStyle();
+        GL_Paint.GL_FontFamily fontFamily = fill2.getGLFontFamily();
+        GL_Paint.GL_FontStyle fontStyle = fill2.getGLFontStyle();
         float fontsize = fill2.getTextSize();
 
         if (fontsize < 3) {

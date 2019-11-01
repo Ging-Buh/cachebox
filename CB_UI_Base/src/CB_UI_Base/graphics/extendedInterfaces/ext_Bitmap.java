@@ -15,7 +15,6 @@
  */
 package CB_UI_Base.graphics.extendedInterfaces;
 
-import CB_UI_Base.graphics.Images.BitmapDrawable;
 import com.badlogic.gdx.graphics.Texture;
 import org.mapsforge.core.graphics.ResourceBitmap;
 
@@ -28,8 +27,6 @@ public interface ext_Bitmap extends ResourceBitmap {
     void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k);
 
     void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k);
-
-    BitmapDrawable getGlBmpHandle();
 
     Texture getTexture();
 }

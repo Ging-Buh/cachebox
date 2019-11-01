@@ -51,7 +51,7 @@ public class CircleDrawable extends PolygonDrawable {
         // calculate theta step
         double thetaStep = (MathUtils.PI2 / SEGMENTE);
 
-        if (PAINT.getGL_Style() == GL_Style.FILL) {
+        if (PAINT.getGL_Style() == GL_Paint.GL_Style.FILL) {
             // initialize arrays
             VERTICES = new float[(SEGMENTE + 1) * 2];
             TRIANGLES = new short[(SEGMENTE) * 3];

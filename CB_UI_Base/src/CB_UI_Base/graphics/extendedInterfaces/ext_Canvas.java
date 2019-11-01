@@ -15,7 +15,6 @@
  */
 package CB_UI_Base.graphics.extendedInterfaces;
 
-import CB_UI_Base.graphics.fromAndroid.RectF;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 
@@ -26,17 +25,11 @@ public interface ext_Canvas extends org.mapsforge.core.graphics.Canvas {
 
     void drawText(String text, float x, float y, Paint paint);
 
-    void drawRect(RectF rect, ext_Paint strokePaint);
-
-    void drawRoundRect(RectF rect, float rx, float ry, ext_Paint strokePaint);
-
-    void drawOval(RectF rect, ext_Paint fillPaint);
-
     void scale(float sx, float sy);
 
-    void setMatrix(ext_Matrix matrix);
-
     ext_Matrix getMatrix();
+
+    void setMatrix(ext_Matrix matrix);
 
     void setMatrix(Matrix matrix);
 

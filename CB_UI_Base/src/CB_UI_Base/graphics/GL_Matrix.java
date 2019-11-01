@@ -306,31 +306,6 @@ public class GL_Matrix implements ext_Matrix, Matrix {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see CB_UI_Base.graphics.extended.ext_Matrix2#mapPoints(float[], int, float[], int, int)
-     */
-    @Override
-    public void mapPoints(float[] dst, int dstIndex, float[] src, int srcIndex, int pointCount) {
-        checkPointArrays(src, srcIndex, dst, dstIndex, pointCount);
-
-        float[] mValues = new float[9];
-        getValues(mValues);
-
-        for (int i = 0; i < pointCount; i++) {
-            // just in case we are doing in place, we better put this in temp vars
-
-            int j = i * 2;
-
-            float x = mValues[0] * src[j + srcIndex] + mValues[1] * src[j + srcIndex + 1] + mValues[2];
-            float y = mValues[3] * src[j + srcIndex] + mValues[4] * src[j + srcIndex + 1] + mValues[5];
-
-            dst[j + dstIndex] = x;
-            dst[j + dstIndex + 1] = y;
-        }
-    }
-
     public void mapPoints(GL_Path path2) {
         mapPoints(path2.items);
     }
@@ -434,24 +409,6 @@ public class GL_Matrix implements ext_Matrix, Matrix {
 
     private float sdot(float a, float b, float c, float d) {
         return a * b + c * d;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see CB_UI_Base.graphics.extended.ext_Matrix2#getValues(float[])
-     */
-    @Override
-    public void getValues(float[] mValues) {
-        mValues[0] = matrix4.val[Matrix4.M00];
-        mValues[1] = matrix4.val[Matrix4.M01];
-        mValues[2] = matrix4.val[Matrix4.M03];
-        mValues[3] = matrix4.val[Matrix4.M10];
-        mValues[4] = matrix4.val[Matrix4.M11];
-        mValues[5] = matrix4.val[Matrix4.M13];
-        mValues[6] = matrix4.val[Matrix4.M20];
-        mValues[7] = matrix4.val[Matrix4.M21];
-        mValues[8] = matrix4.val[Matrix4.M22];
     }
 
     /*

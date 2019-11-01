@@ -130,13 +130,13 @@ class GL_Fonts {
         this.markUp = markUp;
     }
 
-    public BitmapFont get(GL_FontFamily fontFamily, GL_FontStyle fontStyle, float textSize) {
+    public BitmapFont get(GL_Paint.GL_FontFamily fontFamily, GL_Paint.GL_FontStyle fontStyle, float textSize) {
         int Size = ((int) textSize);
         if (textSize <= 0)
             textSize = 3;
 
         if (fontFamily == null || fontStyle == null)
-            return get_Default(GL_FontStyle.NORMAL, Size);
+            return get_Default(GL_Paint.GL_FontStyle.NORMAL, Size);
 
         switch (fontFamily) {
             case MONOSPACE:
@@ -153,7 +153,7 @@ class GL_Fonts {
 
     }
 
-    private BitmapFont get_SANS_SERIF(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_SANS_SERIF(GL_Paint.GL_FontStyle fontStyle, int textSize) {
         switch (fontStyle) {
             case BOLD:
                 return get_Roboto_Bold(textSize);// Roboto-Bold.ttf
@@ -167,7 +167,7 @@ class GL_Fonts {
         return null;
     }
 
-    private BitmapFont get_SERIF(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_SERIF(GL_Paint.GL_FontStyle fontStyle, int textSize) {
 
         switch (fontStyle) {
             case BOLD:
@@ -182,7 +182,7 @@ class GL_Fonts {
         return null;
     }
 
-    private BitmapFont get_Default(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_Default(GL_Paint.GL_FontStyle fontStyle, int textSize) {
         switch (fontStyle) {
             case BOLD:
                 return get_DroidSans_Bold(textSize);
@@ -196,7 +196,7 @@ class GL_Fonts {
         return null;
     }
 
-    private BitmapFont get_Monospace(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_Monospace(GL_Paint.GL_FontStyle fontStyle, int textSize) {
         // MonoSpace has no Style
         return get_DroidSansMono(textSize);
     }

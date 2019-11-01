@@ -267,11 +267,6 @@ public class BitmapDrawable implements ext_Bitmap, Disposable {
     }
 
     @Override
-    public BitmapDrawable getGlBmpHandle() {
-        return this;
-    }
-
-    @Override
     public boolean isDestroyed() {
         // TODO Auto-generated method stub
         return false;

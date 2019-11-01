@@ -16,8 +16,8 @@
 
 package CB_UI_Base.graphics.SVG;
 
+import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.GL_Path;
-import CB_UI_Base.graphics.GL_Style;
 import CB_UI_Base.graphics.Join;
 import CB_UI_Base.graphics.SVG.SVG.*;
 import CB_UI_Base.graphics.SVG.SVG.Style.TextAnchor;
@@ -3262,7 +3262,7 @@ public class SVGAndroidRenderer {
         public RendererState() {
             fillPaint = (ext_Paint) GRAPHIC_FACTORY.createPaint();
             // fillPaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
-            fillPaint.setStyle(GL_Style.FILL);
+            fillPaint.setStyle(GL_Paint.GL_Style.FILL);
             // fillPaint.setTypeface(Typeface.DEFAULT);
 
             strokePaint = (ext_Paint) GRAPHIC_FACTORY.createPaint();
