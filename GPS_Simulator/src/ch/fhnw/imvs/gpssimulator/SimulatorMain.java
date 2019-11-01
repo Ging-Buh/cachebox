@@ -15,7 +15,6 @@ import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
 import CB_UI_Base.Events.PlatformUIBase.IgetFolderReturnListener;
 import CB_UI_Base.Events.PlatformUIBase.Methods;
-import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Settings.SettingBase;
 import ch.fhnw.imvs.gpssimulator.components.*;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;

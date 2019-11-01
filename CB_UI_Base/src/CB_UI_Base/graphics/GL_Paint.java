@@ -439,7 +439,26 @@ public class GL_Paint implements ext_Paint {
 
     @Override
     public void setColor(org.mapsforge.core.graphics.Color color) {
-        this.color = new HSV_Color(GL_GraphicFactory.getColor(color));
+        this.color = new HSV_Color(getColor(color));
+    }
+
+    HSV_Color getColor(org.mapsforge.core.graphics.Color color) {
+        switch (color) {
+            case BLACK:
+                return new HSV_Color(com.badlogic.gdx.graphics.Color.BLACK);
+            case BLUE:
+                return new HSV_Color(com.badlogic.gdx.graphics.Color.BLUE);
+            case GREEN:
+                return new HSV_Color(com.badlogic.gdx.graphics.Color.GREEN);
+            case RED:
+                return new HSV_Color(com.badlogic.gdx.graphics.Color.RED);
+            case TRANSPARENT:
+                return new HSV_Color(0, 0, 0, 0);
+            case WHITE:
+                return new HSV_Color(com.badlogic.gdx.graphics.Color.WHITE);
+        }
+
+        throw new IllegalArgumentException("unknown color: " + color);
     }
 
 }

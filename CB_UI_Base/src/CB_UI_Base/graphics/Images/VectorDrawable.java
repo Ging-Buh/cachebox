@@ -18,7 +18,6 @@ package CB_UI_Base.graphics.Images;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
-import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_Matrix;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
@@ -47,6 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
 
     public static final float FBO_SCALER = 1;// 2.5f;
+    public final static HSV_Color TRANSPARENT = new HSV_Color(0, 0, 0, 0);
     /**
      * @uml.property name="width"
      */
@@ -118,7 +118,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
     public VectorDrawable(int width, int height) {
         this.drawableList = new CB_List<MatrixDrawable>();
         this.rotateDrawableList = new SortedRotateList();
-        this.background = new ColorDrawable(GL_GraphicFactory.TRANSPARENT);
+        this.background = new ColorDrawable(TRANSPARENT);
         this.DEFAULT_WIDTH = width;
         this.DEFAULT_HEIGHT = height;
     }

@@ -22,6 +22,7 @@ import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 import org.poly2tri.Poly2Tri;
@@ -37,9 +38,9 @@ import java.util.Stack;
  * @author Longri
  */
 public class GL_Canvas implements ext_Canvas {
+    public final static EarClippingTriangulator ECT = new EarClippingTriangulator();
     ext_Matrix aktMatrix = new GL_Matrix();
     Stack<ext_Matrix> matrixStack = new Stack<ext_Matrix>();
-
     private VectorDrawable bitmap;
 
     @Override
@@ -144,7 +145,7 @@ public class GL_Canvas implements ext_Canvas {
                         Vertices = pathes.get(0);
                         if (Vertices.length < 6)
                             return; // Nothing to Draw
-                        Triangles = GL_GraphicFactory.ECT.computeTriangles(Vertices).toArray();
+                        Triangles = ECT.computeTriangles(Vertices).toArray();
                     }
 
                     // m.invert();
@@ -153,7 +154,7 @@ public class GL_Canvas implements ext_Canvas {
                     Vertices = pathes.get(0);
                     if (Vertices.length < 6)
                         return; // Nothing to Draw
-                    Triangles = GL_GraphicFactory.ECT.computeTriangles(Vertices).toArray();
+                    Triangles = ECT.computeTriangles(Vertices).toArray();
                 }
 
                 if (Vertices != null && Triangles != null) {
@@ -258,13 +259,13 @@ public class GL_Canvas implements ext_Canvas {
     }
 
     @Override
-    public void setMatrix(ext_Matrix matrix) {
-        aktMatrix.set(matrix);
+    public ext_Matrix getMatrix() {
+        return aktMatrix;
     }
 
     @Override
-    public ext_Matrix getMatrix() {
-        return aktMatrix;
+    public void setMatrix(ext_Matrix matrix) {
+        aktMatrix.set(matrix);
     }
 
     @Override

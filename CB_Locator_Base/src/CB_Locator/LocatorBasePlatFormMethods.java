@@ -2,7 +2,6 @@ package CB_Locator;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
-import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import com.badlogic.gdx.graphics.Texture;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
