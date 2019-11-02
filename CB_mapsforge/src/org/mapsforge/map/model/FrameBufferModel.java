@@ -30,13 +30,6 @@ public class FrameBufferModel extends Observable {
         return this.dimension;
     }
 
-    public void setDimension(Dimension dimension) {
-        synchronized (this) {
-            this.dimension = dimension;
-        }
-        notifyObservers();
-    }
-
     /**
      * @return the current {@code MapPosition} of the {@code FrameBuffer} (may be null).
      */
@@ -44,15 +37,22 @@ public class FrameBufferModel extends Observable {
         return this.mapPosition;
     }
 
+    public synchronized double getOverdrawFactor() {
+        return this.overdrawFactor;
+    }
+
+    public void setDimension(Dimension dimension) {
+        synchronized (this) {
+            this.dimension = dimension;
+        }
+        notifyObservers();
+    }
+
     public void setMapPosition(MapPosition mapPosition) {
         synchronized (this) {
             this.mapPosition = mapPosition;
         }
         notifyObservers();
-    }
-
-    public synchronized double getOverdrawFactor() {
-        return this.overdrawFactor;
     }
 
     /**

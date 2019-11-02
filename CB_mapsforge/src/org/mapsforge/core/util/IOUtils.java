@@ -25,10 +25,6 @@ import java.util.logging.Logger;
 public final class IOUtils {
     private static final Logger LOGGER = Logger.getLogger(IOUtils.class.getName());
 
-    private IOUtils() {
-        throw new IllegalStateException();
-    }
-
     /**
      * Invokes the {@link Closeable#close()} method on the given object. If an {@link IOException} occurs during the
      * method call, it will be caught and logged on level {@link Level#WARNING}.
@@ -43,5 +39,9 @@ public final class IOUtils {
         } catch (IOException e) {
             LOGGER.log(Level.FINE, e.getMessage(), e);
         }
+    }
+
+    private IOUtils() {
+        throw new IllegalStateException();
     }
 }

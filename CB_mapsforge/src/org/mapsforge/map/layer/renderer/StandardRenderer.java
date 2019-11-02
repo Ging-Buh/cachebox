@@ -1,7 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +27,7 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 
@@ -41,30 +43,34 @@ public class StandardRenderer implements RenderCallback {
     private static final byte ZOOM_MAX = 22;
 
     public final GraphicFactory graphicFactory;
+    public final HillsRenderConfig hillsRenderConfig;
     public final MapDataStore mapDataStore;
     private final boolean renderLabels;
 
     /**
-     * Constructs a new StandardRenderer.
+     * Constructs a new StandardRenderer (without hillshading).
      *
      * @param mapDataStore the MapDataStore from which the map data will be read.
      */
     public StandardRenderer(MapDataStore mapDataStore,
                             GraphicFactory graphicFactory,
                             boolean renderLabels) {
+        this(mapDataStore, graphicFactory, renderLabels, null);
+    }
+
+    /**
+     * Constructs a new StandardRenderer.
+     *
+     * @param mapDataStore      the MapDataStore from which the map data will be read.
+     * @param hillsRenderConfig optional relief shading support.
+     */
+    public StandardRenderer(MapDataStore mapDataStore,
+                            GraphicFactory graphicFactory,
+                            boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
         this.mapDataStore = mapDataStore;
         this.graphicFactory = graphicFactory;
         this.renderLabels = renderLabels;
-    }
-
-    private static Point[] getTilePixelCoordinates(int tileSize) {
-        Point[] result = new Point[5];
-        result[0] = new Point(0, 0);
-        result[1] = new Point(tileSize, 0);
-        result[2] = new Point(tileSize, tileSize);
-        result[3] = new Point(0, tileSize);
-        result[4] = result[0];
-        return result;
+        this.hillsRenderConfig = hillsRenderConfig;
     }
 
     /**
@@ -158,7 +164,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderWayText(final RenderContext renderContext, Display display, int priority, String textKey, float dy, Paint fill, Paint stroke,
                               boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         if (renderLabels) {
-            WayDecorator.renderText(way.getUpperLeft(), way.getLowerRight(), textKey, display, priority, dy, fill, stroke,
+            WayDecorator.renderText(graphicFactory, way.getUpperLeft(), way.getLowerRight(), textKey, display, priority, dy, fill, stroke,
                     repeat, repeatGap, repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
         }
     }
@@ -175,6 +181,10 @@ public class StandardRenderer implements RenderCallback {
     protected void renderWaterBackground(final RenderContext renderContext) {
         renderContext.setDrawingLayers((byte) 0);
         Point[] coordinates = getTilePixelCoordinates(renderContext.rendererJob.tile.tileSize);
+        Point tileOrigin = renderContext.rendererJob.tile.getOrigin();
+        for (int i = 0; i < coordinates.length; i++) {
+            coordinates[i] = coordinates[i].offset(tileOrigin.x, tileOrigin.y);
+        }
         PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, renderContext.rendererJob.tile, Collections.singletonList(TAG_NATURAL_WATER));
         renderContext.renderTheme.matchClosedWay(this, renderContext, way);
     }
@@ -205,6 +215,16 @@ public class StandardRenderer implements RenderCallback {
         if (mapReadResult.isWater) {
             renderWaterBackground(renderContext);
         }
+    }
+
+    private static Point[] getTilePixelCoordinates(int tileSize) {
+        Point[] result = new Point[5];
+        result[0] = new Point(0, 0);
+        result[1] = new Point(tileSize, 0);
+        result[2] = new Point(tileSize, tileSize);
+        result[3] = new Point(0, tileSize);
+        result[4] = result[0];
+        return result;
     }
 
 }

@@ -16,7 +16,7 @@ dependencies {
     implementation (project(path: ':CB_UI')){
         exclude group: 'com.github.tony19'
     }
-    implementation project(':GPS_Simulator')
+    // implementation project(':GPS_Simulator')
     //libgdx
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"

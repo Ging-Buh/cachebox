@@ -29,50 +29,6 @@ import java.util.Map;
  * The Grid layer draws a geographical grid.
  */
 public class Grid extends Layer {
-    private final Paint lineBack, lineFront, textBack, textFront;
-    private final Map<Byte, Double> spacingConfig;
-
-    /**
-     * Ctor.
-     *
-     * @param graphicFactory the graphic factory.
-     * @param displayModel   the display model of the map view.
-     * @param spacingConfig  a map containing the spacing for every zoom level.
-     */
-    public Grid(GraphicFactory graphicFactory, DisplayModel displayModel, Map<Byte, Double> spacingConfig) {
-        super();
-
-        this.displayModel = displayModel;
-        this.spacingConfig = spacingConfig;
-
-        this.lineBack = createLineBack(graphicFactory, displayModel);
-        this.lineFront = createLineFront(graphicFactory, displayModel);
-        this.textBack = createTextBack(graphicFactory, displayModel);
-        this.textFront = createTextFront(graphicFactory, displayModel);
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param displayModel  the display model of the map view.
-     * @param spacingConfig a map containing the spacing for every zoom level.
-     * @param lineBack      the back line paint.
-     * @param lineFront     the top line paint.
-     * @param textBack      the back text paint.
-     * @param textFront     the top text paint.
-     */
-    public Grid(DisplayModel displayModel, Map<Byte, Double> spacingConfig,
-                Paint lineBack, Paint lineFront, Paint textBack, Paint textFront) {
-        super();
-
-        this.displayModel = displayModel;
-        this.spacingConfig = spacingConfig;
-        this.lineBack = lineBack;
-        this.lineFront = lineFront;
-        this.textBack = textBack;
-        this.textFront = textFront;
-    }
-
     private static String convertCoordinate(double coordinate) {
         StringBuilder sb = new StringBuilder();
 
@@ -129,6 +85,50 @@ public class Grid extends Layer {
         paint.setStrokeWidth(4 * displayModel.getScaleFactor());
         paint.setStyle(Style.STROKE);
         return paint;
+    }
+
+    private final Paint lineBack, lineFront, textBack, textFront;
+    private final Map<Byte, Double> spacingConfig;
+
+    /**
+     * Ctor.
+     *
+     * @param graphicFactory the graphic factory.
+     * @param displayModel   the display model of the map view.
+     * @param spacingConfig  a map containing the spacing for every zoom level.
+     */
+    public Grid(GraphicFactory graphicFactory, DisplayModel displayModel, Map<Byte, Double> spacingConfig) {
+        super();
+
+        this.displayModel = displayModel;
+        this.spacingConfig = spacingConfig;
+
+        this.lineBack = createLineBack(graphicFactory, displayModel);
+        this.lineFront = createLineFront(graphicFactory, displayModel);
+        this.textBack = createTextBack(graphicFactory, displayModel);
+        this.textFront = createTextFront(graphicFactory, displayModel);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param displayModel  the display model of the map view.
+     * @param spacingConfig a map containing the spacing for every zoom level.
+     * @param lineBack      the back line paint.
+     * @param lineFront     the top line paint.
+     * @param textBack      the back text paint.
+     * @param textFront     the top text paint.
+     */
+    public Grid(DisplayModel displayModel, Map<Byte, Double> spacingConfig,
+                Paint lineBack, Paint lineFront, Paint textBack, Paint textFront) {
+        super();
+
+        this.displayModel = displayModel;
+        this.spacingConfig = spacingConfig;
+        this.lineBack = lineBack;
+        this.lineFront = lineFront;
+        this.textBack = textBack;
+        this.textFront = textFront;
     }
 
     @Override

@@ -1,9 +1,11 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2015-2016 lincomatic
  * Copyright 2016 bvgastel
+ * Copyright 2017 linuskr
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +26,7 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.*;
 import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileHeader;
@@ -31,8 +34,9 @@ import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.reader.header.SubFileParameter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,9 +52,9 @@ import java.util.logging.Logger;
  * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
 public class MapFile extends MapDataStore {
+    private static final Logger LOGGER = Logger.getLogger(MapFile.class.getName());
     /* Only for testing, an empty file. */
     public static final MapFile TEST_MAP_FILE = new MapFile();
-    private static final Logger LOGGER = Logger.getLogger(MapFile.class.getName());
     /**
      * Bitmask to extract the block offset from an index entry.
      */
@@ -95,10 +99,6 @@ public class MapFile extends MapDataStore {
      * Bitmask for the number of POI tags.
      */
     private static final int POI_NUMBER_OF_TAGS_BITMASK = 0x0f;
-    /**
-     * Read only access mode.
-     */
-    private static final String READ_ONLY_MODE = "r";
     /**
      * Length of the debug signature at the beginning of each block.
      */
@@ -177,15 +177,18 @@ public class MapFile extends MapDataStore {
 
     private final IndexCache databaseIndexCache;
     private final long fileSize;
-    private final RandomAccessFile inputFile;
+    private final FileChannel inputChannel;
     private final MapFileHeader mapFileHeader;
     private final long timestamp;
+
+    private byte zoomLevelMin = 0;
+    private byte zoomLevelMax = Byte.MAX_VALUE;
 
     private MapFile() {
         // only to create a dummy empty file.
         databaseIndexCache = null;
         fileSize = 0;
-        inputFile = null;
+        inputChannel = null;
         mapFileHeader = null;
         timestamp = System.currentTimeMillis();
     }
@@ -222,19 +225,79 @@ public class MapFile extends MapDataStore {
                 throw new MapFileException("cannot read file: " + mapFile);
             }
 
-            // open the file in read only mode
-            this.inputFile = new RandomAccessFile(mapFile, READ_ONLY_MODE);
-            this.fileSize = this.inputFile.length();
+            // false positive: stream gets closed when the channel is closed
+            // see e.g. http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4796385
+            FileInputStream fis = new FileInputStream(mapFile);
+            this.inputChannel = fis.getChannel();
+            this.fileSize = this.inputChannel.size();
 
-            ReadBuffer readBuffer = new ReadBuffer(this.inputFile);
+            ReadBuffer readBuffer = new ReadBuffer(this.inputChannel);
             this.mapFileHeader = new MapFileHeader();
             this.mapFileHeader.readHeader(readBuffer, this.fileSize);
-            this.databaseIndexCache = new IndexCache(this.inputFile, INDEX_CACHE_SIZE);
+            this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
 
             this.timestamp = mapFile.lastModified();
         } catch (Exception e) {
-            // make sure that the file is closed
-            closeFile();
+            // make sure that the channel is closed
+            closeFileChannel();
+            throw new MapFileException(e.getMessage());
+        }
+    }
+
+    /**
+     * Opens the given map file input stream, reads its header data and validates them.
+     *
+     * @param mapFileInputStream the map file input stream.
+     * @param language           the language to use (may be null).
+     * @throws MapFileException if the given map file is null or invalid.
+     */
+    public MapFile(FileInputStream mapFileInputStream, long lastModified, String language) {
+        super(language);
+        if (mapFileInputStream == null) {
+            throw new MapFileException("mapFileInputStream must not be null");
+        }
+        try {
+            this.inputChannel = mapFileInputStream.getChannel();
+            this.fileSize = this.inputChannel.size();
+
+            ReadBuffer readBuffer = new ReadBuffer(this.inputChannel);
+            this.mapFileHeader = new MapFileHeader();
+            this.mapFileHeader.readHeader(readBuffer, this.fileSize);
+            this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
+
+            this.timestamp = lastModified;
+        } catch (Exception e) {
+            // make sure that the channel is closed
+            closeFileChannel();
+            throw new MapFileException(e.getMessage());
+        }
+    }
+
+    /**
+     * Opens the given map file channel, reads its header data and validates them.
+     *
+     * @param mapFileChannel the map file channel.
+     * @param language       the language to use (may be null).
+     * @throws MapFileException if the given map file channel is null or invalid.
+     */
+    public MapFile(FileChannel mapFileChannel, long lastModified, String language) {
+        super(language);
+        if (mapFileChannel == null) {
+            throw new MapFileException("mapFileChannel must not be null");
+        }
+        try {
+            this.inputChannel = mapFileChannel;
+            this.fileSize = this.inputChannel.size();
+
+            ReadBuffer readBuffer = new ReadBuffer(this.inputChannel);
+            this.mapFileHeader = new MapFileHeader();
+            this.mapFileHeader.readHeader(readBuffer, this.fileSize);
+            this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
+
+            this.timestamp = lastModified;
+        } catch (Exception e) {
+            // make sure that the channel is closed
+            closeFileChannel();
             throw new MapFileException(e.getMessage());
         }
     }
@@ -268,19 +331,20 @@ public class MapFile extends MapDataStore {
 
     @Override
     public void close() {
-        closeFile();
+        closeFileChannel();
     }
 
     /**
-     * Closes the map file and destroys all internal caches. Has no effect if no map file is currently opened.
+     * Closes the map file channel and destroys all internal caches.
+     * Has no effect if no map file channel is currently opened.
      */
-    private void closeFile() {
+    private void closeFileChannel() {
         try {
             if (this.databaseIndexCache != null) {
                 this.databaseIndexCache.destroy();
             }
-            if (this.inputFile != null) {
-                this.inputFile.close();
+            if (this.inputChannel != null) {
+                this.inputChannel.close();
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -527,7 +591,7 @@ public class MapFile extends MapDataStore {
                 } else if (currentBlockSize == 0) {
                     // the current block is empty, continue with the next block
                     continue;
-                } else if (currentBlockSize > ReadBuffer.getMaximumBufferSize()) {
+                } else if (currentBlockSize > Parameters.MAXIMUM_BUFFER_SIZE) {
                     // the current block is too large, continue with the next block
                     LOGGER.warning("current block size too large: " + currentBlockSize);
                     continue;
@@ -538,7 +602,7 @@ public class MapFile extends MapDataStore {
 
                 // seek to the current block in the map file
                 // read the current block into the buffer
-                ReadBuffer readBuffer = new ReadBuffer(inputFile);
+                ReadBuffer readBuffer = new ReadBuffer(inputChannel);
                 if (!readBuffer.readFromFile(subFileParameter.startAddress + currentBlockPointer, currentBlockSize)) {
                     // skip the current block
                     LOGGER.warning("reading current block has failed: " + currentBlockSize);
@@ -600,16 +664,10 @@ public class MapFile extends MapDataStore {
             // bit 5-8 represent the number of tag IDs
             byte numberOfTags = (byte) (specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 
-            List<Tag> tags = new ArrayList<>();
-
-            // get the tag IDs (VBE-U)
-            for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
-                int tagId = readBuffer.readUnsignedInt();
-                if (tagId < 0 || tagId >= poiTags.length) {
-                    LOGGER.warning("invalid POI tag ID: " + tagId);
-                    return null;
-                }
-                tags.add(poiTags[tagId]);
+            // get the tags from IDs (VBE-U)
+            List<Tag> tags = readBuffer.readTags(poiTags, numberOfTags);
+            if (tags == null) {
+                return null;
             }
 
             // get the feature bitmask (1 byte)
@@ -731,15 +789,10 @@ public class MapFile extends MapDataStore {
             // bit 5-8 represent the number of tag IDs
             byte numberOfTags = (byte) (specialByte & WAY_NUMBER_OF_TAGS_BITMASK);
 
-            List<Tag> tags = new ArrayList<>();
-
-            for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
-                int tagId = readBuffer.readUnsignedInt();
-                if (tagId < 0 || tagId >= wayTags.length) {
-                    LOGGER.warning("invalid way tag ID: " + tagId);
-                    return null;
-                }
-                tags.add(wayTags[tagId]);
+            // get the tags from IDs (VBE-U)
+            List<Tag> tags = readBuffer.readTags(wayTags, numberOfTags);
+            if (tags == null) {
+                return null;
             }
 
             // get the feature bitmask (1 byte)
@@ -768,7 +821,10 @@ public class MapFile extends MapDataStore {
                 tags.add(new Tag(TAG_KEY_REF, readBuffer.readUTF8EncodedString()));
             }
 
-            LatLong labelPosition = readOptionalLabelPosition(tileLatitude, tileLongitude, featureLabelPosition, readBuffer);
+            int[] labelPosition = null;
+            if (featureLabelPosition) {
+                labelPosition = readOptionalLabelPosition(readBuffer);
+            }
 
             int wayDataBlocks = readOptionalWayDataBlocksByte(featureWayDataBlocksByte, readBuffer);
             if (wayDataBlocks < 1) {
@@ -783,7 +839,12 @@ public class MapFile extends MapDataStore {
                         continue;
                     }
                     if (Selector.ALL == selector || featureName || featureHouseNumber || featureRef || wayAsLabelTagFilter(tags)) {
-                        ways.add(new Way(layer, tags, wayNodes, labelPosition));
+                        LatLong labelLatLong = null;
+                        if (labelPosition != null) {
+                            labelLatLong = new LatLong(wayNodes[0][0].latitude + LatLongUtils.microdegreesToDegrees(labelPosition[1]),
+                                    wayNodes[0][0].longitude + LatLongUtils.microdegreesToDegrees(labelPosition[0]));
+                        }
+                        ways.add(new Way(layer, tags, wayNodes, labelLatLong));
                     }
                 }
             }
@@ -798,20 +859,21 @@ public class MapFile extends MapDataStore {
      * @param tile tile for which data is requested.
      * @return label data for the tile.
      */
+    @Override
     public MapReadResult readLabels(Tile tile) {
         return readMapData(tile, tile, Selector.LABELS);
     }
 
     /**
      * Reads data for an area defined by the tile in the upper left and the tile in
-     * the lower right corner. The default implementation combines the results from
-     * all tiles, a possibly inefficient solution.
+     * the lower right corner.
      * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
      *
      * @param upperLeft  tile that defines the upper left corner of the requested area.
      * @param lowerRight tile that defines the lower right corner of the requested area.
      * @return map data for the tile.
      */
+    @Override
     public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
         return readMapData(upperLeft, lowerRight, Selector.LABELS);
     }
@@ -825,6 +887,20 @@ public class MapFile extends MapDataStore {
     @Override
     public MapReadResult readMapData(Tile tile) {
         return readMapData(tile, tile, Selector.ALL);
+    }
+
+    /**
+     * Reads data for an area defined by the tile in the upper left and the tile in
+     * the lower right corner.
+     * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+     *
+     * @param upperLeft  tile that defines the upper left corner of the requested area.
+     * @param lowerRight tile that defines the lower right corner of the requested area.
+     * @return map data for the tile.
+     */
+    @Override
+    public MapReadResult readMapData(Tile upperLeft, Tile lowerRight) {
+        return readMapData(upperLeft, lowerRight, Selector.ALL);
     }
 
     private MapReadResult readMapData(Tile upperLeft, Tile lowerRight, Selector selector) {
@@ -856,18 +932,16 @@ public class MapFile extends MapDataStore {
         }
     }
 
-    private LatLong readOptionalLabelPosition(double tileLatitude, double tileLongitude, boolean featureLabelPosition, ReadBuffer readBuffer) {
-        if (featureLabelPosition) {
-            // get the label position latitude offset (VBE-S)
-            double latitude = tileLatitude + LatLongUtils.microdegreesToDegrees(readBuffer.readSignedInt());
+    private int[] readOptionalLabelPosition(ReadBuffer readBuffer) {
+        int[] labelPosition = new int[2];
 
-            // get the label position longitude offset (VBE-S)
-            double longitude = tileLongitude + LatLongUtils.microdegreesToDegrees(readBuffer.readSignedInt());
+        // get the label position latitude offset (VBE-S)
+        labelPosition[1] = readBuffer.readSignedInt();
 
-            return new LatLong(latitude, longitude);
-        }
+        // get the label position longitude offset (VBE-S)
+        labelPosition[0] = readBuffer.readSignedInt();
 
-        return null;
+        return labelPosition;
     }
 
     private int readOptionalWayDataBlocksByte(boolean featureWayDataBlocksByte, ReadBuffer readBuffer) {
@@ -879,6 +953,12 @@ public class MapFile extends MapDataStore {
         return 1;
     }
 
+    /**
+     * Reads only POI data for tile.
+     *
+     * @param tile tile for which data is requested.
+     * @return POI data for the tile.
+     */
     @Override
     public MapReadResult readPoiData(Tile tile) {
         return readMapData(tile, tile, Selector.POIS);
@@ -924,8 +1004,8 @@ public class MapFile extends MapDataStore {
      * @param maxZoom maximum zoom level supported
      */
     public void restrictToZoomRange(byte minZoom, byte maxZoom) {
-        this.getMapFileInfo().zoomLevelMax = maxZoom;
-        this.getMapFileInfo().zoomLevelMin = minZoom;
+        this.zoomLevelMax = maxZoom;
+        this.zoomLevelMin = minZoom;
     }
 
     @Override
@@ -946,7 +1026,8 @@ public class MapFile extends MapDataStore {
 
     @Override
     public boolean supportsTile(Tile tile) {
-        return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
+        return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox)
+                && (tile.zoomLevel >= this.zoomLevelMin && tile.zoomLevel <= this.zoomLevelMax);
     }
 
     /**

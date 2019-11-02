@@ -49,10 +49,9 @@ public class Rectangle implements Serializable {
 
     /**
      * Enlarges the Rectangle sides individually
-     *
-     * @param left   left enlargement
-     * @param top    top enlargement
-     * @param right  right enlargement
+     * @param left left enlargement
+     * @param top top enlargement
+     * @param right right enlargement
      * @param bottom bottom enlargement
      * @return
      */

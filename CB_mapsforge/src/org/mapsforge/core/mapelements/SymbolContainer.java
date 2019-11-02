@@ -21,9 +21,9 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class SymbolContainer extends MapElementContainer {
-    public final boolean alignCenter;
-    public final float theta;
+    final boolean alignCenter;
     public Bitmap symbol;
+    public final float theta;
 
     public SymbolContainer(Point point, Display display, int priority, Bitmap symbol) {
         this(point, display, priority, symbol, 0, true);

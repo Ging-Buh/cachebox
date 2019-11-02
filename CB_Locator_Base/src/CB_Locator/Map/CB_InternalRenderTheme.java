@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 public enum CB_InternalRenderTheme implements XmlRenderTheme {
 
-    DEFAULT("osmarender/", "default.xml"), OSMARENDER("osmarender/", "osmarender.xml"), CAR("cartheme/", "cartheme.xml");
+    DEFAULT("resources/mapsforge/", "default.xml"), OSMARENDER("resources/mapsforge/", "osmarender.xml"), CAR("resources/cartheme/", "cartheme.xml");
 
     private final String absolutePath;
     private final String fileName;
@@ -18,18 +18,22 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
     CB_InternalRenderTheme(String absolutePath, String file) {
         this.absolutePath = absolutePath;
         this.fileName = file;
-        fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);
+        fileHandle = Gdx.files.internal(this.absolutePath + this.fileName);
     }
 
     @Override
     public String getRelativePathPrefix() {
-        return "/" + this.absolutePath;
+        return "resources/"; //  + this.absolutePath
         // return this.absolutePath;
     }
 
     @Override
     public InputStream getRenderThemeAsStream() {
         return fileHandle.read();
+    }
+
+    @Override
+    public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
     }
 
     @Override

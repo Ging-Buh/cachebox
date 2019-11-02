@@ -39,8 +39,8 @@ public class MapReadResult {
     public List<Way> ways;
 
     public MapReadResult() {
-        this.pointOfInterests = new ArrayList<PointOfInterest>();
-        this.ways = new ArrayList<Way>();
+        this.pointOfInterests = new ArrayList<>();
+        this.ways = new ArrayList<>();
     }
 
     public void add(PoiWayBundle poiWayBundle) {

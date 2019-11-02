@@ -7,14 +7,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = [ "resources/" ]
 
 dependencies {
-    implementation project(":CB_Utils")
-
-    //libgdx
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-
     // https://mvnrepository.com/artifact/net.sf.kxml/kxml2
     implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'
-
-
-
 }

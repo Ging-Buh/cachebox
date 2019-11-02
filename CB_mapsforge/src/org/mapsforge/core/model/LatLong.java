@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,23 +17,18 @@ package org.mapsforge.core.model;
 
 import org.mapsforge.core.util.LatLongUtils;
 
-import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This immutable class represents a geographic coordinate with a latitude and longitude value.
  */
-public class LatLong implements Comparable<LatLong>, Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1187430202550963602L;
-
+public class LatLong implements Comparable<LatLong> {
     /**
      * The RegEx pattern to read WKT points.
      */
-    private static final Pattern WKT_POINT_PATTERN = Pattern.compile(".*POINT\\s?\\(([\\d\\.]+)\\s([\\d\\.]+)\\).*");
+    private static final Pattern WKT_POINT_PATTERN = Pattern
+            .compile(".*POINT\\s?\\(([\\d\\.]+)\\s([\\d\\.]+)\\).*");
 
     /**
      * The internal latitude value.
@@ -75,42 +70,6 @@ public class LatLong implements Comparable<LatLong>, Serializable {
         this.latitude = LatLongUtils.validateLatitude(Double.parseDouble(m.group(2)));
     }
 
-    public LatLong() {
-        this.longitude = 0;
-        this.latitude = 0;
-    }
-
-    /**
-     * Constructs a new LatLong with the given latitude and longitude values, measured in
-     * microdegrees.
-     *
-     * @param latitudeE6  the latitude value in microdegrees.
-     * @param longitudeE6 the longitude value in microdegrees.
-     * @return the LatLong
-     * @throws IllegalArgumentException if the latitudeE6 or longitudeE6 value is invalid.
-     */
-    public static LatLong fromMicroDegrees(int latitudeE6, int longitudeE6) {
-        return new LatLong(LatLongUtils.microdegreesToDegrees(latitudeE6), LatLongUtils.microdegreesToDegrees(longitudeE6));
-    }
-
-    /**
-     * Constructs a new LatLong from a comma-separated String containing latitude and
-     * longitude values (also ';', ':' and whitespace work as separator).
-     * Latitude and longitude are interpreted as measured in degrees.
-     *
-     * @param latLonString the String containing the latitude and longitude values
-     * @return the LatLong
-     * @throws IllegalArgumentException if the latLonString could not be interpreted as a coordinate
-     */
-    public static LatLong fromString(String latLonString) {
-        String[] split = latLonString.split("[,;:\\s]");
-        if (split.length != 2)
-            throw new IllegalArgumentException("cannot read coordinate, not a valid format");
-        double latitude = Double.parseDouble(split[0]);
-        double longitude = Double.parseDouble(split[1]);
-        return new LatLong(latitude, longitude);
-    }
-
     /**
      * This method is necessary for inserting LatLongs into tree data structures.
      */
@@ -118,10 +77,24 @@ public class LatLong implements Comparable<LatLong>, Serializable {
     public int compareTo(LatLong latLong) {
         if (this.latitude > latLong.latitude || this.longitude > latLong.longitude) {
             return 1;
-        } else if (this.latitude < latLong.latitude || this.longitude < latLong.longitude) {
+        } else if (this.latitude < latLong.latitude
+                || this.longitude < latLong.longitude) {
             return -1;
         }
         return 0;
+    }
+
+    /**
+     * Returns the destination point from this point having travelled the given distance on the
+     * given initial bearing (bearing normally varies around path followed).
+     *
+     * @param distance the distance travelled, in same units as earth radius (default: meters)
+     * @param bearing  the initial bearing in degrees from north
+     * @return the destination point
+     * @see <a href="http://www.movable-type.co.uk/scripts/latlon.js">latlon.js</a>
+     */
+    public LatLong destinationPoint(double distance, float bearing) {
+        return LatLongUtils.destinationPoint(this, distance, bearing);
     }
 
     /**
@@ -149,6 +122,38 @@ public class LatLong implements Comparable<LatLong>, Serializable {
             }
             return true;
         }
+    }
+
+    /**
+     * Constructs a new LatLong with the given latitude and longitude values, measured in
+     * microdegrees.
+     *
+     * @param latitudeE6  the latitude value in microdegrees.
+     * @param longitudeE6 the longitude value in microdegrees.
+     * @return the LatLong
+     * @throws IllegalArgumentException if the latitudeE6 or longitudeE6 value is invalid.
+     */
+    public static LatLong fromMicroDegrees(int latitudeE6, int longitudeE6) {
+        return new LatLong(LatLongUtils.microdegreesToDegrees(latitudeE6),
+                LatLongUtils.microdegreesToDegrees(longitudeE6));
+    }
+
+    /**
+     * Constructs a new LatLong from a comma-separated String containing latitude and
+     * longitude values (also ';', ':' and whitespace work as separator).
+     * Latitude and longitude are interpreted as measured in degrees.
+     *
+     * @param latLonString the String containing the latitude and longitude values
+     * @return the LatLong
+     * @throws IllegalArgumentException if the latLonString could not be interpreted as a coordinate
+     */
+    public static LatLong fromString(String latLonString) {
+        String[] split = latLonString.split("[,;:\\s]");
+        if (split.length != 2)
+            throw new IllegalArgumentException("cannot read coordinate, not a valid format");
+        double latitude = Double.parseDouble(split[0]);
+        double longitude = Double.parseDouble(split[1]);
+        return new LatLong(latitude, longitude);
     }
 
     /**

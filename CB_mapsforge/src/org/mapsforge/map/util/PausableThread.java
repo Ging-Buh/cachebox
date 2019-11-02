@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2017 MarcelHeckel
+ * Copyright 2018 Nicola Murino
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,8 +20,49 @@ package org.mapsforge.map.util;
  * An abstract base class for threads which support pausing and resuming.
  */
 public abstract class PausableThread extends Thread {
+    /**
+     * Specifies the scheduling priority of a {@link Thread}.
+     */
+    protected enum ThreadPriority {
+        /**
+         * The priority between {@link #NORMAL} and {@link #HIGHEST}.
+         */
+        ABOVE_NORMAL((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2),
+
+        /**
+         * The priority between {@link #LOWEST} and {@link #NORMAL}.
+         */
+        BELOW_NORMAL((Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2),
+
+        /**
+         * The maximum priority a thread can have.
+         */
+        HIGHEST(MAX_PRIORITY),
+
+        /**
+         * The minimum priority a thread can have.
+         */
+        LOWEST(MIN_PRIORITY),
+
+        /**
+         * The default priority of a thread.
+         */
+        NORMAL(NORM_PRIORITY);
+
+        final int priority;
+
+        private ThreadPriority(int priority) {
+            if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+                throw new IllegalArgumentException("invalid priority: " + priority);
+            }
+            this.priority = priority;
+        }
+    }
+
     private boolean pausing;
     private boolean shouldPause;
+    private boolean shouldStop;
+    protected boolean waitForWork;
 
     /**
      * Causes the current thread to wait until this thread is pausing.
@@ -35,6 +78,11 @@ public abstract class PausableThread extends Thread {
                 }
             }
         }
+    }
+
+    public final synchronized void finish() {
+        this.shouldStop = true;
+        interrupt();
     }
 
     @Override
@@ -78,9 +126,9 @@ public abstract class PausableThread extends Thread {
         setName(getClass().getSimpleName());
         setPriority(getThreadPriority().priority);
 
-        while (!isInterrupted()) {
+        while ((!this.shouldStop && !isInterrupted()) || (this.waitForWork && hasWork())) {
             synchronized (this) {
-                while (!isInterrupted() && (this.shouldPause || !hasWork())) {
+                while (!this.shouldStop && !isInterrupted() && (this.shouldPause || !hasWork())) {
                     try {
                         if (this.shouldPause) {
                             this.pausing = true;
@@ -93,7 +141,7 @@ public abstract class PausableThread extends Thread {
                 }
             }
 
-            if (isInterrupted()) {
+            if ((this.shouldStop || isInterrupted()) && (!this.waitForWork || !hasWork())) {
                 break;
             }
 
@@ -131,43 +179,4 @@ public abstract class PausableThread extends Thread {
      * @return true if this thread has some work to do, false otherwise.
      */
     protected abstract boolean hasWork();
-
-    /**
-     * Specifies the scheduling priority of a {@link Thread}.
-     */
-    protected enum ThreadPriority {
-        /**
-         * The priority between {@link #NORMAL} and {@link #HIGHEST}.
-         */
-        ABOVE_NORMAL((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2),
-
-        /**
-         * The priority between {@link #LOWEST} and {@link #NORMAL}.
-         */
-        BELOW_NORMAL((Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2),
-
-        /**
-         * The maximum priority a thread can have.
-         */
-        HIGHEST(MAX_PRIORITY),
-
-        /**
-         * The minimum priority a thread can have.
-         */
-        LOWEST(MIN_PRIORITY),
-
-        /**
-         * The default priority of a thread.
-         */
-        NORMAL(NORM_PRIORITY);
-
-        final int priority;
-
-        private ThreadPriority(int priority) {
-            if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
-                throw new IllegalArgumentException("invalid priority: " + priority);
-            }
-            this.priority = priority;
-        }
-    }
 }

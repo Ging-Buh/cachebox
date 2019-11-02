@@ -48,57 +48,45 @@ import java.util.logging.Logger;
 public class FileSystemTileCache implements TileCache {
     static final String FILE_EXTENSION = ".tile";
     private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
-    private final File cacheDirectory;
-    private final GraphicFactory graphicFactory;
-    private final ReentrantReadWriteLock lock;
-    private final Observable observable;
-    private final boolean persistent;
-    private FileWorkingSetCache<String> lruCache;
-    /**
-     * Compatibility constructor that creates a non-threaded, non-persistent FSTC.
-     *
-     * @param capacity       the maximum number of entries in this cache.
-     * @param cacheDirectory the directory where cached tiles will be stored.
-     * @param graphicFactory the graphicFactory implementation to use.
-     * @throws IllegalArgumentException if the capacity is negative.
-     */
-    public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
-        this(capacity, cacheDirectory, graphicFactory, false);
-    }
-    /**
-     * Creates a new FileSystemTileCache.
-     * <p/>
-     * Use the {@code persistent} argument to specify whether cache contents should be kept across instances. A
-     * persistent cache will serve any tiles it finds in {@code cacheDirectory}. Calling {@link #destroy()} on a
-     * persistent cache will not delete the cache directory. Conversely, a non-persistent cache will serve only tiles
-     * added to it via the {@link #put(Job, TileBitmap)} method, and calling {@link #destroy()} on a non-persistent
-     * cache will delete {@code cacheDirectory}.
-     *
-     * @param capacity       the maximum number of entries in this cache.
-     * @param cacheDirectory the directory where cached tiles will be stored.
-     * @param graphicFactory the graphicFactory implementation to use.
-     * @param persistent     if cache data will be kept between instances
-     * @throws IllegalArgumentException if the capacity is negative.
-     * @throws IllegalArgumentException if the capacity is negative.
-     */
-    public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean persistent) {
-        this.observable = new Observable();
-        this.persistent = persistent;
-        this.lruCache = new FileWorkingSetCache<String>(capacity);
-        this.lock = new ReentrantReadWriteLock();
-        if (isValidCacheDirectory(cacheDirectory)) {
-            this.cacheDirectory = cacheDirectory;
-            if (this.persistent) {
-                // this will start a new thread to read in the cache directory.
-                // there is the potential that files will be recreated because they
-                // are not yet in the cache, but this will not cause any corruption.
-                new Thread(new CacheDirectoryReader()).start();
-            }
 
-        } else {
-            this.cacheDirectory = null;
+    /**
+     * Runnable that reads the cache directory and re-populates the cache with data saved by previous instances.
+     * <p/>
+     * This method assumes tile files to have a file extension of {@link #FILE_EXTENSION} and reside in a second-level
+     * of subdir of the cache dir (as in the standard TMS directory layout of zoomlevel/x/y). The relative path to the
+     * cached tile, after stripping the extension, is used as the lookup key.
+     */
+    private class CacheDirectoryReader implements Runnable {
+        @Override
+        public void run() {
+            File[] zFiles = FileSystemTileCache.this.cacheDirectory.listFiles();
+            if (zFiles != null) {
+                for (File z : zFiles) {
+                    File[] xFiles = z.listFiles();
+                    if (xFiles != null) {
+                        for (File x : xFiles) {
+                            File[] yFiles = x.listFiles();
+                            if (yFiles != null) {
+                                for (File y : yFiles) {
+                                    if (isValidFile(y) && y.getName().endsWith(FILE_EXTENSION)) {
+                                        int index = y.getName().lastIndexOf(FILE_EXTENSION);
+                                        String key = Job.composeKey(z.getName(), x.getName(), y.getName().substring(0, index));
+                                        try {
+                                            FileSystemTileCache.this.lock.writeLock().lock();
+                                            if (FileSystemTileCache.this.lruCache.put(key, y) != null) {
+                                                LOGGER.warning("overwriting cached entry: " + key);
+                                            }
+                                        } finally {
+                                            FileSystemTileCache.this.lock.writeLock().unlock();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        this.graphicFactory = graphicFactory;
     }
 
     /**
@@ -110,7 +98,8 @@ public class FileSystemTileCache implements TileCache {
      * @param file The File instance to examine. This can be null, which will cause the method to return {@code false}.
      */
     private static boolean isValidCacheDirectory(File file) {
-        return !((file == null) || (!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead() || !file.canWrite());
+        return !((file == null) || (!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead()
+                || !file.canWrite());
     }
 
     /**
@@ -152,6 +141,61 @@ public class FileSystemTileCache implements TileCache {
         }
         // The directory is now empty so delete it
         return dir.delete();
+    }
+
+    private final File cacheDirectory;
+    private final GraphicFactory graphicFactory;
+    private FileWorkingSetCache<String> lruCache;
+    private final ReentrantReadWriteLock lock;
+    private final Observable observable;
+    private final boolean persistent;
+
+    /**
+     * Compatibility constructor that creates a non-threaded, non-persistent FSTC.
+     *
+     * @param capacity       the maximum number of entries in this cache.
+     * @param cacheDirectory the directory where cached tiles will be stored.
+     * @param graphicFactory the graphicFactory implementation to use.
+     * @throws IllegalArgumentException if the capacity is negative.
+     */
+    public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
+        this(capacity, cacheDirectory, graphicFactory, false);
+    }
+
+    /**
+     * Creates a new FileSystemTileCache.
+     * <p/>
+     * Use the {@code persistent} argument to specify whether cache contents should be kept across instances. A
+     * persistent cache will serve any tiles it finds in {@code cacheDirectory}. Calling {@link #destroy()} on a
+     * persistent cache will not delete the cache directory. Conversely, a non-persistent cache will serve only tiles
+     * added to it via the {@link #put(Job, TileBitmap)} method, and calling {@link #destroy()} on a non-persistent
+     * cache will delete {@code cacheDirectory}.
+     *
+     * @param capacity       the maximum number of entries in this cache.
+     * @param cacheDirectory the directory where cached tiles will be stored.
+     * @param graphicFactory the graphicFactory implementation to use.
+     * @param persistent     if cache data will be kept between instances
+     * @throws IllegalArgumentException if the capacity is negative.
+     * @throws IllegalArgumentException if the capacity is negative.
+     */
+    public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean persistent) {
+        this.observable = new Observable();
+        this.persistent = persistent;
+        this.lruCache = new FileWorkingSetCache<>(capacity);
+        this.lock = new ReentrantReadWriteLock();
+        if (isValidCacheDirectory(cacheDirectory)) {
+            this.cacheDirectory = cacheDirectory;
+            if (this.persistent) {
+                // this will start a new thread to read in the cache directory.
+                // there is the potential that files will be recreated because they
+                // are not yet in the cache, but this will not cause any corruption.
+                new Thread(new CacheDirectoryReader()).start();
+            }
+
+        } else {
+            this.cacheDirectory = null;
+        }
+        this.graphicFactory = graphicFactory;
     }
 
     @Override
@@ -291,7 +335,7 @@ public class FileSystemTileCache implements TileCache {
     @Override
     public void setWorkingSet(Set<Job> workingSet) {
         Set<String> workingSetInteger = new HashSet<String>();
-        synchronized (workingSet) {
+        synchronized(workingSet) {
             for (Job job : workingSet) {
                 workingSetInteger.add(job.getKey());
             }
@@ -308,6 +352,7 @@ public class FileSystemTileCache implements TileCache {
     public void removeObserver(final Observer observer) {
         this.observable.removeObserver(observer);
     }
+
 
     private File getOutputFile(Job job) {
         String file = this.cacheDirectory + File.separator + job.getKey();
@@ -372,46 +417,6 @@ public class FileSystemTileCache implements TileCache {
             IOUtils.closeQuietly(outputStream);
         }
 
-    }
-
-    /**
-     * Runnable that reads the cache directory and re-populates the cache with data saved by previous instances.
-     * <p/>
-     * This method assumes tile files to have a file extension of {@link #FILE_EXTENSION} and reside in a second-level
-     * of subdir of the cache dir (as in the standard TMS directory layout of zoomlevel/x/y). The relative path to the
-     * cached tile, after stripping the extension, is used as the lookup key.
-     */
-    private class CacheDirectoryReader implements Runnable {
-        @Override
-        public void run() {
-            File[] zFiles = FileSystemTileCache.this.cacheDirectory.listFiles();
-            if (zFiles != null) {
-                for (File z : zFiles) {
-                    File[] xFiles = z.listFiles();
-                    if (xFiles != null) {
-                        for (File x : xFiles) {
-                            File[] yFiles = x.listFiles();
-                            if (yFiles != null) {
-                                for (File y : yFiles) {
-                                    if (isValidFile(y) && y.getName().endsWith(FILE_EXTENSION)) {
-                                        int index = y.getName().lastIndexOf(FILE_EXTENSION);
-                                        String key = Job.composeKey(z.getName(), x.getName(), y.getName().substring(0, index));
-                                        try {
-                                            FileSystemTileCache.this.lock.writeLock().lock();
-                                            if (FileSystemTileCache.this.lruCache.put(key, y) != null) {
-                                                LOGGER.warning("overwriting cached entry: " + key);
-                                            }
-                                        } finally {
-                                            FileSystemTileCache.this.lock.writeLock().unlock();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
 }

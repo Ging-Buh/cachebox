@@ -52,6 +52,7 @@ public class GL_Paint implements ext_Paint {
         this.style = GL_Style.FILL;
     }
 
+    /*
     public GL_Paint(Paint paint) {
         if (paint instanceof GL_Paint) {
             GL_Paint p = (GL_Paint) paint;
@@ -89,6 +90,8 @@ public class GL_Paint implements ext_Paint {
         this.strokeWidth = paint.getStrokeWidth();
         this.strokeDasharray = paint.getDashArray();
     }
+
+     */
 
     @Override
     public HSV_Color getHSV_Color() {
@@ -164,7 +167,7 @@ public class GL_Paint implements ext_Paint {
         }
     }
 
-    @Override
+    // Override mapsforge getDashArray
     public float[] getDashArray() {
         // chk if DashArray empty, then return null
         if (this.strokeDasharray != null && this.strokeDasharray.length < 2)
@@ -276,7 +279,7 @@ public class GL_Paint implements ext_Paint {
         return this.font;
     }
 
-    @Override
+    // @Override von mapsforge
     public Cap getCap() {
         switch (cap) {
             case BUTT:
@@ -293,7 +296,7 @@ public class GL_Paint implements ext_Paint {
         return this.color;
     }
 
-    @Override
+    // @Override von mapsforge
     public Style getStyle() {
         if (this.style == GL_Style.STROKE) {
             return Style.STROKE;

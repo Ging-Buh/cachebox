@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
+ * Copyright 2018 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,49 +37,87 @@ import org.mapsforge.map.model.common.Observer;
  */
 public class MapZoomControls extends LinearLayout implements Observer {
 
+    public static enum Orientation {
+        /**
+         * Horizontal arrangement, 'zoom in' left of 'zoom out'.
+         */
+        HORIZONTAL_IN_OUT(LinearLayout.HORIZONTAL, true),
+
+        /**
+         * Horizontal arrangement, 'zoom in' right of 'zoom out'.
+         */
+        HORIZONTAL_OUT_IN(LinearLayout.HORIZONTAL, false),
+
+        /**
+         * Vertical arrangement, 'zoom in' above 'zoom out'.
+         */
+        VERTICAL_IN_OUT(LinearLayout.VERTICAL, true),
+
+        /**
+         * Vertical arrangement, 'zoom in' below 'zoom out'.
+         */
+        VERTICAL_OUT_IN(LinearLayout.VERTICAL, false);
+
+        public final int layoutOrientation;
+        public final boolean zoomInFirst;
+
+        private Orientation(int layoutOrientation, boolean zoomInFirst) {
+            this.layoutOrientation = layoutOrientation;
+            this.zoomInFirst = zoomInFirst;
+        }
+    }
+
+    ;
+
     /**
      * Default {@link Gravity} of the zoom controls.
      */
     private static final int DEFAULT_ZOOM_CONTROLS_GRAVITY = Gravity.BOTTOM | Gravity.RIGHT;
 
-    ;
     /**
      * Default maximum zoom level.
      */
     private static final byte DEFAULT_ZOOM_LEVEL_MAX = 22;
+
     /**
      * Default minimum zoom level.
      */
     private static final byte DEFAULT_ZOOM_LEVEL_MIN = 0;
+
     /**
      * Auto-repeat delay of the zoom buttons in ms.
      */
     private static final long DEFAULT_ZOOM_SPEED = 500;
+
     /**
      * Message code for the handler to hide the zoom controls.
      */
     private static final int MSG_ZOOM_CONTROLS_HIDE = 0;
+
     /**
      * Horizontal margin for the zoom controls.
      */
     private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+
     /**
      * Vertical margin for the zoom controls.
      */
     private static final int DEFAULT_VERTICAL_MARGIN = 0;
+
     /**
      * Delay in milliseconds after which the zoom controls disappear.
      */
     private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
+
+    private boolean autoHide;
     private final ZoomButton buttonZoomIn, buttonZoomOut;
     private final MapView mapView;
-    private final Handler zoomControlsHideHandler;
-    private boolean autoHide;
     private boolean showMapZoomControls;
     private int zoomControlsGravity;
+    private final Handler zoomControlsHideHandler;
     private byte zoomLevelMax, zoomLevelMin;
 
-    public MapZoomControls(Context context, MapView mapView) {
+    public MapZoomControls(Context context, final MapView mapView) {
         super(context);
         this.mapView = mapView;
         this.autoHide = true;
@@ -109,12 +148,14 @@ public class MapZoomControls extends LinearLayout implements Observer {
         buttonZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mapView.onZoomEvent();
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
             }
         });
         buttonZoomOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mapView.onZoomEvent();
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
             }
         });
@@ -147,16 +188,6 @@ public class MapZoomControls extends LinearLayout implements Observer {
     }
 
     /**
-     * Sets the gravity for the placing of the zoom controls.
-     *
-     * @param zoomControlsGravity a combination of {@link Gravity} constants describing the desired placement.
-     */
-    public void setZoomControlsGravity(int zoomControlsGravity) {
-        this.zoomControlsGravity = zoomControlsGravity;
-        mapView.requestLayout();
-    }
-
-    /**
      * @return the maximum zoom level of the map.
      */
     public byte getZoomLevelMax() {
@@ -164,39 +195,10 @@ public class MapZoomControls extends LinearLayout implements Observer {
     }
 
     /**
-     * Sets the maximum zoom level of the map.
-     * <p/>
-     * The maximum possible zoom level of the MapView depends also on other elements. For example, downloading map tiles
-     * may only be possible up to a certain zoom level. Setting a higher maximum zoom level has no effect in this case.
-     *
-     * @param zoomLevelMax the maximum zoom level.
-     * @throws IllegalArgumentException if the maximum zoom level is smaller than the current minimum zoom level.
-     */
-    public void setZoomLevelMax(byte zoomLevelMax) {
-        if (zoomLevelMax < this.zoomLevelMin) {
-            throw new IllegalArgumentException();
-        }
-        this.zoomLevelMax = zoomLevelMax;
-    }
-
-    /**
      * @return the minimum zoom level of the map.
      */
     public byte getZoomLevelMin() {
         return this.zoomLevelMin;
-    }
-
-    /**
-     * Sets the minimum zoom level of the map.
-     *
-     * @param zoomLevelMin the minimum zoom level.
-     * @throws IllegalArgumentException if the minimum zoom level is larger than the current maximum zoom level.
-     */
-    public void setZoomLevelMin(byte zoomLevelMin) {
-        if (zoomLevelMin > this.zoomLevelMax) {
-            throw new IllegalArgumentException();
-        }
-        this.zoomLevelMin = zoomLevelMin;
     }
 
     public void hide() {
@@ -211,27 +213,10 @@ public class MapZoomControls extends LinearLayout implements Observer {
     }
 
     /**
-     * @param autoHide true if the zoom controls hide automatically, false otherwise.
-     */
-    public void setAutoHide(boolean autoHide) {
-        this.autoHide = autoHide;
-        if (!this.autoHide) {
-            showZoomControls();
-        }
-    }
-
-    /**
      * @return true if the zoom controls are visible, false otherwise.
      */
     public boolean isShowMapZoomControls() {
         return this.showMapZoomControls;
-    }
-
-    /**
-     * @param showMapZoomControls true if the zoom controls should be visible, false otherwise.
-     */
-    public void setShowMapZoomControls(boolean showMapZoomControls) {
-        this.showMapZoomControls = showMapZoomControls;
     }
 
     @Override
@@ -274,6 +259,16 @@ public class MapZoomControls extends LinearLayout implements Observer {
         }
     }
 
+    /**
+     * @param autoHide true if the zoom controls hide automatically, false otherwise.
+     */
+    public void setAutoHide(boolean autoHide) {
+        this.autoHide = autoHide;
+        if (!this.autoHide) {
+            showZoomControls();
+        }
+    }
+
     public void setMarginHorizontal(int marginHorizontal) {
         setPadding(marginHorizontal, getPaddingTop(), marginHorizontal, getPaddingBottom());
         mapView.requestLayout();
@@ -281,6 +276,23 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
     public void setMarginVertical(int marginVertical) {
         setPadding(getPaddingLeft(), marginVertical, getPaddingRight(), marginVertical);
+        mapView.requestLayout();
+    }
+
+    /**
+     * @param showMapZoomControls true if the zoom controls should be visible, false otherwise.
+     */
+    public void setShowMapZoomControls(boolean showMapZoomControls) {
+        this.showMapZoomControls = showMapZoomControls;
+    }
+
+    /**
+     * Sets the gravity for the placing of the zoom controls.
+     *
+     * @param zoomControlsGravity a combination of {@link Gravity} constants describing the desired placement.
+     */
+    public void setZoomControlsGravity(int zoomControlsGravity) {
+        this.zoomControlsGravity = zoomControlsGravity;
         mapView.requestLayout();
     }
 
@@ -323,6 +335,35 @@ public class MapZoomControls extends LinearLayout implements Observer {
     }
 
     /**
+     * Sets the maximum zoom level of the map.
+     * <p/>
+     * The maximum possible zoom level of the MapView depends also on other elements. For example, downloading map tiles
+     * may only be possible up to a certain zoom level. Setting a higher maximum zoom level has no effect in this case.
+     *
+     * @param zoomLevelMax the maximum zoom level.
+     * @throws IllegalArgumentException if the maximum zoom level is smaller than the current minimum zoom level.
+     */
+    public void setZoomLevelMax(byte zoomLevelMax) {
+        if (zoomLevelMax < this.zoomLevelMin) {
+            throw new IllegalArgumentException();
+        }
+        this.zoomLevelMax = zoomLevelMax;
+    }
+
+    /**
+     * Sets the minimum zoom level of the map.
+     *
+     * @param zoomLevelMin the minimum zoom level.
+     * @throws IllegalArgumentException if the minimum zoom level is larger than the current maximum zoom level.
+     */
+    public void setZoomLevelMin(byte zoomLevelMin) {
+        if (zoomLevelMin > this.zoomLevelMax) {
+            throw new IllegalArgumentException();
+        }
+        this.zoomLevelMin = zoomLevelMin;
+    }
+
+    /**
      * Set background drawable of the zoom out button.
      *
      * @param resId resource id of drawable.
@@ -355,35 +396,5 @@ public class MapZoomControls extends LinearLayout implements Observer {
     private void showZoomControlsWithTimeout() {
         showZoomControls();
         this.zoomControlsHideHandler.sendEmptyMessageDelayed(MSG_ZOOM_CONTROLS_HIDE, ZOOM_CONTROLS_TIMEOUT);
-    }
-
-    public static enum Orientation {
-        /**
-         * Horizontal arrangement, 'zoom in' left of 'zoom out'.
-         */
-        HORIZONTAL_IN_OUT(LinearLayout.HORIZONTAL, true),
-
-        /**
-         * Horizontal arrangement, 'zoom in' right of 'zoom out'.
-         */
-        HORIZONTAL_OUT_IN(LinearLayout.HORIZONTAL, false),
-
-        /**
-         * Vertical arrangement, 'zoom in' above 'zoom out'.
-         */
-        VERTICAL_IN_OUT(LinearLayout.VERTICAL, true),
-
-        /**
-         * Vertical arrangement, 'zoom in' below 'zoom out'.
-         */
-        VERTICAL_OUT_IN(LinearLayout.VERTICAL, false);
-
-        public final int layoutOrientation;
-        public final boolean zoomInFirst;
-
-        private Orientation(int layoutOrientation, boolean zoomInFirst) {
-            this.layoutOrientation = layoutOrientation;
-            this.zoomInFirst = zoomInFirst;
-        }
     }
 }

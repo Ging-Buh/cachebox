@@ -1,8 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2015 Andreas Schildbach
+ * Copyright 2018 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,7 @@ package org.mapsforge.map.android.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
@@ -47,23 +49,76 @@ import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.FrameBufferHA2;
+import org.mapsforge.map.view.InputListener;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView, Observer {
 
+    /**
+     * Child view Layout information associated with MapView.
+     */
+    public static class LayoutParams extends ViewGroup.LayoutParams {
+
+        /**
+         * Special values for the alignment requested by child views.
+         */
+        public enum Alignment {
+            TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER_LEFT, CENTER, CENTER_RIGHT, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT
+        }
+
+        /**
+         * The location of the child view within the map view.
+         */
+        public LatLong latLong;
+
+        /**
+         * The alignment of the view compared to the location.
+         */
+        public Alignment alignment;
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+            this.alignment = LayoutParams.Alignment.BOTTOM_CENTER;
+        }
+
+        /**
+         * Creates a new set of layout parameters for a child view of MapView.
+         *
+         * @param width     the width of the child, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels.
+         * @param height    the height of the child, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels.
+         * @param latLong   the location of the child within the map view.
+         * @param alignment the alignment of the view compared to the location.
+         */
+        public LayoutParams(int width, int height, LatLong latLong, Alignment alignment) {
+            super(width, height);
+            this.latLong = latLong;
+            this.alignment = alignment;
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
+    }
+
     private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
+
     private final FpsCounter fpsCounter;
     private final FrameBuffer frameBuffer;
     private final FrameBufferController frameBufferController;
     private final GestureDetector gestureDetector;
+    private GestureDetector gestureDetectorExternal;
+    private final List<InputListener> inputListeners = new CopyOnWriteArrayList<>();
     private final LayerManager layerManager;
     private final Handler layoutHandler = new Handler();
+    private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
     private final MapZoomControls mapZoomControls;
     private final Model model;
     private final ScaleGestureDetector scaleGestureDetector;
     private final TouchGestureHandler touchGestureHandler;
-    private GestureDetector gestureDetectorExternal;
-    private MapScaleBar mapScaleBar;
 
     public MapView(Context context) {
         this(context, null);
@@ -72,13 +127,18 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     public MapView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
+        setClickable(true);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         setWillNotDraw(false);
 
         this.model = new Model();
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
-        this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
         this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
@@ -93,10 +153,20 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
         this.mapZoomControls = new MapZoomControls(context, this);
         this.addView(this.mapZoomControls, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY, this.model.displayModel);
+        this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
+                GRAPHIC_FACTORY, this.model.displayModel);
         this.mapViewProjection = new MapViewProjection(this);
 
         model.mapViewPosition.addObserver(this);
+    }
+
+    public void addInputListener(InputListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        } else if (this.inputListeners.contains(listener)) {
+            throw new IllegalArgumentException("listener is already registered: " + listener);
+        }
+        this.inputListeners.add(listener);
     }
 
     @Override
@@ -116,7 +186,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     public void destroy() {
         this.touchGestureHandler.destroy();
         this.layoutHandler.removeCallbacksAndMessages(null);
-        this.layerManager.interrupt();
+        this.layerManager.finish();
         this.frameBufferController.destroy();
         this.frameBuffer.destroy();
         if (this.mapScaleBar != null) {
@@ -150,7 +220,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
-        return new MapView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, null, MapView.LayoutParams.Alignment.BOTTOM_CENTER);
+        return new MapView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                null, MapView.LayoutParams.Alignment.BOTTOM_CENTER);
     }
 
     @Override
@@ -165,7 +236,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     public BoundingBox getBoundingBox() {
-        return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(), getDimension(), this.model.displayModel.getTileSize());
+        return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
+                getDimension(), this.model.displayModel.getTileSize());
     }
 
     @Override
@@ -191,14 +263,6 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     @Override
     public MapScaleBar getMapScaleBar() {
         return this.mapScaleBar;
-    }
-
-    @Override
-    public void setMapScaleBar(MapScaleBar mapScaleBar) {
-        if (this.mapScaleBar != null) {
-            this.mapScaleBar.destroy();
-        }
-        this.mapScaleBar = mapScaleBar;
     }
 
     @Override
@@ -349,6 +413,18 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    /**
+     * This method is called by internal programs only. The underlying mapView implementation will
+     * notify registered {@link InputListener} about the start of a manual move.
+     * Note that this method may be called multiple times while the move has been started.
+     * Also note that only manual moves get notified.
+     */
+    public void onMoveEvent() {
+        for (InputListener listener : inputListeners) {
+            listener.onMoveEvent();
+        }
+    }
+
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         this.model.mapViewDimension.setDimension(new Dimension(width, height));
@@ -370,6 +446,27 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
             retVal = this.gestureDetector.onTouchEvent(event);
         }
         return retVal;
+    }
+
+    /**
+     * This method is called by internal programs only. The underlying mapView implementation will
+     * notify registered {@link InputListener} about the start of a manual zoom.
+     * Note that this method may be called multiple times while the zoom has been started.
+     * Also note that only manual zooms get notified.
+     */
+    public void onZoomEvent() {
+        for (InputListener listener : inputListeners) {
+            listener.onZoomEvent();
+        }
+    }
+
+    public void removeInputListener(InputListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        } else if (!this.inputListeners.contains(listener)) {
+            throw new IllegalArgumentException("listener is not registered: " + listener);
+        }
+        this.inputListeners.remove(listener);
     }
 
     @Override
@@ -400,6 +497,14 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     }
 
     @Override
+    public void setMapScaleBar(MapScaleBar mapScaleBar) {
+        if (this.mapScaleBar != null) {
+            this.mapScaleBar.destroy();
+        }
+        this.mapScaleBar = mapScaleBar;
+    }
+
+    @Override
     public void setZoomLevel(byte zoomLevel) {
         this.model.mapViewPosition.setZoomLevel(zoomLevel);
     }
@@ -414,50 +519,5 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     public void setZoomLevelMin(byte zoomLevelMin) {
         this.model.mapViewPosition.setZoomLevelMin(zoomLevelMin);
         this.mapZoomControls.setZoomLevelMin(zoomLevelMin);
-    }
-
-    /**
-     * Child view Layout information associated with MapView.
-     */
-    public static class LayoutParams extends ViewGroup.LayoutParams {
-
-        /**
-         * The location of the child view within the map view.
-         */
-        public LatLong latLong;
-        /**
-         * The alignment of the view compared to the location.
-         */
-        public Alignment alignment;
-
-        public LayoutParams(Context c, AttributeSet attrs) {
-            super(c, attrs);
-            this.alignment = LayoutParams.Alignment.BOTTOM_CENTER;
-        }
-
-        /**
-         * Creates a new set of layout parameters for a child view of MapView.
-         *
-         * @param width     the width of the child, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels.
-         * @param height    the height of the child, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels.
-         * @param latLong   the location of the child within the map view.
-         * @param alignment the alignment of the view compared to the location.
-         */
-        public LayoutParams(int width, int height, LatLong latLong, Alignment alignment) {
-            super(width, height);
-            this.latLong = latLong;
-            this.alignment = alignment;
-        }
-
-        public LayoutParams(ViewGroup.LayoutParams source) {
-            super(source);
-        }
-
-        /**
-         * Special values for the alignment requested by child views.
-         */
-        public enum Alignment {
-            TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER_LEFT, CENTER, CENTER_RIGHT, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT
-        }
     }
 }

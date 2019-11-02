@@ -12,6 +12,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MultiMapDataStore;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.renderer.DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
@@ -85,7 +86,7 @@ public class MapsForgeLayer extends Layer {
         if (mustInitialize) {
             // initialize these static things only once
             mustInitialize = false;
-            PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
+            PROCESSOR_COUNT = 1; //Runtime.getRuntime().availableProcessors();
             multiMapDataStores = new MultiMapDataStore[PROCESSOR_COUNT];
             databaseRenderers = new DatabaseRenderer[PROCESSOR_COUNT];
             for (int i = 0; i < PROCESSOR_COUNT; i++)
@@ -111,7 +112,7 @@ public class MapsForgeLayer extends Layer {
     public void clearAdditionalMaps() {
         additionalMapsforgeLayer.clear();
         for (MultiMapDataStore mmds : multiMapDataStores) {
-            mmds.clearMapDataStore();
+            mmds.close(); // mmds.clearMapDataStore();
             mmds.addMapDataStore(mapFile, false, false);
         }
     }
@@ -154,14 +155,15 @@ public class MapsForgeLayer extends Layer {
         try {
             for (int i = 0; i < PROCESSOR_COUNT; i++) {
                 // Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
-                multiMapDataStores[i].clearMapDataStore();
+                multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
                 multiMapDataStores[i].addMapDataStore(mapFile, false, false);
                 for (Layer layer : additionalMapsforgeLayer) {
                     MapsForgeLayer mapsforgeLayer = (MapsForgeLayer) layer;
                     multiMapDataStores[i].addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
                 }
-                // databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getGraphicFactory(displayModel.getScaleFactor()), firstLevelTileCache, null, true, true);
-                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true);
+                HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
+                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, hillsRenderConfig);
+
             }
             Log.info(log, "prepareLayer " + getName() + " : " + mapFile.getMapFileInfo().comment);
         } catch (Exception e) {

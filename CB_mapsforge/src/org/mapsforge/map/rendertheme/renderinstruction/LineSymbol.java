@@ -38,14 +38,15 @@ import java.util.Map;
 public class LineSymbol extends RenderInstruction {
     private static final float REPEAT_GAP_DEFAULT = 200f;
     private static final float REPEAT_START_DEFAULT = 30f;
-    private final Map<Byte, Float> dyScaled;
-    private final String relativePathPrefix;
+
     private boolean alignCenter;
     private Bitmap bitmap;
     private boolean bitmapInvalid;
     private Display display;
     private float dy;
+    private final Map<Byte, Float> dyScaled;
     private int priority;
+    private final String relativePathPrefix;
     private boolean repeat;
     private float repeatGap;
     private float repeatStart;

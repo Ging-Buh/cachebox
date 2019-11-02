@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,17 +36,18 @@ import java.util.regex.Pattern;
  */
 public class Line extends RenderInstruction {
     private static final Pattern SPLIT_PATTERN = Pattern.compile(",");
+
+    private boolean bitmapCreated;
+    private float dy;
     private final Map<Byte, Float> dyScaled;
     private final int level;
     private final String relativePathPrefix;
-    private final Paint stroke;
-    private final Map<Byte, Paint> strokes;
-    private boolean bitmapCreated;
-    private float dy;
     private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
+    private final Paint stroke;
     private float[] strokeDasharray;
+    private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
     public Line(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -64,15 +65,6 @@ public class Line extends RenderInstruction {
         this.dyScaled = new HashMap<>();
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
-    }
-
-    private static float[] parseFloatArray(String name, String dashString) throws XmlPullParserException {
-        String[] dashEntries = SPLIT_PATTERN.split(dashString);
-        float[] dashIntervals = new float[dashEntries.length];
-        for (int i = 0; i < dashEntries.length; ++i) {
-            dashIntervals[i] = XmlUtils.parseNonNegativeFloat(name, dashEntries[i]);
-        }
-        return dashIntervals;
     }
 
     @Override
@@ -95,7 +87,7 @@ public class Line extends RenderInstruction {
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_DASHARRAY.equals(name)) {
                 this.strokeDasharray = parseFloatArray(name, value);
                 for (int f = 0; f < this.strokeDasharray.length; ++f) {
@@ -128,6 +120,15 @@ public class Line extends RenderInstruction {
             paint = this.stroke;
         }
         return paint;
+    }
+
+    private static float[] parseFloatArray(String name, String dashString) throws XmlPullParserException {
+        String[] dashEntries = SPLIT_PATTERN.split(dashString);
+        float[] dashIntervals = new float[dashEntries.length];
+        for (int i = 0; i < dashEntries.length; ++i) {
+            dashIntervals[i] = XmlUtils.parseNonNegativeFloat(name, dashEntries[i]);
+        }
+        return dashIntervals;
     }
 
     @Override

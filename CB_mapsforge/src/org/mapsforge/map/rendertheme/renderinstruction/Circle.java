@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,12 +39,12 @@ public class Circle extends RenderInstruction {
     private final Paint fill;
     private final Map<Byte, Paint> fills;
     private final int level;
-    private final Map<Byte, Float> renderRadiusScaled;
-    private final Paint stroke;
-    private final Map<Byte, Paint> strokes;
     private float radius;
     private float renderRadius;
+    private final Map<Byte, Float> renderRadiusScaled;
     private boolean scaleRadius;
+    private final Paint stroke;
+    private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
     public Circle(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -82,16 +82,16 @@ public class Circle extends RenderInstruction {
             String name = pullParser.getAttributeName(i);
             String value = pullParser.getAttributeValue(i);
 
-            if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
+            if (RADIUS.equals(name) || R.equals(name)) {
                 this.radius = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (CAT.equals(name)) {
                 this.category = value;
             } else if (FILL.equals(name)) {
-                this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (SCALE_RADIUS.equals(name)) {
                 this.scaleRadius = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else {

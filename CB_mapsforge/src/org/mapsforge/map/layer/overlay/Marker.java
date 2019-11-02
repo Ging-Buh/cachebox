@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -50,9 +50,14 @@ public class Marker extends Layer {
     }
 
     public synchronized boolean contains(Point center, Point point) {
-        Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y
-                - (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2
-                + this.horizontalOffset, center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
+        // Touch min 20x20 px at baseline mdpi (160dpi)
+        double width = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getWidth());
+        double height = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getHeight());
+        Rectangle r = new Rectangle(
+                center.x - width / 2 + this.horizontalOffset,
+                center.y - height / 2 + this.verticalOffset,
+                center.x + width / 2 + this.horizontalOffset,
+                center.y + height / 2 + this.verticalOffset);
         return r.contains(point);
     }
 
@@ -91,19 +96,6 @@ public class Marker extends Layer {
     }
 
     /**
-     * @param bitmap the new {@code Bitmap} of this marker (may be null).
-     */
-    public synchronized void setBitmap(Bitmap bitmap) {
-        if (this.bitmap != null && this.bitmap.equals(bitmap)) {
-            return;
-        }
-        if (this.bitmap != null) {
-            this.bitmap.decrementRefCount();
-        }
-        this.bitmap = bitmap;
-    }
-
-    /**
      * @return the horizontal offset of this marker.
      */
     public synchronized int getHorizontalOffset() {
@@ -111,24 +103,10 @@ public class Marker extends Layer {
     }
 
     /**
-     * @param horizontalOffset the new horizontal offset of this marker.
-     */
-    public synchronized void setHorizontalOffset(int horizontalOffset) {
-        this.horizontalOffset = horizontalOffset;
-    }
-
-    /**
      * @return the geographical coordinates of this marker (may be null).
      */
     public synchronized LatLong getLatLong() {
         return this.latLong;
-    }
-
-    /**
-     * @param latLong the new geographical coordinates of this marker (may be null).
-     */
-    public synchronized void setLatLong(LatLong latLong) {
-        this.latLong = latLong;
     }
 
     /**
@@ -146,18 +124,45 @@ public class Marker extends Layer {
         return this.verticalOffset;
     }
 
-    /**
-     * @param verticalOffset the new vertical offset of this marker.
-     */
-    public synchronized void setVerticalOffset(int verticalOffset) {
-        this.verticalOffset = verticalOffset;
-    }
-
     @Override
     public synchronized void onDestroy() {
         if (this.bitmap != null) {
             this.bitmap.decrementRefCount();
         }
+    }
+
+    /**
+     * @param bitmap the new {@code Bitmap} of this marker (may be null).
+     */
+    public synchronized void setBitmap(Bitmap bitmap) {
+        if (this.bitmap != null && this.bitmap.equals(bitmap)) {
+            return;
+        }
+        if (this.bitmap != null) {
+            this.bitmap.decrementRefCount();
+        }
+        this.bitmap = bitmap;
+    }
+
+    /**
+     * @param horizontalOffset the new horizontal offset of this marker.
+     */
+    public synchronized void setHorizontalOffset(int horizontalOffset) {
+        this.horizontalOffset = horizontalOffset;
+    }
+
+    /**
+     * @param latLong the new geographical coordinates of this marker (may be null).
+     */
+    public synchronized void setLatLong(LatLong latLong) {
+        this.latLong = latLong;
+    }
+
+    /**
+     * @param verticalOffset the new vertical offset of this marker.
+     */
+    public synchronized void setVerticalOffset(int verticalOffset) {
+        this.verticalOffset = verticalOffset;
     }
 
 }

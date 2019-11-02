@@ -20,9 +20,7 @@ import org.mapsforge.core.graphics.Path;
 
 import java.awt.geom.Path2D;
 
-public class AwtPath implements Path {
-    final Path2D path2D = new Path2D.Float();
-
+class AwtPath implements Path {
     private static int getWindingRule(FillRule fillRule) {
         switch (fillRule) {
             case EVEN_ODD:
@@ -33,6 +31,8 @@ public class AwtPath implements Path {
 
         throw new IllegalArgumentException("unknown fill rule:" + fillRule);
     }
+
+    final Path2D path2D = new Path2D.Float();
 
     @Override
     public void clear() {

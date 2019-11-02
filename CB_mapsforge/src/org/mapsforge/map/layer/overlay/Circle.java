@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -69,6 +69,13 @@ public class Circle extends Layer {
         this.paintStroke = paintStroke;
     }
 
+    public synchronized boolean contains(Point center, Point point, double latitude, byte zoomLevel) {
+        // Touch min 20x20 px at baseline mdpi (160dpi)
+        double distance = Math.max(20 / 2 * this.displayModel.getScaleFactor(),
+                getRadiusInPixels(latitude, zoomLevel));
+        return center.distance(point) < distance;
+    }
+
     @Override
     public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
         if (this.latLong == null || (this.paintStroke == null && this.paintFill == null)) {
@@ -109,24 +116,10 @@ public class Circle extends Layer {
     }
 
     /**
-     * @param paintFill the new {@code Paint} used to fill this circle (may be null).
-     */
-    public synchronized void setPaintFill(Paint paintFill) {
-        this.paintFill = paintFill;
-    }
-
-    /**
      * @return the {@code Paint} used to stroke this circle (may be null).
      */
     public synchronized Paint getPaintStroke() {
         return this.paintStroke;
-    }
-
-    /**
-     * @param paintStroke the new {@code Paint} used to stroke this circle (may be null).
-     */
-    public synchronized void setPaintStroke(Paint paintStroke) {
-        this.paintStroke = paintStroke;
     }
 
     /**
@@ -142,14 +135,6 @@ public class Circle extends Layer {
      */
     public synchronized float getRadius() {
         return this.radius;
-    }
-
-    /**
-     * @param radius the new non-negative radius of this circle in meters.
-     * @throws IllegalArgumentException if the given {@code radius} is negative or {@link Float#NaN}.
-     */
-    public synchronized void setRadius(float radius) {
-        setRadiusInternal(radius);
     }
 
     /**
@@ -172,6 +157,28 @@ public class Circle extends Layer {
      */
     public synchronized void setLatLong(LatLong latLong) {
         this.latLong = latLong;
+    }
+
+    /**
+     * @param paintFill the new {@code Paint} used to fill this circle (may be null).
+     */
+    public synchronized void setPaintFill(Paint paintFill) {
+        this.paintFill = paintFill;
+    }
+
+    /**
+     * @param paintStroke the new {@code Paint} used to stroke this circle (may be null).
+     */
+    public synchronized void setPaintStroke(Paint paintStroke) {
+        this.paintStroke = paintStroke;
+    }
+
+    /**
+     * @param radius the new non-negative radius of this circle in meters.
+     * @throws IllegalArgumentException if the given {@code radius} is negative or {@link Float#NaN}.
+     */
+    public synchronized void setRadius(float radius) {
+        setRadiusInternal(radius);
     }
 
     private void setRadiusInternal(float radius) {

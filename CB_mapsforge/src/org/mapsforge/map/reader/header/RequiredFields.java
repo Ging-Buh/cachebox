@@ -51,11 +51,7 @@ final class RequiredFields {
     /**
      * Highest version of the map file format supported by this implementation.
      */
-    private static final int SUPPORTED_FILE_VERSION_MAX = 4;
-
-    private RequiredFields() {
-        throw new IllegalStateException();
-    }
+    private static final int SUPPORTED_FILE_VERSION_MAX = 5;
 
     static void readBoundingBox(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
         double minLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
@@ -180,5 +176,9 @@ final class RequiredFields {
             wayTags[currentTagId] = new Tag(tag);
         }
         mapFileInfoBuilder.wayTags = wayTags;
+    }
+
+    private RequiredFields() {
+        throw new IllegalStateException();
     }
 }

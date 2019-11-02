@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
  * Copyright 2014 devemux86
+ * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,7 @@ package org.mapsforge.map.android.graphics;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Pair;
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.ResourceBitmap;
 
 import java.io.IOException;
@@ -32,8 +34,9 @@ import java.util.logging.Logger;
 
 public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitmap {
     protected static final Logger LOGGER = Logger.getLogger(AndroidResourceBitmap.class.getName());
-    protected static final Map<Integer, Pair<Bitmap, Integer>> RESOURCE_BITMAPS = new HashMap<Integer, Pair<android.graphics.Bitmap, Integer>>();
     protected static Set<Integer> rBitmaps;
+    protected static final Map<Integer, Pair<Bitmap, Integer>> RESOURCE_BITMAPS = new HashMap<Integer, Pair<android.graphics.Bitmap, Integer>>();
+
     // used for debug bitmap accounting
     protected static AtomicInteger rInstances;
 
@@ -47,23 +50,6 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
     // if AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS is set, the bitmaps are kept in
     // a dictionary for faster retrieval and are not deleted or recycled until
     // clearResourceBitmaps is called
-
-    private final int hash; // the hash value is used to avoid multiple loading of the same resource
-
-    protected AndroidResourceBitmap(int hash) {
-        super();
-        this.hash = hash;
-    }
-
-    AndroidResourceBitmap(InputStream inputStream, int hash) throws IOException {
-        this(hash);
-        this.bitmap = getResourceBitmap(inputStream, hash);
-    }
-
-    public AndroidResourceBitmap(Bitmap resourceBitmap) {
-        this.bitmap = resourceBitmap;
-        this.hash = this.bitmap.hashCode();
-    }
 
     public static void clearResourceBitmaps() {
         if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS) {
@@ -83,19 +69,25 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
         }
     }
 
-    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash) throws IOException {
+    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
         synchronized (RESOURCE_BITMAPS) {
             Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
             if (data != null) {
-                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second + 1);
+                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first,
+                        data.second + 1);
                 RESOURCE_BITMAPS.put(hash, updated);
                 return data.first;
             } else {
-                android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, createBitmapFactoryOptions(AndroidGraphicFactory.TRANSPARENT_BITMAP));
+                android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null,
+                        createBitmapFactoryOptions(AndroidGraphicFactory.TRANSPARENT_BITMAP));
                 if (bitmap == null) {
                     throw new IOException("BitmapFactory failed to decodeStream");
                 }
-                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
+                float[] newSize = GraphicUtils.imageSize(bitmap.getWidth(), bitmap.getHeight(), scaleFactor, width, height, percent);
+                if ((int) newSize[0] != bitmap.getWidth() || (int) newSize[1] != bitmap.getHeight())
+                    bitmap = Bitmap.createScaledBitmap(bitmap, (int) newSize[0], (int) newSize[1], true);
+                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
+                        Integer.valueOf(1));
                 RESOURCE_BITMAPS.put(hash, updated);
                 if (AndroidGraphicFactory.DEBUG_BITMAPS) {
                     LOGGER.info("RESOURCE BITMAP CREATE " + hash);
@@ -111,9 +103,6 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
         }
     }
 
-    // destroy is the super method here, which will take care of bitmap accounting
-    // and call down into destroyBitmap when the resource bitmap needs to be destroyed
-
     private static boolean removeBitmap(int hash) {
         if (AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS) {
             return false;
@@ -122,7 +111,8 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
             Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
             if (data != null) {
                 if (data.second.intValue() > 1) {
-                    Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second - 1);
+                    Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(
+                            data.first, data.second - 1);
                     RESOURCE_BITMAPS.put(hash, updated);
                     return false;
                 }
@@ -145,6 +135,21 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
         }
         throw new IllegalStateException("Bitmap should have been here " + hash);
     }
+
+    private final int hash; // the hash value is used to avoid multiple loading of the same resource
+
+    protected AndroidResourceBitmap(int hash) {
+        super();
+        this.hash = hash;
+    }
+
+    AndroidResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+        this(hash);
+        this.bitmap = getResourceBitmap(inputStream, scaleFactor, width, height, percent, hash);
+    }
+
+    // destroy is the super method here, which will take care of bitmap accounting
+    // and call down into destroyBitmap when the resource bitmap needs to be destroyed
 
     @Override
     protected void destroyBitmap() {

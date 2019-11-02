@@ -1,7 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
+ * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,25 +23,43 @@ import android.graphics.Picture;
 import android.graphics.RectF;
 import android.util.Pair;
 import com.caverock.androidsvg.SVG;
+import org.mapsforge.core.graphics.GraphicUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-class AndroidSvgBitmap extends AndroidResourceBitmap {
-    static final float DEFAULT_SIZE = 400f;
+public class AndroidSvgBitmap extends AndroidResourceBitmap {
+    /**
+     * Default size is 20x20px (400px) at baseline mdpi (160dpi).
+     */
+    public static float DEFAULT_SIZE = 400f;
 
-    AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent) throws IOException {
-        super(hash);
-        this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor, width, height, percent);
+    public static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, float scaleFactor, float defaultSize, int width, int height, int percent) throws IOException {
+        try {
+            // not in any cache, so need to render svg
+            SVG svg = SVG.getFromInputStream(inputStream);
+            Picture picture = svg.renderToPicture();
+
+            double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / defaultSize);
+
+            float[] bmpSize = GraphicUtils.imageSize(picture.getWidth(), picture.getHeight(), (float) scale, width, height, percent);
+
+            android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bmpSize[0]),
+                    (int) Math.ceil(bmpSize[1]), AndroidGraphicFactory.TRANSPARENT_BITMAP);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawPicture(picture, new RectF(0, 0, bmpSize[0], bmpSize[1]));
+
+            return bitmap;
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
-    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent)
-            throws IOException {
+    private static android.graphics.Bitmap getResourceBitmapImpl(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent) throws IOException {
         synchronized (RESOURCE_BITMAPS) {
             Pair<Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
             if (data != null) {
-                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first,
-                        data.second + 1);
+                Pair<android.graphics.Bitmap, Integer> updated = new Pair<>(data.first, data.second + 1);
                 RESOURCE_BITMAPS.put(hash, updated);
                 return data.first;
             }
@@ -48,52 +67,14 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
             android.graphics.Bitmap bitmap = AndroidSvgBitmapStore.get(hash);
 
             if (bitmap == null) {
-                try {
-                    // not in any cache, so need to render svg
-                    SVG svg = SVG.getFromInputStream(inputStream);
-                    Picture picture = svg.renderToPicture();
+                bitmap = getResourceBitmap(inputStream, scaleFactor, DEFAULT_SIZE, width, height, percent);
 
-                    double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / DEFAULT_SIZE);
-
-                    float bitmapWidth = (float) (picture.getWidth() * scale);
-                    float bitmapHeight = (float) (picture.getHeight() * scale);
-
-                    float aspectRatio = (1f * picture.getWidth()) / picture.getHeight();
-
-                    if (width != 0 && height != 0) {
-                        // both width and height set, override any other setting
-                        bitmapWidth = width;
-                        bitmapHeight = height;
-                    } else if (width == 0 && height != 0) {
-                        // only width set, calculate from aspect ratio
-                        bitmapWidth = height * aspectRatio;
-                        bitmapHeight = height;
-                    } else if (width != 0 && height == 0) {
-                        // only height set, calculate from aspect ratio
-                        bitmapHeight = width / aspectRatio;
-                        bitmapWidth = width;
-                    }
-
-                    if (percent != 100) {
-                        bitmapWidth *= percent / 100f;
-                        bitmapHeight *= percent / 100f;
-                    }
-
-                    bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
-                            (int) Math.ceil(bitmapHeight), AndroidGraphicFactory.TRANSPARENT_BITMAP);
-                    Canvas canvas = new Canvas(bitmap);
-                    canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
-
-                    // save to disk for faster future retrieval
-                    AndroidSvgBitmapStore.put(hash, bitmap);
-                } catch (Exception e) {
-                    throw new IOException(e);
-                }
+                // save to disk for faster future retrieval
+                AndroidSvgBitmapStore.put(hash, bitmap);
             }
 
             // save in in-memory cache
-            Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
-                    Integer.valueOf(1));
+            Pair<android.graphics.Bitmap, Integer> updated = new Pair<>(bitmap, 1);
             RESOURCE_BITMAPS.put(hash, updated);
 
             if (AndroidGraphicFactory.DEBUG_BITMAPS) {
@@ -106,4 +87,8 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
         }
     }
 
+    public AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent) throws IOException {
+        super(hash);
+        this.bitmap = getResourceBitmapImpl(inputStream, hash, scaleFactor, width, height, percent);
+    }
 }

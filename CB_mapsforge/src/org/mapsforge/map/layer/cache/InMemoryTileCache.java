@@ -67,19 +67,6 @@ public class InMemoryTileCache implements TileCache {
         return this.lruCache.capacity;
     }
 
-    /**
-     * Sets the new size of this cache. If this cache already contains more items than the new capacity allows, items
-     * are discarded based on the cache policy.
-     *
-     * @param capacity the new maximum number of entries in this cache.
-     * @throws IllegalArgumentException if the capacity is negative.
-     */
-    public synchronized void setCapacity(int capacity) {
-        BitmapLRUCache lruCacheNew = new BitmapLRUCache(capacity);
-        lruCacheNew.putAll(this.lruCache);
-        this.lruCache = lruCacheNew;
-    }
-
     @Override
     public int getCapacityFirstLevel() {
         return getCapacity();
@@ -116,6 +103,19 @@ public class InMemoryTileCache implements TileCache {
         }
         bitmap.incrementRefCount();
         this.observable.notifyObservers();
+    }
+
+    /**
+     * Sets the new size of this cache. If this cache already contains more items than the new capacity allows, items
+     * are discarded based on the cache policy.
+     *
+     * @param capacity the new maximum number of entries in this cache.
+     * @throws IllegalArgumentException if the capacity is negative.
+     */
+    public synchronized void setCapacity(int capacity) {
+        BitmapLRUCache lruCacheNew = new BitmapLRUCache(capacity);
+        lruCacheNew.putAll(this.lruCache);
+        this.lruCache = lruCacheNew;
     }
 
     @Override

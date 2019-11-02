@@ -21,8 +21,10 @@ import java.io.Serializable;
  * A tag represents an immutable key-value pair.
  */
 public class Tag implements Comparable<Tag>, Serializable {
-    public static final char KEY_VALUE_SEPARATOR = '=';
     private static final long serialVersionUID = 1L;
+
+    public static final char KEY_VALUE_SEPARATOR = '=';
+
     /**
      * The key of this tag.
      */

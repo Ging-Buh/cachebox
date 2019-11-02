@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2019 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,27 +53,22 @@ public final class LineSegment {
     }
 
     /**
-     * Computes the location code according to Cohen-Sutherland,
-     * see https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm.
+     * Computes the angle between this LineSegment and another one.
+     *
+     * @param other the other LineSegment
+     * @return angle in degrees
      */
-    private static int code(Rectangle r, Point p) {
-        int code = INSIDE;
-        if (p.x < r.left) {
-            // to the left of clip window
-            code |= LEFT;
-        } else if (p.x > r.right) {
-            // to the right of clip window
-            code |= RIGHT;
+    public double angleTo(LineSegment other) {
+        double angle1 = Math.atan2(this.start.y - this.end.y, this.start.x - this.end.x);
+        double angle2 = Math.atan2(other.start.y - other.end.y, other.start.x - other.end.x);
+        double angle = Math.toDegrees(angle1 - angle2);
+        if (angle <= -180) {
+            angle += 360;
         }
-
-        if (p.y > r.bottom) {
-            // below the clip window
-            code |= BOTTOM;
-        } else if (p.y < r.top) {
-            // above the clip window
-            code |= TOP;
+        if (angle >= 180) {
+            angle -= 360;
         }
-        return code;
+        return angle;
     }
 
     /**
@@ -191,6 +187,7 @@ public final class LineSegment {
         return start.distance(end);
     }
 
+
     /**
      * Computes a Point along the line segment with a given distance to the start Point.
      *
@@ -242,6 +239,30 @@ public final class LineSegment {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(start).append(" ").append(end);
         return stringBuilder.toString();
+    }
+
+    /**
+     * Computes the location code according to Cohen-Sutherland,
+     * see https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm.
+     */
+    private static int code(Rectangle r, Point p) {
+        int code = INSIDE;
+        if (p.x < r.left) {
+            // to the left of clip window
+            code |= LEFT;
+        } else if (p.x > r.right) {
+            // to the right of clip window
+            code |= RIGHT;
+        }
+
+        if (p.y > r.bottom) {
+            // below the clip window
+            code |= BOTTOM;
+        } else if (p.y < r.top) {
+            // above the clip window
+            code |= TOP;
+        }
+        return code;
     }
 
 }

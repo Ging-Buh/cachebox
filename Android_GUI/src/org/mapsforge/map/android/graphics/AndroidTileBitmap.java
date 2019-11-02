@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -50,6 +51,43 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
     static {
         if (AndroidGraphicFactory.DEBUG_BITMAPS) {
             tileInstances = new AtomicInteger();
+        }
+    }
+
+    private static int composeHash(int tileSize, boolean isTransparent) {
+        if (isTransparent) {
+            return tileSize + 0x10000000;
+        }
+        return tileSize;
+    }
+
+    private static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize, boolean isTransparent) {
+        int hash = composeHash(tileSize, isTransparent);
+
+        synchronized (reusableTileBitmaps) {
+            Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
+            if (subSet == null) {
+                return null;
+            }
+            android.graphics.Bitmap bitmap = null;
+            final Iterator<SoftReference<android.graphics.Bitmap>> iterator = subSet.iterator();
+            android.graphics.Bitmap candidate;
+            while (iterator.hasNext()) {
+                candidate = iterator.next().get();
+                if (null != candidate && candidate.isMutable()) {
+                    bitmap = candidate;
+                    if (isTransparent) {
+                        bitmap.eraseColor(android.graphics.Color.TRANSPARENT);
+                    }
+                    // Remove from reusable set so it can't be used again.
+                    iterator.remove();
+                    break;
+                } else {
+                    // Remove from the set if the reference has been cleared.
+                    iterator.remove();
+                }
+            }
+            return bitmap;
         }
     }
 
@@ -104,63 +142,26 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         }
     }
 
-    private static int composeHash(int tileSize, boolean isTransparent) {
-        if (isTransparent) {
-            return tileSize + 0x10000000;
-        }
-        return tileSize;
-    }
-
-    private static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize, boolean isTransparent) {
-        int hash = composeHash(tileSize, isTransparent);
-
-        synchronized (reusableTileBitmaps) {
-            Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
-            if (subSet == null) {
-                return null;
-            }
-            android.graphics.Bitmap bitmap = null;
-            final Iterator<SoftReference<android.graphics.Bitmap>> iterator = subSet.iterator();
-            android.graphics.Bitmap candidate;
-            while (iterator.hasNext()) {
-                candidate = iterator.next().get();
-                if (null != candidate && candidate.isMutable()) {
-                    bitmap = candidate;
-                    if (isTransparent) {
-                        bitmap.eraseColor(android.graphics.Color.TRANSPARENT);
-                    }
-                    // Remove from reusable set so it can't be used again.
-                    iterator.remove();
-                    break;
-                } else {
-                    // Remove from the set if the reference has been cleared.
-                    iterator.remove();
-                }
-            }
-            return bitmap;
-        }
-    }
-
     @Override
     public long getTimestamp() {
         return timestamp;
     }
 
     @Override
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    @Override
     public boolean isExpired() {
         if (expiration == 0)
             return false;
-        return (expiration >= System.currentTimeMillis());
+        return (expiration <= System.currentTimeMillis());
     }
 
     @Override
     public void setExpiration(long expiration) {
         this.expiration = expiration;
+    }
+
+    @Override
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
