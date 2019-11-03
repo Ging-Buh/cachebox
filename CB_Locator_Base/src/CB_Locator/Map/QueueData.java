@@ -36,17 +36,17 @@ class QueueData {
     }
 
     void loadTile(final Descriptor descriptor) {
-        TileGL tile = currentLayer.getTileGL(descriptor);
-        if (tile == null) {
-            GL.that.postAsync(() -> {
+        GL.that.postAsync(() -> {
+            TileGL tile = currentLayer.getTileGL(descriptor);
+            if (tile == null) {
                 // download in separate thread
                 if (currentLayer.cacheTileToFile(descriptor)) {
                     addTile(descriptor, currentLayer.getTileGL(descriptor));
                 }
-            });
-        } else {
-            addTile(descriptor, tile);
-        }
+            } else {
+                addTile(descriptor, tile);
+            }
+        });
     }
 
     private void addTile(Descriptor descriptor, TileGL tile) {

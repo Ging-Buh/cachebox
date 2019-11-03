@@ -43,7 +43,7 @@ public class MapsForgeLayer extends Layer {
     private static RenderThemeFuture renderThemeFuture;
     private static int PROCESSOR_COUNT;
     private static boolean mustInitialize = true;
-    private final ArrayList<Layer> additionalMapsforgeLayer;
+    private final ArrayList<MapsForgeLayer> additionalMapsforgeLayers;
     private final TileCache firstLevelTileCache; // perhaps static?
     private MapFile mapFile;
     private float textScale;
@@ -73,12 +73,13 @@ public class MapsForgeLayer extends Layer {
         firstLevelTileCache = new InMemoryTileCache(128);
         textScale = 1;
 
-        additionalMapsforgeLayer = new ArrayList<>();
+        additionalMapsforgeLayers = new ArrayList<>();
 
         mapsforgeThemesStyle = "";
         mapsforgeTheme = "";
         isSetRenderTheme = false;
 
+        getMapsForgeGraphicFactory(); // else overwrites the device scale faktor
         float restrictedScaleFactor = 1f;
         DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
         displayModel = new DisplayModel();
@@ -97,37 +98,39 @@ public class MapsForgeLayer extends Layer {
 
     @Override
     public void addAdditionalMap(Layer layer) {
-        if (!this.isMapsForge() || !layer.isMapsForge())
-            throw new RuntimeException("Can't add this Layer");
-        MapsForgeLayer mapsforgeLayer = (MapsForgeLayer) layer;
-        if (!additionalMapsforgeLayer.contains(mapsforgeLayer)) {
-            additionalMapsforgeLayer.add(mapsforgeLayer);
+        MapsForgeLayer additionalMapsforgeLayer = (MapsForgeLayer) layer;
+        if (!additionalMapsforgeLayers.contains(additionalMapsforgeLayer)) {
+            additionalMapsforgeLayers.add(additionalMapsforgeLayer);
             for (MultiMapDataStore mmds : multiMapDataStores) {
-                mmds.addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
+                mmds.addMapDataStore(additionalMapsforgeLayer.getMapFile(), false, false);
             }
         }
     }
 
     @Override
     public void clearAdditionalMaps() {
-        additionalMapsforgeLayer.clear();
-        for (MultiMapDataStore mmds : multiMapDataStores) {
-            mmds.close(); // mmds.clearMapDataStore();
-            mmds.addMapDataStore(mapFile, false, false);
+        for (MapsForgeLayer additionalMapsforgeLayer : additionalMapsforgeLayers) {
+            additionalMapsforgeLayer.getMapFile().close();
         }
+        for (MultiMapDataStore mmds : multiMapDataStores) {
+            mmds = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
+            mmds.addMapDataStore(mapFile, false, false);
+
+        }
+        additionalMapsforgeLayers.clear();
     }
 
     @Override
     public boolean hasAdditionalMaps() {
-        return additionalMapsforgeLayer.size() > 0;
+        return additionalMapsforgeLayers.size() > 0;
     }
 
     @Override
     public String[] getAllLayerNames() {
-        String[] ret = new String[additionalMapsforgeLayer.size() + 1];
+        String[] ret = new String[additionalMapsforgeLayers.size() + 1];
         ret[0] = getName();
         int idx = 1;
-        for (Layer additionalLayer : additionalMapsforgeLayer) {
+        for (Layer additionalLayer : additionalMapsforgeLayers) {
             ret[idx] = additionalLayer.getName();
             idx++;
         }
@@ -141,10 +144,10 @@ public class MapsForgeLayer extends Layer {
         sb.append(this.getName());
         sb.append("] additional Layer:");
 
-        if (additionalMapsforgeLayer == null || additionalMapsforgeLayer.isEmpty()) {
+        if (additionalMapsforgeLayers == null || additionalMapsforgeLayers.isEmpty()) {
             sb.append("--");
         } else {
-            for (Layer addLayer : additionalMapsforgeLayer) {
+            for (Layer addLayer : additionalMapsforgeLayers) {
                 sb.append(addLayer.getName()).append(", ");
             }
         }
@@ -157,8 +160,7 @@ public class MapsForgeLayer extends Layer {
                 // Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
                 multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
                 multiMapDataStores[i].addMapDataStore(mapFile, false, false);
-                for (Layer layer : additionalMapsforgeLayer) {
-                    MapsForgeLayer mapsforgeLayer = (MapsForgeLayer) layer;
+                for (MapsForgeLayer mapsforgeLayer : additionalMapsforgeLayers) {
                     multiMapDataStores[i].addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
                 }
                 HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
@@ -177,14 +179,17 @@ public class MapsForgeLayer extends Layer {
     TileGL getTileGL(Descriptor desc) {
         // create bitmap from tile-definition
         try {
-            Log.trace(log, "getTileGL: " + desc);
+            Log.info(log, "MF step 1: " + desc);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
             mDataStoreNumber = (mDataStoreNumber + 1) % PROCESSOR_COUNT;
             RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[mDataStoreNumber], renderThemeFuture, displayModel, textScale, false, false);
             TileBitmap bitmap = databaseRenderers[mDataStoreNumber].executeJob(rendererJob);
-            if (bitmap == null)
+            if (bitmap == null) {
+                Log.err(log, "MF step 2: " + desc);
                 return null;
+            }
             else {
+                Log.info(log, "MF step 2: " + desc);
                 return new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
             }
         } catch (Exception ex) {
@@ -274,39 +279,38 @@ public class MapsForgeLayer extends Layer {
     }
 
     public void initTheme(boolean carMode) {
-        String mapsforgeThemesStyle;
-        mapsforgeTheme = "";
+        String themestyle = "";
+        String theme = "";
         String path;
         if (carMode) {
             textScale = DEFAULT_TEXT_SCALE * 1.35f;
-            mapsforgeTheme = INTERNAL_THEME_CAR;
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                mapsforgeThemesStyle = LocatorSettings.MapsforgeCarNightStyle.getValue();
+                themestyle = LocatorSettings.MapsforgeCarNightStyle.getValue();
                 path = LocatorSettings.MapsforgeCarNightTheme.getValue();
             } else {
-                mapsforgeThemesStyle = LocatorSettings.MapsforgeCarDayStyle.getValue();
+                themestyle = LocatorSettings.MapsforgeCarDayStyle.getValue();
                 path = LocatorSettings.MapsforgeCarDayTheme.getValue();
             }
         } else {
             textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.MapViewTextFaktor.getValue();
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                mapsforgeThemesStyle = LocatorSettings.MapsforgeNightStyle.getValue();
+                themestyle = LocatorSettings.MapsforgeNightStyle.getValue();
                 path = LocatorSettings.MapsforgeNightTheme.getValue();
             } else {
-                mapsforgeThemesStyle = LocatorSettings.MapsforgeDayStyle.getValue();
+                themestyle = LocatorSettings.MapsforgeDayStyle.getValue();
                 path = LocatorSettings.MapsforgeDayTheme.getValue();
             }
         }
         if (path.length() > 0) {
             if (path.equals(INTERNAL_THEME_CAR) || path.equals(INTERNAL_THEME_DEFAULT) || path.equals(INTERNAL_THEME_OSMARENDER)) {
-                mapsforgeTheme = path;
+                theme = path;
             } else if (FileIO.fileExists(path) && FileIO.getFileExtension(path).contains("xml")) {
-                mapsforgeTheme = path;
+                theme = path;
             } else
-                mapsforgeTheme = "";
+                theme = "";
         } else
-            mapsforgeTheme = "";
-        setRenderTheme(mapsforgeTheme, mapsforgeThemesStyle);
+            theme = "";
+        setRenderTheme(theme, themestyle);
     }
 
     private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {

@@ -612,7 +612,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         }
     }
 
-    public void restartFromSplash() {
+    void restartFromSplash() {
         Log.info(sKlasse, "=> Must restart from splash!");
         Intent splashIntent = new Intent().setClass(this, Splash.class);
         startActivity(splashIntent);

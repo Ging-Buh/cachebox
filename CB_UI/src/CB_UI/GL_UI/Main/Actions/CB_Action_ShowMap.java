@@ -20,10 +20,7 @@ import CB_Core.Import.UnZip;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.LocatorSettings;
-import CB_Locator.Map.Layer;
-import CB_Locator.Map.LayerManager;
-import CB_Locator.Map.MapViewBase;
-import CB_Locator.Map.MapsForgeLayer;
+import CB_Locator.Map.*;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.SearchCoordinates;
@@ -694,19 +691,23 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
     }
 
     private HashMap<String, String> getMapStyles(String selectedTheme) {
-        if (selectedTheme.length() > 0) {
-            try {
-                StylesCallback stylesCallBack = new StylesCallback();
-                XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, stylesCallBack);
+        try {
+            CB_InternalRenderTheme.valueOf(selectedTheme.toUpperCase()); // todo make this check better
+        } catch (Exception ex) {
+            if (selectedTheme.length() > 0) {
                 try {
-                    // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-                    // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
-                    RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
-                } catch (Exception e) {
-                    Log.err(log, e.getLocalizedMessage());
+                    StylesCallback stylesCallBack = new StylesCallback();
+                    XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, stylesCallBack);
+                    try {
+                        // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
+                        // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
+                        RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
+                    } catch (Exception e) {
+                        Log.err(log, e.getLocalizedMessage());
+                    }
+                    return stylesCallBack.getStyles();
+                } catch (Exception ignored) {
                 }
-                return stylesCallBack.getStyles();
-            } catch (Exception ignored) {
             }
         }
         return new HashMap<>();
