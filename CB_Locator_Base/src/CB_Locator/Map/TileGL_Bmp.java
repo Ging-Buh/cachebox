@@ -72,9 +72,8 @@ public class TileGL_Bmp extends TileGL {
             return true;
         if (inCreation)
             return false;
-        Log.err(log, "can draw create Texture once more!?");
-        createTexture();
-        return texture != null;
+        Log.err(log, "Impossible: not in Creation and texture is null! " + this);
+        return false;
     }
 
     private void createTexture() {

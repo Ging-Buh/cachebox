@@ -11,7 +11,7 @@ dependencies {
     implementation project(":CB_mapsforge")
     implementation project(":CB_UI_Base")
 
-    //sjxp-2.2.jar
+    //sjxp-2.2.jar for TMSLayer.java xml parser
     implementation fileTree(dir: '../libs', include: ['sjxp-2.2.jar'])
 
     //libgdx

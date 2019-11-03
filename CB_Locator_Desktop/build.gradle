@@ -9,10 +9,10 @@ dependencies {
     implementation project(":CB_mapsforge")
 
     //sjxp-2.2.jar
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //libgdx
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    //implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
     // https://mvnrepository.com/artifact/net.sf.kxml/kxml2
     implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'

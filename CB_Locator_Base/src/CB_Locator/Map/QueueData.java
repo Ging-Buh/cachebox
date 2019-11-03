@@ -36,10 +36,12 @@ class QueueData {
     }
 
     void loadTile(final Descriptor descriptor) {
+        // get in separate thread, cause the awake by interrupt closes the stream of mapsforge
+        // java.nio.channels.ClosedByInterruptException
+        // conclusion: todo better
         GL.that.postAsync(() -> {
             TileGL tile = currentLayer.getTileGL(descriptor);
             if (tile == null) {
-                // download in separate thread
                 if (currentLayer.cacheTileToFile(descriptor)) {
                     addTile(descriptor, currentLayer.getTileGL(descriptor));
                 }
@@ -63,6 +65,7 @@ class QueueData {
     }
 
     void loadOverlayTile(final Descriptor descriptor) {
+        // overlay is never mapsforge
         TileGL tile = currentOverlayLayer.getTileGL(descriptor);
         if (tile == null) {
             GL.that.postAsync(() -> {

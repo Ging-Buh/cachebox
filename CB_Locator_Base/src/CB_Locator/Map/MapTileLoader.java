@@ -63,12 +63,12 @@ public class MapTileLoader {
                         try {
                             //Log.info(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
                             queueProcessors.remove(threadToCheck);
-                            MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData, threadToCheck.threadIndex);
+                            MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData);
                             queueProcessors.add(newThread);
                             newThread.setPriority(Thread.MIN_PRIORITY);
                             newThread.start();
                         } catch (Exception ex) {
-                            Log.err(log, "Started a new thread with index: " + threadToCheck.threadIndex);
+                            Log.err(log, "Started a new thread with index: ");
                         }
                     }
                 }
@@ -78,7 +78,7 @@ public class MapTileLoader {
 
     private void startQueueProzessors() {
         for (threadIndex = 0; threadIndex < PROCESSOR_COUNT; threadIndex++) {
-            MultiThreadQueueProcessor thread = new MultiThreadQueueProcessor(queueData, threadIndex);
+            MultiThreadQueueProcessor thread = new MultiThreadQueueProcessor(queueData);
             queueProcessors.add(thread);
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();

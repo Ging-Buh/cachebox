@@ -263,7 +263,6 @@ public class MapsForgeLayer extends Layer {
         }
 
         try {
-            // CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(displayModel.getScaleFactor()), displayModel, renderTheme);
             RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), displayModel, renderTheme);
         } catch (Exception e) {
             Log.err(log, "Error in checking RenderTheme " + mapsforgeTheme, e);

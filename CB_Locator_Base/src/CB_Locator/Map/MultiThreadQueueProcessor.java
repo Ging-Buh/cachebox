@@ -15,7 +15,6 @@
  */
 package CB_Locator.Map;
 
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.utils.Array;
 
@@ -26,19 +25,19 @@ import java.util.Iterator;
  * Logging with threadID
  */
 class MultiThreadQueueProcessor extends Thread {
+    private static int threadIndex = -1;
     private static int newOrderGroup;
     private final QueueData queueData;
-    final private Array<OrderData> orders;
-    int threadIndex;
+    private final Array<OrderData> orders;
     long startTime;
     boolean isWorking;
     private String log = "MapTileQueueThread";
     private OrderData newOrder;
     private int actualOrderGroup;
 
-    MultiThreadQueueProcessor(QueueData queueData, int threadIndex) {
+    MultiThreadQueueProcessor(QueueData queueData) {
+        threadIndex++;
         log = log + "[" + threadIndex + "]";
-        this.threadIndex = threadIndex;
         this.queueData = queueData;
         isWorking = false;
         startTime = System.currentTimeMillis();
