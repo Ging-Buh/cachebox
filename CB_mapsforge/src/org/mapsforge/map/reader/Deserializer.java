@@ -18,10 +18,6 @@ package org.mapsforge.map.reader;
  * An utility class to convert byte arrays to numbers.
  */
 final class Deserializer {
-    private Deserializer() {
-        throw new IllegalStateException();
-    }
-
     /**
      * Converts five bytes of a byte array to an unsigned long.
      * <p/>
@@ -76,5 +72,9 @@ final class Deserializer {
      */
     static int getShort(byte[] buffer, int offset) {
         return buffer[offset] << 8 | (buffer[offset + 1] & 0xff);
+    }
+
+    private Deserializer() {
+        throw new IllegalStateException();
     }
 }

@@ -18,7 +18,7 @@ package CB_Locator.Map;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import com.badlogic.gdx.utils.Array;
 
-class QueueData {
+class MapTiles {
 
     private final MapTileCache tiles;
     private final MapTileCache overlayTiles;
@@ -26,7 +26,7 @@ class QueueData {
     Layer currentLayer = null;
     Layer currentOverlayLayer = null;
 
-    QueueData(int capacity) {
+    MapTiles(int capacity) {
         tiles = new MapTileCache((short) capacity);
         overlayTiles = new MapTileCache((short) capacity);
     }
@@ -36,17 +36,19 @@ class QueueData {
     }
 
     void loadTile(final Descriptor descriptor) {
-        TileGL tile = currentLayer.getTileGL(descriptor);
-        if (tile == null) {
-            GL.that.postAsync(() -> {
-                // download in separate thread
+        // get in separate thread, cause the awake by interrupt closes the stream of mapsforge
+        // java.nio.channels.ClosedByInterruptException
+        // conclusion: todo better
+        GL.that.postAsync(() -> {
+            TileGL tile = currentLayer.getTileGL(descriptor);
+            if (tile == null) {
                 if (currentLayer.cacheTileToFile(descriptor)) {
                     addTile(descriptor, currentLayer.getTileGL(descriptor));
                 }
-            });
-        } else {
-            addTile(descriptor, tile);
-        }
+            } else {
+                addTile(descriptor, tile);
+            }
+        });
     }
 
     private void addTile(Descriptor descriptor, TileGL tile) {
@@ -63,6 +65,7 @@ class QueueData {
     }
 
     void loadOverlayTile(final Descriptor descriptor) {
+        // overlay is never mapsforge
         TileGL tile = currentOverlayLayer.getTileGL(descriptor);
         if (tile == null) {
             GL.that.postAsync(() -> {

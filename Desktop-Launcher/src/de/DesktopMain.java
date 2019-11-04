@@ -26,7 +26,6 @@ import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
-import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -44,6 +43,8 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+//import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 
 public class DesktopMain {
     private static final String log = "DesktopMain";
@@ -371,13 +372,14 @@ public class DesktopMain {
         CB_UI.onStart();
 
         // Gdx.input.setInputProcessor(CB_UI);
-
+/*
         if (simulate) {
             showSimmulateForm();
         }
-
+ */
     }
 
+    /*
     private static void showSimmulateForm() {
         // final simulateForm sim = new simulateForm("Simulate Form");
         // sim.setSize(400, 130);
@@ -397,6 +399,8 @@ public class DesktopMain {
         }
 
     }
+
+     */
 
     /**
      * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3

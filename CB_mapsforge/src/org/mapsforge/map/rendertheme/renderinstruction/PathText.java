@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2016 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,18 +33,19 @@ import java.util.Map;
  * Represents a text along a polyline on the map.
  */
 public class PathText extends RenderInstruction {
-    private static final float REPEAT_GAP_DEFAULT = 50f;
+    private static final float REPEAT_GAP_DEFAULT = 100f;
     private static final float REPEAT_START_DEFAULT = 10f;
+
+    private Display display;
+    private float dy;
     private final Map<Byte, Float> dyScaled;
     private final Paint fill;
     private final Map<Byte, Paint> fills;
-    private final Paint stroke;
-    private final Map<Byte, Paint> strokes;
-    private Display display;
-    private float dy;
     private float fontSize;
     private int priority;
     private Scale scale = Scale.STROKE;
+    private final Paint stroke;
+    private final Map<Byte, Paint> strokes;
     private boolean repeat;
     private float repeatGap;
     private float repeatStart;
@@ -99,7 +100,7 @@ public class PathText extends RenderInstruction {
             } else if (DY.equals(name)) {
                 this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (FILL.equals(name)) {
-                this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (FONT_FAMILY.equals(name)) {
                 fontFamily = FontFamily.fromString(value);
             } else if (FONT_SIZE.equals(name)) {
@@ -119,7 +120,7 @@ public class PathText extends RenderInstruction {
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
             } else {

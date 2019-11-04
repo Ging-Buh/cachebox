@@ -34,12 +34,12 @@ import java.io.IOException;
  * Represents an icon on the map.
  */
 public class Symbol extends RenderInstruction {
-    private final String relativePathPrefix;
     private Bitmap bitmap;
     private boolean bitmapInvalid;
     private Display display;
     private String id;
     private int priority;
+    private final String relativePathPrefix;
     private String src;
 
     public Symbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,

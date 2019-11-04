@@ -17,10 +17,6 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.Point;
 
 final class GeometryUtils {
-    private GeometryUtils() {
-        throw new IllegalStateException();
-    }
-
     /**
      * Calculates the center of the minimum bounding rectangle for the given coordinates.
      *
@@ -48,5 +44,9 @@ final class GeometryUtils {
         }
 
         return new Point((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
+    }
+
+    private GeometryUtils() {
+        throw new IllegalStateException();
     }
 }

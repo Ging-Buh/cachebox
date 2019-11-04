@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2016 devemux86
+ * Copyright 2018 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,8 +17,8 @@
 package org.mapsforge.map.awt.input;
 
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.awt.view.MapView;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.view.MapView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 public class MouseEventListener extends MouseAdapter {
-    protected final MapView mapView;
+    private final MapView mapView;
 
     private Point lastDragPoint;
 
@@ -56,6 +57,7 @@ public class MouseEventListener extends MouseAdapter {
         if (SwingUtilities.isLeftMouseButton(e)) {
             Point point = e.getPoint();
             if (this.lastDragPoint != null) {
+                this.mapView.onMoveEvent();
                 int moveHorizontal = point.x - this.lastDragPoint.x;
                 int moveVertical = point.y - this.lastDragPoint.y;
                 this.mapView.getModel().mapViewPosition.moveCenter(moveHorizontal, moveVertical);
@@ -78,6 +80,7 @@ public class MouseEventListener extends MouseAdapter {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+        this.mapView.onZoomEvent();
         byte zoomLevelDiff = (byte) -e.getWheelRotation();
         this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
     }

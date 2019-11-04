@@ -20,10 +20,6 @@ import java.util.logging.Logger;
 final class RuleOptimizer {
     private static final Logger LOGGER = Logger.getLogger(RuleOptimizer.class.getName());
 
-    private RuleOptimizer() {
-        throw new IllegalStateException();
-    }
-
     static AttributeMatcher optimize(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
         if (attributeMatcher instanceof AnyMatcher || attributeMatcher instanceof NegativeMatcher) {
             return attributeMatcher;
@@ -93,5 +89,9 @@ final class RuleOptimizer {
         }
 
         return attributeMatcher;
+    }
+
+    private RuleOptimizer() {
+        throw new IllegalStateException();
     }
 }

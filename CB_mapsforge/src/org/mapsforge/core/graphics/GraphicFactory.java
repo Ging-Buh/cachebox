@@ -1,6 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2017 usrusr
+ * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +19,7 @@ package org.mapsforge.core.graphics;
 
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 
 import java.io.IOException;
@@ -35,6 +38,11 @@ public interface GraphicFactory {
 
     Matrix createMatrix();
 
+    /**
+     * Create a single channel bitmap for hillshading, may include a buffer.
+     */
+    HillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area);
+
     Paint createPaint();
 
     Paint createPaint(Paint paint);
@@ -44,7 +52,7 @@ public interface GraphicFactory {
     PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
                                                 SymbolContainer symbolContainer, Position position, int maxTextWidth);
 
-    ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
+    ResourceBitmap createResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException;
 
     TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
 

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,18 +27,35 @@ import java.util.List;
  */
 public class BoundingBox implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new BoundingBox from a comma-separated string of coordinates in the order minLat, minLon, maxLat,
+     * maxLon. All coordinate values must be in degrees.
+     *
+     * @param boundingBoxString the string that describes the BoundingBox.
+     * @return a new BoundingBox with the given coordinates.
+     * @throws IllegalArgumentException if the string cannot be parsed or describes an invalid BoundingBox.
+     */
+    public static BoundingBox fromString(String boundingBoxString) {
+        double[] coordinates = LatLongUtils.parseCoordinateString(boundingBoxString, 4);
+        return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+    }
+
     /**
      * The maximum latitude coordinate of this BoundingBox in degrees.
      */
     public final double maxLatitude;
+
     /**
      * The maximum longitude coordinate of this BoundingBox in degrees.
      */
     public final double maxLongitude;
+
     /**
      * The minimum latitude coordinate of this BoundingBox in degrees.
      */
     public final double minLatitude;
+
     /**
      * The minimum longitude coordinate of this BoundingBox in degrees.
      */
@@ -91,19 +108,6 @@ public class BoundingBox implements Serializable {
         this.minLongitude = minLongitude;
         this.maxLatitude = maxLatitude;
         this.maxLongitude = maxLongitude;
-    }
-
-    /**
-     * Creates a new BoundingBox from a comma-separated string of coordinates in the order minLat, minLon, maxLat,
-     * maxLon. All coordinate values must be in degrees.
-     *
-     * @param boundingBoxString the string that describes the BoundingBox.
-     * @return a new BoundingBox with the given coordinates.
-     * @throws IllegalArgumentException if the string cannot be parsed or describes an invalid BoundingBox.
-     */
-    public static BoundingBox fromString(String boundingBoxString) {
-        double[] coordinates = LatLongUtils.parseCoordinateString(boundingBoxString, 4);
-        return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
     }
 
     /**
@@ -198,6 +202,30 @@ public class BoundingBox implements Serializable {
         } else if (verticalExpansion < 0 || horizontalExpansion < 0) {
             throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
         }
+
+        double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+        double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+        double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+        double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+        return new BoundingBox(minLat, minLon, maxLat, maxLon);
+    }
+
+    /**
+     * Creates a BoundingBox that is a fixed margin factor larger on all sides (but does not cross date line/poles).
+     *
+     * @param margin extension (must be > 0)
+     * @return an extended BoundingBox or this (if margin == 1)
+     */
+    public BoundingBox extendMargin(float margin) {
+        if (margin == 1) {
+            return this;
+        } else if (margin <= 0) {
+            throw new IllegalArgumentException("BoundingBox extend operation does not accept negative or zero values");
+        }
+
+        double verticalExpansion = (this.getLatitudeSpan() * margin - this.getLatitudeSpan()) * 0.5;
+        double horizontalExpansion = (this.getLongitudeSpan() * margin - this.getLongitudeSpan()) * 0.5;
 
         double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
         double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);

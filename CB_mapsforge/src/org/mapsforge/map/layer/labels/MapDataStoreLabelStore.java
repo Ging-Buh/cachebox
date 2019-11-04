@@ -72,7 +72,7 @@ public class MapDataStoreLabelStore implements LabelStore {
             MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
 
             if (mapReadResult == null) {
-                return new ArrayList<MapElementContainer>();
+                return new ArrayList<>();
             }
 
             for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
@@ -92,7 +92,7 @@ public class MapDataStoreLabelStore implements LabelStore {
 
             return renderContext.labels;
         } catch (Exception e) {
-            return new ArrayList<MapElementContainer>();
+            return new ArrayList<>();
         }
 
     }

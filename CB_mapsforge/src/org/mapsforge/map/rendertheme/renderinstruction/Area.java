@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -34,15 +34,15 @@ import java.util.Map;
  * Represents a closed polygon on the map.
  */
 public class Area extends RenderInstruction {
+    private boolean bitmapInvalid;
     private final Paint fill;
     private final int level;
     private final String relativePathPrefix;
-    private final Paint stroke;
-    private final Map<Byte, Paint> strokes;
-    private boolean bitmapInvalid;
     private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
+    private final Paint stroke;
+    private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
     public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -83,11 +83,11 @@ public class Area extends RenderInstruction {
             } else if (CAT.equals(name)) {
                 this.category = value;
             } else if (FILL.equals(name)) {
-                this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (SYMBOL_HEIGHT.equals(name)) {

@@ -3,7 +3,9 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Develar
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
+ * Copyright 2017 usrusr
+ * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,12 +27,12 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
+import java.awt.image.*;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -38,12 +40,30 @@ public class AwtGraphicFactory implements GraphicFactory {
     public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
     private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
+    private static final ColorModel monoColorModel;
+
+    static {
+        /**
+         * use an inverse lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
+         * (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand)
+         **/
+        byte[] linear = new byte[256];
+        for (int i = 0; i < 256; i++) {
+            linear[i] = (byte) (255 - i);
+        }
+        monoColorModel = new IndexColorModel(8, 256, linear, linear, linear);
+    }
+
     public static GraphicContext createGraphicContext(Graphics graphics) {
         return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
     }
 
     static AffineTransform getAffineTransform(Matrix matrix) {
         return ((AwtMatrix) matrix).affineTransform;
+    }
+
+    public static Graphics2D getGraphics(Canvas canvas) {
+        return ((AwtCanvas) canvas).getGraphicObject();
     }
 
     public static AwtPaint getPaint(Paint paint) {
@@ -54,11 +74,7 @@ public class AwtGraphicFactory implements GraphicFactory {
         return (AwtPath) path;
     }
 
-    static BufferedImage getBufferedImage(Bitmap bitmap) {
-        return ((AwtBitmap) bitmap).bufferedImage;
-    }
-
-    protected static java.awt.Color getColor(Color color) {
+    static java.awt.Color getColor(Color color) {
         switch (color) {
             case BLACK:
                 return java.awt.Color.BLACK;
@@ -85,17 +101,6 @@ public class AwtGraphicFactory implements GraphicFactory {
         SVGCache.getSVGUniverse().clear();
     }
 
-    /**
-     * Returns the internal image representation.
-     *
-     * @param bitmap Mapsforge Bitmap
-     * @return platform specific image.
-     */
-
-    public static BufferedImage getBitmap(Bitmap bitmap) {
-        return ((AwtBitmap) bitmap).bufferedImage;
-    }
-
     @Override
     public Bitmap createBitmap(int width, int height) {
         return new AwtBitmap(width, height);
@@ -107,6 +112,16 @@ public class AwtGraphicFactory implements GraphicFactory {
             throw new UnsupportedOperationException("No transparencies in AWT implementation");
         }
         return new AwtBitmap(width, height);
+    }
+
+    /**
+     * Returns the internal image representation.
+     *
+     * @param bitmap Mapsforge Bitmap
+     * @return platform specific image.
+     */
+    public static BufferedImage getBitmap(Bitmap bitmap) {
+        return ((AwtBitmap) bitmap).bufferedImage;
     }
 
     @Override
@@ -130,6 +145,17 @@ public class AwtGraphicFactory implements GraphicFactory {
     }
 
     @Override
+    public AwtHillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area) {
+        DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
+
+        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width + 2 * padding, height + 2 * padding);
+        WritableRaster writableRaster = Raster.createWritableRaster(singleByteSampleModel, dataBuffer, null);
+        BufferedImage bufferedImage = new BufferedImage(monoColorModel, writableRaster, false, null);
+
+        return new AwtHillshadingBitmap(bufferedImage, padding, area);
+    }
+
+    @Override
     public Paint createPaint() {
         return new AwtPaint();
     }
@@ -139,19 +165,21 @@ public class AwtGraphicFactory implements GraphicFactory {
         return new AwtPaint(paint);
     }
 
+
     @Override
     public Path createPath() {
         return new AwtPath();
     }
 
     @Override
-    public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack, SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+    public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+                                                       SymbolContainer symbolContainer, Position position, int maxTextWidth) {
         return new AwtPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
     }
 
     @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-        return new AwtResourceBitmap(inputStream);
+    public ResourceBitmap createResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+        return new AwtResourceBitmap(inputStream, scaleFactor, width, height, percent);
     }
 
     @Override
@@ -165,7 +193,7 @@ public class AwtGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public InputStream platformSpecificSources(String relativePathPrefix, String src) throws FileNotFoundException {
+    public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
         return null;
     }
 

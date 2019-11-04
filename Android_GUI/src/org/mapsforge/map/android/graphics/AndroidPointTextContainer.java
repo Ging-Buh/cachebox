@@ -28,7 +28,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
     private StaticLayout backLayout;
     private StaticLayout frontLayout;
 
-    AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack, SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+    AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+                              SymbolContainer symbolContainer, Position position, int maxTextWidth) {
         super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
         final float boxWidth, boxHeight;
@@ -50,9 +51,13 @@ public class AndroidPointTextContainer extends PointTextContainer {
             }
 
             Layout.Alignment alignment = Layout.Alignment.ALIGN_CENTER;
-            if (Position.LEFT == this.position || Position.BELOW_LEFT == this.position || Position.ABOVE_LEFT == this.position) {
+            if (Position.LEFT == this.position
+                    || Position.BELOW_LEFT == this.position
+                    || Position.ABOVE_LEFT == this.position) {
                 alignment = Layout.Alignment.ALIGN_OPPOSITE;
-            } else if (Position.RIGHT == this.position || Position.BELOW_RIGHT == this.position || Position.ABOVE_RIGHT == this.position) {
+            } else if (Position.RIGHT == this.position
+                    || Position.BELOW_RIGHT == this.position
+                    || Position.ABOVE_RIGHT == this.position) {
                 alignment = Layout.Alignment.ALIGN_NORMAL;
             }
 

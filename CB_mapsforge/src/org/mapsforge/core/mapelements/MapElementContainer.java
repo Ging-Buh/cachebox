@@ -37,11 +37,11 @@ import org.mapsforge.core.model.Rectangle;
  * drawn.
  */
 public abstract class MapElementContainer implements Comparable<MapElementContainer> {
-    public final Point xy;
-    protected final int priority;
-    public Rectangle boundary;
+    protected Rectangle boundary;
     protected Rectangle boundaryAbsolute;
     protected Display display;
+    protected final int priority;
+    protected final Point xy;
 
     protected MapElementContainer(Point xy, Display display, int priority) {
         this.xy = xy;

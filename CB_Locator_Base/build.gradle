@@ -4,13 +4,14 @@ sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = [ "assets/" ]
 
 dependencies {
     implementation project(":CB_Utils")
     implementation project(":CB_mapsforge")
     implementation project(":CB_UI_Base")
 
-    //sjxp-2.2.jar
+    //sjxp-2.2.jar for TMSLayer.java xml parser
     implementation fileTree(dir: '../libs', include: ['sjxp-2.2.jar'])
 
     //libgdx

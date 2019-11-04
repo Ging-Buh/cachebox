@@ -25,19 +25,20 @@ import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 
 public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observer {
     private static final int DOWNLOAD_THREADS_MAX = 8;
-    private final GraphicFactory graphicFactory;
-    private final TileCache tileCache;
-    private final TileSource tileSource;
-    private long cacheTimeToLive = 0;
-    private boolean started;
-    private TileDownloadThread[] tileDownloadThreads;
 
-    public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
+    private long cacheTimeToLive = 0;
+    private final GraphicFactory graphicFactory;
+    private boolean started;
+    private final TileCache tileCache;
+    private TileDownloadThread[] tileDownloadThreads;
+    private final TileSource tileSource;
+
+    public TileDownloadLayer(TileCache tileCache, IMapViewPosition mapViewPosition, TileSource tileSource,
                              GraphicFactory graphicFactory) {
         super(tileCache, mapViewPosition, graphicFactory.createMatrix(), tileSource.hasAlpha());
 
@@ -65,23 +66,10 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
         return cacheTimeToLive;
     }
 
-    /**
-     * Sets the time-to-live (TTL) for tiles in the cache.
-     * <p/>
-     * The initial TTL is obtained by calling the {@link org.mapsforge.map.layer.download.tilesource.TileSource}'s
-     * {@link TileSource#getDefaultTimeToLive()} ()} method. Refer to
-     * {@link #isTileStale(Tile, TileBitmap)} for information on how the TTL is enforced.
-     *
-     * @param ttl The TTL. If set to 0, no TTL will be enforced.
-     */
-    public void setCacheTimeToLive(long ttl) {
-        cacheTimeToLive = ttl;
-    }
-
     @Override
     public void onDestroy() {
         for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-            tileDownloadThread.interrupt();
+            tileDownloadThread.finish();
         }
 
         super.onDestroy();
@@ -102,6 +90,19 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
         }
     }
 
+    /**
+     * Sets the time-to-live (TTL) for tiles in the cache.
+     * <p/>
+     * The initial TTL is obtained by calling the {@link org.mapsforge.map.layer.download.tilesource.TileSource}'s
+     * {@link TileSource#getDefaultTimeToLive()} ()} method. Refer to
+     * {@link #isTileStale(Tile, TileBitmap)} for information on how the TTL is enforced.
+     *
+     * @param ttl The TTL. If set to 0, no TTL will be enforced.
+     */
+    public void setCacheTimeToLive(long ttl) {
+        cacheTimeToLive = ttl;
+    }
+
     @Override
     public synchronized void setDisplayModel(DisplayModel displayModel) {
         super.setDisplayModel(displayModel);
@@ -115,7 +116,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
         } else {
             if (this.tileDownloadThreads != null) {
                 for (final TileDownloadThread tileDownloadThread : tileDownloadThreads) {
-                    tileDownloadThread.interrupt();
+                    tileDownloadThread.finish();
                 }
             }
         }

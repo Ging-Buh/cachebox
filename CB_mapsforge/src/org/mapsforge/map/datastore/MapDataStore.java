@@ -30,29 +30,6 @@ import java.util.Locale;
 public abstract class MapDataStore {
 
     /**
-     * the preferred language when extracting labels from this data store. The actual
-     * implementation is up to the concrete implementation, which can also simply ignore
-     * this setting.
-     */
-    protected String preferredLanguage;
-
-    /**
-     * Ctor for MapDataStore that will use default language.
-     */
-    public MapDataStore() {
-        this(null);
-    }
-
-    /**
-     * Ctor for MapDataStore setting preferred language.
-     *
-     * @param language the preferred language or null if default language is used.
-     */
-    public MapDataStore(String language) {
-        this.preferredLanguage = language;
-    }
-
-    /**
      * Extracts substring of preferred language from multilingual string.<br/>
      * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
      * <p/>
@@ -87,6 +64,29 @@ public abstract class MapDataStore {
             }
         }
         return (fallback != null) ? fallback : langNames[0];
+    }
+
+    /**
+     * the preferred language when extracting labels from this data store. The actual
+     * implementation is up to the concrete implementation, which can also simply ignore
+     * this setting.
+     */
+    protected String preferredLanguage;
+
+    /**
+     * Ctor for MapDataStore that will use default language.
+     */
+    public MapDataStore() {
+        this(null);
+    }
+
+    /**
+     * Ctor for MapDataStore setting preferred language.
+     *
+     * @param language the preferred language or null if default language is used.
+     */
+    public MapDataStore(String language) {
+        this.preferredLanguage = language;
     }
 
     /**
@@ -243,7 +243,6 @@ public abstract class MapDataStore {
      * Returns true if a way should be included in the result set for readLabels()
      * By default only ways with names, house numbers or a ref are included in the result set
      * of readLabels(). This is to reduce the set of ways as much as possible to save memory.
-     *
      * @param tags the tags associated with the way
      * @return true if the way should be included in the result set
      */

@@ -18,8 +18,8 @@ import android.content.SharedPreferences;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class AndroidPreferences implements PreferencesFacade {
-    private final SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private final SharedPreferences sharedPreferences;
 
     public AndroidPreferences(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;

@@ -27,6 +27,14 @@ import java.util.Map;
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     private static final float LOAD_FACTOR = 0.6f;
     private static final long serialVersionUID = 1L;
+
+    private static int calculateInitialCapacity(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("capacity must not be negative: " + capacity);
+        }
+        return (int) (capacity / LOAD_FACTOR) + 2;
+    }
+
     public final int capacity;
 
     /**
@@ -36,13 +44,6 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     public LRUCache(int capacity) {
         super(calculateInitialCapacity(capacity), LOAD_FACTOR, true);
         this.capacity = capacity;
-    }
-
-    private static int calculateInitialCapacity(int capacity) {
-        if (capacity < 0) {
-            throw new IllegalArgumentException("capacity must not be negative: " + capacity);
-        }
-        return (int) (capacity / LOAD_FACTOR) + 2;
     }
 
     @Override

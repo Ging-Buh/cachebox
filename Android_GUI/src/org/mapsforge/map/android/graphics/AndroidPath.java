@@ -20,8 +20,6 @@ import org.mapsforge.core.graphics.FillRule;
 import org.mapsforge.core.graphics.Path;
 
 class AndroidPath implements Path {
-    final android.graphics.Path path = new android.graphics.Path();
-
     private static FillType getWindingRule(FillRule fillRule) {
         switch (fillRule) {
             case EVEN_ODD:
@@ -32,6 +30,8 @@ class AndroidPath implements Path {
 
         throw new IllegalArgumentException("unknown fill rule:" + fillRule);
     }
+
+    final android.graphics.Path path = new android.graphics.Path();
 
     @Override
     public void clear() {

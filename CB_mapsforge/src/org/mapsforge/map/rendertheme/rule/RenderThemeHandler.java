@@ -1,7 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2018 devemux86
+ * Copyright 2017 usrusr
+ * Copyright 2017 MarcelHeckel
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,16 +18,17 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import org.kxml2.io.KXmlParser;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.XmlUtils;
 import org.mapsforge.map.rendertheme.renderinstruction.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,39 +41,23 @@ import java.util.logging.Logger;
 /**
  * KXML handler to parse XML render theme files.
  */
-public class RenderThemeHandler {
+public final class RenderThemeHandler {
+
+    private enum Element {
+        RENDER_THEME, RENDERING_INSTRUCTION, RULE, RENDERING_STYLE;
+    }
 
     private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
     private static final String ELEMENT_NAME_RULE = "rule";
     private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
-    private final DisplayModel displayModel;
-    private final Stack<Element> elementStack = new Stack<Element>();
-    private final GraphicFactory graphicFactory;
-    private final XmlPullParser pullParser;
-    private final String relativePathPrefix;
-    private final Stack<Rule> ruleStack = new Stack<Rule>();
-    private final XmlRenderTheme xmlRenderTheme;
-    private Set<String> categories;
-    private Rule currentRule;
-    private int level;
-    private String qName;
-    private RenderTheme renderTheme;
-    private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
-    private XmlRenderThemeStyleMenu renderThemeStyleMenu;
-    private XmlRenderThemeStyleLayer currentLayer;
-    protected RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
-        super();
-        this.pullParser = pullParser;
-        this.graphicFactory = graphicFactory;
-        this.displayModel = displayModel;
-        this.relativePathPrefix = relativePathPrefix;
-        this.xmlRenderTheme = xmlRenderTheme;
-    }
+    private static XmlPullParserFactory xmlPullParserFactory = null;
 
-    public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel, XmlRenderTheme xmlRenderTheme) throws IOException, XmlPullParserException {
-        XmlPullParser pullParser = new KXmlParser();
+    public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
+                                             XmlRenderTheme xmlRenderTheme) throws IOException, XmlPullParserException {
+        XmlPullParser pullParser = getXmlPullParserFactory().newPullParser();
 
-        RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel, xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme, pullParser);
+        RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
+                xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme, pullParser);
         InputStream inputStream = null;
         try {
             inputStream = xmlRenderTheme.getRenderThemeAsStream();
@@ -81,6 +68,44 @@ public class RenderThemeHandler {
             IOUtils.closeQuietly(inputStream);
         }
     }
+
+    public static XmlPullParserFactory getXmlPullParserFactory() throws XmlPullParserException {
+        if (xmlPullParserFactory == null) {
+            xmlPullParserFactory = XmlPullParserFactory.newInstance();
+        }
+        return xmlPullParserFactory;
+    }
+
+    public static void setXmlPullParserFactory(XmlPullParserFactory xmlPullParserFactory) {
+        RenderThemeHandler.xmlPullParserFactory = xmlPullParserFactory;
+    }
+
+    private Set<String> categories;
+    private Rule currentRule;
+    private final DisplayModel displayModel;
+    private final Stack<Element> elementStack = new Stack<Element>();
+    private final GraphicFactory graphicFactory;
+    private int level;
+    private final XmlPullParser pullParser;
+    private String qName;
+    private final String relativePathPrefix;
+    private RenderTheme renderTheme;
+    private final Stack<Rule> ruleStack = new Stack<Rule>();
+    private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
+    private final XmlRenderTheme xmlRenderTheme;
+    private XmlRenderThemeStyleMenu renderThemeStyleMenu;
+    private XmlRenderThemeStyleLayer currentLayer;
+
+    private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix,
+                               XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
+        super();
+        this.pullParser = pullParser;
+        this.graphicFactory = graphicFactory;
+        this.displayModel = displayModel;
+        this.relativePathPrefix = relativePathPrefix;
+        this.xmlRenderTheme = xmlRenderTheme;
+    }
+
 
     public void processRenderTheme() throws XmlPullParserException, IOException {
         int eventType = pullParser.getEventType();
@@ -98,6 +123,7 @@ public class RenderThemeHandler {
         } while (eventType != XmlPullParser.END_DOCUMENT);
         endDocument();
     }
+
 
     private void endDocument() {
         if (this.renderTheme == null) {
@@ -141,7 +167,7 @@ public class RenderThemeHandler {
         try {
             if ("rendertheme".equals(qName)) {
                 checkState(qName, Element.RENDER_THEME);
-                this.renderTheme = new RenderThemeBuilder(this.graphicFactory, qName, pullParser).build();
+                this.renderTheme = new RenderThemeBuilder(this.graphicFactory, this.displayModel, qName, pullParser).build();
             } else if (ELEMENT_NAME_RULE.equals(qName)) {
                 checkState(qName, Element.RULE);
                 Rule rule = new RuleBuilder(qName, pullParser, this.ruleStack).build();
@@ -152,7 +178,8 @@ public class RenderThemeHandler {
                 this.ruleStack.push(this.currentRule);
             } else if ("area".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
-                Area area = new Area(this.graphicFactory, this.displayModel, qName, pullParser, this.level++, this.relativePathPrefix);
+                Area area = new Area(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
+                        this.relativePathPrefix);
                 if (isVisible(area)) {
                     this.currentRule.addRenderingInstruction(area);
                 }
@@ -167,7 +194,8 @@ public class RenderThemeHandler {
                 this.currentLayer.addCategory(getStringAttribute("id"));
             } else if ("circle".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
-                Circle circle = new Circle(this.graphicFactory, this.displayModel, qName, pullParser, this.level++);
+                Circle circle = new Circle(this.graphicFactory, this.displayModel, qName, pullParser,
+                        this.level++);
                 if (isVisible(circle)) {
                     this.currentRule.addRenderingInstruction(circle);
                 }
@@ -196,13 +224,15 @@ public class RenderThemeHandler {
                 }
             } else if ("line".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
-                Line line = new Line(this.graphicFactory, this.displayModel, qName, pullParser, this.level++, this.relativePathPrefix);
+                Line line = new Line(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
+                        this.relativePathPrefix);
                 if (isVisible(line)) {
                     this.currentRule.addRenderingInstruction(line);
                 }
             } else if ("lineSymbol".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
-                LineSymbol lineSymbol = new LineSymbol(this.graphicFactory, this.displayModel, qName, pullParser, this.relativePathPrefix);
+                LineSymbol lineSymbol = new LineSymbol(this.graphicFactory, this.displayModel, qName,
+                        pullParser, this.relativePathPrefix);
                 if (isVisible(lineSymbol)) {
                     this.currentRule.addRenderingInstruction(lineSymbol);
                 }
@@ -230,14 +260,56 @@ public class RenderThemeHandler {
             } else if ("stylemenu".equals(qName)) {
                 checkState(qName, Element.RENDERING_STYLE);
 
-                this.renderThemeStyleMenu = new XmlRenderThemeStyleMenu(getStringAttribute("id"), getStringAttribute("defaultlang"), getStringAttribute("defaultvalue"));
+                this.renderThemeStyleMenu =
+                        new XmlRenderThemeStyleMenu(getStringAttribute("id"),
+                                getStringAttribute("defaultlang"), getStringAttribute("defaultvalue"));
             } else if ("symbol".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
-                Symbol symbol = new Symbol(this.graphicFactory, this.displayModel, qName, pullParser, this.relativePathPrefix);
-                this.currentRule.addRenderingInstruction(symbol);
+                Symbol symbol = new Symbol(this.graphicFactory, this.displayModel, qName, pullParser,
+                        this.relativePathPrefix);
+                if (isVisible(symbol)) {
+                    this.currentRule.addRenderingInstruction(symbol);
+                }
                 String symbolId = symbol.getId();
                 if (symbolId != null) {
                     this.symbols.put(symbolId, symbol);
+                }
+            } else if ("hillshading".equals(qName)) {
+                checkState(qName, Element.RULE);
+                String category = null;
+                byte minZoom = 5;
+                byte maxZoom = 17;
+                byte layer = 5;
+                short magnitude = 64;
+                boolean always = false;
+
+                for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+                    String name = pullParser.getAttributeName(i);
+                    String value = pullParser.getAttributeValue(i);
+
+                    if ("cat".equals(name)) {
+                        category = value;
+                    } else if ("zoom-min".equals(name)) {
+                        minZoom = XmlUtils.parseNonNegativeByte("zoom-min", value);
+                    } else if ("zoom-max".equals(name)) {
+                        maxZoom = XmlUtils.parseNonNegativeByte("zoom-max", value);
+                    } else if ("magnitude".equals(name)) {
+                        magnitude = (short) XmlUtils.parseNonNegativeInteger("magnitude", value);
+                        if (magnitude > 255)
+                            throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
+                    } else if ("always".equals(name)) {
+                        always = Boolean.valueOf(value);
+                    } else if ("layer".equals(name)) {
+                        layer = XmlUtils.parseNonNegativeByte("layer", value);
+                    }
+                }
+
+                int hillShadingLevel = this.level++;
+                Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, always, hillShadingLevel, this.graphicFactory);
+
+                if (this.categories == null || category == null
+                        || this.categories.contains(category)) {
+                    this.renderTheme.addHillShadings(hillshading);
                 }
             } else {
                 throw new XmlPullParserException("unknown element: " + qName);
@@ -291,16 +363,13 @@ public class RenderThemeHandler {
     }
 
     private boolean isVisible(RenderInstruction renderInstruction) {
-        return this.categories == null || renderInstruction.getCategory() == null || this.categories.contains(renderInstruction.getCategory());
+        return this.categories == null || renderInstruction.getCategory() == null ||
+                this.categories.contains(renderInstruction.getCategory());
     }
 
     private boolean isVisible(Rule rule) {
         // a rule is visible if categories is not set, the rule has not category or the
         // categories contain this rule's category
         return this.categories == null || rule.cat == null || this.categories.contains(rule.cat);
-    }
-
-    private static enum Element {
-        RENDER_THEME, RENDERING_INSTRUCTION, RULE, RENDERING_STYLE;
     }
 }

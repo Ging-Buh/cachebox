@@ -25,22 +25,6 @@ public interface TileBitmap extends Bitmap {
     public long getTimestamp();
 
     /**
-     * Sets the timestamp of the tile in milliseconds since January 1, 1970 GMT.
-     * <p/>
-     * The timestamp indicates when the information to create the tile was last retrieved from the source. It can be
-     * used together with a TTL in order to determine whether to treat it as expired.
-     * <p/>
-     * The timestamp of a locally rendered tile should be set to the timestamp of the map database used to render it, as
-     * returned by {@link org.mapsforge.map.reader.header.MapFileInfo#mapDate}. For a tile read from a disk cache, it
-     * should be the file's timestamp. In all other cases (including downloaded tiles), the timestamp should be set to
-     * wall clock time (as returned by {@link java.lang.System#currentTimeMillis()}) when the tile is created.
-     * <p/>
-     * Classes that implement this interface should call {@link java.lang.System#currentTimeMillis()} upon creating an
-     * instance, store the result and return it unless {@code setTimestamp()} has been called for that instance.
-     */
-    public void setTimestamp(long timestamp);
-
-    /**
      * Whether the TileBitmap has expired.
      * <p/>
      * When a tile has expired, the requester should try to replace it with a fresh copy as soon as possible. The
@@ -62,5 +46,21 @@ public interface TileBitmap extends Bitmap {
      * time plus a fixed TTL in order to have the tile expire after the specified time.
      */
     public void setExpiration(long expiration);
+
+    /**
+     * Sets the timestamp of the tile in milliseconds since January 1, 1970 GMT.
+     * <p/>
+     * The timestamp indicates when the information to create the tile was last retrieved from the source. It can be
+     * used together with a TTL in order to determine whether to treat it as expired.
+     * <p/>
+     * The timestamp of a locally rendered tile should be set to the timestamp of the map database used to render it, as
+     * returned by {@link org.mapsforge.map.reader.header.MapFileInfo#mapDate}. For a tile read from a disk cache, it
+     * should be the file's timestamp. In all other cases (including downloaded tiles), the timestamp should be set to
+     * wall clock time (as returned by {@link java.lang.System#currentTimeMillis()}) when the tile is created.
+     * <p/>
+     * Classes that implement this interface should call {@link java.lang.System#currentTimeMillis()} upon creating an
+     * instance, store the result and return it unless {@code setTimestamp()} has been called for that instance.
+     */
+    public void setTimestamp(long timestamp);
 
 }

@@ -26,10 +26,6 @@ import java.util.*;
 
 public final class LayerUtil {
 
-    private LayerUtil() {
-        throw new IllegalStateException();
-    }
-
     public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint,
                                                       int tileSize) {
         int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
@@ -134,5 +130,9 @@ public final class LayerUtil {
             }
         }
         return output;
+    }
+
+    private LayerUtil() {
+        throw new IllegalStateException();
     }
 }

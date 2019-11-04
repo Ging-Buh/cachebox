@@ -17,6 +17,7 @@ package org.mapsforge.map.model;
 
 import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.map.model.common.Observable;
+import org.mapsforge.map.rendertheme.ThemeCallback;
 
 /**
  * Encapsulates the display characteristics for a MapView, such as tile size and background color. The size of map tiles
@@ -34,18 +35,6 @@ public class DisplayModel extends Observable {
 
     private static float defaultUserScaleFactor = 1f;
     private static float deviceScaleFactor = 1f;
-    private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
-    private Filter filter = Filter.NONE;
-    private int fixedTileSize;
-    private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
-    private float maxTextWidthFactor = DEFAULT_MAX_TEXT_WIDTH_FACTOR;
-    private int tileSize = DEFAULT_TILE_SIZE;
-    private int tileSizeMultiple = 64;
-    private float userScaleFactor = defaultUserScaleFactor;
-    public DisplayModel() {
-        super();
-        this.setTileSize();
-    }
 
     /**
      * Get the default scale factor for all newly created DisplayModels.
@@ -54,6 +43,15 @@ public class DisplayModel extends Observable {
      */
     public static synchronized float getDefaultUserScaleFactor() {
         return defaultUserScaleFactor;
+    }
+
+    /**
+     * Returns the device scale factor.
+     *
+     * @return the device scale factor.
+     */
+    public static synchronized float getDeviceScaleFactor() {
+        return deviceScaleFactor;
     }
 
     /**
@@ -67,21 +65,27 @@ public class DisplayModel extends Observable {
     }
 
     /**
-     * Returns the device scale factor.
-     *
-     * @return the device scale factor.
-     */
-    public static synchronized float getDeviceScaleFactor() {
-        return deviceScaleFactor;
-    }
-
-    /**
      * Set the device scale factor.
      *
      * @param scaleFactor the device scale factor.
      */
     public static synchronized void setDeviceScaleFactor(float scaleFactor) {
         deviceScaleFactor = scaleFactor;
+    }
+
+    private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
+    private Filter filter = Filter.NONE;
+    private int fixedTileSize;
+    private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
+    private float maxTextWidthFactor = DEFAULT_MAX_TEXT_WIDTH_FACTOR;
+    private ThemeCallback themeCallback;
+    private int tileSize = DEFAULT_TILE_SIZE;
+    private int tileSizeMultiple = 64;
+    private float userScaleFactor = defaultUserScaleFactor;
+
+    public DisplayModel() {
+        super();
+        this.setTileSize();
     }
 
     @Override
@@ -120,26 +124,10 @@ public class DisplayModel extends Observable {
     }
 
     /**
-     * Set the background color.
-     *
-     * @param color the color to use.
-     */
-    public synchronized void setBackgroundColor(int color) {
-        this.backgroundColor = color;
-    }
-
-    /**
      * Color filtering in map rendering.
      */
     public synchronized Filter getFilter() {
         return this.filter;
-    }
-
-    /**
-     * Color filtering in map rendering.
-     */
-    public synchronized void setFilter(Filter filter) {
-        this.filter = filter;
     }
 
     /**
@@ -161,6 +149,13 @@ public class DisplayModel extends Observable {
     }
 
     /**
+     * Theme callback.
+     */
+    public synchronized ThemeCallback getThemeCallback() {
+        return this.themeCallback;
+    }
+
+    /**
      * Width and height of a map tile in pixel after system and user scaling is applied.
      */
     public synchronized int getTileSize() {
@@ -175,38 +170,12 @@ public class DisplayModel extends Observable {
     }
 
     /**
-     * Clamps the tile size to a multiple of the supplied value.
-     * <p/>
-     * The default value of tileSizeMultiple will be overwritten with this call.
-     * The default value should be good enough for most applications and setting
-     * this value should rarely be required.
-     * Applications that allow external renderthemes might negatively impact
-     * their layout as area fills may depend on the default value being used.
-     *
-     * @param multiple tile size multiple
-     */
-    public synchronized void setTileSizeMultiple(int multiple) {
-        this.tileSizeMultiple = multiple;
-        setTileSize();
-    }
-
-    /**
      * Returns the user scale factor.
      *
      * @return the user scale factor.
      */
     public synchronized float getUserScaleFactor() {
         return this.userScaleFactor;
-    }
-
-    /**
-     * Set the user scale factor.
-     *
-     * @param scaleFactor the user scale factor to use.
-     */
-    public synchronized void setUserScaleFactor(float scaleFactor) {
-        userScaleFactor = scaleFactor;
-        setTileSize();
     }
 
     @Override
@@ -222,6 +191,22 @@ public class DisplayModel extends Observable {
         result = prime * result + this.tileSizeMultiple;
         result = prime * result + Float.floatToIntBits(this.userScaleFactor);
         return result;
+    }
+
+    /**
+     * Set the background color.
+     *
+     * @param color the color to use.
+     */
+    public synchronized void setBackgroundColor(int color) {
+        this.backgroundColor = color;
+    }
+
+    /**
+     * Color filtering in map rendering.
+     */
+    public synchronized void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
     /**
@@ -242,6 +227,39 @@ public class DisplayModel extends Observable {
     public void setMaxTextWidthFactor(float maxTextWidthFactor) {
         this.maxTextWidthFactor = maxTextWidthFactor;
         this.setMaxTextWidth();
+    }
+
+    /**
+     * Theme callback.
+     */
+    public synchronized void setThemeCallback(ThemeCallback themeCallback) {
+        this.themeCallback = themeCallback;
+    }
+
+    /**
+     * Clamps the tile size to a multiple of the supplied value.
+     * <p/>
+     * The default value of tileSizeMultiple will be overwritten with this call.
+     * The default value should be good enough for most applications and setting
+     * this value should rarely be required.
+     * Applications that allow external renderthemes might negatively impact
+     * their layout as area fills may depend on the default value being used.
+     *
+     * @param multiple tile size multiple
+     */
+    public synchronized void setTileSizeMultiple(int multiple) {
+        this.tileSizeMultiple = multiple;
+        setTileSize();
+    }
+
+    /**
+     * Set the user scale factor.
+     *
+     * @param scaleFactor the user scale factor to use.
+     */
+    public synchronized void setUserScaleFactor(float scaleFactor) {
+        userScaleFactor = scaleFactor;
+        setTileSize();
     }
 
     private void setMaxTextWidth() {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,10 +30,9 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
 public class AwtPointTextContainer extends PointTextContainer {
-
-    AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack, SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+    AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+                          SymbolContainer symbolContainer, Position position, int maxTextWidth) {
         super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
-
         this.boundary = computeBoundary();
     }
 
@@ -145,7 +144,6 @@ public class AwtPointTextContainer extends PointTextContainer {
     }
 
     private Rectangle computeBoundary() {
-
         int lines = this.textWidth / maxTextWidth + 1;
         double boxWidth = this.textWidth;
         double boxHeight = this.textHeight;
@@ -180,5 +178,4 @@ public class AwtPointTextContainer extends PointTextContainer {
         }
         return null;
     }
-
 }

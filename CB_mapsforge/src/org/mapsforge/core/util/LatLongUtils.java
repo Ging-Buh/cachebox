@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -21,6 +21,7 @@ package org.mapsforge.core.util;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +74,10 @@ public final class LatLongUtils {
 
     private static final String DELIMITER = ",";
 
-    private LatLongUtils() {
-        throw new IllegalStateException();
-    }
-
     /**
-     * Find if the given point lies within this polygon.<br/>
-     * See http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+     * Find if the given point lies within this polygon.
+     * <p>
+     * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
      *
      * @return true if this polygon contains the given point, false otherwise.
      */
@@ -87,7 +85,27 @@ public final class LatLongUtils {
         boolean result = false;
         for (int i = 0, j = latLongs.length - 1; i < latLongs.length; j = i++) {
             if ((latLongs[i].latitude > latLong.latitude) != (latLongs[j].latitude > latLong.latitude)
-                    && (latLong.longitude < (latLongs[j].longitude - latLongs[i].longitude) * (latLong.latitude - latLongs[i].latitude) / (latLongs[j].latitude - latLongs[i].latitude) + latLongs[i].longitude)) {
+                    && (latLong.longitude < (latLongs[j].longitude - latLongs[i].longitude) * (latLong.latitude - latLongs[i].latitude)
+                    / (latLongs[j].latitude - latLongs[i].latitude) + latLongs[i].longitude)) {
+                result = !result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Find if the given point lies within this polygon.
+     * <p>
+     * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+     *
+     * @return true if this polygon contains the given point, false otherwise.
+     */
+    public static boolean contains(List<LatLong> latLongs, LatLong latLong) {
+        boolean result = false;
+        for (int i = 0, j = latLongs.size() - 1; i < latLongs.size(); j = i++) {
+            if ((latLongs.get(i).latitude > latLong.latitude) != (latLongs.get(j).latitude > latLong.latitude)
+                    && (latLong.longitude < (latLongs.get(j).longitude - latLongs.get(i).longitude) * (latLong.latitude - latLongs.get(i).latitude)
+                    / (latLongs.get(j).latitude - latLongs.get(i).latitude) + latLongs.get(i).longitude)) {
                 result = !result;
             }
         }
@@ -105,6 +123,31 @@ public final class LatLongUtils {
     }
 
     /**
+     * Returns the destination point from this point having travelled the given distance on the
+     * given initial bearing (bearing normally varies around path followed).
+     *
+     * @param start    the start point
+     * @param distance the distance travelled, in same units as earth radius (default: meters)
+     * @param bearing  the initial bearing in degrees from north
+     * @return the destination point
+     * @see <a href="http://www.movable-type.co.uk/scripts/latlon.js">latlon.js</a>
+     */
+    public static LatLong destinationPoint(LatLong start, double distance, float bearing) {
+        double theta = Math.toRadians(bearing);
+        double delta = distance / EQUATORIAL_RADIUS; // angular distance in radians
+
+        double phi1 = Math.toRadians(start.latitude);
+        double lambda1 = Math.toRadians(start.longitude);
+
+        double phi2 = Math.asin(Math.sin(phi1) * Math.cos(delta)
+                + Math.cos(phi1) * Math.sin(delta) * Math.cos(theta));
+        double lambda2 = lambda1 + Math.atan2(Math.sin(theta) * Math.sin(delta) * Math.cos(phi1),
+                Math.cos(delta) - Math.sin(phi1) * Math.sin(phi2));
+
+        return new LatLong(Math.toDegrees(phi2), Math.toDegrees(lambda2));
+    }
+
+    /**
      * Calculate the Euclidean distance between two LatLongs in degrees using the Pythagorean
      * theorem.
      *
@@ -114,6 +157,16 @@ public final class LatLongUtils {
      */
     public static double distance(LatLong latLong1, LatLong latLong2) {
         return Math.hypot(latLong1.longitude - latLong2.longitude, latLong1.latitude - latLong2.latitude);
+    }
+
+    /**
+     * Returns the distance between the given segment and point.
+     * <p>
+     * libGDX (Apache 2.0)
+     */
+    public static double distanceSegmentPoint(double startX, double startY, double endX, double endY, double pointX, double pointY) {
+        Point nearest = nearestSegmentPoint(startX, startY, endX, endY, pointX, pointY);
+        return Math.hypot(nearest.x - pointX, nearest.y - pointY);
     }
 
     /**
@@ -170,6 +223,22 @@ public final class LatLongUtils {
     }
 
     /**
+     * Returns a point on the segment nearest to the specified point.
+     * <p>
+     * libGDX (Apache 2.0)
+     */
+    public static Point nearestSegmentPoint(double startX, double startY, double endX, double endY, double pointX, double pointY) {
+        double xDiff = endX - startX;
+        double yDiff = endY - startY;
+        double length2 = xDiff * xDiff + yDiff * yDiff;
+        if (length2 == 0) return new Point(startX, startY);
+        double t = ((pointX - startX) * (endX - startX) + (pointY - startY) * (endY - startY)) / length2;
+        if (t < 0) return new Point(startX, startY);
+        if (t > 1) return new Point(endX, endY);
+        return new Point(startX + t * (endX - startX), startY + t * (endY - startY));
+    }
+
+    /**
      * Parses a given number of comma-separated coordinate values from the supplied string.
      *
      * @param coordinatesString   a comma-separated string of coordinate values.
@@ -180,7 +249,7 @@ public final class LatLongUtils {
     public static double[] parseCoordinateString(String coordinatesString, int numberOfCoordinates) {
         StringTokenizer stringTokenizer = new StringTokenizer(coordinatesString, DELIMITER, true);
         boolean isDelimiter = true;
-        List<String> tokens = new ArrayList<String>(numberOfCoordinates);
+        List<String> tokens = new ArrayList<>(numberOfCoordinates);
 
         while (stringTokenizer.hasMoreTokens()) {
             String token = stringTokenizer.nextToken();
@@ -220,7 +289,8 @@ public final class LatLongUtils {
     public static double sphericalDistance(LatLong latLong1, LatLong latLong2) {
         double dLat = Math.toRadians(latLong2.latitude - latLong1.latitude);
         double dLon = Math.toRadians(latLong2.longitude - latLong1.longitude);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(latLong1.latitude)) * Math.cos(Math.toRadians(latLong2.latitude)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(latLong1.latitude))
+                * Math.cos(Math.toRadians(latLong2.latitude)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return c * LatLongUtils.EQUATORIAL_RADIUS;
     }
@@ -279,7 +349,9 @@ public final class LatLongUtils {
         do {
             sinLambda = Math.sin(lambda);
             cosLambda = Math.cos(lambda);
-            sinSigma = Math.sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda) + (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda) * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
+            sinSigma = Math.sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda)
+                    + (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+                    * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
             if (sinSigma == 0)
                 return 0; // co-incident points
             cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
@@ -293,16 +365,29 @@ public final class LatLongUtils {
             }
             double C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
             lambdaP = lambda;
-            lambda = L + (1 - C) * f * sinAlpha * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+            lambda = L
+                    + (1 - C)
+                    * f
+                    * sinAlpha
+                    * (sigma + C * sinSigma
+                    * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
         } while (Math.abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
 
         if (iterLimit == 0)
             return 0; // formula failed to converge
 
-        double uSq = cosSqAlpha * (Math.pow(LatLongUtils.EQUATORIAL_RADIUS, 2) - Math.pow(LatLongUtils.POLAR_RADIUS, 2)) / Math.pow(LatLongUtils.POLAR_RADIUS, 2);
+        double uSq = cosSqAlpha
+                * (Math.pow(LatLongUtils.EQUATORIAL_RADIUS, 2) - Math.pow(LatLongUtils.POLAR_RADIUS, 2))
+                / Math.pow(LatLongUtils.POLAR_RADIUS, 2);
         double A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
         double B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
-        double deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) - B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+        double deltaSigma = B
+                * sinSigma
+                * (cos2SigmaM + B
+                / 4
+                * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) - B / 6 * cos2SigmaM
+                * (-3 + 4 * sinSigma * sinSigma)
+                * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
         double s = LatLongUtils.POLAR_RADIUS * A * (sigma - deltaSigma);
 
         return s;
@@ -334,5 +419,9 @@ public final class LatLongUtils {
             return Byte.MAX_VALUE;
         }
         return (byte) zoom;
+    }
+
+    private LatLongUtils() {
+        throw new IllegalStateException();
     }
 }

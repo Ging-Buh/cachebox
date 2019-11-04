@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,9 +30,9 @@ import java.util.List;
 import java.util.Set;
 
 public class CanvasRasterer {
-    public final Canvas canvas;
-    public final Path path;
-    public final Matrix symbolMatrix;
+    private final Canvas canvas;
+    private final Path path;
+    private final Matrix symbolMatrix;
 
     public CanvasRasterer(GraphicFactory graphicFactory) {
         this.canvas = graphicFactory.createCanvas();
@@ -117,6 +118,10 @@ public class CanvasRasterer {
         this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
     }
 
+    private void drawHillshading(HillshadingContainer container) {
+        canvas.shadeBitmap(container.bitmap, container.hillsRect, container.tileRect, container.magnitude);
+    }
+
     private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
         this.path.clear();
 
@@ -141,13 +146,18 @@ public class CanvasRasterer {
     }
 
     private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
-        ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
+        ShapeContainer shapeContainer = shapePaintContainer.shapeContainer;
+        ShapeType shapeType = shapeContainer.getShapeType();
         switch (shapeType) {
             case CIRCLE:
                 drawCircleContainer(shapePaintContainer);
                 break;
+            case HILLSHADING:
+                HillshadingContainer hillshadingContainer = (HillshadingContainer) shapeContainer;
+                drawHillshading(hillshadingContainer);
+                break;
             case POLYLINE:
-                PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+                PolylineContainer polylineContainer = (PolylineContainer) shapeContainer;
                 drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
                 break;
         }

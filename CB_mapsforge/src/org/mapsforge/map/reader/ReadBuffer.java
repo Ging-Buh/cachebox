@@ -1,7 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2018 devemux86
  * Copyright 2016 bvgastel
+ * Copyright 2017 linuskr
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,9 +18,16 @@
  */
 package org.mapsforge.map.reader;
 
+import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.util.Parameters;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -27,36 +36,17 @@ import java.util.logging.Logger;
 public class ReadBuffer {
 
     private static final String CHARSET_UTF8 = "UTF-8";
-    /**
-     * Default maximum buffer size which is supported by this implementation.
-     */
-    private static final int DEFAULT_MAXIMUM_BUFFER_SIZE = 2500000;
     private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
 
-    private static int maximumBufferSize = DEFAULT_MAXIMUM_BUFFER_SIZE;
-    private final RandomAccessFile inputFile;
     private byte[] bufferData;
     private int bufferPosition;
-    ReadBuffer(RandomAccessFile inputFile) {
-        this.inputFile = inputFile;
-    }
+    private ByteBuffer bufferWrapper;
+    private final FileChannel inputChannel;
 
-    /**
-     * Returns the maximum buffer size.
-     *
-     * @return the maximum buffer size.
-     */
-    public static synchronized int getMaximumBufferSize() {
-        return maximumBufferSize;
-    }
+    private final List<Integer> tagIds = new ArrayList<>();
 
-    /**
-     * Set the maximum buffer size.
-     *
-     * @param maximumBufferSize the maximum buffer size to use.
-     */
-    public static synchronized void setMaximumBufferSize(int maximumBufferSize) {
-        ReadBuffer.maximumBufferSize = maximumBufferSize;
+    ReadBuffer(FileChannel inputChannel) {
+        this.inputChannel = inputChannel;
     }
 
     /**
@@ -66,6 +56,17 @@ public class ReadBuffer {
      */
     public byte readByte() {
         return this.bufferData[this.bufferPosition++];
+    }
+
+    /**
+     * Converts four bytes from the read buffer to a float.
+     * <p/>
+     * The byte order is big-endian.
+     *
+     * @return the float value.
+     */
+    public float readFloat() {
+        return Float.intBitsToFloat(readInt());
     }
 
     /**
@@ -80,17 +81,19 @@ public class ReadBuffer {
         // ensure that the read buffer is large enough
         if (this.bufferData == null || this.bufferData.length < length) {
             // ensure that the read buffer is not too large
-            if (length > maximumBufferSize) {
+            if (length > Parameters.MAXIMUM_BUFFER_SIZE) {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }
             this.bufferData = new byte[length];
+            this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
+        this.bufferWrapper.clear();
 
-        return this.inputFile.read(this.bufferData, 0, length) == length;
+        return this.inputChannel.read(this.bufferWrapper) == length;
     }
 
     /**
@@ -106,19 +109,21 @@ public class ReadBuffer {
         // ensure that the read buffer is large enough
         if (this.bufferData == null || this.bufferData.length < length) {
             // ensure that the read buffer is not too large
-            if (length > maximumBufferSize) {
+            if (length > Parameters.MAXIMUM_BUFFER_SIZE) {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }
             this.bufferData = new byte[length];
+            this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
+        this.bufferWrapper.clear();
 
-        synchronized (this.inputFile) {
-            this.inputFile.seek(offset);
-            return this.inputFile.read(this.bufferData, 0, length) == length;
+        synchronized (this.inputChannel) {
+            this.inputChannel.position(offset);
+            return this.inputChannel.read(this.bufferWrapper) == length;
         }
     }
 
@@ -185,6 +190,49 @@ public class ReadBuffer {
         return variableByteDecode | ((this.bufferData[this.bufferPosition++] & 0x3f) << variableByteShift);
     }
 
+    List<Tag> readTags(Tag[] tagsArray, byte numberOfTags) {
+        List<Tag> tags = new ArrayList<>();
+        tagIds.clear();
+
+        int maxTag = tagsArray.length;
+
+        for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
+            int tagId = readUnsignedInt();
+            if (tagId < 0 || tagId >= maxTag) {
+                LOGGER.warning("invalid tag ID: " + tagId);
+                return null;
+            }
+            tagIds.add(tagId);
+        }
+
+        for (int tagId : tagIds) {
+            Tag tag = tagsArray[tagId];
+            // Decode variable values of tags
+            if (tag.value.length() == 2 && tag.value.charAt(0) == '%') {
+                String value = tag.value;
+                if (value.charAt(1) == 'b') {
+                    value = String.valueOf(readByte());
+                } else if (value.charAt(1) == 'i') {
+                    if (tag.key.contains(":colour")) {
+                        value = "#" + Integer.toHexString(readInt());
+                    } else {
+                        value = String.valueOf(readInt());
+                    }
+                } else if (value.charAt(1) == 'f') {
+                    value = String.valueOf(readFloat());
+                } else if (value.charAt(1) == 'h') {
+                    value = String.valueOf(readShort());
+                } else if (value.charAt(1) == 's') {
+                    value = readUTF8EncodedString();
+                }
+                tag = new Tag(tag.key, value);
+            }
+            tags.add(tag);
+        }
+
+        return tags;
+    }
+
     /**
      * Converts a variable amount of bytes from the read buffer to an unsigned int.
      * <p/>
@@ -242,19 +290,19 @@ public class ReadBuffer {
     }
 
     /**
+     * @return the current size of the read buffer.
+     */
+    int getBufferSize() {
+        return this.bufferData.length;
+    }
+
+    /**
      * Sets the buffer position to the given offset.
      *
      * @param bufferPosition the buffer position.
      */
     void setBufferPosition(int bufferPosition) {
         this.bufferPosition = bufferPosition;
-    }
-
-    /**
-     * @return the current size of the read buffer.
-     */
-    int getBufferSize() {
-        return this.bufferData.length;
     }
 
     /**

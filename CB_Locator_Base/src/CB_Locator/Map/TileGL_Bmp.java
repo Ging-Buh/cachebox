@@ -46,7 +46,7 @@ public class TileGL_Bmp extends TileGL {
             bytes = getByteArray();
             this.bitmap = null;
         } else {
-            // todo check (is ist quicker) for removing else part (getTexture special for Android without creating a bytearray)
+            // todo check (is quicker) for removing else part (getTexture special for Android without creating a bytearray)
             /* */
             bytes = getByteArray();
             this.bitmap = null;
@@ -72,9 +72,8 @@ public class TileGL_Bmp extends TileGL {
             return true;
         if (inCreation)
             return false;
-        Log.err(log, "can draw create Texture once more!?");
-        createTexture();
-        return texture != null;
+        Log.err(log, "Impossible: not in Creation and texture is null! " + this);
+        return false;
     }
 
     private void createTexture() {
@@ -116,7 +115,7 @@ public class TileGL_Bmp extends TileGL {
             Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
             texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
             pixmap.dispose();
-            // Log.info(log, "created: " + this);
+            Log.info(log, "Final step: " + this);
         } catch (Exception ex) {
             Log.err(log, "[TileGL] can't create Pixmap or Texture: ", ex);
         }

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,10 +20,6 @@ import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 
 public final class MapPositionUtil {
-    private MapPositionUtil() {
-        throw new IllegalStateException();
-    }
-
     public static BoundingBox getBoundingBox(MapPosition mapPosition, Dimension canvasDimension, int tileSize) {
 
         long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, tileSize);
@@ -54,6 +51,10 @@ public final class MapPositionUtil {
         long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, tileSize);
         double pixelX = Math.round(MercatorProjection.longitudeToPixelX(centerPoint.longitude, mapSize));
         double pixelY = Math.round(MercatorProjection.latitudeToPixelY(centerPoint.latitude, mapSize));
-        return new Point((int) pixelX - halfCanvasWidth, (int) pixelY - halfCanvasHeight);
+        return new Point((long) pixelX - halfCanvasWidth, (long) pixelY - halfCanvasHeight);
+    }
+
+    private MapPositionUtil() {
+        throw new IllegalStateException();
     }
 }

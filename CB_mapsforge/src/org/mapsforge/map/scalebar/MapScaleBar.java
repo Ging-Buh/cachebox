@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2014 Erik Duisters
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -24,45 +24,58 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.MapViewDimension;
-import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.view.MapView;
 
 /**
  * A MapScaleBar displays the ratio of a distance on the map to the corresponding distance on the ground.
  */
 public abstract class MapScaleBar {
+    public enum ScaleBarPosition {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT}
+
     /**
      * Default position of the scale bar.
      */
     private static final ScaleBarPosition DEFAULT_SCALE_BAR_POSITION = ScaleBarPosition.BOTTOM_LEFT;
-    private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
-    private static final int DEFAULT_VERTICAL_MARGIN = 0;
+
     private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
+
     protected final DisplayModel displayModel;
+    protected DistanceUnitAdapter distanceUnitAdapter;
     protected final GraphicFactory graphicFactory;
     protected final Bitmap mapScaleBitmap;
     protected final Canvas mapScaleCanvas;
     private final MapViewDimension mapViewDimension;
-    private final MapViewPosition mapViewPosition;
-    protected DistanceUnitAdapter distanceUnitAdapter;
-    protected boolean redrawNeeded;
-    protected ScaleBarPosition scaleBarPosition;
+    private final IMapViewPosition mapViewPosition;
     private int marginHorizontal;
     private int marginVertical;
     private MapPosition prevMapPosition;
+    protected boolean redrawNeeded;
+    protected ScaleBarPosition scaleBarPosition;
     private boolean visible;
-    public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, DisplayModel displayModel,
+
+    /**
+     * Internal class used by calculateScaleBarLengthAndValue
+     */
+    protected static class ScaleBarLengthAndValue {
+        public int scaleBarLength;
+        public int scaleBarValue;
+
+        public ScaleBarLengthAndValue(int scaleBarLength, int scaleBarValue) {
+            this.scaleBarLength = scaleBarLength;
+            this.scaleBarValue = scaleBarValue;
+        }
+    }
+
+    public MapScaleBar(IMapViewPosition mapViewPosition, MapViewDimension mapViewDimension, DisplayModel displayModel,
                        GraphicFactory graphicFactory, int width, int height) {
         this.mapViewPosition = mapViewPosition;
         this.mapViewDimension = mapViewDimension;
         this.displayModel = displayModel;
         this.graphicFactory = graphicFactory;
-        this.mapScaleBitmap = graphicFactory.createBitmap((int) (width * this.displayModel.getScaleFactor()),
-                (int) (height * this.displayModel.getScaleFactor()));
+        this.mapScaleBitmap = graphicFactory.createBitmap(width, height);
 
-        this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
-        this.marginVertical = DEFAULT_VERTICAL_MARGIN;
         this.scaleBarPosition = DEFAULT_SCALE_BAR_POSITION;
 
         this.mapScaleCanvas = graphicFactory.createCanvas();
@@ -200,8 +213,8 @@ public abstract class MapScaleBar {
         int scaleBarLength = 0;
         int mapScaleValue = 0;
 
-        for (int i = 0; i < scaleBarValues.length; ++i) {
-            mapScaleValue = scaleBarValues[i];
+        for (int scaleBarValue : scaleBarValues) {
+            mapScaleValue = scaleBarValue;
             scaleBarLength = (int) (mapScaleValue / groundResolution);
             if (scaleBarLength < (this.mapScaleBitmap.getWidth() - 10)) {
                 break;
@@ -246,6 +259,13 @@ public abstract class MapScaleBar {
     }
 
     /**
+     * The scalebar is redrawn now.
+     */
+    public void drawScaleBar() {
+        draw(mapScaleCanvas);
+    }
+
+    /**
      * The scalebar will be redrawn on the next draw()
      */
     public void redrawScaleBar() {
@@ -272,25 +292,10 @@ public abstract class MapScaleBar {
     }
 
     /**
-     * Redraw the mapScaleBar. Make sure you always apply this.displayModel.getScaleFactor() to all coordinates and
-     * dimensions.
+     * Redraw the map scale bar.
+     * Make sure you always apply scale factor to all coordinates and dimensions.
      *
      * @param canvas The canvas to draw on
      */
     protected abstract void redraw(Canvas canvas);
-
-    public static enum ScaleBarPosition {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT}
-
-    /**
-     * Internal class used by calculateScaleBarLengthAndValue
-     */
-    protected static class ScaleBarLengthAndValue {
-        public int scaleBarLength;
-        public int scaleBarValue;
-
-        public ScaleBarLengthAndValue(int scaleBarLength, int scaleBarValue) {
-            this.scaleBarLength = scaleBarLength;
-            this.scaleBarValue = scaleBarValue;
-        }
-    }
 }

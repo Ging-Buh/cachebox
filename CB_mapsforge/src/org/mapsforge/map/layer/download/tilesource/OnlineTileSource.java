@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -53,27 +53,12 @@ public class OnlineTileSource extends AbstractTileSource {
         return baseUrl;
     }
 
-    public OnlineTileSource setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-        return this;
-    }
-
     public String getExtension() {
         return extension;
     }
 
-    public OnlineTileSource setExtension(String extension) {
-        this.extension = extension;
-        return this;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public OnlineTileSource setName(String name) {
-        this.name = name;
-        return this;
     }
 
     @Override
@@ -81,27 +66,12 @@ public class OnlineTileSource extends AbstractTileSource {
         return parallelRequestsLimit;
     }
 
-    public OnlineTileSource setParallelRequestsLimit(int parallelRequestsLimit) {
-        this.parallelRequestsLimit = parallelRequestsLimit;
-        return this;
-    }
-
     public String getProtocol() {
         return protocol;
     }
 
-    public OnlineTileSource setProtocol(String protocol) {
-        this.protocol = protocol;
-        return this;
-    }
-
     public int getTileSize() {
         return tileSize;
-    }
-
-    public OnlineTileSource setTileSize(int tileSize) {
-        this.tileSize = tileSize;
-        return this;
     }
 
     @Override
@@ -115,6 +85,9 @@ public class OnlineTileSource extends AbstractTileSource {
         stringBuilder.append('/');
         stringBuilder.append(tile.tileY);
         stringBuilder.append('.').append(extension);
+        if (apiKey != null) {
+            stringBuilder.append('?').append(keyName).append("=").append(apiKey);
+        }
 
         return new URL(this.protocol, getHostName(), this.port, stringBuilder.toString());
     }
@@ -124,19 +97,9 @@ public class OnlineTileSource extends AbstractTileSource {
         return zoomLevelMax;
     }
 
-    public OnlineTileSource setZoomLevelMax(byte zoomLevelMax) {
-        this.zoomLevelMax = zoomLevelMax;
-        return this;
-    }
-
     @Override
     public byte getZoomLevelMin() {
         return zoomLevelMin;
-    }
-
-    public OnlineTileSource setZoomLevelMin(byte zoomLevelMin) {
-        this.zoomLevelMin = zoomLevelMin;
-        return this;
     }
 
     @Override
@@ -154,6 +117,46 @@ public class OnlineTileSource extends AbstractTileSource {
 
     public OnlineTileSource setAlpha(boolean alpha) {
         this.alpha = alpha;
+        return this;
+    }
+
+    public OnlineTileSource setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
+    }
+
+    public OnlineTileSource setExtension(String extension) {
+        this.extension = extension;
+        return this;
+    }
+
+    public OnlineTileSource setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public OnlineTileSource setParallelRequestsLimit(int parallelRequestsLimit) {
+        this.parallelRequestsLimit = parallelRequestsLimit;
+        return this;
+    }
+
+    public OnlineTileSource setProtocol(String protocol) {
+        this.protocol = protocol;
+        return this;
+    }
+
+    public OnlineTileSource setTileSize(int tileSize) {
+        this.tileSize = tileSize;
+        return this;
+    }
+
+    public OnlineTileSource setZoomLevelMax(byte zoomLevelMax) {
+        this.zoomLevelMax = zoomLevelMax;
+        return this;
+    }
+
+    public OnlineTileSource setZoomLevelMin(byte zoomLevelMin) {
+        this.zoomLevelMin = zoomLevelMin;
         return this;
     }
 }

@@ -28,11 +28,13 @@ public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
     private AndroidApplication androidApplication;
     private Activity mainActivity;
     private Main mainMain;
+    private boolean isCreatedAndroidGraphicFactory;
 
     public AndroidLocatorBaseMethods(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
+        isCreatedAndroidGraphicFactory = false;
     }
 
     /**
@@ -172,8 +174,9 @@ public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
 
     @Override
     public GraphicFactory getMapsForgeGraphicFactory() {
-        if (AndroidGraphicFactory.INSTANCE == null) {
+        if (!isCreatedAndroidGraphicFactory) {
             AndroidGraphicFactory.createInstance(mainActivity.getApplication());
+            isCreatedAndroidGraphicFactory = true;
         }
         return AndroidGraphicFactory.INSTANCE;
     }

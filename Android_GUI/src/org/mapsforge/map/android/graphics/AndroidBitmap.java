@@ -47,8 +47,18 @@ public class AndroidBitmap implements Bitmap {
         }
     }
 
-    private final AtomicInteger refCount = new AtomicInteger();
+    protected static android.graphics.Bitmap createAndroidBitmap(int width, int height, Config config) {
+        return android.graphics.Bitmap.createBitmap(width, height, config);
+    }
+
+    protected static final BitmapFactory.Options createBitmapFactoryOptions(Config config) {
+        BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
+        bitmapFactoryOptions.inPreferredConfig = config;
+        return bitmapFactoryOptions;
+    }
+
     protected android.graphics.Bitmap bitmap;
+    private AtomicInteger refCount = new AtomicInteger();
 
     protected AndroidBitmap() {
         if (AndroidGraphicFactory.DEBUG_BITMAPS) {
@@ -73,16 +83,6 @@ public class AndroidBitmap implements Bitmap {
         if (this.bitmap == null) {
             this.bitmap = createAndroidBitmap(width, height, config);
         }
-    }
-
-    protected static android.graphics.Bitmap createAndroidBitmap(int width, int height, Config config) {
-        return android.graphics.Bitmap.createBitmap(width, height, config);
-    }
-
-    protected static final BitmapFactory.Options createBitmapFactoryOptions(Config config) {
-        BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
-        bitmapFactoryOptions.inPreferredConfig = config;
-        return bitmapFactoryOptions;
     }
 
     @Override
@@ -127,7 +127,8 @@ public class AndroidBitmap implements Bitmap {
             // http://stackoverflow.com/questions/2895065/what-does-the-filter-parameter-to-createscaledbitmap-do
             // passing true results in smoother edges, less pixellation.
             // If smoother corners improve the readability of map labels is perhaps debatable.
-            android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width, height, true);
+            android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width,
+                    height, true);
             destroy();
             this.bitmap = scaledBitmap;
         }

@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  * Copyright 2014 Develar
+ * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,17 +37,21 @@ public class AwtTileBitmap extends AwtBitmap implements TileBitmap {
         super(tileSize, tileSize);
     }
 
-    public AwtTileBitmap(int tileSize, boolean hasAlpha) {
-        super(tileSize, tileSize, hasAlpha);
-    }
-
-    public AwtTileBitmap(BufferedImage bufferedImage) {
-        super(bufferedImage);
-    }
-
     @Override
     public long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public boolean isExpired() {
+        if (expiration == 0)
+            return false;
+        return (expiration <= System.currentTimeMillis());
+    }
+
+    @Override
+    public void setExpiration(long expiration) {
+        this.expiration = expiration;
     }
 
     @Override
@@ -54,16 +59,12 @@ public class AwtTileBitmap extends AwtBitmap implements TileBitmap {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public boolean isExpired() {
-        if (expiration == 0)
-            return false;
-        return (expiration >= System.currentTimeMillis());
+    public AwtTileBitmap(int tileSize, boolean hasAlpha) {
+        super(tileSize, tileSize, hasAlpha);
     }
 
-    @Override
-    public void setExpiration(long expiration) {
-        this.expiration = expiration;
+    public AwtTileBitmap(BufferedImage bufferedImage) {
+        super(bufferedImage);
     }
 
 }

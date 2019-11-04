@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2014 Develar
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class AwtBitmap implements Bitmap {
-    protected BufferedImage bufferedImage;
+    BufferedImage bufferedImage;
 
     public AwtBitmap(InputStream inputStream) throws IOException {
         this.bufferedImage = ImageIO.read(inputStream);
@@ -73,16 +73,23 @@ public class AwtBitmap implements Bitmap {
     }
 
     @Override
+    public boolean isDestroyed() {
+        return this.bufferedImage == null;
+    }
+
+    @Override
     public void scaleTo(int width, int height) {
-        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = resizedImage.createGraphics();
-        graphics.setComposite(AlphaComposite.Src);
-        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics.drawImage(bufferedImage, 0, 0, width, height, null);
-        graphics.dispose();
-        this.bufferedImage = resizedImage;
+        if (getWidth() != width || getHeight() != height) {
+            BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics = resizedImage.createGraphics();
+            graphics.setComposite(AlphaComposite.Src);
+            graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.drawImage(bufferedImage, 0, 0, width, height, null);
+            graphics.dispose();
+            this.bufferedImage = resizedImage;
+        }
     }
 
     @Override
@@ -91,11 +98,6 @@ public class AwtBitmap implements Bitmap {
         graphics.setColor(new Color(color, true));
         graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         graphics.dispose();
-    }
-
-    @Override
-    public boolean isDestroyed() {
-        return this.bufferedImage == null;
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -22,48 +22,13 @@ import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Point;
 
 import java.awt.*;
+import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
+import java.text.AttributedCharacterIterator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AwtPaint implements Paint {
-
-    // Avoid creating unnecessary objects
-    private final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-    protected java.awt.Color color;
-    protected Font font;
-    protected String fontName;
-    protected int fontStyle;
-    protected float strokeWidth;
-    protected float textSize;
-    Stroke stroke;
-    Style style;
-    TexturePaint texturePaint;
-    private int cap;
-    private int join;
-    private float[] strokeDasharray;
-    // needed to record size of bitmap shader to compute the shift
-    private int shaderWidth;
-    private int shaderHeight;
-    public AwtPaint() {
-        this.cap = getCap(Cap.ROUND);
-        this.color = java.awt.Color.BLACK;
-        this.style = Style.FILL;
-        this.join = getJoin(Join.ROUND);
-    }
-    AwtPaint(Paint paint) {
-        AwtPaint ap = (AwtPaint) paint;
-        this.cap = ap.cap;
-        this.color = ap.color;
-        this.style = ap.style;
-        this.join = ap.join;
-        this.stroke = ap.stroke;
-        this.fontStyle = ap.fontStyle;
-        this.font = ap.font;
-        this.fontName = ap.fontName;
-        this.strokeWidth = ap.strokeWidth;
-        this.textSize = ap.textSize;
-        this.strokeDasharray = ap.strokeDasharray;
-    }
-
     private static int getCap(Cap cap) {
         switch (cap) {
             case BUTT:
@@ -72,19 +37,6 @@ public class AwtPaint implements Paint {
                 return BasicStroke.CAP_ROUND;
             case SQUARE:
                 return BasicStroke.CAP_SQUARE;
-        }
-
-        throw new IllegalArgumentException("unknown cap: " + cap);
-    }
-
-    private static Cap getMampsforgeCap(int cap) {
-        switch (cap) {
-            case BasicStroke.CAP_BUTT:
-                return Cap.BUTT;
-            case BasicStroke.CAP_ROUND:
-                return Cap.ROUND;
-            case BasicStroke.CAP_SQUARE:
-                return Cap.SQUARE;
         }
 
         throw new IllegalArgumentException("unknown cap: " + cap);
@@ -133,6 +85,64 @@ public class AwtPaint implements Paint {
         throw new IllegalArgumentException("unknown cap: " + join);
     }
 
+    private static final Map<AttributedCharacterIterator.Attribute, Object> TEXT_ATTRIBUTES = new HashMap<>();
+
+    static {
+        TEXT_ATTRIBUTES.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+    }
+
+    java.awt.Color color;
+    Font font;
+    Stroke stroke;
+    Style style;
+    TexturePaint texturePaint;
+    private int cap;
+    private String fontName;
+    private int fontStyle;
+    private int join;
+    private float[] strokeDasharray;
+    private float strokeWidth;
+    private float textSize;
+
+    // needed to record size of bitmap shader to compute the shift
+    private int shaderWidth;
+    private int shaderHeight;
+
+    // Avoid creating unnecessary objects
+    private final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+
+    AwtPaint() {
+        this.cap = getCap(Cap.ROUND);
+        this.color = java.awt.Color.BLACK;
+        this.style = Style.FILL;
+        this.join = getJoin(Join.ROUND);
+    }
+
+    AwtPaint(Paint paint) {
+        AwtPaint ap = (AwtPaint) paint;
+        this.cap = ap.cap;
+        this.color = ap.color;
+        this.style = ap.style;
+        this.join = ap.join;
+        this.stroke = ap.stroke;
+        this.fontStyle = ap.fontStyle;
+        this.font = ap.font;
+        this.fontName = ap.fontName;
+        this.strokeWidth = ap.strokeWidth;
+        this.textSize = ap.textSize;
+        this.strokeDasharray = ap.strokeDasharray;
+    }
+
+    @Override
+    public int getColor() {
+        return this.color.getRGB();
+    }
+
+    @Override
+    public float getStrokeWidth() {
+        return this.strokeWidth;
+    }
+
     @Override
     public int getTextHeight(String text) {
         Graphics2D graphics2d = bufferedImage.createGraphics();
@@ -162,7 +172,7 @@ public class AwtPaint implements Paint {
         this.shaderWidth = bitmap.getWidth();
         this.shaderHeight = bitmap.getHeight();
         Rectangle rectangle = new Rectangle(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        this.texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(bitmap), rectangle);
+        this.texturePaint = new TexturePaint(AwtGraphicFactory.getBitmap(bitmap), rectangle);
     }
 
     /**
@@ -189,6 +199,11 @@ public class AwtPaint implements Paint {
     }
 
     @Override
+    public void setColor(int color) {
+        this.color = new java.awt.Color(color, true);
+    }
+
+    @Override
     public void setDashPathEffect(float[] strokeDasharray) {
         this.strokeDasharray = strokeDasharray;
         createStroke();
@@ -207,8 +222,25 @@ public class AwtPaint implements Paint {
     }
 
     @Override
+    public void setStrokeWidth(float strokeWidth) {
+        this.strokeWidth = strokeWidth;
+        createStroke();
+    }
+
+    @Override
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+
+    @Override
     public void setTextAlign(Align align) {
         // this.align = align; //never read
+    }
+
+    @Override
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
+        createFont();
     }
 
     @Override
@@ -220,7 +252,7 @@ public class AwtPaint implements Paint {
 
     private void createFont() {
         if (this.textSize > 0) {
-            this.font = new Font(this.fontName, this.fontStyle, (int) this.textSize);
+            this.font = new Font(this.fontName, this.fontStyle, (int) this.textSize).deriveFont(TEXT_ATTRIBUTES);
         } else {
             this.font = null;
         }
@@ -235,59 +267,5 @@ public class AwtPaint implements Paint {
 
     public void setStroke(Stroke stroke) {
         this.stroke = stroke;
-    }
-
-    @Override
-    public Cap getCap() {
-        return getMampsforgeCap(this.cap);
-    }
-
-    @Override
-    public int getColor() {
-        return this.color.getRGB();
-    }
-
-    @Override
-    public void setColor(int color) {
-        this.color = new java.awt.Color(color, true);
-    }
-
-    @Override
-    public Style getStyle() {
-        return this.style;
-    }
-
-    //###################################################
-
-    @Override
-    public void setStyle(Style style) {
-        this.style = style;
-    }
-
-    @Override
-    public float getStrokeWidth() {
-        return this.strokeWidth;
-    }
-
-    @Override
-    public void setStrokeWidth(float strokeWidth) {
-        this.strokeWidth = strokeWidth;
-        createStroke();
-    }
-
-    @Override
-    public float getTextSize() {
-        return this.textSize;
-    }
-
-    @Override
-    public void setTextSize(float textSize) {
-        this.textSize = textSize;
-        createFont();
-    }
-
-    @Override
-    public float[] getDashArray() {
-        return this.strokeDasharray;
     }
 }

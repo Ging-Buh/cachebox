@@ -17,7 +17,7 @@
 package org.mapsforge.map.layer.queue;
 
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -26,21 +26,21 @@ import java.util.List;
 public class JobQueue<T extends Job> {
     private static final int QUEUE_CAPACITY = 128;
 
-    private final List<T> assignedJobs = new LinkedList<T>();
+    private final List<T> assignedJobs = new LinkedList<>();
     private final DisplayModel displayModel;
-    private final MapViewPosition mapViewPosition;
-    private final List<QueueItem<T>> queueItems = new LinkedList<QueueItem<T>>();
     private boolean isInterrupted;
+    private final IMapViewPosition mapViewPosition;
+    private final List<QueueItem<T>> queueItems = new LinkedList<>();
     private boolean scheduleNeeded;
 
-    public JobQueue(MapViewPosition mapViewPosition, DisplayModel displayModel) {
+    public JobQueue(IMapViewPosition mapViewPosition, DisplayModel displayModel) {
         this.mapViewPosition = mapViewPosition;
         this.displayModel = displayModel;
     }
 
     public synchronized void add(T job) {
         if (!this.assignedJobs.contains(job)) {
-            QueueItem<T> queueItem = new QueueItem<T>(job);
+            QueueItem<T> queueItem = new QueueItem<>(job);
             if (!this.queueItems.contains(queueItem)) {
                 this.queueItems.add(queueItem);
                 this.scheduleNeeded = true;

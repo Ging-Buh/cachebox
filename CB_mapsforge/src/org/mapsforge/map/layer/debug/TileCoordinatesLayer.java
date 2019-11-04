@@ -28,26 +28,6 @@ import org.mapsforge.map.util.LayerUtil;
 import java.util.List;
 
 public class TileCoordinatesLayer extends Layer {
-    private final DisplayModel displayModel;
-    private final Paint paintBack, paintFront;
-    private final StringBuilder stringBuilder = new StringBuilder();
-    private boolean drawSimple;
-    public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
-        super();
-
-        this.displayModel = displayModel;
-
-        this.paintBack = createPaintBack(graphicFactory, displayModel);
-        this.paintFront = createPaintFront(graphicFactory, displayModel);
-    }
-    public TileCoordinatesLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
-        super();
-
-        this.displayModel = displayModel;
-        this.paintBack = paintBack;
-        this.paintFront = paintFront;
-    }
-
     private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
         Paint paint = graphicFactory.createPaint();
         paint.setColor(Color.RED);
@@ -64,6 +44,28 @@ public class TileCoordinatesLayer extends Layer {
         paint.setStrokeWidth(2 * displayModel.getScaleFactor());
         paint.setStyle(Style.STROKE);
         return paint;
+    }
+
+    private final DisplayModel displayModel;
+    private final Paint paintBack, paintFront;
+    private boolean drawSimple;
+    private final StringBuilder stringBuilder = new StringBuilder();
+
+    public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
+        super();
+
+        this.displayModel = displayModel;
+
+        this.paintBack = createPaintBack(graphicFactory, displayModel);
+        this.paintFront = createPaintFront(graphicFactory, displayModel);
+    }
+
+    public TileCoordinatesLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+        super();
+
+        this.displayModel = displayModel;
+        this.paintBack = paintBack;
+        this.paintFront = paintFront;
     }
 
     @Override
