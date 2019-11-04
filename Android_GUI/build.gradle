@@ -80,7 +80,7 @@ android {
         versionCode = Integer.decode(buildTime())
         versionName = buildTime()
         versionCode = 20191031
-        versionName = "20191031Rel"
+        versionName = "20191031RC1"
         multiDexEnabled true
     }
 

@@ -21,7 +21,6 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
-import android.app.KeyguardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -907,15 +906,35 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
     private void handleRunOverLockScreenConfig() {
-        // add flags for run over lock screen
-        if (Build.VERSION.SDK_INT >= O_MR1) {
-            mainActivity.setShowWhenLocked(true);
-            mainActivity.setTurnScreenOn(true);
-            KeyguardManager keyguardManager = (KeyguardManager) mainActivity.getSystemService(Context.KEYGUARD_SERVICE);
-            assert keyguardManager != null;
-            keyguardManager.requestDismissKeyguard(mainActivity, null);
-        } else {
-            mainActivity.runOnUiThread(() -> {
+        mainActivity.runOnUiThread(() -> {
+            // add flags for run over lock screen
+            if (Build.VERSION.SDK_INT >= O_MR1) {
+                mainActivity.setShowWhenLocked(true);
+                mainActivity.setTurnScreenOn(true);
+                /*
+                // seems as if usage of cachebox is possible without following code
+                // if locked: this code forces to unlock (with your selected unlock method).
+                // if not locked: gives an onDismissError
+                KeyguardManager keyguardManager = (KeyguardManager) mainActivity.getSystemService(Context.KEYGUARD_SERVICE);
+                // to do use try catch for getting KeyguardManager: throws ServiceNotFoundException
+                if (keyguardManager != null) {
+                    keyguardManager.requestDismissKeyguard(mainActivity, new KeyguardManager.KeyguardDismissCallback() {
+                        public void onDismissError() {
+                            Log.err(sKlasse, "request Dismiss Keyguard: Error");
+                        }
+                        public void onDismissSucceeded() {
+                            Log.err(sKlasse, "request Dismiss Keyguard: succeeded");
+                        }
+                        public void onDismissCancelled() {
+                            Log.err(sKlasse, "request Dismiss Keyguard: cancelled");
+                        }
+                    });
+                }
+                else {
+                    Log.err(sKlasse, "keyguardManager not available (null)");
+                }
+                 */
+            } else {
                 Window window = mainActivity.getWindow();
                 if (window != null) {
                     if (Config.RunOverLockScreen.getValue()) {
@@ -924,8 +943,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                         window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     private boolean sendMotionEvent(final MotionEvent event) {
