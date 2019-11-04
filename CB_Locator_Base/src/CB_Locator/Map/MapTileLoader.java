@@ -23,21 +23,25 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * at moment there is only one (static) MapTileLoader for (all) the three MapView Modes (normal, compass, track)
+ */
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     public static AtomicBoolean finishYourself, isWorking;
-    private static int PROCESSOR_COUNT; // == nr of threads for getting tiles
+    private static int PROCESSOR_COUNT; // == nr of threads for getting tiles ?
     private static int nextQueueProcessor;
     private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
-    private final QueueData queueData;
-    private int threadIndex;
+    private final MapTiles mapTiles; // the tiles from the layer: to show
     private Comparator<Descriptor> byDistanceFromCenter;
-    private int orderGroup;
+    private int orderAge;
     private Thread queueProcessorAliveCheck;
+    private Array<Long> alreadyOrdered, alreadyOrderedOverlays;
 
     public MapTileLoader(int capacity) {
-        queueData = new QueueData(capacity);
-        threadIndex = 0;
+        mapTiles = new MapTiles(capacity);
+        alreadyOrdered = new Array<>();
+        alreadyOrderedOverlays = new Array<>();
         finishYourself = new AtomicBoolean();
         finishYourself.set(false);
         isWorking = new AtomicBoolean();
@@ -46,7 +50,7 @@ public class MapTileLoader {
         Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
         nextQueueProcessor = 0;
-        orderGroup = -1;
+        orderAge = -1;
         byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.Data, (Integer) o2.Data);
 
         queueProcessorAliveCheck = new Thread(() -> {
@@ -63,7 +67,7 @@ public class MapTileLoader {
                         try {
                             //Log.info(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
                             queueProcessors.remove(threadToCheck);
-                            MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(queueData);
+                            MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(mapTiles);
                             queueProcessors.add(newThread);
                             newThread.setPriority(Thread.MIN_PRIORITY);
                             newThread.start();
@@ -77,27 +81,35 @@ public class MapTileLoader {
     }
 
     private void startQueueProzessors() {
-        for (threadIndex = 0; threadIndex < PROCESSOR_COUNT; threadIndex++) {
-            MultiThreadQueueProcessor thread = new MultiThreadQueueProcessor(queueData);
+        int threadIndex = 0;
+        while (threadIndex < PROCESSOR_COUNT) {
+            MultiThreadQueueProcessor thread = new MultiThreadQueueProcessor(mapTiles);
             queueProcessors.add(thread);
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();
+            threadIndex++;
         }
         queueProcessorAliveCheck.start();
     }
 
     public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
         if (queueProcessors.size() == 0) startQueueProzessors();
-        orderGroup++;
-        if (orderGroup == Integer.MAX_VALUE) orderGroup = -1;
+        orderAge++;
+        if (orderAge == Integer.MAX_VALUE) orderAge = 0;
         // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
         // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
 
         // make a copy of the loaded tiles (worst case an already generated Tile will be created again)
-        Array<Long> loadedTiles = queueData.getTilesHashCopy();
+        Array<Long> loadedTiles = mapTiles.getTilesHashCopy();
+        for (Long loaded : loadedTiles) {
+            alreadyOrdered.removeValue(loaded, false);
+        }
 
         // make a copy of the loaded overlaytiles
-        Array<Long> loadedOverlayTiles = queueData.getOverlayTilesHashCopy();
+        Array<Long> loadedOverlayTiles = mapTiles.getOverlayTilesHashCopy();
+        for (Long loaded : loadedOverlayTiles) {
+            alreadyOrderedOverlays.removeValue(loaded, false);
+        }
 
         // calc nearest to middle and not yet handled
         // get tiles from middle of rectangle to border and not yet created
@@ -119,18 +131,31 @@ public class MapTileLoader {
             return;
         wantedTiles.sort(byDistanceFromCenter);
 
-        int orderCount = 0; // don't order more than want to be cached
+        int orderCount = 0; // don't order more than want to be cached !!! todo over all orders till now
         int firstDistance = 0;
-        boolean isFirstOrdered = false;
+        boolean isSetFirstDistance = false;
         for (Descriptor descriptor : wantedTiles) {
             if (finishYourself.get()) {
                 return;
             }
-            if (!loadedTiles.contains(descriptor.getHashCode(), false)) {
-                MultiThreadQueueProcessor thread = queueProcessors.get(nextQueueProcessor);
-                if (!isFirstOrdered) {
+            if (!loadedTiles.contains(descriptor.getHashCode(), false) && !alreadyOrdered.contains(descriptor.getHashCode(), false)) {
+                MultiThreadQueueProcessor thread;
+                int previousQueueProcessor = nextQueueProcessor;
+                do {
+                    thread = queueProcessors.get(nextQueueProcessor);
+                    nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
+                    if (nextQueueProcessor == previousQueueProcessor) {
+                        try {
+                            Thread.sleep(1000);
+                        }
+                        catch (Exception ignored) {
+                        }
+                    }
+                }
+                while (!thread.canTakeOrder);
+                if (!isSetFirstDistance) {
                     firstDistance = (int) descriptor.Data;
-                    isFirstOrdered = true;
+                    isSetFirstDistance = true;
                 }
                 if (((int) descriptor.Data) - firstDistance > 1) {
                     // first create the nearest tiles
@@ -138,25 +163,39 @@ public class MapTileLoader {
                     Log.info(log, "ordered: " + orderCount + " Distance: " + ((int) descriptor.Data - 1));
                     return;
                 }
-                Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " run: " + orderGroup + " on thread: " + nextQueueProcessor);
-                thread.addOrder(descriptor, false, orderGroup, mapView);
+                Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " run: " + orderAge + " on thread: " + nextQueueProcessor);
+                alreadyOrdered.add(descriptor.getHashCode());
+                thread.addOrder(descriptor, false, orderAge, mapView);
                 thread.interrupt();
-                nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
                 orderCount++;
-                if (orderCount == queueData.getCapacity())
+                if (orderCount == mapTiles.getCapacity())
                     break;
             }
             if (finishYourself.get()) {
                 return;
             }
-            if (queueData.currentOverlayLayer != null) {
-                if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false)) {
-                    MultiThreadQueueProcessor thread = queueProcessors.get(nextQueueProcessor);
-                    thread.addOrder(descriptor, true, orderGroup, mapView);
+            if (mapTiles.currentOverlayLayer != null) {
+                if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false) && !alreadyOrderedOverlays.contains(descriptor.getHashCode(), false)) {
+                    MultiThreadQueueProcessor thread;
+                    int previousQueueProcessor = nextQueueProcessor;
+                    do {
+                        thread = queueProcessors.get(nextQueueProcessor);
+                        nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
+                        if (nextQueueProcessor == previousQueueProcessor) {
+                            try {
+                                Thread.sleep(1000);
+                            }
+                            catch (Exception ignored) {
+                            }
+                        }
+                    }
+                    while (!thread.canTakeOrder);
+                    alreadyOrderedOverlays.add(descriptor.getHashCode());
+                    thread.addOrder(descriptor, true, orderAge, mapView);
                     thread.interrupt();
                     nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
                     orderCount++;
-                    if (orderCount == queueData.getCapacity())
+                    if (orderCount == mapTiles.getCapacity())
                         break;
                 }
             }
@@ -165,72 +204,86 @@ public class MapTileLoader {
     }
 
     int markTileToDraw(long hash) {
-        return queueData.markTileToDraw(hash);
+        return mapTiles.markTileToDraw(hash);
     }
 
     int getTilesToDrawCounter() {
-        return queueData.getTilesToDrawCounter();
+        return mapTiles.getTilesToDrawCounter();
     }
 
     TileGL getDrawingTile(int i) {
-        return queueData.getDrawingTile(i);
+        return mapTiles.getDrawingTile(i);
     }
 
     void resetTilesToDrawCounter() {
-        queueData.resetTilesToDrawCounter();
+        mapTiles.resetTilesToDrawCounter();
     }
 
     int markOverlayTileToDraw(long hash) {
-        return queueData.markOverlayTileToDraw(hash);
+        return mapTiles.markOverlayTileToDraw(hash);
     }
 
     int getOverlayTilesToDrawCounter() {
-        return queueData.getOverlayTilesToDrawCounter();
+        return mapTiles.getOverlayTilesToDrawCounter();
     }
 
     TileGL getOverlayDrawingTile(int i) {
-        return queueData.getOverlayDrawingTile(i);
+        return mapTiles.getOverlayDrawingTile(i);
     }
 
     void resetOverlayTilesToDrawCounter() {
-        queueData.resetOverlayTilesToDrawCounter();
+        mapTiles.resetOverlayTilesToDrawCounter();
     }
 
     void increaseAge() {
-        queueData.increaseAge();
+        mapTiles.increaseAge();
     }
 
     void sortByAge() {
-        queueData.sortByAge();
+        mapTiles.sortByAge();
     }
 
     public Layer getCurrentLayer() {
-        return queueData.currentLayer;
+        return mapTiles.currentLayer;
     }
 
     public boolean setCurrentLayer(Layer layer, boolean isCarMode) {
-        if (layer != queueData.currentLayer) {
-            queueData.clearTiles();
+        if (layer != mapTiles.currentLayer) {
+            mapTiles.clearTiles();
             Log.info(log, "set layer to " + layer.name);
             layer.prepareLayer(isCarMode);
-            queueData.currentLayer = layer;
+            mapTiles.currentLayer = layer;
             return true;
         }
         return false;
     }
 
     public void modifyCurrentLayer(boolean isCarMode) {
-        queueData.clearTiles();
-        queueData.currentLayer.prepareLayer(isCarMode);
+        mapTiles.clearTiles();
+        mapTiles.currentLayer.prepareLayer(isCarMode);
     }
 
     public Layer getCurrentOverlayLayer() {
-        return queueData.currentOverlayLayer;
+        return mapTiles.currentOverlayLayer;
     }
 
     public void setCurrentOverlayLayer(Layer layer) {
-        queueData.currentOverlayLayer = layer;
-        queueData.clearOverlayTiles();
+        mapTiles.currentOverlayLayer = layer;
+        mapTiles.clearOverlayTiles();
+    }
+
+    private static class OrderData {
+        Descriptor descriptor;
+        boolean forOverlay;
+        int orderAge;
+        MapViewBase mapView;
+
+        OrderData(Descriptor actualDescriptor, boolean forOverlay, int orderAge, MapViewBase mapView) {
+            this.descriptor = actualDescriptor;
+            this.forOverlay = forOverlay;
+            this.orderAge = orderAge;
+            this.mapView = mapView;
+        }
     }
 
 }

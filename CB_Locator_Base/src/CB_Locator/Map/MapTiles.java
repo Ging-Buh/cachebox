@@ -18,7 +18,7 @@ package CB_Locator.Map;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import com.badlogic.gdx.utils.Array;
 
-class QueueData {
+class MapTiles {
 
     private final MapTileCache tiles;
     private final MapTileCache overlayTiles;
@@ -26,7 +26,7 @@ class QueueData {
     Layer currentLayer = null;
     Layer currentOverlayLayer = null;
 
-    QueueData(int capacity) {
+    MapTiles(int capacity) {
         tiles = new MapTileCache((short) capacity);
         overlayTiles = new MapTileCache((short) capacity);
     }

@@ -27,23 +27,25 @@ import java.util.Iterator;
 class MultiThreadQueueProcessor extends Thread {
     private static int threadIndex = -1;
     private static int newOrderGroup;
-    private final QueueData queueData;
+    private final MapTiles mapTiles;
     private final Array<OrderData> orders;
+    public boolean canTakeOrder;
     long startTime;
     boolean isWorking;
     private String log = "MapTileQueueThread";
     private OrderData newOrder;
     private int actualOrderGroup;
 
-    MultiThreadQueueProcessor(QueueData queueData) {
+    MultiThreadQueueProcessor(MapTiles mapTiles) {
         threadIndex++;
         log = log + "[" + threadIndex + "]";
-        this.queueData = queueData;
+        this.mapTiles = mapTiles;
         isWorking = false;
         startTime = System.currentTimeMillis();
         actualOrderGroup = -1;
         newOrderGroup = -1;
-        orders = new Array<>(true, queueData.getCapacity());
+        orders = new Array<>(true, mapTiles.getCapacity());
+        canTakeOrder = true;
     }
 
     /**
@@ -75,10 +77,10 @@ class MultiThreadQueueProcessor extends Thread {
         synchronized (orders) {
             if (orders.size > 0) {
                 if (actualOrderGroup != newOrderGroup) {
-                    while (orders.size > 0 && orders.get(0).orderGroup != newOrderGroup) {
+                    while (orders.size > 0 && orders.get(0).orderAge != newOrderGroup) {
                         for (Iterator<OrderData> iterator = orders.iterator(); iterator.hasNext(); ) {
                             OrderData od = iterator.next();
-                            if (od.orderGroup != newOrderGroup) {
+                            if (od.orderAge != newOrderGroup) {
                                 // Log.info(log, "remove " + od.descriptor + " of " + od.orderGroup);
                                 orders.removeValue(od, true);
                             }
@@ -93,20 +95,22 @@ class MultiThreadQueueProcessor extends Thread {
     public void run() {
         try {
             do {
+                canTakeOrder = false;
                 if (getNextOrder()) {
                     startTime = System.currentTimeMillis();
                     isWorking = true;
                     // Log.info(log, "got Order: " + newOrder.descriptor + " Distance: " + (Integer) newOrder.descriptor.Data + " for " + newOrder.orderGroup);
                     newOrder.descriptor.Data = newOrder.mapView;
                     if (newOrder.forOverlay) {
-                        queueData.loadOverlayTile(newOrder.descriptor);
+                        mapTiles.loadOverlayTile(newOrder.descriptor);
                     } else {
-                        queueData.loadTile(newOrder.descriptor);
+                        mapTiles.loadTile(newOrder.descriptor);
                     }
                     isWorking = false;
                 } else {
                     try {
                         // Log.info(log, "Wait for Order");
+                        canTakeOrder = true;
                         Thread.sleep(100000);
                     } catch (InterruptedException ignored) {
                     }
@@ -124,13 +128,13 @@ class MultiThreadQueueProcessor extends Thread {
     private static class OrderData {
         Descriptor descriptor;
         boolean forOverlay;
-        int orderGroup;
+        int orderAge;
         MapViewBase mapView;
 
-        OrderData(Descriptor actualDescriptor, boolean forOverlay, int orderGroup, MapViewBase mapView) {
+        OrderData(Descriptor actualDescriptor, boolean forOverlay, int orderAge, MapViewBase mapView) {
             this.descriptor = actualDescriptor;
             this.forOverlay = forOverlay;
-            this.orderGroup = orderGroup;
+            this.orderAge = orderAge;
             this.mapView = mapView;
         }
     }
