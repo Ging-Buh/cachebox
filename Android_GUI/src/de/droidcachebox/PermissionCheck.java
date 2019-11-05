@@ -41,6 +41,7 @@ public class PermissionCheck {
     private static final String VIBRATE = "android.permission.VIBRATE";
     private static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
     private static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
+    private static final String FOREGROUND_SERVICE = "android.permission.FOREGROUND_SERVICE";
     public static ArrayList<String> neededPermissions;
 
     public static void checkNeededPermissions(Activity context) {
@@ -56,7 +57,8 @@ public class PermissionCheck {
                         CAMERA,
                         VIBRATE,
                         WRITE_EXTERNAL_STORAGE,
-                        READ_EXTERNAL_STORAGE
+                        READ_EXTERNAL_STORAGE,
+                        FOREGROUND_SERVICE
                 ));
 
         ArrayList<String> DENIED_List = new ArrayList<>();

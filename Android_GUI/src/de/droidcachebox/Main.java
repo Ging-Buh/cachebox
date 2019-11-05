@@ -83,6 +83,7 @@ import de.droidcachebox.Ui.AndroidContentClipboard;
 import de.droidcachebox.Ui.AndroidTextClipboard;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
+import de.droidcachebox.activities.CBForeground;
 import de.droidcachebox.activities.Splash;
 
 import java.io.IOException;
@@ -335,6 +336,13 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         }
 
         initializeLocatorBaseMethods();
+
+        //Start service:
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, CBForeground.class));
+        } else {
+            // startService(new Intent(this, CBForeground.class)); // not necessary
+        }
 
         isCreated = true;
         Log.info(sKlasse, "onCreate <=");
@@ -653,8 +661,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 if (wakeLock.isHeld()) {
                     Log.info(sKlasse, "wakeLock.acquire()");
                     wakeLock.acquire();
-                }
-                else {
+                } else {
                     Log.info(sKlasse, "wakeLock is not held.");
                     // even if not held, you must acquire to change behavior of powerservice
                     wakeLock.acquire();
