@@ -20,7 +20,6 @@ import CB_Locator.Events.PositionChangedListeners;
 import CB_Locator.Location.ProviderType;
 import CB_UI_Base.Energy;
 import CB_Utils.Log.Log;
-import CB_Utils.Util.IChanged;
 import CB_Utils.Util.UnitFormatter;
 
 import java.util.Date;
@@ -50,12 +49,9 @@ public class Locator {
     private CompassType mLastUsedCompassType = CompassType.any;
 
     private Locator() {
-        Energy.addChangedEventListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                isDisplayOff = Energy.isDisplayOff();
-                Log.info(log, "Display off: " + isDisplayOff);
-            }
+        Energy.addChangedEventListener(() -> {
+            isDisplayOff = Energy.isDisplayOff();
+            Log.info(log, "Display off: " + isDisplayOff);
         });
     }
 

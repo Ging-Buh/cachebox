@@ -34,7 +34,6 @@ public class MapTileLoader {
     private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
     private final MapTiles mapTiles; // the tiles from the layer: to show
     private Comparator<Descriptor> byDistanceFromCenter;
-    private int orderAge;
     private Thread queueProcessorAliveCheck;
     private Array<Long> alreadyOrdered, alreadyOrderedOverlays;
 
@@ -50,7 +49,6 @@ public class MapTileLoader {
         Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
         nextQueueProcessor = 0;
-        orderAge = -1;
         byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.Data, (Integer) o2.Data);
 
         queueProcessorAliveCheck = new Thread(() -> {
@@ -94,8 +92,6 @@ public class MapTileLoader {
 
     public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
         if (queueProcessors.size() == 0) startQueueProzessors();
-        orderAge++;
-        if (orderAge == Integer.MAX_VALUE) orderAge = 0;
         // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
         // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
 
@@ -163,9 +159,9 @@ public class MapTileLoader {
                     Log.info(log, "ordered: " + orderCount + " Distance: " + ((int) descriptor.Data - 1));
                     return;
                 }
-                Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " run: " + orderAge + " on thread: " + nextQueueProcessor);
+                Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " on thread: " + nextQueueProcessor);
                 alreadyOrdered.add(descriptor.getHashCode());
-                thread.addOrder(descriptor, false, orderAge, mapView);
+                thread.addOrder(descriptor, false, mapView);
                 thread.interrupt();
                 orderCount++;
                 if (orderCount == mapTiles.getCapacity())
@@ -191,7 +187,7 @@ public class MapTileLoader {
                     }
                     while (!thread.canTakeOrder);
                     alreadyOrderedOverlays.add(descriptor.getHashCode());
-                    thread.addOrder(descriptor, true, orderAge, mapView);
+                    thread.addOrder(descriptor, true, mapView);
                     thread.interrupt();
                     nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
                     orderCount++;
@@ -275,13 +271,11 @@ public class MapTileLoader {
     private static class OrderData {
         Descriptor descriptor;
         boolean forOverlay;
-        int orderAge;
         MapViewBase mapView;
 
-        OrderData(Descriptor actualDescriptor, boolean forOverlay, int orderAge, MapViewBase mapView) {
+        OrderData(Descriptor actualDescriptor, boolean forOverlay, MapViewBase mapView) {
             this.descriptor = actualDescriptor;
             this.forOverlay = forOverlay;
-            this.orderAge = orderAge;
             this.mapView = mapView;
         }
     }

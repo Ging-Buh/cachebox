@@ -115,7 +115,6 @@ public class MapsForgeLayer extends Layer {
         for (MultiMapDataStore mmds : multiMapDataStores) {
             mmds = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
             mmds.addMapDataStore(mapFile, false, false);
-
         }
         additionalMapsforgeLayers.clear();
     }
@@ -165,13 +164,11 @@ public class MapsForgeLayer extends Layer {
                 }
                 HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
                 databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, hillsRenderConfig);
-
             }
             Log.info(log, "prepareLayer " + getName() + " : " + mapFile.getMapFileInfo().comment);
         } catch (Exception e) {
             Log.err(log, "ERROR with Open MapsForge Map: " + getName(), e);
         }
-
         initTheme(isCarMode);
     }
 
@@ -226,7 +223,7 @@ public class MapsForgeLayer extends Layer {
         return false;
     }
 
-    public MapFile getMapFile() {
+    private MapFile getMapFile() {
         return mapFile;
     }
 
@@ -277,26 +274,26 @@ public class MapsForgeLayer extends Layer {
         isSetRenderTheme = true;
     }
 
-    public void initTheme(boolean carMode) {
-        String themestyle = "";
-        String theme = "";
+    private void initTheme(boolean carMode) {
+        String themeStyle;
+        String theme;
         String path;
         if (carMode) {
             textScale = DEFAULT_TEXT_SCALE * 1.35f;
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themestyle = LocatorSettings.MapsforgeCarNightStyle.getValue();
+                themeStyle = LocatorSettings.MapsforgeCarNightStyle.getValue();
                 path = LocatorSettings.MapsforgeCarNightTheme.getValue();
             } else {
-                themestyle = LocatorSettings.MapsforgeCarDayStyle.getValue();
+                themeStyle = LocatorSettings.MapsforgeCarDayStyle.getValue();
                 path = LocatorSettings.MapsforgeCarDayTheme.getValue();
             }
         } else {
             textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.MapViewTextFaktor.getValue();
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themestyle = LocatorSettings.MapsforgeNightStyle.getValue();
+                themeStyle = LocatorSettings.MapsforgeNightStyle.getValue();
                 path = LocatorSettings.MapsforgeNightTheme.getValue();
             } else {
-                themestyle = LocatorSettings.MapsforgeDayStyle.getValue();
+                themeStyle = LocatorSettings.MapsforgeDayStyle.getValue();
                 path = LocatorSettings.MapsforgeDayTheme.getValue();
             }
         }
@@ -309,7 +306,7 @@ public class MapsForgeLayer extends Layer {
                 theme = "";
         } else
             theme = "";
-        setRenderTheme(theme, themestyle);
+        setRenderTheme(theme, themeStyle);
     }
 
     private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {

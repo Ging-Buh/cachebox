@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.Activities;
+package de.droidcachebox.activities;
 
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
@@ -58,7 +58,6 @@ import android.widget.*;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
-import de.CB_Utils.fileProvider.AndroidFileFactory;
 import de.cb.sqlite.AndroidDB;
 import de.droidcachebox.*;
 import de.droidcachebox.Components.copyAssetFolder;

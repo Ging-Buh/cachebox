@@ -30,23 +30,25 @@ public class PermissionCheck {
 
     public static final int MY_PERMISSIONS_REQUEST = 11052016;
 
-    static final String ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION";
-    static final String ACCESS_COARSE_LOCATION = "android.permission.ACCESS_COARSE_LOCATION";
-    static final String WAKE_LOCK = "android.permission.WAKE_LOCK";
-    static final String INTERNET = "android.permission.INTERNET";
-    static final String ACCESS_NETWORK_STATE = "android.permission.ACCESS_NETWORK_STATE";
-    static final String RECORD_AUDIO = "android.permission.RECORD_AUDIO";
-    static final String CAMERA = "android.permission.CAMERA";
-    static final String VIBRATE = "android.permission.VIBRATE";
-    static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
-    static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
+    private static final String ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION";
+    private static final String ACCESS_COARSE_LOCATION = "android.permission.ACCESS_COARSE_LOCATION";
+    private static final String ACCESS_BACKGROUND_LOCATION = "android.permission.ACCESS_BACKGROUND_LOCATION";
+    private static final String WAKE_LOCK = "android.permission.WAKE_LOCK";
+    private static final String INTERNET = "android.permission.INTERNET";
+    private static final String ACCESS_NETWORK_STATE = "android.permission.ACCESS_NETWORK_STATE";
+    private static final String RECORD_AUDIO = "android.permission.RECORD_AUDIO";
+    private static final String CAMERA = "android.permission.CAMERA";
+    private static final String VIBRATE = "android.permission.VIBRATE";
+    private static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
+    private static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
     public static ArrayList<String> neededPermissions;
 
     public static void checkNeededPermissions(Activity context) {
-        neededPermissions = new ArrayList<String>(
+        neededPermissions = new ArrayList<>(
                 Arrays.asList(
                         ACCESS_FINE_LOCATION,
                         ACCESS_COARSE_LOCATION,
+                        ACCESS_BACKGROUND_LOCATION,
                         WAKE_LOCK,
                         INTERNET,
                         ACCESS_NETWORK_STATE,
@@ -64,9 +66,9 @@ public class PermissionCheck {
                 DENIED_List.add(permission);
             }
         }
+
         if (!DENIED_List.isEmpty()) {
-            String[] ar = DENIED_List.toArray(new String[DENIED_List.size()]);
-            ActivityCompat.requestPermissions(context, ar, MY_PERMISSIONS_REQUEST);
+            ActivityCompat.requestPermissions(context, DENIED_List.toArray(new String[0]), MY_PERMISSIONS_REQUEST);
         }
 
     }

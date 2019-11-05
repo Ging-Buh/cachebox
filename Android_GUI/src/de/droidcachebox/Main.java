@@ -76,7 +76,6 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import de.cb.sqlite.AndroidDB;
-import de.droidcachebox.Activities.Splash;
 import de.droidcachebox.CB_Texturepacker.AndroidTexturePacker;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.droidcachebox.Ui.ActivityUtils;
@@ -84,6 +83,7 @@ import de.droidcachebox.Ui.AndroidContentClipboard;
 import de.droidcachebox.Ui.AndroidTextClipboard;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
+import de.droidcachebox.activities.Splash;
 
 import java.io.IOException;
 import java.util.Iterator;

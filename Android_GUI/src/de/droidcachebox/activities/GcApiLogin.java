@@ -1,4 +1,4 @@
-package de.droidcachebox.Activities;
+package de.droidcachebox.activities;
 
 import CB_Core.Api.CB_Api;
 import CB_Core.CB_Core_Settings;

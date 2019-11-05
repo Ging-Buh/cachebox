@@ -692,6 +692,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     private HashMap<String, String> getMapStyles(String selectedTheme) {
         try {
+            // if the selected theme is an internal theme there will be no style
             CB_InternalRenderTheme.valueOf(selectedTheme.toUpperCase()); // todo make this check better
         } catch (Exception ex) {
             if (selectedTheme.length() > 0) {
@@ -702,8 +703,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                         // parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
                         // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
                         RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
-                    } catch (Exception e) {
-                        Log.err(log, e.getLocalizedMessage());
+                    } catch (Exception ex1) {
+                        Log.err(log, "getMapStyles for " + selectedTheme, ex1);
                     }
                     return stylesCallBack.getStyles();
                 } catch (Exception ignored) {

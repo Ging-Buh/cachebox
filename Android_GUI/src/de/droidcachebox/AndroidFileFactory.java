@@ -1,4 +1,4 @@
-package de.CB_Utils.fileProvider;
+package de.droidcachebox;
 
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;

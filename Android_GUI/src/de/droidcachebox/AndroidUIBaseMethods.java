@@ -49,7 +49,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
 import de.cb.sqlite.SQLiteClass;
 import de.cb.sqlite.SQLiteInterface;
-import de.droidcachebox.Activities.GcApiLogin;
+import de.droidcachebox.activities.GcApiLogin;
 
 import java.util.Date;
 import java.util.Objects;

@@ -18,23 +18,18 @@ package CB_Locator.Map;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Iterator;
-
 /**
  * insert sleeping with wakeup from maptileloader loadTiles(...
  * Logging with threadID
  */
 class MultiThreadQueueProcessor extends Thread {
     private static int threadIndex = -1;
-    private static int newOrderGroup;
     private final MapTiles mapTiles;
     private final Array<OrderData> orders;
-    public boolean canTakeOrder;
+    boolean isWorking, canTakeOrder;
     long startTime;
-    boolean isWorking;
     private String log = "MapTileQueueThread";
     private OrderData newOrder;
-    private int actualOrderGroup;
 
     MultiThreadQueueProcessor(MapTiles mapTiles) {
         threadIndex++;
@@ -42,8 +37,6 @@ class MultiThreadQueueProcessor extends Thread {
         this.mapTiles = mapTiles;
         isWorking = false;
         startTime = System.currentTimeMillis();
-        actualOrderGroup = -1;
-        newOrderGroup = -1;
         orders = new Array<>(true, mapTiles.getCapacity());
         canTakeOrder = true;
     }
@@ -51,43 +44,21 @@ class MultiThreadQueueProcessor extends Thread {
     /**
      * used by MapTileLoader for ordering a new Tile (so a Texture to draw)
      */
-    void addOrder(Descriptor descriptor, boolean forOverlay, int orderGroup, MapViewBase mapView) {
-        newOrderGroup = orderGroup;
-        removeOldOrders();
+    void addOrder(Descriptor descriptor, boolean forOverlay, MapViewBase mapView) {
         synchronized (orders) {
-            orders.add(new OrderData(descriptor, forOverlay, orderGroup, mapView));
+            orders.add(new OrderData(descriptor, forOverlay, mapView));
         }
-        // Log.info(log, "put Order: " + descriptor + " Distance: " + (Integer) descriptor.Data + " for " + orderGroup);
+        // Log.info(log, "put Order: " + descriptor + " Distance: " + (Integer) descriptor.Data ;
     }
 
     private boolean getNextOrder() {
-        removeOldOrders();
         synchronized (orders) {
             if (orders.size > 0) {
                 newOrder = orders.get(0);
                 orders.removeIndex(0);
-                actualOrderGroup = newOrderGroup;
                 return true;
             }
             return false;
-        }
-    }
-
-    private void removeOldOrders() {
-        synchronized (orders) {
-            if (orders.size > 0) {
-                if (actualOrderGroup != newOrderGroup) {
-                    while (orders.size > 0 && orders.get(0).orderAge != newOrderGroup) {
-                        for (Iterator<OrderData> iterator = orders.iterator(); iterator.hasNext(); ) {
-                            OrderData od = iterator.next();
-                            if (od.orderAge != newOrderGroup) {
-                                // Log.info(log, "remove " + od.descriptor + " of " + od.orderGroup);
-                                orders.removeValue(od, true);
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -128,13 +99,11 @@ class MultiThreadQueueProcessor extends Thread {
     private static class OrderData {
         Descriptor descriptor;
         boolean forOverlay;
-        int orderAge;
         MapViewBase mapView;
 
-        OrderData(Descriptor actualDescriptor, boolean forOverlay, int orderAge, MapViewBase mapView) {
+        OrderData(Descriptor actualDescriptor, boolean forOverlay, MapViewBase mapView) {
             this.descriptor = actualDescriptor;
             this.forOverlay = forOverlay;
-            this.orderAge = orderAge;
             this.mapView = mapView;
         }
     }

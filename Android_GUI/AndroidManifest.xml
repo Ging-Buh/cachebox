@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.droidcachebox"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+          package="de.droidcachebox"
           android:installLocation="auto">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
-    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
-    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"></uses-feature>
-    <uses-feature android:name="android.hardware.camera" android:required="false"></uses-feature>
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"></uses-feature>
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
 
     <application
@@ -23,7 +25,7 @@
             android:icon="@drawable/cb"
             android:vmSafeMode="false"
             android:allowBackup="true"
-            android:usesCleartextTraffic="true">
+            android:usesCleartextTraffic="true" tools:targetApi="m">
 
         <activity android:name=".Main"
                   android:label="@string/app_name"
@@ -38,7 +40,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Activities.Splash" android:launchMode="singleTask">
+        <activity android:name=".activities.Splash" android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -139,7 +141,7 @@
 
         </activity>
 
-        <activity android:name="de.droidcachebox.Activities.GcApiLogin" android:screenOrientation="behind"
+        <activity android:name="de.droidcachebox.activities.GcApiLogin" android:screenOrientation="behind"
                   android:theme="@style/Theme_day_transparent"/>
 
         <provider
