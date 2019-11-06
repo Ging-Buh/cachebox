@@ -3,6 +3,7 @@ package org.mapsforge.map.swing.view;
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
+import CB_Locator.Map.CB_InternalRenderTheme;
 import CB_UI_Base.Events.PlatformUIBase;
 import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
 import CB_Utils.fileProvider.FileFactory;
@@ -27,7 +28,6 @@ import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -93,7 +93,7 @@ public class MapPanel extends JPanel implements ActionListener {
     private static Layer createTileRendererLayer(TileCache tileCache, IMapViewPosition mapViewPosition, LayerManager layerManager, String MapPath) {
         java.io.File mapFile = new java.io.File(FileFactory.createFile(MapPath).getAbsolutePath());
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile), mapViewPosition, false, false, true, GRAPHIC_FACTORY);
-        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
+        tileRendererLayer.setXmlRenderTheme(CB_InternalRenderTheme.OSMARENDER);
         return tileRendererLayer;
     }
 

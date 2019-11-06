@@ -1,5 +1,6 @@
 package de.droidcachebox.activities;
 
+import CB_Translation_Base.TranslationEngine.Translation;
 import android.annotation.TargetApi;
 import android.app.*;
 import android.content.Context;
@@ -41,8 +42,8 @@ public class CBForeground extends IntentService {
 
         builder.setOngoing(true)
                 .setSmallIcon(R.drawable.cb) // .notification_icon
-                .setContentTitle("CacheBox") // .setContentTitle(yourService.getString(R.string.title))
-                .setContentText("Hihi"); // .setContentText(yourService.getString(R.string.content));
+                .setContentTitle("Cachebox") // .setContentTitle(yourService.getString(R.string.title))
+                .setContentText(Translation.get("welcome")); // .setContentText(yourService.getString(R.string.content));
 
         Notification notification = builder.build();
 

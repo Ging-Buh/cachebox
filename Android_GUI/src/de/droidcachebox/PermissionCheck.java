@@ -49,7 +49,6 @@ public class PermissionCheck {
                 Arrays.asList(
                         ACCESS_FINE_LOCATION,
                         ACCESS_COARSE_LOCATION,
-                        ACCESS_BACKGROUND_LOCATION,
                         WAKE_LOCK,
                         INTERNET,
                         ACCESS_NETWORK_STATE,
@@ -57,8 +56,7 @@ public class PermissionCheck {
                         CAMERA,
                         VIBRATE,
                         WRITE_EXTERNAL_STORAGE,
-                        READ_EXTERNAL_STORAGE,
-                        FOREGROUND_SERVICE
+                        READ_EXTERNAL_STORAGE
                 ));
 
         ArrayList<String> DENIED_List = new ArrayList<>();
@@ -67,6 +65,16 @@ public class PermissionCheck {
             if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                 DENIED_List.add(permission);
             }
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            ContextCompat.checkSelfPermission(context, FOREGROUND_SERVICE); // result doesn't matter
+        }
+
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.P) {
+            if (ContextCompat.checkSelfPermission(context, ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+               // todo ? don't start service
+            };
         }
 
         if (!DENIED_List.isEmpty()) {
