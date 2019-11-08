@@ -1,8 +1,8 @@
 package de.droidcachebox.Components;
 
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import android.content.res.AssetManager;
+import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.FileFactory;
 
 import java.io.*;
 import java.util.ArrayList;

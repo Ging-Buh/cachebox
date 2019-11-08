@@ -61,8 +61,8 @@
 		</encoder>
 	</appender>
 
-<!-- Write messages from class CB_Utils.Settings.SettingsList to its own log -->
-	<logger name="CB_Utils.Settings.SettingsList" level="ALL">
+<!-- Write messages from class de.droidcachebox.settings.SettingsList to its own log -->
+	<logger name="de.droidcachebox.settings.SettingsList" level="ALL">
 		<appender-ref ref="ConfigLog" />
 	</logger>
 
@@ -86,8 +86,8 @@
 		<appender-ref ref="SplashLog" />
 	</logger>
 
-<!-- Write messages from class CB_UI.GL_UI.Controls.Slider to SliderLog -->
-	<logger name="CB_UI_Base.Math.GL_UISizes" level="ALL">
+<!-- Write messages from class de.droidcachebox.gdx.controls.Slider to SliderLog -->
+	<logger name="de.droidcachebox.gdx.math.GL_UISizes" level="ALL">
 		<appender-ref ref="SplashLog" />
 	</logger>
 

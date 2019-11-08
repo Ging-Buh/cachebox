@@ -25,11 +25,11 @@ public class AwtMapView extends MapView {
 
         DisplayModel dispModel = new DisplayModel();
 
-        this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, dispModel);
-        this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, dispModel, GRAPHIC_FACTORY);
+        this.fpsCounter = new FpsCounter(AwtGraphicFactory.INSTANCE, dispModel);
+        this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, dispModel, AwtGraphicFactory.INSTANCE);
         FrameBufferController.create(this.frameBuffer, this.model);
 
-        this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
+        this.layerManager = new LayerManager(this, this.model.mapViewPosition, AwtGraphicFactory.INSTANCE);
         this.layerManager.start();
         LayerManagerController.create(this.layerManager, this.model);
 

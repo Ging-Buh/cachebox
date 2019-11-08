@@ -18,7 +18,7 @@
  */
 package org.apache.xmlrpc.webserver;
 
-import CB_Utils.Log.Log;
+import de.droidcachebox.utils.log.Log;
 import org.apache.xmlrpc.XmlRpcConfig;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.common.TypeConverterFactory;

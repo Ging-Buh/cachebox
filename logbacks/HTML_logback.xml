@@ -61,7 +61,7 @@
 		</encoder>
 	</appender>
 
-<!-- Write messages from class CB_Utils.Settings.SettingsList to its own log -->
+<!-- Write messages from class de.droidcachebox.settings.SettingsList to its own log -->
 	<logger name="HTML_PARSER" level="ALL">
 		<appender-ref ref="HtmlLog" />
 	</logger>

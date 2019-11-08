@@ -1,11 +1,11 @@
 package de.droidcachebox;
 
-import CB_Utils.fileProvider.FileFactory;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.AudioSource;
 import android.util.Log;
+import de.droidcachebox.utils.FileFactory;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

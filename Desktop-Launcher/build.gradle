@@ -7,11 +7,10 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 dependencies {
     implementation project(path: ':CB_Utils', transitive: false)
     implementation project(path: ':CB_Rpc', transitive: false)
-    implementation project(path: ':CB_Translation_Base', transitive: false)
-    implementation project(path: ':CB_mapsforge', transitive: false)
+    implementation project(transitive: false, path: ':mapsforge')
     implementation project(path: ':CB_UI_Base', transitive: false)
     implementation project(path: ':CB_Locator_Base', transitive: false)
-    implementation project(':CB_Locator_Desktop')
+    implementation project(':mapsforge_awt')
     implementation project(path: ':CB_Core', transitive: false)
     implementation (project(path: ':CB_UI')){
         exclude group: 'com.github.tony19'

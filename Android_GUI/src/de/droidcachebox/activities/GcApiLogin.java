@@ -1,9 +1,5 @@
 package de.droidcachebox.activities;
 
-import CB_Core.Api.CB_Api;
-import CB_Core.CB_Core_Settings;
-import CB_UI.Config;
-import CB_Utils.Log.Log;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -13,14 +9,18 @@ import android.view.View;
 import android.view.ViewParent;
 import android.webkit.*;
 import android.widget.LinearLayout;
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
-import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.core.CB_Api;
+import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.utils.ActivityUtils;
+import de.droidcachebox.utils.log.Log;
 
-import static CB_Core.Api.GroundspeakAPI.fetchMyUserInfos;
-import static CB_Core.Api.GroundspeakAPI.setAuthorization;
-import static CB_Core.CB_Core_Settings.GcLogin;
+import static de.droidcachebox.core.CB_Core_Settings.GcLogin;
+import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
+import static de.droidcachebox.core.GroundspeakAPI.setAuthorization;
 
 
 public class GcApiLogin extends Activity {

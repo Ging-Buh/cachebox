@@ -1,6 +1,5 @@
 package de.droidcachebox.activities;
 
-import CB_Translation_Base.TranslationEngine.Translation;
 import android.annotation.TargetApi;
 import android.app.*;
 import android.content.Context;
@@ -9,6 +8,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import de.droidcachebox.R;
+import de.droidcachebox.translation.Translation;
 
 public class CBForeground extends IntentService {
     public CBForeground() {

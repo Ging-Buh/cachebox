@@ -1,9 +1,5 @@
 package de.droidcachebox;
 
-import CB_UI.Config;
-import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Util.MoveableList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
@@ -12,6 +8,9 @@ import android.graphics.*;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import de.CB_PlugIn.IPlugIn;
+import de.droidcachebox.gdx.main.QuickButtonItem;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.utils.MoveableList;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;

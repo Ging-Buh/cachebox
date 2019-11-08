@@ -67,8 +67,8 @@
 		</encoder>
 	</appender>
 
-<!-- Write messages from class CB_Locator.Locator to GPS-log -->
-	<logger name="CB_Translation_Base.TranslationEngine.Translation" level="ALL">
+<!-- Write messages from class de.droidcachebox.locator.Locator to GPS-log -->
+	<logger name="de.droidcachebox.translation.Translation" level="ALL">
 		<appender-ref ref="TranslationLog" />
 	</logger>
 	

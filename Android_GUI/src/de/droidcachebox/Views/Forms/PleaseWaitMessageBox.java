@@ -16,11 +16,6 @@
 
 package de.droidcachebox.Views.Forms;
 
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.Math.UiSizes;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -35,9 +30,14 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.*;
+import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.Global;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.translation.Translation;
 
 /**
  * Zeigt ein Meldungsfeld an, das Text, Schaltflächen und Symbole mit Informationen und Anweisungen für den Benutzer enthalten kann.

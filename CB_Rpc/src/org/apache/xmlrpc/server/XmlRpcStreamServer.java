@@ -18,7 +18,7 @@
  */
 package org.apache.xmlrpc.server;
 
-import CB_Utils.Log.Log;
+import de.droidcachebox.utils.log.Log;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.XmlRpcRequestConfig;

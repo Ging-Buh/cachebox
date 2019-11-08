@@ -7,10 +7,10 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
     implementation project(":CB_UI_Base")
-    implementation project(":CB_mapsforge")
+    implementation project(':mapsforge')
     implementation project(":CB_Utils")
     implementation project(":CB_Locator_Base")
-    implementation project(":CB_Locator_Desktop")
+    implementation project(':mapsforge_awt')
 
     //sjxp-2.2.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])

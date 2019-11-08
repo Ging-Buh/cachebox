@@ -16,10 +16,6 @@
 
 package de.droidcachebox.Custom_Controls;
 
-import CB_UI.Config;
-import CB_UI.GL_UI.Views.DescriptionView;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.GL_UI.ViewConst;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,8 +24,12 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.R;
+import de.droidcachebox.gdx.ViewConst;
+import de.droidcachebox.gdx.views.DescriptionView;
 
 import java.util.Timer;
 import java.util.TimerTask;

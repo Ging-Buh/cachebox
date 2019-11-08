@@ -1,14 +1,14 @@
 package de;
 
-import CB_Core.Api.CB_Api;
-import CB_UI.CB_UI_Settings;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
-import CB_Utils.Interfaces.ICancelRunnable;
-import CB_Utils.Log.Log;
-import CB_Utils.http.Request;
-import CB_Utils.http.Response;
-import CB_Utils.http.Webb;
+import de.droidcachebox.CB_UI_Settings;
+import de.droidcachebox.core.CB_Api;
+import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
+import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.http.Request;
+import de.droidcachebox.utils.http.Response;
+import de.droidcachebox.utils.http.Webb;
+import de.droidcachebox.utils.log.Log;
 
 import java.io.IOException;
 import java.net.HttpCookie;

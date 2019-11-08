@@ -16,11 +16,6 @@
 
 package de.droidcachebox.Views.Forms;
 
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.Math.UiSizes;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -32,8 +27,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.translation.Translation;
 
 import static android.view.View.GONE;
 

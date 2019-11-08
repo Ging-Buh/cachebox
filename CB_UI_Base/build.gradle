@@ -7,8 +7,7 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
     implementation project(":CB_Utils")
-    implementation project(":CB_mapsforge")
-    implementation project(":CB_Translation_Base")
+    implementation project(':mapsforge')
 
     //libgdx
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"

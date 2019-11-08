@@ -15,41 +15,6 @@
  */
 package de.droidcachebox;
 
-import CB_Core.CacheListChangedListeners;
-import CB_Core.Database;
-import CB_Core.Database.DatabaseType;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
-import CB_Locator.Events.GpsStateChangeEventList;
-import CB_Locator.GpsStrength;
-import CB_Locator.Location.ProviderType;
-import CB_Locator.Locator;
-import CB_Locator.Locator.CompassType;
-import CB_Locator.LocatorBasePlatFormMethods;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.*;
-import CB_UI.GL_UI.Main.ViewManager;
-import CB_UI.GL_UI.Views.MainViewInit;
-import CB_UI_Base.Energy;
-import CB_UI_Base.Events.OnResumeListeners;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.Events.invalidateTextureEventList;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.DevicesSizes;
-import CB_UI_Base.Math.Size;
-import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.CB_SLF4J;
-import CB_Utils.Log.Log;
-import CB_Utils.Log.LogLevel;
-import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Plattform;
-import CB_Utils.Util.FileIO;
-import CB_Utils.Util.IChanged;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -63,6 +28,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
+import android.location.Location;
 import android.location.*;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -75,16 +43,38 @@ import android.widget.LinearLayout;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import de.cb.sqlite.AndroidDB;
-import de.droidcachebox.CB_Texturepacker.AndroidTexturePacker;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.AndroidContentClipboard;
-import de.droidcachebox.Ui.AndroidTextClipboard;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 import de.droidcachebox.activities.CBForeground;
 import de.droidcachebox.activities.Splash;
+import de.droidcachebox.core.AndroidDB;
+import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.Database.DatabaseType;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.controls.Android_TextInput;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.DevicesSizes;
+import de.droidcachebox.gdx.math.Size;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.gdx.texturepacker.AndroidTexturePacker;
+import de.droidcachebox.gdx.views.MainViewInit;
+import de.droidcachebox.locator.*;
+import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.Locator.CompassType;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.MathUtils.CalculationType;
+import de.droidcachebox.utils.log.CB_SLF4J;
+import de.droidcachebox.utils.log.Log;
+import de.droidcachebox.utils.log.LogLevel;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -93,7 +83,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static CB_Core.Api.GroundspeakAPI.getSettingsAccessToken;
+import static de.droidcachebox.core.GroundspeakAPI.getSettingsAccessToken;
 
 @SuppressWarnings("deprecation")
 public class Main extends AndroidApplication implements SelectedCacheChangedEventListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
@@ -101,7 +91,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     public static boolean isCreated = false;
     private static Boolean isRestart = false;
     private final AtomicBoolean waitForGL = new AtomicBoolean(false);
-    private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<>(14);
+    private final CB_List<de.droidcachebox.locator.GpsStrength> coreSatList = new CB_List<>(14);
     private SensorEventListener mSensorEventListener;
     private ScreenBroadcastReceiver screenBroadcastReceiver;
     private HorizontalListView quickButtonListView;
@@ -206,7 +196,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
                         return;
                     Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-                    Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
+                    Database.Settings.startUp(Config.mWorkPath + "/User/Config.db3");
                     Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
                     Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
 
@@ -570,7 +560,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (androidLocation.getProvider().toLowerCase(new Locale("en")).contains("network"))
             provider = ProviderType.Network;
 
-        CB_Locator.Location cbLocation = new CB_Locator.Location(androidLocation.getLatitude(), androidLocation.getLongitude(), androidLocation.getAccuracy());
+        de.droidcachebox.locator.Location cbLocation = new de.droidcachebox.locator.Location(androidLocation.getLatitude(), androidLocation.getLongitude(), androidLocation.getAccuracy());
         cbLocation.setHasSpeed(androidLocation.hasSpeed());
         cbLocation.setSpeed(androidLocation.getSpeed());
         cbLocation.setHasBearing(androidLocation.hasBearing());
@@ -781,11 +771,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         }
 
         ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
-        CB_Locator.Location initialLocation;
+        de.droidcachebox.locator.Location initialLocation;
         if (provider == ProviderType.Saved) {
-            initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
+            initialLocation = new de.droidcachebox.locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
         } else {
-            initialLocation = CB_Locator.Location.NULL_LOCATION;
+            initialLocation = de.droidcachebox.locator.Location.NULL_LOCATION;
         }
         Locator.getInstance().setNewLocation(initialLocation);
 
@@ -865,9 +855,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             // SatList.sort();
             coreSatList.sort();
 
-            CB_Locator.GPS.setSatFixes(fixed);
-            CB_Locator.GPS.setSatVisible(satellites);
-            CB_Locator.GPS.setSatList(coreSatList);
+            GPS.setSatFixes(fixed);
+            GPS.setSatVisible(satellites);
+            GPS.setSatList(coreSatList);
             GpsStateChangeEventList.Call();
             if (fixed < 1 && (Locator.getInstance().isFixed())) {
                 if (!lostCheck) {
@@ -875,7 +865,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     TimerTask task = new TimerTask() {
                         @Override
                         public void run() {
-                            if (CB_Locator.GPS.getFixedSats() < 1)
+                            if (GPS.getFixedSats() < 1)
                                 Locator.getInstance().FallBack2Network();
                             lostCheck = false;
                         }

@@ -11,15 +11,15 @@
 
 package ch.fhnw.imvs.gpssimulator;
 
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformUIBase.IgetFolderReturnListener;
-import CB_UI_Base.Events.PlatformUIBase.Methods;
-import CB_Utils.Settings.SettingBase;
 import ch.fhnw.imvs.gpssimulator.components.*;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.nmea.*;
-import de.cb.sqlite.SQLiteInterface;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
+import de.droidcachebox.PlatformUIBase.IgetFolderReturnListener;
+import de.droidcachebox.PlatformUIBase.Methods;
+import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.settings.SettingBase;
 import org.apache.log4j.Logger;
 import org.mapsforge.map.swing.view.MapPanel;
 

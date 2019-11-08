@@ -18,7 +18,7 @@
  */
 package org.apache.xmlrpc.server;
 
-import CB_Utils.Log.Log;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * Instances of this class can be used to customize the servers

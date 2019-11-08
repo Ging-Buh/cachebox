@@ -1,8 +1,5 @@
 package de.droidcachebox.Views;
 
-import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
-import CB_UI.SelectedCacheChangedEventListener;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,8 +8,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
-import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.R;
+import de.droidcachebox.SelectedCacheChangedEventListener;
+import de.droidcachebox.ViewOptionsMenu;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Waypoint;
 //import org.slf4j.LoggerFactory;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheChangedEventListener {

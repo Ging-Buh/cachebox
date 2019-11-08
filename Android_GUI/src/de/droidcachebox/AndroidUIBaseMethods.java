@@ -1,37 +1,5 @@
 package de.droidcachebox;
 
-import CB_Core.CacheListChangedListeners;
-import CB_Core.Database;
-import CB_Core.FilterInstances;
-import CB_Core.FilterProperties;
-import CB_Core.Import.GPXFileImporter;
-import CB_Core.Import.Importer;
-import CB_Core.Import.ImporterProgress;
-import CB_Locator.Coordinate;
-import CB_Locator.CoordinateGPS;
-import CB_Locator.Map.MapViewBase;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
-import CB_UI.GL_UI.Activitys.FZKDownload;
-import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
-import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
-import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
-import CB_UI.GL_UI.Main.ViewManager;
-import CB_UI.GL_UI.Views.CacheListView;
-import CB_UI.GlobalCore;
-import CB_UI_Base.Events.OnResumeListeners;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_Utils.Interfaces.ICancelRunnable;
-import CB_Utils.Log.Log;
-import CB_Utils.Settings.SettingBase;
-import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingString;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -47,9 +15,34 @@ import android.os.Vibrator;
 import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
-import de.cb.sqlite.SQLiteClass;
-import de.cb.sqlite.SQLiteInterface;
+import de.droidcachebox.Views.Forms.Android_FileExplorer;
 import de.droidcachebox.activities.GcApiLogin;
+import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.core.FilterInstances;
+import de.droidcachebox.core.FilterProperties;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.ex_import.GPXFileImporter;
+import de.droidcachebox.ex_import.Importer;
+import de.droidcachebox.ex_import.ImporterProgress;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.activities.EditFilterSettings;
+import de.droidcachebox.gdx.activities.FZKDownload;
+import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.popups.SearchDialog;
+import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.gdx.views.CacheListView;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.map.MapViewBase;
+import de.droidcachebox.settings.*;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.log.Log;
+import de.droidcachebox.utils.sqlite.SQLiteClass;
 
 import java.util.Date;
 import java.util.Objects;
@@ -331,10 +324,10 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
         Log.info(sKlasse, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
         if (coordinate.isValid()) {
-            CB_Action_ShowMap.getInstance().Execute();
-            CB_Action_ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
-            CB_Action_ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
-            CB_Action_ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+            Abstract_ShowMap.getInstance().Execute();
+            Abstract_ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
+            Abstract_ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+            Abstract_ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
         }
     }
 

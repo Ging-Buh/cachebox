@@ -1,25 +1,5 @@
 package de.droidcachebox;
 
-import CB_Core.Types.Cache;
-import CB_Locator.Formatter;
-import CB_Locator.Location;
-import CB_Locator.Locator;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
-import CB_UI.GL_UI.Main.ViewManager;
-import CB_UI.GL_UI.Views.SpoilerView;
-import CB_UI.GlobalCore;
-import CB_UI.TrackRecorder;
-import CB_UI_Base.Events.OnResumeListeners;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
-import CB_UI_Base.GL_UI.ViewConst;
-import CB_UI_Base.GL_UI.ViewID;
-import CB_Utils.Log.Log;
-import CB_Utils.Util.FileIO;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -41,9 +21,23 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DownSlider;
 import de.droidcachebox.Custom_Controls.MicrophoneView;
-import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.ViewGL;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Input;
+import de.droidcachebox.gdx.ViewConst;
+import de.droidcachebox.gdx.ViewID;
+import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.gdx.views.SpoilerView;
+import de.droidcachebox.locator.Formatter;
+import de.droidcachebox.locator.Location;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.log.Log;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -60,7 +54,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private static final int REQUEST_CAPTURE_IMAGE = 61216516;
     private static final int REQUEST_CAPTURE_VIDEO = 61216517;
     private static boolean isVoiceRecordingStarted = false;
-    private static CB_Locator.Location recordingStartCoordinate;
+    private static Location recordingStartCoordinate;
     private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
     private int lastLeft, lastTop, lastRight, lastBottom;
     private AndroidApplication androidApplication;
@@ -740,7 +734,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                         // track annotation
                                         String TrackFolder = Config.TrackFolder.getValue();
                                         String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                                        CB_Locator.Location lastLocation = Locator.getInstance().getLastSavedFineLocation();
+                                        de.droidcachebox.locator.Location lastLocation = Locator.getInstance().getLastSavedFineLocation();
                                         if (lastLocation == null) {
                                             lastLocation = Locator.getInstance().getLocation(Location.ProviderType.any);
                                             if (lastLocation == null) {

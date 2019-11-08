@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import de.droidcachebox.Global;
-import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.utils.ActivityUtils;
 
 public final class MicrophoneView extends View {
 

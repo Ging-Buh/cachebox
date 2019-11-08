@@ -1,16 +1,15 @@
 package de;
 
-import CB_Locator.*;
-import CB_Locator.Events.GpsStateChangeEventList;
-import CB_Locator.Location.ProviderType;
-import CB_Locator.Map.Track;
-import CB_Locator.Map.TrackPoint;
-import CB_UI.Config;
-import CB_UI.RouteOverlay;
-import CB_Utils.Lists.CB_List;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.graphics.Color;
+import de.droidcachebox.Config;
+import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.locator.*;
+import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.map.Track;
+import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.FileFactory;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -137,7 +136,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
             public void run() {
                 TrackPoint trk = simulationRoute.Points.get(trackPointIndex);
                 Coordinate pos = new CoordinateGPS(trk.Y, trk.X);
-                Locator.getInstance().setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, ProviderType.GPS));
+                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, ProviderType.GPS));
 
                 DesktopMain.compassheading = (float) trk.Direction;
 
@@ -202,7 +201,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
                 Bearing += 5;
 
-                Locator.getInstance().setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
+                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
 
                 CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
 

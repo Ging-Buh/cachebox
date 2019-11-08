@@ -16,26 +16,6 @@
 
 package de.droidcachebox.Custom_Controls;
 
-import CB_Core.Attributes;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
-import CB_Locator.CoordinateGPS;
-import CB_Locator.Events.GpsStateChangeEvent;
-import CB_Locator.Events.GpsStateChangeEventList;
-import CB_Locator.GPS;
-import CB_Locator.Locator;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
-import CB_UI.GL_UI.Controls.QuickButtonList;
-import CB_UI.GL_UI.Controls.Slider;
-import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheChangedEventListener;
-import CB_UI.SelectedCacheChangedEventListeners;
-import CB_UI_Base.Energy;
-import CB_UI_Base.Math.CB_Rect;
-import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.Log;
-import CB_Utils.Util.UnitFormatter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -55,10 +35,19 @@ import android.view.View;
 import android.widget.LinearLayout;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
-import de.droidcachebox.Global;
-import de.droidcachebox.Main;
-import de.droidcachebox.R;
-import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.*;
+import de.droidcachebox.database.Attributes;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.gdx.controls.QuickButtonList;
+import de.droidcachebox.gdx.controls.Slider;
+import de.droidcachebox.gdx.math.CB_Rect;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.locator.*;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.ActivityUtils;
+import de.droidcachebox.utils.UnitFormatter;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.Iterator;
 
@@ -585,7 +574,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         this.invalidate();
 
-        // CB_UI.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
+        // de.droidcachebox.gdx.controls.Slider.setAndroidSliderPos(yPos);
 
     }
 

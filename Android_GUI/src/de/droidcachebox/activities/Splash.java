@@ -15,28 +15,6 @@
  */
 package de.droidcachebox.activities;
 
-import CB_Core.Database;
-import CB_Core.Database.DatabaseType;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
-import CB_UI.GlobalCore;
-import CB_UI_Base.AbstractGlobal;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.DisplayType;
-import CB_UI_Base.GL_UI.Handler;
-import CB_UI_Base.Math.DevicesSizes;
-import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.Size;
-import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.CB_SLF4J;
-import CB_Utils.Log.Log;
-import CB_Utils.Log.LogLevel;
-import CB_Utils.StringH;
-import CB_Utils.Util.FileIO;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -58,10 +36,26 @@ import android.widget.*;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
-import de.cb.sqlite.AndroidDB;
 import de.droidcachebox.*;
 import de.droidcachebox.Components.copyAssetFolder;
+import de.droidcachebox.Views.Forms.Android_FileExplorer;
 import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.core.AndroidDB;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.Database.DatabaseType;
+import de.droidcachebox.gdx.DisplayType;
+import de.droidcachebox.gdx.Handler;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.math.DevicesSizes;
+import de.droidcachebox.gdx.math.GL_UISizes;
+import de.droidcachebox.gdx.math.Size;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.log.CB_SLF4J;
+import de.droidcachebox.utils.log.Log;
+import de.droidcachebox.utils.log.LogLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -153,7 +147,7 @@ public class Splash extends Activity {
         int delaytime = 0; // give splash the time to show: width/height != 0
         if (width == 0 || height == 0) delaytime = 1000;
         new Handler().postDelayed(() -> {
-            // could bundle ui too, but the (static) classes are initialized directly
+            // could bundle utils too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
             if (Database.Settings.isDbNew()) {
                 Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
@@ -807,7 +801,7 @@ public class Splash extends Activity {
         if (!userFolderExists)
             return;
         Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-        Database.Settings.StartUp(workPath + "/User/Config.db3");
+        Database.Settings.startUp(workPath + "/User/Config.db3");
         // Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
         if (Database.Settings.isDbNew()) {
             Config.settings.LoadAllDefaultValues();

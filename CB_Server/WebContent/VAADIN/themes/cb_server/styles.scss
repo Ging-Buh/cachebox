@@ -1,9 +1,0 @@
-@import "addons.scss";
-@import "cb_server.scss";
-
-/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
-/* The actual styles should be defined in cb_server.scss */
-.de_test_vaadin {
-  @include addons;
-  @include cb_server;
-}

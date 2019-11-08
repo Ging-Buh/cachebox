@@ -15,15 +15,15 @@
  */
 package de;
 
-import CB_UI.Config;
-import CB_UI.GlobalCore;
-import CB_UI_Base.Math.DevicesSizes;
-import CB_UI_Base.Math.Size;
-import CB_Utils.Log.CB_SLF4J;
-import CB_Utils.Log.LogLevel;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
-import de.CB_Utils.fileProvider.DesktopFileFactory;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.gdx.math.DevicesSizes;
+import de.droidcachebox.gdx.math.Size;
+import de.droidcachebox.utils.DesktopFileFactory;
+import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.log.CB_SLF4J;
+import de.droidcachebox.utils.log.LogLevel;
 import org.mapsforge.map.model.DisplayModel;
 
 import java.awt.*;

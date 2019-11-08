@@ -1,0 +1,10 @@
+/**
+	Bind a bsh object into a particular namespace and interpreter
+*/
+import de.droidcachebox.locator.bsh.This;
+import de.droidcachebox.locator.bsh.NameSpace;
+
+bind( de.droidcachebox.locator.bsh.This ths, de.droidcachebox.locator.bsh.NameSpace namespace ) {
+	This.bind( ths, namespace, this.interpreter );
+}
+

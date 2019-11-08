@@ -1,8 +1,5 @@
 package de.droidcachebox.Views;
 
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_Utils.Log.Log;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.LayoutInflater;
@@ -11,8 +8,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.R;
+import de.droidcachebox.ViewOptionsMenu;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Listener_Interface;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

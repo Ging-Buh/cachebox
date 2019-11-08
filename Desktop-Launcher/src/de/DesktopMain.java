@@ -1,38 +1,40 @@
 package de;
 
-import CB_Core.Database;
-import CB_Core.Database.DatabaseType;
-import CB_Locator.Location;
-import CB_Locator.Locator;
-import CB_Locator.LocatorBasePlatFormMethods;
-import CB_UI.Config;
-import CB_UI.GL_UI.Main.ViewManager;
-import CB_UI.GL_UI.Views.MainViewInit;
-import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformUIBase.IgetFolderReturnListener;
-import CB_UI_Base.Events.PlatformUIBase.Methods;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.DevicesSizes;
-import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.Log;
-import CB_Utils.Plattform;
-import CB_Utils.Settings.SettingBase;
-import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingString;
-import CB_Utils.Util.FileIO;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import de.CB_Texturepacker.Desktop_Packer;
-import de.cb.sqlite.DesktopDB;
-import de.cb.sqlite.SQLiteClass;
-import de.cb.sqlite.SQLiteInterface;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
+import de.droidcachebox.PlatformUIBase.IgetFolderReturnListener;
+import de.droidcachebox.PlatformUIBase.Methods;
+import de.droidcachebox.core.DesktopDB;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.Database.DatabaseType;
+import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Listener_Interface;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.DevicesSizes;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.gdx.texturepacker.DesktopTexturePacker;
+import de.droidcachebox.gdx.views.MainViewInit;
+import de.droidcachebox.locator.DesktopLocatorBaseMethods;
+import de.droidcachebox.locator.Location;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.LocatorBasePlatFormMethods;
+import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.settings.SettingBool;
+import de.droidcachebox.settings.SettingInt;
+import de.droidcachebox.settings.SettingString;
+import de.droidcachebox.utils.DesktopClipboard;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.Plattform;
+import de.droidcachebox.utils.log.Log;
+import de.droidcachebox.utils.sqlite.SQLiteClass;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -68,7 +70,7 @@ public class DesktopMain {
         frame.setVisible(false);
 
         // Initial Desctop TexturePacker
-        new Desktop_Packer();
+        new DesktopTexturePacker();
 
         // has been done by launcher
         // InitialConfig();
@@ -414,10 +416,10 @@ public class DesktopMain {
         if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
             return;
         Database.Settings = new DesktopDB(DatabaseType.Settings);
-        Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
+        Database.Settings.startUp(Config.mWorkPath + "/User/Config.db3");
         Database.Data = new DesktopDB(DatabaseType.CacheBox);
         Database.Drafts = new DesktopDB(DatabaseType.Drafts);
-        Database.Drafts.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
+        Database.Drafts.startUp(Config.mWorkPath + "/User/FieldNotes.db3");
     }
 
     /**

@@ -61,8 +61,8 @@
 		</encoder>
 	</appender>
 
-<!-- Write messages from class CB_Utils.Settings.SettingsList to its own log -->
-	<logger name="CB_Utils.Settings.SettingsList" level="ALL">
+<!-- Write messages from class de.droidcachebox.settings.SettingsList to its own log -->
+	<logger name="de.droidcachebox.settings.SettingsList" level="ALL">
 		<appender-ref ref="ConfigLog" />
 	</logger>
 
@@ -97,13 +97,13 @@
 		</encoder>
 	</appender>
 
-<!-- Write messages from class CB_Locator.Locator to GPS-log -->
-	<logger name="CB_Locator.Locator" level="ALL">
+<!-- Write messages from class de.droidcachebox.locator.Locator to GPS-log -->
+	<logger name="de.droidcachebox.locator.Locator" level="ALL">
 		<appender-ref ref="GPSLog" />
 	</logger>
 	
-<!-- Write messages from class CB_Locator.GPS to GPS-log -->
-	<logger name="CB_Locator.GPS" level="ALL">
+<!-- Write messages from class de.droidcachebox.locator.GPS to GPS-log -->
+	<logger name="de.droidcachebox.locator.GPS" level="ALL">
 		<appender-ref ref="GPSLog" />
 	</logger>
 

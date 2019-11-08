@@ -1,21 +1,5 @@
 package de.droidcachebox.Custom_Controls;
 
-import CB_Core.Attributes;
-import CB_Core.DAO.ImageDAO;
-import CB_Core.DAO.LogDAO;
-import CB_Core.DAO.WaypointDAO;
-import CB_Core.Database;
-import CB_Core.Import.DescriptionImageGrabber;
-import CB_Core.Types.*;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
-import CB_UI.GlobalCore;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_Utils.Log.Log;
-import CB_Utils.http.Download;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -29,13 +13,24 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.ViewOptionsMenu;
 import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.database.*;
+import de.droidcachebox.ex_import.DescriptionImageGrabber;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.http.Download;
+import de.droidcachebox.utils.log.Log;
 
 import java.io.File;
 import java.util.*;
 
-import static CB_Core.Api.GroundspeakAPI.*;
+import static de.droidcachebox.core.GroundspeakAPI.*;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private final static String log = "DescriptionViewControl";

@@ -1,30 +1,30 @@
 package de.droidcachebox.Components;
 
-import CB_Core.Database;
-import CB_Core.LogTypes;
-import CB_Core.Types.Cache;
-import CB_Core.Types.LogEntry;
-import CB_Locator.Coordinate;
-import CB_Locator.CoordinateGPS;
-import CB_Locator.Locator;
-import CB_UI.GlobalCore;
-import CB_UI_Base.Math.CB_Rect;
-import CB_Utils.Lists.CB_List;
-import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Util.UnitFormatter;
 import android.graphics.*;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import de.droidcachebox.Global;
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.R;
-import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogTypes;
+import de.droidcachebox.gdx.math.CB_Rect;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.utils.ActivityUtils;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.MathUtils.CalculationType;
+import de.droidcachebox.utils.UnitFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import static CB_UI_Base.Math.UiSizes.getInstance;
+import static de.droidcachebox.gdx.math.UiSizes.getInstance;
 
 public class CacheDraw {
 

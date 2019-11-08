@@ -1,15 +1,15 @@
 package org.mapsforge.map.swing.view;
 
-import CB_Locator.Location;
-import CB_Locator.Location.ProviderType;
-import CB_Locator.Locator;
-import CB_Locator.Map.CB_InternalRenderTheme;
-import CB_UI_Base.Events.PlatformUIBase;
-import CB_UI_Base.Events.PlatformUIBase.IgetFileReturnListener;
-import CB_Utils.fileProvider.FileFactory;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
+import de.droidcachebox.locator.Location;
+import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.map.CB_InternalRenderTheme;
+import de.droidcachebox.utils.FileFactory;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
