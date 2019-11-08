@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.gdx.graphics;
 
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Matrix;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 
 /**
  * @author Longri
@@ -34,9 +34,9 @@ public class MatrixDrawable {
      * @uml.property name="matrix"
      * @uml.associationEnd
      */
-    public ext_Matrix matrix;
+    public GDXMatrix matrix;
 
-    public MatrixDrawable(IRotateDrawable drw, ext_Matrix mat, boolean realDraw) {
+    public MatrixDrawable(IRotateDrawable drw, GDXMatrix mat, boolean realDraw) {
         this.drawable = drw;
 
         if (!mat.isDefault()) {

@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Bitmap;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
@@ -42,7 +42,7 @@ public class TileGL_Bmp extends TileGL {
         this.texture = null;
         this.format = format;
         this.bitmap = bitmap;
-        if (bitmap instanceof ext_Bitmap) {
+        if (bitmap instanceof GDXBitmap) {
             bytes = getByteArray();
             this.bitmap = null;
         } else {
@@ -130,7 +130,7 @@ public class TileGL_Bmp extends TileGL {
             bitmap.compress(baos);
             byte[] byteArray = baos.toByteArray(); // takes long
             baos.close();
-            if (bitmap instanceof ext_Bitmap) ((ext_Bitmap) bitmap).recycle();
+            if (bitmap instanceof GDXBitmap) ((GDXBitmap) bitmap).recycle();
             return byteArray;
         } catch (Exception ex) {
             Log.err(log, "convert bitmap to byteArray", ex);

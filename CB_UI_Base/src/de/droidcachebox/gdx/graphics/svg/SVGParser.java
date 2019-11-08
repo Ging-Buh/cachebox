@@ -16,8 +16,8 @@
 
 package de.droidcachebox.gdx.graphics.svg;
 
-import de.droidcachebox.gdx.graphics.mapsforge.ext_GraphicFactory;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Matrix;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXGraphicFactory;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 import de.droidcachebox.gdx.graphics.svg.CSSParser.MediaType;
 import de.droidcachebox.gdx.graphics.svg.SVG.*;
 import de.droidcachebox.gdx.graphics.svg.SVG.Style.TextDecoration;
@@ -352,7 +352,7 @@ public class SVGParser extends DefaultHandler2 {
         // supportedFeatures.add("org.w3c.dom.svg.all" );
     }
 
-    private final ext_GraphicFactory GRAPHIC_FACTORY;
+    private final GDXGraphicFactory GRAPHIC_FACTORY;
 
     // Element types that we don't support. Those that are containers have their
     // contents ignored.
@@ -423,7 +423,7 @@ public class SVGParser extends DefaultHandler2 {
     private StringBuilder styleElementContents = null;
     private HashSet<String> supportedFormats = null;
 
-    public SVGParser(ext_GraphicFactory factory) {
+    public SVGParser(GDXGraphicFactory factory) {
         GRAPHIC_FACTORY = factory;
     }
 
@@ -2976,8 +2976,8 @@ public class SVGParser extends DefaultHandler2 {
         }
     }
 
-    private ext_Matrix parseTransformList(String val) throws SAXException {
-        ext_Matrix matrix = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+    private GDXMatrix parseTransformList(String val) throws SAXException {
+        GDXMatrix matrix = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
 
         TextScanner scan = new TextScanner(val);
         scan.skipWhitespace();
@@ -3006,7 +3006,7 @@ public class SVGParser extends DefaultHandler2 {
                 if (f == null || !scan.consume(')'))
                     throw new SAXException("Invalid transform list: " + val);
 
-                ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+                GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
                 m.setValues(new float[]{a, c, e, b, d, f, 0, 0, 1});
                 matrix.preConcat(m);
                 // matrix.postConcat(m);

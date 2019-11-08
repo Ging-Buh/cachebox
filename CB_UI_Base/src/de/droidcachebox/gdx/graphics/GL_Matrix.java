@@ -17,7 +17,7 @@ package de.droidcachebox.gdx.graphics;
 
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Matrix;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 import org.mapsforge.core.graphics.Matrix;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,12 +25,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Longri
  */
-public class GL_Matrix implements ext_Matrix, Matrix {
+public class GL_Matrix implements GDXMatrix, Matrix {
     private static final Matrix4 DEFAULT = new Matrix4();
     private final AtomicBoolean isDisposed = new AtomicBoolean(false);
     private Matrix4 matrix4;
 
-    public GL_Matrix(ext_Matrix matrix) {
+    public GL_Matrix(GDXMatrix matrix) {
         if (matrix == null) {
             matrix4 = new Matrix4(DEFAULT);
         } else {
@@ -153,10 +153,10 @@ public class GL_Matrix implements ext_Matrix, Matrix {
     }
 
     /*
-     * Set the values from given interface ext_Matrix.
+     * Set the values from given interface GDXMatrix.
      */
     @Override
-    public void set(ext_Matrix matrix) {
+    public void set(GDXMatrix matrix) {
         this.matrix4.set(((GL_Matrix) matrix).matrix4);
     }
 
@@ -171,7 +171,7 @@ public class GL_Matrix implements ext_Matrix, Matrix {
      * Postconcats the matrix with the specified matrix. M' = other * M
      */
     @Override
-    public void postConcat(ext_Matrix matrix) {
+    public void postConcat(GDXMatrix matrix) {
         Matrix4 m = matrix.getMatrix4();
         m.mul(this.matrix4);
         set(m);
@@ -414,10 +414,10 @@ public class GL_Matrix implements ext_Matrix, Matrix {
     /*
      * (non-Javadoc)
      *
-     * @see CB_UI_Base.graphics.extended.ext_Matrix2#preConcat(CB_UI_Base.graphics.extended.ext_Matrix)
+     * @see CB_UI_Base.graphics.extended.ext_Matrix2#preConcat(CB_UI_Base.graphics.extended.GDXMatrix)
      */
     @Override
-    public void preConcat(ext_Matrix matrix) {
+    public void preConcat(GDXMatrix matrix) {
         ((GL_Matrix) matrix).matrix4.mul(this.matrix4);
         this.set(matrix);
     }

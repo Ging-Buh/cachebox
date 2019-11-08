@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.IRenderFBO;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Bitmap;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.utils.CB_List;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.io.OutputStream;
 /**
  * @author Longri
  */
-public class BitmapDrawable implements ext_Bitmap, Disposable {
+public class BitmapDrawable implements GDXBitmap, Disposable {
     // static HashMap<String, Texture> TextureList = new HashMap<String, Texture>();
     public static TextureAtlas Atlas;
     static CB_List<String> HashStringList = new CB_List<String>();

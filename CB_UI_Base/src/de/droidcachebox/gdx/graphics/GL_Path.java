@@ -19,8 +19,8 @@ import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Matrix;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Path;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXPath;
 import de.droidcachebox.gdx.math.RectF;
 import de.droidcachebox.utils.CB_List;
 import org.mapsforge.core.graphics.FillRule;
@@ -31,7 +31,7 @@ import java.util.Arrays;
 /**
  * @author Longri
  */
-public class GL_Path implements ext_Path, Disposable {
+public class GL_Path implements GDXPath, Disposable {
     private final static float MIN_SEGMENTH_LENGTH = 10;
 
     public float[] items;
@@ -231,7 +231,7 @@ public class GL_Path implements ext_Path, Disposable {
      * @param transformedPath    The transformed path is written here. If dst is null, then the the original path is modified
      */
     @Override
-    public void transform(ext_Matrix currentMatrix, ext_Path transformedPath) {
+    public void transform(GDXMatrix currentMatrix, GDXPath transformedPath) {
 
     }
 
@@ -275,7 +275,7 @@ public class GL_Path implements ext_Path, Disposable {
     }
 
     @Override
-    public void addPath(ext_Path path, ext_Matrix combinedPathMatrix) {
+    public void addPath(GDXPath path, GDXMatrix combinedPathMatrix) {
 
     }
 
@@ -291,12 +291,12 @@ public class GL_Path implements ext_Path, Disposable {
     }
 
     @Override
-    public void addPath(ext_Path spanPath) {
+    public void addPath(GDXPath spanPath) {
 
     }
 
     @Override
-    public void transform(ext_Matrix transform) {
+    public void transform(GDXMatrix transform) {
 
     }
 

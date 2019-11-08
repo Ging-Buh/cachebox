@@ -29,8 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Disposable;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.IRenderFBO;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Bitmap;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Matrix;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 import de.droidcachebox.utils.CB_List;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Longri
  */
-public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
+public class VectorDrawable implements GDXBitmap, Drawable, Disposable {
 
     public static final float FBO_SCALER = 1;// 2.5f;
     public final static HSV_Color TRANSPARENT = new HSV_Color(0, 0, 0, 0);
@@ -154,7 +154,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
         for (MatrixDrawable drw : rotateDrawableList) {
 
             Matrix4 matrix = thisDrawMatrix.cpy();
-            ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
+            GDXMatrix drwMatrix = new GL_Matrix(drw.matrix);
             matrix.mul(drwMatrix.getMatrix4().cpy());
             GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
             drw.drawable.draw(GL.that.getPolygonSpriteBatch(), 0, 0, width, height, -rotated * MathUtils.degreesToRadians);
@@ -274,7 +274,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
         addDrawable(drw, new GL_Matrix(), canRealDraw);
     }
 
-    public void addDrawable(IRotateDrawable drw, ext_Matrix matrix, boolean canRealDraw) {
+    public void addDrawable(IRotateDrawable drw, GDXMatrix matrix, boolean canRealDraw) {
         drawableList.add(new MatrixDrawable(drw, matrix, canRealDraw));
     }
 

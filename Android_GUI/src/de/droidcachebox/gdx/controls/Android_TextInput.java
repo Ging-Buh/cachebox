@@ -5,7 +5,7 @@ import android.content.Context;
 import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;

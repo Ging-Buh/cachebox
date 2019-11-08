@@ -37,10 +37,10 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 import de.droidcachebox.*;
-import de.droidcachebox.Components.copyAssetFolder;
-import de.droidcachebox.Views.Forms.Android_FileExplorer;
-import de.droidcachebox.Views.Forms.MessageBox;
-import de.droidcachebox.core.AndroidDB;
+import de.droidcachebox.components.CopyAssetFolder;
+import de.droidcachebox.views.forms.Android_FileExplorer;
+import de.droidcachebox.views.forms.MessageBox;
+import de.droidcachebox.database.AndroidDB;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
 import de.droidcachebox.gdx.DisplayType;
@@ -822,7 +822,7 @@ public class Splash extends Activity {
             if (Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
 
                 String[] exclude = new String[]{"webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", ""};
-                copyAssetFolder myCopie = new copyAssetFolder();
+                CopyAssetFolder myCopie = new CopyAssetFolder();
                 myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
 
                 Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());

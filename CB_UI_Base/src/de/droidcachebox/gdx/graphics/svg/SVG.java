@@ -17,10 +17,10 @@
 package de.droidcachebox.gdx.graphics.svg;
 
 import de.droidcachebox.gdx.graphics.SVG_Drawable;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Bitmap;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Canvas;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_GraphicFactory;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Matrix;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXCanvas;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXGraphicFactory;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 import de.droidcachebox.gdx.graphics.svg.CSSParser.Ruleset;
 import de.droidcachebox.gdx.math.RectF;
 import org.xml.sax.SAXException;
@@ -285,12 +285,12 @@ public class SVG {
     protected SVG() {
     }
 
-    public static ext_Bitmap createBmpFromSVG(ext_GraphicFactory factory, InputStream stream) throws SVGParseException {
+    public static GDXBitmap createBmpFromSVG(GDXGraphicFactory factory, InputStream stream) throws SVGParseException {
         return createBmpFromSVG(factory, stream, 1f);
     }
 
-    public static ext_Bitmap createBmpFromSVG(ext_GraphicFactory factory, InputStream stream, float scale) throws SVGParseException {
-        ext_Bitmap newBM = null;
+    public static GDXBitmap createBmpFromSVG(GDXGraphicFactory factory, InputStream stream, float scale) throws SVGParseException {
+        GDXBitmap newBM = null;
 
         SVG svg = SVG.getFromInputStream(stream, factory);
 
@@ -306,7 +306,7 @@ public class SVG {
         }
 
         newBM = new SVG_Drawable(width, height);
-        ext_Canvas bmcanvas = factory.createCanvas();
+        GDXCanvas bmcanvas = factory.createCanvas();
         bmcanvas.setBitmap(newBM);
 
         if (scale != 1f) {
@@ -325,7 +325,7 @@ public class SVG {
      * @return an SVG instance on which you can call one of the render methods.
      * @throws SVGParseException if there is an error parsing the document.
      */
-    public static SVG getFromInputStream(InputStream is, ext_GraphicFactory factory) throws SVGParseException {
+    public static SVG getFromInputStream(InputStream is, GDXGraphicFactory factory) throws SVGParseException {
         SVGParser parser = new SVGParser(factory);
         return parser.parse(is);
     }
@@ -337,7 +337,7 @@ public class SVG {
      * @return an SVG instance on which you can call one of the render methods.
      * @throws SVGParseException if there is an error parsing the document.
      */
-    public static SVG getFromString(String svg, ext_GraphicFactory factory) throws SVGParseException {
+    public static SVG getFromString(String svg, GDXGraphicFactory factory) throws SVGParseException {
         SVGParser parser = new SVGParser(factory);
         return parser.parse(new ByteArrayInputStream(svg.getBytes()));
     }
@@ -369,7 +369,7 @@ public class SVG {
      *
      * @param canvas the canvas to which the document should be rendered.
      */
-    public void renderToCanvas(ext_Canvas canvas, ext_GraphicFactory factory) {
+    public void renderToCanvas(GDXCanvas canvas, GDXGraphicFactory factory) {
         renderToCanvas(canvas, null, factory);
     }
 
@@ -379,7 +379,7 @@ public class SVG {
      * @param canvas   the canvas to which the document should be rendered.
      * @param viewPort the bounds of the area on the canvas you want the SVG rendered, or null for the whole canvas.
      */
-    public void renderToCanvas(ext_Canvas canvas, RectF viewPort, ext_GraphicFactory factory) {
+    public void renderToCanvas(GDXCanvas canvas, RectF viewPort, GDXGraphicFactory factory) {
         Box svgViewPort;
 
         if (viewPort != null) {
@@ -404,7 +404,7 @@ public class SVG {
      * @param viewId the id of a view element in the document that defines which section of the document is to be visible.
      * @param canvas the canvas to which the document should be rendered.
      */
-    public void renderViewToCanvas(String viewId, ext_Canvas canvas, ext_GraphicFactory factory) {
+    public void renderViewToCanvas(String viewId, GDXCanvas canvas, GDXGraphicFactory factory) {
         renderViewToCanvas(viewId, canvas, null, factory);
     }
 
@@ -421,7 +421,7 @@ public class SVG {
      * @param canvas   the canvas to which the document should be rendered.
      * @param viewPort the bounds of the area on the canvas you want the SVG rendered, or null for the whole canvas.
      */
-    public void renderViewToCanvas(String viewId, ext_Canvas canvas, RectF viewPort, ext_GraphicFactory factory) {
+    public void renderViewToCanvas(String viewId, GDXCanvas canvas, RectF viewPort, GDXGraphicFactory factory) {
         SvgObject obj = this.getElementById(viewId);
         if (obj == null)
             return;
@@ -873,7 +873,7 @@ public class SVG {
     // ===============================================================================
 
     protected interface HasTransform {
-        public void setTransform(ext_Matrix matrix);
+        public void setTransform(GDXMatrix matrix);
     }
 
     protected interface NotDirectlyRendered {
@@ -1461,10 +1461,10 @@ public class SVG {
 
     // An SVG element that can contain other elements.
     protected static class Group extends SvgConditionalContainer implements HasTransform {
-        public ext_Matrix transform;
+        public GDXMatrix transform;
 
         @Override
-        public void setTransform(ext_Matrix transform) {
+        public void setTransform(GDXMatrix transform) {
             this.transform = transform;
         }
     }
@@ -1477,10 +1477,10 @@ public class SVG {
     // One of the element types that can cause graphics to be drawn onto the target canvas.
     // Specifically: �circle�, �ellipse�, �image�, �line�, �path�, �polygon�, �polyline�, �rect�, �text� and �use�.
     protected static abstract class GraphicsElement extends SvgConditionalElement implements HasTransform {
-        public ext_Matrix transform;
+        public GDXMatrix transform;
 
         @Override
-        public void setTransform(ext_Matrix transform) {
+        public void setTransform(GDXMatrix transform) {
             this.transform = transform;
         }
     }
@@ -1552,10 +1552,10 @@ public class SVG {
     }
 
     protected static class Text extends TextPositionedContainer implements TextRoot, HasTransform {
-        public ext_Matrix transform;
+        public GDXMatrix transform;
 
         @Override
-        public void setTransform(ext_Matrix transform) {
+        public void setTransform(GDXMatrix transform) {
             this.transform = transform;
         }
     }
@@ -1652,7 +1652,7 @@ public class SVG {
         public List<SvgObject> children = new ArrayList<SvgObject>();
 
         public Boolean gradientUnitsAreUser;
-        public ext_Matrix gradientTransform;
+        public GDXMatrix gradientTransform;
         public GradientSpread spreadMethod;
         public String href;
 
@@ -1718,7 +1718,7 @@ public class SVG {
     protected static class Pattern extends SvgViewBoxContainer implements NotDirectlyRendered {
         public Boolean patternUnitsAreUser;
         public Boolean patternContentUnitsAreUser;
-        public ext_Matrix patternTransform;
+        public GDXMatrix patternTransform;
         public Length x;
         public Length y;
         public Length width;
@@ -1732,10 +1732,10 @@ public class SVG {
         public Length y;
         public Length width;
         public Length height;
-        public ext_Matrix transform;
+        public GDXMatrix transform;
 
         @Override
-        public void setTransform(ext_Matrix transform) {
+        public void setTransform(GDXMatrix transform) {
             this.transform = transform;
         }
     }

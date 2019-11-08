@@ -3,7 +3,7 @@ package de.droidcachebox.locator;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import de.droidcachebox.CB_UI_Base_Settings;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Bitmap;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.locator.map.BoundingBox;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.utils.File;
@@ -207,7 +207,7 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
             bitmap.compress(baos);
             byteArray = baos.toByteArray(); // takes long
             baos.close();
-            if (bitmap instanceof ext_Bitmap) ((ext_Bitmap) bitmap).recycle();
+            if (bitmap instanceof GDXBitmap) ((GDXBitmap) bitmap).recycle();
         } catch (Exception ex) {
             Log.err(sKlasse, "convert bitmap to byteArray", ex);
             return null;

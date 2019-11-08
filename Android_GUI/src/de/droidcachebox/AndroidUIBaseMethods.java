@@ -15,7 +15,7 @@ import android.os.Vibrator;
 import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
-import de.droidcachebox.Views.Forms.Android_FileExplorer;
+import de.droidcachebox.views.forms.Android_FileExplorer;
 import de.droidcachebox.activities.GcApiLogin;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
@@ -42,7 +42,7 @@ import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
-import de.droidcachebox.utils.sqlite.SQLiteClass;
+import de.droidcachebox.database.SQLiteClass;
 
 import java.util.Date;
 import java.util.Objects;

@@ -19,8 +19,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Matrix;
-import de.droidcachebox.gdx.graphics.mapsforge.ext_Paint;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXPaint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Point;
@@ -28,7 +28,7 @@ import org.mapsforge.core.model.Point;
 /**
  * @author Longri
  */
-public class GL_Paint implements ext_Paint {
+public class GL_Paint implements GDXPaint {
     protected HSV_Color color;
     protected GL_Align align;
     protected Join join;
@@ -215,7 +215,7 @@ public class GL_Paint implements ext_Paint {
     }
 
     @Override
-    public ext_Matrix getGradiantMatrix() {
+    public GDXMatrix getGradiantMatrix() {
 
         return null;
     }
@@ -250,7 +250,7 @@ public class GL_Paint implements ext_Paint {
     }
 
     @Override
-    public void setGradientMatrix(ext_Matrix matrix) {
+    public void setGradientMatrix(GDXMatrix matrix) {
 
     }
 

@@ -49,8 +49,8 @@ public class SVGAndroidRenderer {
     private static final int LUMINANCE_TO_ALPHA_RED = (int) (0.2125f * (1 << LUMINANCE_FACTOR_SHIFT));
     private static final int LUMINANCE_TO_ALPHA_GREEN = (int) (0.7154f * (1 << LUMINANCE_FACTOR_SHIFT));
     private static final int LUMINANCE_TO_ALPHA_BLUE = (int) (0.0721f * (1 << LUMINANCE_FACTOR_SHIFT));
-    private final ext_GraphicFactory GRAPHIC_FACTORY;
-    private ext_Canvas canvas;
+    private final GDXGraphicFactory GRAPHIC_FACTORY;
+    private GDXCanvas canvas;
     private Box canvasViewPort;
     private float dpi; // dots per inch. Needed for accurate conversion of length values that have real world units, such as "cm".
     private boolean directRenderingMode;
@@ -60,16 +60,16 @@ public class SVGAndroidRenderer {
     private Stack<RendererState> stateStack; // Keeps track of render state as we render
     // Keep track of element stack while rendering.
     private Stack<SvgContainer> parentStack; // The 'render parent' for elements like Symbol cf. file parent
-    private Stack<ext_Matrix> matrixStack; // Keeps track of current transform as we descend into element tree
+    private Stack<GDXMatrix> matrixStack; // Keeps track of current transform as we descend into element tree
     // Canvas stack for when we are processing mask elements
-    private Stack<ext_Canvas> canvasStack;
-    private Stack<ext_Bitmap> bitmapStack;
+    private Stack<GDXCanvas> canvasStack;
+    private Stack<GDXBitmap> bitmapStack;
 
-    public SVGAndroidRenderer(ext_GraphicFactory factory) {
+    public SVGAndroidRenderer(GDXGraphicFactory factory) {
         GRAPHIC_FACTORY = factory;
     }
 
-    protected SVGAndroidRenderer(ext_Canvas canvas, SVG.Box viewPort, float defaultDPI, ext_GraphicFactory factory) {
+    protected SVGAndroidRenderer(GDXCanvas canvas, SVG.Box viewPort, float defaultDPI, GDXGraphicFactory factory) {
         GRAPHIC_FACTORY = factory;
         this.canvas = canvas;
         this.dpi = defaultDPI;
@@ -101,7 +101,7 @@ public class SVGAndroidRenderer {
             LOGGER.log(Level.INFO, String.format(format, args));
     }
 
-    private static void arcTo(float lastX, float lastY, float rx, float ry, float angle, boolean largeArcFlag, boolean sweepFlag, float x, float y, PathInterface pather, ext_GraphicFactory GRAPHIC_FACTORY) {
+    private static void arcTo(float lastX, float lastY, float rx, float ry, float angle, boolean largeArcFlag, boolean sweepFlag, float x, float y, PathInterface pather, GDXGraphicFactory GRAPHIC_FACTORY) {
         if (lastX == x && lastY == y) {
             // If the endpoints (x, y) and (x0, y0) are identical, then this
             // is equivalent to omitting the elliptical arc segment entirely.
@@ -199,7 +199,7 @@ public class SVGAndroidRenderer {
         float[] bezierPoints = arcToBeziers(angleStart, angleExtent);
 
         // Calculate a transformation matrix that will move and scale these bezier points to the correct location.
-        ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+        GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
         m.postTranslate((float) cx, (float) cy);
         m.postRotate(angle);
         m.postScale(rx, ry);
@@ -278,12 +278,12 @@ public class SVGAndroidRenderer {
         stateStack.push((RendererState) state.clone()); // Manual push here - don't use statePush();
 
         // Initialise the stacks used for mask handling
-        canvasStack = new Stack<ext_Canvas>();
-        bitmapStack = new Stack<ext_Bitmap>();
+        canvasStack = new Stack<GDXCanvas>();
+        bitmapStack = new Stack<GDXBitmap>();
 
         // Keep track of element stack while rendering.
         // The 'render parent' for some elements (eg <use> references) is different from its DOM parent.
-        matrixStack = new Stack<ext_Matrix>();
+        matrixStack = new Stack<GDXMatrix>();
         parentStack = new Stack<SvgContainer>();
     }
 
@@ -473,7 +473,7 @@ public class SVGAndroidRenderer {
     /*
      * Fill a path with either the given paint, or if a pattern is set, with the pattern.
      */
-    private void doFilledPath(SvgElement obj, ext_Path path) {
+    private void doFilledPath(SvgElement obj, GDXPath path) {
         // First check for pattern fill. It requires special handling.
         if (state.style.fill instanceof SVG.PaintReference) {
             SVG.SvgObject ref = document.resolveIRI(((SVG.PaintReference) state.style.fill).href);
@@ -491,7 +491,7 @@ public class SVGAndroidRenderer {
     // ==============================================================================
     // Renderers for each element type
 
-    private void doStroke(ext_Path path) {
+    private void doStroke(GDXPath path) {
         // TODO handle degenerate subpaths properly
 
         if (state.style.vectorEffect == VectorEffect.NonScalingStroke) {
@@ -499,19 +499,19 @@ public class SVGAndroidRenderer {
             // It will be rendered at the same width no matter how the document contents are transformed.
 
             // First step: get the current canvas matrix
-            ext_Matrix currentMatrix = canvas.getMatrix();
+            GDXMatrix currentMatrix = canvas.getMatrix();
             // Transform the path using this transform
-            ext_Path transformedPath = GRAPHIC_FACTORY.createPath();
+            GDXPath transformedPath = GRAPHIC_FACTORY.createPath();
             path.transform(currentMatrix, transformedPath);
             // Reset the current canvas transform completely
             canvas.setMatrix(GRAPHIC_FACTORY.createMatrix());
 
             // If there is a shader (such as a gradient), we need to update its transform also
-            ext_Matrix currentShaderMatrix = state.strokePaint.getGradiantMatrix();
+            GDXMatrix currentShaderMatrix = state.strokePaint.getGradiantMatrix();
 
             if (currentShaderMatrix != null) {
 
-                ext_Matrix newShaderMatrix = GRAPHIC_FACTORY.createMatrix(currentShaderMatrix);
+                GDXMatrix newShaderMatrix = GRAPHIC_FACTORY.createMatrix(currentShaderMatrix);
                 newShaderMatrix.postConcat(currentMatrix);
                 state.strokePaint.setGradientMatrix(newShaderMatrix);
             }
@@ -631,7 +631,7 @@ public class SVGAndroidRenderer {
             return;
 
         // Convert the corners of the child bbox to world space
-        ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+        GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
         // Get the inverse of the child transform
         if (matrixStack.peek().invert()) {
             float[] pts = {obj.boundingBox.minX, obj.boundingBox.minY, obj.boundingBox.maxX(), obj.boundingBox.minY, obj.boundingBox.maxX(), obj.boundingBox.maxY(), obj.boundingBox.minX, obj.boundingBox.maxY()};
@@ -695,7 +695,7 @@ public class SVGAndroidRenderer {
             duplicateCanvas();
             renderMask((SVG.Mask) ref, obj);
 
-            ext_Bitmap maskedContent = processMaskBitmaps();
+            GDXBitmap maskedContent = processMaskBitmaps();
 
             // Retrieve the real canvas
             canvas = canvasStack.pop();
@@ -720,9 +720,9 @@ public class SVGAndroidRenderer {
 
     private void duplicateCanvas() {
         try {
-            ext_Bitmap newBM = GRAPHIC_FACTORY.createBitmap(canvas.getWidth(), canvas.getHeight());
+            GDXBitmap newBM = GRAPHIC_FACTORY.createBitmap(canvas.getWidth(), canvas.getHeight());
             bitmapStack.push(newBM);
-            ext_Canvas newCanvas = GRAPHIC_FACTORY.createCanvas();
+            GDXCanvas newCanvas = GRAPHIC_FACTORY.createCanvas();
             newCanvas.setBitmap(newBM);
             newCanvas.setMatrix(canvas.getMatrix());
             canvas = newCanvas;
@@ -734,11 +734,11 @@ public class SVGAndroidRenderer {
 
     // ==============================================================================
 
-    private ext_Bitmap processMaskBitmaps() {
+    private GDXBitmap processMaskBitmaps() {
         // Retrieve the rendered mask
-        ext_Bitmap mask = bitmapStack.pop();
+        GDXBitmap mask = bitmapStack.pop();
         // Retrieve the rendered content to which the mask is to be applied
-        ext_Bitmap maskedContent = bitmapStack.pop();
+        GDXBitmap maskedContent = bitmapStack.pop();
         // Convert the mask bitmap to an alpha channel and multiply it to the content
         // We will process the bitmaps in a row-wise fashion to save memory.
         // It doesn't seem to be be significantly slower than doing it all at once.
@@ -883,7 +883,7 @@ public class SVGAndroidRenderer {
         }
 
         // We handle the x,y,width,height attributes by adjusting the transform
-        ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+        GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
         float _x = (obj.x != null) ? obj.x.floatValueX(this) : 0f;
         float _y = (obj.y != null) ? obj.y.floatValueY(this) : 0f;
         m.preTranslate(_x, _y);
@@ -935,7 +935,7 @@ public class SVGAndroidRenderer {
         if (obj.transform != null)
             canvas.concat(obj.transform);
 
-        ext_Path path = (new PathConverter(obj.d)).getPath();
+        GDXPath path = (new PathConverter(obj.d)).getPath();
 
         if (obj.boundingBox == null) {
             obj.boundingBox = calculatePathBounds(path);
@@ -962,7 +962,7 @@ public class SVGAndroidRenderer {
 
     // ==============================================================================
 
-    private Box calculatePathBounds(ext_Path path) {
+    private Box calculatePathBounds(GDXPath path) {
         RectF pathBounds = new RectF();
         path.computeBounds(pathBounds, true);
         return new Box(pathBounds.left, pathBounds.top, pathBounds.width(), pathBounds.height());
@@ -986,7 +986,7 @@ public class SVGAndroidRenderer {
         if (obj.transform != null)
             canvas.concat(obj.transform);
 
-        ext_Path path = makePathAndBoundingBox(obj);
+        GDXPath path = makePathAndBoundingBox(obj);
         updateParentBoundingBox(obj);
 
         checkForGradiantsAndPatterns(obj);
@@ -1021,7 +1021,7 @@ public class SVGAndroidRenderer {
         if (obj.transform != null)
             canvas.concat(obj.transform);
 
-        ext_Path path = makePathAndBoundingBox(obj);
+        GDXPath path = makePathAndBoundingBox(obj);
         updateParentBoundingBox(obj);
 
         checkForGradiantsAndPatterns(obj);
@@ -1056,7 +1056,7 @@ public class SVGAndroidRenderer {
         if (obj.transform != null)
             canvas.concat(obj.transform);
 
-        ext_Path path = makePathAndBoundingBox(obj);
+        GDXPath path = makePathAndBoundingBox(obj);
         updateParentBoundingBox(obj);
 
         checkForGradiantsAndPatterns(obj);
@@ -1088,7 +1088,7 @@ public class SVGAndroidRenderer {
         if (obj.transform != null)
             canvas.concat(obj.transform);
 
-        ext_Path path = makePathAndBoundingBox(obj);
+        GDXPath path = makePathAndBoundingBox(obj);
         updateParentBoundingBox(obj);
 
         checkForGradiantsAndPatterns(obj);
@@ -1138,7 +1138,7 @@ public class SVGAndroidRenderer {
         if (numPoints < 2)
             return;
 
-        ext_Path path = makePathAndBoundingBox(obj);
+        GDXPath path = makePathAndBoundingBox(obj);
         updateParentBoundingBox(obj);
 
         checkForGradiantsAndPatterns(obj);
@@ -1219,7 +1219,7 @@ public class SVGAndroidRenderer {
         if (numPoints < 2)
             return;
 
-        ext_Path path = makePathAndBoundingBox(obj);
+        GDXPath path = makePathAndBoundingBox(obj);
         updateParentBoundingBox(obj);
 
         checkForGradiantsAndPatterns(obj);
@@ -1413,7 +1413,7 @@ public class SVGAndroidRenderer {
         }
 
         SVG.Path pathObj = (SVG.Path) ref;
-        ext_Path path = (new PathConverter(pathObj.d)).getPath();
+        GDXPath path = (new PathConverter(pathObj.d)).getPath();
 
         if (pathObj.transform != null)
             path.transform(pathObj.transform);
@@ -1644,8 +1644,8 @@ public class SVGAndroidRenderer {
      * Note values in the two Box parameters whould be in user units. If you pass values that are in "objectBoundingBox" space, you will get
      * incorrect results.
      */
-    private ext_Matrix calculateViewBoxTransform(Box viewPort, Box viewBox, PreserveAspectRatio positioning) {
-        ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+    private GDXMatrix calculateViewBoxTransform(Box viewPort, Box viewBox, PreserveAspectRatio positioning) {
+        GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
 
         if (positioning == null || positioning.getAlignment() == null)
             return m;
@@ -1996,15 +1996,15 @@ public class SVGAndroidRenderer {
         }
     }
 
-    private ext_Path.FillType getFillTypeFromState() {
+    private GDXPath.FillType getFillTypeFromState() {
         if (state.style.fillRule == null)
-            return ext_Path.FillType.WINDING;
+            return GDXPath.FillType.WINDING;
         switch (state.style.fillRule) {
             case EvenOdd:
-                return ext_Path.FillType.EVEN_ODD;
+                return GDXPath.FillType.EVEN_ODD;
             case NonZero:
             default:
-                return ext_Path.FillType.WINDING;
+                return GDXPath.FillType.WINDING;
         }
     }
 
@@ -2157,7 +2157,7 @@ public class SVGAndroidRenderer {
         // inherit from the element referencing the <marker> element." (sect 11.6.2)
         state = findInheritFromAncestorState(marker);
 
-        ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+        GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
         m.preTranslate(pos.x, pos.y);
         m.preRotate(angle);
         m.preScale(unitsScale, unitsScale);
@@ -2340,7 +2340,7 @@ public class SVGAndroidRenderer {
             fillInChainedGradientFields(gradient, gradient.href);
 
         boolean userUnits = (gradient.gradientUnitsAreUser != null && gradient.gradientUnitsAreUser);
-        ext_Paint paint = isFill ? state.fillPaint : state.strokePaint;
+        GDXPaint paint = isFill ? state.fillPaint : state.strokePaint;
 
         float _x1, _y1, _x2, _y2;
         if (userUnits) {
@@ -2363,7 +2363,7 @@ public class SVGAndroidRenderer {
         state = findInheritFromAncestorState(gradient);
 
         // Calculate the gradient transform matrix
-        ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+        GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
         if (!userUnits) {
             m.preTranslate(boundingBox.minX, boundingBox.minY);
             m.preScale(boundingBox.width, boundingBox.height);
@@ -2445,7 +2445,7 @@ public class SVGAndroidRenderer {
             fillInChainedGradientFields(gradient, gradient.href);
 
         boolean userUnits = (gradient.gradientUnitsAreUser != null && gradient.gradientUnitsAreUser);
-        ext_Paint paint = isFill ? state.fillPaint : state.strokePaint;
+        GDXPaint paint = isFill ? state.fillPaint : state.strokePaint;
 
         float _cx, _cy, _r;
         if (userUnits) {
@@ -2468,7 +2468,7 @@ public class SVGAndroidRenderer {
         state = findInheritFromAncestorState(gradient);
 
         // Calculate the gradient transform matrix
-        ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+        GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
         if (!userUnits) {
             m.preTranslate(boundingBox.minX, boundingBox.minY);
             m.preScale(boundingBox.width, boundingBox.height);
@@ -2680,7 +2680,7 @@ public class SVGAndroidRenderer {
         clipStatePush();
 
         if (!userUnits) {
-            ext_Matrix m = (ext_Matrix) GRAPHIC_FACTORY.createMatrix();
+            GDXMatrix m = (GDXMatrix) GRAPHIC_FACTORY.createMatrix();
             m.preTranslate(boundingBox.minX, boundingBox.minY);
             m.preScale(boundingBox.width, boundingBox.height);
             canvas.concat(m);
@@ -2695,16 +2695,16 @@ public class SVGAndroidRenderer {
 
         checkForClipPath(clipPath);
 
-        ext_Path combinedPath = GRAPHIC_FACTORY.createPath();
+        GDXPath combinedPath = GRAPHIC_FACTORY.createPath();
         for (SvgObject child : clipPath.children) {
-            addObjectToClip(child, true, combinedPath, (ext_Matrix) GRAPHIC_FACTORY.createMatrix());
+            addObjectToClip(child, true, combinedPath, (GDXMatrix) GRAPHIC_FACTORY.createMatrix());
         }
         canvas.clipPath(combinedPath);
 
         clipStatePop();
     }
 
-    private void addObjectToClip(SvgObject obj, boolean allowUse, ext_Path combinedPath, ext_Matrix combinedPathMatrix) {
+    private void addObjectToClip(SvgObject obj, boolean allowUse, GDXPath combinedPath, GDXMatrix combinedPathMatrix) {
         if (!display())
             return;
 
@@ -2750,19 +2750,19 @@ public class SVGAndroidRenderer {
         state = stateStack.pop();
     }
 
-    private ext_Path.FillType getClipRuleFromState() {
+    private GDXPath.FillType getClipRuleFromState() {
         if (state.style.clipRule == null)
-            return ext_Path.FillType.WINDING;
+            return GDXPath.FillType.WINDING;
         switch (state.style.clipRule) {
             case EvenOdd:
-                return ext_Path.FillType.EVEN_ODD;
+                return GDXPath.FillType.EVEN_ODD;
             case NonZero:
             default:
-                return ext_Path.FillType.WINDING;
+                return GDXPath.FillType.WINDING;
         }
     }
 
-    private void addObjectToClip(SVG.Path obj, ext_Path combinedPath, ext_Matrix combinedPathMatrix) {
+    private void addObjectToClip(SVG.Path obj, GDXPath combinedPath, GDXMatrix combinedPathMatrix) {
         updateStyleForElement(state, obj);
 
         if (!display())
@@ -2774,7 +2774,7 @@ public class SVGAndroidRenderer {
         if (obj.transform != null)
             combinedPathMatrix.postConcat(obj.transform);
 
-        ext_Path path = (new PathConverter(obj.d)).getPath();
+        GDXPath path = (new PathConverter(obj.d)).getPath();
 
         if (obj.boundingBox == null) {
             obj.boundingBox = calculatePathBounds(path);
@@ -2786,7 +2786,7 @@ public class SVGAndroidRenderer {
         combinedPath.addPath(path, combinedPathMatrix);
     }
 
-    private void addObjectToClip(SVG.GraphicsElement obj, ext_Path combinedPath, ext_Matrix combinedPathMatrix) {
+    private void addObjectToClip(SVG.GraphicsElement obj, GDXPath combinedPath, GDXMatrix combinedPathMatrix) {
         updateStyleForElement(state, obj);
 
         if (!display())
@@ -2798,7 +2798,7 @@ public class SVGAndroidRenderer {
         if (obj.transform != null)
             combinedPathMatrix.postConcat(obj.transform);
 
-        ext_Path path;
+        GDXPath path;
         if (obj instanceof SVG.Rect)
             path = makePathAndBoundingBox((SVG.Rect) obj);
         else if (obj instanceof SVG.Circle)
@@ -2816,7 +2816,7 @@ public class SVGAndroidRenderer {
         combinedPath.addPath(path, combinedPathMatrix);
     }
 
-    private void addObjectToClip(SVG.Use obj, ext_Path combinedPath, ext_Matrix combinedPathMatrix) {
+    private void addObjectToClip(SVG.Use obj, GDXPath combinedPath, GDXMatrix combinedPathMatrix) {
         updateStyleForElement(state, obj);
 
         if (!display())
@@ -2844,7 +2844,7 @@ public class SVGAndroidRenderer {
     // Clip paths
     // ==============================================================================
 
-    private void addObjectToClip(SVG.Text obj, ext_Path combinedPath, ext_Matrix combinedPathMatrix) {
+    private void addObjectToClip(SVG.Text obj, GDXPath combinedPath, GDXMatrix combinedPathMatrix) {
         updateStyleForElement(state, obj);
 
         if (!display())
@@ -2877,14 +2877,14 @@ public class SVGAndroidRenderer {
         }
         checkForClipPath(obj);
 
-        ext_Path textAsPath = GRAPHIC_FACTORY.createPath();
+        GDXPath textAsPath = GRAPHIC_FACTORY.createPath();
         enumerateTextSpans(obj, new PlainTextToPath(x + dx, y + dy, textAsPath));
 
         combinedPath.setFillType(getClipRuleFromState());
         combinedPath.addPath(textAsPath, combinedPathMatrix);
     }
 
-    private ext_Path makePathAndBoundingBox(Line obj) {
+    private GDXPath makePathAndBoundingBox(Line obj) {
         float x1 = (obj.x1 == null) ? 0 : obj.x1.floatValue(this);
         float y1 = (obj.y1 == null) ? 0 : obj.y1.floatValue(this);
         float x2 = (obj.x2 == null) ? 0 : obj.x2.floatValue(this);
@@ -2894,13 +2894,13 @@ public class SVGAndroidRenderer {
             obj.boundingBox = new Box(Math.min(x1, y1), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
         }
 
-        ext_Path p = GRAPHIC_FACTORY.createPath();
+        GDXPath p = GRAPHIC_FACTORY.createPath();
         p.moveTo(x1, y1);
         p.lineTo(x2, y2);
         return p;
     }
 
-    private ext_Path makePathAndBoundingBox(Rect obj) {
+    private GDXPath makePathAndBoundingBox(Rect obj) {
         float x, y, w, h, rx, ry;
 
         if (obj.rx == null && obj.ry == null) {
@@ -2928,7 +2928,7 @@ public class SVGAndroidRenderer {
         float right = x + w;
         float bottom = y + h;
 
-        ext_Path p = GRAPHIC_FACTORY.createPath();
+        GDXPath p = GRAPHIC_FACTORY.createPath();
         if (rx == 0 || ry == 0) {
             // Simple rect
             p.moveTo(x, y);
@@ -2957,7 +2957,7 @@ public class SVGAndroidRenderer {
         return p;
     }
 
-    private ext_Path makePathAndBoundingBox(SVG.Circle obj) {
+    private GDXPath makePathAndBoundingBox(SVG.Circle obj) {
         float cx = (obj.cx != null) ? obj.cx.floatValueX(this) : 0f;
         float cy = (obj.cy != null) ? obj.cy.floatValueY(this) : 0f;
         float r = obj.r.floatValue(this);
@@ -2973,7 +2973,7 @@ public class SVGAndroidRenderer {
 
         float cp = r * BEZIER_ARC_FACTOR;
 
-        ext_Path p = GRAPHIC_FACTORY.createPath();
+        GDXPath p = GRAPHIC_FACTORY.createPath();
         p.moveTo(cx, top);
         p.cubicTo(cx + cp, top, right, cy - cp, right, cy);
         p.cubicTo(right, cy + cp, cx + cp, bottom, cx, bottom);
@@ -2983,7 +2983,7 @@ public class SVGAndroidRenderer {
         return p;
     }
 
-    private ext_Path makePathAndBoundingBox(SVG.Ellipse obj) {
+    private GDXPath makePathAndBoundingBox(SVG.Ellipse obj) {
         float cx = (obj.cx != null) ? obj.cx.floatValueX(this) : 0f;
         float cy = (obj.cy != null) ? obj.cy.floatValueY(this) : 0f;
         float rx = obj.rx.floatValueX(this);
@@ -3001,7 +3001,7 @@ public class SVGAndroidRenderer {
         float cpx = rx * BEZIER_ARC_FACTOR;
         float cpy = ry * BEZIER_ARC_FACTOR;
 
-        ext_Path p = GRAPHIC_FACTORY.createPath();
+        GDXPath p = GRAPHIC_FACTORY.createPath();
         p.moveTo(cx, top);
         p.cubicTo(cx + cpx, top, right, cy - cpy, right, cy);
         p.cubicTo(right, cy + cpy, cx + cpx, bottom, cx, bottom);
@@ -3011,8 +3011,8 @@ public class SVGAndroidRenderer {
         return p;
     }
 
-    private ext_Path makePathAndBoundingBox(SVG.PolyLine obj) {
-        ext_Path path = GRAPHIC_FACTORY.createPath();
+    private GDXPath makePathAndBoundingBox(SVG.PolyLine obj) {
+        GDXPath path = GRAPHIC_FACTORY.createPath();
 
         path.moveTo(obj.points[0], obj.points[1]);
         for (int i = 2; i < obj.points.length; i += 2) {
@@ -3032,7 +3032,7 @@ public class SVGAndroidRenderer {
     /*
      * Fill a path with a pattern by setting the path as a clip path and drawing the pattern element as a repeating tile inside it.
      */
-    private void fillWithPattern(SvgElement obj, ext_Path path, Pattern pattern) {
+    private void fillWithPattern(SvgElement obj, GDXPath path, Pattern pattern) {
         boolean patternUnitsAreUser = (pattern.patternUnitsAreUser != null && pattern.patternUnitsAreUser);
         float x, y, w, h;
         float originX, originY;
@@ -3250,8 +3250,8 @@ public class SVGAndroidRenderer {
         public Style style;
         public boolean hasFill;
         public boolean hasStroke;
-        public ext_Paint fillPaint;
-        public ext_Paint strokePaint;
+        public GDXPaint fillPaint;
+        public GDXPaint strokePaint;
         public SVG.Box viewPort;
         public SVG.Box viewBox;
         public boolean spacePreserve;
@@ -3260,12 +3260,12 @@ public class SVGAndroidRenderer {
         public boolean directRendering;
 
         public RendererState() {
-            fillPaint = (ext_Paint) GRAPHIC_FACTORY.createPaint();
+            fillPaint = (GDXPaint) GRAPHIC_FACTORY.createPaint();
             // fillPaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
             fillPaint.setStyle(GL_Paint.GL_Style.FILL);
             // fillPaint.setTypeface(Typeface.DEFAULT);
 
-            strokePaint = (ext_Paint) GRAPHIC_FACTORY.createPaint();
+            strokePaint = (GDXPaint) GRAPHIC_FACTORY.createPaint();
             // strokePaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
             strokePaint.setStyle(org.mapsforge.core.graphics.Style.STROKE);
             // strokePaint.setTypeface(Typeface.DEFAULT);
@@ -3327,9 +3327,9 @@ public class SVGAndroidRenderer {
     }
 
     private class PathTextDrawer extends PlainTextDrawer {
-        private final ext_Path path;
+        private final GDXPath path;
 
-        public PathTextDrawer(ext_Path path, float x, float y) {
+        public PathTextDrawer(GDXPath path, float x, float y) {
             super(x, y);
             this.path = path;
         }
@@ -3382,7 +3382,7 @@ public class SVGAndroidRenderer {
                     return false;
                 }
                 SVG.Path pathObj = (SVG.Path) ref;
-                ext_Path path = (new PathConverter(pathObj.d)).getPath();
+                GDXPath path = (new PathConverter(pathObj.d)).getPath();
                 if (pathObj.transform != null)
                     path.transform(pathObj.transform);
                 RectF pathBounds = new RectF();
@@ -3425,7 +3425,7 @@ public class SVGAndroidRenderer {
             pathDef.enumeratePath(this);
         }
 
-        public ext_Path getPath() {
+        public GDXPath getPath() {
             return path;
         }
 
@@ -3631,9 +3631,9 @@ public class SVGAndroidRenderer {
     private class PlainTextToPath extends TextProcessor {
         // public float x;
         // public float y;
-        public ext_Path textAsPath;
+        public GDXPath textAsPath;
 
-        public PlainTextToPath(float x, float y, ext_Path textAsPath) {
+        public PlainTextToPath(float x, float y, GDXPath textAsPath) {
             // this.x = x;
             // this.y = y;
             this.textAsPath = textAsPath;
@@ -3652,7 +3652,7 @@ public class SVGAndroidRenderer {
         public void processText(String text) {
             if (visible()) {
                 // state.fillPaint.getTextPath(text, 0, text.length(), x, y, textAsPath);
-                ext_Path spanPath = GRAPHIC_FACTORY.createPath();
+                GDXPath spanPath = GRAPHIC_FACTORY.createPath();
                 // state.fillPaint.getTextPath(text, 0, text.length(), x, y, spanPath);
                 textAsPath.addPath(spanPath);
             }
