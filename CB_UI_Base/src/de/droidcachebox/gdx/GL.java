@@ -64,7 +64,7 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_FAST_ACTION = 40;
     public static GL that;
     public TextInputInterface textInput;
-    public GL_Listener_Interface mGL_Listener_Interface; // implementation in Android_GUI/ViewGL : Desktop-Launcher/DesktopMain/start
+    public GL_Listener_Interface mGL_Listener_Interface; // implementation in ../ViewGL : Desktop-Launcher/DesktopMain/start
     private AsyncExecutor asyncExecutor;
     private int width, height;
     private MainViewBase mSplash;

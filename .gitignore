@@ -8,7 +8,7 @@
 /build
 /captures
 .externalNativeBuild
-Android_GUI/assets/build.info
+CB_Android/assets/build.info
 WorkingDir/build.info
 /SkinPacker/skins
 /WorkingDir/

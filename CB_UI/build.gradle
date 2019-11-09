@@ -32,10 +32,6 @@ dependencies {
 
 }
 
-eclipse.project {
-    name = appName + "-core"
-}
-
 task saveBuildInfo {
     doFirst {
         // get the current commit hash in git
@@ -96,7 +92,7 @@ task saveBuildInfo {
         // save the combined build info into assets/build.info file
         def result_line = git_ver_tag.toString().trim() + "#" + git_revison + "#" + git_branch_or_tag + "#" + git_version + "#" +
                 build_time
-        def assetsDir = "$projectDir/../Android_GUI/assets"
+        def assetsDir = "$projectDir/../CB_Android/assets"
         def buildInfoFile = new File(assetsDir, 'build.info').getAbsolutePath()
         new File(buildInfoFile).write(result_line)
         def desktopDir = "$projectDir/../WorkingDir"
