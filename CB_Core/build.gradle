@@ -7,7 +7,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
     implementation project(":CB_Utils")
-    implementation project(":CB_Rpc")
     implementation project(':mapsforge')
     implementation project(":CB_UI_Base")
     implementation project(":CB_Locator_Base")
@@ -24,4 +23,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/net.sf.kxml/kxml2
     implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'
+	
+	// rpc part
+	implementation fileTree(dir: '../libs', include: ['servlet-api-6.0.16.jar'])
+    implementation fileTree(dir: '../libs', include: ['mina-core-2.0.4.jar'])
+    implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+
 }

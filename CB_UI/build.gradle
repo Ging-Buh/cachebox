@@ -10,7 +10,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 dependencies {
     // submoduls
     implementation project(":CB_Utils")
-    implementation project(":CB_Rpc")
     implementation project(':mapsforge')
     implementation project(":CB_UI_Base")
     implementation project(":CB_Locator_Base")
