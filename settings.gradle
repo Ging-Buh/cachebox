@@ -1,2 +1,2 @@
 include ':CB_Utils', ':mapsforge', ':CB_UI_Base', ':CB_Locator_Base', ':mapsforge_awt', ':GPS_Simulator', ':SkinPacker', ':CB_Core'
-include 'Desktop-Launcher', 'Android_GUI', 'CB_UI'
+include 'CB_Desktop', 'CB_Android', 'CB_UI'
