@@ -27,7 +27,7 @@ import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.translation.Translation;
@@ -268,7 +268,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         });
 
         tglBtnMap.addClickHandler((v, x, y, pointer, button) -> {
-            actSearchPos = Abstract_ShowMap.getInstance().normalMapView.center;
+            actSearchPos = ShowMap.getInstance().normalMapView.center;
             setToggleBtnState(1);
             return true;
         });
@@ -306,8 +306,8 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             return true;
         });
 
-        if (Abstract_ShowMap.getInstance().normalMapView.isVisible()) {
-            actSearchPos = Abstract_ShowMap.getInstance().normalMapView.center;
+        if (ShowMap.getInstance().normalMapView.isVisible()) {
+            actSearchPos = ShowMap.getInstance().normalMapView.center;
             searchState = 1;
         } else {
             actSearchPos = Locator.getInstance().getMyPosition();
@@ -519,7 +519,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                 finish();
             } else {
                 // Notify Map
-                Abstract_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
                 if (dis != null) {
                     ImportGCPosition.this.removeChildsDirekt(dis);
                     dis.dispose();

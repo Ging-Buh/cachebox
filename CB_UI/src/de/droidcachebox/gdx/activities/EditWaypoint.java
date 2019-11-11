@@ -14,8 +14,8 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
-import de.droidcachebox.gdx.main.Abstract_ShowWaypointAction;
+import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.main.menuBtn2.ShowWaypoint;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
@@ -333,13 +333,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             }
 
             // Änderungen auch an die MapView melden
-            Abstract_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+            ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
             finish();
 
             // Show WP View?
             if (showWaypointListAfterFinish) {
-                Abstract_ShowWaypointAction.getInstance().Execute();
+                ShowWaypoint.getInstance().Execute();
             }
 
             return true;

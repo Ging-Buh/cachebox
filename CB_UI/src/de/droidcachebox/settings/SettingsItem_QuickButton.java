@@ -15,8 +15,8 @@ import de.droidcachebox.gdx.graphics.ColorDrawable;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
-import de.droidcachebox.gdx.main.QuickActions;
-import de.droidcachebox.gdx.main.QuickButtonItem;
+import de.droidcachebox.main.QuickActions;
+import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
@@ -76,14 +76,14 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         for (QuickActions item : AllActionList) {
             if (item == QuickActions.empty)
                 continue;
-            icm.addMenuItem("", QuickActions.getName(item.ordinal()),
-                    new SpriteDrawable(QuickActions.getActionEnumById(item.ordinal()).getIcon()),
+            icm.addMenuItem("", QuickActions.getName(item),
+                    new SpriteDrawable(QuickActions.getAction(item).getIcon()),
                     (v, x, y, pointer, button) -> {
                         icm.close();
                         QuickActions type = (QuickActions) v.getData();
                         float itemHeight = UiSizes.getInstance().getQuickButtonListHeight() * 0.93f;
                         QuickButtonItem tmp1 = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight),
-                                tmpQuickList.size(), QuickActions.getActionEnumById(type.ordinal()), QuickActions.getName(type.ordinal()), type);
+                                tmpQuickList.size(), QuickActions.getAction(type), QuickActions.getName(type), type);
                         tmpQuickList.add(tmp1);
                         reloadListViewItems();
                         return true;
@@ -242,8 +242,8 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             Menu icm = new Menu("virtuell");
             QuickButtonItem item = tmpQuickList.get(position);
             QuickActions action = item.getAction();
-            MenuItem mi = icm.addMenuItem("", QuickActions.getName(action.ordinal()),
-                    new SpriteDrawable(QuickActions.getActionEnumById(action.ordinal()).getIcon()),
+            MenuItem mi = icm.addMenuItem("", QuickActions.getName(action),
+                    new SpriteDrawable(QuickActions.getAction(action).getIcon()),
                     (v, x, y, pointer, button) -> {
                         listView.setSelection(((ListViewItemBase) v).getIndex());
                         return false;

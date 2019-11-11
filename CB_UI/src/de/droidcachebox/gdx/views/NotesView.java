@@ -24,7 +24,7 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;

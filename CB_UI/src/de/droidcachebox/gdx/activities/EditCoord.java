@@ -2,6 +2,7 @@ package de.droidcachebox.gdx.activities;
 
 import com.badlogic.gdx.graphics.Color;
 import de.droidcachebox.Config;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;

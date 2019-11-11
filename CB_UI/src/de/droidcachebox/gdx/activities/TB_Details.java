@@ -15,6 +15,7 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.LogTypes;

@@ -31,9 +31,9 @@ import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.solver.DataTypes.DataType;
@@ -306,8 +306,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         CoordinateGPS result = getSelectedCoordinateResult();
         if (result != null) {
             // Set Map Center
-            Abstract_ShowMap.getInstance().normalMapView.setCenter(result);
-            Abstract_ShowMap.getInstance().Execute();
+            ShowMap.getInstance().normalMapView.setCenter(result);
+            ShowMap.getInstance().Execute();
         }
     }
 

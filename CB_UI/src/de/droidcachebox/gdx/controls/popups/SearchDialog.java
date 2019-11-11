@@ -38,7 +38,7 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CacheListView;
@@ -492,8 +492,8 @@ public class SearchDialog extends PopUp_Base {
             public void run() {
 
                 Coordinate searchCoord;
-                if (Abstract_ShowMap.getInstance().normalMapView.isVisible()) {
-                    searchCoord = Abstract_ShowMap.getInstance().normalMapView.center;
+                if (ShowMap.getInstance().normalMapView.isVisible()) {
+                    searchCoord = ShowMap.getInstance().normalMapView.center;
                 } else {
                     searchCoord = Locator.getInstance().getMyPosition();
                 }

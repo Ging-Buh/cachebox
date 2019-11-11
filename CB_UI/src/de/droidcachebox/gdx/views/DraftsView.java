@@ -45,6 +45,9 @@ import de.droidcachebox.gdx.controls.popups.QuickDraftFeedbackPopUp;
 import de.droidcachebox.gdx.main.*;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.main.menuBtn4.UploadLogs;
+import de.droidcachebox.main.menuBtn4.UploadDrafts;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_FixSizeList;
 import de.droidcachebox.utils.File;
@@ -443,9 +446,9 @@ public class DraftsView extends V_ListView {
 
         cm.addDivider();
 
-        cm.addMenuItem("uploadDrafts", Action_UploadDrafts.getInstance().getIcon(), () -> Action_UploadDrafts.getInstance().Execute());
+        cm.addMenuItem("uploadDrafts", UploadDrafts.getInstance().getIcon(), () -> UploadDrafts.getInstance().Execute());
         if (CB_Core_Settings.DirectOnlineLog.getValue())
-            cm.addMenuItem("directLog", Action_UploadLogs.getInstance().getIcon(), () -> Action_UploadLogs.getInstance().Execute());
+            cm.addMenuItem("directLog", UploadLogs.getInstance().getIcon(), () -> UploadLogs.getInstance().Execute());
         //
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
@@ -595,9 +598,9 @@ public class DraftsView extends V_ListView {
                         cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
                     }
                 }
-                cm.addMenuItem("uploadDrafts", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
+                cm.addMenuItem("uploadDrafts", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
                 if (CB_Core_Settings.DirectOnlineLog.getValue())
-                    cm.addMenuItem("directLog", Action_UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
+                    cm.addMenuItem("directLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
                 cm.addMenuItem("SelectCache", null, this::selectCacheFromDraft);
                 cm.addMenuItem("delete", Sprites.getSprite(IconName.DELETE.name()), this::deleteDraft);
                 cm.show();

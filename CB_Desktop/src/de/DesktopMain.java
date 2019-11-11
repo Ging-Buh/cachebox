@@ -16,7 +16,7 @@ import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Listener_Interface;
 import de.droidcachebox.gdx.GL_View_Base;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.UiSizes;

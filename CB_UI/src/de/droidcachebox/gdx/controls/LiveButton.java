@@ -8,7 +8,7 @@ import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.core.LiveMapQue.QueStateChanged;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.locator.Coordinate;
 
 public class LiveButton extends ImageButton implements QueStateChanged {
@@ -72,7 +72,7 @@ public class LiveButton extends ImageButton implements QueStateChanged {
     public boolean click(int x, int y, int pointer, int button) {
         setState(!state);
         if (state) {
-            Coordinate center = Abstract_ShowMap.getInstance().normalMapView.center;
+            Coordinate center = ShowMap.getInstance().normalMapView.center;
             LiveMapQue.quePosition(center);
         }
         return true;

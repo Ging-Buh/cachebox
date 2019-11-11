@@ -16,7 +16,7 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CoordinateButton.ICoordinateChangedListener;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldStyle;
 import de.droidcachebox.gdx.controls.Spinner.ISelectionChangedListener;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.translation.Translation;
@@ -126,7 +126,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.Size = CacheSizes.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
-        newValues.Pos = Abstract_ShowMap.getInstance().normalMapView.center;
+        newValues.Pos = ShowMap.getInstance().normalMapView.center;
         if (!newValues.Pos.isValid())
             newValues.Pos = GlobalCore.getSelectedCoord();
         // GC - Code bestimmen für freies CWxxxx = CustomWaypint

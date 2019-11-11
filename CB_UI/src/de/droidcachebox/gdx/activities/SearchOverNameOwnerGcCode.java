@@ -32,7 +32,7 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
@@ -298,8 +298,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             String searchPattern = mEingabe.getText().trim();
 
                             Coordinate searchCoord;
-                            if (Abstract_ShowMap.getInstance().normalMapView.isVisible()) {
-                                searchCoord = Abstract_ShowMap.getInstance().normalMapView.center;
+                            if (ShowMap.getInstance().normalMapView.isVisible()) {
+                                searchCoord = ShowMap.getInstance().normalMapView.center;
                             } else {
                                 searchCoord = Locator.getInstance().getMyPosition();
                             }
@@ -374,7 +374,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             } else {
 
                 // Notify Map
-                Abstract_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 bImport.enable();
             }

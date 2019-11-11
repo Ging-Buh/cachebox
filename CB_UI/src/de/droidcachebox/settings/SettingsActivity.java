@@ -22,9 +22,9 @@ import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListene
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.QuickButtonItem;
+import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -157,7 +157,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             // Notify QuickButtonList
             QuickButtonList.that.notifyDataSetChanged();
 
-            Abstract_ShowMap.getInstance().normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
+            ShowMap.getInstance().normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
             finish();
             return true;

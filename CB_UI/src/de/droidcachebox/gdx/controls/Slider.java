@@ -1,10 +1,7 @@
 package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import de.droidcachebox.CB_UI_Settings;
-import de.droidcachebox.Config;
-import de.droidcachebox.SelectedCacheChangedEventListener;
-import de.droidcachebox.SelectedCacheChangedEventListeners;
+import de.droidcachebox.*;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheSizes;
 import de.droidcachebox.database.CacheTypes;
@@ -13,7 +10,7 @@ import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.graphics.ColorDrawable;
 import de.droidcachebox.gdx.graphics.HSV_Color;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeChangedEvent;

@@ -15,6 +15,8 @@ import android.os.Vibrator;
 import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.views.forms.Android_FileExplorer;
 import de.droidcachebox.activities.GcApiLogin;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -25,13 +27,11 @@ import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.ex_import.GPXFileImporter;
 import de.droidcachebox.ex_import.Importer;
 import de.droidcachebox.ex_import.ImporterProgress;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.activities.FZKDownload;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
@@ -324,10 +324,10 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
         Log.info(sKlasse, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
         if (coordinate.isValid()) {
-            Abstract_ShowMap.getInstance().Execute();
-            Abstract_ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
-            Abstract_ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
-            Abstract_ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+            ShowMap.getInstance().Execute();
+            ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
+            ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+            ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
         }
     }
 

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.CB_UI_Base_Settings;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.CB_Button;

@@ -9,7 +9,6 @@ import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextFieldBase;
 import de.droidcachebox.gdx.controls.SelectionMarker;
-import de.droidcachebox.gdx.main.Action_ShowQuit;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.Point;
 
@@ -102,7 +101,7 @@ public class GL_Input implements InputProcessor {
         // InputProcessor Implementation keyUp
         if (value == Input.Keys.BACK) {
             if (!GL.that.closeCurrentDialogOrActivity()) {
-                Action_ShowQuit.getInstance().Execute();
+                Quit.quit();
             }
             return true;
         }

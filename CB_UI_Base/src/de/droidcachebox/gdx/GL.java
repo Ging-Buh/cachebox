@@ -139,27 +139,6 @@ public class GL implements ApplicationListener {
         Log.debug("GL", "Constructor done");
     }
 
-    public AsyncExecutor getAsyncExecutor() {
-        if (asyncExecutor == null) {
-            asyncExecutor = new AsyncExecutor(8);
-        }
-        return asyncExecutor;
-    }
-
-    public void postAsync(final Runnable runnable) {
-        if (asyncExecutor == null) {
-            asyncExecutor = new AsyncExecutor(8);
-        }
-        asyncExecutor.submit((AsyncTask<Void>) () -> {
-            try {
-                runnable.run();
-            } catch (final Exception e) {
-                Log.err("GL", "postAsync ", e);
-            }
-            return null;
-        });
-    }
-
     @Override
     public void create() {
         // ApplicationListener Implementation create()
@@ -1385,6 +1364,20 @@ public class GL implements ApplicationListener {
         view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
 
         return view;
+    }
+
+    public void postAsync(final Runnable runnable) {
+        if (asyncExecutor == null) {
+            asyncExecutor = new AsyncExecutor(8);
+        }
+        asyncExecutor.submit((AsyncTask<Void>) () -> {
+            try {
+                runnable.run();
+            } catch (final Exception e) {
+                Log.err("GL", "postAsync ", e);
+            }
+            return null;
+        });
     }
 
     /*

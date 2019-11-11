@@ -29,7 +29,7 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeF;

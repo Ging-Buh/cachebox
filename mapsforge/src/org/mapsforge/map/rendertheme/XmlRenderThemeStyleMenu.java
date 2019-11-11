@@ -16,7 +16,6 @@ package org.mapsforge.map.rendertheme;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Entry class for automatically building menus from rendertheme V4+ files.
@@ -28,7 +27,7 @@ import java.util.Map;
 public class XmlRenderThemeStyleMenu implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Map<String, XmlRenderThemeStyleLayer> layers;
+    private final LinkedHashMap<String, XmlRenderThemeStyleLayer> layers;
     private final String defaultLanguage;
     private final String defaultValue;
     private final String id;
@@ -37,7 +36,7 @@ public class XmlRenderThemeStyleMenu implements Serializable {
         this.defaultLanguage = defaultLanguage;
         this.defaultValue = defaultValue;
         this.id = id;
-        this.layers = new LinkedHashMap<String, XmlRenderThemeStyleLayer>();
+        this.layers = new LinkedHashMap<>();
     }
 
     public XmlRenderThemeStyleLayer createLayer(String id, boolean visible, boolean enabled) {
@@ -50,7 +49,7 @@ public class XmlRenderThemeStyleMenu implements Serializable {
         return this.layers.get(id);
     }
 
-    public Map<String, XmlRenderThemeStyleLayer> getLayers() {
+    public LinkedHashMap<String, XmlRenderThemeStyleLayer> getLayers() {
         return this.layers;
     }
 

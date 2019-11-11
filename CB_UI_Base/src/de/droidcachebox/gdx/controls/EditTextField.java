@@ -43,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class EditTextField extends EditTextFieldBase {
     private static final String log = "EditTextField";
-    final Lock displayTextLock = new ReentrantLock();
+    private final Lock displayTextLock = new ReentrantLock();
     private final CB_List<IListPosChanged> listPosChangedHandlers = new CB_List<>();
     protected TextFieldStyle style;
     protected ArrayList<Line> lines;
@@ -55,14 +55,10 @@ public class EditTextField extends EditTextFieldBase {
     private int maxLineCount;
     private float leftPos;
     private float textWidth;
-    private boolean passwordMode;
-    private StringBuilder passwordBuffer;
     private Selection selectedArea = null;
-    private char passwordCharacter = BULLET;
     private float bgTopHeight = 0;
     private float bgBottomHeight = 0;
     private float bgLeftWidth = 0;
-    private float bgRightWidth = 0;
     private boolean selectionIsActive = false;
     private WrapType mWrapType = WrapType.SINGLELINE;
     private Point touchDownPos = null;
@@ -114,7 +110,7 @@ public class EditTextField extends EditTextFieldBase {
                     showSelectionMarker(SelectionMarker.Type.Left, selectedArea.cursorStart);
                     showSelectionMarker(SelectionMarker.Type.Right, selectedArea.cursorEnd);
                 } else {
-                    showSelectionMarker(SelectionMarker.Type.Center);
+                    showSelectionMarker(SelectionMarker.Type.Center, cursor);
                     hidePopUp();
                 }
             }
@@ -128,7 +124,6 @@ public class EditTextField extends EditTextFieldBase {
         if (WrapType != null) {
             if (WrapType != mWrapType) {
                 mWrapType = WrapType;
-                // todo ? make corresponding changes;
             }
         }
         return this;
@@ -150,7 +145,7 @@ public class EditTextField extends EditTextFieldBase {
 
     private void calculateSizeDependencies(boolean focused) {
         bgLeftWidth = style.getLeftWidth(focused);
-        bgRightWidth = style.getRightWidth(focused);
+        float bgRightWidth = style.getRightWidth(focused);
         if (mWrapType == WrapType.SINGLELINE) {
             bgTopHeight = bgBottomHeight = Math.max(0, (getHeight() - style.font.getLineHeight()) / 2);
         } else {
@@ -212,9 +207,10 @@ public class EditTextField extends EditTextFieldBase {
             for (Line line : lines) {
                 // try hack : if (textY < this.getHeight() && textY > 0) {                    }
                 if (line != null) {
-                    if (line.displayText == null) line.displayText = "";
-                    style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
-                    textY -= this.style.font.getLineHeight();
+                    if (line.displayText != null) {
+                        style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
+                        textY -= style.font.getLineHeight();
+                    }
                 } else {
                     Log.err(log, "a line of lines is null");
                 }
@@ -255,15 +251,15 @@ public class EditTextField extends EditTextFieldBase {
         float xpos = 0;
         if (lines.size() > aCursor.y) {
             Line line = getNthLine(aCursor.y);
-            if (aCursor.x < line.glyphPositions.size) {
-                // in front of the char
-                xpos = line.glyphPositions.get(aCursor.x);
-            } else if (line.glyphPositions.size == 0) {
+            if (line != null) {
                 // no text
-                xpos = 0;
-            } else {
                 // after the last character
-                xpos = line.glyphPositions.get(line.glyphPositions.size - 1);
+                if (aCursor.x < line.glyphPositions.size) {
+                    // in front of the char
+                    xpos = line.glyphPositions.get(aCursor.x);
+                } else {
+                    xpos = line.glyphPositions.size == 0 ? 0 : line.glyphPositions.get(line.glyphPositions.size - 1);
+                }
             }
         }
         return this.bgLeftWidth + xpos - leftPos - 3;// empirische Korrektur
@@ -276,32 +272,6 @@ public class EditTextField extends EditTextFieldBase {
     private float getCursorY(int aCursorLine) {
         float textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
         return (int) (textY - this.style.font.getLineHeight() * (aCursorLine - topLine + 1.5));
-    }
-
-    private void updateDisplayTextList() {
-        lines.clear();
-        if (passwordMode && style.font.getData().hasGlyph(passwordCharacter)) {
-            if (passwordBuffer == null)
-                passwordBuffer = new StringBuilder(text.length());
-            if (passwordBuffer.length() > text.length()) //
-                passwordBuffer.setLength(text.length());
-            else {
-                for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
-                    passwordBuffer.append(passwordCharacter);
-            }
-            lines.add(new Line(new String(passwordBuffer), style.font));
-        } else {
-            String[] dts = text.split("\n");
-            for (String s : dts)
-                lines.add(new Line(s, style.font));
-        }
-
-        for (Line line : lines) {
-            computeGlyphAdvancesAndPositions(line.displayText, line.glyphAdvances, line.glyphPositions);
-        }
-
-        int lineCount = lines.size();
-        sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
     }
 
     private void updateDisplayText(Line line, boolean calcCursor) {
@@ -335,8 +305,8 @@ public class EditTextField extends EditTextFieldBase {
                 }
                 if (idWord > 0) {
                     // dieses erste Wort passt noch in die letzte Zeile
-                    String s1 = line.displayText.toString().substring(0, idWord);
-                    String s2 = line.displayText.toString().substring(idWord, line.displayText.length());
+                    String s1 = line.displayText.substring(0, idWord);
+                    String s2 = line.displayText.substring(idWord);
                     previousLine.displayText += s1;
                     computeGlyphAdvancesAndPositions(previousLine.displayText, previousLine.glyphAdvances, previousLine.glyphPositions);
                     line.displayText = s2;
@@ -386,9 +356,6 @@ public class EditTextField extends EditTextFieldBase {
                     id = i;
             }
             if (id > 0) {
-                if (!calcCursor) {
-                    calcCursor = false;
-                }
                 // Zeile Trennen nach dem letzten "Space" vor dem Zeichen id
                 for (int j = id - 1; j >= 0; j--) {
                     if (isaPossibleLineBeak(line.displayText.charAt(j))) {
@@ -398,8 +365,8 @@ public class EditTextField extends EditTextFieldBase {
                 }
                 // Zeilenumbruch an Zeichen id
                 // aktuellen String bei id trennen
-                String s1 = line.displayText.toString().substring(0, id);
-                String s2 = line.displayText.toString().substring(id, line.displayText.length());
+                String s1 = line.displayText.substring(0, id);
+                String s2 = line.displayText.substring(id);
                 line.displayText = s1;
                 computeGlyphAdvancesAndPositions(line.displayText, line.glyphAdvances, line.glyphPositions);
                 cursor.y++;
@@ -451,8 +418,8 @@ public class EditTextField extends EditTextFieldBase {
             }
             if (idWord > 0) {
                 // dieses erste Wort passt noch in die letzte Zeile
-                String s1 = nextLine.displayText.toString().substring(0, idWord);
-                String s2 = nextLine.displayText.toString().substring(idWord, nextLine.displayText.length());
+                String s1 = nextLine.displayText.substring(0, idWord);
+                String s2 = nextLine.displayText.substring(idWord);
                 line.displayText += s1;
                 computeGlyphAdvancesAndPositions(line.displayText, line.glyphAdvances, line.glyphPositions);
                 updateDisplayText(line, false);
@@ -467,9 +434,10 @@ public class EditTextField extends EditTextFieldBase {
                     cursor.y--;
                 }
             }
-        } else {
-            // anschließend kommt keine Zeile, die automatisch umgebrochen wurde -> nichts machen
         }
+        //else {
+        // anschließend kommt keine Zeile, die automatisch umgebrochen wurde -> nichts machen
+        //}
     }
 
     private boolean isaPossibleLineBeak(char c) {
@@ -562,13 +530,16 @@ public class EditTextField extends EditTextFieldBase {
             return new Point(0, lines.size() - 1);
         // Spalte bestimmen, in die geklickt wurde.
         Line line = getNthLine(clickedLine);
-        float lx = X - style.getLeftWidth(true) + leftPos; // isClicked=isFocused
-        for (int i = 0; i < line.glyphPositions.size; i++) {
-            if (line.glyphPositions.items[i] > lx) {
-                return new Point(Math.max(0, i - 1), clickedLine);
+        if (line != null) {
+            float lx = X - style.getLeftWidth(true) + leftPos; // isClicked=isFocused
+            for (int i = 0; i < line.glyphPositions.size; i++) {
+                if (line.glyphPositions.items[i] > lx) {
+                    return new Point(Math.max(0, i - 1), clickedLine);
+                }
             }
+            return new Point(Math.max(0, line.glyphPositions.size - 1), clickedLine);
         }
-        return new Point(Math.max(0, line.glyphPositions.size - 1), clickedLine);
+        return new Point(0, 0);
     }
 
     @Override
@@ -585,7 +556,7 @@ public class EditTextField extends EditTextFieldBase {
 
         clearSelection();
         cursorOn = false; // startvalue for blinking (off)
-        showSelectionMarker(SelectionMarker.Type.Center);
+        showSelectionMarker(SelectionMarker.Type.Center, cursor);
         hidePopUp();
         GL.that.renderOnce();
 
@@ -606,8 +577,11 @@ public class EditTextField extends EditTextFieldBase {
                 clickedLine = 0;
             if (clickedLine >= lines.size())
                 clickedLine = lines.size() - 1;
-            int endOfClickedLine = getNthLine(clickedLine).displayText.length();
-            selectedArea = new Selection(new Point(0, clickedLine), new Point(endOfClickedLine, clickedLine));
+            Line nthLine = getNthLine(clickedLine);
+            if (nthLine != null) {
+                int endOfClickedLine = nthLine.displayText.length();
+                selectedArea = new Selection(new Point(0, clickedLine), new Point(endOfClickedLine, clickedLine));
+            } else return false;
         } else {
             selectionIsActive = true;
             Point newCursor = getClickedCursor(x, y);
@@ -644,14 +618,6 @@ public class EditTextField extends EditTextFieldBase {
             }
             if (cursorEnd == null)
                 cursorEnd = new Point(line.displayText.length(), newCursor.y);
-            if ((cursorStart == null) || (cursorEnd == null))
-                return false;
-			/*
-			 * noch nichts markiert
-			if (cursorStart.x >= cursorEnd.x)
-			return false;
-			 */
-
             hideSelectionMarker();
             selectedArea = new Selection(cursorStart, cursorEnd);
         }
@@ -665,11 +631,7 @@ public class EditTextField extends EditTextFieldBase {
         return true;
     }
 
-    protected void showSelectionMarker(SelectionMarker.Type type) {
-        showSelectionMarker(type, cursor);
-    }
-
-    protected void showSelectionMarker(final SelectionMarker.Type type, final Point tmpCursor) {
+    private void showSelectionMarker(final SelectionMarker.Type type, final Point tmpCursor) {
         GL.that.showMarker(type);
         Timer v = new Timer();
         TimerTask ta;
@@ -691,7 +653,7 @@ public class EditTextField extends EditTextFieldBase {
         };
         try {
             v.schedule(ta, 700);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -707,12 +669,12 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
-    protected void hideSelectionMarker() {
+    private void hideSelectionMarker() {
         selectedArea = null;
         GL.that.hideMarker();
     }
 
-    public Point aSelectionMarkerIsDragged(int dx, int dy, SelectionMarker.Type selectionMarkerType) {
+    Point aSelectionMarkerIsDragged(int dx, int dy, SelectionMarker.Type selectionMarkerType) {
         Point useCursor = cursor;
         switch (selectionMarkerType) {
             case Center:
@@ -740,42 +702,49 @@ public class EditTextField extends EditTextFieldBase {
             clickedLine = lines.size() - 1;
         }
 
-        int lx;
+        int lx = 0;
         Line line = getNthLine(clickedLine);
-        if (useCursor.y == clickedLine) {
-            lx = (int) line.glyphPositions.items[useCursor.x] + dx;
-        } else {
-            lx = (int) getNthLine(useCursor.y).glyphPositions.items[useCursor.x] + dx;
-        }
-
-        // in front of the char
-        for (int i = 0; i < line.glyphPositions.size; i++) {
-            float pos = line.glyphPositions.items[i];
-            if (pos > lx) {
-                Point result = null;
-                int clickedColumn = Math.max(0, i - 1);
-                result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
-                useCursor.x = clickedColumn;
-                useCursor.y = clickedLine;
-                if (selectionMarkerType == SelectionMarker.Type.Center) {
-                    setCursorLine(clickedLine, false);
+        if (line != null) {
+            if (useCursor.y == clickedLine) {
+                lx = (int) line.glyphPositions.items[useCursor.x] + dx;
+            } else {
+                Line nthLine = getNthLine(useCursor.y);
+                if (nthLine != null) {
+                    lx = (int) nthLine.glyphPositions.items[useCursor.x] + dx;
                 }
-                // Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
-                return result;
             }
+
+            // in front of the char
+            for (int i = 0; i < line.glyphPositions.size; i++) {
+                float pos = line.glyphPositions.items[i];
+                if (pos > lx) {
+                    int clickedColumn = Math.max(0, i - 1);
+                    Point result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
+                    useCursor.x = clickedColumn;
+                    useCursor.y = clickedLine;
+                    if (selectionMarkerType == SelectionMarker.Type.Center) {
+                        setCursorLine(clickedLine, false);
+                    }
+                    // Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
+                    return result;
+                }
+            }
+
+            // after the last character
+            int clickedColumn = Math.max(0, line.glyphPositions.size - 1);
+            Point result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
+            useCursor.x = clickedColumn;
+            useCursor.y = clickedLine;
+            if (selectionMarkerType == SelectionMarker.Type.Center) {
+                setCursorLine(clickedLine, false);
+            }
+            //Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
+            return result;
+
         }
 
-        // after the last character
-        int clickedColumn = Math.max(0, line.glyphPositions.size - 1);
-        Point result = null;
-        result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
-        useCursor.x = clickedColumn;
-        useCursor.y = clickedLine;
-        if (selectionMarkerType == SelectionMarker.Type.Center) {
-            setCursorLine(clickedLine, false);
-        }
-        //Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
-        return result;
+        return new Point(0, 0);
+
     }
 
     @Override
@@ -795,6 +764,7 @@ public class EditTextField extends EditTextFieldBase {
                     if (keycode == Keys.INSERT)
                         pasteFromClipboard();
                     // cut
+                    /*
                     if (keycode == Keys.FORWARD_DEL) {
                         // if (hasSelection)
                         // {
@@ -802,6 +772,7 @@ public class EditTextField extends EditTextFieldBase {
                         // delete();
                         // }
                     }
+                     */
                     // selection
                     if (keycode == Keys.LEFT) {
                         // if (!hasSelection)
@@ -901,7 +872,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     // bewegt den Cursor nach links - rechts
-    public void cursorLeftRight(int i) {
+    void cursorLeftRight(int i) {
         Line line = getNthLine(cursor.y);
         if (line == null)
             return;
@@ -912,7 +883,10 @@ public class EditTextField extends EditTextFieldBase {
         } else if (newPosition < 0) {
             if (cursorUpDown(-1)) {
                 Line newLine = getNthLine(cursor.y);
-                cursor.x = newLine.displayText.length();
+                if (newLine != null) {
+                    cursor.x = newLine.displayText.length();
+                } else
+                    cursor.x = 0;
             }
         } else {
             cursor.x = newPosition;
@@ -952,12 +926,14 @@ public class EditTextField extends EditTextFieldBase {
         if (newCursorLine >= lines.size())
             return false;
         Line oldLine = getNthLine(cursor.y);
-        // X-Koordinate von alter Cursor Position bestimmen
-        float x = oldLine.glyphPositions.items[cursor.x];
-        // Cursor in neue Zeile plazieren
-        setCursorLine(newCursorLine, true);
-        // Cursor möglichst an gleiche x-Position plazieren
-        setCursorXPos(x);
+        if (oldLine != null) {
+            // X-Koordinate von alter Cursor Position bestimmen
+            float x = oldLine.glyphPositions.items[cursor.x];
+            // Cursor in neue Zeile plazieren
+            setCursorLine(newCursorLine, true);
+            // Cursor möglichst an gleiche x-Position plazieren
+            setCursorXPos(x);
+        }
         return true;
     }
 
@@ -978,7 +954,7 @@ public class EditTextField extends EditTextFieldBase {
         try {
             if (hideSelectionMarker)
                 hideSelectionMarker();
-            this.calculateSizeDependencies(true);
+            calculateSizeDependencies(GL.that.hasFocus(this));
             // Oben-Unten => topLine anpassen
             if (cursor.y - topLine >= maxLineCount) {
                 topLine = cursor.y - maxLineCount + 1;
@@ -989,7 +965,7 @@ public class EditTextField extends EditTextFieldBase {
             // links-rechts => leftPos anpassen
             Line line = getNthLine(cursor.y);
             if (line != null && textWidth > 0) {
-                float xCursor = 0;
+                float xCursor;
                 if (cursor.x < line.glyphPositions.size) {
                     xCursor = line.glyphPositions.get(cursor.x);
                 } else {
@@ -1036,7 +1012,7 @@ public class EditTextField extends EditTextFieldBase {
         if (clipboard == null)
             return null;
         if (selectedArea != null) {
-            String content = "";
+            String content;
             content = this.getSelectedText();
             clipboard.setContents(content);
             return ""; // only copy Msg
@@ -1062,11 +1038,10 @@ public class EditTextField extends EditTextFieldBase {
 
         String[] contents = clipboard.getContents().split("\n");
 
-        if ((contents != null) && (contents.length > 0)) {
+        if (contents.length > 0) {
             boolean firstLine = true;
             // nach Zeilenvorschüben trennen
             for (String content : contents) {
-                StringBuilder builder = new StringBuilder();
                 content = content.replace("\b", "");
                 content = content.replace("\u2010", "-");
                 content = content.replace("\u2011", "-");
@@ -1109,7 +1084,6 @@ public class EditTextField extends EditTextFieldBase {
                     char c = content.charAt(i);
 
                     if (style.font.getData().hasGlyph(c)) {
-                        builder.append(c);
                         keyTyped(c, true);
                     }
                 }
@@ -1136,14 +1110,14 @@ public class EditTextField extends EditTextFieldBase {
         if (lineEnd == null)
             return;
         if (selectedArea.cursorEnd.x < lineEnd.displayText.length()) {
-            zeilenText = zeilenText + lineEnd.displayText.substring(selectedArea.cursorEnd.x, lineEnd.displayText.length());
+            zeilenText = zeilenText + lineEnd.displayText.substring(selectedArea.cursorEnd.x);
         }
         line.displayText = zeilenText;
         updateDisplayText(line, false);
 
         try {
-            for (int i = selectedArea.cursorEnd.y; i > selectedArea.cursorStart.y; i--) {
-                lines.remove(i);
+            if (selectedArea.cursorEnd.y >= selectedArea.cursorStart.y + 1) {
+                lines.subList(selectedArea.cursorStart.y + 1, selectedArea.cursorEnd.y + 1).clear();
             }
         } catch (Exception e) {
             selectedArea = null;
@@ -1180,7 +1154,7 @@ public class EditTextField extends EditTextFieldBase {
                 } else {
                     try {
                         if (cursor.x > 0) {
-                            line.displayText = line.displayText.substring(0, cursor.x - 1) + line.displayText.substring(cursor.x, line.displayText.length());
+                            line.displayText = line.displayText.substring(0, cursor.x - 1) + line.displayText.substring(cursor.x);
                             updateDisplayText(line, true);
                             cursor.x--;
                             setTextAtCursorVisible(true);
@@ -1191,14 +1165,16 @@ public class EditTextField extends EditTextFieldBase {
                             if (cursor.y > 0) {
                                 setCursorLine(cursor.y - 1, true);
                                 Line line2 = getNthLine(cursor.y);
-                                cursor.x = line2.displayText.length();
-                                setTextAtCursorVisible(true);
-                                line2.displayText = line2.displayText + line.displayText;
-                                lines.remove(cursor.y + 1);
-                                updateDisplayText(line2, true);
+                                if (line2 != null) {
+                                    cursor.x = line2.displayText.length();
+                                    setTextAtCursorVisible(true);
+                                    line2.displayText = line2.displayText + line.displayText;
+                                    lines.remove(cursor.y + 1);
+                                    updateDisplayText(line2, true);
 
-                                int lineCount = lines.size();
-                                sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
+                                    int lineCount = lines.size();
+                                    sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
+                                }
                             }
                             GL.that.renderOnce();
                             sendKeyTyped(character);
@@ -1216,7 +1192,7 @@ public class EditTextField extends EditTextFieldBase {
                     return true;
                 } else {
                     if (cursor.x < line.displayText.length()) {
-                        line.displayText = line.displayText.substring(0, cursor.x) + line.displayText.substring(cursor.x + 1, line.displayText.length());
+                        line.displayText = line.displayText.substring(0, cursor.x) + line.displayText.substring(cursor.x + 1);
                         updateDisplayText(line, true);
                         GL.that.renderOnce();
                         sendKeyTyped(character);
@@ -1225,11 +1201,13 @@ public class EditTextField extends EditTextFieldBase {
                         if (cursor.y + 1 < lines.size()) {
                             cursor.y++;
                             Line line2 = getNthLine(cursor.y);
-                            cursor.y--;
-                            lines.remove(line2);
-                            line.displayText += line2.displayText;
-                            updateDisplayText(line, true);
-                            GL.that.renderOnce();
+                            if (line2 != null) {
+                                cursor.y--;
+                                lines.remove(line2);
+                                line.displayText += line2.displayText;
+                                updateDisplayText(line, true);
+                                GL.that.renderOnce();
+                            }
                         }
                         sendKeyTyped(character);
                         return true;
@@ -1253,7 +1231,7 @@ public class EditTextField extends EditTextFieldBase {
                     deleteSelection();
                 {
                     try {
-                        line.displayText = line.displayText.substring(0, cursor.x) + character + line.displayText.substring(cursor.x, line.displayText.length());
+                        line.displayText = line.displayText.substring(0, cursor.x) + character + line.displayText.substring(cursor.x);
                         updateDisplayText(line, true);
                         cursor.x++;
                         setTextAtCursorVisible(true);
@@ -1265,25 +1243,18 @@ public class EditTextField extends EditTextFieldBase {
                 GL.that.renderOnce();
             }
             sendKeyTyped(character);
-            if (passwordMode)
-                updateDisplayTextList();
             return true;
         } else
             return false;
     }
 
     private boolean isMultiLine() {
-        if ((mWrapType == WrapType.MULTILINE) || (mWrapType == WrapType.WRAPPED))
-            return true;
-        else
-            return false;
+        return (mWrapType == WrapType.MULTILINE) || (mWrapType == WrapType.WRAPPED);
     }
 
     public String getText() {
 
         StringBuilder sb = new StringBuilder();
-
-        lines.size();
         int index = 0;
         for (Line line : lines) {
             if ((index > 0) && (!line.autoWrap)) {
@@ -1309,7 +1280,7 @@ public class EditTextField extends EditTextFieldBase {
 
         BitmapFont font = style.font;
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < inputText.length(); i++) {
             char c = inputText.charAt(i);
             if (font.getData().hasGlyph(c) || (c == '\n'))
@@ -1345,26 +1316,25 @@ public class EditTextField extends EditTextFieldBase {
             return "";
 
         StringBuilder sb = new StringBuilder();
-
         // Alle Zeilen durchgehen, in denen selektierter Text liegt
         for (int n = selectedArea.cursorStart.y; n <= selectedArea.cursorEnd.y; n++) {
             Line line = getNthLine(n);
+            if (line != null) {
+                int startPos = 0;
+                int endPos = line.displayText.length();
 
-            int startPos = 0;
-            int endPos = line.displayText.length();
+                if (n == selectedArea.cursorStart.y) {
+                    startPos = selectedArea.cursorStart.x;
+                }
+                if (n == selectedArea.cursorEnd.y) {
+                    endPos = selectedArea.cursorEnd.x;
+                }
 
-            if (n == selectedArea.cursorStart.y) {
-                startPos = selectedArea.cursorStart.x;
+                sb.append(line.displayText, startPos, endPos);
+                if (n < selectedArea.cursorEnd.y) {
+                    sb.append(AbstractGlobal.br);
+                }
             }
-            if (n == selectedArea.cursorEnd.y) {
-                endPos = selectedArea.cursorEnd.x;
-            }
-
-            sb.append(line.displayText, startPos, endPos);
-            if (n < selectedArea.cursorEnd.y) {
-                sb.append(AbstractGlobal.br);
-            }
-
         }
         String ret = sb.toString();
 
@@ -1406,7 +1376,7 @@ public class EditTextField extends EditTextFieldBase {
 
     }
 
-    public void clearSelection() {
+    private void clearSelection() {
         selectedArea = null;
     }
 
@@ -1418,12 +1388,14 @@ public class EditTextField extends EditTextFieldBase {
 
         for (int n = 0; n < lines.size(); n++) {
             Line line = getNthLine(n);
-            if (cursorPosition < line.displayText.length()) {
-                cursor.y = n;
-                cursor.x = cursorPosition;
-                break;
+            if (line != null) {
+                if (cursorPosition < line.displayText.length()) {
+                    cursor.y = n;
+                    cursor.x = cursorPosition;
+                    break;
+                }
+                cursorPosition = cursorPosition - line.displayText.length() + 1;
             }
-            cursorPosition = cursorPosition - line.displayText.length() + 1;
         }
 
         setTextAtCursorVisible(true);
@@ -1451,20 +1423,18 @@ public class EditTextField extends EditTextFieldBase {
         this.calculateSizeDependencies(true);
     }
 
-    public void setPasswordMode() {
-        passwordMode = true;
-    }
-
     public int getSelectionStart() {
         if (selectedArea == null) {
             int pos = 0;
             for (int n = 0; n <= cursor.y; n++) {
                 Line line = getNthLine(n);
-                if (n == cursor.y) {
-                    pos += cursor.x;
-                    break;
+                if (line != null) {
+                    if (n == cursor.y) {
+                        pos += cursor.x;
+                        break;
+                    }
+                    pos = pos + line.displayText.length() + 1;
                 }
-                pos = pos + line.displayText.length() + 1;
             }
             return pos;
         }
@@ -1472,11 +1442,13 @@ public class EditTextField extends EditTextFieldBase {
         int pos = 0;
         for (int n = 0; n <= selectedArea.cursorStart.y; n++) {
             Line line = getNthLine(n);
-            if (n == selectedArea.cursorStart.y) {
-                pos = pos + selectedArea.cursorStart.x;
-                break;
+            if (line != null) {
+                if (n == selectedArea.cursorStart.y) {
+                    pos = pos + selectedArea.cursorStart.x;
+                    break;
+                }
+                pos = pos + line.displayText.length() + 1;
             }
-            pos = pos + line.displayText.length() + 1;
         }
         return pos;
 
@@ -1487,11 +1459,13 @@ public class EditTextField extends EditTextFieldBase {
             int pos = 0;
             for (int n = 0; n <= cursor.y; n++) {
                 Line line = getNthLine(n);
-                if (n == cursor.y) {
-                    pos = pos + cursor.x;
-                    break;
+                if (line != null) {
+                    if (n == cursor.y) {
+                        pos = pos + cursor.x;
+                        break;
+                    }
+                    pos = pos + line.displayText.length() + 1;
                 }
-                pos = pos + line.displayText.length() + 1;
             }
             return pos;
         }
@@ -1499,13 +1473,14 @@ public class EditTextField extends EditTextFieldBase {
         int pos = 0;
         for (int n = 0; n <= selectedArea.cursorEnd.y; n++) {
             Line line = getNthLine(n);
-            if (n == selectedArea.cursorEnd.y) {
-                pos += selectedArea.cursorEnd.x;
-                break;
+            if (line != null) {
+                if (n == selectedArea.cursorEnd.y) {
+                    pos += selectedArea.cursorEnd.x;
+                    break;
+                }
+                pos = pos + line.displayText.length() + 1;
             }
-            pos = pos + line.displayText.length() + 1;
         }
-
         return pos;
     }
 
@@ -1524,15 +1499,8 @@ public class EditTextField extends EditTextFieldBase {
         return topLine;
     }
 
-    /**
-     * @param lineNo
-     */
     public void showFromLineNo(int lineNo) {
-        if (lineNo < 0) {
-            topLine = 0;
-        } else {
-            topLine = lineNo;
-        }
+        topLine = Math.max(lineNo, 0);
     }
 
     public int getLineCount() {
@@ -1552,7 +1520,7 @@ public class EditTextField extends EditTextFieldBase {
             listPosChangedHandlers.add(handler);
     }
 
-    protected void callListPosChangedEvent() {
+    private void callListPosChangedEvent() {
         for (int i = 0, n = listPosChangedHandlers.size(); i < n; i++) {
             IListPosChanged handler = listPosChangedHandlers.get(i);
             if (handler != null)
@@ -1560,7 +1528,7 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
-    public void computeGlyphAdvancesAndPositions(CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
+    private void computeGlyphAdvancesAndPositions(CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
         glyphAdvances.clear();
         glyphPositions.clear();
         int index = 0;
@@ -1638,13 +1606,13 @@ public class EditTextField extends EditTextFieldBase {
         private String displayText;
         private boolean autoWrap;
 
-        public Line(String displayText, BitmapFont font) {
+        Line(String displayText, BitmapFont font) {
             this.displayText = displayText;
 
             calcTextBounds(font);
         }
 
-        public Line(String displayText, boolean autoWrap, BitmapFont font) {
+        Line(String displayText, boolean autoWrap, BitmapFont font) {
             this.displayText = displayText;
             this.autoWrap = autoWrap;
 
@@ -1656,7 +1624,7 @@ public class EditTextField extends EditTextFieldBase {
             computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
         }
 
-        public GlyphLayout getTextBounds() {
+        GlyphLayout getTextBounds() {
             return textBounds;
         }
 
@@ -1670,7 +1638,7 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
-    private class Selection {
+    private static class Selection {
         private final Point cursorStart;
         private final Point cursorEnd;
 

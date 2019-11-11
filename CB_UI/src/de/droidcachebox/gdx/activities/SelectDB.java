@@ -33,7 +33,7 @@ import de.droidcachebox.gdx.controls.dialogs.NewDB_InputBox;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.list.*;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
-import de.droidcachebox.gdx.main.Action_ShowQuit;
+import de.droidcachebox.main.menuBtn5.ShowQuit;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -203,7 +203,7 @@ public class SelectDB extends ActivityBase {
         bCancel.addClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             if (MustSelect) {
-                Action_ShowQuit.getInstance().Execute();
+                ShowQuit.getInstance().Execute();
             } else {
                 finish();
             }

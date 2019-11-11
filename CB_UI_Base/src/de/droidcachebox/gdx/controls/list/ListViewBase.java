@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.CB_List;

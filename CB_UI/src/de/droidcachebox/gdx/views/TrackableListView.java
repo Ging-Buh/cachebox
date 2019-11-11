@@ -22,7 +22,7 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;

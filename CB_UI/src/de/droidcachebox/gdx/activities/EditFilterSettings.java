@@ -20,9 +20,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.Config;
-import de.droidcachebox.GlobalCore;
-import de.droidcachebox.WrapType;
+import de.droidcachebox.*;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreSettingsForward;
 import de.droidcachebox.core.FilterInstances;
@@ -41,9 +39,8 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.main.Abstract_ShowMap;
-import de.droidcachebox.gdx.main.Action_EditFilterSettings;
-import de.droidcachebox.gdx.main.ViewManager;
+import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.settings.SettingString;
@@ -259,7 +256,7 @@ public class EditFilterSettings extends ActivityBase {
                 ViewManager.that.filterSetChanged();
 
                 // Notify Map
-                Abstract_ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 // Save selected filter (new JSON Format)
                 // wont save History at the Moment
@@ -409,7 +406,7 @@ public class EditFilterSettings extends ActivityBase {
 
                 @Override
                 public boolean onClick(int which, Object data) {
-                    Action_EditFilterSettings.getInstance().Execute();
+                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
                     return true;
                 }
             });
@@ -438,13 +435,13 @@ public class EditFilterSettings extends ActivityBase {
                         Config.AcceptChanges();
                         mPresetListView.fillPresetList();
                         mPresetListView.notifyDataSetChanged();
-                        Action_EditFilterSettings.getInstance().Execute();
+                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
                         break;
                     case 2: // cancel clicked
-                        Action_EditFilterSettings.getInstance().Execute();
+                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
                         break;
                     case 3:
-                        Action_EditFilterSettings.getInstance().Execute();
+                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
                         break;
                 }
 
@@ -555,13 +552,13 @@ public class EditFilterSettings extends ActivityBase {
 
                 }
             }
-            CoreSettingsForward.Categories.WriteToFilter(EditFilterSettings.tmpFilterProps);
+            CoreSettingsForward.Categories.WriteToFilter(de.droidcachebox.gdx.activities.EditFilterSettings.tmpFilterProps);
 
         }
 
         private void fillCategorieList() {
 
-            CoreSettingsForward.Categories.ReadFromFilter(EditFilterSettings.tmpFilterProps);
+            CoreSettingsForward.Categories.ReadFromFilter(de.droidcachebox.gdx.activities.EditFilterSettings.tmpFilterProps);
 
             int Index = 0;
 
@@ -594,7 +591,7 @@ public class EditFilterSettings extends ActivityBase {
             }
             CategorieEntry tmp = new CategorieEntry(file, Icon, ItemType);
             lCategories.add(tmp);
-            CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
+            CategorieListViewItem v = new CategorieListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, Index, tmp);
             // inital mit INVISIBLE
             v.setInvisible();
             v.addClickHandler(onItemClickListener);
@@ -610,7 +607,7 @@ public class EditFilterSettings extends ActivityBase {
             CategorieEntry tmp = new CategorieEntry(cat, Icon, ItemType);
             lCategories.add(tmp);
 
-            CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
+            CategorieListViewItem v = new CategorieListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, Index, tmp);
             lCategorieListViewItems.add(v);
 
             v.addClickHandler(new OnClickListener() {
@@ -730,7 +727,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             public float getItemSize(int position) {
-                return EditFilterSettings.ItemRec.getHeight();
+                return de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec.getHeight();
             }
         }
 
@@ -1357,13 +1354,13 @@ public class EditFilterSettings extends ActivityBase {
                                     }
 
                                 }
-                                Action_EditFilterSettings.getInstance().Execute();
+                                de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
                                 break;
                             case 2: // cancel clicked
-                                Action_EditFilterSettings.getInstance().Execute();
+                                de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
                                 break;
                             case 3:
-                                Action_EditFilterSettings.getInstance().Execute();
+                                de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
                                 break;
                         }
 
@@ -1462,7 +1459,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             public float getItemSize(int position) {
-                return EditFilterSettings.ItemRec.getHeight();
+                return de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec.getHeight();
             }
         }
 
@@ -1487,7 +1484,7 @@ public class EditFilterSettings extends ActivityBase {
 
             if (tmpFilterProps != null) {
                 if (mPresetEntry.getFilterProperties().equals(tmpFilterProps)) {
-                    isSelected = !EditFilterSettings.tmpFilterProps.isExtendedFilter();
+                    isSelected = !de.droidcachebox.gdx.activities.EditFilterSettings.tmpFilterProps.isExtendedFilter();
                 }
             }
 
