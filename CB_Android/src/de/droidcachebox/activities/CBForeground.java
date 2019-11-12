@@ -10,6 +10,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import de.droidcachebox.R;
 import de.droidcachebox.translation.Translation;
 
+/**
+ * for Android >= Build.VERSION_CODES.O this is needed to get a continous GPS-Signal
+ */
 public class CBForeground extends IntentService {
     public CBForeground() {
         super("CBForeground");

@@ -38,8 +38,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 import de.droidcachebox.*;
 import de.droidcachebox.components.CopyAssetFolder;
-import de.droidcachebox.views.forms.Android_FileExplorer;
-import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.database.AndroidDB;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
@@ -56,6 +54,8 @@ import de.droidcachebox.utils.*;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
+import de.droidcachebox.views.forms.Android_FileExplorer;
+import de.droidcachebox.views.forms.MessageBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -119,28 +119,35 @@ public class Splash extends Activity {
     protected void onStart() {
         super.onStart();
         Log.info(log, "onStart");
-        if (!Main.isCreated) {
+        if (Main.isCreated) {
+            startMain();
+        } else {
             startInitialization();
             if (askForWorkpath) {
                 askForWorkPath(); // does finishInitializationAndStartMain()
             } else {
                 finishInitializationAndStartMain();
             }
-        } else {
-            startMain();
         }
     }
 
     private void startMain() {
         GlobalCore.RunFromSplash = true;
-        Activity main = Main.getInstance();
         Intent mainIntent;
-        if (main == null) {
+        if (Main.isCreated) {
+            Log.info(log, "Connect to Main to onNewIntent(Intent)");
+            Activity main = Main.getInstance();
+            if (main == null) {
+                // Gdx.app is null
+                // todo handle another way
+                mainIntent = new Intent().setClass(this, Main.class);
+            }
+            else {
+                mainIntent = main.getIntent();
+            }
+        } else {
             Log.info(log, "Start Main");
             mainIntent = new Intent().setClass(this, Main.class);
-        } else {
-            mainIntent = main.getIntent();
-            Log.info(log, "Connect to Main to onNewIntent(Intent)");
         }
         int width = frame.getMeasuredWidth();
         int height = frame.getMeasuredHeight();

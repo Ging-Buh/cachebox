@@ -43,40 +43,40 @@ import android.widget.LinearLayout;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import de.droidcachebox.controls.HorizontalListView;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.utils.AndroidContentClipboard;
-import de.droidcachebox.gdx.utils.AndroidTextClipboard;
-import de.droidcachebox.views.forms.MessageBox;
-import de.droidcachebox.views.forms.PleaseWaitMessageBox;
 import de.droidcachebox.activities.CBForeground;
 import de.droidcachebox.activities.Splash;
-import de.droidcachebox.database.AndroidDB;
+import de.droidcachebox.controls.HorizontalListView;
 import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.database.AndroidDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
 import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.Android_TextInput;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.AndroidTexturePacker;
+import de.droidcachebox.gdx.utils.AndroidContentClipboard;
+import de.droidcachebox.gdx.utils.AndroidTextClipboard;
 import de.droidcachebox.gdx.views.MainViewInit;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.Location.ProviderType;
 import de.droidcachebox.locator.Locator.CompassType;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.*;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
+import de.droidcachebox.views.forms.MessageBox;
+import de.droidcachebox.views.forms.PleaseWaitMessageBox;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -176,8 +176,13 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     public static Activity getInstance() {
         if (isCreated) {
-            if (Gdx.app instanceof Activity)
-                return (Activity) Gdx.app;
+            if (Gdx.app == null) {
+                Log.err(sKlasse, "Gdx.app is null");
+            } else {
+                if (Gdx.app instanceof Activity)
+                    return (Activity) Gdx.app;
+                Log.err(sKlasse, "Gdx.app is not an Activity");
+            }
         }
         return null;
     }
@@ -314,11 +319,12 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             Config.AcceptChanges();
 
         } else {
+            Log.info(sKlasse, "restartFromSplash: cannot start Main without previous Splash");
             restartFromSplash();
         }
 
         if (input == null) {
-            Log.info(sKlasse, "gdx input not yet initialized");
+            Log.info(sKlasse, "gdx input not yet / no longer initialized");
                 /*
                 // should be != null : initialized by gdxview = initializeForView(GL.that, gdxConfig); in initializeGDXAndroidApplication();
                 graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
@@ -329,7 +335,6 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         initializeLocatorBaseMethods();
 
-        //Start service:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, CBForeground.class));
         } else {
@@ -426,7 +431,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
-        // having a protokoll of the program start: but now reset to Config.AktLogLevel
+        // having a protokoll of the program start: but now reset to Config.AktLogLevel but >= LogLevel.ERROR
+        if (Config.AktLogLevel.getEnumValue() == LogLevel.OFF) Config.AktLogLevel.setEnumValue(LogLevel.ERROR);
         CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
 
         super.onResume();
