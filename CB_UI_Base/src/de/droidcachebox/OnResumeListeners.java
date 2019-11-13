@@ -21,8 +21,8 @@ public class OnResumeListeners extends CopyOnWriteArrayList<OnResumeListeners.On
     }
 
     public void onResume() {
+        Log.info("onResume"," fire for " + this.size() + " listeners");
         for (OnResumeListener listener : this) {
-            Log.info("Fire OnResume for: ", listener.getClass().getName());
             listener.onResume();
         }
     }

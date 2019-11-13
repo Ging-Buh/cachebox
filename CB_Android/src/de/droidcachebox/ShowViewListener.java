@@ -21,23 +21,23 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import de.droidcachebox.components.CacheNameView;
 import de.droidcachebox.controls.DownSlider;
 import de.droidcachebox.controls.MicrophoneView;
+import de.droidcachebox.database.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Input;
-import de.droidcachebox.views.DescriptionView;
-import de.droidcachebox.views.ViewGL;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.gdx.ViewConst;
 import de.droidcachebox.gdx.ViewID;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.locator.Location;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
+import de.droidcachebox.views.DescriptionView;
+import de.droidcachebox.views.ViewGL;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private ExtAudioRecorder extAudioRecorder;
     private View.OnTouchListener onTouchListener;
 
-    public ShowViewListener(Main main) {
+    ShowViewListener(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
@@ -133,7 +133,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
     // all you have to do on Main Destroy
-    public void onDestroyWithFinishing() {
+    void onDestroyWithFinishing() {
         if (aktView != null) {
             aktView.OnHide();
             aktView.OnFree();
@@ -164,7 +164,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
     }
 
-    public void onDestroyWithoutFinishing() {
+    void onDestroyWithoutFinishing() {
         if (aktView != null)
             aktView.OnHide();
         if (aktTabView != null)

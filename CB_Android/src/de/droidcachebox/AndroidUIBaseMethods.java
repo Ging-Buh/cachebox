@@ -15,34 +15,34 @@ import android.os.Vibrator;
 import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.main.menuBtn3.ShowMap;
-import de.droidcachebox.views.forms.Android_FileExplorer;
 import de.droidcachebox.activities.GcApiLogin;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.Database;
+import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.ex_import.GPXFileImporter;
 import de.droidcachebox.ex_import.Importer;
 import de.droidcachebox.ex_import.ImporterProgress;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.activities.FZKDownload;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.MapViewBase;
+import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.settings.*;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
-import de.droidcachebox.database.SQLiteClass;
+import de.droidcachebox.views.forms.Android_FileExplorer;
 
 import java.util.Date;
 import java.util.Objects;
@@ -67,11 +67,11 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private CancelWaitDialog wd;
     private LocationManager locationManager;
 
-    public AndroidUIBaseMethods(Main main) {
+    AndroidUIBaseMethods(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
-        OnResumeListeners.getInstance().addListener(this::handleExternalRequest);
+        OnResumeListeners.getInstance().addListener(AndroidUIBaseMethods.this::handleExternalRequest);
     }
 
     @Override

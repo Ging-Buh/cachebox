@@ -80,7 +80,6 @@ class MultiThreadQueueProcessor extends Thread {
                     isWorking = false;
                 } else {
                     try {
-                        // Log.info(log, "Wait for Order");
                         canTakeOrder = true;
                         Thread.sleep(100000);
                     } catch (InterruptedException ignored) {

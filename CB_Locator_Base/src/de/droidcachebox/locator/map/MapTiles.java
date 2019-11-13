@@ -18,6 +18,8 @@ package de.droidcachebox.locator.map;
 import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.gdx.GL;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 class MapTiles {
 
     private final MapTileCache tiles;
@@ -25,6 +27,8 @@ class MapTiles {
 
     Layer currentLayer = null;
     Layer currentOverlayLayer = null;
+
+    private AtomicBoolean isReady = new AtomicBoolean(true);
 
     MapTiles(int capacity) {
         tiles = new MapTileCache((short) capacity);
@@ -38,7 +42,7 @@ class MapTiles {
     void loadTile(final Descriptor descriptor) {
         // get in separate thread, cause the awake by interrupt closes the stream of mapsforge
         // java.nio.channels.ClosedByInterruptException
-        // conclusion: todo better
+        isReady.set(false);
         GL.that.postAsync(() -> {
             TileGL tile = currentLayer.getTileGL(descriptor);
             if (tile == null) {
@@ -48,7 +52,16 @@ class MapTiles {
             } else {
                 addTile(descriptor, tile);
             }
+            isReady.set(true);
         });
+
+        while (!isReady.get()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+            }
+        }
+
     }
 
     private void addTile(Descriptor descriptor, TileGL tile) {
@@ -65,18 +78,28 @@ class MapTiles {
     }
 
     void loadOverlayTile(final Descriptor descriptor) {
-        // overlay is never mapsforge
+        // overlay is never mapsforge: so no new thread
         TileGL tile = currentOverlayLayer.getTileGL(descriptor);
         if (tile == null) {
+            isReady.set(false);
             GL.that.postAsync(() -> {
                 // download in separate thread
                 if (currentOverlayLayer.cacheTileToFile(descriptor)) {
                     addOverlayTile(descriptor, currentOverlayLayer.getTileGL(descriptor));
                 }
+                isReady.set(false);
             });
         } else {
             addOverlayTile(descriptor, tile);
         }
+
+        while (!isReady.get()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+            }
+        }
+
     }
 
     private void addOverlayTile(Descriptor descriptor, TileGL tile) {

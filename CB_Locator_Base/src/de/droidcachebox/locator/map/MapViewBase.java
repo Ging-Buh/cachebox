@@ -54,13 +54,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected final int ZoomTime = 1000;
     protected final Vector2 loVector = new Vector2();
     protected final Vector2 ruVector = new Vector2();
-    protected Vector2 midVector2;
     protected final PointL screenCenterT = new PointL(0, 0);
     private final Point lastMovement = new Point(0, 0);
     private final HashMap<Integer, Point> fingerDown = new LinkedHashMap<>();
     public CoordinateGPS center = new CoordinateGPS(48.0, 12.0);
     public float ySpeedVersatz = 200;
     public float pixelsPerMeter = 0;
+    protected Vector2 midVector2;
     protected ZoomButtons zoomBtn;
     protected ZoomScale zoomScale;
     protected MapScale mapScale;
@@ -89,13 +89,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected InputState inputState = InputState.Idle;
     protected boolean isShown, isCreated;
     protected int maxNumTiles;
+    Descriptor lastDescriptorOrdered;
     private AccuracyDrawable accuracyDrawable = null;
     private boolean NightMode = false;
     private MapState mapState = MapState.FREE;
     // protected boolean alignToCompass = false;
     private float mapHeading = 0;
     private KineticPan kineticPan = null;
-    Descriptor lastDescriptorOrdered;
 
     public MapViewBase(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -372,7 +372,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
                         if (!canDraw) {
                             if (!tileOrdered && lastDescriptorOrdered.getHashCode() != desc.getHashCode()) {
-                                Log.info(log, "order: " + desc + " Distance: " + Math.max(Math.abs(i - midX), Math.abs(j - midY)));
+                                // Log.info(log, "order: " + desc + " Distance: " + Math.max(Math.abs(i - midX), Math.abs(j - midY)));
                                 lastDescriptorOrdered = desc;
                                 directLoadTiles(lowerTile, upperTile, aktZoom);
                             }
@@ -1156,7 +1156,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     @Override
     public void invalidateTexture() {
-        Log.info(log, "invalidateTexture");
+        // Log.info(log, "invalidateTexture");
         setNewSettings(INITIAL_THEME);
         mapScale.ZoomChanged();
 
@@ -1239,7 +1239,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             Descriptor midTile = screenToDescriptor(midVector2, aktZoom);
             if (lastDescriptorOrdered.getHashCode() != midTile.getHashCode()) {
                 lastDescriptorOrdered = midTile;
-                Log.info(log, "order: " + midTile);
+                // Log.info(log, debugInfo + " order: " + midTile);
                 directLoadTiles(midTile, midTile, aktZoom);
                 updateCacheList(debugInfo.contains("oom"));
             }

@@ -115,7 +115,7 @@ public class TileGL_Bmp extends TileGL {
             Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
             texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
             pixmap.dispose();
-            Log.info(log, "Final step: " + this);
+            // Log.info(log, "Final step: " + this);
         } catch (Exception ex) {
             Log.err(log, "[TileGL] can't create Pixmap or Texture: ", ex);
         }
@@ -173,8 +173,7 @@ public class TileGL_Bmp extends TileGL {
             try {
                 if (texture != null)
                     texture.dispose();
-            } catch (java.lang.NullPointerException e) {
-                e.printStackTrace();
+            } catch (java.lang.NullPointerException ignored) {
             }
             texture = null;
         } else {
@@ -182,8 +181,7 @@ public class TileGL_Bmp extends TileGL {
                 try {
                     if (texture != null)
                         texture.dispose();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
+                } catch (NullPointerException ignored) {
                 }
                 texture = null;
             });

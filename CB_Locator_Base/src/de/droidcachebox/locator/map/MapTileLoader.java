@@ -127,7 +127,7 @@ public class MapTileLoader {
             return;
         wantedTiles.sort(byDistanceFromCenter);
 
-        int orderCount = 0; // don't order more than want to be cached !!! todo over all orders till now
+        int orderCount = 0; // don't order more than want to be cached !!!
         int firstDistance = 0;
         boolean isSetFirstDistance = false;
         for (Descriptor descriptor : wantedTiles) {
@@ -156,10 +156,10 @@ public class MapTileLoader {
                 if (((int) descriptor.Data) - firstDistance > 1) {
                     // first create the nearest tiles
                     // if a tile is missing on rendering the load will be ordered there (again)
-                    Log.info(log, "ordered: " + orderCount + " Distance: " + ((int) descriptor.Data - 1));
+                    // Log.info(log, "ordered: " + orderCount + " Distance: " + ((int) descriptor.Data - 1));
                     return;
                 }
-                Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " on thread: " + nextQueueProcessor);
+                // Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " on thread: " + nextQueueProcessor);
                 alreadyOrdered.add(descriptor.getHashCode());
                 thread.addOrder(descriptor, false, mapView);
                 thread.interrupt();
@@ -266,18 +266,6 @@ public class MapTileLoader {
     public void setCurrentOverlayLayer(Layer layer) {
         mapTiles.currentOverlayLayer = layer;
         mapTiles.clearOverlayTiles();
-    }
-
-    private static class OrderData {
-        Descriptor descriptor;
-        boolean forOverlay;
-        MapViewBase mapView;
-
-        OrderData(Descriptor actualDescriptor, boolean forOverlay, MapViewBase mapView) {
-            this.descriptor = actualDescriptor;
-            this.forOverlay = forOverlay;
-            this.mapView = mapView;
-        }
     }
 
 }

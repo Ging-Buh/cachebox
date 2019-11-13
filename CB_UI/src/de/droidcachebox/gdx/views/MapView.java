@@ -436,9 +436,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             this.positionChanged();
         });
         // to force generation of tiles in loadTiles();
-        OnResumeListeners.getInstance().addListener(() -> {
-            renderOnce("OnResumeListeners");
-        });
+        OnResumeListeners.getInstance().addListener(this::onResume);
     }
 
     @Override
@@ -1245,6 +1243,10 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
     public void SetAlignToCompass(boolean value) {
         super.SetAlignToCompass(value);
         de.droidcachebox.Config.MapNorthOriented.setValue(!value);
+    }
+
+    private void onResume() {
+        MapView.this.renderOnce("OnResumeListeners");
     }
 
     public enum MapMode {

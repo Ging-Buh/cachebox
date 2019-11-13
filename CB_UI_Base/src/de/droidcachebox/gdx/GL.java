@@ -1069,12 +1069,14 @@ public class GL implements ApplicationListener {
             float last = stateTime - caller.get(name);
             caller.put(name, stateTime);
             if (last < 0.008) {
-                int lastCount = callerCount.get(name) + 1;
-                if (lastCount > 50) {
-                    lastCount = 0;
-                    // Log.err(log, "to many calls from: " + name);
+                if (callerCount != null) {
+                    int lastCount = callerCount.get(name) + 1;
+                    if (lastCount > 50) {
+                        lastCount = 0;
+                        // Log.err(log, "to many calls from: " + name);
+                    }
+                    callerCount.put(name, lastCount);
                 }
-                callerCount.put(name, lastCount);
             }
         } else {
             callerCount.put(name, 0);

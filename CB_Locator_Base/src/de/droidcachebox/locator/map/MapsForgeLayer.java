@@ -176,7 +176,7 @@ public class MapsForgeLayer extends Layer {
     TileGL getTileGL(Descriptor desc) {
         // create bitmap from tile-definition
         try {
-            Log.info(log, "MF step 1: " + desc);
+            // Log.info(log, "MF step 1: " + desc);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
             mDataStoreNumber = (mDataStoreNumber + 1) % PROCESSOR_COUNT;
             RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[mDataStoreNumber], renderThemeFuture, displayModel, textScale, false, false);
@@ -184,9 +184,8 @@ public class MapsForgeLayer extends Layer {
             if (bitmap == null) {
                 Log.err(log, "MF step 2: " + desc);
                 return null;
-            }
-            else {
-                Log.info(log, "MF step 2: " + desc);
+            } else {
+                // Log.info(log, "MF step 2: " + desc);
                 return new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
             }
         } catch (Exception ex) {
