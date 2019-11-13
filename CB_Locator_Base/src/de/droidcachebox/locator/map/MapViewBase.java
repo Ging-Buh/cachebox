@@ -966,6 +966,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 // debugString = "";
                 long faktor = getMapTilePosFactor(aktZoom);
                 // debugString += faktor;
+                LinkedHashMap<Integer, Point> fff = (LinkedHashMap) fingerDown;
+                if (fff.values().size() == 0) return false;
                 Point lastPoint = (Point) fingerDown.values().toArray()[0];
                 // debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
 
