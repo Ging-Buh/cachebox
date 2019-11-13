@@ -16,7 +16,6 @@
 package de.droidcachebox.main;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.core.API_ErrorEventHandler;
@@ -34,8 +33,8 @@ import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.main.*;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
+import de.droidcachebox.gdx.main.*;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -273,6 +272,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn2.addAction(ShowSpoiler.getInstance(), false);
         mainBtn2.addAction(ShowLogs.getInstance(), false, GestureDirection.Down);
         mainBtn2.addAction(ShowNotes.getInstance(), false, GestureDirection.Left);
+        // mainBtn2.addAction(ShowTrackableList.getInstance(),false);
+        // mainBtn2.addAction(ShowSolver1.getInstance(),false);
+        // mainBtn2.addAction(ShowSolver2.getInstance(),false);
         mainBtn2.addAction(StartExternalDescription.getInstance(), false);
 
         mainBtn3.addAction(ShowMap.getInstance(), true, GestureDirection.Up);

@@ -31,7 +31,7 @@ public class H_ListView extends ListViewBase {
     }
 
     @Override
-    protected void RenderThreadSetPos(float value, boolean Kinetic) {
+    protected void renderThreadSetPos(float value, boolean Kinetic) {
         // alle childs verschieben
         synchronized (childs) {
 

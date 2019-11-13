@@ -64,26 +64,24 @@ public class QuickDraft extends AbstractAction {
             case Giga:
             case CITO:
                 cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> {
-                    DraftsView.addNewDraft(LogTypes.attended, "", true);
+                    DraftsView.getInstance().addNewDraft(LogTypes.attended, "", true);
                     finalHandling(true);
                 });
                 break;
             case Camera:
                 cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> {
-                    DraftsView.addNewDraft(LogTypes.webcam_photo_taken, "", true);
+                    DraftsView.getInstance().addNewDraft(LogTypes.webcam_photo_taken, "", true);
                     finalHandling(true);
                 });
-                cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> {
-                    finalHandling(false);
-                });
+                cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> finalHandling(false));
                 break;
             default:
                 cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> {
-                    DraftsView.addNewDraft(LogTypes.found, "", true);
+                    DraftsView.getInstance().addNewDraft(LogTypes.found, "", true);
                     finalHandling(true);
                 });
                 cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> {
-                    DraftsView.addNewDraft(LogTypes.didnt_find, "", true);
+                    DraftsView.getInstance().addNewDraft(LogTypes.didnt_find, "", true);
                     finalHandling(false);
                 });
                 break;

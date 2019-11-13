@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.CB_List;
@@ -266,7 +265,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         GL.that.renderOnce();
     }
 
-    protected abstract void RenderThreadSetPos(float value, boolean Kinetic);
+    protected abstract void renderThreadSetPos(float value, boolean Kinetic);
 
     /**
      * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefügt wird.
@@ -321,7 +320,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             try {
                 super.render(batch);
                 if (mMustSetPos) {
-                    RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
+                    renderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
                 } else {
                     // Run WorkPool
                     isWorkOnRunOnGL.set(true);
@@ -353,8 +352,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
+                // Log.err(log,"");
             }
         }
 

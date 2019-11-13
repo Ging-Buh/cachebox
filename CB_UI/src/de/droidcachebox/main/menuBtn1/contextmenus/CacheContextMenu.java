@@ -20,8 +20,11 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
+import de.droidcachebox.main.menuBtn1.ShowTrackableList;
 import de.droidcachebox.main.menuBtn2.*;
+import de.droidcachebox.main.menuBtn4.ShowDrafts;
 import de.droidcachebox.main.menuBtn4.ShowSolver1;
+import de.droidcachebox.main.menuBtn4.ShowSolver2;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
@@ -45,17 +48,10 @@ public class CacheContextMenu {
         if (selectedCacheIsSet) {
             selectedCacheIsGC = GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
         }
-        if (forCacheList) {
-            // todo description
-            cacheContextMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + CacheTypes.Trailhead.name()), () -> ShowWaypoint.getInstance().Execute()).setEnabled(selectedCacheIsGC);
-            cacheContextMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> HintDialog.getInstance().showHint()).setEnabled(selectedCacheIsGC && GlobalCore.getSelectedCache().hasHint());
-            cacheContextMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().Execute()).setEnabled(GlobalCore.selectedCachehasSpoiler());
-            cacheContextMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().Execute()).setEnabled(selectedCacheIsGC);
-            // todo notes
-            // todo TBList
-            // todo external description
-        }
         cacheContextMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), CacheContextMenu::reloadSelectedCache).setEnabled(selectedCacheIsGC);
+        if (forCacheList) {
+            cacheContextMenu.addMoreMenu(ShowDrafts.getInstance().getContextMenu(),Translation.get("DraftsContextMenuTitle"),Translation.get("DraftsContextMenuTitle"));
+        }
         MenuItem mi;
         mi = cacheContextMenu.addMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), () -> {
             GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
@@ -92,13 +88,31 @@ public class CacheContextMenu {
                 });
             }
         }).setEnabled(selectedCacheIsGC);
-        cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().Execute()).setEnabled(selectedCacheIsGC);
-        // todo solver2
         cacheContextMenu.addMenuItem("MI_EDIT_CACHE", null, () -> new EditCache().update(GlobalCore.getSelectedCache())).setEnabled(selectedCacheIsSet);
         cacheContextMenu.addMenuItem("MI_DELETE_CACHE", null, () -> {
             deleteSelectedCache();
             GlobalCore.setSelectedWaypoint(null, null, true);
         }).setEnabled(selectedCacheIsSet);
+        if (forCacheList) {
+            cacheContextMenu.addDivider();
+            cacheContextMenu.addMenuItem("Description", Sprites.getSprite(IconName.docIcon.name()), () -> ShowDescription.getInstance().Execute());
+            cacheContextMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + CacheTypes.Trailhead.name()), () -> ShowWaypoint.getInstance().Execute());
+            cacheContextMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> HintDialog.getInstance().showHint()).setEnabled(GlobalCore.getSelectedCache().hasHint());
+            cacheContextMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().Execute());
+            cacheContextMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().Execute());
+            cacheContextMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.getInstance().Execute());
+            cacheContextMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().Execute());
+            cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().Execute());
+            cacheContextMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().Execute());
+            cacheContextMenu.addMenuItem("descExt", Sprites.getSprite(IconName.hintIcon.name()), () -> StartExternalDescription.getInstance().Execute());
+        }
+        else {
+            cacheContextMenu.addDivider();
+            cacheContextMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().Execute());
+            cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().Execute()).setEnabled(selectedCacheIsGC);
+            cacheContextMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().Execute());
+        }
+
         return cacheContextMenu;
     }
 
