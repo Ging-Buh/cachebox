@@ -131,12 +131,8 @@ public class GL implements ApplicationListener {
         currentActivityIsShown = false;
         MarkerIsShown = false;
         aktPopUp = null;
-
         that = this;
-
         allIsInitialized = false;
-
-        Log.debug("GL", "Constructor done");
     }
 
     @Override

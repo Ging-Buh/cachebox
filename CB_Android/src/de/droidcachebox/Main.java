@@ -127,9 +127,9 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     gravity = event.values;
                 long now = System.currentTimeMillis();
                 long lastUpdateTime = 0;
-                long updateTime = 15;
+                long updateInterval = 15;
                 // if (lastUpdateTime == 0 ||
-                if (lastUpdateTime + updateTime < now) {
+                if (lastUpdateTime + updateInterval < now) {
                     if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
                         float[] geomagnetic = event.values;
                         if (gravity != null && geomagnetic != null) {
@@ -324,7 +324,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         }
 
         if (input == null) {
-            Log.info(sKlasse, "gdx input not yet / no longer initialized");
+            Log.err(sKlasse, "gdx input not yet / no longer initialized");
                 /*
                 // should be != null : initialized by gdxview = initializeForView(GL.that, gdxConfig); in initializeGDXAndroidApplication();
                 graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
@@ -337,9 +337,13 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, CBForeground.class));
-        } else {
-            // startService(new Intent(this, CBForeground.class)); // not necessary
         }
+        /*
+        // not necessary
+        else {
+            // startService(new Intent(this, CBForeground.class));
+        }
+         */
 
         isCreated = true;
         Log.info(sKlasse, "onCreate <=");
@@ -411,7 +415,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         OnResumeListeners.getInstance().onResume();
 
         if (input == null) {
-            Log.info(sKlasse, "(input == null) : init input needed for super.onResume()");
+            Log.err(sKlasse, "(input == null) : init input needed for super.onResume()");
             /*
             graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -451,7 +455,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         }
 
         if (input == null) {
-            Log.info(sKlasse, "(input == null) : init input needed for super.onPause()");
+            Log.err(sKlasse, "(input == null) : init input needed for super.onPause()");
             /*
             graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);

@@ -8,7 +8,7 @@ import de.droidcachebox.utils.MoveableList;
 public class CB_View_Base extends GL_View_Base {
 
     public static final int FIXED = -1;
-    public static final boolean TOPDOWN = true;
+    protected static final boolean TOPDOWN = true;
     public static final boolean BOTTOMUP = false;
     protected boolean isInitial = false;
     // row handling by arbor95: makes live much easier
@@ -52,7 +52,7 @@ public class CB_View_Base extends GL_View_Base {
         super(size, Name);
     }
 
-    public static void setToNull(CB_View_Base view) {
+    private static void setToNull(CB_View_Base view) {
         if (view.childs.size() != 0) {
             synchronized (view.childs) {
                 view.childs.clear();
@@ -95,25 +95,16 @@ public class CB_View_Base extends GL_View_Base {
         return false;
     }
 
-    /**
-     * onTouchDown
-     */
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
         return false;
     }
 
-    /**
-     * onTouchDragged
-     */
     @Override
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
         return false;
     }
 
-    /**
-     * onTouchUp
-     */
     @Override
     public boolean onTouchUp(int x, int y, int pointer, int button) {
         return false;
@@ -322,7 +313,7 @@ public class CB_View_Base extends GL_View_Base {
      **/
     public void initRow(boolean direction, float y) {
         if (row == null) {
-            row = new MoveableList<GL_View_Base>();
+            row = new MoveableList<>();
         } else {
             row.clear();
         }
@@ -410,7 +401,7 @@ public class CB_View_Base extends GL_View_Base {
     /**
      * All items within the last row processed in the layout!
      */
-    public void FinaliseRow() {
+    public void finaliseRow() {
         addMe(null, true);
     }
 
@@ -482,10 +473,5 @@ public class CB_View_Base extends GL_View_Base {
             }
             row.clear();
         }
-    }
-
-    public void measureRec() {
-        // Some Controls can change their size
-
     }
 }

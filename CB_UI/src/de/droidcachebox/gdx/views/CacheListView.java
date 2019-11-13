@@ -36,12 +36,12 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.Scrollbar;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
+import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
@@ -52,9 +52,9 @@ import java.util.TimerTask;
 public class CacheListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, SelectedCacheChangedEventListener, PositionChangedEvent {
     private static final String log = "CacheListView";
     private static CacheListView that;
-    private V_ListView listView;
+    private V_ListView geoCacheListView;
     private Scrollbar scrollBar;
-    private CustomAdapter lvAdapter;
+    private GeoCacheListViewAdapter geoCacheListViewAdapter;
     private BitmapFontCache emptyMsg;
     private Boolean isShown = false;
     private float searchPlaceholder = 0;
@@ -64,13 +64,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         registerSkinChangedEvent();
         CacheListChangedListeners.getInstance().addListener(this);
         SelectedCacheChangedEventListeners.getInstance().add(this);
-        listView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
-        listView.setZeroPos();
+        geoCacheListView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
+        geoCacheListView.setZeroPos();
 
-        listView.addListPosChangedEventHandler(() -> scrollBar.ScrollPositionChanged());
-        scrollBar = new Scrollbar(listView);
+        geoCacheListView.addListPosChangedEventHandler(() -> scrollBar.ScrollPositionChanged());
+        scrollBar = new Scrollbar(geoCacheListView);
 
-        this.addChild(listView);
+        this.addChild(geoCacheListView);
         this.addChild(scrollBar);
     }
 
@@ -83,7 +83,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     public void initialize() {
         // Log.debug(log, "CacheListView => Initial()");
         // this.setListPos(0, false);
-        listView.chkSlideBack();
+        geoCacheListView.chkSlideBack();
         GL.that.renderOnce();
     }
 
@@ -91,7 +91,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     public void render(Batch batch) {
         // if Track List empty, draw empty Msg
         try {
-            if (lvAdapter == null || lvAdapter.getCount() == 0) {
+            if (geoCacheListViewAdapter == null || geoCacheListViewAdapter.getCount() == 0) {
                 if (emptyMsg == null) {
                     emptyMsg = new BitmapFontCache(Fonts.getBig());
                     GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
@@ -133,22 +133,23 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
 
         synchronized (Database.Data.cacheList) {
             try {
-                lvAdapter = new CustomAdapter(Database.Data.cacheList);
-                listView.setBaseAdapter(lvAdapter);
+                geoCacheListViewAdapter = new GeoCacheListViewAdapter(Database.Data.cacheList);
+                geoCacheListView.setBaseAdapter(geoCacheListViewAdapter);
 
                 int itemCount = Database.Data.cacheList.size();
-                int itemSpace = listView.getMaxItemCount();
+                int itemSpace = geoCacheListView.getMaxItemCount();
 
                 if (itemSpace >= itemCount) {
-                    listView.setUnDraggable();
+                    geoCacheListView.setUnDraggable();
                 } else {
-                    listView.setDraggable();
+                    geoCacheListView.setDraggable();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                Log.err(log, "create ");
             }
         }
-        TimerTask task = new TimerTask() {
+
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 // aktuellen Cache in der List anzeigen
@@ -156,15 +157,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                     setSelectedCacheVisible();
 
                 } else
-                    listView.setSelection(0);
+                    geoCacheListView.setSelection(0);
 
                 resetInitial();
-                listView.chkSlideBack();
+                geoCacheListView.chkSlideBack();
             }
-        };
-
-        Timer timer = new Timer();
-        timer.schedule(task, 150);
+        }, 150);
 
         GL.that.renderOnce();
     }
@@ -173,18 +171,18 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        listView.RunIfListInitial(() -> {
+        geoCacheListView.RunIfListInitial(() -> {
             int id = 0;
-            Point firstAndLast = listView.getFirstAndLastVisibleIndex();
+            Point firstAndLast = geoCacheListView.getFirstAndLastVisibleIndex();
 
             synchronized (Database.Data.cacheList) {
                 for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                     Cache ca = Database.Data.cacheList.get(i);
                     if (ca.Id == GlobalCore.getSelectedCache().Id) {
-                        listView.setSelection(id);
-                        if (listView.isDraggable()) {
+                        geoCacheListView.setSelection(id);
+                        if (geoCacheListView.isDraggable()) {
                             if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
-                                listView.scrollToItem(id);
+                                geoCacheListView.scrollToItem(id);
                                 Log.debug(log, "Scroll to:" + id);
                             }
                         }
@@ -199,8 +197,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                 @Override
                 public void run() {
                     GL.that.RunOnGL(() -> {
-                        if (listView != null)
-                            listView.chkSlideBack();
+                        if (geoCacheListView != null)
+                            geoCacheListView.chkSlideBack();
                         GL.that.renderOnce();
                     });
                 }
@@ -224,30 +222,30 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
             SearchDialog.that.close();
         }
 
-        lvAdapter = null;
-        listView.setBaseAdapter(lvAdapter);
+        geoCacheListViewAdapter = null;
+        geoCacheListView.setBaseAdapter(geoCacheListViewAdapter);
     }
 
     @Override
     public void cacheListChanged() {
         Log.debug(log, "CacheListChangedEvent on Cache List");
         try {
-            listView.setBaseAdapter(null);
+            geoCacheListView.setBaseAdapter(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
         synchronized (Database.Data.cacheList) {
-            lvAdapter = new CustomAdapter(Database.Data.cacheList);
+            geoCacheListViewAdapter = new GeoCacheListViewAdapter(Database.Data.cacheList);
 
-            listView.setBaseAdapter(lvAdapter);
+            geoCacheListView.setBaseAdapter(geoCacheListViewAdapter);
 
             int itemCount = Database.Data.cacheList.size();
-            int itemSpace = listView.getMaxItemCount();
+            int itemSpace = geoCacheListView.getMaxItemCount();
 
             if (itemSpace >= itemCount) {
-                listView.setUnDraggable();
+                geoCacheListView.setUnDraggable();
             } else {
-                listView.setDraggable();
+                geoCacheListView.setDraggable();
             }
         }
 
@@ -255,7 +253,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
             boolean diverend = true;
 
             try {
-                diverend = GlobalCore.getSelectedCache().Id != ((CacheListViewItem) listView.getSelectedItem()).getCache().Id;
+                diverend = GlobalCore.getSelectedCache().Id != ((CacheListViewItem) geoCacheListView.getSelectedItem()).getCache().Id;
             } catch (Exception ignored) {
             }
 
@@ -264,25 +262,25 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
             }
         }
 
-        listView.chkSlideBack();
+        geoCacheListView.chkSlideBack();
     }
 
     @Override
     public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
-            CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
+            CacheListViewItem selItem = (CacheListViewItem) geoCacheListView.getSelectedItem();
             if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id) {
                 // TODO Run if ListView Initial and after showing
-                listView.RunIfListInitial(this::setSelectedCacheVisible);
+                geoCacheListView.RunIfListInitial(this::setSelectedCacheVisible);
             }
         }
     }
 
     @Override
     protected void skinIsChanged() {
-        if (listView != null)
-            listView.reloadItems();
+        if (geoCacheListView != null)
+            geoCacheListView.reloadItems();
         setBackground(Sprites.ListBack);
         CacheListViewItem.ResetBackground();
     }
@@ -305,9 +303,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     @Override
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
-        listView.setSize(rec);
-        listView.setHeight(rec.getHeight() + searchPlaceholder);
-        listView.setZeroPos();
+        geoCacheListView.setSize(rec);
+        geoCacheListView.setHeight(rec.getHeight() + searchPlaceholder);
+        geoCacheListView.setZeroPos();
     }
 
     public void setTopPlaceHolder(float PlaceHoldHeight) {
@@ -333,15 +331,15 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     public void dispose() {
         that = null;
 
-        if (listView != null)
-            listView.dispose();
-        listView = null;
+        if (geoCacheListView != null)
+            geoCacheListView.dispose();
+        geoCacheListView = null;
         if (scrollBar != null)
             scrollBar.dispose();
         scrollBar = null;
-        if (lvAdapter != null)
-            lvAdapter.dispose();
-        lvAdapter = null;
+        if (geoCacheListViewAdapter != null)
+            geoCacheListViewAdapter.dispose();
+        geoCacheListViewAdapter = null;
         if (emptyMsg != null)
             emptyMsg.clear();
         emptyMsg = null;
@@ -353,15 +351,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         super.dispose();
     }
 
-    public class CustomAdapter implements Adapter {
+    public class GeoCacheListViewAdapter implements Adapter {
         private CacheList cacheList;
-
         private int Count;
 
-        public CustomAdapter(CacheList cacheList) {
+        GeoCacheListViewAdapter(final CacheList cacheList) {
             synchronized (cacheList) {
                 this.cacheList = cacheList;
-
                 Count = cacheList.size();
             }
         }
@@ -375,51 +371,51 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         }
 
         @Override
-        public ListViewItemBase getView(int position) {
+        public ListViewItemBase getView(int index) {
             synchronized (cacheList) {
-                if (cacheList == null)
-                    return null;
-
-                if (cacheList.size() <= position)
-                    return null;
-
-                Cache cache = cacheList.get(position);
-
-                CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache);
+                if (cacheList == null) return null;
+                if (cacheList.size() <= index) return null;
+                CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, cacheList.get(index));
                 v.setClickable(true);
 
                 v.addClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
-                    Cache tmp;
+                    Cache geoCache;
                     synchronized (Database.Data.cacheList) {
-                        tmp = Database.Data.cacheList.get(selectionIndex);
+                        geoCache = Database.Data.cacheList.get(selectionIndex);
                     }
-                    if (tmp != null) {
-                        // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-                        Waypoint waypoint = tmp.getCorrectedFinal();
+                    if (geoCache != null) {
+                        Waypoint waypoint = geoCache.getCorrectedFinal();
                         if (waypoint == null)
-                            waypoint = tmp.getStartWaypoint();
-                        GlobalCore.setSelectedWaypoint(tmp, waypoint);
+                            waypoint = geoCache.getStartWaypoint();
+                        // shutdown AutoResort when selecting a cache by hand
+                        GlobalCore.setAutoResort(false);
+                        GlobalCore.setSelectedWaypoint(geoCache, waypoint);
                     }
-                    listView.setSelection(selectionIndex);
+
+                    geoCacheListView.setSelection(selectionIndex);
                     setSelectedCacheVisible();
+                    invalidate();
+                    CacheContextMenu.getCacheContextMenu(true).show();
                     return true;
                 });
 
-                v.setOnLongClickListener((v12, x, y, pointer, button) -> {
-                    int selectionIndex = ((ListViewItemBase) v12).getIndex();
-
-                    Cache tmp;
+                v.setOnLongClickListener((v1, x, y, pointer, button) -> {
+                    int selectionIndex = ((ListViewItemBase) v1).getIndex();
+                    Cache geoCache;
                     synchronized (Database.Data.cacheList) {
-                        tmp = Database.Data.cacheList.get(selectionIndex);
+                        geoCache = Database.Data.cacheList.get(selectionIndex);
                     }
-                    Waypoint finalWp = tmp.getCorrectedFinal();
-                    if (finalWp == null)
-                        finalWp = tmp.getStartWaypoint();
-                    // shutdown AutoResort when selecting a cache by hand
-                    GlobalCore.setAutoResort(false);
-                    GlobalCore.setSelectedWaypoint(tmp, finalWp);
-
+                    if (geoCache != null) {
+                        Waypoint waypoint = geoCache.getCorrectedFinal();
+                        if (waypoint == null)
+                            waypoint = geoCache.getStartWaypoint();
+                        // shutdown AutoResort when selecting a cache by hand
+                        GlobalCore.setAutoResort(false);
+                        GlobalCore.setSelectedWaypoint(geoCache, waypoint);
+                    }
+                    geoCacheListView.setSelection(selectionIndex);
+                    setSelectedCacheVisible();
                     invalidate();
                     CacheContextMenu.getCacheContextMenu(true).show();
                     return true;

@@ -8,16 +8,9 @@ public abstract class ListViewItemBase extends CB_View_Base implements Comparabl
     public boolean isSelected = false;
     protected int mIndex;
 
-    /**
-     * Constructor
-     *
-     * @param rec
-     * @param Index Index in der List
-     * @param Name
-     */
-    public ListViewItemBase(CB_RectF rec, int Index, String Name) {
-        super(rec, Name);
-        mIndex = Index;
+    public ListViewItemBase(CB_RectF rec, int index, String name) {
+        super(rec, name);
+        mIndex = index;
         this.setClickable(true);
     }
 
@@ -31,13 +24,7 @@ public abstract class ListViewItemBase extends CB_View_Base implements Comparabl
 
     @Override
     public int compareTo(ListViewItemBase another) {
-        if (mIndex == another.mIndex)
-            return 0;
-
-        if (mIndex < another.mIndex)
-            return -1;
-
-        return 1;
+        return Integer.compare(mIndex, another.mIndex);
     }
 
     @Override
@@ -49,10 +36,8 @@ public abstract class ListViewItemBase extends CB_View_Base implements Comparabl
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
-        if (obj instanceof ListViewItemBase) {
+        if (obj instanceof ListViewItemBase)
             return mIndex == ((ListViewItemBase) obj).mIndex;
-        }
-
         return false;
     }
 

@@ -47,13 +47,13 @@ public class CB_Label extends CB_View_Base {
     private static final float DEFAULTSCROLLSTEP = 0.7f;
     private static final int SCROLL_PAUSE = 60;
     private static float scrollstep = 0;
-    private final AtomicBoolean checkRuns = new AtomicBoolean(false);
-    protected BitmapFontCache mTextObject;
-    protected String mText;
-    protected BitmapFont mFont = Fonts.getNormal();
-    protected Color mColor = COLOR.getFontColor();
-    protected HAlignment mHAlignment = HAlignment.LEFT;
-    protected VAlignment mVAlignment = VAlignment.CENTER;
+    private final AtomicBoolean isRenderingOnce = new AtomicBoolean(false);
+    BitmapFontCache mTextObject;
+    String mText;
+    BitmapFont mFont = Fonts.getNormal();
+    Color mColor = COLOR.getFontColor();
+    HAlignment mHAlignment = HAlignment.LEFT;
+    VAlignment mVAlignment = VAlignment.CENTER;
     private WrapType mWrapType = WrapType.SINGLELINE;
     private int ErrorCount = 0;
     private int scrollPos = 0;
@@ -122,32 +122,17 @@ public class CB_Label extends CB_View_Base {
         setText();
     }
 
-    public static int GDX_HAlignment(HAlignment ali) {
-        switch (ali) {
+    private static int GDX_HAlignment(HAlignment alignment) {
+        switch (alignment) {
             case CENTER:
-                return com.badlogic.gdx.utils.Align.center;
-            case LEFT:
-                return com.badlogic.gdx.utils.Align.left;
-            case RIGHT:
-                return com.badlogic.gdx.utils.Align.right;
             case SCROLL_CENTER:
                 return com.badlogic.gdx.utils.Align.center;
-            case SCROLL_LEFT:
-                return com.badlogic.gdx.utils.Align.left;
+            case RIGHT:
             case SCROLL_RIGHT:
                 return com.badlogic.gdx.utils.Align.right;
             default:
                 return com.badlogic.gdx.utils.Align.left;
-
         }
-    }
-
-    static int indexOf(CharSequence text, char ch, int start) {
-        final int n = text.length();
-        for (; start < n; start++)
-            if (text.charAt(start) == ch)
-                return start;
-        return n;
     }
 
     @Override
@@ -173,7 +158,8 @@ public class CB_Label extends CB_View_Base {
                     if (underline)
                         addLine(lineList, 0);
                     if (strikeout)
-                        addLine(lineList, mTextObject.getFont().getDescent());
+                        if (mTextObject != null)
+                            addLine(lineList, mTextObject.getFont().getDescent());
                     GL_Paint PAINT = new GL_Paint();
                     PAINT.setColor(mColor);
                     underlineStrikeoutDrawable = new PolygonDrawable(lineList.getVertices(), lineList.getTriangles(), PAINT, this.getWidth(), this.getHeight());
@@ -227,40 +213,36 @@ public class CB_Label extends CB_View_Base {
     }
 
     private void checkRenderMustStart() {
-        if (checkRuns.get())
+        if (isRenderingOnce.get())
             return;
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                checkRuns.set(true);
-                while (lastRender + 0.01 < GL.that.getStateTime()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    GL.that.renderOnce();
-                    checkRuns.set(false);
+        new Thread(() -> {
+            isRenderingOnce.set(true);
+            while (lastRender + 0.01 < GL.that.getStateTime()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ignored) {
                 }
+                GL.that.renderOnce();
+                isRenderingOnce.set(false);
             }
-        });
-        thread.start();
+        }).start();
     }
 
-    private GeometryList addLine(GeometryList lineList, float yOffset) {
+    private void addLine(GeometryList lineList, float yOffset) {
         float ascent = mTextObject.getFont().getAscent();
         float underlineHight = ascent * 0.333f;
         float[] vertices = mTextObject.getVertices();
 
         int start2 = 0;
         float lxStart = 0;
-        float lxEnd = 0;
+        float lxEnd;
         float ly = 0;
 
-        for (int i = 0, n = vertices.length - 21; i < n; i += 20) {
+        int n = vertices.length - 21;
+        for (int i = 0; i < n; i += 20) {
 
             if (start2 == i) {
-                lxStart = vertices[i + 0];
+                lxStart = vertices[i];
                 ly = vertices[i + 1] - underlineHight;
             }
 
@@ -296,7 +278,6 @@ public class CB_Label extends CB_View_Base {
             }
 
         }
-        return lineList;
     }
 
     private void setText() {
@@ -370,21 +351,22 @@ public class CB_Label extends CB_View_Base {
             if (mHAlignment == HAlignment.CENTER || mHAlignment == HAlignment.SCROLL_CENTER) {
                 if (mWrapType == WrapType.SINGLELINE) {
                     xPosition = (innerWidth - bounds.width) / 2f;
-                } else {
                 }
             } else if (mHAlignment == HAlignment.RIGHT || mHAlignment == HAlignment.SCROLL_RIGHT) {
                 if (mWrapType == WrapType.SINGLELINE) {
                     xPosition = innerWidth - bounds.width;
-                } else {
                 }
             }
         } else {
             if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
                 xPosition += scrollPos;
-            } else {
+            }
+            /*
+            else {
                 // no horizontal scrolling and Text out of limits
                 // Log.debug(log, "Label Text is too long: " + mText);
             }
+             */
         }
         // bottom : text starts at yPosition, Text wird von hier aus unterhalb geschrieben (Descent ist negativ, daher -)
         float yPosition = 0;
@@ -408,21 +390,20 @@ public class CB_Label extends CB_View_Base {
             // Try again
             ErrorCount++;
             if (ErrorCount < 5)
-                GL.that.RunOnGL(() -> setTextPosition());
+                GL.that.RunOnGL(this::setTextPosition);
         }
     }
 
     /**
      * setting the Text. new line is GlobalCore.br
      **/
-    public CB_Label setMultiLineText(String text) {
+    public void setMultiLineText(String text) {
         if (text == null)
             text = "";
         mText = text.replace("\r\n", "\n");
         mVAlignment = VAlignment.TOP;
         this.mWrapType = WrapType.MULTILINE;
         setText();
-        return this;
     }
 
     /**
@@ -487,14 +468,13 @@ public class CB_Label extends CB_View_Base {
         return this;
     }
 
-    public CB_Label setTextColor(Color color) {
+    public void setTextColor(Color color) {
         if (color != null) {
             if (!mColor.equals(color)) {
                 mColor = color;
                 setText();
             }
         }
-        return this;
     }
 
     public String getText() {
@@ -520,9 +500,11 @@ public class CB_Label extends CB_View_Base {
         return bounds.runs.size;
     }
 
+    /*
     public float getLineHeight() {
         return mFont.getLineHeight();
     }
+     */
 
     public BitmapFont getFont() {
         return mFont;
@@ -594,21 +576,11 @@ public class CB_Label extends CB_View_Base {
         setText();
     }
 
-    @Override
-    public void measureRec() {
-        // Some Controls can change there size
-
-        if (bounds != null) {
-            this.setSize(bounds.width + leftBorder + rightBorder + (mFont.getCapHeight() - mFont.getDescent()), bounds.height + bottomBorder + topBorder + (mFont.getCapHeight() - mFont.getDescent()));
-        }
-
-    }
-
-    static public enum VAlignment {
+    public enum VAlignment {
         TOP, CENTER, BOTTOM
     }
 
-    static public enum HAlignment {
+    public enum HAlignment {
         LEFT, CENTER, RIGHT, SCROLL_LEFT, SCROLL_CENTER, SCROLL_RIGHT
     }
 
