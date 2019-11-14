@@ -1,6 +1,4 @@
-package de.droidcachebox.ex_import;
-
-import de.droidcachebox.rpc.RpcMessage;
+package de.droidcachebox.rpc;
 
 public class RpcMessage_GetExportList extends RpcMessage {
 

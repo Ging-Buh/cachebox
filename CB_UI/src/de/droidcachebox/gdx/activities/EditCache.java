@@ -16,9 +16,9 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CoordinateButton.ICoordinateChangedListener;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldStyle;
 import de.droidcachebox.gdx.controls.Spinner.ISelectionChangedListener;
-import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 
 import java.util.Date;

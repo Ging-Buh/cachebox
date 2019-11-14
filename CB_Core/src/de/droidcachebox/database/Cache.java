@@ -414,7 +414,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         return Distance(type, useFinal, Locator.getInstance().getMyPosition());
     }
 
-    float Distance(CalculationType type, boolean useFinal, Coordinate fromPos) {
+    public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos) {
         if (isDisposed)
             return 0;
         Waypoint waypoint = null;

@@ -160,23 +160,23 @@ public class CacheDetail implements Serializable {
         // > 0;
     }
 
-    void addAttributeNegative(Attributes attribute) {
+    public void addAttributeNegative(Attributes attribute) {
         if (attributesNegative == null)
             attributesNegative = new DLong(0, 0);
         attributesNegative.BitOr(Attributes.GetAttributeDlong(attribute));
     }
 
-    void addAttributePositive(Attributes attribute) {
+    public void addAttributePositive(Attributes attribute) {
         if (attributesPositive == null)
             attributesPositive = new DLong(0, 0);
         attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
     }
 
-    void setAttributesPositive(DLong i) {
+    public void setAttributesPositive(DLong i) {
         attributesPositive = i;
     }
 
-    void setAttributesNegative(DLong i) {
+    public void setAttributesNegative(DLong i) {
         attributesNegative = i;
     }
 
@@ -235,7 +235,7 @@ public class CacheDetail implements Serializable {
      *
      * @return ArrayList of String
      */
-    public CB_List<ImageEntry> getSpoilerRessources(Cache cache) {
+    public CB_List<ImageEntry> getSpoilerRessources(de.droidcachebox.database.Cache cache) {
         if (spoilerRessources == null) {
             loadSpoilerRessources(cache);
         }
@@ -257,7 +257,7 @@ public class CacheDetail implements Serializable {
      *
      * @return Boolean
      */
-    public boolean hasSpoiler(Cache cache) {
+    public boolean hasSpoiler(de.droidcachebox.database.Cache cache) {
         try {
             if (spoilerRessources == null)
                 loadSpoilerRessources(cache);
@@ -267,11 +267,11 @@ public class CacheDetail implements Serializable {
         }
     }
 
-    public void SpoilerForceReEvaluate(Cache cache) {
+    public void SpoilerForceReEvaluate(de.droidcachebox.database.Cache cache) {
         spoilerRessources = null;
     }
 
-    public void loadSpoilerRessources(Cache cache) {
+    public void loadSpoilerRessources(de.droidcachebox.database.Cache cache) {
 
         String gcCode = cache.getGcCode();
         if (gcCode.length() < 4)

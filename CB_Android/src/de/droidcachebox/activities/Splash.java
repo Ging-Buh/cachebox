@@ -88,6 +88,7 @@ public class Splash extends Activity {
     private Bundle bundeledData;
     private boolean askForWorkpath;
     private FrameLayout frame;
+    private Activity main;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,35 +120,30 @@ public class Splash extends Activity {
     protected void onStart() {
         super.onStart();
         Log.info(log, "onStart");
-        if (Main.isCreated) {
-            startMain();
-        } else {
+
+        main = Main.getInstance();
+
+        if (main == null) {
             startInitialization();
             if (askForWorkpath) {
                 askForWorkPath(); // does finishInitializationAndStartMain()
             } else {
                 finishInitializationAndStartMain();
             }
+        } else {
+            startMain();
         }
     }
 
     private void startMain() {
         GlobalCore.RunFromSplash = true;
         Intent mainIntent;
-        if (Main.isCreated) {
-            Log.info(log, "Connect to Main to onNewIntent(Intent)");
-            Activity main = Main.getInstance();
-            if (main == null) {
-                // Gdx.app is null
-                // todo handle another way
-                mainIntent = new Intent().setClass(this, Main.class);
-            }
-            else {
-                mainIntent = main.getIntent();
-            }
-        } else {
+        if (main == null) {
             Log.info(log, "Start Main");
             mainIntent = new Intent().setClass(this, Main.class);
+        } else {
+            Log.info(log, "Connect to Main to onNewIntent(Intent)");
+            mainIntent = main.getIntent();
         }
         int width = frame.getMeasuredWidth();
         int height = frame.getMeasuredHeight();

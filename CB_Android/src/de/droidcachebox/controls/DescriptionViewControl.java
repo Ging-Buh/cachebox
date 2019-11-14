@@ -17,7 +17,6 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.ViewOptionsMenu;
-import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.database.*;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.GL;
@@ -26,6 +25,7 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
+import de.droidcachebox.views.forms.MessageBox;
 
 import java.io.File;
 import java.util.*;

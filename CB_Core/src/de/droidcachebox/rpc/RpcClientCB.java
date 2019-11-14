@@ -1,7 +1,6 @@
-package de.droidcachebox.ex_import;
+package de.droidcachebox.rpc;
 
-import de.droidcachebox.rpc.RpcAnswer;
-import de.droidcachebox.rpc.Rpc_Client;
+import de.droidcachebox.ex_import.ExportList;
 
 public class RpcClientCB extends Rpc_Client {
     public RpcAnswer getExportList() {

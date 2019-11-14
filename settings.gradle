@@ -1,2 +1,3 @@
-include ':CB_Utils', ':mapsforge', ':CB_UI_Base', ':CB_Locator_Base', ':mapsforge_awt', ':GPS_Simulator', ':SkinPacker', ':CB_Core'
-include 'CB_Desktop', 'CB_Android', 'CB_UI'
+include ':CB_Utils', ':mapsforge', ':CB_UI_Base', ':CB_Locator_Base', ':mapsforge_awt', ':CB_Core', 'CB_UI'
+include 'CB_Desktop', 'CB_Android', ':GPS_Simulator', ':SkinPacker'
+

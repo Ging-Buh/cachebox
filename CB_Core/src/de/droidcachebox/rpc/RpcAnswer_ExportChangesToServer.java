@@ -1,6 +1,6 @@
-package de.droidcachebox.ex_import;
+package de.droidcachebox.rpc;
 
-import de.droidcachebox.rpc.RpcAnswer;
+import de.droidcachebox.ex_import.ExportList;
 
 public class RpcAnswer_ExportChangesToServer extends RpcAnswer {
     private static final long serialVersionUID = -7370827484237509850L;

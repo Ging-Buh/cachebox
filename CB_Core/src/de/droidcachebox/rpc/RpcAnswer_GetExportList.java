@@ -1,6 +1,4 @@
-package de.droidcachebox.ex_import;
-
-import de.droidcachebox.rpc.RpcAnswer;
+package de.droidcachebox.rpc;
 
 import java.io.Serializable;
 import java.util.ArrayList;

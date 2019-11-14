@@ -28,7 +28,7 @@ public class Category extends ArrayList<de.droidcachebox.database.GpxFilename> i
      * @param filename
      * @return
      */
-    public GpxFilename addGpxFilename(String filename) {
+    public de.droidcachebox.database.GpxFilename addGpxFilename(String filename) {
         filename = FileFactory.createFile(filename).getName();
 
         Parameters args = new Parameters();
