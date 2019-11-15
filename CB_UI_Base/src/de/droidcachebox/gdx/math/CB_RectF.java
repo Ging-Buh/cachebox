@@ -63,6 +63,14 @@ public class CB_RectF {
         calcCrossCorner();
     }
 
+    public CB_RectF(float X, float Y, float sideLength) {
+        member[0] = X;
+        member[1] = Y;
+        member[3] = sideLength;
+        member[2] = sideLength;
+        calcCrossCorner();
+    }
+
     public CB_RectF(CB_RectF rec) {
         if (member == null)
             throw new IllegalStateException("Is Disposed");
@@ -109,9 +117,6 @@ public class CB_RectF {
     /**
      * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
      *
-     * @param Width
-     * @param Height
-     * @return
      */
     public boolean setSize(float Width, float Height) {
         if (member == null)
@@ -123,6 +128,10 @@ public class CB_RectF {
         calcCrossCorner();
         CallRecChanged();
         return true;
+    }
+
+    public boolean setSize(float sideLength) {
+        return setSize(sideLength, sideLength);
     }
 
     public boolean setSize(CB_RectF rec) {

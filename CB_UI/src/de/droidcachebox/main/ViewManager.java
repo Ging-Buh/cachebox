@@ -443,7 +443,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         if (de.droidcachebox.GlobalCore.isSetSelectedCache()) {
             float distance = de.droidcachebox.GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
             if (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) {
-                distance = de.droidcachebox.GlobalCore.getSelectedWaypoint().Distance();
+                distance = de.droidcachebox.GlobalCore.getSelectedWaypoint().getDistance();
             }
 
             if (de.droidcachebox.Config.switchViewApproach.getValue() && !de.droidcachebox.GlobalCore.switchToCompassCompleted && (distance < de.droidcachebox.Config.SoundApproachDistance.getValue())) {

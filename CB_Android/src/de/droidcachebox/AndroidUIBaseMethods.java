@@ -275,7 +275,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         // viewmanager must have been initialized
         final Bundle extras = mainActivity.getIntent().getExtras();
         if (extras != null) {
-            Log.trace(sKlasse, "prepared Request from splash");
+            // Log.trace(sKlasse, "prepared Request from splash");
             if (ViewManager.that.isInitialized()) {
                 String externalRequestGCCode = extras.getString("GcCode");
                 if (externalRequestGCCode != null) {

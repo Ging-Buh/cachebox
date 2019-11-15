@@ -97,7 +97,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             coordinate = Locator.getInstance().getMyPosition();
             if (!coordinate.isValid() || coordinate.isZero()) {
                 // coordinate = get from cache
-                coordinate = GlobalCore.getSelectedCache().Pos;
+                coordinate = GlobalCore.getSelectedCache().coordinate;
             }
         }
         bCoord = new CoordinateButton(rec, "CoordButton", coordinate, null);

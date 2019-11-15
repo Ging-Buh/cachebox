@@ -455,15 +455,15 @@ public class CacheInfo extends CB_View_Base {
         }
 
         if (ifModeFlag(SHOW_COORDS)) {
-            if (mCache.Pos == null) {
+            if (mCache.coordinate == null) {
                 text.append("????");
                 text.append(br);
             } else {
                 if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)) {
-                    text.append(mCache.Pos.formatCoordinateLineBreak());
+                    text.append(mCache.coordinate.formatCoordinateLineBreak());
                     text.append(br);
                 } else {
-                    text.append(mCache.Pos.FormatCoordinate());
+                    text.append(mCache.coordinate.FormatCoordinate());
                     text.append(br);
                 }
             }

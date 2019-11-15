@@ -201,7 +201,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         if (selectedWaypoint != null) {
             ret = selectedWaypoint.Pos;
         } else if (selectedCache != null) {
-            ret = selectedCache.Pos;
+            ret = selectedCache.coordinate;
         }
 
         return ret;

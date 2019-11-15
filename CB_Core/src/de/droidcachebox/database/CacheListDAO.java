@@ -83,7 +83,7 @@ public class CacheListDAO {
         // Clear List before read
         cacheList.clear();
 
-        Log.trace(log, "ReadCacheList 1.Waypoints");
+        // Log.trace(log, "ReadCacheList 1.Waypoints");
         SortedMap<Long, CB_List<Waypoint>> waypoints;
         waypoints = new TreeMap<>();
         // zuerst alle Waypoints einlesen
@@ -123,7 +123,7 @@ public class CacheListDAO {
         }
         reader.close();
 
-        Log.trace(log, "ReadCacheList 2.Caches");
+        // Log.trace(log, "ReadCacheList 2.Caches");
         try {
             if (fullDetails) {
                 sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;

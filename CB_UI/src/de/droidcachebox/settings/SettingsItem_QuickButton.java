@@ -15,10 +15,10 @@ import de.droidcachebox.gdx.graphics.ColorDrawable;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
-import de.droidcachebox.main.QuickActions;
-import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.main.QuickAction;
+import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MoveableList;
 
@@ -26,12 +26,12 @@ import java.util.ArrayList;
 
 public class SettingsItem_QuickButton extends CB_View_Base {
 
-    public static MoveableList<QuickButtonItem> tmpQuickList = null;
+    static MoveableList<QuickButtonItem> tmpQuickList = null;
     private ImageButton up, down, del, add;
     private V_ListView listView;
     private Box boxForListView;
 
-    public SettingsItem_QuickButton(CB_RectF rec, String Name) {
+    SettingsItem_QuickButton(CB_RectF rec, String Name) {
         super(rec, Name);
 
         this.addClickHandler((v, x, y, pointer, button) -> {
@@ -52,12 +52,12 @@ public class SettingsItem_QuickButton extends CB_View_Base {
     private void showSelect() {
         // erstelle Menu mit allen Actions, die noch nicht in der QuickButton List enthalten sind.
 
-        final ArrayList<QuickActions> AllActionList = new ArrayList<>();
-        QuickActions[] tmp = QuickActions.values();
+        final ArrayList<QuickAction> quickActions = new ArrayList<>();
+        QuickAction[] tmp = QuickAction.values();
 
-        for (QuickActions item : tmp) {
+        for (QuickAction item : tmp) {
             // don't show QuickButton Torch if Torch not available
-            if (item == QuickActions.torch) {
+            if (item == QuickAction.torch) {
                 if (!PlatformUIBase.isTorchAvailable())
                     continue;
             }
@@ -65,29 +65,27 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             boolean exist = false;
             for (int i = 0, n = tmpQuickList.size(); i < n; i++) {
                 QuickButtonItem listItem = tmpQuickList.get(i);
-                if (listItem.getAction() == item)
+                if (listItem.getQuickAction() == item)
                     exist = true;
             }
             if (!exist)
-                AllActionList.add(item);
+                quickActions.add(item);
         }
 
         Menu icm = new Menu("Select QuickButtonItem");
-        for (QuickActions item : AllActionList) {
-            if (item == QuickActions.empty)
+        for (QuickAction quickAction : quickActions) {
+            if (quickAction == QuickAction.empty || quickAction.getAction() == null)
                 continue;
-            icm.addMenuItem("", QuickActions.getName(item),
-                    new SpriteDrawable(QuickActions.getAction(item).getIcon()),
+            icm.addMenuItem("", quickAction.getName(),
+                    new SpriteDrawable(quickAction.getAction().getIcon()),
                     (v, x, y, pointer, button) -> {
                         icm.close();
-                        QuickActions type = (QuickActions) v.getData();
+                        QuickAction clickedQuickAction = (QuickAction) v.getData();
                         float itemHeight = UiSizes.getInstance().getQuickButtonListHeight() * 0.93f;
-                        QuickButtonItem tmp1 = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight),
-                                tmpQuickList.size(), QuickActions.getAction(type), QuickActions.getName(type), type);
-                        tmpQuickList.add(tmp1);
+                        tmpQuickList.add(new QuickButtonItem(new CB_RectF(0, 0, itemHeight), tmpQuickList.size(), clickedQuickAction));
                         reloadListViewItems();
                         return true;
-                    }).setData(item);
+                    }).setData(quickAction);
         }
         icm.setPrompt(Translation.get("selectQuickButtemItem"));
         icm.show();
@@ -241,9 +239,9 @@ public class SettingsItem_QuickButton extends CB_View_Base {
                 return null;
             Menu icm = new Menu("virtuell");
             QuickButtonItem item = tmpQuickList.get(position);
-            QuickActions action = item.getAction();
-            MenuItem mi = icm.addMenuItem("", QuickActions.getName(action),
-                    new SpriteDrawable(QuickActions.getAction(action).getIcon()),
+            QuickAction quickAction = item.getQuickAction();
+            MenuItem mi = icm.addMenuItem("", quickAction.getName(),
+                    new SpriteDrawable(quickAction.getAction() == null ? null : quickAction.getAction().getIcon()),
                     (v, x, y, pointer, button) -> {
                         listView.setSelection(((ListViewItemBase) v).getIndex());
                         return false;

@@ -366,7 +366,11 @@ public class Menu extends ButtonDialog {
     }
 
     public MenuItem addCheckableMenuItem(String titleTranlationId, boolean checked, Runnable runnable) {
-        MenuItem item = addMenuItem(titleTranlationId, null, runnable);
+        return addCheckableMenuItem(titleTranlationId, null, checked, runnable);
+    }
+
+    public MenuItem addCheckableMenuItem(String titleTranlationId, Sprite icon, boolean checked, Runnable runnable) {
+        MenuItem item = addMenuItem(titleTranlationId, icon, runnable);
         item.setCheckable(true);
         item.setChecked(checked);
         return item;

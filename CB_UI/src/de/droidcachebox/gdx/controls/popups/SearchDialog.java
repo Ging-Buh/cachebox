@@ -663,7 +663,7 @@ public class SearchDialog extends PopUp_Base {
             setY(CacheListView.getInstance().getMaxY() - this.getHeight());
             CacheListView.getInstance().setTopPlaceHolder(this.getHeight());
 
-            if (!GL.that.PopUpIsShown())
+            if (GL.that.PopUpIsHidden())
                 that.showNotCloseAutomaticly();
         } catch (Exception e) {
             e.printStackTrace();

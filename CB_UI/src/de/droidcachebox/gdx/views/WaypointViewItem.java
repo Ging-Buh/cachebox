@@ -100,15 +100,18 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     private void setActLocator() {
-        if (Locator.getInstance().Valid()) {
+        if (mCache == null)
+            return;
 
-            if (mWaypoint != null && mWaypoint.Pos.isZero()) {
+        if (Locator.getInstance().isValid()) {
+
+            if (mWaypoint != null && mWaypoint.Pos != null && mWaypoint.Pos.isZero()) {
                 arrow = null;
                 setDistanceString("???");
             } else {
-                double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
-                double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
-                float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.Distance();
+                double lat = (mWaypoint == null) ? mCache.getLatitude() : mWaypoint.Pos.getLatitude();
+                double lon = (mWaypoint == null) ? mCache.getLongitude() : mWaypoint.Pos.getLongitude();
+                float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.getDistance();
 
                 Coordinate position = Locator.getInstance().getMyPosition();
                 double heading = Locator.getInstance().getHeading();
@@ -197,8 +200,6 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
     @Override
     public void orientationChanged() {
-        if (mCache == null)
-            return;
         setActLocator();
     }
 
@@ -216,7 +217,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
             arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-            if (Locator.getInstance().Valid()) {
+            if (Locator.getInstance().isValid()) {
                 arrow.setColor(DISABLE_COLOR);
                 setDistanceString("---");
             } else {

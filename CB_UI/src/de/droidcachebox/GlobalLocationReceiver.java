@@ -95,7 +95,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                             if (GlobalCore.isSetSelectedCache()) {
                                 float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
                                 if (GlobalCore.getSelectedWaypoint() != null) {
-                                    distance = GlobalCore.getSelectedWaypoint().Distance();
+                                    distance = GlobalCore.getSelectedWaypoint().getDistance();
                                 }
 
                                 if (!approachSoundCompleted && (distance < CB_UI_Settings.SoundApproachDistance.getValue())) {
@@ -128,8 +128,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                             initialResortAfterFirstFixCompleted = true;
                         }
                     } catch (Exception e) {
-                        Log.err(log, "GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
-                        e.printStackTrace();
+                        Log.err(log, "GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.isValid)", e);
                     }
 
                     try {

@@ -20,7 +20,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
-import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.views.LogView;
 import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.main.ViewManager;
@@ -37,7 +36,6 @@ import static de.droidcachebox.core.GroundspeakAPI.*;
 public class ShowLogs extends AbstractShowAction {
 
     private static ShowLogs that;
-    private Menu contextMenu;
     private CancelWaitDialog pd;
     private int ChangedCount = 0;
     private int result = 0;
@@ -84,23 +82,18 @@ public class ShowLogs extends AbstractShowAction {
         // if depends on something: call createContextMenu() again
         // todo why are the clickhandlers of the items gone on following calls? temp solution createContextMenu() again
         // has to do with the disposing of the compoundMenu in CB_Button after the Show
-        createContextMenu();
-        return contextMenu;
+        return createContextMenu();
     }
 
-    private void createContextMenu() {
-        contextMenu = new Menu("LogListViewContextMenuTitle");
-
-        MenuItem mi;
+    private Menu createContextMenu() {
+        Menu contextMenu = new Menu("LogListViewContextMenuTitle");
         contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), () -> loadLogs(true));
         if (CB_Core_Settings.Friends.getValue().length() > 0) {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
-            mi = contextMenu.addMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), () -> {
+            contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
                 LogView.getInstance().resetInitial();
             });
-            mi.setCheckable(true);
-            mi.setChecked(GlobalCore.filterLogsOfFriends);
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
         contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
@@ -110,7 +103,7 @@ public class ShowLogs extends AbstractShowAction {
                 SpoilerView.getInstance().ForceReload();
             }
         }));
-
+        return contextMenu;
     }
 
     private void loadLogs(boolean loadAllLogs) {

@@ -88,7 +88,7 @@ public class GPS {
     }
 
     public static void setSatFixes(int fixed) {
-        Log.trace(log, "set SatFixes to:" + fixed);
+        // Log.trace(log, "set SatFixes to:" + fixed);
         mSatFixed = fixed;
     }
 

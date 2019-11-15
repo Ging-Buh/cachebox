@@ -79,8 +79,6 @@ public class Locator {
     /**
      * Returns True if the flag for DisplayOff is True!
      *
-     * @return
-     * @uml.property name="displayOff"
      */
     public boolean isDisplayOff() {
         return isDisplayOff;
@@ -107,7 +105,6 @@ public class Locator {
     /**
      * Set the speed level for using Hardware or GPS heading
      *
-     * @param value
      */
     public void setHardwareCompassLevel(int value) {
         mMagneticCompassLevel = value;
@@ -116,7 +113,6 @@ public class Locator {
     /**
      * Set true if the Locator is use heading values from Hardware Compass
      *
-     * @param value
      */
     public void setUseHardwareCompass(boolean value) {
         mUseMagneticCompass = value;
@@ -127,10 +123,8 @@ public class Locator {
      * 1. Gps</br> 2. Network</br> 3. Saved</br> </br> If the last set of GPS Location older 2min, the saved FineLocation will be cleaned!
      * (Fall back to Network or saved Location)
      *
-     * @param location
      */
     public void setNewLocation(Location location) {
-        Log.trace(log, "new Location:" + location.toString());
         if (location == null)
             location = Location.NULL_LOCATION;
 
@@ -162,7 +156,7 @@ public class Locator {
                         setHeading(location.getBearing(), CompassType.GPS);
                     }
 
-                    if (!fix && location != null) {
+                    if (!fix) {
                         fix = true;
                         GPS_FallBackEventList.CallFix();
                     }
@@ -182,7 +176,6 @@ public class Locator {
     /**
      * Returns the last saved fine location (from GPS) or null !
      *
-     * @return
      */
     public Location getLastSavedFineLocation() {
         synchronized (locator) {
@@ -202,8 +195,6 @@ public class Locator {
     /**
      * Returns the last Latitude from the last position of the given ProviderType
      *
-     * @param type
-     * @return
      */
     public double getLatitude(ProviderType type) {
         return getLocation(type).getLatitude();
@@ -221,8 +212,6 @@ public class Locator {
     /**
      * Returns the last Longitude from the last position of the given ProviderType
      *
-     * @param type
-     * @return
      */
     public double getLongitude(ProviderType type) {
         return getLocation(type).getLongitude();
@@ -231,7 +220,6 @@ public class Locator {
     /**
      * Returns the last valid position.</br> 1. Gps</br> 2. Network</br> 3. Saved</br>
      *
-     * @return
      */
     public Location getLocation() {
         return getLocation(ProviderType.any);
@@ -265,7 +253,6 @@ public class Locator {
     /**
      * Returns the last valid position.</br> 1. Gps</br> 2. Network</br> 3. Saved</br>
      *
-     * @return
      */
     public CoordinateGPS getMyPosition() {
         return getLocation(ProviderType.any).toCordinate();
@@ -274,17 +261,14 @@ public class Locator {
     /**
      * Returns True if the saved Location != ProviderType.NULL
      *
-     * @return
      */
-    public boolean Valid() {
+    public boolean isValid() {
         return getLocation().getProviderType() == ProviderType.GPS || getLocation().getProviderType() == ProviderType.Network;
     }
 
     /**
      * Returns the last valid position of the given ProviderType
      *
-     * @param type
-     * @return
      */
     public Coordinate getMyPosition(ProviderType type) {
         Location loc = getLocation(type);
@@ -305,7 +289,6 @@ public class Locator {
     /**
      * Returns the formated speed String!
      *
-     * @return
      */
     public String SpeedString() {
         synchronized (locator) {
@@ -319,7 +302,6 @@ public class Locator {
     /**
      * Returns the Speed as float
      *
-     * @return
      */
     public float SpeedOverGround() {
         synchronized (locator) {
@@ -333,7 +315,6 @@ public class Locator {
     /**
      * Return True if the last valid Location from Type GPS
      *
-     * @return
      */
     public boolean isGPSprovided() {
         return getLocation().getProviderType() == ProviderType.GPS;
@@ -342,8 +323,6 @@ public class Locator {
     /**
      * Set the alt correction value
      *
-     * @param value
-     * @uml.property name="altCorrection"
      */
     public void setAltCorrection(double value) {
         Log.debug(log, "set alt corection to: " + value);
@@ -358,11 +337,9 @@ public class Locator {
             // check if last GPS position older then 20 sec
 
             if (locator.mTimeStampSpeed + 20000 >= (new Date()).getTime()) {
-                Log.trace(log, "no fall back");
                 return;
             }
 
-            Log.debug(log, "Falback2Network");
             fix = false;
             locator.mFineLocation = null;
         }
@@ -372,7 +349,6 @@ public class Locator {
     /**
      * Returns True if the last valid Location have a speed value
      *
-     * @return
      */
     public boolean hasSpeed() {
         synchronized (locator) {
@@ -383,8 +359,6 @@ public class Locator {
     /**
      * Returns the speed value of the last valid Location
      *
-     * @return
-     * @uml.property name="speed"
      */
     public double getSpeed() {
         synchronized (locator) {
@@ -395,7 +369,6 @@ public class Locator {
     /**
      * Returns the altitude with correction from last valid Location
      *
-     * @return
      */
     public double getAlt() {
         return getLocation().getAltitude() - altCorrection;
@@ -404,7 +377,6 @@ public class Locator {
     /**
      * Returns the formated string of last valid altitude with correction value
      *
-     * @return
      */
     public String getAltStringWithCorection() {
         String result = getAltString();
@@ -418,16 +390,14 @@ public class Locator {
     /**
      * Returns the formated string of last valid altitude
      *
-     * @return
      */
     public String getAltString() {
         return UnitFormatter.AltString((float) getAlt());
     }
 
     /**
-     * Returns the ProviderType of the last Valid Location
+     * Returns the ProviderType of the last isValid Location
      *
-     * @return
      */
     public ProviderType getProvider() {
         return getLocation().getProviderType();
@@ -436,7 +406,6 @@ public class Locator {
     /**
      * Returns True if the used bearing value from magnetic compass. </br> Returns False if the bearing from GPS.
      *
-     * @return
      */
     public boolean UseMagneticCompass() {
         if (locator == null)
@@ -449,7 +418,6 @@ public class Locator {
     /**
      * Returns the last saved heading
      *
-     * @return
      */
     public float getHeading() {
         return getHeading(CompassType.any);
@@ -458,8 +426,6 @@ public class Locator {
     /**
      * Returns the last saved heading of the given ProviderType
      *
-     * @param type
-     * @return
      */
     public float getHeading(CompassType type) {
         synchronized (locator) {
@@ -480,8 +446,6 @@ public class Locator {
     /**
      * Set the heading from GPS or magnetic sensor
      *
-     * @param heading
-     * @param type
      */
     public void setHeading(float heading, CompassType type) {
 
@@ -502,21 +466,9 @@ public class Locator {
         PositionChangedListeners.orientationChanged();
     }
 
-    /**
-     * @author Longri
-     */
     public enum CompassType {
-        /**
-         * @uml.property name="gPS"
-         * @uml.associationEnd
-         */
         GPS,
-        /**
-         * @uml.property name="magnetic"
-         * @uml.associationEnd
-         */
         Magnetic,
-
         any
     }
 

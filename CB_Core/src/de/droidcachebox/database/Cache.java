@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Cache implements Comparable<Cache>, Serializable {
-    public static final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = "";
     // ########################################################
     // Boolean Handling
     // one Boolean use up to 4 Bytes
@@ -40,11 +40,11 @@ public class Cache implements Comparable<Cache>, Serializable {
     //
     // so we use one Short for Store all Boolean and Use a BitMask
     // ########################################################
-    public final static byte NOT_LIVE = 0;
+    final static byte NOT_LIVE = 0;
     public final static byte IS_LITE = 1;
     public final static byte IS_FULL = 2;
-    protected static final Charset US_ASCII = StandardCharsets.US_ASCII;
-    protected static final Charset UTF_8 = StandardCharsets.UTF_8;
+    private static final Charset US_ASCII = StandardCharsets.US_ASCII;
+    private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final long serialVersionUID = 1015307624242318838L;
     // Masks
     // protected final static short MASK_HAS_HINT = 1 << 0; // not necessary because hasHint is always called for SelectedCache and
@@ -70,7 +70,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Die Coordinate, an der der Cache liegt.
      */
-    public Coordinate Pos = new Coordinate(0, 0);
+    public Coordinate coordinate = new Coordinate(0, 0);
     /**
      * Durchschnittliche Bewertung des Caches von GcVote
      */
@@ -99,7 +99,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
      */
-    public int NumTravelbugs = 0;
+    public int NumTravelbugs;
     /**
      * Falls keine erneute Distanzberechnung noetig ist nehmen wir diese Distanz
      */
@@ -107,7 +107,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Liste der zusaetzlichen Wegpunkte des Caches
      */
-    public CB_List<Waypoint> waypoints = null;
+    public CB_List<Waypoint> waypoints;
     /**
      * Waypoint Code des Caches
      */
@@ -124,12 +124,6 @@ public class Cache implements Comparable<Cache>, Serializable {
      * 0 nein
      */
     private int myCache = -1;
-
-    // /**
-    // * hat der Cache Clues oder Notizen erfasst
-    // */
-    // public boolean hasUserData;
-    private boolean isSearchVisible = true;
 
     // /**
     // * Das Listing hat sich geaendert!
@@ -167,7 +161,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         this.setTerrain(0);
         this.Size = CacheSizes.other;
         this.setAvailable(true);
-        waypoints = new CB_List<Waypoint>();
+        waypoints = new CB_List<>();
         if (withDetails) {
             detail = new CacheDetail();
         }
@@ -177,7 +171,7 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Constructor
      */
     public Cache(double Latitude, double Longitude, String Name, CacheTypes cacheType, String GcCode) {
-        this.Pos = new Coordinate(Latitude, Longitude);
+        this.coordinate = new Coordinate(Latitude, Longitude);
         this.setName(Name);
         this.Type = cacheType;
         this.setGcCode(GcCode);
@@ -210,15 +204,17 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Breitengrad
      */
-    public double Latitude() {
-        return Pos.getLatitude();
+    public double getLatitude() {
+        if (coordinate == null) coordinate = new Coordinate(0,0);
+        return coordinate.getLatitude();
     }
 
     /**
      * Längengrad
      */
-    public double Longitude() {
-        return Pos.getLongitude();
+    public double getLongitude() {
+        if (coordinate == null) coordinate = new Coordinate(0,0);
+        return coordinate.getLongitude();
     }
 
     /**
@@ -251,12 +247,8 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    /*
-     * Getter/Setter
-     */
-
-    public boolean isDetailLoaded() {
-        return (detail != null);
+    public boolean mustLoadDetail() {
+        return (detail == null);
     }
 
     /**
@@ -335,7 +327,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * search the start Waypoint for a multi or mystery
      *
-     * @return
      */
     public Waypoint getStartWaypoint() {
         if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery))
@@ -367,37 +358,17 @@ public class Cache implements Comparable<Cache>, Serializable {
     }
 
     /**
-     * Set a List of Spoiler Ressources
-     *
-     * @param value ArrayList of String
-     */
-    public void setSpoilerRessources(CB_List<ImageEntry> value) {
-        if (detail != null) {
-            detail.setSpoilerRessources(value);
-        }
-    }
-
-    /**
      * Returns true has the Cache Spoilers else returns false
      *
      * @return Boolean
      */
     public boolean hasSpoiler() {
         if (detail != null) {
-            boolean hasSpoiler = detail.hasSpoiler(this);
-            return hasSpoiler;
+            return detail.hasSpoiler(this);
         } else {
             return false;
         }
     }
-
-    public void SpoilerForceReEvaluate() {
-        detail.SpoilerForceReEvaluate(this);
-    }
-
-    /*
-     * Overrides
-     */
 
     public void loadSpoilerRessources() {
         if (detail != null) {
@@ -424,12 +395,12 @@ public class Cache implements Comparable<Cache>, Serializable {
         // Diszanzberechnung vom Final aus gemacht werden
         // If a mystery has a final waypoint, the distance will be calculated to
         // the final not the the cache coordinates
-        Coordinate toPos = Pos;
+        Coordinate toPos = coordinate;
         if (waypoint != null) {
             toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
             // nur sinnvolles Final, sonst vom Cache
             if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0)
-                toPos = Pos;
+                toPos = coordinate;
         }
         float[] dist = new float[4];
         MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
@@ -439,29 +410,17 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Cache))
+        if (!(obj instanceof Cache))
             return false;
         Cache other = (Cache) obj;
-
-        if (Arrays.equals(this.GcCode, other.GcCode))
-            return true;
-
-        return false;
+        return Arrays.equals(this.GcCode, other.GcCode);
     }
 
     @Override
     public int compareTo(Cache c2) {
         float dist1 = this.cachedDistance;
         float dist2 = c2.cachedDistance;
-        return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
-    }
-
-    public boolean isSearchVisible() {
-        return isSearchVisible;
-    }
-
-    public void setSearchVisible(boolean value) {
-        isSearchVisible = value;
+        return (Float.compare(dist1, dist2));
     }
 
     private Waypoint findWaypointByGc(String gc) {
@@ -482,7 +441,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         // this.MapX = cache.MapX;
         // this.MapY = cache.MapY;
         this.Name = cache.Name;
-        this.Pos = cache.Pos;
+        this.coordinate = cache.coordinate;
         this.Rating = cache.Rating;
         this.favPoints = cache.favPoints;
         this.Size = cache.Size;
@@ -547,7 +506,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
         GcCode = null;
         Name = null;
-        Pos = null;
+        coordinate = null;
         Size = null;
         Type = null;
         Owner = null;
@@ -804,7 +763,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         return this.getMaskValue(MASK_LISTING_CHANGED);
     }
 
-    public void setListingChanged(boolean listingChanged) {
+    void setListingChanged(boolean listingChanged) {
         this.setMaskValue(MASK_LISTING_CHANGED, listingChanged);
     }
 
@@ -850,7 +809,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public int getNoteChecksum() {
+    int getNoteChecksum() {
         if (detail != null) {
             return detail.noteCheckSum;
         } else {
@@ -892,7 +851,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public int getSolverChecksum() {
+    int getSolverChecksum() {
         if (detail != null) {
             return detail.solverCheckSum;
         } else {
@@ -982,7 +941,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public DLong getAttributesPositive() {
+    DLong getAttributesPositive() {
         if (detail != null) {
             return detail.getAttributesPositive(Id);
         } else {
@@ -996,7 +955,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public DLong getAttributesNegative() {
+    DLong getAttributesNegative() {
         if (detail != null) {
             return detail.getAttributesNegative(Id);
         } else {
@@ -1067,14 +1026,6 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public boolean isAttributeNegativeSet(Attributes attribute) {
-        if (detail != null) {
-            return detail.isAttributeNegativeSet(attribute);
-        } else {
-            return false;
-        }
-    }
-
     public boolean isDisposed() {
         return isDisposed;
     }
@@ -1082,7 +1033,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Returns true if the Cache a event like Giga, Cito, Event or Mega
      *
-     * @return
      */
     public boolean isEvent() {
         if (this.Type == CacheTypes.Giga)
@@ -1091,9 +1041,7 @@ public class Cache implements Comparable<Cache>, Serializable {
             return true;
         if (this.Type == CacheTypes.Event)
             return true;
-        if (this.Type == CacheTypes.MegaEvent)
-            return true;
-        return false;
+        return this.Type == CacheTypes.MegaEvent;
     }
 
 }

@@ -25,7 +25,7 @@ import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,7 +78,7 @@ public final class GpxSerializer {
 
     private static String getCountry(final Cache cache) {
         String country = getLocationPart(cache, 1);
-        if (country != null && country.length() > 0)
+        if (country.length() > 0)
             return country;
         return cache.getCountry();
     }
@@ -90,7 +90,6 @@ public final class GpxSerializer {
      * @param prefix     an XML prefix, see {@link XmlSerializer#startTag(String, String)}
      * @param tag        an XML tag
      * @param text       some text to insert, or <tt>null</tt> to omit completely this tag
-     * @throws IOException
      */
     private static void simpleText(final XmlSerializer serializer, final String prefix, final String tag, final String text) throws IOException {
         if (text != null) {
@@ -103,7 +102,6 @@ public final class GpxSerializer {
     /**
      * Android throws a InvalidCharacterException so we check this before write
      *
-     * @param text
      * @return valid text as String
      */
     private static String validateChar(String text) {
@@ -121,8 +119,7 @@ public final class GpxSerializer {
                 }
             }
         }
-        String validText = new String(validChars, 0, validCount);
-        return validText;
+        return new String(validChars, 0, validCount);
     }
 
     /**
@@ -132,7 +129,6 @@ public final class GpxSerializer {
      * @param prefix     an XML prefix, see {@link XmlSerializer#startTag(String, String)} shared by all tags
      * @param tagAndText an XML tag, the corresponding text, another XML tag, the corresponding text. <tt>null</tt> texts will be omitted along
      *                   with their respective tag.
-     * @throws IOException
      */
     private static void multipleTexts(final XmlSerializer serializer, final String prefix, final String... tagAndText) throws IOException {
         for (int i = 0; i < tagAndText.length; i += 2) {
@@ -187,12 +183,12 @@ public final class GpxSerializer {
         cancel = false;
 
         // create a copy of the geocode list, as we need to modify it, but it might be immutable
-        final ArrayList<String> allGeocodes = new ArrayList<String>(allGeocodesIn);
+        final ArrayList<String> allGeocodes = new ArrayList<>(allGeocodesIn);
 
         this.progressListener = progressListener;
         gpx.setOutput(writer);
         gpx.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-        final String UTF_8 = (Charset.forName("utf-8").name());
+        final String UTF_8 = StandardCharsets.UTF_8.name();
         gpx.startDocument(UTF_8, true);
         gpx.setPrefix("xsi", PREFIX_XSI);
         gpx.setPrefix("", PREFIX_GPX);
@@ -208,7 +204,7 @@ public final class GpxSerializer {
         // Split the overall set of geocodes into small chunks. That is a compromise between memory efficiency (because
         // we don't load all caches fully into memory) and speed (because we don't query each cache separately).
         while (!allGeocodes.isEmpty()) {
-            final ArrayList<String> batch = new ArrayList<String>(allGeocodes.subList(0, Math.min(CACHES_PER_BATCH, allGeocodes.size())));
+            final ArrayList<String> batch = new ArrayList<>(allGeocodes.subList(0, Math.min(CACHES_PER_BATCH, allGeocodes.size())));
             exportBatch(gpx, batch);
             allGeocodes.removeAll(batch);
             batch.clear();
@@ -241,7 +237,7 @@ public final class GpxSerializer {
             if (cache == null) {
                 continue;
             }
-            final Coordinate coords = cache.Pos;
+            final Coordinate coords = cache.coordinate;
             if (coords == null) {
                 // Export would be invalid without coordinates.
                 continue;
@@ -308,7 +304,7 @@ public final class GpxSerializer {
 
             writeAttributes(cache);
 
-            // TODO Shortdescription is not into DB is combind with LongDescription and Save into ROW Description
+            // Shortdescription is not in DB. It is combined with LongDescription and saved into ROW Description
             // Expand DB with ROW shortDescription
             String shortDesc = null;
             try {
@@ -353,13 +349,12 @@ public final class GpxSerializer {
         }
 
         cacheList.dispose();
-        cacheList = null;
     }
 
     private void writeWaypoints(final Cache cache) throws IOException {
         final CB_List<Waypoint> waypoints = cache.waypoints;
-        final List<Waypoint> ownWaypoints = new ArrayList<Waypoint>(waypoints.size());
-        final List<Waypoint> originWaypoints = new ArrayList<Waypoint>(waypoints.size());
+        final List<Waypoint> ownWaypoints = new ArrayList<>(waypoints.size());
+        final List<Waypoint> originWaypoints = new ArrayList<>(waypoints.size());
 
         for (int i = 0; i < cache.waypoints.size(); i++) {
             Waypoint wp = cache.waypoints.get(i);
@@ -381,10 +376,6 @@ public final class GpxSerializer {
 
     /**
      * Writes one waypoint entry for cache waypoint.
-     *
-     * @param cache  The cache
-     * @param wp
-     * @throws IOException
      */
     private void writeCacheWaypoint(Cache cache, final Waypoint wp) throws IOException {
         final Coordinate coords = wp.Pos;
@@ -411,8 +402,7 @@ public final class GpxSerializer {
     }
 
     private void writeLogs(final Cache cache) throws IOException {
-        CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-        cleanLogs = Database.Logs(cache);
+        CB_List<LogEntry> cleanLogs = Database.Logs(cache);
 
         if (cleanLogs.isEmpty()) {
             return;
@@ -451,7 +441,7 @@ public final class GpxSerializer {
         if (cache.getAttributes().isEmpty()) {
             return;
         }
-        // TODO: Attribute conversion required: English verbose name, gpx-id
+
         gpx.startTag(PREFIX_GROUNDSPEAK, "attributes");
 
         for (final Attributes attribute : cache.getAttributes()) {
@@ -467,7 +457,7 @@ public final class GpxSerializer {
         gpx.endTag(PREFIX_GROUNDSPEAK, "attributes");
     }
 
-    public static interface ProgressListener {
+    public interface ProgressListener {
         void publishProgress(int countExported, String Name);
     }
 

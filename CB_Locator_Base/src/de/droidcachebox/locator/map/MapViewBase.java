@@ -126,7 +126,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
         if (camera == null) {
             // onResized(this);
-            Log.trace(log, "why is the camera zero");
+            Log.err(log, "why is the camera zero");
         } else {
             setVisible();
             setActZoom();
@@ -691,7 +691,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 // setLockPosition(0);
             } else {
                 // GPS-Position bekannt?
-                if (Locator.getInstance().Valid()) {
+                if (Locator.getInstance().isValid()) {
                     setCenter(Locator.getInstance().getMyPosition());
                     positionInitialized = true;
                 } else {

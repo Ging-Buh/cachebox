@@ -61,7 +61,7 @@ public class WriteIntoDB {
                     if (cache.hasCorrectedCoordinates()) {
                         // changed coords from GS stay preserved
                     } else {
-                        cache.Pos = oldCache.Pos;
+                        cache.coordinate = oldCache.coordinate;
                         cache.setHasCorrectedCoordinates(true);
                     }
                 }

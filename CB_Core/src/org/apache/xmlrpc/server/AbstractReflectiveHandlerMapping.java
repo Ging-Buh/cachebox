@@ -106,7 +106,7 @@ public abstract class AbstractReflectiveHandlerMapping implements XmlRpcListable
     /**
      * Searches for methods in the given class. For any valid
      * method, it creates an instance of {@link XmlRpcHandler}.
-     * Valid methods are defined as follows:
+     * isValid methods are defined as follows:
      * <ul>
      * <li>They must be public.</li>
      * <li>They must not be static.</li>

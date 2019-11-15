@@ -7,11 +7,12 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.H_ListView;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
-import de.droidcachebox.main.QuickActions;
+import de.droidcachebox.main.QuickAction;
 import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.MoveableList;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.ConcurrentModificationException;
 
@@ -22,13 +23,13 @@ public class QuickButtonList extends H_ListView {
     private final float btnHeight;
     private float btnYPos;
 
-    public QuickButtonList(CB_RectF rec, String Name) {
+    QuickButtonList(CB_RectF rec, String Name) {
         super(rec, Name);
         that = this;
         btnHeight = UiSizes.getInstance().getQuickButtonListHeight() * 0.93f;
         setBackground(Sprites.ButtonBack);
 
-        CB_RectF btnRec = new CB_RectF(0, 0, btnHeight, btnHeight);
+        CB_RectF btnRec = new CB_RectF(0, 0, btnHeight);
 
         btnYPos = this.getHalfHeight() - btnRec.getHalfHeight();
 
@@ -44,7 +45,7 @@ public class QuickButtonList extends H_ListView {
         btnYPos = this.getHalfHeight() - btnHeight / 2;
 
         if (quickButtonList != null && !quickButtonList.isEmpty())
-            for (int i = 0; i > quickButtonList.size(); i++) {
+            for (int i = 0; i < quickButtonList.size(); i++) {
                 setButtonYPos(i);
             }
 
@@ -128,7 +129,7 @@ public class QuickButtonList extends H_ListView {
 
     private QuickButtonItem setButtonYPos(int position) {
         QuickButtonItem v = quickButtonList.get(position);
-        v.setSize(btnHeight, btnHeight);
+        v.setSize(btnHeight);
         v.setY(btnYPos);// center btn on y direction
         return v;
     }
@@ -136,8 +137,45 @@ public class QuickButtonList extends H_ListView {
     private void readQuickButtonItemsList() {
         if (quickButtonList == null) {
             String ConfigActionList = Config.quickButtonList.getValue();
-            String[] ConfigList = ConfigActionList.split(",");
-            quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
+            String[] configList = ConfigActionList.split(",");
+            quickButtonList = new MoveableList<>();
+            if (configList.length > 0) {
+                boolean invalidEnumId = false;
+                try {
+                    int index = 0;
+                    for (String s : configList) {
+                        s = s.replace(",", "");
+                        int EnumId = Integer.parseInt(s);
+                        if (EnumId > -1) {
+                            QuickAction quickAction = QuickAction.values()[EnumId];
+                            if (quickAction.getAction() != null) {
+                                QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, btnHeight), index++, quickAction);
+                                quickButtonList.add(tmp);
+                            } else
+                                invalidEnumId = true;
+                        }
+                    }
+                } catch (Exception ex)
+                {
+                    // wenn ein Fehler auftritt, gib die bis dorthin gelesenen Items zurück
+                    Log.err("QuickbuttonList", "create from Config", ex);
+                }
+                if (invalidEnumId) {
+                    //	    write valid id's back
+                    StringBuilder ActionsString = new StringBuilder();
+                    int counter = 0;
+                    for (int i = 0, n = quickButtonList.size(); i < n; i++) {
+                        QuickButtonItem tmp = quickButtonList.get(i);
+                        ActionsString.append(tmp.getQuickAction().ordinal());
+                        if (counter < quickButtonList.size() - 1) {
+                            ActionsString.append(",");
+                        }
+                        counter++;
+                    }
+                    Config.quickButtonList.setValue(ActionsString.toString());
+                    Config.AcceptChanges();
+                }
+            }
         }
         chkIsDraggable();
     }
@@ -160,7 +198,7 @@ public class QuickButtonList extends H_ListView {
 
     public class CustomAdapter implements Adapter {
 
-        public CustomAdapter() {
+        CustomAdapter() {
             readQuickButtonItemsList();
 
         }
@@ -170,8 +208,7 @@ public class QuickButtonList extends H_ListView {
             if (quickButtonList == null)
                 return null;
 
-            QuickButtonItem v = setButtonYPos(position);
-            return v;
+            return setButtonYPos(position);
         }
 
         @Override

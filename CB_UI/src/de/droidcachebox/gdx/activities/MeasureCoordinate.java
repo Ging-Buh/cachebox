@@ -510,7 +510,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
             }
 
             /**
-             * Gibt die Longitude dieser Koordinate zurück
+             * Gibt die getLongitude dieser Koordinate zurück
              *
              * @return double
              */

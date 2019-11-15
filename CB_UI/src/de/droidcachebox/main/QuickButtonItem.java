@@ -22,16 +22,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.main.AbstractAction;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.main.QuickActions;
 
 /**
  * Stellt ein Item der Quick Button List dar
@@ -43,23 +40,18 @@ public class QuickButtonItem extends ListViewItemBase {
 
     private AbstractAction mAction;
     private Image mButtonIcon;
-    private String mActionDesc;
     private CB_Button mButton;
-    private QuickActions quickActionsEnum;
-    private int autoResortState = -1;
-    private int spoilerState = -1;
-    private int hintState = -1;
-    private int torchState = -1;
+    private QuickAction quickAction;
+    private int state;
 
-    public QuickButtonItem(CB_RectF rec, int Index, AbstractAction action, String Desc, QuickActions type) {
-        super(rec, Index, action.getTitleTranlationId());
-        quickActionsEnum = type;
-        mAction = action;
+    public QuickButtonItem(CB_RectF rec, int Index, QuickAction type) {
+        super(rec, Index, "");
+        name = type.getAction() == null ? "" : type.getAction().getTitleTranlationId();
+        quickAction = type;
+        mAction = type.getAction();
         mButtonIcon = new Image(rec.ScaleCenter(0.7f), "QuickListItemImage", false);
-        mButtonIcon.setDrawable(new SpriteDrawable(action.getIcon()));
+        mButtonIcon.setDrawable(new SpriteDrawable(mAction.getIcon()));
         mButtonIcon.setClickable(false);
-
-        mActionDesc = Desc;
 
         mButton = new CB_Button(rec, "QuickListItemButton");
         mButton.setButtonSprites(Sprites.QuickButton);
@@ -67,23 +59,12 @@ public class QuickButtonItem extends ListViewItemBase {
         this.addChild(mButton);
         this.addChild(mButtonIcon);
 
-        mButton.addClickHandler(new OnClickListener() {
+        state = -1;
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                mAction.Execute();
-                return true;
-            }
+        mButton.addClickHandler((v, x, y, pointer, button) -> {
+            mAction.Execute();
+            return true;
         });
-    }
-
-    /**
-     * Gibt die Beschreibung dieses Items wieder
-     *
-     * @return String
-     */
-    public String getDesc() {
-        return mActionDesc;
     }
 
     @Override
@@ -105,54 +86,52 @@ public class QuickButtonItem extends ListViewItemBase {
 
         super.render(batch);
 
-        if (mAction.getId() == MenuID.AID_AUTO_RESORT) {
-            if (GlobalCore.getAutoResort() && autoResortState != 1) {
+        if (quickAction == QuickAction.AutoResort) {
+            if (GlobalCore.getAutoResort() && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.autoSortOnIcon.name())));
-                autoResortState = 1;
-            } else if (!GlobalCore.getAutoResort() && autoResortState != 0) {
+                state = 1;
+            } else if (!GlobalCore.getAutoResort() && state != 0) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.autoSortOffIcon.name())));
-                autoResortState = 0;
+                state = 0;
             }
-        } else if (mAction.getId() == MenuID.AID_SHOW_SPOILER) {
+        } else if (quickAction == QuickAction.Spoiler) {
             boolean hasSpoiler = false;
             if (GlobalCore.isSetSelectedCache()) {
                 hasSpoiler = GlobalCore.selectedCachehasSpoiler();
             }
 
-            if (hasSpoiler && spoilerState != 1) {
+            if (hasSpoiler && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.imagesIcon.name())));
-                spoilerState = 1;
-            } else if (!hasSpoiler && spoilerState != 0) {
+                state = 1;
+            } else if (!hasSpoiler && state != 0) {
                 Sprite sprite = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));
                 sprite.setColor(DISABLE_COLOR);
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));
-                spoilerState = 0;
+                state = 0;
             }
-        } else if (mAction.getId() == MenuID.AID_TORCH) {
-
-            if (PlatformUIBase.isTorchOn() && torchState != 1) {
+        } else if (quickAction == QuickAction.torch) {
+            if (PlatformUIBase.isTorchOn() && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHON.name())));
-                torchState = 1;
-            } else if (!PlatformUIBase.isTorchOn() && torchState != 0) {
+                state = 1;
+            } else if (!PlatformUIBase.isTorchOn() && state != 0) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHOFF.name())));
-                torchState = 0;
+                state = 0;
             }
-        } else if (mAction.getId() == MenuID.AID_SHOW_HINT) {
-
-            if (mAction.getEnabled() && hintState != 1) {
+        } else if (quickAction == QuickAction.Hint) {
+            if (mAction.getEnabled() && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.hintIcon.name())));
-                hintState = 1;
-            } else if (!mAction.getEnabled() && hintState != 0) {
+                state = 1;
+            } else if (!mAction.getEnabled() && state != 0) {
                 Sprite sprite = new Sprite(Sprites.getSprite(IconName.hintIcon.name()));
                 sprite.setColor(DISABLE_COLOR);
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));
-                hintState = 0;
+                state = 0;
             }
         }
     }
 
-    public QuickActions getAction() {
-        return quickActionsEnum;
+    public QuickAction getQuickAction() {
+        return quickAction;
     }
 
     @Override

@@ -379,8 +379,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                     selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
                                 }
                                 boolean showWaypoints = showAllWaypoints || selectedCache;
-                                double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
-                                double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
+                                double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.getLongitude());
+                                double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.getLatitude());
                                 Waypoint finalWaypoint = null;
                                 Waypoint startWaypoint;
                                 if (showWaypoints) {

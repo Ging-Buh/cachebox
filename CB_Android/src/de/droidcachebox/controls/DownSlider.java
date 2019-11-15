@@ -320,7 +320,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         final Drawable Slide = Global.BtnIcons[0];
 
         mBtnRec.set(-10, yPos - UiSizes.getInstance().getMargin(), width + 10, (int) (yPos + UiSizes.getInstance().getMargin() + 10 * 3.3));
-        Log.trace(log, "AndroidSlider bound: " + mBtnRec.toShortString());
+        // Log.trace(log, "AndroidSlider bound: " + mBtnRec.toShortString());
 
         Slide.setBounds(mBtnRec);
         Slide.draw(canvas);

@@ -190,7 +190,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                         Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos;
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     } else {
-                        Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedCache().Pos;
+                        Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     }
 
@@ -502,7 +502,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         if (de.droidcachebox.GlobalCore.getSelectedCache() == null)
             return;
 
-        Coordinate coord = (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) ? de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos : de.droidcachebox.GlobalCore.getSelectedCache().Pos;
+        Coordinate coord = (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) ? de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos : de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
 
         if (coord == null) {
             return;
@@ -735,7 +735,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             setMapState(MapState.FREE);
 
         try {
-            CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new CoordinateGPS(cache.Pos.getLatitude(), cache.Pos.getLongitude());
+            CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new CoordinateGPS(cache.coordinate.getLatitude(), cache.coordinate.getLongitude());
             setCenter(target);
         } catch (Exception ignored) {
         }
@@ -906,7 +906,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                 Coordinate position = Locator.getInstance().getMyPosition();
 
                 if (de.droidcachebox.GlobalCore.isSetSelectedCache()) {
-                    Coordinate dest = (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) ? de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos : de.droidcachebox.GlobalCore.getSelectedCache().Pos;
+                    Coordinate dest = (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) ? de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos : de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
 
                     if (dest == null)
                         return;
@@ -1038,14 +1038,14 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
         if (Mode == MapMode.Compass) {
             // Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
-            // if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+            // if ((GlobalCore.Marker != null) && (GlobalCore.Marker.isValid)) position = GlobalCore.Marker;
             Coordinate position = Locator.getInstance().getMyPosition();
 
             float distance = -1;
             if (de.droidcachebox.GlobalCore.isSetSelectedCache() && position.isValid()) {
                 try {
                     if (de.droidcachebox.GlobalCore.getSelectedWaypoint() == null)
-                        distance = position.Distance(de.droidcachebox.GlobalCore.getSelectedCache().Pos, CalculationType.ACCURATE);
+                        distance = position.Distance(de.droidcachebox.GlobalCore.getSelectedCache().coordinate, CalculationType.ACCURATE);
                     else
                         distance = position.Distance(de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos, CalculationType.ACCURATE);
                 } catch (Exception e) {
@@ -1205,7 +1205,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                         if (Database.Data.cacheList.size() > 0) {
                             // Koordinaten des ersten Caches der Datenbank
                             // nehmen
-                            setCenter(new CoordinateGPS(Database.Data.cacheList.get(0).Pos.getLatitude(), Database.Data.cacheList.get(0).Pos.getLongitude()));
+                            setCenter(new CoordinateGPS(Database.Data.cacheList.get(0).coordinate.getLatitude(), Database.Data.cacheList.get(0).coordinate.getLongitude()));
                             positionInitialized = true;
                             // setLockPosition(0);
                         } else {
@@ -1233,7 +1233,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                 Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos;
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             } else {
-                Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedCache().Pos;
+                Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             }
         }

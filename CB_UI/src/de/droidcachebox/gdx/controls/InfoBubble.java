@@ -70,7 +70,7 @@ public class InfoBubble extends CB_View_Base {
         SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 
         // if Cache is an event we must load details for DateHidden
-        if (mCache.isEvent() && !mCache.isDetailLoaded())
+        if (mCache.isEvent() && mCache.mustLoadDetail())
             mCache.loadDetail();
 
         cacheInfo = new de.droidcachebox.gdx.controls.CacheInfo(size, "CacheInfo", cache);

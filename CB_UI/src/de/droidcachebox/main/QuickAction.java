@@ -15,15 +15,11 @@
  */
 package de.droidcachebox.main;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.gdx.main.AbstractAction;
-import de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings;
-import de.droidcachebox.main.menuBtn4.UploadDrafts;
-import de.droidcachebox.main.quickBtns.*;
-import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.main.menuBtn1.ParkingDialog;
 import de.droidcachebox.main.menuBtn1.ShowCacheList;
 import de.droidcachebox.main.menuBtn1.ShowTrackableList;
+import de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings;
 import de.droidcachebox.main.menuBtn2.*;
 import de.droidcachebox.main.menuBtn3.ShowCompass;
 import de.droidcachebox.main.menuBtn3.ShowMap;
@@ -31,10 +27,13 @@ import de.droidcachebox.main.menuBtn3.ShowTrackList;
 import de.droidcachebox.main.menuBtn4.ShowDrafts;
 import de.droidcachebox.main.menuBtn4.ShowSolver1;
 import de.droidcachebox.main.menuBtn4.ShowSolver2;
+import de.droidcachebox.main.menuBtn4.UploadDrafts;
 import de.droidcachebox.main.menuBtn5.SwitchDayNight;
 import de.droidcachebox.main.menuBtn5.SwitchTorch;
+import de.droidcachebox.main.quickBtns.Add_WP;
+import de.droidcachebox.main.quickBtns.SearchDialog;
+import de.droidcachebox.main.quickBtns.SwitchAutoresort;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.MoveableList;
 
 import static de.droidcachebox.main.ViewManager.*;
 
@@ -43,7 +42,7 @@ import static de.droidcachebox.main.ViewManager.*;
  *
  * @author Longri
  */
-public enum QuickActions {
+public enum QuickAction {
     DescriptionView, // 0
     WaypointView, // 1
     LogView, // 2
@@ -76,55 +75,8 @@ public enum QuickActions {
     empty,
     ;
 
-    public static MoveableList<QuickButtonItem> getListFromConfig(String[] configList, float height) {
-        MoveableList<QuickButtonItem> retList = new MoveableList<QuickButtonItem>();
-        if (configList == null || configList.length == 0) {
-            return retList;
-        }
-
-        boolean invalidEnumId = false;
-        try {
-            int index = 0;
-
-            for (String s : configList) {
-                s = s.replace(",", "");
-                int EnumId = Integer.parseInt(s);
-                if (EnumId > -1) {
-
-                    QuickActions type = QuickActions.values()[EnumId];
-                    if (QuickActions.getAction(type) != null) {
-                        QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index++, QuickActions.getAction(type), QuickActions.getName(type), type);
-                        retList.add(tmp);
-                    } else
-                        invalidEnumId = true;
-                }
-            }
-        } catch (Exception ignored)
-        {
-            // wenn ein Fehler auftritt, gib die bis dorthin gelesenen Items zurück
-        }
-        if (invalidEnumId) {
-            //	    write valid id's back
-
-            String ActionsString = "";
-            int counter = 0;
-            for (int i = 0, n = retList.size(); i < n; i++) {
-                QuickButtonItem tmp = retList.get(i);
-                ActionsString += String.valueOf(tmp.getAction().ordinal());
-                if (counter < retList.size() - 1) {
-                    ActionsString += ",";
-                }
-                counter++;
-            }
-            Config.quickButtonList.setValue(ActionsString);
-            Config.AcceptChanges();
-        }
-        return retList;
-    }
-    // private static AbstractAction action_ScreenLock;
-
-    public static AbstractAction getAction(QuickActions id) {
-        switch (id) {
+    public AbstractAction getAction() {
+        switch (this) {
             case DescriptionView:
                 return ShowDescription.getInstance();
             case WaypointView:
@@ -182,8 +134,8 @@ public enum QuickActions {
         return null;
     }
 
-    public static String getName(QuickActions id) {
-        switch (id) {
+    public String getName() {
+        switch (this) {
             case DescriptionView:
                 return Translation.get("Description");
             case WaypointView:

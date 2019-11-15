@@ -555,7 +555,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         Log.info(sKlasse, "=> selectedCacheChanged");
         float distance = cache.Distance(CalculationType.FAST, false);
         if (waypoint != null) {
-            distance = waypoint.Distance();
+            distance = waypoint.getDistance();
         }
         if (distance > Config.SoundApproachDistance.getValue()) {
             runOnUiThread(() -> GlobalCore.switchToCompassCompleted = false);

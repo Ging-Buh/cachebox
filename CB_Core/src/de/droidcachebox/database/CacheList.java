@@ -76,7 +76,7 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
         CacheWithWP retValue = null;
 
         this.ResortAtWork = true;
-        boolean isLocatorValid = Locator.getInstance().Valid();
+        boolean isLocatorValid = Locator.getInstance().isValid();
         // Alle Distanzen aktualisieren
         if (isLocatorValid) {
             for (int i = 0, n = this.size(); i < n; i++) {
@@ -88,7 +88,7 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
             Coordinate fromPos = selectedCoord;
             // avoid "illegal waypoint"
             if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)) {
-                fromPos = selected.getCache().Pos;
+                fromPos = selected.getCache().coordinate;
             }
             if (fromPos == null) {
                 this.ResortAtWork = false;

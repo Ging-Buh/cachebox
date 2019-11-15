@@ -239,25 +239,23 @@ public class GL implements ApplicationListener {
 
         synchronized (runOnGL_ListWaitPool) {
             if (runOnGL_ListWaitPool != null && runOnGL_ListWaitPool.size() > 0) {
-                if (runOnGL_ListWaitPool.size() > 0) {
-                    for (IRunOnGL run : runOnGL_ListWaitPool) {
-                        if (run != null) {
-                            // Run only MAX_FBO_RENDER_CALLS
-                            if (run instanceof IRenderFBO) {
+                for (IRunOnGL run : runOnGL_ListWaitPool) {
+                    if (run != null) {
+                        // Run only MAX_FBO_RENDER_CALLS
+                        if (run instanceof IRenderFBO) {
 
-                                if (canFBO()) {
-                                    run.run();
-                                } else {
-                                    // Log.debug(log, "Max_FBO_Render_Calls" + run.toString());
-                                    runOnGL_List.add(run);
-                                }
-                            } else
+                            if (canFBO()) {
                                 run.run();
-                        }
+                            } else {
+                                // Log.debug(log, "Max_FBO_Render_Calls" + run.toString());
+                                runOnGL_List.add(run);
+                            }
+                        } else
+                            run.run();
                     }
-
-                    runOnGL_ListWaitPool.clear();
                 }
+
+                runOnGL_ListWaitPool.clear();
 
             }
         }
@@ -359,7 +357,7 @@ public class GL implements ApplicationListener {
                     lastTouchX = x;
                     lastTouchY = y;
                 }
-                mPolygonSpriteBatch.draw(Sprites.LogIcons.get(14), x - (pointSize / 2), y - (pointSize / 2), pointSize, pointSize);
+                mPolygonSpriteBatch.draw(Sprites.LogIcons.get(14), x - (pointSize >> 1), y - (pointSize >> 1), pointSize, pointSize);
             }
         }
 
@@ -389,8 +387,7 @@ public class GL implements ApplicationListener {
 
         try {
             mPolygonSpriteBatch.end();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
 
         Gdx.gl.glFlush();
@@ -502,29 +499,25 @@ public class GL implements ApplicationListener {
         currentDialog = dialog;
 
         mDialog.addChildDirekt(dialog);
-        mDialog.addClickHandler(new GL_View_Base.OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // Sollte bei einem Click neben dem Dialog ausgelöst werden.
-                // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
-                if (currentDialogIsShown) {
-                    GL_View_Base vDialog = mDialog.getChild(0);
-                    if (vDialog instanceof Menu)
-                        closeDialog(currentDialog);
-                    if (aktPopUp != null) {
-                        closePopUp(aktPopUp);
-                    }
-                    return true;
-                }
-
+        mDialog.addClickHandler((v, x1, y1, pointer, button) -> {
+            // Sollte bei einem Click neben dem Dialog ausgelöst werden.
+            // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
+            if (currentDialogIsShown) {
+                GL_View_Base vDialog = mDialog.getChild(0);
+                if (vDialog instanceof Menu)
+                    closeDialog(currentDialog);
                 if (aktPopUp != null) {
                     closePopUp(aktPopUp);
-                    return true;
                 }
-
-                return false;
+                return true;
             }
+
+            if (aktPopUp != null) {
+                closePopUp(aktPopUp);
+                return true;
+            }
+
+            return false;
         });
 
         child.setClickable(false);
@@ -534,8 +527,7 @@ public class GL implements ApplicationListener {
         try {
             currentDialog.setEnabled(true);
             currentDialog.setVisible();
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
         PlatformUIBase.showForDialog();
 
@@ -555,7 +547,7 @@ public class GL implements ApplicationListener {
         closeDialog(dialog, true);
     }
 
-    public void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector) {
+    private void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector) {
 
         if (!currentDialogIsShown || !mDialog.getchilds().contains((dialog))) {
             Timer timer = new Timer();
@@ -566,8 +558,7 @@ public class GL implements ApplicationListener {
                         return;
                     if (dialog.equals(mDialog))
                         throw new IllegalStateException("mDialog can't disposed");
-                    if (dialog != null)
-                        dialog.dispose();
+                    dialog.dispose();
                 }
             };
             timer.schedule(task, 50);
@@ -580,7 +571,6 @@ public class GL implements ApplicationListener {
             if (focusedEditTextField != null && focusedEditTextField.getParent() == currentDialog) {
                 setFocusedEditTextField(null);
             }
-
             currentDialog.onHide();
         }
 
@@ -727,18 +717,18 @@ public class GL implements ApplicationListener {
         renderOnce();
     }
 
-    public Dialog getCurrentDialog() {
+    Dialog getCurrentDialog() {
         return currentDialog;
     }
 
-    public boolean closeCurrentDialogOrActivity() {
+    boolean closeCurrentDialogOrActivity() {
         if (currentDialogIsShown) {
             closeDialog(currentDialog);
             return true;
         }
 
         if (currentActivityIsShown) {
-            if (currentActivity instanceof ActivityBase) {
+            if (currentActivity != null) {
                 if (!currentActivity.canCloseWithBackKey())
                     return true;
             }
@@ -778,12 +768,12 @@ public class GL implements ApplicationListener {
         MarkerIsShown = false;
     }
 
-    public boolean isShownDialogOrActivity() {
-        return currentDialogIsShown || currentActivityIsShown;
+    public boolean isNotShownDialogOrActivity() {
+        return !currentDialogIsShown && !currentActivityIsShown;
     }
 
-    public boolean PopUpIsShown() {
-        return (aktPopUp != null);
+    public boolean PopUpIsHidden() {
+        return (aktPopUp == null);
     }
 
     private void disposeTexture() {
@@ -814,7 +804,7 @@ public class GL implements ApplicationListener {
         }
     }
 
-    private void startTimer(long delay, final String Name) {
+    private void startTimer(long delay) {
         if (timerValue == delay)
             return;
         stopTimer();
@@ -849,7 +839,6 @@ public class GL implements ApplicationListener {
      * Run on GL-Thread!<br>
      * If this Thread the GL_thread, run direct!
      *
-     * @param run
      */
     public void RunOnGLWithThreadCheck(IRunOnGL run) {
         if (isGlThread()) {
@@ -880,11 +869,11 @@ public class GL implements ApplicationListener {
         renderOnce(true);
     }
 
-    public void setDefaultShader() {
+    private void setDefaultShader() {
         mPolygonSpriteBatch.setShader(SpriteBatch.createDefaultShader());
     }
 
-    public void setShader(ShaderProgram shader) {
+    private void setShader(ShaderProgram shader) {
 
         if (shader == null) {
             setDefaultShader();
@@ -912,10 +901,6 @@ public class GL implements ApplicationListener {
         return false;
     }
 
-    public int getFpsInfoPos() {
-        return FpsInfoPos;
-    }
-
     public float getWidth() {
         return width;
     }
@@ -928,7 +913,7 @@ public class GL implements ApplicationListener {
         return child;
     }
 
-    protected void drawDarknessSprite() {
+    private void drawDarknessSprite() {
         if (mPolygonSpriteBatch == null)
             return;
         if (mDarknessSprite == null) {
@@ -940,8 +925,7 @@ public class GL implements ApplicationListener {
             mDarknessSprite = new Sprite(mDarknessTexture, width, height);
         }
 
-        if (mDarknessSprite != null)
-            mDarknessSprite.draw(mPolygonSpriteBatch, darknessAlpha);
+        mDarknessSprite.draw(mPolygonSpriteBatch, darknessAlpha);
         if (darknessAnimationRuns) {
             darknessAlpha += 0.1f;
             if (darknessAlpha > 1f) {
@@ -953,7 +937,7 @@ public class GL implements ApplicationListener {
 
     }
 
-    public void Initialize() {
+    private void Initialize() {
 
         if (Gdx.graphics.getGL20() == null)
             return;// kann nicht initialisiert werden
@@ -965,8 +949,7 @@ public class GL implements ApplicationListener {
         if (modelBatch == null) {
             try {
                 modelBatch = new ModelBatch();
-            } catch (java.lang.NoSuchFieldError e) {
-                e.printStackTrace();
+            } catch (java.lang.NoSuchFieldError ignored) {
             }
         }
 
@@ -999,7 +982,7 @@ public class GL implements ApplicationListener {
         return mDialog;
     }
 
-    protected void initMarkerOverlay() {
+    private void initMarkerOverlay() {
         mMarkerOverlay = new Box(new CB_RectF(0, 0, width, height), "MarkerOverlay");
         selectionMarkerCenter = new SelectionMarker(SelectionMarker.Type.Center);
         selectionMarkerLeft = new SelectionMarker(SelectionMarker.Type.Left);
@@ -1029,9 +1012,7 @@ public class GL implements ApplicationListener {
                 }
                 return;
             }
-            if (renderViews.containsKey(view)) {
-                renderViews.remove(view);
-            }
+            renderViews.remove(view);
             renderViews.put(view, delay);
             calcNewRenderSpeed();
             if (mGL_Listener_Interface != null)
@@ -1099,12 +1080,12 @@ public class GL implements ApplicationListener {
             if (minDelay == 0)
                 stopTimer();
             else
-                startTimer(minDelay, "GL_Listener calcNewRenderSpeed()");
+                startTimer(minDelay);
         }
 
     }
 
-    public CB_View_Base getActiveView() {
+    CB_View_Base getActiveView() {
         return currentDialogIsShown ? mDialog : currentActivityIsShown ? mActivity : child;
     }
 
@@ -1208,7 +1189,7 @@ public class GL implements ApplicationListener {
         toast.setWidth(bounds.width + border);
         toast.setHeight(bounds.height + border);
 
-        toast.setPos((width / 2) - (bounds.width / 2), MainBtnSize.getHeight() * 1.3f);
+        toast.setPos((width >> 1) - (bounds.width / 2), MainBtnSize.getHeight() * 1.3f);
 
         Toast(toast, length);
     }
@@ -1233,17 +1214,6 @@ public class GL implements ApplicationListener {
         renderingIsStopped = false;
         renderOnce();
         setAllIsInitialized(true);
-    }
-
-    /**
-     * @return true wenn behandeld
-     */
-    public boolean keyBackClicked() {
-        if (currentDialog instanceof Menu) {
-            closeDialog(currentDialog);
-            return true;
-        }
-        return false;
     }
 
     public EditTextField getFocusedEditTextField() {
@@ -1350,12 +1320,12 @@ public class GL implements ApplicationListener {
             mGL_Listener_Interface.RenderDirty();
     }
 
-    public void resetAmbiantMode() {
+    void resetAmbiantMode() {
         grayFader.resetFadeOut();
     }
 
     public GL_View_Base onTouchDown(int x, int y, int pointer, int button) {
-        GL_View_Base view = null;
+        GL_View_Base view;
 
         CB_View_Base testingView = currentDialogIsShown ? mDialog : currentActivityIsShown ? mActivity : child;
 

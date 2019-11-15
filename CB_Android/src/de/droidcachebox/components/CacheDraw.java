@@ -188,7 +188,7 @@ public class CacheDraw {
                 drawName += "\n";
                 drawName += cache.getGcCode();
             } else if (drawStyle == DrawStyle.withOwner) {
-                drawName = drawName + "\n" + cache.Pos.FormatCoordinate() + "\n" + cache.getGcCode();
+                drawName = drawName + "\n" + cache.coordinate.FormatCoordinate() + "\n" + cache.getGcCode();
             }
 
             if (drawStyle == DrawStyle.withOwnerAndName || drawStyle == DrawStyle.withOwner) {
@@ -220,7 +220,7 @@ public class CacheDraw {
                     counter++;
                 } while (((int) namePaint.measureText(DrawText)) >= nameLayoutWidth);
 
-                DrawText = DrawText + "\n" + "\n" + cache.Pos.FormatCoordinate() + "\n" + cache.getGcCode() + "\n";
+                DrawText = DrawText + "\n" + "\n" + cache.coordinate.FormatCoordinate() + "\n" + cache.getGcCode() + "\n";
 
                 String LastFound = getLastFoundLogDate(cache);
                 if (!LastFound.equals("")) {
@@ -317,10 +317,10 @@ public class CacheDraw {
 
     private static void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec) {
 
-        if (Locator.getInstance().Valid()) {
+        if (Locator.getInstance().isValid()) {
             Coordinate position = Locator.getInstance().getMyPosition();
             double heading = Locator.getInstance().getHeading();
-            double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), cache.Pos.getLatitude(), cache.Pos.getLongitude());
+            double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), cache.coordinate.getLatitude(), cache.coordinate.getLongitude());
             double cacheBearing = bearing - heading;
             String cacheDistance = UnitFormatter.DistanceString(cache.Distance(CalculationType.FAST, false));
             DrawBearing(cache, canvas, drawingRec, cacheDistance, cacheBearing);

@@ -58,7 +58,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
         arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-        if (!Locator.getInstance().Valid()) {
+        if (!Locator.getInstance().isValid()) {
             arrow.setColor(DISABLE_COLOR);
             setDistanceString("---");
         } else {
@@ -105,9 +105,9 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
         // Log.debug(log, "CacheListItem set ActLocator");
 
-        if (Locator.getInstance().Valid()) {
+        if (Locator.getInstance().isValid()) {
 
-            if (mCache.Pos == null) {
+            if (mCache.coordinate == null) {
                 // mCache was disposed
                 Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.Id);
                 if (c == null) {
@@ -120,7 +120,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
             Waypoint FinalWp = mCache.getCorrectedFinal();
 
-            Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
+            Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.coordinate;
             CalculationType calcType = CalculationType.FAST;
             Cache c = GlobalCore.getSelectedCache();
             if (c != null) {

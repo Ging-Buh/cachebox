@@ -43,7 +43,7 @@ public class CacheDAO {
 
             cache.Id = reader.getLong(0);
             cache.setGcCode(reader.getString(1).trim());
-            cache.Pos = new Coordinate(reader.getDouble(2), reader.getDouble(3));
+            cache.coordinate = new Coordinate(reader.getDouble(2), reader.getDouble(3));
             cache.setName(reader.getString(4).trim());
             cache.Size = CacheSizes.CacheSizesFromInt(reader.getInt(5));
             cache.setDifficulty(((float) reader.getShort(6)) / 2);
@@ -170,8 +170,8 @@ public class CacheDAO {
         Parameters args = new Parameters();
         args.put("Id", cache.Id);
         args.put("GcCode", cache.getGcCode());
-        args.put("Latitude", cache.Pos.getLatitude());
-        args.put("Longitude", cache.Pos.getLongitude());
+        args.put("Latitude", cache.coordinate.getLatitude());
+        args.put("Longitude", cache.coordinate.getLongitude());
         args.put("Name", cache.getName());
         try {
             args.put("Size", cache.Size.ordinal());
@@ -260,10 +260,10 @@ public class CacheDAO {
         args.put("Id", cache.Id);
         args.put("GcCode", cache.getGcCode());
         args.put("GcId", cache.getGcId());
-        if (cache.Pos.isValid() && !cache.Pos.isZero()) {
+        if (cache.coordinate.isValid() && !cache.coordinate.isZero()) {
             // Update Cache position only when new position is valid and not zero
-            args.put("Latitude", cache.Pos.getLatitude());
-            args.put("Longitude", cache.Pos.getLongitude());
+            args.put("Latitude", cache.coordinate.getLatitude());
+            args.put("Longitude", cache.coordinate.getLongitude());
         }
         args.put("Name", cache.getName());
         try {

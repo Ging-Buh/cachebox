@@ -370,7 +370,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         mainActivity.runOnUiThread(() -> {
             // chk for timer conflict (releay set invisible)
             // only if showing Dialog or Activity
-            if (!GL.that.isShownDialogOrActivity())
+            if (GL.that.isNotShownDialogOrActivity())
                 return;
 
             if (aktView != null)
@@ -394,7 +394,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 mainActivity.runOnUiThread(() -> {
                     // chk for timer conflict (releay set invisible)
                     // only if not showing Dialog or Activity
-                    if (!GL.that.isShownDialogOrActivity()) {
+                    if (GL.that.isNotShownDialogOrActivity()) {
                         if (aktView != null) {
                             ((View) aktView).setVisibility(View.VISIBLE);
                             aktView.OnShow();
@@ -498,8 +498,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             String targetName;
 
             if (GlobalCore.getSelectedWaypoint() == null) {
-                lat = GlobalCore.getSelectedCache().Latitude();
-                lon = GlobalCore.getSelectedCache().Pos.getLongitude();
+                lat = GlobalCore.getSelectedCache().getLatitude();
+                lon = GlobalCore.getSelectedCache().coordinate.getLongitude();
                 targetName = GlobalCore.getSelectedCache().getGcCode();
             } else {
                 lat = GlobalCore.getSelectedWaypoint().Pos.getLatitude();
@@ -878,13 +878,13 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                 text = text + ("\n\n" + "Location (corrected)");
                 if (cache.hasCorrectedCoordinates()) {
-                    text = text + ("\n" + Formatter.FormatCoordinate(cache.Pos, ""));
+                    text = text + ("\n" + Formatter.FormatCoordinate(cache.coordinate, ""));
                 } else {
                     text = text + ("\n" + Formatter.FormatCoordinate(cache.getCorrectedFinal().Pos, ""));
                 }
             } else {
                 text = text + ("\n\n" + "Location");
-                text = text + ("\n" + Formatter.FormatCoordinate(cache.Pos, ""));
+                text = text + ("\n" + Formatter.FormatCoordinate(cache.coordinate, ""));
             }
             if (PlatformUIBase.getClipboard() != null)
                 text = text + ("\n" + PlatformUIBase.getClipboard().getContents());

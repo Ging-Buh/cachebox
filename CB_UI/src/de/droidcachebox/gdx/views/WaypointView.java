@@ -168,7 +168,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         MenuItem mi = cm.addMenuItem("UploadCorrectedCoordinates", null, () -> {
             GL.that.postAsync(() -> {
                 if (aktCache.hasCorrectedCoordinates())
-                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.Pos);
+                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.coordinate);
                 else if (aktWaypoint.isCorrectedFinal())
                     GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
                 if (GroundspeakAPI.APIError == 0) {
@@ -196,7 +196,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
         if ((coord == null) || (!coord.isValid()))
-            coord = de.droidcachebox.GlobalCore.getSelectedCache().Pos;
+            coord = de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
         Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
 
@@ -302,7 +302,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     private void addProjection() {
         createNewWaypoint = true;
 
-        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getInstance().getMyPosition();
+        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.coordinate : Locator.getInstance().getMyPosition();
         String ProjName;
 
         ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;

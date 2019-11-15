@@ -328,8 +328,8 @@ public class CacheInfoList {
 
         int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
         info.ListingCheckSum = ListingCheckSum;
-        info.Latitude = cache.Latitude();
-        info.Longitude = cache.Longitude();
+        info.Latitude = cache.getLatitude();
+        info.Longitude = cache.getLongitude();
         info.Found = cache.isFound();
         info.favorite = cache.isFavorite();
         info.CorrectedCoordinates = cache.hasCorrectedCoordiantesOrHasCorrectedFinal();

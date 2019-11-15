@@ -247,7 +247,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 String GcCode = "";
                 try {
                     GcCode = reader.getString("Code");
-                    Log.trace(sKlasse, GcCode);
+                    // Log.trace(sKlasse, GcCode);
                     Cache cache = createGeoCache(reader);
                     if (cache != null && GcCode.length() > 0) {
                         cache = addAttributes(cache);
@@ -507,7 +507,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     // switch subValue
                     if (hasCorrected) {
                         if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
-                            cache.Pos = new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal"));
+                            cache.coordinate = new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal"));
                             cache.waypoints.add(new Waypoint(
                                     "!?" + cache.getGcCode().substring(2),
                                     CacheTypes.Final,
@@ -518,11 +518,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                                     "",
                                     "Final GSAK Corrected"));
                         } else {
-                            cache.Pos = new Coordinate(reader.getDouble("Latitude"), reader.getDouble("Longitude"));
+                            cache.coordinate = new Coordinate(reader.getDouble("Latitude"), reader.getDouble("Longitude"));
                             cache.setHasCorrectedCoordinates(true);
                         }
                     } else {
-                        cache.Pos = new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal"));
+                        cache.coordinate = new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal"));
                     }
                     break;
                 case "ShortDescription":

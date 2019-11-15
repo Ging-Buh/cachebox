@@ -43,7 +43,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
     private static CB_RectF ItemRec;
     private static LogView that;
     private Cache aktCache;
-    private ListViewBaseAdapter lvAdapter;
+    private LogListAdapter lvAdapter;
     private CB_List<LogViewItem> itemList;
 
     private LogView() {
@@ -79,7 +79,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
         createItemList();
 
-        lvAdapter = new ListViewBaseAdapter();
+        lvAdapter = new LogListAdapter();
         this.setBaseAdapter(lvAdapter);
 
         this.setEmptyMsg(Translation.get("EmptyLogList"));
@@ -168,8 +168,8 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
         //Log.debug(log, "LogView disposed");
     }
 
-    public class ListViewBaseAdapter implements Adapter {
-        ListViewBaseAdapter() {
+    public class LogListAdapter implements Adapter {
+        LogListAdapter() {
         }
 
         @Override

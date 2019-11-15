@@ -165,7 +165,8 @@ public class MapsForgeLayer extends Layer {
                 HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
                 databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, hillsRenderConfig);
             }
-            Log.info(log, "prepareLayer " + getName() + " : " + mapFile.getMapFileInfo().comment);
+            String additional = mapFile.getMapFileInfo().comment == null ? "" : " : " + mapFile.getMapFileInfo().comment;
+            Log.info(log, "prepareLayer " + getName() + additional);
         } catch (Exception e) {
             Log.err(log, "ERROR with Open MapsForge Map: " + getName(), e);
         }

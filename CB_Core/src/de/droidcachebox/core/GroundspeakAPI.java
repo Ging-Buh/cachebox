@@ -1172,30 +1172,30 @@ public class GroundspeakAPI {
                             boolean didFind = sFound.length() != 0 && !sFound.contains("null");
                             cache.setFound(didFind);
                             // correctedCoordinates
-                            JSONObject correctedCoordinates = userData.optJSONObject("correctedCoordinates");
-                            if (correctedCoordinates != null) {
+                            JSONObject correctedCoordinate = userData.optJSONObject("correctedCoordinates");
+                            if (correctedCoordinate != null) {
                                 if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
                                     JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
-                                    cache.Pos = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
+                                    cache.coordinate = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
                                     cache.waypoints.add(new Waypoint(
                                             "!?" + cache.getGcCode().substring(2),
                                             CacheTypes.Final,
                                             "",
-                                            correctedCoordinates.optDouble("latitude", 0),
-                                            correctedCoordinates.optDouble("longitude", 0),
+                                            correctedCoordinate.optDouble("latitude", 0),
+                                            correctedCoordinate.optDouble("longitude", 0),
                                             cache.Id,
                                             "",
                                             "Final GSAK Corrected"));
                                 } else {
-                                    cache.Pos = new Coordinate(correctedCoordinates.optDouble("latitude", 0), correctedCoordinates.optDouble("longitude", 0));
+                                    cache.coordinate = new Coordinate(correctedCoordinate.optDouble("latitude", 0), correctedCoordinate.optDouble("longitude", 0));
                                     cache.setHasCorrectedCoordinates(true);
                                 }
                             } else {
                                 JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
                                 if (postedCoordinates != null) {
-                                    cache.Pos = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
+                                    cache.coordinate = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
                                 } else {
-                                    cache.Pos = new Coordinate();
+                                    cache.coordinate = new Coordinate();
                                 }
                             }
                             cache.setTmpNote(userData.optString("note", ""));
@@ -1203,9 +1203,9 @@ public class GroundspeakAPI {
                             cache.setFound(false);
                             JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
                             if (postedCoordinates != null) {
-                                cache.Pos = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
+                                cache.coordinate = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
                             } else {
-                                cache.Pos = new Coordinate();
+                                cache.coordinate = new Coordinate();
                             }
                             cache.setTmpNote("");
                         }

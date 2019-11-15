@@ -171,7 +171,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             synchronized (aktCache) {
                 Log.debug(log, "new cache: " + aktCache.getGcCode() + ":" + aktCache.getName());
 
-                if (!aktCache.isDetailLoaded()) {
+                if (aktCache.mustLoadDetail()) {
                     Log.debug(log, "loading details.");
                     aktCache.loadDetail();
                 }
@@ -224,7 +224,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
                 if (showCoords && lblCoords != null) {
                     if (aktWaypoint == null) {
-                        lblCoords.setText(aktCache.Pos.FormatCoordinate());
+                        lblCoords.setText(aktCache.coordinate.FormatCoordinate());
                     } else {
                         lblCoords.setText(aktWaypoint.Pos.FormatCoordinate());
                     }
@@ -635,7 +635,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (lblOwnCoords != null)
             lblOwnCoords.setText(position.FormatCoordinate());
 
-        Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
+        Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.coordinate;
 
         float[] result = new float[4];
 
@@ -705,11 +705,11 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (aktCache == null)
             return;
 
-        if (Locator.getInstance().Valid()) {
+        if (Locator.getInstance().isValid()) {
             Coordinate position = Locator.getInstance().getMyPosition();
             double heading = Locator.getInstance().getHeading();
 
-            Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
+            Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.coordinate;
 
             float[] result = new float[2];
 
@@ -740,7 +740,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (Sun == null || Moon == null)
             return;
 
-        if (Locator.getInstance().Valid()) {
+        if (Locator.getInstance().isValid()) {
             CoordinateGPS latLon = Locator.getInstance().getMyPosition();
             double heading = Locator.getInstance().getHeading();
             float centerX = frame.getCenterPosX();

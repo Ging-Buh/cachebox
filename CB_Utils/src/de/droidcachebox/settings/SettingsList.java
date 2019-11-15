@@ -171,6 +171,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                         }
                     }
 
+                    /*
                     if (setting instanceof SettingEncryptedString) {// Don't write encrypted settings in to a log file
                         debugString = "*******";
                     } else {
@@ -190,6 +191,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                             Log.trace(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
                         }
                     }
+                     */
                 }
                 tryCount.set(100);
             } catch (Exception e) {
