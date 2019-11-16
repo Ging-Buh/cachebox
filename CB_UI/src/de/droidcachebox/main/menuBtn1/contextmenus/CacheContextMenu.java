@@ -14,7 +14,6 @@ import de.droidcachebox.gdx.activities.EditCache;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
@@ -22,6 +21,7 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.main.menuBtn1.ShowTrackableList;
 import de.droidcachebox.main.menuBtn2.*;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.main.menuBtn4.ShowDrafts;
 import de.droidcachebox.main.menuBtn4.ShowSolver1;
 import de.droidcachebox.main.menuBtn4.ShowSolver2;
@@ -50,7 +50,7 @@ public class CacheContextMenu {
         }
         cacheContextMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), CacheContextMenu::reloadSelectedCache).setEnabled(selectedCacheIsGC);
         if (forCacheList) {
-            cacheContextMenu.addMoreMenu(ShowDrafts.getInstance().getContextMenu(),Translation.get("DraftsContextMenuTitle"),Translation.get("DraftsContextMenuTitle"));
+            cacheContextMenu.addMoreMenu(ShowDrafts.getInstance().getContextMenu(), Translation.get("DraftsContextMenuTitle"), Translation.get("DraftsContextMenuTitle"));
         }
         MenuItem mi;
         mi = cacheContextMenu.addMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), () -> {
@@ -95,6 +95,7 @@ public class CacheContextMenu {
         }).setEnabled(selectedCacheIsSet);
         if (forCacheList) {
             cacheContextMenu.addDivider();
+            cacheContextMenu.addMenuItem("Map", Sprites.getSprite(IconName.map.name()), () -> ShowMap.getInstance().Execute());
             cacheContextMenu.addMenuItem("Description", Sprites.getSprite(IconName.docIcon.name()), () -> ShowDescription.getInstance().Execute());
             cacheContextMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + CacheTypes.Trailhead.name()), () -> ShowWaypoint.getInstance().Execute());
             cacheContextMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> HintDialog.getInstance().showHint()).setEnabled(GlobalCore.getSelectedCache().hasHint());
@@ -105,8 +106,7 @@ public class CacheContextMenu {
             cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().Execute());
             cacheContextMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().Execute());
             cacheContextMenu.addMenuItem("descExt", Sprites.getSprite(IconName.hintIcon.name()), () -> StartExternalDescription.getInstance().Execute());
-        }
-        else {
+        } else {
             cacheContextMenu.addDivider();
             cacheContextMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().Execute());
             cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().Execute()).setEnabled(selectedCacheIsGC);
@@ -119,12 +119,8 @@ public class CacheContextMenu {
     public static void reloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
 
-            wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
-                @Override
-                public void isCanceled() {
-                    // TODO handle cancel
-                }
+            wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
+                // TODO handle cancel
             }, new ICancelRunnable() {
 
                 @Override
@@ -165,7 +161,7 @@ public class CacheContextMenu {
         }
     }
 
-    public static void deleteSelectedCache() {
+    private static void deleteSelectedCache() {
         ArrayList<String> GcCodeList = new ArrayList<>();
         GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
         CacheListDAO dao = new CacheListDAO();
