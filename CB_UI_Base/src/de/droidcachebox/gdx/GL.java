@@ -465,71 +465,75 @@ public class GL implements ApplicationListener {
     }
 
     public void showDialog(final Dialog dialog, boolean atTop) {
+        try {
+            setFocusedEditTextField(null);
 
-        setFocusedEditTextField(null);
+            //if (dialog instanceof ActivityBase) throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
 
-        //if (dialog instanceof ActivityBase) throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
+            clearRenderViews();
 
-        clearRenderViews();
+            if (dialog.isDisposed())
+                return;
 
-        if (dialog.isDisposed())
-            return;
-
-        // Center Menu on Screen
-        float x = (width - dialog.getWidth()) / 2;
-        float y;
-        if (atTop)
-            y = height - dialog.getHeight();// - (UI_Size_Base.that.getMargin() * 4);
-        else
-            y = (height - dialog.getHeight()) / 2;
-        dialog.setPos(x, y);
-
-        if (aktPopUp != null) {
-            closePopUp(aktPopUp);
-        }
-
-        if (currentDialog != null && currentDialog != dialog) {
-            currentDialog.onHide();
-            currentDialog.setEnabled(false);
-            // am Anfang der Liste einfügen
-            dialogHistory.add(0, currentDialog);
-            mDialog.removeChildsDirekt(currentDialog);
-        }
-
-        currentDialog = dialog;
-
-        mDialog.addChildDirekt(dialog);
-        mDialog.addClickHandler((v, x1, y1, pointer, button) -> {
-            // Sollte bei einem Click neben dem Dialog ausgelöst werden.
-            // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
-            if (currentDialogIsShown) {
-                GL_View_Base vDialog = mDialog.getChild(0);
-                if (vDialog instanceof Menu)
-                    closeDialog(currentDialog);
-                if (aktPopUp != null) {
-                    closePopUp(aktPopUp);
-                }
-                return true;
-            }
+            // Center Menu on Screen
+            float x = (width - dialog.getWidth()) / 2;
+            float y;
+            if (atTop)
+                y = height - dialog.getHeight();// - (UI_Size_Base.that.getMargin() * 4);
+            else
+                y = (height - dialog.getHeight()) / 2;
+            dialog.setPos(x, y);
 
             if (aktPopUp != null) {
                 closePopUp(aktPopUp);
-                return true;
             }
 
-            return false;
-        });
+            if (currentDialog != null && currentDialog != dialog) {
+                currentDialog.onHide();
+                currentDialog.setEnabled(false);
+                // am Anfang der Liste einfügen
+                dialogHistory.add(0, currentDialog);
+                mDialog.removeChildsDirekt(currentDialog);
+            }
 
-        child.setClickable(false);
-        currentDialogIsShown = true;
-        darknessAnimationRuns = true;
-        currentDialog.onShow();
-        try {
-            currentDialog.setEnabled(true);
-            currentDialog.setVisible();
-        } catch (Exception ignored) {
+            currentDialog = dialog;
+
+            mDialog.addChildDirekt(dialog);
+            mDialog.addClickHandler((v, x1, y1, pointer, button) -> {
+                // Sollte bei einem Click neben dem Dialog ausgelöst werden.
+                // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
+                if (currentDialogIsShown) {
+                    GL_View_Base vDialog = mDialog.getChild(0);
+                    if (vDialog instanceof Menu)
+                        closeDialog(currentDialog);
+                    if (aktPopUp != null) {
+                        closePopUp(aktPopUp);
+                    }
+                    return true;
+                }
+
+                if (aktPopUp != null) {
+                    closePopUp(aktPopUp);
+                    return true;
+                }
+
+                return false;
+            });
+
+            child.setClickable(false);
+            currentDialogIsShown = true;
+            darknessAnimationRuns = true;
+            currentDialog.onShow();
+            try {
+                currentDialog.setEnabled(true);
+                currentDialog.setVisible();
+            } catch (Exception ignored) {
+            }
+            PlatformUIBase.showForDialog();
         }
-        PlatformUIBase.showForDialog();
+        catch (Exception ex) {
+            Log.err("GL", "ShowDialog", ex);
+        }
 
         renderOnce();
     }

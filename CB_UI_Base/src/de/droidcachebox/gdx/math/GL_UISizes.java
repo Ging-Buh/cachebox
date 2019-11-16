@@ -131,8 +131,6 @@ public class GL_UISizes implements SizeChangedEvent {
     /**
      * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der übergebenen Größe und des Eingestellten DPI Faktors.
      *
-     * @param width
-     * @param height
      */
     public static void initial(float width, float height) {
 
@@ -160,8 +158,7 @@ public class GL_UISizes implements SizeChangedEvent {
         if (SurfaceSize == null) {
             SurfaceSize = new CB_RectF(0, 0, width, height);
             GL_UISizes tmp = new GL_UISizes();
-            SurfaceSize.Add(tmp);
-
+            SurfaceSize.addListener(tmp);
         } else {
             if (SurfaceSize.setSize(width, height)) {
                 // Surface grösse hat sich geändert, die Positionen der UI-Elemente müssen neu Berechnet werden.
@@ -266,10 +263,10 @@ public class GL_UISizes implements SizeChangedEvent {
 
 
         infoShadowHeight = (float) (3.333333 * defaultDPI);
-        Info.setSize((UiSizes.getInstance().RefWidth - (UiSizes.getInstance().getButtonWidth() * 1.1f) - (margin * 3)), UiSizes.getInstance().getButtonHeight() * 1.1f);
+        Info.setSize((UiSizes.getInstance().RefWidth - (UiSizes.getInstance().getButtonHeight() * 1.1f) - (margin * 3)), UiSizes.getInstance().getButtonHeight() * 1.1f);
         Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
         halfCompass = Compass.getHeight() / 2;
-        Toggle.setSize(UiSizes.getInstance().getButtonWidth() * 1.1f, UiSizes.getInstance().getButtonHeight() * 1.1f);
+        Toggle.setSize(UiSizes.getInstance().getButtonHeight() * 1.1f, UiSizes.getInstance().getButtonHeight() * 1.1f);
         ZoomBtn.setSize((158 * defaultDPI), 48 * defaultDPI);
         PosMarkerSize = (float) (46.666667 * DPI);
         halfPosMarkerSize = PosMarkerSize / 2;
@@ -305,7 +302,7 @@ public class GL_UISizes implements SizeChangedEvent {
         }
     }
 
-    public static int convertDip2Pix(float dips) {
+    private static int convertDip2Pix(float dips) {
         // Converting dips to pixels
         if (scale == 0)
             scale = UiSizes.getInstance().getScale();

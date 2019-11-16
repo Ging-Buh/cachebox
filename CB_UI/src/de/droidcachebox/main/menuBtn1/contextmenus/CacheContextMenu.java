@@ -88,8 +88,8 @@ public class CacheContextMenu {
                 });
             }
         }).setEnabled(selectedCacheIsGC);
-        cacheContextMenu.addMenuItem("MI_EDIT_CACHE", null, () -> new EditCache().update(GlobalCore.getSelectedCache())).setEnabled(selectedCacheIsSet);
-        cacheContextMenu.addMenuItem("MI_DELETE_CACHE", null, () -> {
+        cacheContextMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(GlobalCore.getSelectedCache())).setEnabled(selectedCacheIsSet);
+        cacheContextMenu.addMenuItem("MI_DELETE_CACHE", Sprites.getSprite(IconName.DELETE.name()), () -> {
             deleteSelectedCache();
             GlobalCore.setSelectedWaypoint(null, null, true);
         }).setEnabled(selectedCacheIsSet);
@@ -120,7 +120,6 @@ public class CacheContextMenu {
         if (GlobalCore.isSetSelectedCache()) {
 
             wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
-                // TODO handle cancel
             }, new ICancelRunnable() {
 
                 @Override

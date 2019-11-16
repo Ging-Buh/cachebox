@@ -20,6 +20,7 @@ import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.ViewID;
 import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 
@@ -65,8 +66,13 @@ public class PlatformUIBase {
 
     public static void showForDialog() {
         if (showViewListener != null) {
-            GL.that.clearRenderViews();
-            showViewListener.showForDialog();
+            try {
+                GL.that.clearRenderViews();
+                showViewListener.showForDialog();
+            }
+            catch (Exception ex) {
+                Log.err("PlatformUIBase", "showForDialog", ex);
+            }
         }
     }
 

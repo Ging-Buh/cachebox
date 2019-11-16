@@ -34,11 +34,11 @@ import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListene
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.UnitFormatter;
@@ -205,7 +205,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
 
     private void createTable() {
         float leftMaxWidth = 0;
-        CB_RectF lblRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight() / 2.5f);
+        CB_RectF lblRec = new CB_RectF(0, 0, 0, UiSizes.getInstance().getButtonHeight() / 2.5f);
 
         lblGPS = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.get("gps")).getTextWidth());

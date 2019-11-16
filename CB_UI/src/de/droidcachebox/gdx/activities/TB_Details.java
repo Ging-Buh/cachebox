@@ -15,7 +15,6 @@
  */
 package de.droidcachebox.gdx.activities;
 
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.LogTypes;
@@ -70,7 +69,7 @@ public class TB_Details extends ActivityBase {
             return true;
         });
 
-        CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight());
+        CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight());
         iconRec = iconRec.ScaleCenter(0.8f);
         icon = new Image(iconRec, "Icon", false);
         title = new EditTextField(iconRec, this, "title");

@@ -26,7 +26,6 @@ import de.droidcachebox.CB_UI_Base_Settings;
 public class UiSizes {
 
     private static UiSizes uiSizes;
-    private int ButtonWidth;
     private int ButtonHeight;
     private int WideButtonWidth;
     private int scaledFontSize_normal;
@@ -36,16 +35,11 @@ public class UiSizes {
     private int scaledFontSize_big;
     private int scaledFontSize_btn;
     private int ScaledFontSize_small;
-    private int ScaledFontSize_supersmall;
-    private int IconContextMenuHeight;
     private float scale;
     private int margin;
-    private double calcBase;
-    public  int RefWidth;
+    int RefWidth;
     private int mClickToleranz;
-    private DevicesSizes devicesSizes;
     private Size QuickButtonList;
-    private int CacheInfoHeight;
     private int scaledIconSize;
     private int CornerSize;
     private int infoSliderHeight;
@@ -54,12 +48,9 @@ public class UiSizes {
     private int halfCornerSize;
     private Size CacheListItemSize;
     private CB_Rect CacheListDrawRec;
-    private int StrengthHeightMultipler;
     private int arrowScaleList;
-    private int arrowScaleMap;
     private int TB_icon_Size;
     private CB_RectF ButtonRectF;
-    private CB_RectF WideButtonRectF;
     private boolean isInitialized;
 
     private UiSizes() {
@@ -76,21 +67,17 @@ public class UiSizes {
     }
 
     public Size initialize(DevicesSizes devicesSizes) {
-        this.devicesSizes = devicesSizes;
         this.windowWidth = devicesSizes.Window.width;
         this.windowHeight = devicesSizes.Window.height;
         this.scale = devicesSizes.Density; // res.getDisplayMetrics().density;
 
         mClickToleranz = (int) (17 * scale);
 
-        calcBase = 533.333 * scale;
-
         margin = (int) (10 * scale);
 
         float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
 
-        ButtonWidth = (int) (NormalTextSize * scale);
-        ButtonHeight = ButtonWidth;
+        ButtonHeight = (int) (NormalTextSize * scale);
         WideButtonWidth = (windowWidth - 4 * margin) / 3;
 
         RefWidth = windowWidth;
@@ -98,12 +85,9 @@ public class UiSizes {
         scaledFontSize_normal = (int) (10 * scale);
         scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
         ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
-        ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
         scaledFontSize_btn = (int) (11 * scale);
 
         iconSize = (int) (10 * scale);
-
-        IconContextMenuHeight = (int) (calcBase / 11.1);
 
         int quickButtonRef = 320;
         QuickButtonList = new Size((int) (quickButtonRef * scale - (13.3333f * scale)), (int) (((quickButtonRef * scale) / 5) - 4 * scale));
@@ -111,7 +95,6 @@ public class UiSizes {
         scaledIconSize = (int) (10 * scale);
 
         CornerSize = (int) (10 * scale);
-        CacheInfoHeight = (int) (40 * scale);
         infoSliderHeight = (int) (30 * scale);
 
         spaceWidth = (int) (scaledFontSize_normal * 0.9);
@@ -122,13 +105,10 @@ public class UiSizes {
 
         CacheListItemSize = new Size(RefWidth, (int) ItemHeight);
         CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
-        StrengthHeightMultipler = (int) (calcBase / 600);
 
         arrowScaleList = (int) (10 * scale);
-        arrowScaleMap = (int) (10 * scale);
         TB_icon_Size = (int) (10 * scale);
-        ButtonRectF = new CB_RectF(0, 0, ButtonWidth, ButtonHeight);
-        WideButtonRectF = new CB_RectF(0, 0, WideButtonWidth, ButtonHeight);
+        ButtonRectF = new CB_RectF(0, 0, ButtonHeight);
 
         isInitialized = true;
         return new Size(windowWidth, windowHeight);
@@ -150,16 +130,12 @@ public class UiSizes {
         return ButtonHeight;
     }
 
-    public int getButtonWidth() {
-        return ButtonWidth;
-    }
-
     public int getButtonWidthWide() {
         return WideButtonWidth;
     }
 
     public SizeF getChkBoxSize() {
-        float h = ButtonWidth * 0.88f;
+        float h = ButtonHeight * 0.88f;
         return new SizeF(h, h);
     }
 
@@ -207,20 +183,8 @@ public class UiSizes {
         return arrowScaleList;
     }
 
-    public int getArrowScaleMap() {
-        return arrowScaleMap;
-    }
-
     public int getQuickButtonListHeight() {
         return QuickButtonList.height;
-    }
-
-    public int getQuickButtonListWidth() {
-        return QuickButtonList.width;
-    }
-
-    public int getCacheInfoHeight() {
-        return CacheInfoHeight;
     }
 
     public int getInfoSliderHeight() {
@@ -233,18 +197,6 @@ public class UiSizes {
 
     public CB_Rect getCacheListItemRec() {
         return CacheListDrawRec;
-    }
-
-    public int getIconAddCorner() {
-        return iconSize + CornerSize;
-    }
-
-    public int getStrengthHeight() {
-        return StrengthHeightMultipler;
-    }
-
-    public int getIconContextMenuHeight() {
-        return IconContextMenuHeight;
     }
 
     public int getCornerSize() {
@@ -271,7 +223,4 @@ public class UiSizes {
         return ButtonRectF;
     }
 
-    public CB_RectF getWideButtonRectF() {
-        return WideButtonRectF;
-    }
 }

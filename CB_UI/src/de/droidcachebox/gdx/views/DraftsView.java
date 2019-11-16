@@ -15,6 +15,7 @@
  */
 package de.droidcachebox.gdx.views;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.*;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -587,30 +588,39 @@ public class DraftsView extends V_ListView {
             return v;
         }
 
-        private boolean onItemClicked(DraftViewItem v) {
-            DraftViewItem draftViewItem = (DraftViewItem) v;
+        private boolean onItemClicked(DraftViewItem draftViewItem) {
             int index = draftViewItem.getIndex();
             aktDraft = lDrafts.get(index);
-            if (draftViewItem.headerClicked) {
-                draftViewItem.headerClicked = false;
-                Menu cm = new Menu("DraftItemMenuTitle");
-                cm.addMenuItem("edit", null, this::editDraft);
-                if (aktDraft.GcId != null) {
-                    if (aktDraft.GcId.startsWith("GL")) {
-                        cm.addMenuItem("uploadLogImage", Sprites.getSprite(IconName.imagesIcon.name()), this::uploadLogImage);
-                        cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
-                    }
+            draftViewItem.headerClicked = false;
+            Menu cm = new Menu("DraftItemMenuTitle");
+            cm.addMenuItem("edit", null, this::editDraft);
+            if (aktDraft.GcId != null) {
+                if (aktDraft.GcId.startsWith("GL")) {
+                    cm.addMenuItem("uploadLogImage", Sprites.getSprite(IconName.imagesIcon.name()), this::uploadLogImage);
+                    cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
                 }
-                cm.addMenuItem("uploadDrafts", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
-                if (CB_Core_Settings.DirectOnlineLog.getValue())
-                    cm.addMenuItem("directLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
-                cm.addMenuItem("SelectCache", null, this::selectCacheFromDraft);
-                cm.addMenuItem("delete", Sprites.getSprite(IconName.DELETE.name()), this::deleteDraft);
-                cm.show();
+            }
+            cm.addMenuItem("uploadAsDraft", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
+            if (CB_Core_Settings.DirectOnlineLog.getValue())
+                cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
+            Sprite icon;
+            if (aktDraft.isTbDraft) {
+                // Sprite from url ?  draft.TbIconUrl
+                icon = null;
+            }
+            else {
+                icon = Sprites.getSprite("big" + CacheTypes.values()[aktDraft.cacheType].name());
+            }
+            cm.addMenuItem("SelectCache", icon, this::selectCacheFromDraft);
+            cm.addMenuItem("delete", Sprites.getSprite(IconName.DELETE.name()), this::deleteDraft);
+            cm.show();
+            /*
+            if (draftViewItem.headerClicked) {
             } else {
                 draftViewItem.headerClicked = false;
                 editDraft();
             }
+             */
             return true;
         }
 

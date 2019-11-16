@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.CB_Button;
@@ -66,7 +65,7 @@ public class Menu extends ButtonDialog {
 
     public Menu(String titleTranlationId) {
         super(getMenuRec(), titleTranlationId);
-        setTitle(Translation.get(titleTranlationId));
+        setTitle("<= " + Translation.get(titleTranlationId));
         autoClose = true;
         singleSelection = false;
 
@@ -188,7 +187,7 @@ public class Menu extends ButtonDialog {
                 for (MenuItem item : mItems) {
                     higherValue += item.getHeight() + mListView.getDividerHeight();
                 }
-                float freiraumObenPlusUnten = 0; // x * UI_Size_Base.that.getButtonHeight();
+                float freiraumObenPlusUnten = 0; // 2 * UiSizes.getInstance().getButtonHeight();
                 if (higherValue > UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten) {
                     higherValue = UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten;
                 }

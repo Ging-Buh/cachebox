@@ -93,7 +93,7 @@ public class TB_Log extends ActivityBase {
         contentBox.setHeight(this.getHeight() - (btnClose.getHeight() - margin) * 2.5f);
         contentBox.setBackground(Sprites.activityBackground);
 
-        CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight());
+        CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight());
         iconRec = iconRec.ScaleCenter(0.8f);
 
         icon = new Image(iconRec, "Icon", false);

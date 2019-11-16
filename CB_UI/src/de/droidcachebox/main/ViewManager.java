@@ -379,8 +379,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                 }
             }
             invalidateTextureEventList.Call();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(log, "reloadSprites", ex);
         }
         GL.that.restartRendering();
     }

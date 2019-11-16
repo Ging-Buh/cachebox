@@ -39,9 +39,9 @@ public class ConnectionError extends Toast {
     }
 
     private void createContent(String msg) {
-        float wh = UiSizes.getInstance().getButtonWidth() * 4f;
+        float wh = UiSizes.getInstance().getButtonHeight() * 4f;
 
-        CB_RectF posRec = new CB_RectF((UiSizes.getInstance().getWindowWidth() / 2) - (wh / 2), UiSizes.getInstance().getWindowHeight() - wh - Dialog.margin, wh, wh / 2);
+        CB_RectF posRec = new CB_RectF((UiSizes.getInstance().getButtonHeight() / 2) - (wh / 2), UiSizes.getInstance().getWindowHeight() - wh - Dialog.margin, wh, wh / 2);
 
         this.setRec(posRec);
 

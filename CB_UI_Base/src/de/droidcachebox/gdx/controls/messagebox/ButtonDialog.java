@@ -30,6 +30,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -236,12 +237,11 @@ public class ButtonDialog extends Dialog {
     public void show() {
         GL.that.RunOnGL(() -> {
             try {
-                GL.that.showDialog(ButtonDialog.this);
-            } catch (Exception e) {
-
+                GL.that.showDialog(this);
+            } catch (Exception ex) {
+                Log.err("ButtonDialog", "show", ex);
             }
         });
-
     }
 
     private Sprite getIcon(MessageBoxIcon msgIcon) {

@@ -35,34 +35,34 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public abstract class GL_View_Base extends CB_RectF {
-    public static final int MOUSE_WHEEL_POINTER_UP = -280272;
-    public static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
+    protected static final int MOUSE_WHEEL_POINTER_UP = -280272;
+    protected static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
     private static final String log = "GL_View_Base";
     public static boolean debug = false;
     public static boolean disableScissor = false;
     protected static int nDepthCounter = 0;
     private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     private static boolean calling = false;
-    protected final Matrix4 rotateMatrix = new Matrix4();
+    private final Matrix4 rotateMatrix = new Matrix4();
     protected final MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
     private final ParentInfo myInfoForChild = new ParentInfo();
     public boolean withoutScissor = false;
-    public Pixmap debugRegPixmap = null;
-    public Texture debugRegTexture = null;
-    public Vector2 lastTouchPos;
+    protected Pixmap debugRegPixmap = null;
+    protected Texture debugRegTexture = null;
+    protected Vector2 lastTouchPos;
     public CB_RectF thisWorldRec = new CB_RectF();
-    public CB_RectF intersectRec = new CB_RectF();
+    protected CB_RectF intersectRec = new CB_RectF();
     public ParentInfo myParentInfo = new ParentInfo();
     protected String name = "";
     protected Drawable drawableBackground;
     protected OnClickListener mOnClickListener;
-    protected OnClickListener mOnLongClickListener;
-    protected OnClickListener mOnDoubleClickListener;
+    private OnClickListener mOnLongClickListener;
+    private OnClickListener mOnDoubleClickListener;
     protected Sprite DebugSprite = null;
     protected boolean onTouchUp = false;
     protected boolean onTouchDown = false;
     protected GL_View_Base parent;
-    protected float Weight = 1f;
+    float Weight = 1f;
     protected float leftBorder = 0;
     protected float rightBorder = 0;
     protected float topBorder = 0;
@@ -71,17 +71,12 @@ public abstract class GL_View_Base extends CB_RectF {
     protected float innerHeight = getHeight();
     protected boolean childsInvalidate = false;
     protected boolean thisInvalidate = true;
-    protected float mRotate = 0;
-    protected float mOriginX;
-    protected float mOriginY;
+    private float mRotate = 0;
+    private float mOriginX;
+    private float mOriginY;
     protected float mScale = 1f;
-    protected SkinChangedEventListener mSkinChangedEventListener = new SkinChangedEventListener() {
-        @Override
-        public void SkinChanged() {
-            skinIsChanged();
-        }
-    };
-    protected Color mColorFilter = null;
+    private SkinChangedEventListener mSkinChangedEventListener = this::skinIsChanged;
+    private Color mColorFilter = null;
     protected Object data = null;
     private boolean forceHandleTouchEvents = false;
     private boolean isClickable = false;
@@ -92,7 +87,6 @@ public abstract class GL_View_Base extends CB_RectF {
     private boolean ChildIsDoubleClickable = false;
     private boolean mVisible = true;
     private boolean enabled = true;
-    private boolean mustSetScissor = false;
     private boolean isDisposed = false;
 
     public GL_View_Base() {
@@ -563,7 +557,7 @@ public abstract class GL_View_Base extends CB_RectF {
         childsInvalidate = true;
         thisWorldRec.setRec(this);
         thisWorldRec.offset(-this.getX() + myParentInfo.Vector().x, -this.getY() + myParentInfo.Vector().y);
-        mustSetScissor = !myParentInfo.drawRec().contains(thisWorldRec);
+        boolean mustSetScissor = !myParentInfo.drawRec().contains(thisWorldRec);
 
         if (mustSetScissor) {
             intersectRec.setRec(myParentInfo.drawRec().createIntersection(thisWorldRec));

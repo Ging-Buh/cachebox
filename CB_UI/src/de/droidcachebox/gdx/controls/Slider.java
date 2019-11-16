@@ -1,7 +1,10 @@
 package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import de.droidcachebox.*;
+import de.droidcachebox.CB_UI_Settings;
+import de.droidcachebox.Config;
+import de.droidcachebox.SelectedCacheChangedEventListener;
+import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheSizes;
 import de.droidcachebox.database.CacheTypes;
@@ -10,12 +13,12 @@ import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.graphics.ColorDrawable;
 import de.droidcachebox.gdx.graphics.HSV_Color;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeChangedEvent;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.WaypointViewItem;
+import de.droidcachebox.main.ViewManager;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -357,7 +360,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
             cacheDesc.setHeight(cacheDesc.getHeight() + cacheDesc.getAttributeHeight() + cacheDesc.getStarsHeight() + (cacheDesc.getTexteHeight() / 2));
             cacheDesc.requestLayout();
             cacheDesc.isSelected = true;
-            cacheDesc.Add(onItemSizeChanged);
+            cacheDesc.addListener(onItemSizeChanged);
             mSlideBoxContent.addChild(cacheDesc);
         }
 
@@ -365,7 +368,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
             waypointDesc = new WaypointViewItem(rec, 1, actCache, actWaypoint);
             waypointDesc.isSelected = true;
             cacheDesc.isSelected = false;
-            waypointDesc.Add(onItemSizeChanged);
+            waypointDesc.addListener(onItemSizeChanged);
             mSlideBoxContent.addChild(waypointDesc);
         } else {
             if (waypointDesc != null)

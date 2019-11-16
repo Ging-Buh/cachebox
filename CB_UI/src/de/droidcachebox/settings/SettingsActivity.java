@@ -22,14 +22,14 @@ import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListene
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
-import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.locator.PositionChangedListeners;
+import de.droidcachebox.main.QuickButtonItem;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Lang;
 import de.droidcachebox.translation.SelectedLangChangedEvent;
 import de.droidcachebox.translation.SelectedLangChangedEventList;
@@ -101,11 +101,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private void createButtons() {
-        float btnW = (innerWidth - UiSizes.getInstance().getButtonWidth()) / 2;
+        float btnW = (innerWidth - UiSizes.getInstance().getButtonHeight()) / 2;
 
-        btnOk = new CB_Button(leftBorder, this.getBottomHeight(), btnW, UiSizes.getInstance().getButtonHeight(), "OK Button");
-        btnMenu = new CB_Button(btnOk.getMaxX(), this.getBottomHeight(), UiSizes.getInstance().getButtonWidth(), UiSizes.getInstance().getButtonHeight(), "Menu Button");
-        btnCancel = new CB_Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
+        btnOk = new CB_Button(leftBorder, getBottomHeight(), btnW, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        btnMenu = new CB_Button(new CB_RectF(btnOk.getMaxX(), getBottomHeight(), UiSizes.getInstance().getButtonHeight()), "Menu Button");
+        btnCancel = new CB_Button(btnMenu.getMaxX(), getBottomHeight(), btnW, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         btnOk.setText(Translation.get("save"));
         btnCancel.setText(Translation.get("cancel"));
@@ -1102,17 +1102,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;

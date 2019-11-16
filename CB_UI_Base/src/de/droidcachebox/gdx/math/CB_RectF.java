@@ -17,8 +17,8 @@
 package de.droidcachebox.gdx.math;
 
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.MoveableList;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Eine Struktur für RectF mit besonderen Methoden speziell für die Handhabung in der Verwendung der berechneten Grössen und Positionen einzelner UI Elemente in Cachebox
@@ -26,9 +26,7 @@ import de.droidcachebox.utils.MoveableList;
  * @author Longri
  */
 public class CB_RectF {
-    // Member
-
-    private static MoveableList<Integer> Geraden = new MoveableList<Integer>();
+    private CopyOnWriteArrayList<SizeChangedEvent> sizeChangedEvents;
     /**
      * Holds all values <br>
      * <br>
@@ -43,8 +41,7 @@ public class CB_RectF {
      * [8] = centerPos.x <br>
      * [9] = centerPos.x <br>
      */
-    private float member[] = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    private CB_List<SizeChangedEvent> list = new CB_List<>(1);
+    private float[] member = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
     public CB_RectF() {
     }
@@ -72,8 +69,6 @@ public class CB_RectF {
     }
 
     public CB_RectF(CB_RectF rec) {
-        if (member == null)
-            throw new IllegalStateException("Is Disposed");
         if (rec != null && rec.member != null) {
             System.arraycopy(rec.member, 0, this.member, 0, 10);
         }
@@ -90,7 +85,7 @@ public class CB_RectF {
     /**
      * Berechnet die rechte obere Ecke
      */
-    protected void calcCrossCorner() {
+    private void calcCrossCorner() {
         if (member == null)
             throw new IllegalStateException("Is Disposed");
         this.member[4] = this.member[2] / 2;
@@ -116,7 +111,6 @@ public class CB_RectF {
 
     /**
      * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
-     *
      */
     public boolean setSize(float Width, float Height) {
         if (member == null)
@@ -126,7 +120,7 @@ public class CB_RectF {
         member[2] = Width;
         member[3] = Height;
         calcCrossCorner();
-        CallRecChanged();
+        sizeChanged();
         return true;
     }
 
@@ -175,7 +169,7 @@ public class CB_RectF {
             return;
         this.member[0] = i;
         calcCrossCorner();
-        CallRecChanged();
+        sizeChanged();
     }
 
     public float getY() {
@@ -191,7 +185,7 @@ public class CB_RectF {
             return;
         this.member[1] = i;
         calcCrossCorner();
-        CallRecChanged();
+        sizeChanged();
     }
 
     public float getWidth() {
@@ -207,7 +201,7 @@ public class CB_RectF {
             return;
         member[2] = Width;
         calcCrossCorner();
-        CallRecChanged();
+        sizeChanged();
     }
 
     public float getHeight() {
@@ -221,7 +215,7 @@ public class CB_RectF {
             return;
         member[3] = Height;
         calcCrossCorner();
-        CallRecChanged();
+        sizeChanged();
     }
 
     public boolean contains(Vector2 ret) {
@@ -252,9 +246,6 @@ public class CB_RectF {
 
     /**
      * liefert True, wenn das übergebene Rechteck kommplett in diese rechteck Passt.
-     *
-     * @param rec
-     * @return
      */
     public boolean contains(CB_RectF rec) {
         if (member == null)
@@ -267,35 +258,17 @@ public class CB_RectF {
         return ret;
     }
 
-    public void Add(SizeChangedEvent event) {
-        synchronized (list) {
-            if (list == null)
-                return; // is disposed
-            list.add(event);
-        }
+    public void addListener(SizeChangedEvent listener) {
+        if (sizeChangedEvents == null) sizeChangedEvents = new CopyOnWriteArrayList<>();
+        sizeChangedEvents.add(listener);
     }
 
-    public void Remove(SizeChangedEvent event) {
-        synchronized (list) {
-            if (list == null)
-                return; // is disposed
-            list.remove(event);
-        }
-    }
-
-    public void CallRecChanged() {
-        synchronized (list) {
-            if (list == null)
-                return; // is disposed
-
-            resize(this.member[2], this.member[3]);
-
-            if (list.size() > 0) {
-                for (int i = 0, n = list.size(); i < n; i++) {
-                    list.get(i).sizeChanged();
-                }
+    private void sizeChanged() {
+        resize(member[2], member[3]);
+        if (sizeChangedEvents != null)
+            for (SizeChangedEvent listener : sizeChangedEvents) {
+                listener.sizeChanged();
             }
-        }
     }
 
     public void resize(float width, float height) {
@@ -342,10 +315,7 @@ public class CB_RectF {
             return false;
         if (this.member[2] != rec.member[2])
             return false;
-        if (this.member[3] != rec.member[3])
-            return false;
-
-        return true;
+        return this.member[3] == rec.member[3];
     }
 
     public CB_RectF copy() {
@@ -374,25 +344,14 @@ public class CB_RectF {
      *
      * @param P1    = start Punkt der Linie
      * @param P2    = End Punkt der Line
-     * @param first
+     * @param first line of rectangle to be used
      * @return Punkt (b) wenn first=1 </br> Punkt (a) wenn first=2,3 oder 4 </br>
      */
     public Vector2 getIntersection(Vector2 P1, Vector2 P2, int first) {
-
-        // Array mit Geraden Nummern füllen
-        if (Geraden.size() < 4) {
-            Geraden.add(1);
-            Geraden.add(2);
-            Geraden.add(3);
-            Geraden.add(4);
-        }
-
-        Geraden.MoveItemFirst(Geraden.indexOf(first));
-
         Vector2 ret = new Vector2();
-
-        for (int i = 0, n = Geraden.size(); i < n; i++) {
-            switch (Geraden.get(i)) {
+        int i = first;
+        for (int j = 1; j <= 4; j++) {
+            switch (i) {
                 case 1:
                     if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[6], this.member[1]), ret)) {
                         if (contains(ret))
@@ -418,8 +377,9 @@ public class CB_RectF {
                     }
                     break;
             }
+            i++;
+            if (i > 4) i = 1;
         }
-
         return null;
     }
 
@@ -428,7 +388,7 @@ public class CB_RectF {
      *
      * @return the smallest x coordinate of the framing rectangle of the <code>CB_RectF</code>.
      */
-    public float getMinX() {
+    private float getMinX() {
         return getX();
     }
 
@@ -437,7 +397,7 @@ public class CB_RectF {
      *
      * @return the smallest y coordinate of the framing rectangle of the <code>CB_RectF</code>.
      */
-    public float getMinY() {
+    private float getMinY() {
         return getY();
     }
 
@@ -482,7 +442,7 @@ public class CB_RectF {
         if (this.equals(rec))
             return;
         System.arraycopy(rec.member, 0, this.member, 0, 10);
-        CallRecChanged();
+        sizeChanged();
     }
 
     @Override
@@ -502,7 +462,7 @@ public class CB_RectF {
         this.member[0] = x;
         this.member[1] = y;
         calcCrossCorner();
-        CallRecChanged();
+        sizeChanged();
     }
 
     public float getCenterPosX() {
@@ -528,17 +488,12 @@ public class CB_RectF {
         this.member[2] = width;
         this.member[3] = height;
         calcCrossCorner();
-        CallRecChanged();
+        sizeChanged();
     }
 
     public void dispose() {
-        if (list != null) {
-            synchronized (list) {
-                list.clear();
-                list = null;
-            }
-        }
+        if (sizeChangedEvents != null)
+            sizeChangedEvents.clear();
         member = null;
-
     }
 }
