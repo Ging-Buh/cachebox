@@ -70,7 +70,7 @@ public class CacheContextMenu {
             cacheContextMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().Execute());
             cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().Execute());
             cacheContextMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().Execute());
-            cacheContextMenu.addMenuItem("descExt", Sprites.getSprite(IconName.hintIcon.name()), () -> StartExternalDescription.getInstance().Execute());
+            cacheContextMenu.addMenuItem("descExt", Sprites.getSprite(IconName.docIcon.name()), () -> StartExternalDescription.getInstance().Execute());
         } else {
             cacheContextMenu.addDivider();
             cacheContextMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().Execute());

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class SQLiteClass implements SQLiteInterface {
     private static final String log = "SQLiteClass";
-    Connection myDB = null;
+    private Connection myDB = null;
 
     public SQLiteClass() {
         try {
@@ -77,7 +77,7 @@ public class SQLiteClass implements SQLiteInterface {
             StringBuilder sb = new StringBuilder("RAW_QUERY :" + sql + " ARGs= ");
             if (args != null) {
                 for (String arg : args)
-                    sb.append(arg + ", ");
+                    sb.append(arg).append(", ");
             } else
                 sb.append("NULL");
             Log.trace(log, sb.toString());
@@ -101,7 +101,7 @@ public class SQLiteClass implements SQLiteInterface {
         }
 
         // TODO Hack to get Rowcount
-        ResultSet rs2 = null;
+        ResultSet rs2;
         int rowcount = 0;
         PreparedStatement statement2 = null;
         try {
@@ -123,10 +123,9 @@ public class SQLiteClass implements SQLiteInterface {
             e.printStackTrace();
         } finally {
             try {
+                assert statement2 != null;
                 statement2.close();
-            } catch (SQLException e) {
-
-                e.printStackTrace();
+            } catch (SQLException ignored) {
             }
         }
 
@@ -141,18 +140,13 @@ public class SQLiteClass implements SQLiteInterface {
         Log.trace(log, "execSQL : " + sql);
 
         boolean ret;
-        Statement statement = null;
         try {
-            statement = myDB.createStatement();
-            ret = statement.execute(sql);
+            try (Statement statement = myDB.createStatement()) {
+                ret = statement.execute(sql);
+            }
         } catch (SQLException e) {
             ret = false;
-            e.printStackTrace();
-        } finally {
-            try {
-                statement.close();
-            } catch (SQLException e) {
-            }
+            // e.printStackTrace();
         }
         return ret;
     }
@@ -162,12 +156,12 @@ public class SQLiteClass implements SQLiteInterface {
 
         if (LogLevel.shouldWriteLog(LogLevel.TRACE)) {
             StringBuilder sb = new StringBuilder("Update @ Table:" + tablename);
-            sb.append("Parameters:" + val.toString());
-            sb.append("WHERECLAUSE:" + whereClause);
+            sb.append("Parameters:").append(val.toString());
+            sb.append("WHERECLAUSE:").append(whereClause);
 
             if (whereArgs != null) {
                 for (String arg : whereArgs) {
-                    sb.append(arg + ", ");
+                    sb.append(arg).append(", ");
                 }
             }
 
@@ -222,10 +216,9 @@ public class SQLiteClass implements SQLiteInterface {
             return 0;
         } finally {
             try {
+                assert st != null;
                 st.close();
-            } catch (SQLException e) {
-
-                e.printStackTrace();
+            } catch (SQLException ignored) {
             }
         }
         return ret;
@@ -280,9 +273,9 @@ public class SQLiteClass implements SQLiteInterface {
             return 0;
         } finally {
             try {
+                assert st != null;
                 st.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ignored) {
             }
         }
     }
@@ -291,7 +284,7 @@ public class SQLiteClass implements SQLiteInterface {
     public long delete(String tablename, String whereClause, String[] whereArgs) {
         if (LogLevel.shouldWriteLog(LogLevel.TRACE)) {
             StringBuilder sb = new StringBuilder("Delete@ Table:" + tablename);
-            sb.append("WHERECLAUSE:" + whereClause);
+            sb.append("WHERECLAUSE:").append(whereClause);
 
             if (whereArgs != null) {
                 for (String arg : whereArgs) {

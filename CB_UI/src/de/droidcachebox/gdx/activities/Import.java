@@ -76,7 +76,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private boolean LOG_LINE_ACTIVE = true;
     private boolean DB_LINE_ACTIVE = true;
     private boolean IMAGE_LINE_ACTIVE;
-    private int importType; // um direkt gleich den Import für eine bestimmte API starten zu können
     private V_ListView lvPQs, lvCBServer;
     private CB_Button bOK;
     private CB_Button refreshPqList;
@@ -158,7 +157,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     public Import(int importType) {
         super(activityRec(), "importActivity");
-        this.importType = importType;
+        // um direkt gleich den Import für eine bestimmte API starten zu können
         CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
         IMAGE_LINE_ACTIVE = true;
         switch (importType) {
@@ -200,7 +199,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         }
         Log.debug(log, "is Premium = " + PQ_LINE_ACTIVE);
         createPQLines();
-        createCBServerLines();
+        // createCBServerLines();
         createPqCollapseBox();
         createCBServerCollapseBox();
         createGpxLine();
@@ -1204,14 +1203,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     static class ImportAPIListItem extends ListViewItemBackground {
-        private CB_CheckBox chk;
-        private CB_Label lblName, lblInfo;
 
-        public ImportAPIListItem(CB_RectF rec, int Index, final RpcAnswer_GetExportList.ListItem item) {
+        ImportAPIListItem(CB_RectF rec, int Index, final RpcAnswer_GetExportList.ListItem item) {
             super(rec, Index, "");
 
-            lblName = new CB_Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
-            lblInfo = new CB_Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+            CB_Label lblName = new CB_Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+            CB_Label lblInfo = new CB_Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
 
             lblName.setFont(Fonts.getNormal());
             lblInfo.setFont(Fonts.getSmall());
@@ -1222,22 +1219,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             // String dateString = postFormater.format(pq.lastGenerated);
             // DecimalFormat df = new DecimalFormat("###.##");
             // String FileSize = df.format(pq.sizeMB) + " MB";
-            String Count = "   Count=" + String.valueOf(item.getCacheCount());
+            String Count = "   Count=" + item.getCacheCount();
             lblInfo.setText(Count);
 
             // lblInfo.setText("---");
 
-            chk = new CB_CheckBox("");
+            CB_CheckBox chk = new CB_CheckBox("");
             chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
             chk.setY(this.getHalfHeight() - chk.getHalfHeight());
             chk.setChecked(false);
-            chk.setOnCheckChangedListener(new OnCheckChangedListener() {
-
-                @Override
-                public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
-                    item.setDownload(isChecked);
-                }
-            });
+            chk.setOnCheckChangedListener((view, isChecked) -> item.setDownload(isChecked));
 
             this.addChild(lblName);
             this.addChild(lblInfo);
@@ -1318,29 +1309,27 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     }
 
-    public class Import_PqListItem extends ListViewItemBackground {
-        private final CB_CheckBox chk;
-        private final CB_Label lblName, lblInfo;
+    public static class Import_PqListItem extends ListViewItemBackground {
 
-        public Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
+        Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
             super(rec, Index, "");
 
-            lblName = new CB_Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
-            lblInfo = new CB_Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+            CB_Label lblName = new CB_Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+            CB_Label lblInfo = new CB_Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
 
             lblName.setFont(Fonts.getSmall());
             lblInfo.setFont(Fonts.getBubbleSmall());
 
             lblName.setText(pq.name);
 
-            SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
             String dateString = Translation.get("PQcreationDate") + ": " + postFormater.format(pq.lastGenerated);
             //DecimalFormat df = new DecimalFormat("###.##");
             //String FileSize = df.format(pq.sizeMB) + " MB";
-            String Count = "\n" + Translation.get("Count") + ": " + String.valueOf(pq.cacheCount);
+            String Count = "\n" + Translation.get("Count") + ": " + pq.cacheCount;
             lblInfo.setText(dateString + Count); // + "  " + FileSize
 
-            chk = new CB_CheckBox("");
+            CB_CheckBox chk = new CB_CheckBox("");
             chk.setRec(chk.ScaleCenter(0.6f));
             chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
             chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
