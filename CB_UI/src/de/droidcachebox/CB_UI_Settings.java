@@ -133,6 +133,7 @@ public interface CB_UI_Settings {
 
     SettingBool ShowDraftsAsDefaultView = new SettingBool("ShowDraftsAsDefaultView", Skin, EXPERT, false, Global, ACB, true);
     SettingBool ShowDraftsContextMenuWithFirstShow = new SettingBool("ShowDraftsCMwithFirstShow", Skin, EXPERT, false, Global, ACB, false);
+    SettingBool CacheContextMenuShortClickToggle = new SettingBool("CacheContextMenuShortClickToggle", Skin, NEVER, true, Global, ACB, false);
 
     SettingBool MultiDBAsk = new SettingBool("MultiDBAsk", Internal, NEVER, true, Global, ACB);
     SettingString DatabaseName = new SettingString("DatabaseName", Internal, NEVER, "cachebox.db3", Global, ACB);

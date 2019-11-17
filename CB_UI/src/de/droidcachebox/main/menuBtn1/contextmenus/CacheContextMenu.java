@@ -18,7 +18,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.main.menuBtn1.ShowTrackableList;
 import de.droidcachebox.main.menuBtn2.*;
 import de.droidcachebox.main.menuBtn3.ShowMap;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
+import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BUTTON_POSITIVE;
 
 public class CacheContextMenu {
     private static final String ClassName = "CacheContextMenu";
@@ -48,51 +48,16 @@ public class CacheContextMenu {
         if (selectedCacheIsSet) {
             selectedCacheIsGC = GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
         }
-        cacheContextMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), CacheContextMenu::reloadSelectedCache).setEnabled(selectedCacheIsGC);
         if (forCacheList) {
+            cacheContextMenu.addCheckableMenuItem("CacheContextMenuShortClickToggle", Config.CacheContextMenuShortClickToggle.getValue(), CacheContextMenu::toggleShortClick);
             cacheContextMenu.addMoreMenu(ShowDrafts.getInstance().getContextMenu(), Translation.get("DraftsContextMenuTitle"), Translation.get("DraftsContextMenuTitle"));
         }
-        MenuItem mi;
-        mi = cacheContextMenu.addMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), () -> {
-            GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
-            CacheDAO dao = new CacheDAO();
-            dao.UpdateDatabase(GlobalCore.getSelectedCache());
-            // Update cacheList
-            Database.Data.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
-            // Update View
-            ShowDescription.getInstance().updateDescriptionView(true);
-            CacheListChangedListeners.getInstance().cacheListChanged();
-        });
-        mi.setEnabled(selectedCacheIsSet);
-        mi.setCheckable(true);
-        mi.setChecked(selectedCacheIsSet && GlobalCore.getSelectedCache().isFavorite());
-        cacheContextMenu.addMenuItem("AddToWatchList", null, () -> {
-            if (GlobalCore.isSetSelectedCache()) {
-                GL.that.postAsync(() -> {
-                    if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                        MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                    } else {
-                        MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                    }
-                });
-            }
-        }).setEnabled(selectedCacheIsGC);
-        cacheContextMenu.addMenuItem("RemoveFromWatchList", null, () -> {
-            if (GlobalCore.isSetSelectedCache()) {
-                GL.that.postAsync(() -> {
-                    if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                        MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                    } else {
-                        MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                    }
-                });
-            }
-        }).setEnabled(selectedCacheIsGC);
+        cacheContextMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), CacheContextMenu::reloadSelectedCache).setEnabled(selectedCacheIsGC);
+        cacheContextMenu.addCheckableMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), selectedCacheIsSet && GlobalCore.getSelectedCache().isFavorite(), CacheContextMenu::toggleAsFavorite).setEnabled(selectedCacheIsSet);
+        cacheContextMenu.addMenuItem("AddToWatchList", null, CacheContextMenu::addToWatchList).setEnabled(selectedCacheIsGC);
+        cacheContextMenu.addMenuItem("RemoveFromWatchList", null, CacheContextMenu::removeFromWatchList).setEnabled(selectedCacheIsGC);
         cacheContextMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(GlobalCore.getSelectedCache())).setEnabled(selectedCacheIsSet);
-        cacheContextMenu.addMenuItem("MI_DELETE_CACHE", Sprites.getSprite(IconName.DELETE.name()), () -> {
-            deleteSelectedCache();
-            GlobalCore.setSelectedWaypoint(null, null, true);
-        }).setEnabled(selectedCacheIsSet);
+        cacheContextMenu.addMenuItem("MI_DELETE_CACHE", Sprites.getSprite(IconName.DELETE.name()), CacheContextMenu::deleteGeoCache).setEnabled(selectedCacheIsSet);
         if (forCacheList) {
             cacheContextMenu.addDivider();
             cacheContextMenu.addMenuItem("Map", Sprites.getSprite(IconName.map.name()), () -> ShowMap.getInstance().Execute());
@@ -181,5 +146,57 @@ public class CacheContextMenu {
         GlobalCore.setSelectedCache(null);
 
         CacheListChangedListeners.getInstance().cacheListChanged();
+    }
+
+    private static void toggleShortClick() {
+        MessageBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                (btnNumber, data) -> {
+                    if (btnNumber == BUTTON_POSITIVE)
+                        Config.CacheContextMenuShortClickToggle.setValue(false);
+                    else
+                        Config.CacheContextMenuShortClickToggle.setValue(true);
+                    Config.AcceptChanges();
+                    return false;
+                });
+    }
+
+    private static void toggleAsFavorite() {
+        GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
+        CacheDAO dao = new CacheDAO();
+        dao.UpdateDatabase(GlobalCore.getSelectedCache());
+        // Update cacheList
+        Database.Data.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+        // Update View
+        ShowDescription.getInstance().updateDescriptionView(true);
+        CacheListChangedListeners.getInstance().cacheListChanged();
+    }
+
+    private static void addToWatchList() {
+        if (GlobalCore.isSetSelectedCache()) {
+            GL.that.postAsync(() -> {
+                if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
+                    MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                } else {
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                }
+            });
+        }
+    }
+
+    private static void removeFromWatchList() {
+        if (GlobalCore.isSetSelectedCache()) {
+            GL.that.postAsync(() -> {
+                if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
+                    MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                } else {
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                }
+            });
+        }
+    }
+
+    private static void deleteGeoCache() {
+        deleteSelectedCache();
+        GlobalCore.setSelectedWaypoint(null, null, true);
     }
 }

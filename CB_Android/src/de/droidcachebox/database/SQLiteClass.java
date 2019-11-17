@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import de.droidcachebox.database.AndroidCursor;
-import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -31,7 +28,7 @@ public class SQLiteClass implements SQLiteInterface {
             myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READWRITE);
             return true;
         } catch (Exception ex) {
-            Log.err(log, "open: ", ex);
+            // Log.err(log, "open: ", ex); // for a new database
             return false;
         }
     }
@@ -87,7 +84,7 @@ public class SQLiteClass implements SQLiteInterface {
             myDB.execSQL(sql);
             return true;
         } catch (Exception ex) {
-            Log.err(log, "execSQL: ", ex);
+            // Log.err(log, "execSQL: ", ex); // use throw ?
             return false;
         }
     }

@@ -1,8 +1,5 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.DesktopCursor;
-import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
@@ -99,8 +96,8 @@ public class SQLiteClass implements SQLiteInterface {
             }
             rs = statement.executeQuery();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Log.trace(log, ex);
         }
 
         // TODO Hack to get Rowcount

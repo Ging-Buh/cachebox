@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
+import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.SelectedCacheChangedEventListener;
 import de.droidcachebox.SelectedCacheChangedEventListeners;
@@ -396,7 +397,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                     geoCacheListView.setSelection(selectionIndex);
                     setSelectedCacheVisible();
                     invalidate();
-                    CacheContextMenu.getCacheContextMenu(true).show();
+                    if (Config.CacheContextMenuShortClickToggle.getValue())
+                        CacheContextMenu.getCacheContextMenu(true).show();
                     return true;
                 });
 

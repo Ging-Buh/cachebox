@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.CB_Button;
@@ -185,29 +184,9 @@ public class ButtonDialog extends Dialog {
     }
 
     private void setButtonListener() {
-        positiveButtonClickListener = new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                return ButtonClick(1);
-            }
-        };
-
-        neutralButtonClickListener = new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                return ButtonClick(2);
-            }
-        };
-
-        negativeButtonClickListener = new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                return ButtonClick(3);
-            }
-        };
+        positiveButtonClickListener = (v, x, y, pointer, button) -> ButtonClick(1);
+        neutralButtonClickListener = (v, x, y, pointer, button) -> ButtonClick(2);
+        negativeButtonClickListener = (v, x, y, pointer, button) -> ButtonClick(3);
     }
 
     private boolean ButtonClick(int button) {
