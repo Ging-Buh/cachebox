@@ -42,8 +42,8 @@ public class StartExternalDescription extends AbstractAction {
     private static final String log = "StartExternalDescription";
     private static StartExternalDescription that;
     private final String TEMP_CACHE_HTML_FILE = "temp.html";
-    private final LinkedList<String> NonLocalImages = new LinkedList<String>();
-    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
+    private final LinkedList<String> NonLocalImages = new LinkedList<>();
+    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
 
     private StartExternalDescription() {
         super("descExt", MenuID.AID_SHOW_DescExt);
@@ -65,7 +65,7 @@ public class StartExternalDescription extends AbstractAction {
             Cache cache = GlobalCore.getSelectedCache();
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String cachehtml = Database.GetShortDescription(cache) + Database.GetDescription(cache);
+            String cachehtml = Database.getShortDescription(cache) + Database.getDescription(cache);
             String html = DescriptionImageGrabber.resolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
             String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
             html = header + html;

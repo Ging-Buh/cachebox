@@ -29,7 +29,7 @@ public class StringH {
         if (s != null)
             if (!("null".equals(s)))
                 // ret = s; // Ohne Konvertierung
-                ret = Jsoup.parse(s).text(); // todo Loader problem
+                ret = Jsoup.parse(s).text();
         return ret;
     }
 }

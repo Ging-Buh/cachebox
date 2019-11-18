@@ -244,7 +244,7 @@ public abstract class Database extends Database_Core {
         return retLogEntry;
     }
 
-    public static String GetDescription(Cache cache) {
+    public static String getDescription(Cache cache) {
         String description = "";
         CoreCursor reader = Database.Data.sql.rawQuery("select Description from Caches where Id=?", new String[]{Long.toString(cache.Id)});
         if (reader == null)
@@ -260,7 +260,7 @@ public abstract class Database extends Database_Core {
         return description;
     }
 
-    public static String GetShortDescription(Cache cache) {
+    public static String getShortDescription(Cache cache) {
         String description = "";
         CoreCursor reader = Database.Data.sql.rawQuery("select ShortDescription from Caches where Id=?", new String[]{Long.toString(cache.Id)});
         if (reader == null)

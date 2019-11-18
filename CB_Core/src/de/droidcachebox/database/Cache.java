@@ -972,7 +972,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getLongDescription() {
         if (detail != null) {
             if (detail.getLongDescription() == null || detail.getLongDescription().length() == 0) {
-                return Database.GetDescription(this);
+                return Database.getDescription(this);
             }
             return detail.getLongDescription();
         } else {
@@ -990,7 +990,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getShortDescription() {
         if (detail != null) {
             if (detail.getShortDescription() == null || detail.getShortDescription().length() == 0) {
-                return Database.GetShortDescription(this);
+                return Database.getShortDescription(this);
             }
             return detail.getShortDescription();
         } else {

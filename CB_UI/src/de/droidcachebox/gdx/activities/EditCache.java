@@ -114,7 +114,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues = new Cache(true);
         newValues.copyFrom(cache);
         newValues.setShortDescription("");
-        newValues.setLongDescription(Database.GetDescription(cache));
+        newValues.setLongDescription(Database.getDescription(cache));
         cache.setLongDescription(newValues.getLongDescription());
         this.cache = cache;
         doShow();

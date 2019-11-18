@@ -199,7 +199,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         }
         Log.debug(log, "is Premium = " + PQ_LINE_ACTIVE);
         createPQLines();
-        // createCBServerLines();
+        createCBServerLines();
         createPqCollapseBox();
         createCBServerCollapseBox();
         createGpxLine();
@@ -223,6 +223,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             checkBoxGcVote.setChecked(true);
             checkBoxGcVote.setVisible(true);
         }
+        // next 3 lines delete, if CBServer is integrated again
+        checkImportFromCBServer.setChecked(false);
+        checkImportFromCBServer.setVisible(false);
+        lblCBServer.setVisible(false);
 
         // scrollBox.setBackground(new ColorDrawable(Color.RED));
     }

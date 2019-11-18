@@ -63,4 +63,5 @@ public class MenuID {
     public static final int AID_SearchCoordinates = 208;
     public static final int AID_UPLOAD_LOGS = 209;
     public static final int AID_Share = 210;
+    public static final int AID_TranslateDescription = 211;
 }

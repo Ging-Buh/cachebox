@@ -279,7 +279,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             aktCache = cache;
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String html = Database.GetShortDescription(cache) + Database.GetDescription(cache);
+            String html = Database.getShortDescription(cache) + Database.getDescription(cache);
             // cache.getApiStatus() == Cache.IS_FULL
             if (html.length() > 0) {
                 html = DescriptionImageGrabber.resolveImages(cache, html, false, NonLocalImages, NonLocalImagesUrl);

@@ -300,6 +300,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn5.addAction(SwitchDayNight.getInstance(), false);
         mainBtn5.addAction(HelpOnline.getInstance(), false);
         mainBtn5.addAction(ContactOwner.getInstance(), false);
+        // mainBtn5.addAction(TranslateDescription.getInstance(), false);
         mainBtn5.addAction(SwitchTorch.getInstance(), false);
         mainBtn5.addAction(ShowAbout.getInstance(), true, GestureDirection.Up);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
