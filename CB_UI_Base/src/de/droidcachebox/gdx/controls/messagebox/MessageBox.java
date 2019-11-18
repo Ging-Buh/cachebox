@@ -279,7 +279,7 @@ public class MessageBox extends Dialog {
                 break;
         }
 
-        setButtonListener(anzahl);
+        setButtonListener();
 
         if (rememberSetting != null) {
             chkRemember = new CB_CheckBox("remember");
@@ -296,15 +296,22 @@ public class MessageBox extends Dialog {
         setFooterHeight(getHeightFromBottom());
     }
 
-    private void setButtonListener(int anzahl) {
-        if (mMsgBoxClickListener != null) {
-            btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(1);
-            btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(2);
-            btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(3);
+    private void setButtonListener() {
+        if (btnLeftPositive != null) {
+            if (btnLeftPositiveClickListener == null)
+                btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BUTTON_POSITIVE);
+            btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
         }
-        btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
-        if (anzahl > 1) btnMiddleNeutral.setClickHandler(btnMiddleNeutralClickListener);
-        if (anzahl > 2) btnRightNegative.setClickHandler(btnRightNegativeClickListener);
+        if (btnMiddleNeutral != null) {
+            if (btnMiddleNeutralClickListener == null)
+                btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BUTTON_NEUTRAL);
+            btnMiddleNeutral.setClickHandler(btnMiddleNeutralClickListener);
+        }
+        if (btnRightNegative != null) {
+            if (btnRightNegativeClickListener == null)
+                btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BUTTON_NEGATIVE);
+            btnRightNegative.setClickHandler(btnRightNegativeClickListener);
+        }
     }
 
     private boolean handleButtonClick(int button) {
