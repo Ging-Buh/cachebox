@@ -101,6 +101,6 @@ public class StartExternalDescription extends AbstractAction {
 
     @Override
     public Sprite getIcon() {
-        return Sprites.getSprite(IconName.hintIcon.name());
+        return Sprites.getSprite(IconName.docIcon.name());
     }
 }
