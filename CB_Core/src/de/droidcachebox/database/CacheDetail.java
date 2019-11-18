@@ -235,7 +235,7 @@ public class CacheDetail implements Serializable {
      *
      * @return ArrayList of String
      */
-    public CB_List<ImageEntry> getSpoilerRessources(de.droidcachebox.database.Cache cache) {
+    public CB_List<ImageEntry> getSpoilerRessources(Cache cache) {
         if (spoilerRessources == null) {
             loadSpoilerRessources(cache);
         }
@@ -257,7 +257,7 @@ public class CacheDetail implements Serializable {
      *
      * @return Boolean
      */
-    public boolean hasSpoiler(de.droidcachebox.database.Cache cache) {
+    public boolean hasSpoiler(Cache cache) {
         try {
             if (spoilerRessources == null)
                 loadSpoilerRessources(cache);
@@ -267,11 +267,11 @@ public class CacheDetail implements Serializable {
         }
     }
 
-    public void SpoilerForceReEvaluate(de.droidcachebox.database.Cache cache) {
+    public void SpoilerForceReEvaluate(Cache cache) {
         spoilerRessources = null;
     }
 
-    public void loadSpoilerRessources(de.droidcachebox.database.Cache cache) {
+    public void loadSpoilerRessources(Cache cache) {
 
         String gcCode = cache.getGcCode();
         if (gcCode.length() < 4)

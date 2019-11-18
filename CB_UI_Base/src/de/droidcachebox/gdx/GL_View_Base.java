@@ -44,7 +44,7 @@ public abstract class GL_View_Base extends CB_RectF {
     private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     private static boolean calling = false;
     private final Matrix4 rotateMatrix = new Matrix4();
-    protected final MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
+    protected final MoveableList<GL_View_Base> childs = new MoveableList<>();
     private final ParentInfo myInfoForChild = new ParentInfo();
     public boolean withoutScissor = false;
     protected Pixmap debugRegPixmap = null;
@@ -948,8 +948,8 @@ public abstract class GL_View_Base extends CB_RectF {
      * @param listener The callback that will run
      * @see #setClickable(boolean)
      */
-    public void addClickHandler(OnClickListener listener) {
-        // name changed from setOnClickListener to addClickHandler to be compatible with CB3
+    public void setClickHandler(OnClickListener listener) {
+        // name changed from setOnClickListener to setClickHandler to be compatible with CB3
         isClickable = listener != null;
         mOnClickListener = listener;
     }

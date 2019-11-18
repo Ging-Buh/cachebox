@@ -228,7 +228,7 @@ public class MenuItem extends ListViewItemBackground {
             // used is the menus onItemClickedListener,
             // who handles item clicks independant of isEnabled
             // what is not bad ex. for spoilers
-            addClickHandler(null);
+            setClickHandler(null);
             setOnLongClickListener(null);
         }
 

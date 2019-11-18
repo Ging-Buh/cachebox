@@ -379,7 +379,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                 CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, cacheList.get(index));
                 v.setClickable(true);
 
-                v.addClickHandler((v1, x, y, pointer, button) -> {
+                v.setClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
                     Cache geoCache;
                     synchronized (Database.Data.cacheList) {

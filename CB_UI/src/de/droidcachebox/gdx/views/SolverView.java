@@ -28,8 +28,8 @@ import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.solver.DataTypes.DataType;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.solver.SolverZeile;
@@ -112,14 +112,14 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
 
     private void addControls() {
         btnSolve = new CB_Button(Translation.get("Solve"));
-        btnSolve.addClickHandler((v, x, y, pointer, button) -> {
+        btnSolve.setClickHandler((v, x, y, pointer, button) -> {
             solve();
             return true;
         });
         this.addChild(btnSolve);
 
         btnFunct = new CB_Button(Translation.get("Funct."));
-        btnFunct.addClickHandler((v, x, y, pointer, button) -> {
+        btnFunct.setClickHandler((v, x, y, pointer, button) -> {
             SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, function -> {
                 // ausgewählte Funktion verarbeiten!
                 // wenn funktion==null wurde Cancel gedrückt
@@ -161,7 +161,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
         this.addChild(btnFunct);
 
         btnSelect = new CB_Button(Translation.get("Select."));
-        btnSelect.addClickHandler((v, x, y, pointer, button) -> {
+        btnSelect.setClickHandler((v, x, y, pointer, button) -> {
             GL.that.setFocusedEditTextField(null);
             return true;
         });
@@ -186,19 +186,19 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
         edResult.disableKeyboardPopup();
         this.addChild(edResult);
 
-        btnInputWindow.addClickHandler((v, x, y, pointer, button) -> {
+        btnInputWindow.setClickHandler((v, x, y, pointer, button) -> {
             windowState = WindowState.Left;
             layoutEditFields(GL.that.getFocusedEditTextField());
             return true;
         });
 
-        btnBothWindow.addClickHandler((v, x, y, pointer, button) -> {
+        btnBothWindow.setClickHandler((v, x, y, pointer, button) -> {
             windowState = WindowState.Both;
             layoutEditFields(GL.that.getFocusedEditTextField());
             return true;
         });
 
-        btnResultWindow.addClickHandler((v, x, y, pointer, button) -> {
+        btnResultWindow.setClickHandler((v, x, y, pointer, button) -> {
             windowState = WindowState.Right;
             layoutEditFields(GL.that.getFocusedEditTextField());
             return true;

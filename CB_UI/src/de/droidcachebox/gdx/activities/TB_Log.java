@@ -78,13 +78,13 @@ public class TB_Log extends ActivityBase {
 
         btnClose = new CB_Button("Close");
         btnClose.setText(Translation.get("close"));
-        btnClose.addClickHandler((v, x, y, pointer, button) -> {
+        btnClose.setClickHandler((v, x, y, pointer, button) -> {
             TB_Log.this.finish();
             return true;
         });
 
         btnAction = new ImageButton("Action");
-        btnAction.addClickHandler((v, x, y, pointer, button) -> {
+        btnAction.setClickHandler((v, x, y, pointer, button) -> {
             LogNow();
             return true;
         });

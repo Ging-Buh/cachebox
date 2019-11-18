@@ -14,12 +14,12 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
-import de.droidcachebox.main.menuBtn3.ShowMap;
-import de.droidcachebox.main.menuBtn2.ShowWaypoint;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.main.menuBtn2.ShowWaypoint;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
@@ -322,7 +322,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         // this.addChild(bHelp);
         this.addChild(bCancel);
 
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
                 waypoint.Pos = bCoord.getCoordinate();
                 waypoint.setTitle(etTitle.getText());
@@ -345,13 +345,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             return true;
         });
 
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null)
                 mReturnListener.returnedWP(null);
             finish();
             return true;
         });
-        bHelp.addClickHandler((v, x, y, pointer, button) -> true);
+        bHelp.setClickHandler((v, x, y, pointer, button) -> true);
     }
 
     private void showCbStartPoint(boolean visible) {

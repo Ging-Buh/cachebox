@@ -81,7 +81,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public static ViewManager that;
     public static CB_TabView leftTab; // the only one (has been left aand right for Tablet)
 
-    public static PlatformActivity actionTakePicture, actionRecordVideo, actionRecordVoice, actionShare;
+    static PlatformActivity actionTakePicture, actionRecordVideo, actionRecordVoice, actionShare;
 
     private GestureButton mainBtn1; // default: show CacheList
     private GestureButton mainBtn2; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
@@ -90,7 +90,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     private GestureButton mainBtn5; // default: show About View
 
     private boolean isInitial = false;
-    private boolean isFiltered = false;
 
     public ViewManager(CB_RectF rec) {
         super(rec);
@@ -392,7 +391,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     public void filterSetChanged() {
         // change the icon
-        isFiltered = FilterInstances.isLastFilterSet();
+        boolean isFiltered = FilterInstances.isLastFilterSet();
         mainBtn1.isFiltered(isFiltered);
 
         if (!de.droidcachebox.Config.useDescriptiveCB_Buttons.getValue()) {
@@ -411,8 +410,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         synchronized (Database.Data.cacheList) {
             int filterCount = Database.Data.cacheList.size();
 
-            if (Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark") != null)
-                --filterCount;
+            if (Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark") != null) {
+                filterCount = filterCount - 1;
+            }
 
             int DBCount = Database.Data.getCacheCountInDB();
             String strFilterCount = "";
@@ -427,8 +427,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     @Override
     public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-        if (childs == null)
-            return;
         super.renderChilds(batch, parentInfo);
     }
 

@@ -427,7 +427,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                     if (items.get(position) == null || items.get(position).isDisposed()) {
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache, null);
                         waypointViewItem.setClickable(true);
-                        waypointViewItem.addClickHandler((v, x, y, pointer, button) -> {
+                        waypointViewItem.setClickHandler((v, x, y, pointer, button) -> {
                             int selectionIndex = ((ListViewItemBase) v).getIndex();
 
                             if (selectionIndex == 0) {
@@ -475,7 +475,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                         Waypoint waypoint = cache.waypoints.get(position - 1);
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache, waypoint);
                         waypointViewItem.setClickable(true);
-                        waypointViewItem.addClickHandler((v, x, y, pointer, button) -> {
+                        waypointViewItem.setClickHandler((v, x, y, pointer, button) -> {
                             int selectionIndex = ((ListViewItemBase) v).getIndex();
 
                             if (selectionIndex == 0) {

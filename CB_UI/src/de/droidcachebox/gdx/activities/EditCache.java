@@ -180,7 +180,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void btnOKClickHandler() {
-        btnOK.addClickHandler((v, x, y, pointer, button) -> {
+        btnOK.setClickHandler((v, x, y, pointer, button) -> {
             boolean update = false;
             CacheDAO cacheDAO = new CacheDAO();
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
@@ -227,7 +227,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void btnCancelClickHandler() {
-        this.btnCancel.addClickHandler((v, x, y, pointer, button) -> {
+        this.btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             finish();
             return true;
         });

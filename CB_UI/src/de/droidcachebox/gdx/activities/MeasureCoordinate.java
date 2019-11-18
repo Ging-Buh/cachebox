@@ -90,7 +90,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         this.addChild(bOK);
         this.addChild(bCancel);
 
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             if (mCoordReturnListener != null) {
                 synchronized (mMeasureList) {
                     GL.that.RunOnGL(() -> mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord()));
@@ -101,7 +101,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
             return true;
         });
 
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (mCoordReturnListener != null)
                 mCoordReturnListener.returnCoord(null);
             finish();

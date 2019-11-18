@@ -42,7 +42,7 @@ import java.util.Iterator;
 /// <para><b>Neu implementierte Methoden, welche ein Changed Event aus lösen:</b></para>
 /// <para >
 ///  MoveItem /
-///  MoveItemFirst /
+///  moveItemFirst /
 ///  MoveItemLast /
 ///  MoveItemsLeft /
 ///  MoveItemsRight /
@@ -172,7 +172,7 @@ public class MoveableList<T> extends CB_List<T> {
         _MoveResultIndex = -1;
     }
 
-    public void MoveItemFirst(int index) {
+    public void moveItemFirst(int index) {
         PrivateMoveItem(index, 0);
         _MoveResultIndex = 0;
 

@@ -177,7 +177,7 @@ public class ProjectionCoordinate extends ActivityBase {
         this.addChild(bOK);
         this.addChild(bCancel);
 
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             if (!parseView())
                 return true;
             if (mCoordReturnListener != null)
@@ -186,7 +186,7 @@ public class ProjectionCoordinate extends ActivityBase {
             return true;
         });
 
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (mCoordReturnListener != null)
                 mCoordReturnListener.returnCoord(null, null, 0, 0);
             finish();

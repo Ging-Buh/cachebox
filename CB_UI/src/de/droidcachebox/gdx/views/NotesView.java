@@ -24,8 +24,8 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
@@ -61,7 +61,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
 
         SelectedCacheChangedEventListeners.getInstance().add(this);
 
-        btnUpload.addClickHandler((v, x, y, pointer, button) -> {
+        btnUpload.setClickHandler((v, x, y, pointer, button) -> {
             final CB_Button b = (CB_Button) v;
             if (notes.getText().length() > 0) {
                 b.setText("Cancel");
@@ -79,7 +79,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
             return true;
         });
 
-        getSolverButton.addClickHandler((v, x, y, pointer, button) -> {
+        getSolverButton.setClickHandler((v, x, y, pointer, button) -> {
             String solver;
             if (aktCache != null) {
                 solver = Database.GetSolver(aktCache);

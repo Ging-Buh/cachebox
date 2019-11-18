@@ -126,7 +126,7 @@ public enum CacheTypes {
 
     }
 
-    public static String toShortString(de.droidcachebox.database.Cache cache) {
+    public static String toShortString(Cache cache) {
         if (cache.getType() == null) return " ";
 
         switch (cache.getType()) {

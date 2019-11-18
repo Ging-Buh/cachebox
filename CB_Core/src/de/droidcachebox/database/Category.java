@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Category extends ArrayList<de.droidcachebox.database.GpxFilename> implements Comparable<Category> {
+public class Category extends ArrayList<GpxFilename> implements Comparable<Category> {
     /**
      *
      */
@@ -28,7 +28,7 @@ public class Category extends ArrayList<de.droidcachebox.database.GpxFilename> i
      * @param filename
      * @return
      */
-    public de.droidcachebox.database.GpxFilename addGpxFilename(String filename) {
+    public GpxFilename addGpxFilename(String filename) {
         filename = FileFactory.createFile(filename).getName();
 
         Parameters args = new Parameters();

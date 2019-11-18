@@ -181,7 +181,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             zoomBtn.setMinimumFadeValue(0.25f);
         }
 
-        addClickHandler((v, x, y, pointer, button) -> {
+        setClickHandler((v, x, y, pointer, button) -> {
             WaypointRenderInfo minWpi = null;
 
             if (TargetArrow != null && TargetArrow.contains(x, y)) {
@@ -345,7 +345,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
         infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
         infoBubble.setInvisible();
-        infoBubble.addClickHandler((v, x, y, pointer, button) -> {
+        infoBubble.setClickHandler((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
                 wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
 

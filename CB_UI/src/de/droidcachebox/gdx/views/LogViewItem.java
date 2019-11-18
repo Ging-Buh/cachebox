@@ -32,7 +32,6 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.popups.ICopyPaste;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.main.menuBtn2.ShowLogs;
 
 import java.text.SimpleDateFormat;
 
@@ -61,7 +60,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         iniFoundLabel();
         iniDateLabel();
         iniCommentLabel();
-        addClickHandler((v1, x, y, pointer, button) -> {
+        setClickHandler((v1, x, y, pointer, button) -> {
             // ShowLogs.getInstance().getContextMenu().show();
             return true;
         });

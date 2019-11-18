@@ -79,7 +79,7 @@ public class ColorPicker extends ActivityBase {
         bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             GL.that.RunOnGL(() -> finish());
             if (mReturnListener != null)
                 mReturnListener.returnColor(actColor);
@@ -87,7 +87,7 @@ public class ColorPicker extends ActivityBase {
         });
 
         this.addChild(bCancel);
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null)
                 mReturnListener.returnColor(null);
             finish();

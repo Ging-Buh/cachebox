@@ -37,7 +37,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         isCanceld = false;
 
         addButtons(MessageBoxButtons.Cancel);
-        btnRightNegative.addClickHandler(new OnClickListener() {
+        btnRightNegative.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 ProgressThread.Cancel();

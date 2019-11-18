@@ -148,7 +148,7 @@ public class ButtonDialog extends Dialog {
             case 1:
                 button1 = new CB_Button(t1);
                 this.addLast(button1);
-                button1.addClickHandler(positiveButtonClickListener);
+                button1.setClickHandler(positiveButtonClickListener);
                 // addFooterChild(button1);
                 break;
             case 2:
@@ -156,8 +156,8 @@ public class ButtonDialog extends Dialog {
                 button3 = new CB_Button(t3);
                 this.addNext(button1);
                 this.addLast(button3);
-                button1.addClickHandler(positiveButtonClickListener);
-                button3.addClickHandler(negativeButtonClickListener);
+                button1.setClickHandler(positiveButtonClickListener);
+                button3.setClickHandler(negativeButtonClickListener);
                 // addFooterChild(button1);
                 // addFooterChild(button3);
                 break;
@@ -168,9 +168,9 @@ public class ButtonDialog extends Dialog {
                 this.addNext(button1);
                 this.addNext(button2);
                 this.addLast(button3);
-                button1.addClickHandler(positiveButtonClickListener);
-                button2.addClickHandler(neutralButtonClickListener);
-                button3.addClickHandler(negativeButtonClickListener);
+                button1.setClickHandler(positiveButtonClickListener);
+                button2.setClickHandler(neutralButtonClickListener);
+                button3.setClickHandler(negativeButtonClickListener);
                 // addFooterChild(button1);
                 // addFooterChild(button2);
                 // addFooterChild(button3);

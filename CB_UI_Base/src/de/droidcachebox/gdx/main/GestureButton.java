@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.CB_UI_Base_Settings;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.CB_Button;
@@ -189,7 +187,7 @@ public class GestureButton extends CB_Button {
         useDescriptiveCB_Buttons = true;
         this.rememberLastAction = rememberLastAction;
         cb_actionButtons = new ArrayList<>();
-        addClickHandler(onClickListener);
+        setClickHandler(onClickListener);
         // setOnLongClickListener(longClickListener);
         drawableNormal = new SpriteDrawable(getSprite("button"));
         drawablePressed = new SpriteDrawable(getSprite("btn-pressed"));
@@ -204,7 +202,7 @@ public class GestureButton extends CB_Button {
         useDescriptiveCB_Buttons = false;
         this.rememberLastAction = rememberLastAction;
         cb_actionButtons = new ArrayList<>();
-        addClickHandler(onClickListener);
+        setClickHandler(onClickListener);
         // setOnLongClickListener(longClickListener);
         setButtonSprites(sprites);
         isFiltered = false;

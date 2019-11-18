@@ -134,7 +134,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
         CachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
         CachesFoundLabel.setWidth(getWidth());
 
-        CachesFoundLabel.addClickHandler(new OnClickListener() {
+        CachesFoundLabel.setClickHandler(new OnClickListener() {
             MessageBox ms;
 
             @Override
@@ -265,7 +265,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
 
         // set LinkColor
 
-        WaypointLabel.addClickHandler((v, x, y, pointer, button) -> {
+        WaypointLabel.setClickHandler((v, x, y, pointer, button) -> {
             if (GlobalCore.getSelectedCache() == null)
                 return true;
             callUrl(GlobalCore.getSelectedCache().getUrl());

@@ -63,11 +63,13 @@ public interface CB_Core_Settings {
 
     SettingBool UseCorrectedFinal = new SettingBool("UseCorrectedFinal", Misc, NORMAL, true, Global, ALL);
     SettingBool RunOverLockScreen = new SettingBool("RunOverLockScreen", Misc, NORMAL, true, Global, ACB);
+    SettingString rememberedGeoCache = new SettingString("rememberedGeoCache", Misc, NEVER, "", Global, ACB);
 
     // base settings, read directly from Platform, before the database can be accessed
     SettingBool AskAgain = new SettingBool("AskAgain", Folder, NORMAL, false, Platform, ALL);
     SettingBool showSandbox = new SettingBool("showSandbox", RememberAsk, NORMAL, false, Platform, ACB);
     SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Folder, NEVER, "data/lang/en-GB/strings.ini", Platform, ALL, "lan");
+
     enum Live_Cache_Time {
         min_10, min_30, min_60, h_6, h_12, h_24;
 

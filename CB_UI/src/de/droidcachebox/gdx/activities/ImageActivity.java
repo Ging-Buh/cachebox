@@ -84,7 +84,7 @@ public class ImageActivity extends ActivityBase {
         deleteImage = new Image(this.getWidth() - wh, this.getHeight() - wh, wh, wh, "", false);
         deleteImage.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.closeIcon.name())));
         this.addChild(deleteImage);
-        deleteImage.addClickHandler(deleteClick);
+        deleteImage.setClickHandler(deleteClick);
         this.setClickable(true);
 
         this.setBackground(new ColorDrawable(new HSV_Color(Color.BLACK)));

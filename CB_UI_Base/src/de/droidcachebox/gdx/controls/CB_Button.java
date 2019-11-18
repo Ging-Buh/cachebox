@@ -20,8 +20,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -38,7 +36,7 @@ public class CB_Button extends CB_View_Base {
     protected Drawable drawablePressed;
     protected Drawable drawableDisabled;
     protected Drawable drawableFocused;
-    protected MoveableList<Drawable> DrawableOverlayList = new MoveableList<Drawable>();
+    protected MoveableList<Drawable> DrawableOverlayList = new MoveableList<>();
 
     protected boolean isFocused = false;
     protected boolean isPressed = false;
@@ -78,7 +76,7 @@ public class CB_Button extends CB_View_Base {
 
     public CB_Button(CB_RectF rec, OnClickListener onClick) {
         super(rec, "");
-        this.addClickHandler(onClick);
+        this.setClickHandler(onClick);
     }
 
     public void setninePatch(Drawable drawable) {
@@ -169,7 +167,7 @@ public class CB_Button extends CB_View_Base {
             isPressed = true;
             GL.that.renderOnce();
         }
-        return dragableButton ? false : true;
+        return !dragableButton;
     }
 
     @Override
@@ -184,7 +182,7 @@ public class CB_Button extends CB_View_Base {
 
         isPressed = false;
         GL.that.renderOnce();
-        return dragableButton ? false : true;
+        return !dragableButton;
     }
 
     public void enable() {
@@ -227,7 +225,7 @@ public class CB_Button extends CB_View_Base {
                                 return;
 
         // no text -> remove label
-        if (Text == null || Text.equals("")) {
+        if (Text.equals("")) {
             if (lblTxt != null) {
                 this.removeChild(lblTxt);
                 lblTxt.dispose();

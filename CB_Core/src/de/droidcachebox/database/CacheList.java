@@ -26,24 +26,24 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
+public class CacheList extends MoveableList<Cache> {
 
     private static final long serialVersionUID = -932434844601790958L;
 
     public boolean ResortAtWork = false;
 
-    public de.droidcachebox.database.Cache getCacheByGcCodeFromCacheList(String GcCode) {
+    public Cache getCacheByGcCodeFromCacheList(String GcCode) {
         for (int i = 0, n = this.size(); i < n; i++) {
-            de.droidcachebox.database.Cache cache = this.get(i);
+            Cache cache = this.get(i);
             if (cache.getGcCode().equalsIgnoreCase(GcCode))
                 return cache;
         }
         return null;
     }
 
-    public de.droidcachebox.database.Cache getCacheByIdFromCacheList(long cacheId) {
+    public Cache getCacheByIdFromCacheList(long cacheId) {
         for (int i = 0, n = this.size(); i < n; i++) {
-            de.droidcachebox.database.Cache cache = this.get(i);
+            Cache cache = this.get(i);
             if (cache.Id == cacheId)
                 return cache;
         }
@@ -80,7 +80,7 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
         // Alle Distanzen aktualisieren
         if (isLocatorValid) {
             for (int i = 0, n = this.size(); i < n; i++) {
-                de.droidcachebox.database.Cache cache = this.get(i);
+                Cache cache = this.get(i);
                 cache.Distance(CalculationType.FAST, true);
             }
         } else {
@@ -95,7 +95,7 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
                 return retValue;
             }
             for (int i = 0, n = this.size(); i < n; i++) {
-                de.droidcachebox.database.Cache cache = this.get(i);
+                Cache cache = this.get(i);
                 cache.Distance(CalculationType.FAST, true, fromPos);
             }
         }
@@ -104,7 +104,7 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
 
         // Nächsten Cache auswählen
         if (this.size() > 0) {
-            de.droidcachebox.database.Cache nextCache = this.get(0); // or null ...
+            Cache nextCache = this.get(0); // or null ...
             for (int i = 0; i < this.size(); i++) {
                 nextCache = this.get(i);
                 if (!nextCache.isArchived()) {
@@ -156,9 +156,9 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
         CacheListChangedListeners.getInstance().cacheListChanged();
 
         // vorhandenen Parkplatz Cache nach oben schieben
-        de.droidcachebox.database.Cache park = this.getCacheByGcCodeFromCacheList("CBPark");
+        Cache park = getCacheByGcCodeFromCacheList("CBPark");
         if (park != null) {
-            this.MoveItemFirst(this.indexOf(park));
+            this.moveItemFirst(this.indexOf(park));
         }
 
         // Cursor.Current = Cursors.Default;
@@ -173,7 +173,7 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
     @Override
     public void clear() {
         for (int i = 0, n = this.size(); i < n; i++) {
-            de.droidcachebox.database.Cache cache = this.get(i);
+            Cache cache = this.get(i);
             if (!cache.isLive())
                 cache.dispose(); // don't dispose LiveCaches
             cache = null;
@@ -197,7 +197,7 @@ public class CacheList extends MoveableList<de.droidcachebox.database.Cache> {
     }
 
     @Override
-    public int add(de.droidcachebox.database.Cache ca) {
+    public int add(Cache ca) {
         if (ca == null)
             return -1;
 

@@ -64,7 +64,7 @@ public class DraftViewItem extends ListViewItemBackground {
         if (draft == null) {
             CB_Button btnLoadMore = new CB_Button(Translation.get("LoadMore"));
             btnLoadMore.setWidth(this.getWidth());
-            btnLoadMore.addClickHandler((v, x, y, pointer, button) -> {
+            btnLoadMore.setClickHandler((v, x, y, pointer, button) -> {
                 if (DraftViewItem.this.mOnClickListener != null)
                     DraftViewItem.this.mOnClickListener.onClick(v, x, y, pointer, button);
                 return true;
@@ -76,7 +76,7 @@ public class DraftViewItem extends ListViewItemBackground {
             headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 
             header = new Box(getWidth(), headHeight);
-            header.addClickHandler((v, x, y, pointer, button) -> {
+            header.setClickHandler((v, x, y, pointer, button) -> {
                 headerClicked = true;
                 return false;
             });

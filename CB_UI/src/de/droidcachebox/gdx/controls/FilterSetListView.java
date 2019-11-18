@@ -300,7 +300,7 @@ public class FilterSetListView extends V_ListView {
         FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
         lFilterSetListViewItems.add(v);
 
-        v.addClickHandler((v1, x, y, pointer, button) -> {
+        v.setClickHandler((v1, x, y, pointer, button) -> {
             // only one or none should be active
             if (activeCollapseButton != null) {
                 if (activeCollapseButton == v1) {

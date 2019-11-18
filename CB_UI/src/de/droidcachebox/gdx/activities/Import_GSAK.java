@@ -102,7 +102,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void initClickHandlersAndContent() {
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             importRuns = true;
             bOK.disable();
             GL.that.postAsync(() -> {
@@ -112,7 +112,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             return true;
         });
 
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importRuns) {
                 bOK.enable();
                 isCanceled = true;
@@ -138,7 +138,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             }
         });
 
-        btnSelectDB.addClickHandler((v, x, y, pointer, button) -> {
+        btnSelectDB.setClickHandler((v, x, y, pointer, button) -> {
             mDatabasePath = Config.GSAKLastUsedDatabasePath.getValue();
             if (mDatabasePath.length() == 0) {
                 mDatabasePath = Config.mWorkPath + "/User";
@@ -152,7 +152,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             return true;
         });
 
-        btnSelectImagesDB.addClickHandler((v, x, y, pointer, button) -> {
+        btnSelectImagesDB.setClickHandler((v, x, y, pointer, button) -> {
             mImageDatabasePath = Config.GSAKLastUsedImageDatabasePath.getValue();
             if (mImageDatabasePath.length() == 0) {
                 mImageDatabasePath = Config.mWorkPath + "/User";
@@ -166,7 +166,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             return true;
         });
 
-        btnSelectImagesPath.addClickHandler(((v, x, y, pointer, button) -> {
+        btnSelectImagesPath.setClickHandler(((v, x, y, pointer, button) -> {
             mImagesPath = Config.GSAKLastUsedImagesPath.getValue();
             if (mImagesPath.length() == 0) {
                 mImagesPath = Config.mWorkPath + "/User";

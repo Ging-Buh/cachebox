@@ -18,7 +18,6 @@ package de.droidcachebox.gdx.views;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import de.droidcachebox.AbstractGlobal;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -33,9 +32,9 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.PolygonDrawable;
-import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.*;
+import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
 import de.droidcachebox.translation.Translation;
 
 import java.util.Timer;
@@ -245,7 +244,7 @@ public class DescriptionView extends CB_View_Base {
 
         this.addChild(downloadButton);
 
-        downloadButton.addClickHandler(downloadClicked);
+        downloadButton.setClickHandler(downloadClicked);
 
         if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0)
             downloadButton.disable();

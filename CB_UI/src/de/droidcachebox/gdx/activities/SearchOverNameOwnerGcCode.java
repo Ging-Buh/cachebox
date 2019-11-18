@@ -32,11 +32,11 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
@@ -108,13 +108,13 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bImport);
-        bImport.addClickHandler((v, x, y, pointer, button) -> {
+        bImport.setClickHandler((v, x, y, pointer, button) -> {
             ImportNow();
             return true;
         });
 
         this.addChild(bCancel);
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importRuns) {
 
                 cancelImport();
@@ -244,17 +244,17 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
         checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
 
-        mTglBtnTitle.addClickHandler((v, x, y, pointer, button) -> {
+        mTglBtnTitle.setClickHandler((v, x, y, pointer, button) -> {
             switchSearcheMode(0);
             return true;
         });
 
-        mTglBtnGc.addClickHandler((v, x, y, pointer, button) -> {
+        mTglBtnGc.setClickHandler((v, x, y, pointer, button) -> {
             switchSearcheMode(1);
             return true;
         });
 
-        mTglBtnOwner.addClickHandler((v, x, y, pointer, button) -> {
+        mTglBtnOwner.setClickHandler((v, x, y, pointer, button) -> {
             switchSearcheMode(2);
             return true;
         });

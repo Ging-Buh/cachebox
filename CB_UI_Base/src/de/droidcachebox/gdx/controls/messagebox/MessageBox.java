@@ -249,7 +249,6 @@ public class MessageBox extends Dialog {
     }
 
     private void createButtons(int anzahl, String left, String middle, String right) {
-        setButtonListener();
         initRow(BOTTOMUP, margin);
         setBorders(margin, margin);
         if (anzahl > 0) {
@@ -262,29 +261,25 @@ public class MessageBox extends Dialog {
         switch (anzahl) {
             case 1:
                 btnLeftPositive = new CB_Button(left);
-                btnLeftPositive.addClickHandler(btnLeftPositiveClickListener);
                 addLast(btnLeftPositive);
                 break;
             case 2:
                 btnLeftPositive = new CB_Button(left);
-                btnLeftPositive.addClickHandler(btnLeftPositiveClickListener);
                 btnRightNegative = new CB_Button(right);
-                btnRightNegative.addClickHandler(btnRightNegativeClickListener);
                 addNext(btnLeftPositive);
                 addLast(btnRightNegative);
                 break;
             case 3:
                 btnLeftPositive = new CB_Button(left);
-                btnLeftPositive.addClickHandler(btnLeftPositiveClickListener);
                 btnMiddleNeutral = new CB_Button(middle);
-                btnMiddleNeutral.addClickHandler(btnMiddleNeutralClickListener);
                 btnRightNegative = new CB_Button(right);
-                btnRightNegative.addClickHandler(btnRightNegativeClickListener);
                 addNext(btnLeftPositive);
                 addNext(btnMiddleNeutral);
                 addLast(btnRightNegative);
                 break;
         }
+
+        setButtonListener(anzahl);
 
         if (rememberSetting != null) {
             chkRemember = new CB_CheckBox("remember");
@@ -301,14 +296,16 @@ public class MessageBox extends Dialog {
         setFooterHeight(getHeightFromBottom());
     }
 
-    private void setButtonListener() {
-        btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(1);
-        btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(2);
-        btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(3);
+    private void setButtonListener(int anzahl) {
+        if (mMsgBoxClickListener != null) {
+            btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(1);
+            btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(2);
+            btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(3);
+        }
+        btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
+        if (anzahl > 1) btnMiddleNeutral.setClickHandler(btnMiddleNeutralClickListener);
+        if (anzahl > 2) btnRightNegative.setClickHandler(btnRightNegativeClickListener);
     }
-
-    // the class ends here
-    //==========================================================================================================================================================================
 
     private boolean handleButtonClick(int button) {
         // check for remember
@@ -356,6 +353,11 @@ public class MessageBox extends Dialog {
 
     public void close() {
         GL.that.closeDialog(that);
+    }
+
+    public boolean finish() {
+        GL.that.closeDialog(that);
+        return true;
     }
 
     @Override

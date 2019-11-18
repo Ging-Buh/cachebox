@@ -2,7 +2,6 @@ package de.droidcachebox.gdx.activities;
 
 import com.badlogic.gdx.graphics.Color;
 import de.droidcachebox.Config;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
@@ -142,7 +141,7 @@ public class EditCoord extends ActivityBase {
         this.createUTM(pnlUTM);
         this.addChild(pnlUTM);
 
-        btnOK.addClickHandler(new OnClickListener() {
+        btnOK.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 if (!parseView()) {
@@ -160,7 +159,7 @@ public class EditCoord extends ActivityBase {
                 return true;
             }
         });
-        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
                 GL.that.closeActivity();
                 mReturnListener.returnCoord(cancelCoord);
@@ -175,17 +174,17 @@ public class EditCoord extends ActivityBase {
     protected void initialize() {
 
         bDec.setTag(0);
-        bDec.addClickHandler(mtbClicked);
+        bDec.setClickHandler(mtbClicked);
         bDec.setOnDoubleClickListener(bDecDoubleClicked);
 
         bMin.setTag(1);
-        bMin.addClickHandler(mtbClicked);
+        bMin.setClickHandler(mtbClicked);
 
         bSec.setTag(2);
-        bSec.addClickHandler(mtbClicked);
+        bSec.setClickHandler(mtbClicked);
 
         bUtm.setTag(3);
-        bUtm.addClickHandler(mtbClicked);
+        bUtm.setClickHandler(mtbClicked);
 
         bMin.setState(1);
         showPage(1);
@@ -352,7 +351,7 @@ public class EditCoord extends ActivityBase {
 
     private void setClickHandlers(CB_Button[] bLat, CB_Button[] bLon) {
         // N/S
-        bLat[0].addClickHandler(new OnClickListener() {
+        bLat[0].setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 CB_Button btn = (CB_Button) v;
@@ -364,7 +363,7 @@ public class EditCoord extends ActivityBase {
             }
         });
         // E/W
-        bLon[0].addClickHandler(new OnClickListener() {
+        bLon[0].setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 CB_Button btn = (CB_Button) v;
@@ -378,7 +377,7 @@ public class EditCoord extends ActivityBase {
 
         for (int i = 1; i < bLat.length; i++) // must have same length for Lat and Lon
         {
-            bLat[i].addClickHandler(new OnClickListener() {
+            bLat[i].setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -401,7 +400,7 @@ public class EditCoord extends ActivityBase {
                     return true;
                 }
             });
-            bLon[i].addClickHandler(new OnClickListener() {
+            bLon[i].setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -431,7 +430,7 @@ public class EditCoord extends ActivityBase {
         // the clicked button accepts the next input from Numpad
 
         for (int i = 0; i < bLat.length; i++) {
-            bLat[i].addClickHandler(new OnClickListener() {
+            bLat[i].setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -447,7 +446,7 @@ public class EditCoord extends ActivityBase {
         }
 
         for (int i = 0; i < (bLon.length - 2); i++) {
-            bLon[i].addClickHandler(new OnClickListener() {
+            bLon[i].setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -463,7 +462,7 @@ public class EditCoord extends ActivityBase {
         }
 
         for (int i = 0; i < 3; i++) {
-            bZone[i].addClickHandler(new OnClickListener() {
+            bZone[i].setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -491,7 +490,7 @@ public class EditCoord extends ActivityBase {
 
         for (int i = 0; i < 10; i++) {
             btnNumpad[i] = new CB_Button(this, "btnNumpad" + i);
-            btnNumpad[i].addClickHandler(new OnClickListener() {
+            btnNumpad[i].setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     CB_Button btn = (CB_Button) v;
@@ -531,7 +530,7 @@ public class EditCoord extends ActivityBase {
 
         }
 
-        Leertaste.addClickHandler(new OnClickListener() {
+        Leertaste.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 CB_Button btn = (CB_Button) v;

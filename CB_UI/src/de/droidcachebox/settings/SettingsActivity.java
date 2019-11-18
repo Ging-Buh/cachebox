@@ -112,7 +112,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         this.addChild(btnMenu);
         btnMenu.setText("...");
-        btnMenu.addClickHandler((v, x, y, pointer, button) -> {
+        btnMenu.setClickHandler((v, x, y, pointer, button) -> {
             Menu icm = new Menu("SettingsLevelTitle");
 
             if (Config.SettingsShowAll.getValue())
@@ -137,7 +137,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         this.addChild(btnOk);
-        btnOk.addClickHandler((v, x, y, pointer, button) -> {
+        btnOk.setClickHandler((v, x, y, pointer, button) -> {
 
             StringBuilder ActionsString = new StringBuilder();
             int counter = 0;
@@ -164,7 +164,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         this.addChild(btnCancel);
-        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             Config.settings.LoadFromLastValue();
 
             finish();
@@ -311,7 +311,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 addControlToLinearLayout(btn, margin);
                 addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
 
-                btn.addClickHandler(new OnClickListener() {
+                btn.setClickHandler(new OnClickListener() {
                     @Override
                     public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                         lay.Toggle();
@@ -401,7 +401,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.addClickHandler(new OnClickListener() {
+        item.setClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -458,7 +458,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             item.setDefault(SB.getValue());
         }
 
-        item.addClickHandler(new OnClickListener() {
+        item.setClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -687,7 +687,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.addClickHandler(new OnClickListener() {
+        item.setClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -739,7 +739,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.addClickHandler(new OnClickListener() {
+        item.setClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -791,7 +791,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.addClickHandler(new OnClickListener() {
+        item.setClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -849,7 +849,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             item.setDefault(settingFolder.getValue());
         }
 
-        item.addClickHandler((v, x, y, pointer, button) -> {
+        item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(settingFolder);
             File file = FileFactory.createFile(settingFolder.getValue());
             final String absolutePath = (file != null) ? file.getAbsolutePath() : "";
@@ -888,7 +888,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(Translation.get(settingFile.getName()));
         item.setDefault(settingFile.getValue());
 
-        item.addClickHandler((v, x, y, pointer, button) -> {
+        item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(settingFile);
             File file = FileFactory.createFile(settingFile.getValue());
 
@@ -926,7 +926,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btn.setText(Translation.get(SB.getName()));
 
         if (SB.getName().equals("DebugDisplayInfo")) {
-            btn.addClickHandler(new OnClickListener() {
+            btn.setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
@@ -1066,7 +1066,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(intToTime(SB.getValue()));
 
-        item.addClickHandler(new OnClickListener() {
+        item.setClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

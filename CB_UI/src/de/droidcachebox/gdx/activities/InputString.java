@@ -42,14 +42,14 @@ public class InputString extends ActivityBase {
         box.adjustHeight();
         scrollBox.setVirtualHeight(box.getHeight());
 
-        btnOK.addClickHandler((v, x, y, pointer, button) -> {
+        btnOK.setClickHandler((v, x, y, pointer, button) -> {
             btnOK.disable();
             callBack(edtResult.getText());
             finish();
             return true;
         });
 
-        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             callBack("");
             finish();
             return true;

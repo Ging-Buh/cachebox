@@ -24,8 +24,8 @@ import de.droidcachebox.gdx.activities.ImageActivity;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -161,7 +161,7 @@ public class SpoilerView extends CB_View_Base {
                         overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
                         overviewloader.setImage(imageEntry.LocalPath);
                         GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-                        overviewItem.addClickHandler((v, x, y, pointer, button) -> {
+                        overviewItem.setClickHandler((v, x, y, pointer, button) -> {
                             final int idx = ((GalleryItem) v).getIndex();
 
                             gallery.notifyDataSetChanged();

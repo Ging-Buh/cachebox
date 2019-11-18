@@ -47,7 +47,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         mActCoord = coordinate;
         mwpName = wpName;
         setText();
-        this.addClickHandler(click);
+        this.setClickHandler(click);
         this.setOnLongClickListener(longCLick);
         clipboard = PlatformUIBase.getClipboard();
     }
@@ -55,7 +55,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     public CoordinateButton(String name) {
         super(name);
         mActCoord = new CoordinateGPS(0, 0);
-        this.addClickHandler(click);
+        this.setClickHandler(click);
         this.setOnLongClickListener(longCLick);
         clipboard = PlatformUIBase.getClipboard();
     }

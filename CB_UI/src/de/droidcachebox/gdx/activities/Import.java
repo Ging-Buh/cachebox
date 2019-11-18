@@ -250,13 +250,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             ImportNow();
             return true;
         });
 
         this.addChild(bCancel);
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (BreakawayImportThread.isCanceled()) {
                 BreakawayImportThread.reset();
                 finish();
@@ -361,7 +361,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         refreshPqList.setX(margin);
         refreshPqList.setY(margin);
         refreshPqList.setText(Translation.get("refreshPqList"));
-        refreshPqList.addClickHandler((v, x, y, pointer, button) -> {
+        refreshPqList.setClickHandler((v, x, y, pointer, button) -> {
             refreshPqList();
             return true;
         });
@@ -387,7 +387,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         refreshCBServerList.setX(margin);
         refreshCBServerList.setY(margin);
         refreshCBServerList.setText(Translation.get("refreshCBServerList"));
-        refreshCBServerList.addClickHandler((v, x, y, pointer, button) -> {
+        refreshCBServerList.setClickHandler((v, x, y, pointer, button) -> {
             refreshCBServerList();
             return true;
         });
@@ -421,7 +421,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         btnSelectFile.setPos(checkBoxImportGPX.getMaxX() + (checkBoxImportGPX.getWidth() * 2.2f), checkBoxImportGPX.getY());
         btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
 
-        btnSelectFile.addClickHandler((v, x, y, pointer, button) -> {
+        btnSelectFile.setClickHandler((v, x, y, pointer, button) -> {
             PlatformUIBase.getFile("", "", "", "", this::copyGPX2PQ_Folder);
             return true;
         });
@@ -581,7 +581,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         input.setText(String.valueOf(Config.LogMinCount.getValue()));
         input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());
         LogCollapseBox.addChild(input);
-        input.addClickHandler((v, x, y, pointer, button) -> {
+        input.setClickHandler((v, x, y, pointer, button) -> {
             NumericInputBox.Show(Translation.get("ButKeepLeast"), Translation.get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {

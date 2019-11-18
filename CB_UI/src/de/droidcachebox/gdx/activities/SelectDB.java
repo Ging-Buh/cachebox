@@ -33,11 +33,11 @@ import de.droidcachebox.gdx.controls.dialogs.NewDB_InputBox;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.list.*;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
-import de.droidcachebox.main.menuBtn5.ShowQuit;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
+import de.droidcachebox.main.menuBtn5.ShowQuit;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.*;
 import de.droidcachebox.utils.log.Log;
@@ -182,14 +182,14 @@ public class SelectDB extends ActivityBase {
         addChild(bAutostart);
 
         // New Button
-        bNew.addClickHandler((v, x, y, pointer, button) -> {
+        bNew.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.get("NewDB"), Translation.get("InsNewDBName"), "NewDB", mDialogListenerNewDB);
             return true;
         });
 
         // Select Button
-        bSelect.addClickHandler((v, x, y, pointer, button) -> {
+        bSelect.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             if (AktFile == null) {
                 GL.that.Toast("Please select Database!", Toast.LENGTH_SHORT);
@@ -200,7 +200,7 @@ public class SelectDB extends ActivityBase {
         });
 
         // Cancel Button
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             if (MustSelect) {
                 ShowQuit.getInstance().Execute();
@@ -212,7 +212,7 @@ public class SelectDB extends ActivityBase {
         });
 
         // AutoStart Button
-        bAutostart.addClickHandler((v, x, y, pointer, button) -> {
+        bAutostart.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             showSelectionMenu();
             return true;
@@ -472,7 +472,7 @@ public class SelectDB extends ActivityBase {
         @Override
         public ListViewItemBase getView(int position) {
             DBItem v = new DBItem(recItem, position, this.dbFiles.get(position));
-            v.addClickHandler((v1, x, y, pointer, button) -> {
+            v.setClickHandler((v1, x, y, pointer, button) -> {
                 stopTimer();
                 DBItem selectedItem = (DBItem) v1;
                 AktFile = selectedItem.file;

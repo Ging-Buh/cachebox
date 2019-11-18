@@ -58,13 +58,13 @@ public class TB_Details extends ActivityBase {
         float innerHeight = 1000;
 
         btnClose = new CB_Button(Translation.get("close"));
-        btnClose.addClickHandler((v, x, y, pointer, button) -> {
+        btnClose.setClickHandler((v, x, y, pointer, button) -> {
             TB_Details.this.finish();
             return true;
         });
 
         btnAction = new CB_Button(Translation.get("TB_LogButton"));
-        btnAction.addClickHandler((v, x, y, pointer, button) -> {
+        btnAction.setClickHandler((v, x, y, pointer, button) -> {
             showLogMenu();
             return true;
         });

@@ -499,7 +499,7 @@ public class GL implements ApplicationListener {
             currentDialog = dialog;
 
             mDialog.addChildDirekt(dialog);
-            mDialog.addClickHandler((v, x1, y1, pointer, button) -> {
+            mDialog.setClickHandler((v, x1, y1, pointer, button) -> {
                 // Sollte bei einem Click neben dem Dialog ausgelöst werden.
                 // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
                 if (currentDialogIsShown) {

@@ -9,9 +9,9 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 
 import java.util.Iterator;
@@ -104,7 +104,7 @@ public class TrackListView extends V_ListView {
                         // Notify Map to Reload RouteOverlay
                         RouteOverlay.RoutesChanged();
                     });
-                    aktRouteItem.addClickHandler((v, x, y, pointer, button) -> {
+                    aktRouteItem.setClickHandler((v, x, y, pointer, button) -> {
                         selectedTrackItem = ((ListViewItemBase) v).getIndex();
                         setSelection(selectedTrackItem);
                         return true;
@@ -121,7 +121,7 @@ public class TrackListView extends V_ListView {
                 RouteOverlay.RoutesChanged();
             });
 
-            v.addClickHandler((v1, x, y, pointer, button) -> {
+            v.setClickHandler((v1, x, y, pointer, button) -> {
                 selectedTrackItem = ((ListViewItemBase) v1).getIndex();
                 setSelection(selectedTrackItem);
                 return true;

@@ -38,12 +38,12 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
@@ -201,7 +201,7 @@ public class SearchDialog extends PopUp_Base {
         setLang();
         switchSearcheMode(SearchMode.Title);
 
-        mBtnCancel.addClickHandler(new OnClickListener() {
+        mBtnCancel.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 close();
@@ -209,7 +209,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnTitle.addClickHandler(new OnClickListener() {
+        mTglBtnTitle.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchSearcheMode(SearchMode.Title);
@@ -217,7 +217,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnGc.addClickHandler(new OnClickListener() {
+        mTglBtnGc.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchSearcheMode(SearchMode.GcCode);
@@ -225,7 +225,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnOwner.addClickHandler(new OnClickListener() {
+        mTglBtnOwner.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchSearcheMode(SearchMode.Owner);
@@ -233,7 +233,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mBtnSearch.addClickHandler(new OnClickListener() {
+        mBtnSearch.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -244,7 +244,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mBtnNext.addClickHandler(new OnClickListener() {
+        mBtnNext.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -254,7 +254,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mBtnFilter.addClickHandler(new OnClickListener() {
+        mBtnFilter.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -268,7 +268,7 @@ public class SearchDialog extends PopUp_Base {
             }
         });
 
-        mTglBtnOnline.addClickHandler(new OnClickListener() {
+        mTglBtnOnline.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 setFilterBtnState();

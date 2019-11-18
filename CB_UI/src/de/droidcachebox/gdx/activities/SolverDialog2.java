@@ -227,7 +227,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         bVariableWaypoint.setY(innerHeight - mVariableField.getHeight());
         bVariableWaypoint.setWidth(mVariableField.getHeight());
         scrollBox.addChild(bVariableWaypoint);
-        bVariableWaypoint.addClickHandler(new OnClickListener() {
+        bVariableWaypoint.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
                 //String param = "";
@@ -421,7 +421,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         bCancel.setText(Translation.get("cancel"));
 
         this.addChild(bOK);
-        bOK.addClickHandler(new OnClickListener() {
+        bOK.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 // damit die Änderungen in sForm gespeichert werden
@@ -449,7 +449,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         });
 
         this.addChild(bCancel);
-        bCancel.addClickHandler(new OnClickListener() {
+        bCancel.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 finish();
@@ -767,7 +767,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
                 // Integer erwartet -> kein Komma anzeigen
                 bZahl[i].setVisible(false);
             }
-            bZahl[i].addClickHandler(new OnClickListener() {
+            bZahl[i].setClickHandler(new OnClickListener() {
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                     Integer i = (Integer) v.getData();
@@ -857,7 +857,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
                 addFunctionParamLine(function, i, parameters[i].trim());
             }
         }
-        bFunction.addClickHandler(new OnClickListener() {
+        bFunction.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 // Funktionsauswahl zeigen
@@ -901,7 +901,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         bFunctionParam[i] = new CB_Button("..");
         scrollBox.addChild(bFunctionParam[i]);
         bFunctionParam[i].setData(i);
-        bFunctionParam[i].addClickHandler(new OnClickListener() {
+        bFunctionParam[i].setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
                 String param = "";
@@ -1055,7 +1055,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             bOperator[i] = new CB_Button("..");
             scrollBox.addChild(bOperator[i]);
             bOperator[i].setData(tbOperator[i]);
-            bOperator[i].addClickHandler(oclSolverString);
+            bOperator[i].setClickHandler(oclSolverString);
         }
     }
 

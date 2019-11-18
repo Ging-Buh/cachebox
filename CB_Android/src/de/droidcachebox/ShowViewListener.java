@@ -734,7 +734,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                         // track annotation
                                         String TrackFolder = Config.TrackFolder.getValue();
                                         String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                                        de.droidcachebox.locator.Location lastLocation = Locator.getInstance().getLastSavedFineLocation();
+                                        Location lastLocation = Locator.getInstance().getLastSavedFineLocation();
                                         if (lastLocation == null) {
                                             lastLocation = Locator.getInstance().getLocation(Location.ProviderType.any);
                                             if (lastLocation == null) {

@@ -58,6 +58,7 @@ public class CacheContextMenu {
         cacheContextMenu.addMenuItem("RemoveFromWatchList", null, CacheContextMenu::removeFromWatchList).setEnabled(selectedCacheIsGC);
         cacheContextMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(GlobalCore.getSelectedCache())).setEnabled(selectedCacheIsSet);
         cacheContextMenu.addMenuItem("MI_DELETE_CACHE", Sprites.getSprite(IconName.DELETE.name()), CacheContextMenu::deleteGeoCache).setEnabled(selectedCacheIsSet);
+        cacheContextMenu.addCheckableMenuItem("rememberGeoCache", Config.rememberedGeoCache.getValue().equals(GlobalCore.getSelectedCache().getGcCode()), CacheContextMenu::rememberGeoCache).setEnabled(selectedCacheIsSet);
         if (forCacheList) {
             cacheContextMenu.addDivider();
             cacheContextMenu.addMenuItem("Map", Sprites.getSprite(IconName.map.name()), () -> ShowMap.getInstance().Execute());
@@ -79,6 +80,28 @@ public class CacheContextMenu {
         }
 
         return cacheContextMenu;
+    }
+
+    private static void rememberGeoCache() {
+        if (GlobalCore.isSetSelectedCache()) {
+            MessageBox mb = MessageBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxIcon.Question);
+            mb.btnLeftPositiveClickListener = (v, x, y, pointer, button) -> {
+                Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGcCode());
+                Config.AcceptChanges();
+                return mb.finish();
+            };
+            mb.btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> {
+                Cache rememberedCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
+                if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
+                return mb.finish();
+            };
+            mb.btnRightNegativeClickListener= (v, x, y, pointer, button) -> {
+                Config.rememberedGeoCache.setValue("");
+                Config.AcceptChanges();
+                return mb.finish();
+            };
+            mb.addButtons(Translation.get("rememberGeoCache"), Translation.get("selectGeoCache"), Translation.get("forgetGeoCache"));
+        }
     }
 
     public static void reloadSelectedCache() {

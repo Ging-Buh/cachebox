@@ -27,9 +27,9 @@ import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
-import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancel;
 import de.droidcachebox.utils.UnitFormatter;
@@ -237,12 +237,12 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     private void initClickHandlersAndContent() {
 
-        btnOK.addClickHandler((v, x, y, pointer, button) -> {
+        btnOK.setClickHandler((v, x, y, pointer, button) -> {
             ImportNow();
             return true;
         });
 
-        btnCancel.addClickHandler((v, x, y, pointer, button) -> {
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importRuns) {
                 isCanceld = true;
             } else {
@@ -251,29 +251,29 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             return true;
         });
 
-        btnPlus.addClickHandler((v, x, y, pointer, button) -> {
+        btnPlus.setClickHandler((v, x, y, pointer, button) -> {
             incrementRadius(1);
             return true;
         });
 
-        btnMinus.addClickHandler((v, x, y, pointer, button) -> {
+        btnMinus.setClickHandler((v, x, y, pointer, button) -> {
             incrementRadius(-1);
             return true;
         });
 
-        tglBtnGPS.addClickHandler((v, x, y, pointer, button) -> {
+        tglBtnGPS.setClickHandler((v, x, y, pointer, button) -> {
             actSearchPos = Locator.getInstance().getMyPosition();
             setToggleBtnState(0);
             return true;
         });
 
-        tglBtnMap.addClickHandler((v, x, y, pointer, button) -> {
+        tglBtnMap.setClickHandler((v, x, y, pointer, button) -> {
             actSearchPos = ShowMap.getInstance().normalMapView.center;
             setToggleBtnState(1);
             return true;
         });
 
-        tglBtnWeb.addClickHandler((v, x, y, pointer, button) -> {
+        tglBtnWeb.setClickHandler((v, x, y, pointer, button) -> {
             actSearchPos = Locator.getInstance().getMyPosition();
             searchCoordinates = new SearchCoordinates() {
                 public void callBack(Coordinate coordinate) {
@@ -288,7 +288,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             return true;
         });
 
-        btnBeforeAfterEqual.addClickHandler((v, x, y, pointer, button) -> {
+        btnBeforeAfterEqual.setClickHandler((v, x, y, pointer, button) -> {
             switch (btnBeforeAfterEqual.getText()) {
                 case "X":
                     btnBeforeAfterEqual.setText("<=");

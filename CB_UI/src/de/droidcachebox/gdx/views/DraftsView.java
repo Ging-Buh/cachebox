@@ -572,14 +572,14 @@ public class DraftsView extends V_ListView {
             DraftViewItem v = new DraftViewItem(rec, position, fne);
 
             if (fne == null) {
-                v.addClickHandler((v14, x, y, pointer, button) -> {
+                v.setClickHandler((v14, x, y, pointer, button) -> {
                     // Load More
                     lDrafts.loadDrafts("", LoadingType.loadMore);
                     DraftsView.this.notifyDataSetChanged();
                     return true;
                 });
             } else {
-                v.addClickHandler((v12, x, y, pointer, button) -> onItemClicked((DraftViewItem) v12));
+                v.setClickHandler((v12, x, y, pointer, button) -> onItemClicked((DraftViewItem) v12));
                 v.setOnLongClickListener((v13, x, y, pointer, button) -> onItemClicked((DraftViewItem) v13));
             }
 

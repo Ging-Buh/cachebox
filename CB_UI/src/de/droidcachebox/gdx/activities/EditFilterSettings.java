@@ -87,7 +87,7 @@ public class EditFilterSettings extends ActivityBase {
 
         CB_Button bOK = new CB_Button(leftBorder / 2, leftBorder, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
 
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             finish();
 
             Timer t = new Timer();
@@ -140,7 +140,7 @@ public class EditFilterSettings extends ActivityBase {
 
         CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             finish();
             return true;
         });
@@ -180,7 +180,7 @@ public class EditFilterSettings extends ActivityBase {
         btCat.initialOn_Off_ToggleStates(sCat, sCat);
         btTxt.initialOn_Off_ToggleStates(sTxt, sTxt);
 
-        btPre.addClickHandler(new OnClickListener() {
+        btPre.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switchVisibility(0);
@@ -188,12 +188,12 @@ public class EditFilterSettings extends ActivityBase {
             }
         });
 
-        btSet.addClickHandler((v, x, y, pointer, button) -> {
+        btSet.setClickHandler((v, x, y, pointer, button) -> {
             switchVisibility(1);
             return true;
         });
 
-        btCat.addClickHandler((v, x, y, pointer, button) -> {
+        btCat.setClickHandler((v, x, y, pointer, button) -> {
             switchVisibility(2);
             return true;
         });
@@ -283,7 +283,7 @@ public class EditFilterSettings extends ActivityBase {
         CB_RectF rec = new CB_RectF(leftBorder, margin, innerWidth, UiSizes.getInstance().getButtonHeight());
         btnAddPreset = new CB_Button(rec, "AddPresetButon");
         btnAddPreset.setText(Translation.get("AddOwnFilterPreset"));
-        btnAddPreset.addClickHandler(new OnClickListener() {
+        btnAddPreset.setClickHandler(new OnClickListener() {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -596,7 +596,7 @@ public class EditFilterSettings extends ActivityBase {
             CategorieListViewItem v = new CategorieListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, Index, tmp);
             // inital mit INVISIBLE
             v.setInvisible();
-            v.addClickHandler(onItemClickListener);
+            v.setClickHandler(onItemClickListener);
             lCategorieListViewItems.add(v);
             return v;
         }
@@ -612,7 +612,7 @@ public class EditFilterSettings extends ActivityBase {
             CategorieListViewItem v = new CategorieListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, Index, tmp);
             lCategorieListViewItems.add(v);
 
-            v.addClickHandler(new OnClickListener() {
+            v.setClickHandler(new OnClickListener() {
 
                 @Override
                 public boolean onClick(GL_View_Base v, int X, int Y, int pointer, int button) {
@@ -1292,7 +1292,7 @@ public class EditFilterSettings extends ActivityBase {
             for (PresetEntry entry : mPresetEntries) {
                 PresetListViewItem v = new PresetListViewItem(ItemRec, index, entry);
 
-                v.addClickHandler(new OnClickListener() {
+                v.setClickHandler(new OnClickListener() {
 
                     @Override
                     public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

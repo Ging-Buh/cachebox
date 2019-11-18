@@ -77,7 +77,7 @@ public class Menu extends ButtonDialog {
         mListView.setDisposeFlag(false);
         this.addChild(mMoreMenu);
         initialDialog();
-        // addClickHandler(...); // auf titel geklickt
+        // setClickHandler(...); // auf titel geklickt
     }
 
     public static CB_RectF getMenuRec() {
@@ -231,7 +231,7 @@ public class Menu extends ButtonDialog {
             float MenuY = mParentMenu != null ? mParentMenu.getY() : this.getY();
             mMoreMenuToggleButton.setY(MenuY + mFooterHeight);
             GL.that.getDialogLayer().addChild(mMoreMenuToggleButton);
-            mMoreMenuToggleButton.addClickHandler(new OnClickListener() {
+            mMoreMenuToggleButton.setClickHandler(new OnClickListener() {
 
                 @Override
                 public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -322,7 +322,7 @@ public class Menu extends ButtonDialog {
             } else
                 item.setIcon((Drawable) icon);
         }
-        item.addClickHandler(onClickListener);
+        item.setClickHandler(onClickListener);
         mItems.add(item);
         mListView.notifyDataSetChanged();
         return item;
@@ -466,7 +466,7 @@ public class Menu extends ButtonDialog {
     public void addItems(ArrayList<MenuItem> items, boolean setEnabled) {
         for (MenuItem menuItem : items) {
             if (menuItem.getOnClickListener() == null)
-                menuItem.addClickHandler(menuItemClickListener);
+                menuItem.setClickHandler(menuItemClickListener);
             if (setEnabled)
                 menuItem.setEnabled(true);
             mItems.add(menuItem);

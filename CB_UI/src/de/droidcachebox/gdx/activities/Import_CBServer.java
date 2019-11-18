@@ -104,13 +104,13 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         bCancel.setText(Translation.get("cancel"));
 
         this.addNext(bOK);
-        bOK.addClickHandler((v, x, y, pointer, button) -> {
+        bOK.setClickHandler((v, x, y, pointer, button) -> {
             ImportNow();
             return true;
         });
 
         this.addLast(bCancel);
-        bCancel.addClickHandler((v, x, y, pointer, button) -> {
+        bCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (BreakawayImportThread.isCanceled()) {
                 BreakawayImportThread.reset();
                 finish();
@@ -131,7 +131,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
         refreshExportList = new CB_Button(name);
         refreshExportList.setText(Translation.get("refreshExportList"));
-        refreshExportList.addClickHandler((v, x, y, pointer, button) -> {
+        refreshExportList.setClickHandler((v, x, y, pointer, button) -> {
             refreshExportList();
             return true;
         });

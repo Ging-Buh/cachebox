@@ -346,7 +346,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             SolverZeile solverZeile = solver.get(position);
             SolverViewItem solverViewItem = new SolverViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, solverZeile);
             solverViewItem.setClickable(true);
-            solverViewItem.addClickHandler((v, x, y, pointer, button) -> {
+            solverViewItem.setClickHandler((v, x, y, pointer, button) -> {
                 int selectionIndex = ((ListViewItemBase) v).getIndex();
                 // GlobalCore.SelectedCache(Database.Data.cacheList.get(selectionIndex));
                 setSelection(selectionIndex);
