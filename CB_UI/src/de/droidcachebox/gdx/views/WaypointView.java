@@ -172,9 +172,9 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                 else if (aktWaypoint.isCorrectedFinal())
                     GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
                 if (GroundspeakAPI.APIError == 0) {
-                    MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    MessageBox.create(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
                 } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
                 }
             });
         });
@@ -268,7 +268,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     }
 
     private void deleteWP() {
-        MessageBox.show(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.create(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
                 case MessageBox.BUTTON_POSITIVE:
                     // Yes button clicked
@@ -296,7 +296,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                     break;
             }
             return true;
-        });
+        }).show();
     }
 
     private void addProjection() {

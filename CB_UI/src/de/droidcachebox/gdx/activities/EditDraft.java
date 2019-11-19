@@ -178,8 +178,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
                     draft.timestamp = timestamp;
                 } catch (ParseException e) {
-                    final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
-
+                    final MessageBox msg = MessageBox.create(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
                         @Override
                         public boolean onClick(int which, Object data) {
                             Timer runTimer = new Timer();
@@ -190,13 +189,11 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                                     show();
                                 }
                             };
-
                             runTimer.schedule(task, 200);
-
                             return true;
                         }
                     });
-
+                    msg.show();
                     Timer runTimer = new Timer();
                     TimerTask task = new TimerTask() {
 

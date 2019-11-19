@@ -169,7 +169,7 @@ public class ShowLogs extends AbstractShowAction {
                                     pd.close();
                                     if (result != -1) {
                                         synchronized (Database.Data.cacheList) {
-                                            MessageBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None);
+                                            MessageBox.create(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None).show();
                                         }
 
                                     }
@@ -188,9 +188,9 @@ public class ShowLogs extends AbstractShowAction {
             if (GroundspeakAPI.APIError == 0) {
                 Config.Friends.setValue(friends);
                 Config.AcceptChanges();
-                MessageBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.create(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
             } else {
-                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
             }
         });
     }

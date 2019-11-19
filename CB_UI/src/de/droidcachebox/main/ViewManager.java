@@ -132,11 +132,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyInvalid") + de.droidcachebox.GlobalCore.br + de.droidcachebox.GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                        MessageBox.create(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
-                        });
+                        }).show();
                     }
                 };
                 new Timer().schedule(tt, 1500);
@@ -152,11 +152,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyExpired") + de.droidcachebox.GlobalCore.br + de.droidcachebox.GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                        MessageBox.create(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BUTTON_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
-                        });
+                        }).show();
                     }
                 };
                 t.schedule(tt, 1500);
@@ -173,11 +173,12 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyNeeded") + de.droidcachebox.GlobalCore.br + de.droidcachebox.GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == MessageBox.BUTTON_POSITIVE)
-                                PlatformUIBase.getApiKey();
-                            return true;
-                        }, de.droidcachebox.Config.RememberAsk_Get_API_Key);
+                        MessageBox.create(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+                                (which, data) -> {
+                                    if (which == MessageBox.BUTTON_POSITIVE)
+                                        PlatformUIBase.getApiKey();
+                                    return true;
+                                }, de.droidcachebox.Config.RememberAsk_Get_API_Key).show();
                     }
                 };
                 t.schedule(tt, 1500);

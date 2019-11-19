@@ -1,20 +1,14 @@
 package de.droidcachebox.settings;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import de.droidcachebox.*;
 import de.droidcachebox.SoundCache.Sounds;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.activities.ColorPicker;
-import de.droidcachebox.gdx.activities.ColorPicker.IReturnListener;
 import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.CB_CheckBox.OnCheckChangedListener;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
-import de.droidcachebox.gdx.controls.CollapseBox.IAnimatedHeightChangedListener;
-import de.droidcachebox.gdx.controls.Spinner.ISelectionChangedListener;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListenerDouble;
@@ -212,30 +206,26 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             int position = 0;
 
-            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
 
             final CB_View_Base btn = getView(catBtn, 1);
 
             // add Cat einträge
             final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
             lay.setClickable(true);
-            lay.setAnimationListener(new IAnimatedHeightChangedListener() {
+            lay.setAnimationListener(Height -> {
+                LinearLayout.layout();
 
-                @Override
-                public void animatedHeightChanged(float Height) {
-                    LinearLayout.layout();
+                LinearLayout.setZeroPos();
+                scrollBox.setVirtualHeight(LinearLayout.getHeight());
 
-                    LinearLayout.setZeroPos();
-                    scrollBox.setVirtualHeight(LinearLayout.getHeight());
-
-                }
             });
 
             int entryCount = 0;
 
             switch (cat) {
                 case Login:
-                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
                     lay.addChild(getView(lgIn, 1));
                     entryCount++;
                     break;
@@ -244,14 +234,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     entryCount++;
                     break;
                 case Debug:
-                    SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+                    SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<>("DebugDisplayInfo", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
                     final CB_View_Base btnDisp = getView(disp, 1);
+                    assert btnDisp != null;
                     btnDisp.setSize(itemRec);
                     lay.addChild(btnDisp);
                     entryCount++;
                     break;
                 case Skin:
-                    SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+                    SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<>("Skin", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
                     CB_View_Base skinView = getSkinSpinnerView(skin);
                     lay.addChild(skinView);
                     entryCount++;
@@ -281,12 +272,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             }
 
-            Boolean expandLayout = false;
+            boolean expandLayout = false;
 
             for (SettingBase settingItem : CatList) {
                 final CB_View_Base view = getView(settingItem, position++);
 
                 if (Config.DraftsLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("DraftsLoadLength")) {
+                    assert view != null;
                     ((SettingsItemBase) view).disable();
                 }
 
@@ -311,12 +303,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 addControlToLinearLayout(btn, margin);
                 addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
 
-                btn.setClickHandler(new OnClickListener() {
-                    @Override
-                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                        lay.Toggle();
-                        return true;
-                    }
+                assert btn != null;
+                btn.setClickHandler((v, x, y, pointer, button) -> {
+                    lay.Toggle();
+                    return true;
                 });
             }
         }
@@ -401,47 +391,33 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.setClickHandler(new OnClickListener() {
+        item.setClickHandler((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(SB);
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
+            GL.that.RunOnGLWithThreadCheck(() -> {
+                ColorPicker clrPick = new ColorPicker(ActivityBase.activityRec(), SB.getValue(), color -> {
+                    if (color == null)
+                        return; // nothing changed
 
-                GL.that.RunOnGLWithThreadCheck(() -> {
-                    ColorPicker clrPick = new ColorPicker(ActivityBase.activityRec(), SB.getValue(), new IReturnListener() {
-
-                        @Override
-                        public void returnColor(Color color) {
-                            if (color == null)
-                                return; // nothing changed
-
-                            SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
-                            if (SetValue != null)
-                                SetValue.setValue(color);
-                            resortList();
-                            // Activity wieder anzeigen
-                            show();
-                        }
-                    });
-                    clrPick.show();
+                    SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
+                    if (SetValue != null)
+                        SetValue.setValue(color);
+                    resortList();
+                    // Activity wieder anzeigen
+                    show();
                 });
+                clrPick.show();
+            });
 
-                return true;
-            }
-
+            return true;
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;
@@ -458,21 +434,16 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             item.setDefault(SB.getValue());
         }
 
-        item.setClickHandler(new OnClickListener() {
+        item.setClickHandler((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(SB);
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
+            WrapType type;
 
-                WrapType type;
+            type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
 
-                type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
-
-                StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new OnMsgBoxClickListener() {
-
-                    @Override
-                    public boolean onClick(int which, Object data) {
-                        String text = StringInputBox.editText.getText().toString();
+            StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
+                    (which, data) -> {
+                        String text = StringInputBox.editText.getText();
                         if (which == MessageBox.BUTTON_POSITIVE) {
                             SettingString value = (SettingString) Config.settings.get(EditKey);
 
@@ -482,33 +453,24 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                                 text = text.replace("\n", "");
                             }
 
-                            if (value != null)
-                                value.setValue(text);
+                            value.setValue(text);
 
                             resortList();
                         }
                         // Activity wieder anzeigen
                         SettingsActivity.this.show();
                         return true;
-                    }
-                });
+                    });
 
-                return true;
-            }
-
+            return true;
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return true;
-            }
-
+            return true;
         });
 
         return item;
@@ -546,24 +508,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         spinner.setAdapter(adapter);
         spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
 
-        spinner.setSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                SB.setValue(SB.getValues().get(index));
-            }
-        });
+        spinner.setSelectionChangedListener(index -> SB.setValue(SB.getValues().get(index)));
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;
@@ -600,24 +552,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         spinner.setAdapter(adapter);
         spinner.setSelection(SB.getIndex());
 
-        spinner.setSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                SB.setValue(SB.getValueFromIndex(index));
-            }
-        });
+        spinner.setSelectionChangedListener(index -> SB.setValue(SB.getValueFromIndex(index)));
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;
@@ -655,24 +597,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         spinner.setAdapter(adapter);
         spinner.setSelection(SB.getIndexOfValue());
 
-        spinner.setSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                SB.setValue(SB.getValueFromIndex(index));
-            }
-        });
+        spinner.setSelectionChangedListener(index -> SB.setValue(SB.getValueFromIndex(index)));
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;
@@ -687,47 +619,37 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.setClickHandler(new OnClickListener() {
+        item.setClickHandler((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(SB);
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
+            // Show NumPad Int Edit
+            NumericInputBox.Show("default: " + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListener() {
+                @Override
+                public void returnValue(int value) {
+                    SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
+                    if (SetValue != null)
+                        SetValue.setValue(value);
+                    resortList();
+                    // Activity wieder anzeigen
+                    show();
+                }
 
-                // Show NumPad Int Edit
-                NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListener() {
-                    @Override
-                    public void returnValue(int value) {
-                        SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
-                        if (SetValue != null)
-                            SetValue.setValue(value);
-                        resortList();
-                        // Activity wieder anzeigen
-                        show();
-                    }
+                @Override
+                public void cancelClicked() {
+                    // Activity wieder anzeigen
+                    show();
+                }
 
-                    @Override
-                    public void cancelClicked() {
-                        // Activity wieder anzeigen
-                        show();
-                    }
-
-                });
-                return true;
-            }
-
+            });
+            return true;
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;
@@ -739,46 +661,36 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.setClickHandler(new OnClickListener() {
+        item.setClickHandler((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(SB);
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
+            // Show NumPad Int Edit
+            NumericInputBox.Show("default: " + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
+                @Override
+                public void returnValue(double value) {
+                    SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
+                    if (SetValue != null)
+                        SetValue.setValue(value);
+                    resortList();
+                    // Activity wieder anzeigen
+                    SettingsActivity.this.show();
+                }
 
-                // Show NumPad Int Edit
-                NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
-                    @Override
-                    public void returnValue(double value) {
-                        SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
-                        if (SetValue != null)
-                            SetValue.setValue(value);
-                        resortList();
-                        // Activity wieder anzeigen
-                        SettingsActivity.this.show();
-                    }
-
-                    @Override
-                    public void cancelClicked() {
-                        // Activity wieder anzeigen
-                        SettingsActivity.this.show();
-                    }
-                });
-                return true;
-            }
-
+                @Override
+                public void cancelClicked() {
+                    // Activity wieder anzeigen
+                    SettingsActivity.this.show();
+                }
+            });
+            return true;
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;
@@ -791,46 +703,36 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(String.valueOf(SB.getValue()));
 
-        item.setClickHandler(new OnClickListener() {
+        item.setClickHandler((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(SB);
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
+            // Show NumPad Int Edit
+            NumericInputBox.Show("default: " + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
+                @Override
+                public void returnValue(double value) {
+                    SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
+                    if (SetValue != null)
+                        SetValue.setValue((float) value);
+                    resortList();
+                    // Activity wieder anzeigen
+                    SettingsActivity.this.show();
+                }
 
-                // Show NumPad Int Edit
-                NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
-                    @Override
-                    public void returnValue(double value) {
-                        SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
-                        if (SetValue != null)
-                            SetValue.setValue((float) value);
-                        resortList();
-                        // Activity wieder anzeigen
-                        SettingsActivity.this.show();
-                    }
-
-                    @Override
-                    public void cancelClicked() {
-                        // Activity wieder anzeigen
-                        SettingsActivity.this.show();
-                    }
-                });
-                return true;
-            }
-
+                @Override
+                public void cancelClicked() {
+                    // Activity wieder anzeigen
+                    SettingsActivity.this.show();
+                }
+            });
+            return true;
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return item;
@@ -874,7 +776,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MessageBox.show(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener);
+            MessageBox.create(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener).show();
             return false;
         });
 
@@ -910,7 +812,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MessageBox.show(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener);
+            MessageBox.create(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener).show();
             return false;
         });
 
@@ -926,43 +828,34 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btn.setText(Translation.get(SB.getName()));
 
         if (SB.getName().equals("DebugDisplayInfo")) {
-            btn.setClickHandler(new OnClickListener() {
-                @Override
-                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            btn.setClickHandler((v, x, y, pointer, button) -> {
 
-                    if (SB.getName().equals("DebugDisplayInfo")) {
-                        String info = "";
+                if (SB.getName().equals("DebugDisplayInfo")) {
+                    String info = "";
 
-                        info += "Density= " + String.valueOf(GL_UISizes.DPI) + GlobalCore.br;
-                        info += "Height= " + String.valueOf(UiSizes.getInstance().getWindowHeight()) + GlobalCore.br;
-                        info += "Width= " + String.valueOf(UiSizes.getInstance().getWindowWidth()) + GlobalCore.br;
-                        info += "Scale= " + String.valueOf(UiSizes.getInstance().getScale()) + GlobalCore.br;
-                        info += "FontSize= " + String.valueOf(UiSizes.getInstance().getScaledFontSize()) + GlobalCore.br;
-                        info += "GPS min pos Time= " + String.valueOf(PositionChangedListeners.minPosEventTime) + GlobalCore.br;
-                        info += "GPS min Orientation Time= " + String.valueOf(PositionChangedListeners.minOrientationEventTime) + GlobalCore.br;
+                    info += "Density= " + GL_UISizes.DPI + GlobalCore.br;
+                    info += "Height= " + UiSizes.getInstance().getWindowHeight() + GlobalCore.br;
+                    info += "Width= " + UiSizes.getInstance().getWindowWidth() + GlobalCore.br;
+                    info += "Scale= " + UiSizes.getInstance().getScale() + GlobalCore.br;
+                    info += "FontSize= " + UiSizes.getInstance().getScaledFontSize() + GlobalCore.br;
+                    info += "GPS min pos Time= " + PositionChangedListeners.minPosEventTime + GlobalCore.br;
+                    info += "GPS min Orientation Time= " + PositionChangedListeners.minOrientationEventTime + GlobalCore.br;
 
-                        MessageBox.show(info, msgBoxReturnListener);
+                    MessageBox.create(info, msgBoxReturnListener).show();
 
-                        return true;
-                    }
-
-                    return false;
+                    return true;
                 }
 
+                return false;
             });
         }
 
-        btn.setOnLongClickListener(new OnClickListener() {
+        btn.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return false;
-            }
-
+            return false;
         });
 
         return btn;
@@ -978,69 +871,56 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         boolean full = Config.SettingsShowExpert.getValue() || Config.SettingsShowAll.getValue();
         final String AudioName = SB.getName();
-        final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, new FloatControl.iValueChanged() {
+        final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, value -> {
+            Audio aud = new Audio(SB.getValue());
+            aud.Volume = value / 100f;
+            SB.setValue(aud);
 
-            @Override
-            public void ValueChanged(int value) {
-                Audio aud = new Audio(SB.getValue());
-                aud.Volume = value / 100f;
-                SB.setValue(aud);
+            // play Audio now
 
-                // play Audio now
-
-                if (AudioName.equalsIgnoreCase("GlobalVolume"))
-                    SoundCache.play(Sounds.Global, true);
-                if (AudioName.equalsIgnoreCase("Approach"))
-                    SoundCache.play(Sounds.Approach);
-                if (AudioName.equalsIgnoreCase("GPS_lose"))
-                    SoundCache.play(Sounds.GPS_lose);
-                if (AudioName.equalsIgnoreCase("GPS_fix"))
-                    SoundCache.play(Sounds.GPS_fix);
-                if (AudioName.equalsIgnoreCase("AutoResortSound"))
-                    SoundCache.play(Sounds.AutoResortSound);
-            }
+            if (AudioName.equalsIgnoreCase("GlobalVolume"))
+                SoundCache.play(Sounds.Global, true);
+            if (AudioName.equalsIgnoreCase("Approach"))
+                SoundCache.play(Sounds.Approach);
+            if (AudioName.equalsIgnoreCase("GPS_lose"))
+                SoundCache.play(Sounds.GPS_lose);
+            if (AudioName.equalsIgnoreCase("GPS_fix"))
+                SoundCache.play(Sounds.GPS_fix);
+            if (AudioName.equalsIgnoreCase("AutoResortSound"))
+                SoundCache.play(Sounds.AutoResortSound);
         });
 
         item.setName(Translation.get(SB.getName()));
-        item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
+        item.setDefault("default: " + SB.getDefaultValue());
         item.setVolume((int) (SB.getValue().Volume * 100));
         CB_CheckBox chk = item.getCheckBox();
 
         if (!AudioName.contains("Global")) {
             if (audioSettingsList == null)
-                audioSettingsList = new ArrayList<SettingsItem_Audio>();
+                audioSettingsList = new ArrayList<>();
             audioSettingsList.add(item);
         }
 
         chk.setChecked(SB.getValue().Mute);
-        chk.setOnCheckChangedListener(new OnCheckChangedListener() {
-            @Override
-            public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
-                Audio aud = new Audio(SB.getValue());
-                aud.Mute = isChecked;
-                SB.setValue(aud);
-                item.setMuteDisabeld(isChecked);
-                if (AudioName.contains("Global")) {
-                    // Enable or disable all other
-                    setVolumeState(isChecked);
-                }
+        chk.setOnCheckChangedListener((view, isChecked) -> {
+            Audio aud = new Audio(SB.getValue());
+            aud.Mute = isChecked;
+            SB.setValue(aud);
+            item.setMuteDisabeld(isChecked);
+            if (AudioName.contains("Global")) {
+                // Enable or disable all other
+                setVolumeState(isChecked);
             }
-
         });
 
         item.setMuteDisabeld(chk.isChecked());
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return true;
-            }
-
+            return true;
         });
 
         return item;
@@ -1066,46 +946,41 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setName(trans);
         item.setDefault(intToTime(SB.getValue()));
 
-        item.setClickHandler(new OnClickListener() {
+        item.setClickHandler((v, x, y, pointer, button) -> {
+            EditKey = Config.settings.indexOf(SB);
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditKey = Config.settings.indexOf(SB);
+            String Value = intToTime(SB.getValue());
+            String[] s = Value.split(":");
 
-                String Value = intToTime(SB.getValue());
-                String[] s = Value.split(":");
+            int intValueMin = Integer.parseInt(s[0]);
+            int intValueSec = Integer.parseInt(s[1]);
 
-                int intValueMin = Integer.parseInt(s[0]);
-                int intValueSec = Integer.parseInt(s[1]);
+            // Show NumPad Int Edit
+            NumericInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
+                @Override
+                public void returnValue(int min, int sec) {
+                    SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
+                    int value = (min * 60 * 1000) + (sec * 1000);
+                    if (SetValue != null)
+                        SetValue.setValue(value);
+                    resortList();
+                    // Activity wieder anzeigen
+                    SettingsActivity.this.show();
+                }
 
-                // Show NumPad Int Edit
-                NumericInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
-                    @Override
-                    public void returnValue(int min, int sec) {
-                        SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
-                        int value = (min * 60 * 1000) + (sec * 1000);
-                        if (SetValue != null)
-                            SetValue.setValue(value);
-                        resortList();
-                        // Activity wieder anzeigen
-                        SettingsActivity.this.show();
-                    }
-
-                    @Override
-                    public void cancelClicked() {
-                        // Activity wieder anzeigen
-                        SettingsActivity.this.show();
-                    }
-                });
-                return true;
-            }
-
+                @Override
+                public void cancelClicked() {
+                    // Activity wieder anzeigen
+                    SettingsActivity.this.show();
+                }
+            });
+            return true;
         });
 
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
             return false;
         });
@@ -1119,7 +994,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         int minutes = (milliseconds / (1000 * 60)) % 60;
         // int hours = (int) ((milliseconds / (1000*60*60)) % 24);
 
-        return String.valueOf(minutes) + ":" + String.valueOf(seconds);
+        return minutes + ":" + seconds;
     }
 
     private CB_View_Base getLangSpinnerView() {
@@ -1257,32 +1132,24 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SettingsItem_Bool item = new SettingsItem_Bool(itemRec, backgroundChanger, SB.getName());
 
         item.setName(Translation.get(SB.getName()));
-        item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
+        item.setDefault("default: " + SB.getDefaultValue());
 
         CB_CheckBox chk = item.getCheckBox();
 
         chk.setChecked(SB.getValue());
-        chk.setOnCheckChangedListener(new OnCheckChangedListener() {
-            @Override
-            public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
-                SB.setValue(isChecked);
-                if (SB.getName().equalsIgnoreCase("DraftsLoadAll")) {
-                    resortList();
-                }
+        chk.setOnCheckChangedListener((view, isChecked) -> {
+            SB.setValue(isChecked);
+            if (SB.getName().equalsIgnoreCase("DraftsLoadAll")) {
+                resortList();
             }
         });
 
-        item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener((v, x, y, pointer, button) -> {
+            // zeige Beschreibung der Einstellung
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                // zeige Beschreibung der Einstellung
+            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
 
-                MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-                return true;
-            }
-
+            return true;
         });
 
         return item;
@@ -1332,7 +1199,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         super.dispose();
     }
 
-    class SettingsOrder implements Comparator<SettingBase> {
+    static class SettingsOrder implements Comparator<SettingBase> {
         public int compare(SettingBase a, SettingBase b) {
             return a.compareTo(b);
         }

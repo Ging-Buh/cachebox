@@ -187,9 +187,9 @@ public class ShowImportMenu extends AbstractShowAction {
                     }
 
                     if (canceld) {
-                        MessageBox.show(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MessageBoxIcon.Stop);
+                        MessageBox.create(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MessageBoxIcon.Stop).show();
                     } else {
-                        MessageBox.show(Translation.get("exported", String.valueOf(actExportedCount)), Translation.get("export"), MessageBoxIcon.Information);
+                        MessageBox.create(Translation.get("exported", String.valueOf(actExportedCount)), Translation.get("export"), MessageBoxIcon.Information).show();
                     }
 
                 }

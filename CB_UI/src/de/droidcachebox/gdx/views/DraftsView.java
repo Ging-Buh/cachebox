@@ -62,6 +62,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
@@ -117,10 +118,10 @@ public class DraftsView extends V_ListView {
             writer.write(bom);
 
             for (Draft draft : drafts) {
-                SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                 String sDate = datFormat.format(draft.timestamp) + "T";
-                datFormat = new SimpleDateFormat("HH:mm:ss");
+                datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
                 datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                 sDate += datFormat.format(draft.timestamp) + "Z";
                 String log = draft.gcCode + "," + sDate + "," + draft.type.toString() + ",\"" + draft.comment + "\"\n";
@@ -130,7 +131,7 @@ public class DraftsView extends V_ListView {
             writer.close();
         } catch (IOException e) {
             Log.err(log, e.toString() + " at\n" + txtFile.getAbsolutePath());
-            MessageBox.show(e.toString() + " at\n" + txtFile.getAbsolutePath(), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+            MessageBox.create(e.toString() + " at\n" + txtFile.getAbsolutePath(), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
         }
     }
 
@@ -213,7 +214,7 @@ public class DraftsView extends V_ListView {
         Cache cache = GlobalCore.getSelectedCache();
 
         if (cache == null) {
-            MessageBox.show(Translation.get("NoCacheSelect"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+            MessageBox.create(Translation.get("NoCacheSelect"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
             return;
         }
 
@@ -221,9 +222,9 @@ public class DraftsView extends V_ListView {
         if (cache.getGcCode().equalsIgnoreCase("CBPark")) {
 
             if (type == LogTypes.found) {
-                MessageBox.show(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.create(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
             } else if (type == LogTypes.didnt_find) {
-                MessageBox.show(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                MessageBox.create(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
             }
 
             return;
@@ -514,7 +515,7 @@ public class DraftsView extends V_ListView {
         };
 
         final String message = Translation.get("DelDrafts?");
-        GL.that.RunOnGL(() -> MessageBox.show(message, Translation.get("DeleteAllDrafts"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener));
+        GL.that.RunOnGL(() -> MessageBox.create(message, Translation.get("DeleteAllDrafts"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener).show());
 
     }
 
@@ -540,7 +541,7 @@ public class DraftsView extends V_ListView {
         private final CB_FixSizeList<DraftViewItem> fixViewList = new CB_FixSizeList<>(20);
         private Drafts drafts;
 
-        public CustomAdapter(Drafts drafts) {
+        CustomAdapter(Drafts drafts) {
             this.drafts = drafts;
         }
 
@@ -607,8 +608,7 @@ public class DraftsView extends V_ListView {
             if (aktDraft.isTbDraft) {
                 // Sprite from url ?  draft.TbIconUrl
                 icon = null;
-            }
-            else {
+            } else {
                 icon = Sprites.getSprite("big" + CacheTypes.values()[aktDraft.cacheType].name());
             }
             cm.addMenuItem("SelectCache", icon, this::selectCacheFromDraft);
@@ -649,9 +649,9 @@ public class DraftsView extends V_ListView {
                                 String image = Base64.encodeBytes(WebbUtils.readBytes(file.getFileInputStream()));
                                 GroundspeakAPI.uploadLogImage(aktDraft.GcId, image, description);
                                 if (GroundspeakAPI.APIError == OK) {
-                                    MessageBox.show(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                    MessageBox.create(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
                                 } else {
-                                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                    MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
                                 }
                             } catch (Exception ignored) {
                             }
@@ -694,7 +694,7 @@ public class DraftsView extends V_ListView {
                         addOrChangeDraft(draft, isNewDraft, false);
                     } else {
                         // Error handling
-                        MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                        MessageBox.create(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                             switch (which) {
                                 case MessageBox.BUTTON_NEGATIVE:
                                     logOnline(draft, true);
@@ -708,10 +708,10 @@ public class DraftsView extends V_ListView {
                                     logOnline(draft, false); // or nothing
                             }
                             return true;
-                        });
+                        }).show();
                     }
                     if (GroundspeakAPI.LastAPIError.length() > 0) {
-                        GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
+                        GL.that.RunOnGL(() -> MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("Error"), MessageBoxIcon.Error).show());
                     }
                     if (wd != null)
                         wd.close();
@@ -743,7 +743,7 @@ public class DraftsView extends V_ListView {
             if (cache == null) {
                 String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
                 message += "\n" + Translation.get("DraftNoSelect");
-                MessageBox.show(message);
+                MessageBox.create(message).show();
                 return;
             }
 
@@ -756,7 +756,7 @@ public class DraftsView extends V_ListView {
                 cache = Data.cacheList.getCacheByGcCodeFromCacheList(aktDraft.gcCode);
             }
 
-            Waypoint finalWp = null;
+            Waypoint finalWp;
             if (cache != null) {
                 finalWp = cache.getCorrectedFinal();
                 if (finalWp == null)
@@ -786,7 +786,7 @@ public class DraftsView extends V_ListView {
             if (cache == null && !aktDraft.isTbDraft) {
                 String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
                 message += "\n" + Translation.get("draftNoDelete");
-                MessageBox.show(message);
+                MessageBox.create(message).show();
                 return;
             }
 
@@ -799,7 +799,7 @@ public class DraftsView extends V_ListView {
                     message += Translation.get("confirmDraftDeletionRst");
             }
 
-            MessageBox.show(message, Translation.get("deleteDraft"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+            MessageBox.create(message, Translation.get("deleteDraft"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
                 switch (which) {
                     case MessageBox.BUTTON_POSITIVE:
                         // Yes button clicked
@@ -839,7 +839,7 @@ public class DraftsView extends V_ListView {
                         break;
                 }
                 return true;
-            });
+            }).show();
 
         }
 

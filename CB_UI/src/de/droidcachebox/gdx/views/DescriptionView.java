@@ -208,9 +208,9 @@ public class DescriptionView extends CB_View_Base {
             fetchMyCacheLimits();
             if (fetchMyUserInfos().remaining <= 0) {
                 if (isPremiumMember()) {
-                    MessageBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                    MessageBox.create(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show();
                 } else {
-                    MessageBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                    MessageBox.create(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show();
                 }
                 return;
             }

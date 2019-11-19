@@ -144,7 +144,7 @@ public class TB_Log extends ActivityBase {
                 final String errorMsg = Translation.get("NoCacheSelect");
                 this.finish();
 
-                GL.that.RunOnGL(() -> MessageBox.show(errorMsg, "", MessageBoxIcon.Error));
+                GL.that.RunOnGL(() -> MessageBox.create(errorMsg, "", MessageBoxIcon.Error).show());
                 return;
             }
 
@@ -239,7 +239,7 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.create(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
                             case MessageBox.BUTTON_NEGATIVE:
                                 logOnline();
@@ -253,14 +253,14 @@ public class TB_Log extends ActivityBase {
                                 return true;
                         }
                         return true;
-                    });
+                    }).show();
                     return;
                 }
                 if (result != OK) {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.create(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
                             case MessageBox.BUTTON_NEGATIVE:
                                 logOnline();
@@ -274,12 +274,12 @@ public class TB_Log extends ActivityBase {
                                 return true;
                         }
                         return true;
-                    });
+                    }).show();
                     return;
                 }
 
                 if (LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(() -> MessageBox.show(LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
+                    GL.that.RunOnGL(() -> MessageBox.create(LastAPIError, Translation.get("Error"), MessageBoxIcon.Error).show());
                 }
 
                 if (wd != null)

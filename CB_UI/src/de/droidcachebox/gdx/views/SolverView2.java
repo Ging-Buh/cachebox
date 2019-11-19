@@ -222,7 +222,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     }
 
     private void DeleteLine() {
-        MessageBox.show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.create("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             if (which == 1) {
                 solver.remove(mSelectedIndex);
                 solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
@@ -237,7 +237,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
                 return true;
             } else
                 return false;
-        });
+        }).show();
     }
 
     private CoordinateGPS getSelectedCoordinateResult() {

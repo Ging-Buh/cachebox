@@ -14,13 +14,14 @@ public class Quit {
             return;
 
         try {
-            messageBox = MessageBox.show(Translation.get("QuitReally"), Translation.get("Quit?"), MessageBoxButtons.OKCancel, MessageBoxIcon.Stop,
+            messageBox = MessageBox.create(Translation.get("QuitReally"), Translation.get("Quit?"), MessageBoxButtons.OKCancel, MessageBoxIcon.Stop,
                     (which, data) -> {
                         if (which == MessageBox.BUTTON_POSITIVE) {
                             PlatformUIBase.quit();
                         }
                         return true;
                     });
+            messageBox.show();
         } catch (Exception e) {
             PlatformUIBase.quit();
         }

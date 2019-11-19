@@ -17,13 +17,16 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.gdx.main.*;
+import de.droidcachebox.gdx.main.AbstractShowAction;
+import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.gdx.main.MenuID;
+import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.main.menuBtn1.contextmenus.DeleteDialog;
+import de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings;
 import de.droidcachebox.main.menuBtn1.contextmenus.SelectDBDialog;
 import de.droidcachebox.main.menuBtn1.contextmenus.ShowImportMenu;
-import de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings;
 import de.droidcachebox.translation.Translation;
 
 public class ShowCacheList extends AbstractShowAction {
@@ -123,7 +126,7 @@ public class ShowCacheList extends AbstractShowAction {
                 msgText = "askResetFavorites";
             }
             final boolean finalchecked = checked;
-            gL_MsgBox = MessageBox.show(Translation.get(msgText), Translation.get("Favorites"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question, (which, data) -> {
+            gL_MsgBox = MessageBox.create(Translation.get(msgText), Translation.get("Favorites"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question, (which, data) -> {
                 gL_MsgBox_close();
                 if (which == MessageBox.BUTTON_POSITIVE) {
                     Database.Data.sql.beginTransaction();
@@ -137,6 +140,7 @@ public class ShowCacheList extends AbstractShowAction {
                 }
                 return true;
             });
+            gL_MsgBox.show();
             return true;
         });
         mi.setCheckable(true);

@@ -27,7 +27,7 @@ public class InfoBubble extends CB_View_Base {
      */
     private Cache mCache = null;
     private Waypoint mWaypoint = null;
-    private de.droidcachebox.gdx.controls.CacheInfo cacheInfo;
+    private CacheInfo cacheInfo;
 
     public InfoBubble(SizeF Size, String Name) {
         super(Size, Name);
@@ -73,8 +73,8 @@ public class InfoBubble extends CB_View_Base {
         if (mCache.isEvent() && mCache.mustLoadDetail())
             mCache.loadDetail();
 
-        cacheInfo = new de.droidcachebox.gdx.controls.CacheInfo(size, "CacheInfo", cache);
-        cacheInfo.setViewMode(mCache.isEvent() ? de.droidcachebox.gdx.controls.CacheInfo.VIEW_MODE_BUBBLE_EVENT : CacheInfo.VIEW_MODE_BUBBLE);
+        cacheInfo = new CacheInfo(size, "CacheInfo", cache);
+        cacheInfo.setViewMode(mCache.isEvent() ? CacheInfo.VIEW_MODE_BUBBLE_EVENT : CacheInfo.VIEW_MODE_BUBBLE);
         cacheInfo.setY(getHeight() - size.height);
         cacheInfo.setFont(Fonts.getBubbleNormal());
         cacheInfo.setSmallFont(Fonts.getBubbleSmall());

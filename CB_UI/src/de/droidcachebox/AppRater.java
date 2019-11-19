@@ -63,7 +63,7 @@ public class AppRater {
         String later = Translation.get("Rate_later");
         String never = Translation.get("Rate_never");
 
-        msgBox = MessageBox.show(message, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, (which, data) -> {
+        msgBox = MessageBox.create(message, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
                 case 1:
                     // Rate
@@ -96,6 +96,8 @@ public class AppRater {
         msgBox.setButtonText(1, now);
         msgBox.setButtonText(2, later);
         msgBox.setButtonText(3, never);
+
+        msgBox.show();
 
     }
 }

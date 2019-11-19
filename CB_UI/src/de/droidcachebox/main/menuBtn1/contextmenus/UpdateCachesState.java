@@ -172,7 +172,7 @@ public class UpdateCachesState extends AbstractAction {
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 synchronized (Database.Data.cacheList) {
-                    MessageBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.get("chkState"), MessageBoxIcon.None);
+                    MessageBox.create(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.get("chkState"), MessageBoxIcon.None).show();
                 }
 
             }

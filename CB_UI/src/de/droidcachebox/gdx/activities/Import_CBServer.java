@@ -118,12 +118,13 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             }
 
             if (importStarted) {
-                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
-                    if (which == MessageBox.BUTTON_POSITIVE) {
-                        cancelImport();
-                    }
-                    return true;
-                });
+                MessageBox.create(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop,
+                        (which, data) -> {
+                            if (which == MessageBox.BUTTON_POSITIVE) {
+                                cancelImport();
+                            }
+                            return true;
+                        }).show();
             } else
                 finish();
             return true;
@@ -373,42 +374,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         return result;
     }
 
-    public class CustomAdapterExportCBServer implements Adapter {
-
-        CustomAdapterExportCBServer() {
-        }
-
-        @Override
-        public int getCount() {
-            if (exportList != null) {
-                return exportList.size();
-            } else {
-                return 0;
-            }
-        }
-
-        @Override
-        public ListViewItemBase getView(int position) {
-            final ExportEntry it = exportList.get(position);
-            if (itemRecCBServer == null) {
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
-                float itemWidth = scrollBox.getInnerWidth();
-
-                itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
-            }
-
-            return new ExportCBServerListItem(itemRecCBServer, position, it);
-        }
-
-        @Override
-        public float getItemSize(int position) {
-            if (itemHeight == -1)
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
-            return itemHeight;
-        }
-
-    }
-
     static class ExportCBServerListItem extends ListViewItemBackground {
         private CB_CheckBox chk;
         private CB_Label lblName, lblInfo;
@@ -448,6 +413,42 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             this.addChild(lblName);
             this.addChild(lblInfo);
             this.addChild(chk);
+        }
+
+    }
+
+    public class CustomAdapterExportCBServer implements Adapter {
+
+        CustomAdapterExportCBServer() {
+        }
+
+        @Override
+        public int getCount() {
+            if (exportList != null) {
+                return exportList.size();
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public ListViewItemBase getView(int position) {
+            final ExportEntry it = exportList.get(position);
+            if (itemRecCBServer == null) {
+                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+                float itemWidth = scrollBox.getInnerWidth();
+
+                itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
+            }
+
+            return new ExportCBServerListItem(itemRecCBServer, position, it);
+        }
+
+        @Override
+        public float getItemSize(int position) {
+            if (itemHeight == -1)
+                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+            return itemHeight;
         }
 
     }

@@ -111,9 +111,9 @@ public class UploadDraftsOrLogs {
 
                     if (!UploadMeldung.equals("")) {
                         if (!API_Key_error)
-                            MessageBox.show(UploadMeldung, Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                            MessageBox.create(UploadMeldung, Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
                     } else {
-                        MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live);
+                        MessageBox.create(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live).show();
                     }
                 }
                 DraftsView.getInstance().notifyDataSetChanged();

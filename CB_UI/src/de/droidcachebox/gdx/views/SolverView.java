@@ -69,7 +69,6 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
     public void onShow() {
         // view must be refilled with values
         KeyboardFocusChangedEventList.Add(this);
-        // todo you are possibly comparing the same objects, but the values could have changed
         if (aktCache != GlobalCore.getSelectedCache()) {
             mustLoadSolver = true;
             aktCache = GlobalCore.getSelectedCache();
@@ -251,8 +250,6 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
         float le = this.getHalfWidth();
         float le2 = this.getWidth() * 0.2f;
         switch (windowState) {
-            case Both:
-                break;
             case Left:
                 le = le2;
                 break;
@@ -306,20 +303,19 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
                 message.append(s);
             }
 
-            MessageBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, (which, data) -> {
-                {
-                    // Behandle das ergebniss
-                    if (which == 1) {/* User clicked OK so do some stuff */
-                        StringBuilder missing = new StringBuilder();
-                        for (String s : solver.MissingVariables.keySet()) {
-                            missing.append(s).append("=\n");
-                            edResult.setText("\n" + edInput.getText());
+            MessageBox.create(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk,
+                    (which, data) -> {
+                        // Behandle das ergebniss
+                        if (which == 1) {/* User clicked OK so do some stuff */
+                            StringBuilder missing = new StringBuilder();
+                            for (String s : solver.MissingVariables.keySet()) {
+                                missing.append(s).append("=\n");
+                                edResult.setText("\n" + edInput.getText());
+                            }
+                            edInput.setText(missing + edInput.getText());
                         }
-                        edInput.setText(missing + edInput.getText());
-                    }
-                    return true;
-                }
-            });
+                        return true;
+                    }).show();
         }
     }
 

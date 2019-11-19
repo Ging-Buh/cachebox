@@ -139,67 +139,54 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-                ms = MessageBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                    // Behandle das ergebniss
-                    switch (which) {
-                        case 1:
-                            ms.close();
-                            pd = CancelWaitDialog.ShowWait(Translation.get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
-                                @Override
-                                public void run() {
-                                    result = GroundspeakAPI.fetchMyUserInfos().findCount;
-                                    pd.close();
-
-                                    if (result > -1) {
-                                        String Text = Translation.get("FoundsSetTo", String.valueOf(result));
-                                        MessageBox.show(Text, Translation.get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
-
-                                        Config.FoundOffset.setValue(result);
-                                        Config.AcceptChanges();
-                                        AboutView.this.refreshText();
-                                    }
-
-                                }
-
-                                @Override
-                                public boolean doCancel() {
-                                    return false;
-                                }
-                            });
-
-                            break;
-                        case 3:
-                            ms.close();
-                            GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Config.FoundOffset.getValue(), new IReturnValueListener() {
-                                @Override
-                                public void returnValue(int value) {
-                                    Config.FoundOffset.setValue(value);
-                                    Config.AcceptChanges();
-                                    AboutView.this.refreshText();
-                                }
-
-                                @Override
-                                public void cancelClicked() {
-
-                                }
-
-                            }));
-
-                            break;
-
-                    }
-                    return true;
-                });
-
+                ms = MessageBox.create(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+                        (which, data) -> {
+                            // Behandle das ergebniss
+                            switch (which) {
+                                case 1:
+                                    ms.close();
+                                    pd = CancelWaitDialog.ShowWait(Translation.get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
+                                        @Override
+                                        public void run() {
+                                            result = GroundspeakAPI.fetchMyUserInfos().findCount;
+                                            pd.close();
+                                            if (result > -1) {
+                                                String Text = Translation.get("FoundsSetTo", String.valueOf(result));
+                                                MessageBox.create(Text, Translation.get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null).show();
+                                                Config.FoundOffset.setValue(result);
+                                                Config.AcceptChanges();
+                                                AboutView.this.refreshText();
+                                            }
+                                        }
+                                        @Override
+                                        public boolean doCancel() {
+                                            return false;
+                                        }
+                                    });
+                                    break;
+                                case 3:
+                                    ms.close();
+                                    GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Config.FoundOffset.getValue(), new IReturnValueListener() {
+                                        @Override
+                                        public void returnValue(int value) {
+                                            Config.FoundOffset.setValue(value);
+                                            Config.AcceptChanges();
+                                            AboutView.this.refreshText();
+                                        }
+                                        @Override
+                                        public void cancelClicked() {
+                                        }
+                                    }));
+                                    break;
+                            }
+                            return true;
+                        });
+                ms.show();
                 return true;
             }
         });
-
         this.addChild(CachesFoundLabel);
-
         createTable();
-
         refreshText();
     }
 

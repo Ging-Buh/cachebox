@@ -33,9 +33,7 @@ import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
 import de.droidcachebox.gdx.controls.Slider.YPositionChanged;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -402,7 +400,7 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchAktive = false;
-                    MessageBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
+                    MessageBox.create(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null).show();
                 } else {
                     if (tmp != null) {
                         Waypoint finalWp = tmp.getCorrectedFinal();
@@ -435,33 +433,24 @@ public class SearchDialog extends PopUp_Base {
             public void checkReady(boolean invalidAccessToken) {
 
                 if (invalidAccessToken) {
-                    GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+                    GL.that.RunOnGL(() -> MessageBox.create(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show());
                 } else {
 
-                    wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
-                        @Override
-                        public void isCanceled() {
-                            closeWaitDialog();
-                        }
-                    }, new ICancelRunnable() {
+                    wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), () -> closeWaitDialog(), new ICancelRunnable() {
 
                         @Override
                         public void run() {
                             if (isPremiumMember()) {
                                 searchOnlineNow();
                             } else {
-                                MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
-                                        new OnMsgBoxClickListener() {
-                                            @Override
-                                            public boolean onClick(int which, Object data) {
-                                                if (which == MessageBox.BUTTON_POSITIVE) {
-                                                    searchOnlineNow();
-                                                } else
-                                                    closeWaitDialog();
-                                                return true;
-                                            }
-                                        });
+                                MessageBox.create(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                                        (which, data) -> {
+                                            if (which == MessageBox.BUTTON_POSITIVE) {
+                                                searchOnlineNow();
+                                            } else
+                                                closeWaitDialog();
+                                            return true;
+                                        }).show();
                             }
                         }
 
@@ -686,23 +675,22 @@ public class SearchDialog extends PopUp_Base {
             @Override
             public void checkReady(boolean invalidAccessToken) {
                 if (invalidAccessToken) {
-                    GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+                    GL.that.RunOnGL(() -> MessageBox.create(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show());
                 } else {
                     closeWD();
                     GL.that.RunOnGL(() -> {
                         if (isPremiumMember()) {
                             showTargetApiDialog();
                         } else {
-                            MSB = MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
-                                @Override
-                                public boolean onClick(int which, Object data) {
-                                    closeMsgBox();
-                                    if (which == MessageBox.BUTTON_POSITIVE) {
-                                        showTargetApiDialog();
-                                    }
-                                    return true;
-                                }
-                            });
+                            MSB = MessageBox.create(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                                    (which, data) -> {
+                                        closeMsgBox();
+                                        if (which == MessageBox.BUTTON_POSITIVE) {
+                                            showTargetApiDialog();
+                                        }
+                                        return true;
+                                    });
+                            MSB.show();
                         }
                     });
                 }

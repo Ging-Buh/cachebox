@@ -41,7 +41,7 @@ public class CacheInfoList {
      * nicht mehr benötigt wird, sollte sie mit dispose() gelöscht werden.
      */
     public static void IndexDB() {
-        mCacheInfoList = new HashMap<String, CacheInfo>();
+        mCacheInfoList = new HashMap<>();
 
         CoreCursor reader = Database.Data.sql.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
 

@@ -260,8 +260,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     }
 
     public static void MsgDownloadLimit() {
-        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null));
-
+        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.create(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null).show());
     }
 
     public static void chkAPiLogInWithWaitDialog(final iChkReadyHandler handler) {

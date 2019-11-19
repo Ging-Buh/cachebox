@@ -89,17 +89,9 @@ public class ShowTrackList extends AbstractShowAction {
     @Override
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListViewContextMenuTitle");
-        cm.addMenuItem("load", null, () -> {
-            PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
-                if (Path != null) {
-                    TrackColor = RouteOverlay.getNextColor();
-                    RouteOverlay.MultiLoadRoute(Path, TrackColor);
-                    Log.debug(log, "Load Track :" + Path);
-                    TrackListView.getInstance().notifyDataSetChanged();
-                }
-            });
-        });
-        cm.addMenuItem("generate", null, () -> showMenuCreate());
+        cm.addMenuItem("load", null, this::loadTrackList);
+        cm.addMenuItem("generate", null, this::showMenuCreate);
+
         // rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
         TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
         if (selectedTrackItem != null && !selectedTrackItem.getRoute().IsActualTrack) {
@@ -141,9 +133,9 @@ public class ShowTrackList extends AbstractShowAction {
                 TrackListViewItem mTrackItem = TrackListView.getInstance().getSelectedItem();
 
                 if (mTrackItem == null) {
-                    MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                    MessageBox.create(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null).show();
                 } else if (mTrackItem.getRoute().IsActualTrack) {
-                    MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                    MessageBox.create(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null).show();
                 } else {
                     RouteOverlay.remove(mTrackItem.getRoute());
                     TrackListView.getInstance().notifyDataSetChanged();
@@ -261,4 +253,14 @@ public class ShowTrackList extends AbstractShowAction {
         pC.show();
     }
 
+    private void loadTrackList() {
+        PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
+            if (Path != null) {
+                TrackColor = RouteOverlay.getNextColor();
+                RouteOverlay.MultiLoadRoute(Path, TrackColor);
+                Log.debug(log, "Load Track :" + Path);
+                TrackListView.getInstance().notifyDataSetChanged();
+            }
+        });
+    }
 }

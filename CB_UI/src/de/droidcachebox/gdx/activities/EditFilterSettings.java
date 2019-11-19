@@ -38,7 +38,6 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -58,6 +57,19 @@ import java.util.TimerTask;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
 public class EditFilterSettings extends ActivityBase {
+    static final FilterProperties[] presets = new FilterProperties[]{ //
+            FilterInstances.HISTORY, //
+            FilterInstances.ACTIVE, //
+            FilterInstances.QUICK, //
+            FilterInstances.BEGINNER, //
+            FilterInstances.WITHTB, //
+            FilterInstances.DROPTB, //
+            FilterInstances.HIGHLIGHTS, //
+            FilterInstances.FAVORITES, //
+            FilterInstances.TOARCHIVE, //
+            FilterInstances.LISTINGCHANGED, //
+            FilterInstances.ALL, //
+    };
     private static final String log = "EditFilterSettings";
     public static EditFilterSettings that;
     public static CB_RectF ItemRec;
@@ -404,51 +416,44 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         if (exist) {
-            MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener() {
-
-                @Override
-                public boolean onClick(int which, Object data) {
-                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                    return true;
-                }
-            });
+            MessageBox.create(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning,
+                    (which, data) -> {
+                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                        return true;
+                    }).show();
             return;
         }
 
-        StringInputBox.Show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset", new OnMsgBoxClickListener() {
+        StringInputBox.Show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset", (which, data) -> {
+            String text = StringInputBox.editText.getText();
+            // Behandle das ergebniss
+            switch (which) {
+                case 1: // ok Clicket
+                    String uF = Config.UserFilter.getValue();
+                    String aktFilter = tmpFilterProps.toString();
 
-            @Override
-            public boolean onClick(int which, Object data) {
-                String text = StringInputBox.editText.getText();
-                // Behandle das ergebniss
-                switch (which) {
-                    case 1: // ok Clicket
-                        String uF = Config.UserFilter.getValue();
-                        String aktFilter = tmpFilterProps.toString();
+                    // Category Filterungen aus Filter entfernen
+                    int pos = aktFilter.indexOf("^");
+                    int posE = aktFilter.indexOf("\"", pos);
+                    String after = aktFilter.substring(posE);
+                    aktFilter = aktFilter.substring(0, pos) + after;
 
-                        // Category Filterungen aus Filter entfernen
-                        int pos = aktFilter.indexOf("^");
-                        int posE = aktFilter.indexOf("\"", pos);
-                        String after = aktFilter.substring(posE);
-                        aktFilter = aktFilter.substring(0, pos) + after;
-
-                        uF += text + ";" + aktFilter + "#";
-                        Config.UserFilter.setValue(uF);
-                        Config.AcceptChanges();
-                        mPresetListView.fillPresetList();
-                        mPresetListView.notifyDataSetChanged();
-                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                        break;
-                    case 2: // cancel clicked
-                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                        break;
-                    case 3:
-                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                        break;
-                }
-
-                return true;
+                    uF += text + ";" + aktFilter + "#";
+                    Config.UserFilter.setValue(uF);
+                    Config.AcceptChanges();
+                    mPresetListView.fillPresetList();
+                    mPresetListView.notifyDataSetChanged();
+                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                    break;
+                case 2: // cancel clicked
+                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                    break;
+                case 3:
+                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                    break;
             }
+
+            return true;
         });
     }
 
@@ -689,6 +694,155 @@ public class EditFilterSettings extends ActivityBase {
             return true;
         }
 
+        public static class CategorieEntry {
+            private static int IdCounter;
+            private final GpxFilename mFile;
+            private final int mItemType;
+            private final int ID;
+            private Category mCat;
+            private Sprite mIcon;
+            private Sprite[] mIconArray;
+            private int mState = 0;
+            private double mNumericMax;
+            private double mNumericStep;
+            private double mNumericState;
+
+            public CategorieEntry(GpxFilename file, Sprite Icon, int itemType) {
+                mCat = null;
+                mFile = file;
+                mIcon = Icon;
+                mItemType = itemType;
+                ID = IdCounter++;
+
+            }
+
+            public CategorieEntry(Category cat, Sprite Icon, int itemType) {
+                mCat = cat;
+                mFile = null;
+                mIcon = Icon;
+                mItemType = itemType;
+                ID = IdCounter++;
+
+            }
+
+            public CategorieEntry(GpxFilename file, Sprite[] Icons, int itemType, double min, double max, double iniValue, double Step) {
+                mFile = file;
+                mIconArray = Icons;
+                mItemType = itemType;
+                mNumericMax = max;
+                mNumericState = iniValue;
+                mNumericStep = Step;
+                ID = IdCounter++;
+            }
+
+            public GpxFilename getFile() {
+                return mFile;
+            }
+
+            public Sprite getIcon() {
+                if (mItemType == NUMERIC_ITEM) {
+                    try {
+                        double ArrayMultiplier = (mIconArray.length > 5) ? 2 : 1;
+
+                        return mIconArray[(int) (mNumericState * ArrayMultiplier)];
+                    } catch (Exception e) {
+                    }
+
+                }
+                return mIcon;
+            }
+
+            public int getState() {
+                return mState;
+            }
+
+            public void setState(int State) {
+                mState = State;
+            }
+
+            public void setState(float State) {
+                mNumericState = State;
+            }
+
+            public int getItemType() {
+                return mItemType;
+            }
+
+            public int getID() {
+                return ID;
+            }
+
+            public double getNumState() {
+                return mNumericState;
+            }
+
+            public void plusClick() {
+
+                if (mItemType == COLLAPSE_BUTTON_ITEM) {
+                    // collabs Button chk clicked
+                    int State = mCat.getCheck();
+                    if (State == 0) {// keins ausgewählt, also alle anwählen
+
+                        for (GpxFilename tmp : mCat) {
+                            tmp.Checked = true;
+                        }
+
+                    } else {// einer oder mehr ausgewählt, also alle abwählen
+
+                        for (GpxFilename tmp : mCat) {
+                            tmp.Checked = false;
+                        }
+
+                    }
+                } else {
+                    stateClick();
+                }
+
+            }
+
+            public void minusClick() {
+                if (mItemType == COLLAPSE_BUTTON_ITEM) {
+                    // Collabs Button Pin Clicked
+                    CategoryDAO dao = new CategoryDAO();
+                    dao.SetPinned(this.mCat, !this.mCat.pinned);
+                    // this.mCat.pinned = !this.mCat.pinned;
+
+                } else {
+                    mNumericState -= mNumericStep;
+                    if (mNumericState < 0)
+                        mNumericState = mNumericMax;
+                }
+            }
+
+            public void stateClick() {
+
+                mState += 1;
+                if (mItemType == CHECK_ITEM || mItemType == COLLAPSE_BUTTON_ITEM) {
+                    if (mState > 1)
+                        mState = 0;
+                } else if (mItemType == THREE_STATE_ITEM) {
+                    if (mState > 1)
+                        mState = -1;
+                }
+
+                if (mItemType == CHECK_ITEM) {
+                    if (mState == 0)
+                        this.mFile.Checked = false;
+                    else
+                        this.mFile.Checked = true;
+                }
+            }
+
+            public String getCatName() {
+                return mCat.GpxFilename;
+            }
+
+            public Category getCat() {
+                return mCat;
+            }
+
+        }
+
         public class CustomAdapter implements Adapter {
 
             private final ArrayList<CategorieEntry> categorieList;
@@ -735,6 +889,13 @@ public class EditFilterSettings extends ActivityBase {
 
         public class CategorieListViewItem extends ListViewItemBackground {
             private final SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy hh:mm ");
+            // static Member
+            private final ArrayList<CategorieListViewItem> mChildList = new ArrayList<>();
+            public CategorieEntry categorieEntry;
+            public Vector2 lastItemTouchPos;
+            // private Member
+            float left;
+            float top;
             private Sprite chkOff;
             private Sprite chkOn;
             private Sprite chkNo;
@@ -743,21 +904,13 @@ public class EditFilterSettings extends ActivityBase {
             private CB_RectF rBounds;
             private CB_RectF rChkBounds;
             private float halfSize = 0;
+
+            // Draw Methods
             private NinePatch btnBack;
             private NinePatch btnBack_pressed;
             private Sprite sPinOn;
             private Sprite sPinOff;
             private float margin = 0;
-
-            // Draw Methods
-
-            // static Member
-            private final ArrayList<CategorieListViewItem> mChildList = new ArrayList<>();
-            public CategorieEntry categorieEntry;
-            public Vector2 lastItemTouchPos;
-            // private Member
-            float left;
-            float top;
             private BitmapFontCache EntryName;
             private BitmapFontCache EntryDate;
             private BitmapFontCache EntryCount;
@@ -1060,170 +1213,7 @@ public class EditFilterSettings extends ActivityBase {
 
         }
 
-        public static class CategorieEntry {
-            private static int IdCounter;
-            private final GpxFilename mFile;
-            private final int mItemType;
-            private final int ID;
-            private Category mCat;
-            private Sprite mIcon;
-            private Sprite[] mIconArray;
-            private int mState = 0;
-            private double mNumericMax;
-            private double mNumericStep;
-            private double mNumericState;
-
-            public CategorieEntry(GpxFilename file, Sprite Icon, int itemType) {
-                mCat = null;
-                mFile = file;
-                mIcon = Icon;
-                mItemType = itemType;
-                ID = IdCounter++;
-
-            }
-
-            public CategorieEntry(Category cat, Sprite Icon, int itemType) {
-                mCat = cat;
-                mFile = null;
-                mIcon = Icon;
-                mItemType = itemType;
-                ID = IdCounter++;
-
-            }
-
-            public CategorieEntry(GpxFilename file, Sprite[] Icons, int itemType, double min, double max, double iniValue, double Step) {
-                mFile = file;
-                mIconArray = Icons;
-                mItemType = itemType;
-                mNumericMax = max;
-                mNumericState = iniValue;
-                mNumericStep = Step;
-                ID = IdCounter++;
-            }
-
-            public GpxFilename getFile() {
-                return mFile;
-            }
-
-            public Sprite getIcon() {
-                if (mItemType == NUMERIC_ITEM) {
-                    try {
-                        double ArrayMultiplier = (mIconArray.length > 5) ? 2 : 1;
-
-                        return mIconArray[(int) (mNumericState * ArrayMultiplier)];
-                    } catch (Exception e) {
-                    }
-
-                }
-                return mIcon;
-            }
-
-            public int getState() {
-                return mState;
-            }
-
-            public void setState(int State) {
-                mState = State;
-            }
-
-            public void setState(float State) {
-                mNumericState = State;
-            }
-
-            public int getItemType() {
-                return mItemType;
-            }
-
-            public int getID() {
-                return ID;
-            }
-
-            public double getNumState() {
-                return mNumericState;
-            }
-
-            public void plusClick() {
-
-                if (mItemType == COLLAPSE_BUTTON_ITEM) {
-                    // collabs Button chk clicked
-                    int State = mCat.getCheck();
-                    if (State == 0) {// keins ausgewählt, also alle anwählen
-
-                        for (GpxFilename tmp : mCat) {
-                            tmp.Checked = true;
-                        }
-
-                    } else {// einer oder mehr ausgewählt, also alle abwählen
-
-                        for (GpxFilename tmp : mCat) {
-                            tmp.Checked = false;
-                        }
-
-                    }
-                } else {
-                    stateClick();
-                }
-
-            }
-
-            public void minusClick() {
-                if (mItemType == COLLAPSE_BUTTON_ITEM) {
-                    // Collabs Button Pin Clicked
-                    CategoryDAO dao = new CategoryDAO();
-                    dao.SetPinned(this.mCat, !this.mCat.pinned);
-                    // this.mCat.pinned = !this.mCat.pinned;
-
-                } else {
-                    mNumericState -= mNumericStep;
-                    if (mNumericState < 0)
-                        mNumericState = mNumericMax;
-                }
-            }
-
-            public void stateClick() {
-
-                mState += 1;
-                if (mItemType == CHECK_ITEM || mItemType == COLLAPSE_BUTTON_ITEM) {
-                    if (mState > 1)
-                        mState = 0;
-                } else if (mItemType == THREE_STATE_ITEM) {
-                    if (mState > 1)
-                        mState = -1;
-                }
-
-                if (mItemType == CHECK_ITEM) {
-                    if (mState == 0)
-                        this.mFile.Checked = false;
-                    else
-                        this.mFile.Checked = true;
-                }
-            }
-
-            public String getCatName() {
-                return mCat.GpxFilename;
-            }
-
-            public Category getCat() {
-                return mCat;
-            }
-
-        }
-
     }
-
-    static final FilterProperties[] presets = new FilterProperties[]{ //
-            FilterInstances.HISTORY, //
-            FilterInstances.ACTIVE, //
-            FilterInstances.QUICK, //
-            FilterInstances.BEGINNER, //
-            FilterInstances.WITHTB, //
-            FilterInstances.DROPTB, //
-            FilterInstances.HIGHLIGHTS, //
-            FilterInstances.FAVORITES, //
-            FilterInstances.TOARCHIVE, //
-            FilterInstances.LISTINGCHANGED, //
-            FilterInstances.ALL, //
-    };
 
     class PresetListView extends V_ListView {
 
@@ -1331,44 +1321,44 @@ public class EditFilterSettings extends ActivityBase {
                 v.setOnLongClickListener((v1, x, y, pointer, button) -> {
                     final int delItemIndex = ((PresetListViewItem) v1).getIndex();
                     GL.that.closeActivity();
-                    MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
-                        switch (which) {
-                            case 1: // ok Clicked
+                    MessageBox.create(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                            (which, data) -> {
+                                switch (which) {
+                                    case 1: // ok Clicked
 
-                                if (delItemIndex < presets.length) {
-                                    return false; // Don't delete System Presets
-                                } else {
-                                    try {
-                                        String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+                                        if (delItemIndex < presets.length) {
+                                            return false; // Don't delete System Presets
+                                        } else {
+                                            try {
+                                                String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 
-                                        int i = presets.length;
-                                        String newUserEntris = "";
-                                        for (String entry1 : userEntrys) {
-                                            if (i++ != delItemIndex)
-                                                newUserEntris += entry1 + SettingString.STRING_SPLITTER;
+                                                int i = presets.length;
+                                                String newUserEntris = "";
+                                                for (String entry1 : userEntrys) {
+                                                    if (i++ != delItemIndex)
+                                                        newUserEntris += entry1 + SettingString.STRING_SPLITTER;
+                                                }
+                                                Config.UserFilter.setValue(newUserEntris);
+                                                Config.AcceptChanges();
+                                                that.mPresetListView.fillPresetList();
+                                                that.mPresetListView.notifyDataSetChanged();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
                                         }
-                                        Config.UserFilter.setValue(newUserEntris);
-                                        Config.AcceptChanges();
-                                        that.mPresetListView.fillPresetList();
-                                        that.mPresetListView.notifyDataSetChanged();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
+                                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                                        break;
+                                    case 2: // cancel clicked
+                                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                                        break;
+                                    case 3:
+                                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                                        break;
                                 }
-                                de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                                break;
-                            case 2: // cancel clicked
-                                de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                                break;
-                            case 3:
-                                de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                                break;
-                        }
 
-                        return true;
-                    });
-
+                                return true;
+                            }).show();
                     return true;
                 });
 

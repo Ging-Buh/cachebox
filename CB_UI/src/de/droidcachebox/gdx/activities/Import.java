@@ -194,7 +194,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                     PQ_LINE_ACTIVE = false;
                 }
             } else {
-                MessageBox.show(Translation.get("Desc_ImportPQsFromGeocachingCom"), Translation.get("apiKeyInvalid"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                MessageBox.create(Translation.get("Desc_ImportPQsFromGeocachingCom"), Translation.get("apiKeyInvalid"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
             }
         }
         Log.debug(log, "is Premium = " + PQ_LINE_ACTIVE);
@@ -264,12 +264,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
 
             if (importStarted) {
-                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
+                MessageBox.create(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, (which, data) -> {
                     if (which == MessageBox.BUTTON_POSITIVE) {
                         cancelImport();
                     }
                     return true;
-                });
+                }).show();
             } else
                 finish();
             return true;
@@ -731,7 +731,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         new Thread(() -> {
             PqList = fetchPocketQueryList();
             if (APIError != OK) {
-                MessageBox.show(LastAPIError, Translation.get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.create(LastAPIError, Translation.get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
             }
             // even if error: you can use PqList, may be empty
             Collections.sort(PqList, (p1, p2) -> p1.name.compareTo(p2.name));
@@ -935,7 +935,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                                         ip.ProgressInkrement("importGC", "Download: " + pq.name, false);
                                         fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
                                         if (APIError != OK) {
-                                            MessageBox.show(LastAPIError, Translation.get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                            MessageBox.create(LastAPIError, Translation.get("PQfromGC"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
                                         }
                                     }
 
