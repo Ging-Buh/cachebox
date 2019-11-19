@@ -144,16 +144,6 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
             return;
         }
 
-        // // rewrite Changed Values ( like Favroite state)
-        // if (selectedCache != null)
-        // {
-        // if (!Cache.getGcCode().equals("CBPark"))
-        // {
-        // Cache lastCache = Database.Data.cacheList.GetCacheById(selectedCache.Id);
-        //
-        // }
-        // }
-
         // remove Detail Info from old selectedCache
         if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.detail != null)) {
             selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());

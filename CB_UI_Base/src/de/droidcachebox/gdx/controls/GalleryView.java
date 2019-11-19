@@ -71,12 +71,14 @@ public class GalleryView extends H_ListView {
     public void chkSlideBack() {
 
         if (showSelectedItemCenter) {
+            // this implementation is not compatible with click selection
 
             //search item at center and set as selected
 
             float itemWidth = mBaseAdapter.getItemSize(0);
 
-            for (int i = 0, n = mPosDefault.size() - 1; i < n; i++) {
+            int n = mPosDefault.size() - 1;
+            for (int i = 0; i < n; i++) {
                 final float pos1 = mPosDefault.get(i) - this.getHalfWidth() + (itemWidth / 2);
                 final float pos2 = mPosDefault.get(i + 1) - this.getHalfWidth() + (itemWidth / 2);
 
@@ -86,11 +88,11 @@ public class GalleryView extends H_ListView {
                     final float div2 = Math.abs(mPos - pos2);
 
                     if (div1 <= div2) {
-                        //			setSelection(idx);
+                        // setSelection(i);
                         mBaseAdapter.getView(i).click(0, 0, 0, 0);
                         scrollItemToCenter(i);
                     } else {
-                        //			setSelection(idx + 1);
+                        // setSelection(i + 1);
                         mBaseAdapter.getView(i + 1).click(0, 0, 0, 0);
                         scrollItemToCenter(i + 1);
                     }
@@ -100,12 +102,10 @@ public class GalleryView extends H_ListView {
             return;
         }
 
-        if (!mIsDraggable) {
-            startAnimationToBottom();
-
-        } else {
+        /*
+        // what does this do?
+        if (mIsDraggable) {
             lastPos = mcalcAllSizeBase;
-
             if (mPos > 0) {
                 startAnimationtoTop();
                 snapIn(mBaseAdapter.getCount() - 1);
@@ -113,32 +113,32 @@ public class GalleryView extends H_ListView {
                 startAnimationToBottom();
                 snapIn(0);
             }
+        } else {
+            startAnimationToBottom();
         }
 
-        //SnapIN?
+         */
 
+        //SnapIN?
         for (int i = 0, n = mPosDefault.size() - 1; i < n; i++) {
             final float pos1 = mPosDefault.get(i);
             final float pos2 = mPosDefault.get(i + 1);
-
             if (mPos > pos1 && mPos < pos2) {
                 //search max Div
-
                 final float div1 = Math.abs(mPos - pos1);
                 final float div2 = Math.abs(mPos - pos2);
                 final int idx = i;
                 GL.that.RunOnGL(() -> {
-
                     if (div1 <= div2) {
                         //Snap to 1
                         mBottomAnimation = false;
-                        GalleryView.this.scrollTo(pos1);
+                        scrollTo(pos1);
                         Log.debug(log, "SnapIn first " + pos1);
                         snapIn(idx);
                     } else {
                         //Snap to 2
                         mBottomAnimation = true;
-                        GalleryView.this.scrollTo(pos2);
+                        scrollTo(pos2);
                         Log.debug(log, "SnapIn second " + pos2);
                         snapIn(idx + 1);
                     }
@@ -175,30 +175,13 @@ public class GalleryView extends H_ListView {
     public void onResized(CB_RectF rec) {
         // don't call super.onResized()
         // this will change posList
-
-        // Items neu laden
-        //	calcDefaultPosList();
-        //	mMustSetPos = true;
     }
 
     public void snapIn(int index) {
     }
 
     @Override
-    public void setSelection(int i) {
-        super.setSelection(i);
-    }
-
-    @Override
     protected void scrollToSelectedItem() {
-        //	if (this.isDraggable()) {
-        //	    Point lastAndFirst = getFirstAndLastVisibleIndex();
-        //	    if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex))
-        //		scrollToItem(mSelectedIndex);
-        //	} else {
-        //	    scrollTo(0);
-        //	}
-        //	selectionchanged = false;
     }
 
     public void scrollItemToCenter(int idx) {

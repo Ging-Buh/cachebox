@@ -181,7 +181,6 @@ public class Cache implements Comparable<Cache>, Serializable {
         this.Size = CacheSizes.other;
         this.setAvailable(true);
         waypoints = new CB_List<>();
-
     }
 
     public static long GenerateCacheId(String GcCode) {
@@ -259,22 +258,21 @@ public class Cache implements Comparable<Cache>, Serializable {
         dao.readDetail(this);
         // load all Waypoints with full Details
         WaypointDAO wdao = new WaypointDAO();
-        CB_List<Waypoint> wpts = wdao.getWaypointsFromCacheID(Id, true);
-        for (int i = 0; i < wpts.size(); i++) {
-            Waypoint wp = wpts.get(i);
+        CB_List<Waypoint> readWaypoints = wdao.getWaypointsFromCacheID(Id, true);
+        if (waypoints == null) waypoints = new CB_List<>();
+        for (int i = 0; i < readWaypoints.size(); i++) {
+            Waypoint readWaypoint = readWaypoints.get(i);
             boolean found = false;
             for (int j = 0; j < waypoints.size(); j++) {
-                Waypoint wp2 = waypoints.get(j);
-                if (wp.getGcCode().equals(wp2.getGcCode())) {
+                Waypoint existingWaypoint = waypoints.get(j);
+                if (readWaypoint.getGcCode().equals(existingWaypoint.getGcCode())) {
                     found = true;
-                    wp2.detail = wp.detail; // copy Detail Info
+                    existingWaypoint.detail = readWaypoint.detail; // copy Detail Info
                     break;
                 }
             }
             if (!found) {
-                // Waypoint not in List
-                // Add Waypoint to List
-                waypoints.add(wp);
+                waypoints.add(readWaypoint);
             }
         }
     }

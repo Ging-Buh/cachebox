@@ -64,7 +64,7 @@ public class SpoilerView extends CB_View_Base {
         or.setHeight(this.getHeight() - gr.getHeight());
         galleryOverwiew = new GalleryView(or, "overview");
         galleryOverwiew.setPos(0, this.getHeight() - or.getHeight());
-        galleryOverwiew.showSelectedItemCenter(true);
+        galleryOverwiew.showSelectedItemCenter(false);
 
         this.addChild(galleryOverwiew);
     }
@@ -163,12 +163,10 @@ public class SpoilerView extends CB_View_Base {
                         GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
                         overviewItem.setClickHandler((v, x, y, pointer, button) -> {
                             final int idx = ((GalleryItem) v).getIndex();
-
-                            gallery.notifyDataSetChanged();
-
-                            gallery.scrollToItem(idx);
                             galleryOverwiew.setSelection(idx);
                             galleryOverwiew.scrollItemToCenter(idx);
+                            gallery.notifyDataSetChanged();
+                            gallery.scrollToItem(idx);
                             return true;
                         });
                         if (firstItem == null)

@@ -664,7 +664,7 @@ public abstract class GL_View_Base extends CB_RectF {
         // todo Überschreibung in EditTextField, ColorPicker, Button, .... Erklärung (final)
         boolean handled = false;
         try {
-            if (childs != null && childs.size() > 0) {
+            if (childs.size() > 0) {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
                 while (iterator.hasNext()) {
                     // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.

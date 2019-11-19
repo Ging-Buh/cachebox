@@ -91,7 +91,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     /**
      * Wenn True, werden die Items beim verlassen des sichtbaren Bereiches Disposed und auf NULL gesetzt.
      */
-    protected Boolean mCanDispose = true;
+    protected boolean mCanDispose = true;
     protected int mDragged = 0;
     protected int mLastTouch = 0;
     protected float mLastPos_onTouch = 0;
