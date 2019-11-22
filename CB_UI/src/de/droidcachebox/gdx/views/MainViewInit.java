@@ -371,8 +371,7 @@ public class MainViewInit extends MainViewBase {
 
         synchronized (Database.Data.cacheList) {
             CacheListDAO cacheListDAO = new CacheListDAO();
-            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-            cacheListDAO = null;
+            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();

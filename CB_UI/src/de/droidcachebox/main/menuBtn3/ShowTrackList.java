@@ -133,9 +133,9 @@ public class ShowTrackList extends AbstractShowAction {
                 TrackListViewItem mTrackItem = TrackListView.getInstance().getSelectedItem();
 
                 if (mTrackItem == null) {
-                    MessageBox.create(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null).show();
+                    MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
                 } else if (mTrackItem.getRoute().IsActualTrack) {
-                    MessageBox.create(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null).show();
+                    MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
                 } else {
                     RouteOverlay.remove(mTrackItem.getRoute());
                     TrackListView.getInstance().notifyDataSetChanged();

@@ -63,41 +63,39 @@ public class AppRater {
         String later = Translation.get("Rate_later");
         String never = Translation.get("Rate_never");
 
-        msgBox = MessageBox.create(message, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, (which, data) -> {
-            switch (which) {
-                case 1:
-                    // Rate
+        msgBox = MessageBox.show(message, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+                (which, data) -> {
+                    switch (which) {
+                        case 1:
+                            // Rate
 
-                    StringBuilder sb = new StringBuilder();
-                    if (Plattform.used == Plattform.Android) {
-                        sb.append("market://details?id=");
-                    } else {
-                        sb.append("https://play.google.com/store/apps/details?id=");
+                            StringBuilder sb = new StringBuilder();
+                            if (Plattform.used == Plattform.Android) {
+                                sb.append("market://details?id=");
+                            } else {
+                                sb.append("https://play.google.com/store/apps/details?id=");
+                            }
+
+                            sb.append(APP_PACKAGE_NAME);
+
+                            PlatformUIBase.callUrl(sb.toString());
+                            break;
+                        case 2:
+                            // later
+                            if (msgBox != null)
+                                msgBox.close();
+                            break;
+                        case 3:
+                            // never
+                            Config.AppRaterDontShowAgain.setValue(true);
+                            Config.AcceptChanges();
+                            break;
                     }
-
-                    sb.append(APP_PACKAGE_NAME);
-
-                    PlatformUIBase.callUrl(sb.toString());
-                    break;
-                case 2:
-                    // later
-                    if (msgBox != null)
-                        msgBox.close();
-                    break;
-                case 3:
-                    // never
-                    Config.AppRaterDontShowAgain.setValue(true);
-                    Config.AcceptChanges();
-                    break;
-            }
-            return true;
-        });
-
-        msgBox.setButtonText(1, now);
-        msgBox.setButtonText(2, later);
-        msgBox.setButtonText(3, never);
-
-        msgBox.show();
+                    return true;
+                });
+        msgBox.setButtonText(MessageBox.BTN_LEFT_POSITIVE, now);
+        msgBox.setButtonText(MessageBox.BTN_MIDDLE_NEUTRAL, later);
+        msgBox.setButtonText(MessageBox.BTN_RIGHT_NEGATIVE, never);
 
     }
 }

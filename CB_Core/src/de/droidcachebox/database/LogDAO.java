@@ -16,12 +16,11 @@
 package de.droidcachebox.database;
 
 import de.droidcachebox.database.Database_Core.Parameters;
-import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.utils.log.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
+import java.util.Locale;
 
 public class LogDAO {
     private static final String log = "LogDAO";
@@ -32,7 +31,7 @@ public class LogDAO {
         args.put("Finder", logEntry.Finder);
         args.put("Type", logEntry.Type.ordinal());
         args.put("Comment", logEntry.Comment);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String stimestamp = iso8601Format.format(logEntry.Timestamp);
         args.put("Timestamp", stimestamp);
         args.put("CacheId", logEntry.CacheId);
@@ -40,35 +39,6 @@ public class LogDAO {
             Database.Data.sql.insertWithConflictReplace("Logs", args);
         } catch (Exception exc) {
             Log.err(log, "Write Log", exc);
-        }
-
-    }
-
-    // static HashMap<String, String> LogLookup = null;
-
-    public void WriteImports(Iterator<LogEntry> logIterator) {
-        WriteImports(logIterator, 0, null);
-    }
-
-    public void WriteImports(Iterator<LogEntry> logIterator, int logCount, ImporterProgress ip) {
-
-        if (ip != null)
-            ip.setJobMax("WriteLogsToDB", logCount);
-        while (logIterator.hasNext()) {
-            LogEntry log = logIterator.next();
-            if (ip != null)
-                ip.ProgressInkrement("WriteLogsToDB", String.valueOf(log.CacheId), false);
-            try {
-                WriteToDatabase(log);
-            } catch (Exception e) {
-
-                // Statt hier den Fehler abzufangen, sollte die LogTabelle
-                // Indexiert werden
-                // und nur die noch nicht vorhandenen Logs geschrieben werden.
-
-                e.printStackTrace();
-            }
-
         }
 
     }

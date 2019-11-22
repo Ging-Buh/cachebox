@@ -52,7 +52,7 @@ public class UpdateCachesState extends AbstractAction {
                 }
 
             }
-            float ProgressInkrement = 100.0f / (chkList.size() / BlockSize); // 100% durch Anzahl Schleifen
+            float ProgressInkrement = 100.0f / ((float) chkList.size() / BlockSize); // 100% durch Anzahl Schleifen
 
             // in Blöcke Teilen
 
@@ -82,7 +82,7 @@ public class UpdateCachesState extends AbstractAction {
                 caches.clear();
                 if (!cancelThread) {
 
-                    if (chkList == null || chkList.size() == 0) {
+                    if (chkList.size() == 0) {
                         break;
                     }
 
@@ -168,11 +168,13 @@ public class UpdateCachesState extends AbstractAction {
                 synchronized (Database.Data.cacheList) {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                     CacheListDAO cacheListDAO = new CacheListDAO();
-                    cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 synchronized (Database.Data.cacheList) {
-                    MessageBox.create(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(), Translation.get("chkState"), MessageBoxIcon.None).show();
+                    MessageBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(),
+                            Translation.get("chkState"),
+                            MessageBoxIcon.None);
                 }
 
             }

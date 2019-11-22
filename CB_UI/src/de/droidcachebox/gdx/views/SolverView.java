@@ -303,7 +303,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
                 message.append(s);
             }
 
-            MessageBox.create(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk,
+            MessageBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk,
                     (which, data) -> {
                         // Behandle das ergebniss
                         if (which == 1) {/* User clicked OK so do some stuff */
@@ -315,7 +315,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
                             edInput.setText(missing + edInput.getText());
                         }
                         return true;
-                    }).show();
+                    });
         }
     }
 

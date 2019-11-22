@@ -39,7 +39,7 @@ public class HintDialog extends MessageBox {
         // nur der Label ist auf der Scrollbox
         scrollBox.setVirtualHeight(lblHeight);
         addChild(scrollBox);
-        getButton(MessageBox.BUTTON_POSITIVE).setClickHandler((v, x, y, pointer, button) -> {
+        getButton(MessageBox.BTN_LEFT_POSITIVE).setClickHandler((v, x, y, pointer, button) -> {
             setMessage(UnitFormatter.Rot13(label.getText()));
             return true;
         });

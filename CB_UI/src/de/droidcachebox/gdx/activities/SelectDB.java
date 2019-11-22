@@ -121,7 +121,7 @@ public class SelectDB extends ActivityBase {
 
                 synchronized (Database.Data.cacheList) {
                     CacheListDAO cacheListDAO = new CacheListDAO();
-                    cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
 

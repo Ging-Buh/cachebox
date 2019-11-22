@@ -83,7 +83,7 @@ public class Categories extends MoveableList<Category> {
     public void ReadFromFilter(FilterProperties filter) {
         checkAll();
         boolean foundOne = false;
-        for (long id : filter.Categories) {
+        for (long id : filter.categories) {
             for (int i = 0, n = this.size(); i < n; i++) {
                 Category cat = this.get(i);
                 if (cat.Id == id) {
@@ -99,7 +99,7 @@ public class Categories extends MoveableList<Category> {
                 cat.Checked = true;
             }
         }
-        for (long id : filter.GPXFilenameIds) {
+        for (long id : filter.gpxFilenameIds) {
             for (int i = 0, n = this.size(); i < n; i++) {
                 Category cat = this.get(i);
                 for (GpxFilename gpx : cat) {
@@ -121,24 +121,24 @@ public class Categories extends MoveableList<Category> {
     }
 
     public void WriteToFilter(FilterProperties filter) {
-        if (filter.GPXFilenameIds == null) filter.GPXFilenameIds = new ArrayList<>();
-        filter.GPXFilenameIds.clear();
-        if(filter.Categories==null)filter.Categories=new ArrayList<>();
-        filter.Categories.clear();
+        if (filter.gpxFilenameIds == null) filter.gpxFilenameIds = new ArrayList<>();
+        filter.gpxFilenameIds.clear();
+        if(filter.categories ==null)filter.categories =new ArrayList<>();
+        filter.categories.clear();
         int n = this.size();
         for (int i = 0; i < n; i++) {
             Category cat = this.get(i);
             if (cat.Checked) {
                 // GpxFilename Filter nur setzen, wenn die Category aktiv ist!
-                filter.Categories.add(cat.Id);
+                filter.categories.add(cat.Id);
                 for (GpxFilename gpx : cat) {
                     if (!gpx.Checked)
-                        filter.GPXFilenameIds.add(gpx.Id);
+                        filter.gpxFilenameIds.add(gpx.Id);
                 }
             } else {
                 // Category ist nicht aktiv -> alle GpxFilenames in Filter aktivieren
                 for (GpxFilename gpx : cat)
-                    filter.GPXFilenameIds.add(gpx.Id);
+                    filter.gpxFilenameIds.add(gpx.Id);
             }
         }
     }

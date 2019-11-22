@@ -167,7 +167,6 @@ public class TileGL_Bmp extends TileGL {
     public void dispose() {
         if (isDisposed)
             return;
-        // Log.info(log, "dispose: " + this);
 
         if (GL.that.isGlThread()) {
             try {

@@ -34,18 +34,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class MessageBox extends Dialog {
-    public static final int BUTTON_POSITIVE = 1;
-    public static final int BUTTON_NEUTRAL = 2;
-    public static final int BUTTON_NEGATIVE = 3;
-    private OnClickListener btnLeftPositiveClickListener;
-    private OnClickListener btnMiddleNeutralClickListener;
-    private OnClickListener btnRightNegativeClickListener;
+    public static final int BTN_LEFT_POSITIVE = 1;
+    public static final int BTN_MIDDLE_NEUTRAL = 2;
+    public static final int BTN_RIGHT_NEGATIVE = 3;
     protected CB_Label label;
     protected CB_Button btnLeftPositive;
     protected CB_Button btnMiddleNeutral;
     protected CB_Button btnRightNegative;
     protected SettingBool rememberSetting = null;
     protected CB_CheckBox chkRemember;
+    private OnClickListener btnLeftPositiveClickListener;
+    private OnClickListener btnMiddleNeutralClickListener;
+    private OnClickListener btnRightNegativeClickListener;
     private OnMsgBoxClickListener mMsgBoxClickListener;
     private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
@@ -53,8 +53,147 @@ public class MessageBox extends Dialog {
         super(size.getBounds().asFloat(), name);
     }
 
-    public void show() {
-        GL.that.RunOnGL(() -> GL.that.showDialog(this));
+    public static MessageBox show(String msg) {
+        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
+        msgBox.addButtons(MessageBoxButtons.OK);
+        msgBox.label = new CB_Label(msgBox.getContentSize().getBounds());
+        msgBox.label.setZeroPos(); // .getTextHeight()
+        msgBox.label.setWrappedText(msg);
+        msgBox.addChild(msgBox.label);
+        GL.that.RunOnGL(() -> GL.that.showDialog(msgBox));
+        return msgBox;
+    }
+
+    public static MessageBox show(String msg, OnMsgBoxClickListener Listener) {
+        return show(msg, "", Listener);
+    }
+
+    public static MessageBox show(String msg, String title, OnMsgBoxClickListener Listener) {
+        return show(msg, title, MessageBoxButtons.OK, Listener, null);
+    }
+
+    public static MessageBox show(String msg, String title, MessageBoxIcon icon) {
+        return show(msg, title, MessageBoxButtons.OK, icon, null, null);
+    }
+
+    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
+        return show(msg, title, buttons, icon, Listener, null);
+    }
+
+    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
+
+        if (remember != null && remember.getValue()) {
+            // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
+            // Wir liefern nur ein On Click auf den OK Button zur�ck!
+            if (Listener != null) {
+                Listener.onClick(BTN_LEFT_POSITIVE, null);
+            }
+            return null;
+        }
+
+        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)), "MsgBox" + title);
+        msgBox.rememberSetting = remember;
+        msgBox.mMsgBoxClickListener = Listener;
+        msgBox.addButtons(buttons);
+        msgBox.setTitle(title);
+
+        msgBox.label = new CB_Label();
+        msgBox.label.setWrappedText(msg);
+        float labelHeight = msgBox.label.getTextHeight();
+        msgBox.label.setHeight(labelHeight);
+
+        ScrollBox scrollBox = new ScrollBox(msgBox.getContentSize().getBounds());
+        scrollBox.initRow(BOTTOMUP);
+        scrollBox.setVirtualHeight(labelHeight);
+        scrollBox.addLast(msgBox.label);
+
+        msgBox.addChild(scrollBox);
+
+        GL.that.RunOnGL(() -> GL.that.showDialog(msgBox));
+
+        return msgBox;
+    }
+
+    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
+
+        if (remember != null && remember.getValue()) {
+            // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
+            // Wir liefern nur ein On Click auf den OK Button zurück!
+            if (Listener != null) {
+                Listener.onClick(BTN_LEFT_POSITIVE, null);
+            }
+            return null;
+        }
+
+        // nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
+        // !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
+        Dialog.margin = 5;
+        final MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
+
+        msgBox.rememberSetting = remember;
+        msgBox.mMsgBoxClickListener = Listener;
+        msgBox.setTitle(title);
+
+        msgBox.addButtons(buttons);
+
+        SizeF contentSize = msgBox.getContentSize();
+
+        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
+
+        Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
+        if (icon != MessageBoxIcon.None)
+            iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
+        msgBox.addChild(iconImage);
+
+        msgBox.label = new CB_Label(contentSize.getBounds());
+        msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getInstance().getButtonHeight());
+        msgBox.label.setPos(imageRec.getMaxX() + 5, 0);
+        msgBox.label.setWrappedText(msg);
+        msgBox.addChild(msgBox.label);
+
+        GL.that.RunOnGL(() -> GL.that.showDialog(msgBox));
+
+        return msgBox;
+    }
+
+    public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon) {
+        return calcMsgBoxSize(Text, hasTitle, hasButtons, hasIcon, false);
+    }
+
+    private static Sprite getIcon(MessageBoxIcon msgIcon) {
+
+        Sprite icon = null;
+
+        try {
+            switch (msgIcon.ordinal()) {
+                case 0:
+                case 4:
+                    icon = Sprites.getSprite(IconName.infoIcon.name());
+                    break;
+                case 1:
+                case 3:
+                case 7:
+                    icon = Sprites.getSprite(IconName.closeIcon.name());
+                    break;
+                case 2:
+                case 8:
+                    icon = Sprites.getSprite(IconName.warningIcon.name());
+                    break;
+                case 6:
+                    icon = Sprites.getSprite(IconName.helpIcon.name());
+                    break;
+                case 9:
+                case 10:
+                    icon = Sprites.getSprite(IconName.dayGcLiveIcon.name());
+                    break;
+                default:
+                    icon = null;
+
+            }
+        } catch (Exception ignored) {
+        }
+
+        return icon;
     }
 
     protected void addButtons(MessageBoxButtons buttons) {
@@ -155,27 +294,25 @@ public class MessageBox extends Dialog {
     private void setButtonListener() {
         if (btnLeftPositive != null) {
             if (btnLeftPositiveClickListener == null)
-                btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BUTTON_POSITIVE);
+                btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BTN_LEFT_POSITIVE);
             btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
         }
         if (btnMiddleNeutral != null) {
             if (btnMiddleNeutralClickListener == null)
-                btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BUTTON_NEUTRAL);
+                btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BTN_MIDDLE_NEUTRAL);
             btnMiddleNeutral.setClickHandler(btnMiddleNeutralClickListener);
         }
         if (btnRightNegative != null) {
             if (btnRightNegativeClickListener == null)
-                btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BUTTON_NEGATIVE);
+                btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BTN_RIGHT_NEGATIVE);
             btnRightNegative.setClickHandler(btnRightNegativeClickListener);
         }
     }
 
     private boolean handleButtonClick(int button) {
-        // check for remember
         if (rememberSetting != null) {
             if (chkRemember.isChecked()) {
                 rememberSetting.setValue(true);
-                // todo automated save
             }
         }
 
@@ -201,12 +338,15 @@ public class MessageBox extends Dialog {
     }
 
     public void setButtonText(String left, String middle, String right) {
-        btnLeftPositive.setText(Translation.get(left));
-        btnMiddleNeutral.setText(Translation.get(middle));
-        btnRightNegative.setText(Translation.get(right));
+        if (left != null)
+            btnLeftPositive.setText(Translation.get(left));
+        if (middle != null)
+            btnMiddleNeutral.setText(Translation.get(middle));
+        if (right != null)
+            btnRightNegative.setText(Translation.get(right));
     }
 
-        public CB_Button getButton(int number) {
+    public CB_Button getButton(int number) {
         switch (number) {
             case 1:
                 return btnLeftPositive;
@@ -292,161 +432,9 @@ public class MessageBox extends Dialog {
         /**
          * This method will be invoked when a button is clicked.
          *
-         * @param btnNumber The button that was clicked ( the position of the item clicked.
-         * @return
+         * @param btnNumber The button that was clicked (BUTTON_POSITIVE, ...)
          */
         boolean onClick(int btnNumber, Object data);
-    }
-
-    public static MessageBox create(String msg) {
-        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
-        msgBox.addButtons(MessageBoxButtons.OK);
-        msgBox.label = new CB_Label(msgBox.getContentSize().getBounds());
-        msgBox.label.setZeroPos(); // .getTextHeight()
-        msgBox.label.setWrappedText(msg);
-        msgBox.addChild(msgBox.label);
-        return msgBox;
-    }
-
-    public static MessageBox create(String msg, OnMsgBoxClickListener Listener) {
-        return create(msg, "", Listener);
-    }
-
-    public static MessageBox create(String msg, String title, OnMsgBoxClickListener Listener) {
-        return create(msg, title, MessageBoxButtons.OK, Listener, null);
-    }
-
-    public static MessageBox create(String msg, String title, MessageBoxIcon icon) {
-        return create(msg, title, MessageBoxButtons.OK, icon, null, null);
-    }
-
-    public static MessageBox create(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
-        return create(msg, title, buttons, icon, Listener, null);
-    }
-
-    public static MessageBox create(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
-
-        if (remember != null && remember.getValue()) {
-            // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
-            // Wir liefern nur ein On Click auf den OK Button zur�ck!
-            if (Listener != null) {
-                Listener.onClick(BUTTON_POSITIVE, null);
-            }
-            return null;
-        }
-
-        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)), "MsgBox" + title);
-        msgBox.rememberSetting = remember;
-        msgBox.mMsgBoxClickListener = Listener;
-        msgBox.addButtons(buttons);
-        msgBox.setTitle(title);
-
-        msgBox.label = new CB_Label();
-        msgBox.label.setWrappedText(msg);
-        float labelHeight = msgBox.label.getTextHeight();
-        msgBox.label.setHeight(labelHeight);
-
-        ScrollBox scrollBox = new ScrollBox(msgBox.getContentSize().getBounds());
-        scrollBox.initRow(BOTTOMUP);
-        scrollBox.setVirtualHeight(labelHeight);
-        scrollBox.addLast(msgBox.label);
-
-        msgBox.addChild(scrollBox);
-
-        return msgBox;
-    }
-
-    public static MessageBox create(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
-
-        if (remember != null && remember.getValue()) {
-            // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
-            // Wir liefern nur ein On Click auf den OK Button zurück!
-            if (Listener != null) {
-                Listener.onClick(BUTTON_NEGATIVE, null);
-            }
-            return null;
-        }
-
-        // nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
-        // !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
-        Dialog.margin = 5;
-        final MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
-
-        msgBox.rememberSetting = remember;
-        msgBox.mMsgBoxClickListener = Listener;
-        msgBox.setTitle(title);
-
-        msgBox.addButtons(buttons);
-
-        SizeF contentSize = msgBox.getContentSize();
-
-        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-
-        Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
-        if (icon != MessageBoxIcon.None)
-            iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
-        msgBox.addChild(iconImage);
-
-        msgBox.label = new CB_Label(contentSize.getBounds());
-        msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getInstance().getButtonHeight());
-        msgBox.label.setPos(imageRec.getMaxX() + 5, 0);
-        msgBox.label.setWrappedText(msg);
-        msgBox.addChild(msgBox.label);
-
-        return msgBox;
-    }
-
-    public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon) {
-        return calcMsgBoxSize(Text, hasTitle, hasButtons, hasIcon, false);
-    }
-
-    private static Sprite getIcon(MessageBoxIcon msgIcon) {
-
-        Sprite icon = null;
-
-        try {
-            switch (msgIcon.ordinal()) {
-                case 0:
-                    icon = Sprites.getSprite(IconName.infoIcon.name());
-                    break;
-                case 1:
-                    icon = Sprites.getSprite(IconName.closeIcon.name());
-                    break;
-                case 2:
-                    icon = Sprites.getSprite(IconName.warningIcon.name());
-                    break;
-                case 3:
-                    icon = Sprites.getSprite(IconName.closeIcon.name());
-                    break;
-                case 4:
-                    icon = Sprites.getSprite(IconName.infoIcon.name());
-                    break;
-                case 5:
-                    icon = null;
-                    break;
-                case 6:
-                    icon = Sprites.getSprite(IconName.helpIcon.name());
-                    break;
-                case 7:
-                    icon = Sprites.getSprite(IconName.closeIcon.name());
-                    break;
-                case 8:
-                    icon = Sprites.getSprite(IconName.warningIcon.name());
-                    break;
-                case 9:
-                    icon = Sprites.getSprite(IconName.dayGcLiveIcon.name());
-                    break;
-                case 10:
-                    icon = Sprites.getSprite(IconName.dayGcLiveIcon.name());
-                    break;
-                default:
-                    icon = null;
-
-            }
-        } catch (Exception e) {
-        }
-
-        return icon;
     }
 
 }

@@ -222,7 +222,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     }
 
     private void DeleteLine() {
-        MessageBox.create("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             if (which == 1) {
                 solver.remove(mSelectedIndex);
                 solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
@@ -237,7 +237,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
                 return true;
             } else
                 return false;
-        }).show();
+        });
     }
 
     private CoordinateGPS getSelectedCoordinateResult() {
@@ -325,7 +325,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     public class CustomAdapter implements Adapter {
         private final Solver solver;
 
-        public CustomAdapter(Solver solver) {
+        CustomAdapter(Solver solver) {
             this.solver = solver;
         }
 
@@ -341,7 +341,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             if (solver == null)
                 return null;
 
-            //FIXME cache SolverViewItem, don't create new. Bad dispose this cache
+            // cache SolverViewItem, don't create new. Bad dispose this cache
 
             SolverZeile solverZeile = solver.get(position);
             SolverViewItem solverViewItem = new SolverViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, solverZeile);

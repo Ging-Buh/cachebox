@@ -44,15 +44,11 @@ import static de.droidcachebox.core.GroundspeakAPI.*;
 import static de.droidcachebox.gdx.math.GL_UISizes.MainBtnSize;
 
 public class DescriptionView extends CB_View_Base {
-    final static String BASIC = "Basic";
-    final static String PREMIUM = "Premium";
-    final static String BASIC_LIMIT = "3";
-    final static String PREMIUM_LIMIT = "6000";
+    private final static String BASIC = "Basic";
+    private final static String PREMIUM = "Premium";
+    private final static String BASIC_LIMIT = "3";
+    private final static String PREMIUM_LIMIT = "6000";
     private static DescriptionView that;
-    final static OnClickListener downloadClicked = (v, x, y, pointer, button) -> {
-        GL.that.RunOnGL(() -> CacheContextMenu.reloadSelectedCache());
-        return true;
-    };
     private String STRING_POWERD_BY;
     private CacheListViewItem cacheInfo;
     private CB_Button downloadButton;
@@ -208,9 +204,9 @@ public class DescriptionView extends CB_View_Base {
             fetchMyCacheLimits();
             if (fetchMyUserInfos().remaining <= 0) {
                 if (isPremiumMember()) {
-                    MessageBox.create(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show();
+                    MessageBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                 } else {
-                    MessageBox.create(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show();
+                    MessageBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                 }
                 return;
             }
@@ -244,7 +240,10 @@ public class DescriptionView extends CB_View_Base {
 
         this.addChild(downloadButton);
 
-        downloadButton.setClickHandler(downloadClicked);
+        downloadButton.setClickHandler((v, x, y, pointer, button) -> {
+            GL.that.RunOnGL(CacheContextMenu::reloadSelectedCache);
+            return true;
+        });
 
         if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0)
             downloadButton.disable();

@@ -17,13 +17,11 @@
 package de.droidcachebox.database;
 
 import com.badlogic.gdx.files.FileHandle;
-import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -35,55 +33,38 @@ public class CacheListDAO {
     private static final String log = "CacheListDAO";
 
     /**
+     * selecting by a list of GCCodes
      * !!! only exportBatch
-     *
-     * @param cacheList
-     * @param GC_Codes
-     * @param withDescription
-     * @param fullDetails
-     * @param loadAllWaypoints
-     * @return
      */
-    public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
-        ArrayList<String> orParts = new ArrayList<String>();
+    public CacheList readCacheList(ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        ArrayList<String> orParts = new ArrayList<>();
 
         for (String gcCode : GC_Codes) {
             orParts.add("GcCode like '%" + gcCode + "%'");
         }
-        String where = join(" or ", orParts);
-        return ReadCacheList(cacheList, "", where, withDescription, fullDetails, loadAllWaypoints);
+        String where = join(orParts);
+        return readCacheList(where, withDescription, fullDetails, loadAllWaypoints);
     }
 
-    private String join(String separator, ArrayList<String> array) {
-        String retString = "";
-
+    private String join(ArrayList<String> array) {
+        StringBuilder retString = new StringBuilder();
         int count = 0;
         for (String tmp : array) {
-            retString += tmp;
+            retString.append(tmp);
             count++;
             if (count < array.size())
-                retString += separator;
+                retString.append(" or ");
         }
-        return retString;
+        return retString.toString();
     }
 
-    public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails, boolean loadAllWaypoints) {
-        return ReadCacheList(cacheList, "", where, false, fullDetails, loadAllWaypoints);
-    }
+    /**
+     *
+     */
+    public CacheList readCacheList(String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        CacheList cacheList = new CacheList();
 
-    // public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
-    // {
-    // return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
-    // }
-
-    public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
-        if (cacheList == null)
-            return null;
-
-        // Clear List before read
-        cacheList.clear();
-
-        // Log.trace(log, "ReadCacheList 1.Waypoints");
+        // Log.trace(log, "readCacheList 1.Waypoints");
         SortedMap<Long, CB_List<Waypoint>> waypoints;
         waypoints = new TreeMap<>();
         // zuerst alle Waypoints einlesen
@@ -123,7 +104,7 @@ public class CacheListDAO {
         }
         reader.close();
 
-        // Log.trace(log, "ReadCacheList 2.Caches");
+        // Log.trace(log, "readCacheList 2.Caches");
         try {
             if (fullDetails) {
                 sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
@@ -136,7 +117,9 @@ public class CacheListDAO {
 
             }
 
-            sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
+            // an empty sqlQualification and a sqlQualification other than where (p.e for join) starting with 5 blanks (by my definition)
+            boolean addWhere = sqlQualification.length() > 0 && !sqlQualification.startsWith("     ");
+            sql += " from Caches c " + (addWhere ? "where " + sqlQualification : sqlQualification);
             reader = Database.Data.sql.rawQuery(sql, null);
 
         } catch (Exception e) {
@@ -148,6 +131,8 @@ public class CacheListDAO {
 
         while (!reader.isAfterLast()) {
             Cache cache = cacheDAO.ReadFromCursor(reader, fullDetails, withDescription);
+            /*
+            // implemented in sql query in november 2019. arbor95
             boolean doAdd = true;
             if (FilterInstances.hasCorrectedCoordinates != 0) {
                 if (waypoints.containsKey(cache.Id)) {
@@ -168,17 +153,19 @@ public class CacheListDAO {
                 }
             }
             if (doAdd) {
-                cacheList.add(cache);
-                cache.waypoints.clear();
-                if (waypoints.containsKey(cache.Id)) {
-                    CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
 
-                    for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
-                        cache.waypoints.add(tmpwaypoints.get(i));
-                    }
+            }
+             */
+            cacheList.add(cache);
+            cache.waypoints.clear();
+            if (waypoints.containsKey(cache.Id)) {
+                CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
 
-                    waypoints.remove(cache.Id);
+                for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
+                    cache.waypoints.add(tmpwaypoints.get(i));
                 }
+
+                waypoints.remove(cache.Id);
             }
             // ++Global.CacheCount;
             reader.moveToNext();
@@ -186,24 +173,6 @@ public class CacheListDAO {
         }
         reader.close();
 
-        // clear other never used WP`s from Mem
-        waypoints.clear();
-        waypoints = null;
-
-        // do it manual (or automated after fix), got hanging app on startup
-        // Log.debug(log, "ReadCacheList 3.Sorting");
-        try
-
-        {
-            // Collections.sort(cacheList);
-        } catch (
-
-                Exception e)
-
-        {
-            // Log.err(log, "CacheListDAO.ReadCacheList()", "Sort ERROR", e);
-        }
-        // Log.debug(log, "ReadCacheList 4. ready");
         return cacheList;
 
     }
@@ -213,11 +182,11 @@ public class CacheListDAO {
      * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
      * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
      * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
-     * @return
+     * @return count deleted
      */
     public long deleteArchived(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
-            delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            delCacheImages(getGcCodes("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
             long ret = Database.Data.sql.delete("Caches", "Archived=1", null);
             Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
             return ret;
@@ -232,11 +201,11 @@ public class CacheListDAO {
      * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
      * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
      * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
-     * @return
+     * @return count deleted
      */
     public long deleteFinds(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
-            delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            delCacheImages(getGcCodes("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
             long ret = Database.Data.sql.delete("Caches", "Found=1", null);
             Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
             return ret;
@@ -247,16 +216,16 @@ public class CacheListDAO {
     }
 
     /**
-     * @param Where
+     * @param Where                       sql
      * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
      * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
      * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
      * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
-     * @return
+     * @return count deleted
      */
     public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
-            delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            delCacheImages(getGcCodes(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
             Database.Data.sql.beginTransaction();
             long ret = Database.Data.sql.delete("Caches", Where, null);
             Database.Data.sql.setTransactionSuccessful();
@@ -269,28 +238,27 @@ public class CacheListDAO {
         }
     }
 
-    private ArrayList<String> getGcCodeList(String where) {
-        CacheList list = new CacheList();
-        ReadCacheList(list, where, false, false);
-        ArrayList<String> StrList = new ArrayList<>();
+    private ArrayList<String> getGcCodes(String where) {
+        CacheList list = readCacheList(where, false, false, false);
+        ArrayList<String> gcCodes = new ArrayList<>();
 
         for (int i = 0, n = list.size(); i < n; i++) {
-            StrList.add(list.get(i).getGcCode());
+            gcCodes.add(list.get(i).getGcCode());
         }
         list.dispose();
-        return StrList;
+        return gcCodes;
     }
 
     /**
      * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
      *
-     * @param list
+     * @param listOfGCCodes               listOfGCCodes
      * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
      * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
      * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
      * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
      */
-    public void delCacheImages(ArrayList<String> list, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+    public void delCacheImages(ArrayList<String> listOfGCCodes, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         String spoilerpath = SpoilerFolder;
         if (SpoilerFolderLocal.length() > 0)
             spoilerpath = SpoilerFolderLocal;
@@ -300,21 +268,19 @@ public class CacheListDAO {
             imagespath = DescriptionImageFolderLocal;
 
         Log.debug(log, "Del Spoilers from " + spoilerpath);
-        delCacheImagesByPath(spoilerpath, list);
+        delCacheImagesByPath(spoilerpath, listOfGCCodes);
         Log.debug(log, "Del Images from " + imagespath);
-        delCacheImagesByPath(imagespath, list);
+        delCacheImagesByPath(imagespath, listOfGCCodes);
 
         ImageDAO imageDAO = new ImageDAO();
-        for (Iterator<String> iterator = list.iterator(); iterator.hasNext(); ) {
-            final String GcCode = iterator.next();
+        for (final String GcCode : listOfGCCodes) {
             imageDAO.deleteImagesForCache(GcCode);
         }
-        imageDAO = null;
     }
 
-    public void delCacheImagesByPath(String path, ArrayList<String> list) {
-        for (Iterator<String> iterator = list.iterator(); iterator.hasNext(); ) {
-            final String GcCode = iterator.next().toLowerCase();
+    private void delCacheImagesByPath(String path, ArrayList<String> list) {
+        for (String s : list) {
+            final String GcCode = s.toLowerCase();
             String directory = path + "/" + GcCode.substring(0, Math.min(4, GcCode.length()));
             if (!FileIO.directoryExists(directory))
                 continue;
@@ -322,13 +288,13 @@ public class CacheListDAO {
             FileHandle dir = new FileHandle(directory);
             FileHandle[] files = dir.list();
 
-            for (int i = 0; i < files.length; i++) {
+            for (FileHandle fileHandle : files) {
 
                 // simplyfied for startswith gccode, thumbs_gccode + ooverwiewthumbs_gccode
-                if (!files[i].name().toLowerCase().contains(GcCode))
+                if (!fileHandle.name().toLowerCase().contains(GcCode))
                     continue;
 
-                String filename = directory + "/" + files[i].name();
+                String filename = directory + "/" + fileHandle.name();
                 FileHandle file = new FileHandle(filename);
                 if (file.exists()) {
                     if (!file.delete())

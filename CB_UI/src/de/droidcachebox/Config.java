@@ -48,9 +48,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 
     protected void acceptChanges() {
         if (settings.WriteToDB()) {
-            //TODO change to Dialog for restart now
-            // GL.that.Toast(Translation.Get("SettingChangesNeedRestart"));
-            MessageBox.create(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
+            MessageBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
         }
     }
 

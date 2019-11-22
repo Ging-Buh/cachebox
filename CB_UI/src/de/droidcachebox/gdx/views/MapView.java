@@ -371,7 +371,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                         synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(de.droidcachebox.Config.GcLogin.getValue());
                             CacheListDAO cacheListDAO = new CacheListDAO();
-                            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, de.droidcachebox.Config.ShowAllWaypoints.getValue());
+                            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, de.droidcachebox.Config.ShowAllWaypoints.getValue());
                         }
                         CacheListChangedListeners.getInstance().cacheListChanged();
 

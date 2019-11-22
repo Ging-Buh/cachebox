@@ -69,6 +69,7 @@ public class EditFilterSettings extends ActivityBase {
             FilterInstances.TOARCHIVE, //
             FilterInstances.LISTINGCHANGED, //
             FilterInstances.ALL, //
+            FilterInstances.UserDefinedSQL, //
     };
     private static final String log = "EditFilterSettings";
     public static EditFilterSettings that;
@@ -262,7 +263,7 @@ public class EditFilterSettings extends ActivityBase {
                     Log.info(log, "Main.ApplyFilter: " + sqlWhere);
                     Database.Data.cacheList.clear();
                     CacheListDAO cacheListDAO = new CacheListDAO();
-                    cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
@@ -295,13 +296,9 @@ public class EditFilterSettings extends ActivityBase {
         CB_RectF rec = new CB_RectF(leftBorder, margin, innerWidth, UiSizes.getInstance().getButtonHeight());
         btnAddPreset = new CB_Button(rec, "AddPresetButon");
         btnAddPreset.setText(Translation.get("AddOwnFilterPreset"));
-        btnAddPreset.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                addUserPreset();
-                return true;
-            }
+        btnAddPreset.setClickHandler((v, x, y, pointer, button) -> {
+            addUserPreset();
+            return true;
         });
         contentBox.addChild(btnAddPreset);
 
@@ -416,45 +413,37 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         if (exist) {
-            MessageBox.create(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning,
+            MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning,
                     (which, data) -> {
-                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
+                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
                         return true;
-                    }).show();
+                    });
             return;
         }
 
-        StringInputBox.Show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset", (which, data) -> {
-            String text = StringInputBox.editText.getText();
-            // Behandle das ergebniss
-            switch (which) {
-                case 1: // ok Clicket
-                    String uF = Config.UserFilter.getValue();
-                    String aktFilter = tmpFilterProps.toString();
+        StringInputBox.Show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset",
+                (which, data) -> {
+                    String text = StringInputBox.editText.getText();
+                    // Behandle das ergebniss
+                    if (which == MessageBox.BTN_LEFT_POSITIVE) { // ok Clicked
+                        String uF = Config.UserFilter.getValue();
+                        String aktFilter = tmpFilterProps.toString();
 
-                    // Category Filterungen aus Filter entfernen
-                    int pos = aktFilter.indexOf("^");
-                    int posE = aktFilter.indexOf("\"", pos);
-                    String after = aktFilter.substring(posE);
-                    aktFilter = aktFilter.substring(0, pos) + after;
+                        // Category Filterungen aus Filter entfernen
+                        int pos = aktFilter.indexOf("^");
+                        int posE = aktFilter.indexOf("\"", pos);
+                        String after = aktFilter.substring(posE);
+                        aktFilter = aktFilter.substring(0, pos) + after;
 
-                    uF += text + ";" + aktFilter + "#";
-                    Config.UserFilter.setValue(uF);
-                    Config.AcceptChanges();
-                    mPresetListView.fillPresetList();
-                    mPresetListView.notifyDataSetChanged();
-                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                    break;
-                case 2: // cancel clicked
-                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                    break;
-                case 3:
-                    de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                    break;
-            }
-
-            return true;
-        });
+                        uF += text + ";" + aktFilter + "#";
+                        Config.UserFilter.setValue(uF);
+                        Config.AcceptChanges();
+                        mPresetListView.fillPresetList();
+                        mPresetListView.notifyDataSetChanged();
+                    }
+                    de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
+                    return true;
+                });
     }
 
     @Override
@@ -559,13 +548,13 @@ public class EditFilterSettings extends ActivityBase {
 
                 }
             }
-            CoreSettingsForward.Categories.WriteToFilter(de.droidcachebox.gdx.activities.EditFilterSettings.tmpFilterProps);
+            CoreSettingsForward.Categories.WriteToFilter(EditFilterSettings.tmpFilterProps);
 
         }
 
         private void fillCategorieList() {
 
-            CoreSettingsForward.Categories.ReadFromFilter(de.droidcachebox.gdx.activities.EditFilterSettings.tmpFilterProps);
+            CoreSettingsForward.Categories.ReadFromFilter(EditFilterSettings.tmpFilterProps);
 
             int Index = 0;
 
@@ -598,7 +587,7 @@ public class EditFilterSettings extends ActivityBase {
             }
             CategorieEntry tmp = new CategorieEntry(file, Icon, ItemType);
             lCategories.add(tmp);
-            CategorieListViewItem v = new CategorieListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, Index, tmp);
+            CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
             // inital mit INVISIBLE
             v.setInvisible();
             v.setClickHandler(onItemClickListener);
@@ -614,51 +603,47 @@ public class EditFilterSettings extends ActivityBase {
             CategorieEntry tmp = new CategorieEntry(cat, Icon, ItemType);
             lCategories.add(tmp);
 
-            CategorieListViewItem v = new CategorieListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, Index, tmp);
+            CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
             lCategorieListViewItems.add(v);
 
-            v.setClickHandler(new OnClickListener() {
+            v.setClickHandler((v1, X, Y, pointer, button) -> {
+                CB_RectF HitRec = v1.copy();
+                HitRec.setY(0);
 
-                @Override
-                public boolean onClick(GL_View_Base v, int X, int Y, int pointer, int button) {
-                    CB_RectF HitRec = v.copy();
-                    HitRec.setY(0);
+                CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
+                CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
 
-                    CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
-                    CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
+                float lastTouchX = ((CategorieListViewItem) v1).lastItemTouchPos.x;
+                float lastTouchY = ((CategorieListViewItem) v1).lastItemTouchPos.y;
 
-                    float lastTouchX = ((CategorieListViewItem) v).lastItemTouchPos.x;
-                    float lastTouchY = ((CategorieListViewItem) v).lastItemTouchPos.y;
-
-                    if (((CategorieListViewItem) v).getCategorieEntry().getItemType() == COLLAPSE_BUTTON_ITEM) {
-                        if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                            ((CategorieListViewItem) v).plusClick();
-                            if (lCategories != null) {
-                                for (CategorieEntry tmp : lCategories) {
-                                    GpxFilename file = tmp.getFile();
-                                    if (file != null) {
-                                        tmp.setState(file.Checked ? 1 : 0);
-                                    }
-
+                if (((CategorieListViewItem) v1).getCategorieEntry().getItemType() == COLLAPSE_BUTTON_ITEM) {
+                    if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
+                        ((CategorieListViewItem) v1).plusClick();
+                        if (lCategories != null) {
+                            for (CategorieEntry tmp1 : lCategories) {
+                                GpxFilename file = tmp1.getFile();
+                                if (file != null) {
+                                    tmp1.setState(file.Checked ? 1 : 0);
                                 }
-                            }
-                            SetCategory();
-                        } else if (minusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                            ((CategorieListViewItem) v).minusClick();
-                            SetCategory();
-                        } else {
-                            collapseButton_Clicked((CategorieListViewItem) v);
-                            notifyDataSetChanged();
-                        }
 
-                    } else {
-                        if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                            SetCategory();
+                            }
                         }
+                        SetCategory();
+                    } else if (minusBtnHitRec.contains(lastTouchX, lastTouchY)) {
+                        ((CategorieListViewItem) v1).minusClick();
+                        SetCategory();
+                    } else {
+                        collapseButton_Clicked((CategorieListViewItem) v1);
+                        notifyDataSetChanged();
                     }
 
-                    return true;
+                } else {
+                    if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
+                        SetCategory();
+                    }
                 }
+
+                return true;
             });
 
             return v;
@@ -883,7 +868,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             public float getItemSize(int position) {
-                return de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec.getHeight();
+                return EditFilterSettings.ItemRec.getHeight();
             }
         }
 
@@ -1236,11 +1221,11 @@ public class EditFilterSettings extends ActivityBase {
             if (mPresetEntries != null)
                 mPresetEntries.clear();
             else
-                mPresetEntries = new ArrayList<PresetEntry>();
+                mPresetEntries = new ArrayList<>();
             if (mPresetListViewItems != null)
                 mPresetListViewItems.clear();
             else
-                mPresetListViewItems = new ArrayList<PresetListViewItem>();
+                mPresetListViewItems = new ArrayList<>();
 
             FilterInstances.HISTORY.isHistory = true;
 
@@ -1255,6 +1240,7 @@ public class EditFilterSettings extends ActivityBase {
             mPresetEntriesAdd("PrepareToArchive", Sprites.IconName.DELETE.name(), FilterInstances.TOARCHIVE);
             mPresetEntriesAdd("ListingChanged", Sprites.IconName.warningIcon.name(), FilterInstances.LISTINGCHANGED);
             mPresetEntriesAdd("AllCaches", "earth", FilterInstances.ALL);
+            // mPresetEntriesAdd("SQL", null, FilterInstances.UserDefinedSQL);
 
             // add User Presets from Config.UserFilter
             if (!Config.UserFilter.getValue().equalsIgnoreCase("")) {
@@ -1321,44 +1307,35 @@ public class EditFilterSettings extends ActivityBase {
                 v.setOnLongClickListener((v1, x, y, pointer, button) -> {
                     final int delItemIndex = ((PresetListViewItem) v1).getIndex();
                     GL.that.closeActivity();
-                    MessageBox.create(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                    MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                             (which, data) -> {
-                                switch (which) {
-                                    case 1: // ok Clicked
+                                // NO clicked
+                                if (which == MessageBox.BTN_LEFT_POSITIVE) { // YES Clicked
 
-                                        if (delItemIndex < presets.length) {
-                                            return false; // Don't delete System Presets
-                                        } else {
-                                            try {
-                                                String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+                                    if (delItemIndex < presets.length) {
+                                        return false; // Don't delete System Presets
+                                    } else {
+                                        try {
+                                            String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 
-                                                int i = presets.length;
-                                                String newUserEntris = "";
-                                                for (String entry1 : userEntrys) {
-                                                    if (i++ != delItemIndex)
-                                                        newUserEntris += entry1 + SettingString.STRING_SPLITTER;
-                                                }
-                                                Config.UserFilter.setValue(newUserEntris);
-                                                Config.AcceptChanges();
-                                                that.mPresetListView.fillPresetList();
-                                                that.mPresetListView.notifyDataSetChanged();
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
+                                            int i = presets.length;
+                                            StringBuilder newUserEntris = new StringBuilder();
+                                            for (String entry1 : userEntrys) {
+                                                if (i++ != delItemIndex)
+                                                    newUserEntris.append(entry1).append(SettingString.STRING_SPLITTER);
                                             }
-
+                                            Config.UserFilter.setValue(newUserEntris.toString());
+                                            Config.AcceptChanges();
+                                            that.mPresetListView.fillPresetList();
+                                            that.mPresetListView.notifyDataSetChanged();
+                                        } catch (Exception ex) {
+                                            Log.err(log, "DelUserPreset", ex);
                                         }
-                                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                                        break;
-                                    case 2: // cancel clicked
-                                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                                        break;
-                                    case 3:
-                                        de.droidcachebox.main.menuBtn1.contextmenus.EditFilterSettings.getInstance().Execute();
-                                        break;
+                                    }
                                 }
-
+                                de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
                                 return true;
-                            }).show();
+                            });
                     return true;
                 });
 
@@ -1451,7 +1428,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             public float getItemSize(int position) {
-                return de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec.getHeight();
+                return EditFilterSettings.ItemRec.getHeight();
             }
         }
 
@@ -1476,7 +1453,7 @@ public class EditFilterSettings extends ActivityBase {
 
             if (tmpFilterProps != null) {
                 if (mPresetEntry.getFilterProperties().equals(tmpFilterProps)) {
-                    isSelected = !de.droidcachebox.gdx.activities.EditFilterSettings.tmpFilterProps.isExtendedFilter();
+                    isSelected = !EditFilterSettings.tmpFilterProps.isDefinedFilterExtensions();
                 }
             }
 

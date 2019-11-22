@@ -208,7 +208,12 @@ public class EditTextField extends EditTextFieldBase {
                 // try hack : if (textY < this.getHeight() && textY > 0) {                    }
                 if (line != null) {
                     if (line.displayText != null) {
-                        style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
+                        try {
+                            style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
+                        }
+                        catch (Exception ex) {
+                            Log.err(log, "not displayed: " + line.displayText + " length: " + line.displayText.length());
+                        }
                         textY -= style.font.getLineHeight();
                     }
                 } else {

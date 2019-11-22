@@ -105,9 +105,9 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             }
 
             if (importStarted) {
-                MessageBox.create(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop,
+                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop,
                         (which, data) -> {
-                            if (which == MessageBox.BUTTON_POSITIVE) {
+                            if (which == MessageBox.BTN_LEFT_POSITIVE) {
                                 finishImport();
                             }
                             return true;

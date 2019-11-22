@@ -118,13 +118,13 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             }
 
             if (importStarted) {
-                MessageBox.create(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop,
+                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop,
                         (which, data) -> {
-                            if (which == MessageBox.BUTTON_POSITIVE) {
+                            if (which == MessageBox.BTN_LEFT_POSITIVE) {
                                 cancelImport();
                             }
                             return true;
-                        }).show();
+                        });
             } else
                 finish();
             return true;
@@ -402,13 +402,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
             chk.setY(this.getHalfHeight() - chk.getHalfHeight());
             chk.setChecked(item.toExport);
-            chk.setOnCheckChangedListener(new CB_CheckBox.OnCheckChangedListener() {
-
-                @Override
-                public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
-                    item.setExport(isChecked);
-                }
-            });
+            chk.setOnCheckChangedListener((view, isChecked) -> item.setExport(isChecked));
 
             this.addChild(lblName);
             this.addChild(lblInfo);

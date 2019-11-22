@@ -131,20 +131,11 @@ public class DraftsView extends V_ListView {
             writer.close();
         } catch (IOException e) {
             Log.err(log, e.toString() + " at\n" + txtFile.getAbsolutePath());
-            MessageBox.create(e.toString() + " at\n" + txtFile.getAbsolutePath(), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
+            MessageBox.show(e.toString() + " at\n" + txtFile.getAbsolutePath(), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
         }
     }
 
     private static void addOrChangeDraft(Draft draft, boolean isNewDraft, boolean directLog) {
-
-        // removed direct log after edit
-        /*
-        if (directLog) {
-            // try to direct upload
-            logOnline(draft, isNewDraft);
-            return;
-        }
-         */
 
         DraftsView.firstShow = false;
 
@@ -214,7 +205,7 @@ public class DraftsView extends V_ListView {
         Cache cache = GlobalCore.getSelectedCache();
 
         if (cache == null) {
-            MessageBox.create(Translation.get("NoCacheSelect"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
+            MessageBox.show(Translation.get("NoCacheSelect"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
             return;
         }
 
@@ -222,9 +213,9 @@ public class DraftsView extends V_ListView {
         if (cache.getGcCode().equalsIgnoreCase("CBPark")) {
 
             if (type == LogTypes.found) {
-                MessageBox.create(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                MessageBox.show(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             } else if (type == LogTypes.didnt_find) {
-                MessageBox.create(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null).show();
+                MessageBox.show(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
             }
 
             return;
@@ -484,7 +475,7 @@ public class DraftsView extends V_ListView {
     private void deleteAllDrafts() {
         final MessageBox.OnMsgBoxClickListener dialogClickListener = (which, data) -> {
             switch (which) {
-                case MessageBox.BUTTON_POSITIVE:
+                case MessageBox.BTN_LEFT_POSITIVE:
                     // Yes button clicked
                     // delete all Drafts
                     // reload all Drafts!
@@ -505,7 +496,7 @@ public class DraftsView extends V_ListView {
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
                     break;
 
-                case MessageBox.BUTTON_NEGATIVE:
+                case MessageBox.BTN_RIGHT_NEGATIVE:
                     // No button clicked
                     // do nothing
                     break;
@@ -515,7 +506,7 @@ public class DraftsView extends V_ListView {
         };
 
         final String message = Translation.get("DelDrafts?");
-        GL.that.RunOnGL(() -> MessageBox.create(message, Translation.get("DeleteAllDrafts"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener).show());
+        MessageBox.show(message, Translation.get("DeleteAllDrafts"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
 
     }
 
@@ -649,9 +640,9 @@ public class DraftsView extends V_ListView {
                                 String image = Base64.encodeBytes(WebbUtils.readBytes(file.getFileInputStream()));
                                 GroundspeakAPI.uploadLogImage(aktDraft.GcId, image, description);
                                 if (GroundspeakAPI.APIError == OK) {
-                                    MessageBox.create(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                                    MessageBox.show(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                                 } else {
-                                    MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                                 }
                             } catch (Exception ignored) {
                             }
@@ -663,7 +654,6 @@ public class DraftsView extends V_ListView {
         }
 
         private void logOnline(final Draft draft, final boolean directLog) {
-            boolean isNewDraft = false; // never changed (relikt)
             wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
 
             }, new ICancelRunnable() {
@@ -691,27 +681,27 @@ public class DraftsView extends V_ListView {
                             draft.GcId = GroundspeakAPI.logReferenceCode;
                             LogView.getInstance().resetInitial(); // if own log is written !
                         }
-                        addOrChangeDraft(draft, isNewDraft, false);
+                        addOrChangeDraft(draft, false, false);
                     } else {
                         // Error handling
-                        MessageBox.create(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                        MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                             switch (which) {
-                                case MessageBox.BUTTON_NEGATIVE:
+                                case MessageBox.BTN_RIGHT_NEGATIVE:
                                     logOnline(draft, true);
                                     // addOrChangeDraft(draft, isNewDraft, true);// try again
                                     break;
-                                case MessageBox.BUTTON_NEUTRAL:
+                                case MessageBox.BTN_MIDDLE_NEUTRAL:
                                     break;
-                                case MessageBox.BUTTON_POSITIVE:
+                                case MessageBox.BTN_LEFT_POSITIVE:
                                     // is alread in local database
                                     // addOrChangeDraft(draft, isNewDraft, false);// create Draft
                                     logOnline(draft, false); // or nothing
                             }
                             return true;
-                        }).show();
+                        });
                     }
                     if (GroundspeakAPI.LastAPIError.length() > 0) {
-                        GL.that.RunOnGL(() -> MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("Error"), MessageBoxIcon.Error).show());
+                        MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MessageBoxIcon.Error);
                     }
                     if (wd != null)
                         wd.close();
@@ -732,9 +722,8 @@ public class DraftsView extends V_ListView {
 
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheList lCaches = new CacheList();
             CacheListDAO cacheListDAO = new CacheListDAO();
-            cacheListDAO.ReadCacheList(lCaches, "Id = " + aktDraft.CacheId, false, false);
+            CacheList lCaches = cacheListDAO.readCacheList("Id = " + aktDraft.CacheId, false, false, false);
             Cache tmpCache = null;
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
@@ -743,7 +732,7 @@ public class DraftsView extends V_ListView {
             if (cache == null) {
                 String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
                 message += "\n" + Translation.get("DraftNoSelect");
-                MessageBox.create(message).show();
+                MessageBox.show(message);
                 return;
             }
 
@@ -766,7 +755,7 @@ public class DraftsView extends V_ListView {
         }
 
         private void deleteDraft() {
-            // todo perhaps delete the uploaded draft or log
+            //  perhaps delete the uploaded draft or log
             // aktuell selectierte draft löschen
             if (aktDraft == null)
                 return;
@@ -776,9 +765,8 @@ public class DraftsView extends V_ListView {
             Cache tmpCache = null;
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheList lCaches = new CacheList();
             CacheListDAO cacheListDAO = new CacheListDAO();
-            cacheListDAO.ReadCacheList(lCaches, "Id = " + aktDraft.CacheId, false, false);
+            CacheList lCaches = cacheListDAO.readCacheList("Id = " + aktDraft.CacheId, false, false, false);
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
             final Cache cache = tmpCache;
@@ -786,7 +774,7 @@ public class DraftsView extends V_ListView {
             if (cache == null && !aktDraft.isTbDraft) {
                 String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
                 message += "\n" + Translation.get("draftNoDelete");
-                MessageBox.create(message).show();
+                MessageBox.show(message);
                 return;
             }
 
@@ -799,9 +787,9 @@ public class DraftsView extends V_ListView {
                     message += Translation.get("confirmDraftDeletionRst");
             }
 
-            MessageBox.create(message, Translation.get("deleteDraft"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+            MessageBox.show(message, Translation.get("deleteDraft"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
                 switch (which) {
-                    case MessageBox.BUTTON_POSITIVE:
+                    case MessageBox.BTN_LEFT_POSITIVE:
                         // Yes button clicked
                         // delete aktDraft
                         if (cache != null) {
@@ -833,13 +821,13 @@ public class DraftsView extends V_ListView {
                         createGeoCacheVisits();
 
                         break;
-                    case MessageBox.BUTTON_NEGATIVE:
+                    case MessageBox.BTN_RIGHT_NEGATIVE:
                         // No button clicked
                         // do nothing
                         break;
                 }
                 return true;
-            }).show();
+            });
 
         }
 

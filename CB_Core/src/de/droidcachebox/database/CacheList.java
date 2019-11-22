@@ -50,7 +50,7 @@ public class CacheList extends MoveableList<Cache> {
         return null;
     }
 
-    /**
+    /*
      * @param selectedCoord
      *            GlobalCore.getSelectedCoord()
      * @param selected
@@ -66,11 +66,6 @@ public class CacheList extends MoveableList<Cache> {
      *         GlobalCore.NearestCache(nextCache);
      */
 
-    /**
-     * @param selectedCoord
-     * @param selected
-     * @return
-     */
     public CacheWithWP resort(Coordinate selectedCoord, CacheWithWP selected) {
 
         CacheWithWP retValue = null;
@@ -175,10 +170,9 @@ public class CacheList extends MoveableList<Cache> {
         for (int i = 0, n = this.size(); i < n; i++) {
             Cache cache = this.get(i);
             if (!cache.isLive())
-                cache.dispose(); // don't dispose LiveCaches
+                cache.dispose();
             cache = null;
         }
-
         super.clear();
     }
 

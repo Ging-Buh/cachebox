@@ -46,6 +46,7 @@ import de.droidcachebox.utils.log.Log;
 import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,9 +59,9 @@ import static de.droidcachebox.core.GroundspeakAPI.*;
  * @author longri
  */
 public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
-    public static final String aboutMsg1 = "Team Cachebox (2011-2019)" + br;
-    public static final String teamLink = "www.team-cachebox.de";
-    public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
+    private static final String aboutMsg1 = "Team Cachebox (2011-2019)" + br;
+    private static final String teamLink = "www.team-cachebox.de";
+    private static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
     public static final String splashMsg = aboutMsg + br + br + "POWERED BY:";
     private static final String CurrentVersion = "2.0.";
@@ -175,16 +176,6 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         return selectedWaypoint;
     }
 
-    /**
-     * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
-     */
-    public static boolean APIisOnline() {
-        if (GroundspeakAPI.getSettingsAccessToken().length() == 0) {
-            return false;
-        }
-        return PlatformUIBase.isOnline();
-    }
-
     public static Coordinate getSelectedCoord() {
         Coordinate ret = null;
 
@@ -242,7 +233,6 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
 
             @Override
             public boolean doCancel() {
-                // TODO Handle Cancel
                 return false;
             }
         });
@@ -250,7 +240,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     }
 
     public static void MsgDownloadLimit() {
-        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.create(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null).show());
+        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null));
     }
 
     public static void chkAPiLogInWithWaitDialog(final iChkReadyHandler handler) {
@@ -322,8 +312,8 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
             String[] sections = info.split("#");
             VersionPrefix = sections[1];
             String dat = sections[4];
-            Date d = new SimpleDateFormat("yyyy-MM-dd").parse(dat);
-            CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd")).format(d));
+            Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dat);
+            CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd", Locale.US)).format(d));
         } catch (Exception ex) {
             // for parsing of date gives an error
             VersionPrefix = "1000";

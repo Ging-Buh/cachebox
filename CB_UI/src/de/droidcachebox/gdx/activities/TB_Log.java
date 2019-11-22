@@ -42,7 +42,7 @@ import java.util.Date;
 import static de.droidcachebox.core.GroundspeakAPI.*;
 
 public class TB_Log extends ActivityBase {
-    static WaitDialog wd;
+    private static WaitDialog wd;
     private static TB_Log that;
     private Trackable TB;
     private CB_Button btnClose;
@@ -144,7 +144,7 @@ public class TB_Log extends ActivityBase {
                 final String errorMsg = Translation.get("NoCacheSelect");
                 this.finish();
 
-                GL.that.RunOnGL(() -> MessageBox.create(errorMsg, "", MessageBoxIcon.Error).show());
+                GL.that.RunOnGL(() -> MessageBox.show(errorMsg, "", MessageBoxIcon.Error));
                 return;
             }
 
@@ -239,47 +239,48 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.create(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
-                            case MessageBox.BUTTON_NEGATIVE:
+                            case MessageBox.BTN_RIGHT_NEGATIVE:
                                 logOnline();
                                 return true;
 
-                            case MessageBox.BUTTON_NEUTRAL:
+                            case MessageBox.BTN_MIDDLE_NEUTRAL:
                                 return true;
 
-                            case MessageBox.BUTTON_POSITIVE:
+                            case MessageBox.BTN_LEFT_POSITIVE:
                                 createTBDraft();
                                 return true;
                         }
                         return true;
-                    }).show();
+                    });
                     return;
                 }
                 if (result != OK) {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.create(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
-                        switch (which) {
-                            case MessageBox.BUTTON_NEGATIVE:
-                                logOnline();
-                                return true;
+                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question,
+                            (which, data) -> {
+                                switch (which) {
+                                    case MessageBox.BTN_RIGHT_NEGATIVE:
+                                        logOnline();
+                                        return true;
 
-                            case MessageBox.BUTTON_NEUTRAL:
-                                return true;
+                                    case MessageBox.BTN_MIDDLE_NEUTRAL:
+                                        return true;
 
-                            case MessageBox.BUTTON_POSITIVE:
-                                createTBDraft();
+                                    case MessageBox.BTN_LEFT_POSITIVE:
+                                        createTBDraft();
+                                        return true;
+                                }
                                 return true;
-                        }
-                        return true;
-                    }).show();
+                            });
                     return;
                 }
 
                 if (LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(() -> MessageBox.create(LastAPIError, Translation.get("Error"), MessageBoxIcon.Error).show());
+                    GL.that.RunOnGL(() -> MessageBox.show(LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
                 }
 
                 if (wd != null)
@@ -295,7 +296,6 @@ public class TB_Log extends ActivityBase {
 
             @Override
             public boolean doCancel() {
-                // TODO Handle Cancel
                 return false;
             }
         });

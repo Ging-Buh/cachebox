@@ -189,7 +189,7 @@ public class ShowMap extends AbstractShowAction {
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-                MessageBox msgBox = MessageBox.create(
+                MessageBox msgBox = MessageBox.show(
                         Translation.get("AddOrChangeMap"),
                         Translation.get("Layer"),
                         MessageBoxButtons.YesNoCancel,
@@ -197,11 +197,11 @@ public class ShowMap extends AbstractShowAction {
                         (which, data) -> {
                             Layer layer1 = (Layer) data;
                             switch (which) {
-                                case MessageBox.BUTTON_POSITIVE:
+                                case MessageBox.BTN_LEFT_POSITIVE:
                                     // add the selected map to the curent layer
                                     normalMapView.addAdditionalLayer(layer1);
                                     break;
-                                case MessageBox.BUTTON_NEUTRAL:
+                                case MessageBox.BTN_MIDDLE_NEUTRAL:
                                     // switch curent layer to selected
                                     normalMapView.setCurrentLayer(layer1);
                                     break;
@@ -214,7 +214,6 @@ public class ShowMap extends AbstractShowAction {
                 msgBox.setButtonText(2, "=");
                 msgBox.setButtonText(3, "-");
                 msgBox.setData(layer);
-                msgBox.show();
             } else {
                 normalMapView.setCurrentLayer(layer);
             }
@@ -222,7 +221,7 @@ public class ShowMap extends AbstractShowAction {
     }
 
     private void showLanguageSelectionMenu(Layer layer) {
-        boolean hasLanguage = false;
+        // boolean hasLanguage = false;
         if (layer.isMapsForge()) {
             if (layer.getLanguages() != null)
                 if (layer.getLanguages().length > 1) {
@@ -237,7 +236,7 @@ public class ShowMap extends AbstractShowAction {
                         });
                     }
                     lsm.show();
-                    hasLanguage = true;
+                    // hasLanguage = true;
                 }
         }
     }
@@ -352,7 +351,7 @@ public class ShowMap extends AbstractShowAction {
         return files;
     }
 
-    private boolean showModusSelectionMenu() {
+    private void showModusSelectionMenu() {
         OptionMenu mapViewThemeMenu = new OptionMenu("MapViewThemeMenuTitle");
         mapViewThemeMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.day));
         mapViewThemeMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.night));
@@ -379,7 +378,7 @@ public class ShowMap extends AbstractShowAction {
                                     UnZip.extractFolder(target, false);
                                 } catch (Exception ex) {
                                     Log.err(log, "Unzip error: " + ex.toString());
-                                    MessageBox.create(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show();
+                                    MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                                 }
                                 Gdx.files.absolute(target).delete();
                                 ((MenuItem) v).setDisabled(true);
@@ -394,20 +393,19 @@ public class ShowMap extends AbstractShowAction {
                 mapViewThemeMenu.addDivider();
                 mapViewThemeMenu.addMenuItem("Download", null, () -> {
                     // MakeRenderThemePathWritable
-                    MessageBox.create(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MessageBoxButtons.YesNo, MessageBoxIcon.Hand,
+                    MessageBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MessageBoxButtons.YesNo, MessageBoxIcon.Hand,
                             (btnNumber, data) -> {
                                 if (btnNumber == 1) { // change path
                                     Config.RenderThemesFolder.setValue(Config.RenderThemesFolder.getDefaultValue());
                                     Config.AcceptChanges();
                                 }
                                 return true;
-                            }, Config.RememberAsk_RenderThemePathWritable).show();
+                            }, Config.RememberAsk_RenderThemePathWritable);
                 });
             }
         }
 
         mapViewThemeMenu.show();
-        return true;
     }
 
     private void showFZKThemesDownloadMenu() {
@@ -447,7 +445,7 @@ public class ShowMap extends AbstractShowAction {
                                 UnZip.extractFolder(target);
                             } catch (Exception ex) {
                                 Log.err(log, "Unzip error: " + ex.toString());
-                                MessageBox.create(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show();
+                                MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                             }
                             Gdx.files.absolute(target).delete();
                             ((MenuItem) v).setDisabled(true);
@@ -687,7 +685,7 @@ public class ShowMap extends AbstractShowAction {
     private HashMap<String, String> getMapStyles(String selectedTheme) {
         try {
             // if the selected theme is an internal theme there will be no style
-            CB_InternalRenderTheme.valueOf(selectedTheme.toUpperCase()); // todo make this check better
+            CB_InternalRenderTheme.valueOf(selectedTheme.toUpperCase()); // make this check better
         } catch (Exception ex) {
             if (selectedTheme.length() > 0) {
                 try {
@@ -798,7 +796,7 @@ public class ShowMap extends AbstractShowAction {
         public String Description;
         public String Url;
         public int Size;
-        public String MD5;
+        String MD5;
     }
 
 }

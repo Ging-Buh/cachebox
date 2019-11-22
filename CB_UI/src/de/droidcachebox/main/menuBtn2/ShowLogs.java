@@ -43,7 +43,7 @@ public class ShowLogs extends AbstractShowAction {
 
     private ShowLogs() {
         super("ShowLogs", MenuID.AID_SHOW_LOGS);
-        // createContextMenu(); todo see getContextMenu
+        // createContextMenu();  see getContextMenu
     }
 
     public static ShowLogs getInstance() {
@@ -169,7 +169,7 @@ public class ShowLogs extends AbstractShowAction {
                                     pd.close();
                                     if (result != -1) {
                                         synchronized (Database.Data.cacheList) {
-                                            MessageBox.create(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None).show();
+                                            MessageBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None);
                                         }
 
                                     }
@@ -188,9 +188,9 @@ public class ShowLogs extends AbstractShowAction {
             if (GroundspeakAPI.APIError == 0) {
                 Config.Friends.setValue(friends);
                 Config.AcceptChanges();
-                MessageBox.create(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                MessageBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             } else {
-                MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             }
         });
     }

@@ -32,16 +32,15 @@ import java.util.ArrayList;
 
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
-import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BUTTON_POSITIVE;
+import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSITIVE;
 
 public class CacheContextMenu {
     private static final String ClassName = "CacheContextMenu";
-    private static Menu cacheContextMenu;
     private static CancelWaitDialog wd;
 
     public static Menu getCacheContextMenu(boolean forCacheList) {
 
-        cacheContextMenu = new Menu("DescriptionViewTitle");
+        Menu cacheContextMenu = new Menu("DescriptionViewTitle");
 
         boolean selectedCacheIsSet = GlobalCore.isSetSelectedCache();
         boolean selectedCacheIsGC = false;
@@ -83,7 +82,7 @@ public class CacheContextMenu {
 
     private static void rememberGeoCache() {
         if (GlobalCore.isSetSelectedCache()) {
-            MessageBox mb = MessageBox.create(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question, null);
+            MessageBox mb = MessageBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
                 Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGcCode());
                 Config.AcceptChanges();
@@ -100,7 +99,6 @@ public class CacheContextMenu {
                 return mb.finish();
             });
             mb.setButtonText("rememberGeoCache", "selectGeoCache", "forgetGeoCache");
-            mb.show();
         }
     }
 
@@ -125,11 +123,10 @@ public class CacheContextMenu {
                         synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                             CacheListDAO cacheListDAO = new CacheListDAO();
-                            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                            CacheListChangedListeners.getInstance().cacheListChanged();
+                            GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         }
-                        CacheListChangedListeners.getInstance().cacheListChanged();
-                        //
-                        GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         GL.that.RunOnGL(() -> {
                             ShowDescription.getInstance().updateDescriptionView(true);
                             GL.that.renderOnce();
@@ -144,7 +141,7 @@ public class CacheContextMenu {
                 }
             });
         } else {
-            MessageBox.create(Translation.get("NoCacheSelect"), Translation.get("Error"), MessageBoxIcon.Error).show();
+            MessageBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MessageBoxIcon.Error);
         }
     }
 
@@ -172,15 +169,15 @@ public class CacheContextMenu {
     }
 
     private static void toggleShortClick() {
-        MessageBox.create(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+        MessageBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                 (btnNumber, data) -> {
-                    if (btnNumber == BUTTON_POSITIVE)
+                    if (btnNumber == BTN_LEFT_POSITIVE)
                         Config.CacheContextMenuShortClickToggle.setValue(false);
                     else
                         Config.CacheContextMenuShortClickToggle.setValue(true);
                     Config.AcceptChanges();
                     return true;
-                }).show();
+                });
     }
 
     private static void toggleAsFavorite() {
@@ -195,25 +192,24 @@ public class CacheContextMenu {
     }
 
     private static void watchList() {
-        MessageBox mb = MessageBox.create(Translation.get("WatchlistMessage"), Translation.get("Watchlist"), MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question,
+        MessageBox mb = MessageBox.show(Translation.get("WatchlistMessage"), Translation.get("Watchlist"), MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question,
                 (btnNumber, data) -> {
-                    if (btnNumber == BUTTON_POSITIVE)
+                    if (btnNumber == BTN_LEFT_POSITIVE)
                         addToWatchList();
-                    else if (btnNumber == MessageBox.BUTTON_NEUTRAL)
+                    else if (btnNumber == MessageBox.BTN_MIDDLE_NEUTRAL)
                         removeFromWatchList();
                     return true;
                 });
         mb.setButtonText("append", "remove", "cancel");
-        mb.show();
     }
 
     private static void addToWatchList() {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
                 if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                    MessageBox.create(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                    MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                 } else {
-                    MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                 }
             });
         }
@@ -223,9 +219,9 @@ public class CacheContextMenu {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
                 if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                    MessageBox.create(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                    MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                 } else {
-                    MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
                 }
             });
         }

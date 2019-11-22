@@ -18,12 +18,10 @@ package de.droidcachebox.gdx.controls.popups;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.GlobalCore.iChkReadyHandler;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.*;
 import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
@@ -65,8 +63,8 @@ public class SearchDialog extends PopUp_Base {
         }
     };
 
-    CancelWaitDialog wd = null;
-    MessageBox MSB;
+    private CancelWaitDialog wd = null;
+    private MessageBox messageBox;
     /**
      * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
      */
@@ -138,7 +136,7 @@ public class SearchDialog extends PopUp_Base {
         mTglBtnOwner = new MultiToggleButton(rec, "mTglBtnOwner");
         mTglBtnOnline = new MultiToggleButton(rec, "mTglBtnOnline");
 
-        rec.setWidth(btnWidth = (this.getWidth() - (margin * 5)) / 4);
+        rec.setWidth((this.getWidth() - (margin * 5)) / 4);
 
         mBtnFilter = new ImageButton(rec, "mBtnFilter");
         mBtnSearch = new CB_Button(rec, "mBtnSearch");
@@ -199,80 +197,56 @@ public class SearchDialog extends PopUp_Base {
         setLang();
         switchSearcheMode(SearchMode.Title);
 
-        mBtnCancel.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        mBtnCancel.setClickHandler((v, x, y1, pointer, button) -> {
+            close();
+            return true;
+        });
+
+        mTglBtnTitle.setClickHandler((v, x, y12, pointer, button) -> {
+            switchSearcheMode(SearchMode.Title);
+            return true;
+        });
+
+        mTglBtnGc.setClickHandler((v, x, y13, pointer, button) -> {
+            switchSearcheMode(SearchMode.GcCode);
+            return true;
+        });
+
+        mTglBtnOwner.setClickHandler((v, x, y14, pointer, button) -> {
+            switchSearcheMode(SearchMode.Owner);
+            return true;
+        });
+
+        mBtnSearch.setClickHandler((v, x, y15, pointer, button) -> {
+            GL.that.setFocusedEditTextField(null);
+            mSearchAktive = false;
+            beginnSearchIndex = 0;
+            searchNow(false);
+            return true;
+        });
+
+        mBtnNext.setClickHandler((v, x, y16, pointer, button) -> {
+            GL.that.setFocusedEditTextField(null);
+            searchNow(true);
+            return true;
+
+        });
+
+        mBtnFilter.setClickHandler((v, x, y17, pointer, button) -> {
+            GL.that.setFocusedEditTextField(null);
+            if (mTglBtnOnline.getState() == 1) {
                 close();
-                return true;
+                GL.that.postAsync(this::askPremium);
+            } else {
+                setFilter();
             }
+            return true;
         });
 
-        mTglBtnTitle.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(SearchMode.Title);
-                return true;
-            }
-        });
-
-        mTglBtnGc.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(SearchMode.GcCode);
-                return true;
-            }
-        });
-
-        mTglBtnOwner.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(SearchMode.Owner);
-                return true;
-            }
-        });
-
-        mBtnSearch.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                GL.that.setFocusedEditTextField(null);
-                mSearchAktive = false;
-                beginnSearchIndex = 0;
-                searchNow(false);
-                return true;
-            }
-        });
-
-        mBtnNext.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                GL.that.setFocusedEditTextField(null);
-                searchNow(true);
-                return true;
-
-            }
-        });
-
-        mBtnFilter.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                GL.that.setFocusedEditTextField(null);
-                if (mTglBtnOnline.getState() == 1) {
-                    close();
-                    GL.that.postAsync(() -> askPremium());
-                } else {
-                    setFilter();
-                }
-                return true;
-            }
-        });
-
-        mTglBtnOnline.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                setFilterBtnState();
-                textBox_TextChanged();
-                return true;
-            }
+        mTglBtnOnline.setClickHandler((v, x, y18, pointer, button) -> {
+            setFilterBtnState();
+            textBox_TextChanged();
+            return true;
         });
 
     }
@@ -349,7 +323,7 @@ public class SearchDialog extends PopUp_Base {
             mBtnFilter.enable();
         }
 
-        // TODO Sofort Filter hat eine schlechte Performance, deshalb habe ich ihn ersteinmal abgeschalten.
+        // Sofort Filter hat eine schlechte Performance, deshalb habe ich ihn ersteinmal abgeschalten.
         // Es wäre aber ein schönes Feature!
         // filterSearchByTextChnge();
     }
@@ -400,14 +374,12 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchAktive = false;
-                    MessageBox.create(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null).show();
+                    MessageBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
                 } else {
-                    if (tmp != null) {
-                        Waypoint finalWp = tmp.getCorrectedFinal();
-                        if (finalWp == null)
-                            finalWp = tmp.getStartWaypoint();
-                        GlobalCore.setSelectedWaypoint(tmp, finalWp);
-                    }
+                    Waypoint finalWp = tmp.getCorrectedFinal();
+                    if (finalWp == null)
+                        finalWp = tmp.getStartWaypoint();
+                    GlobalCore.setSelectedWaypoint(tmp, finalWp);
                     // deactivate autoResort when Cache is selected by hand
                     GlobalCore.setAutoResort(false);
 
@@ -427,41 +399,35 @@ public class SearchDialog extends PopUp_Base {
      */
     private void searchAPI() {
 
-        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
+        GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
 
-            @Override
-            public void checkReady(boolean invalidAccessToken) {
+            if (invalidAccessToken) {
+                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+            } else {
 
-                if (invalidAccessToken) {
-                    GL.that.RunOnGL(() -> MessageBox.create(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show());
-                } else {
+                wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new ICancelRunnable() {
 
-                    wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), () -> closeWaitDialog(), new ICancelRunnable() {
-
-                        @Override
-                        public void run() {
-                            if (isPremiumMember()) {
-                                searchOnlineNow();
-                            } else {
-                                MessageBox.create(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
-                                        (which, data) -> {
-                                            if (which == MessageBox.BUTTON_POSITIVE) {
-                                                searchOnlineNow();
-                                            } else
-                                                closeWaitDialog();
-                                            return true;
-                                        }).show();
-                            }
+                    @Override
+                    public void run() {
+                        if (isPremiumMember()) {
+                            searchOnlineNow();
+                        } else {
+                            MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                                    (which, data) -> {
+                                        if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                                            searchOnlineNow();
+                                        } else
+                                            closeWaitDialog();
+                                        return true;
+                                    });
                         }
+                    }
 
-                        @Override
-                        public boolean doCancel() {
-                            // TODO Handle Cancel
-                            return false;
-                        }
-                    });
-
-                }
+                    @Override
+                    public boolean doCancel() {
+                        return false;
+                    }
+                });
             }
         });
 
@@ -475,7 +441,7 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
         Log.debug(log, "searchOnlineNow");
-        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), () -> closeWaitDialog(), new ICancelRunnable() {
+        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -525,7 +491,7 @@ public class SearchDialog extends PopUp_Base {
                         geoCacheRelateds = searchGeoCaches(q);
                         break;
                     default: // GCCode
-                        // todo API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
+                        // API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
                         if (searchPattern.contains(",")) {
                             geoCacheRelateds = fetchGeoCaches(q, searchPattern);
                         } else {
@@ -546,30 +512,21 @@ public class SearchDialog extends PopUp_Base {
                     int counter = 0;
 
                     synchronized (Database.Data.cacheList) {
-                        for (int j = 0; j < geoCacheRelateds.size(); j++) {
-                            GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(j);
+                        for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
                             Cache cache = geoCacheRelated.cache;
                             counter++;
                             if (Database.Data.cacheList.getCacheByIdFromCacheList(cache.Id) == null) {
                                 Database.Data.cacheList.add(cache);
-
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.Id);
-                                } else {
-                                    // todo check if this must be done
-                                    // get akt category, if not pinned.
                                 }
-
                                 cacheDAO.WriteToDatabase(cache);
-
                                 for (LogEntry log : geoCacheRelated.logs) {
                                     logDAO.WriteToDatabase(log);
                                 }
-
                                 for (ImageEntry image : geoCacheRelated.images) {
                                     imageDAO.WriteToDatabase(image, false);
                                 }
-
                                 for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
                                     Waypoint waypoint = cache.waypoints.get(i);
                                     waypointDAO.WriteToDatabase(waypoint, false); // do not store replication information here
@@ -597,7 +554,6 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public boolean doCancel() {
-                // TODO Handle Cancel
                 return false;
             }
         });
@@ -670,36 +626,31 @@ public class SearchDialog extends PopUp_Base {
     private void askPremium() {
 
         // First check API-Key with visual Feedback
-        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
-
-            @Override
-            public void checkReady(boolean invalidAccessToken) {
-                if (invalidAccessToken) {
-                    GL.that.RunOnGL(() -> MessageBox.create(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null).show());
-                } else {
-                    closeWD();
-                    GL.that.RunOnGL(() -> {
-                        if (isPremiumMember()) {
-                            showTargetApiDialog();
-                        } else {
-                            MSB = MessageBox.create(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
-                                    (which, data) -> {
-                                        closeMsgBox();
-                                        if (which == MessageBox.BUTTON_POSITIVE) {
-                                            showTargetApiDialog();
-                                        }
-                                        return true;
-                                    });
-                            MSB.show();
-                        }
-                    });
-                }
+        GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
+            if (invalidAccessToken) {
+                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+            } else {
+                closeWD();
+                GL.that.RunOnGL(() -> {
+                    if (isPremiumMember()) {
+                        showTargetApiDialog();
+                    } else {
+                        messageBox = MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                                (which, data) -> {
+                                    closeMsgBox();
+                                    if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                                        showTargetApiDialog();
+                                    }
+                                    return true;
+                                });
+                    }
+                });
             }
         });
     }
 
     private void closeMsgBox() {
-        MSB.close();
+        messageBox.close();
     }
 
     private void closeWD() {

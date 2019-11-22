@@ -453,7 +453,7 @@ public class CacheDAO {
     // // Indexing DB
     // CacheList IndexDB = new CacheList();
     // CacheListDAO cacheListDAO = new CacheListDAO();
-    // IndexDB = cacheListDAO.ReadCacheList(IndexDB, "", true, true);
+    // IndexDB = cacheListDAO.readCacheList(IndexDB, "", true, true);
     //
     // ip.setJobMax("IndexingDB", IndexDB.size());
     // ArrayList<String> index = new ArrayList<String>();

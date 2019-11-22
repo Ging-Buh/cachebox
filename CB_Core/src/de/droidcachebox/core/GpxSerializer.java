@@ -217,7 +217,7 @@ public final class GpxSerializer {
     }
 
     private void exportBatch(final XmlSerializer gpx, ArrayList<String> geocodesOfBatch) throws IOException {
-        CacheList cacheList = new CacheList();
+        CacheList cacheList;
 
         CacheListDAO clDAO = new CacheListDAO();
 
@@ -227,7 +227,7 @@ public final class GpxSerializer {
 
         progressListener.publishProgress(countExported, Translation.get("readCacheDetails", String.valueOf(geocodesOfBatch.size())));
 
-        clDAO.ReadCacheList(cacheList, geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
+        cacheList = clDAO.readCacheList(geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
 
         for (int i = 0; i < cacheList.size(); i++) {
             if (cancel)

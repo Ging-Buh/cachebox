@@ -25,7 +25,6 @@ import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.FilterSetListView.FilterSetEntry;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -41,10 +40,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent {
     private FilterSetListViewItem GcVote;
@@ -116,11 +112,11 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         // initLogText
         etComment.setText(draft.comment);
         // Date
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String sDate = iso8601Format.format(draft.timestamp);
         tvDate.setText(sDate);
         // Time
-        iso8601Format = new SimpleDateFormat("HH:mm");
+        iso8601Format = new SimpleDateFormat("HH:mm", Locale.US);
         String sTime = iso8601Format.format(draft.timestamp);
         tvTime.setText(sTime);
         // iniOptions();
@@ -173,27 +169,23 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     Date timestamp;
                     DateFormat formatter;
 
-                    formatter = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+                    formatter = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US);
                     timestamp = formatter.parse(date + "." + time + ".00");
 
                     draft.timestamp = timestamp;
                 } catch (ParseException e) {
-                    final MessageBox msg = MessageBox.create(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener() {
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            Timer runTimer = new Timer();
-                            TimerTask task = new TimerTask() {
-
-                                @Override
-                                public void run() {
-                                    show();
-                                }
-                            };
-                            runTimer.schedule(task, 200);
-                            return true;
-                        }
-                    });
-                    msg.show();
+                    final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error,
+                            (which, data) -> {
+                                Timer runTimer = new Timer();
+                                TimerTask task = new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        show();
+                                    }
+                                };
+                                runTimer.schedule(task, 200);
+                                return true;
+                            });
                     Timer runTimer = new Timer();
                     TimerTask task = new TimerTask() {
 
@@ -258,13 +250,13 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         tvDate = new EditTextField(this, "*" + Translation.get("date"));
         tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         scrollBoxContent.addNext(tvDate, 0.4f);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String sDate = iso8601Format.format(draft.timestamp);
         tvDate.setText(sDate);
         tvTime = new EditTextField(this, "*" + Translation.get("time"));
         tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
         scrollBoxContent.addLast(tvTime, 0.4f);
-        String sTime = new SimpleDateFormat("HH:mm").format(draft.timestamp);
+        String sTime = new SimpleDateFormat("HH:mm", Locale.US).format(draft.timestamp);
         tvTime.setText(sTime);
     }
 

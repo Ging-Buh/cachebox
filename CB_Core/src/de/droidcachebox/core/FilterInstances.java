@@ -21,6 +21,7 @@ public class FilterInstances {
             "\"types\":\"" + setCacheTypes(true) + "\"," + //
             "\"filtername\":\"\"" + //
             "}");
+    // (Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='arbor95') and Difficulty <= 5.0 and Terrain <= 5.0 and Type in (0,3,4,21)
     public final static FilterProperties QUICK = new FilterProperties("{" + //
             "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,1.0,2.5,1.0,2.5,0.0,4.0,0.0,5.0,0\"," + //
@@ -106,12 +107,13 @@ public class FilterInstances {
             "\"types\":\"" + setCacheTypes(true) + "\"," + //
             "\"filtername\":\"\"" + //
             "}");
+    public final static FilterProperties UserDefinedSQL = new FilterProperties(true);
     public static FilterProperties HISTORY = new FilterProperties(); // == ALL, isHistory wird vor Verwendung gesetzt daher nicht final
-    public static int hasCorrectedCoordinates = 0;
+    // public static int hasCorrectedCoordinates = 0;
     private static FilterProperties mLastFilter = null;
 
     // Quick Cache 2
-    private final static String sQuickCacheTypes() {
+    private static String sQuickCacheTypes() {
         // true,false,false,true,true,-false,-false,-false,-false,-false,-false,true,false
         // Traditional,-Multi,-Mystery,Camera,Earth,-Event,-MegaEvent,-CITO,-Virtual,-Letterbox,-Wherigo,
         //-ReferencePoint,-Wikipedia,-Undefined,-MultiStage,-MultiQuestion, -Trailhead,-ParkingArea,-Final,-Cache,-MyParking, Munzee,-Giga,
@@ -121,30 +123,30 @@ public class FilterInstances {
         mCacheTypes[CacheTypes.Camera.ordinal()] = true;
         mCacheTypes[CacheTypes.Earth.ordinal()] = true;
         mCacheTypes[CacheTypes.Munzee.ordinal()] = true;
-        String tmp = String.valueOf(mCacheTypes[0]);
-        for (int i = 1; i < mCacheTypes.length; i++) {
-            tmp = tmp + "," + String.valueOf(mCacheTypes[i]);
+        String tmp = "";
+        for (int i = 0; i < mCacheTypes.length; i++) {
+            tmp = tmp + "," + mCacheTypes[i];
         }
         return tmp;
     }
 
     // Quick Cache 2
-    private final static String sBEGINNERCacheTypes() {
+    private static String sBEGINNERCacheTypes() {
         // true,false,false,true,true,-false,-false,-false,-false,-false,-false,true,false
         // Traditional,-Multi,-Mystery,Camera,Earth,-Event,-MegaEvent,-CITO,-Virtual,-Letterbox,-Wherigo,
         //-ReferencePoint,-Wikipedia,-Undefined,-MultiStage,-MultiQuestion, -Trailhead,-ParkingArea,-Final,-Cache,-MyParking, Munzee,-Giga,
         boolean[] mCacheTypes = new boolean[CacheTypes.values().length];
         Arrays.fill(mCacheTypes, false);
         mCacheTypes[CacheTypes.Traditional.ordinal()] = true;
-        String tmp = String.valueOf(mCacheTypes[0]);
-        for (int i = 1; i < mCacheTypes.length; i++) {
-            tmp = tmp + "," + String.valueOf(mCacheTypes[i]);
+        String tmp = "";
+        for (int i = 0; i < mCacheTypes.length; i++) {
+            tmp = tmp + "," + mCacheTypes[i];
         }
         return tmp;
     }
 
     // Drop off Travelbugs 4
-    private final static String sTBsCacheTypes() {
+    private static String sTBsCacheTypes() {
         // "\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\"," + //
         boolean[] mCacheTypes = new boolean[CacheTypes.values().length];
         Arrays.fill(mCacheTypes, false);
@@ -157,9 +159,9 @@ public class FilterInstances {
         mCacheTypes[CacheTypes.Multi.ordinal()] = true;
         mCacheTypes[CacheTypes.Mystery.ordinal()] = true;
         mCacheTypes[CacheTypes.Wherigo.ordinal()] = true;
-        String tmp = String.valueOf(mCacheTypes[0]);
-        for (int i = 1; i < mCacheTypes.length; i++) {
-            tmp = tmp + "," + String.valueOf(mCacheTypes[i]);
+        String tmp = "";
+        for (int i = 0; i < mCacheTypes.length; i++) {
+            tmp = tmp + "," + mCacheTypes[i];
         }
         return tmp;
     }

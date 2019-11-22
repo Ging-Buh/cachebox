@@ -165,19 +165,17 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             cm.addMenuItem("delete", null, this::deleteWP);
         if (aktWaypoint != null || aktCache != null)
             cm.addMenuItem("Projection", null, this::addProjection);
-        MenuItem mi = cm.addMenuItem("UploadCorrectedCoordinates", null, () -> {
-            GL.that.postAsync(() -> {
-                if (aktCache.hasCorrectedCoordinates())
-                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.coordinate);
-                else if (aktWaypoint.isCorrectedFinal())
-                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
-                if (GroundspeakAPI.APIError == 0) {
-                    MessageBox.create(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
-                } else {
-                    MessageBox.create(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null).show();
-                }
-            });
-        });
+        MenuItem mi = cm.addMenuItem("UploadCorrectedCoordinates", null, () -> GL.that.postAsync(() -> {
+            if (aktCache.hasCorrectedCoordinates())
+                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.coordinate);
+            else if (aktWaypoint.isCorrectedFinal())
+                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
+            if (GroundspeakAPI.APIError == 0) {
+                MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+            } else {
+                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+            }
+        }));
         mi.setEnabled(aktCache.hasCorrectedCoordinates() || (aktWaypoint != null && aktWaypoint.isCorrectedFinal()));
         cm.addMenuItem("FromGps", null, this::addMeasure);
 
@@ -268,9 +266,9 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     }
 
     private void deleteWP() {
-        MessageBox.create(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
-                case MessageBox.BUTTON_POSITIVE:
+                case MessageBox.BTN_LEFT_POSITIVE:
                     // Yes button clicked
                     Database.DeleteFromDatabase(aktWaypoint);
                     de.droidcachebox.GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
@@ -291,12 +289,12 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                     that.scrollToItem(0);
 
                     break;
-                case MessageBox.BUTTON_NEGATIVE:
+                case MessageBox.BTN_RIGHT_NEGATIVE:
                     // No button clicked
                     break;
             }
             return true;
-        }).show();
+        });
     }
 
     private void addProjection() {
@@ -387,18 +385,18 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
     public class CustomAdapter implements Adapter {
         private Cache cache;
-        private CB_List<ListViewItemBase> items;
+        private CB_List<ListViewItemBase> wayPoints;
 
-        public CustomAdapter(Cache cache) {
+        CustomAdapter(Cache cache) {
             this.cache = cache;
-            this.items = new CB_List<>();
-            this.items.ensureCapacity(cache.waypoints.size() + 1, true);
+            wayPoints = new CB_List<>();
+            wayPoints.ensureCapacity(cache.waypoints.size() + 1, true);
         }
 
         public void setCache(Cache cache) {
             this.cache = cache;
-            this.items = new CB_List<>();
-            this.items.ensureCapacity(cache.waypoints.size() + 1, true);
+            wayPoints = new CB_List<>();
+            wayPoints.ensureCapacity(cache.waypoints.size() + 1, true);
         }
 
         @Override
@@ -409,22 +407,12 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                 return 0;
         }
 
-        Object getItem(int position) {
-            if (cache != null) {
-                if (position == 0)
-                    return cache;
-                else
-                    return cache.waypoints.get(position - 1);
-            } else
-                return null;
-        }
-
         @Override
         public ListViewItemBase getView(int position) {
             if (cache != null) {
                 if (position == 0) {
                     // the cache
-                    if (items.get(position) == null || items.get(position).isDisposed()) {
+                    if (wayPoints.get(position) == null || wayPoints.get(position).isDisposed()) {
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache, null);
                         waypointViewItem.setClickable(true);
                         waypointViewItem.setClickHandler((v, x, y, pointer, button) -> {
@@ -466,12 +454,12 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                             mMustSetPos = true;
                             GL.that.renderOnce(true);
                         });
-                        items.replace(waypointViewItem, position);
+                        wayPoints.replace(waypointViewItem, position);
                     }
 
-                    return items.get(position);
+                    return wayPoints.get(position);
                 } else {
-                    if (items.get(position) == null || items.get(position).isDisposed()) {
+                    if (wayPoints.get(position) == null || wayPoints.get(position).isDisposed()) {
                         Waypoint waypoint = cache.waypoints.get(position - 1);
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache, waypoint);
                         waypointViewItem.setClickable(true);
@@ -514,9 +502,9 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                             mMustSetPos = true;
                             GL.that.renderOnce(true);
                         });
-                        items.replace(waypointViewItem, position);
+                        wayPoints.replace(waypointViewItem, position);
                     }
-                    return items.get(position);
+                    return wayPoints.get(position);
                 }
             } else
                 return null;
@@ -525,11 +513,11 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         @Override
         public float getItemSize(int position) {
 
-            if (items.get(position) == null || items.get(position).isDisposed()) {
+            if (wayPoints.get(position) == null || wayPoints.get(position).isDisposed()) {
                 getView(position);
             }
 
-            return items.get(position).getHeight();
+            return wayPoints.get(position).getHeight();
         }
 
     }

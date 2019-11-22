@@ -415,7 +415,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -444,7 +444,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
                     (which, data) -> {
                         String text = StringInputBox.editText.getText();
-                        if (which == MessageBox.BUTTON_POSITIVE) {
+                        if (which == MessageBox.BTN_LEFT_POSITIVE) {
                             SettingString value = (SettingString) Config.settings.get(EditKey);
 
                             // api ohne lineBreak
@@ -468,7 +468,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return true;
         });
@@ -513,7 +513,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -557,7 +557,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -602,7 +602,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -647,7 +647,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -688,7 +688,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -730,7 +730,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -776,7 +776,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MessageBox.create(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener);
             return false;
         });
 
@@ -812,7 +812,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MessageBox.create(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener);
             return false;
         });
 
@@ -841,7 +841,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     info += "GPS min pos Time= " + PositionChangedListeners.minPosEventTime + GlobalCore.br;
                     info += "GPS min Orientation Time= " + PositionChangedListeners.minOrientationEventTime + GlobalCore.br;
 
-                    MessageBox.create(info, msgBoxReturnListener).show();
+                    MessageBox.show(info, msgBoxReturnListener);
 
                     return true;
                 }
@@ -853,7 +853,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btn.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -918,7 +918,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return true;
         });
@@ -980,7 +980,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -1147,7 +1147,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.create(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener).show();
+            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return true;
         });

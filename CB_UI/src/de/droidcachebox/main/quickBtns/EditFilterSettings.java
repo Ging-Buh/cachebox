@@ -1,4 +1,4 @@
-package de.droidcachebox.main.menuBtn1.contextmenus;
+package de.droidcachebox.main.quickBtns;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.ActivityBase;

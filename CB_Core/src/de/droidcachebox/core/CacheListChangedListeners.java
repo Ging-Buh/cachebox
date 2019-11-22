@@ -61,20 +61,20 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
 
             // add all Live Caches
             for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++) {
-                Cache ca = LiveMapQue.LiveCaches.get(i);
-                if (ca == null)
+                Cache geoCache = LiveMapQue.LiveCaches.get(i);
+                if (geoCache == null)
                     continue;
                 if (FilterInstances.isLastFilterSet()) {
-                    if (!Database.Data.cacheList.contains(ca)) {
-                        if (FilterInstances.getLastFilter().passed(ca)) {
-                            ca.setLive(true);
-                            Database.Data.cacheList.add(ca);
+                    if (!Database.Data.cacheList.contains(geoCache)) {
+                        if (FilterInstances.getLastFilter().passed(geoCache)) {
+                            geoCache.setLive(true);
+                            Database.Data.cacheList.add(geoCache);
                         }
                     }
                 } else {
-                    if (!Database.Data.cacheList.contains(ca)) {
-                        ca.setLive(true);
-                        Database.Data.cacheList.add(ca);
+                    if (!Database.Data.cacheList.contains(geoCache)) {
+                        geoCache.setLive(true);
+                        Database.Data.cacheList.add(geoCache);
                     }
                 }
 

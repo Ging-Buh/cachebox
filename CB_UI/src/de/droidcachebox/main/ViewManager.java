@@ -16,8 +16,7 @@
 package de.droidcachebox.main;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.TrackRecorder;
+import de.droidcachebox.*;
 import de.droidcachebox.core.API_ErrorEventHandler;
 import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.API_ErrorEventHandlerList.API_ERROR;
@@ -39,7 +38,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CompassView;
-import de.droidcachebox.invalidateTextureEventList;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.main.menuBtn1.ParkingDialog;
@@ -98,10 +96,10 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     public static void reloadCacheList() {
-        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(de.droidcachebox.Config.GcLogin.getValue());
+        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
         synchronized (Database.Data.cacheList) {
             CacheListDAO cacheListDAO = new CacheListDAO();
-            cacheListDAO.ReadCacheList(Database.Data.cacheList, sqlWhere, false, de.droidcachebox.Config.ShowAllWaypoints.getValue());
+            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
@@ -111,12 +109,12 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     protected void initialize() {
         Log.debug(log, "Start ViewManager-Initial");
 
-        de.droidcachebox.GlobalCore.receiver = new de.droidcachebox.GlobalLocationReceiver();
+        GlobalCore.receiver = new GlobalLocationReceiver();
 
-        UnitFormatter.setUseImperialUnits(de.droidcachebox.Config.ImperialUnits.getValue());
-        de.droidcachebox.Config.ImperialUnits.addSettingChangedListener(() -> UnitFormatter.setUseImperialUnits(de.droidcachebox.Config.ImperialUnits.getValue()));
+        UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
+        Config.ImperialUnits.addSettingChangedListener(() -> UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue()));
 
-        de.droidcachebox.Config.ShowAllWaypoints.addSettingChangedListener(() -> {
+        Config.ShowAllWaypoints.addSettingChangedListener(() -> {
             reloadCacheList();
             // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
             ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
@@ -129,14 +127,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyInvalid") + de.droidcachebox.GlobalCore.br + de.droidcachebox.GlobalCore.br;
+                        String Msg = Translation.get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.create(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == MessageBox.BUTTON_POSITIVE)
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                            if (which == MessageBox.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
-                        }).show();
+                        });
                     }
                 };
                 new Timer().schedule(tt, 1500);
@@ -149,14 +147,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyExpired") + de.droidcachebox.GlobalCore.br + de.droidcachebox.GlobalCore.br;
+                        String Msg = Translation.get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.create(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == MessageBox.BUTTON_POSITIVE)
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                            if (which == MessageBox.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
-                        }).show();
+                        });
                     }
                 };
                 t.schedule(tt, 1500);
@@ -170,15 +168,15 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyNeeded") + de.droidcachebox.GlobalCore.br + de.droidcachebox.GlobalCore.br;
+                        String Msg = Translation.get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.create(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
                                 (which, data) -> {
-                                    if (which == MessageBox.BUTTON_POSITIVE)
+                                    if (which == MessageBox.BTN_LEFT_POSITIVE)
                                         PlatformUIBase.getApiKey();
                                     return true;
-                                }, de.droidcachebox.Config.RememberAsk_Get_API_Key).show();
+                                }, Config.RememberAsk_Get_API_Key);
                     }
                 };
                 t.schedule(tt, 1500);
@@ -195,33 +193,33 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         autoLoadTrack();
 
-        if (de.droidcachebox.Config.TrackRecorderStartup.getValue() && PlatformUIBase.isGPSon()) {
-            de.droidcachebox.TrackRecorder.StartRecording();
+        if (Config.TrackRecorderStartup.getValue() && PlatformUIBase.isGPSon()) {
+            TrackRecorder.StartRecording();
         }
-        de.droidcachebox.Config.TrackDistance.addSettingChangedListener(() -> de.droidcachebox.TrackRecorder.distanceForNextTrackpoint = de.droidcachebox.Config.TrackDistance.getValue());
+        Config.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Config.TrackDistance.getValue());
 
         // set last selected Cache
-        String sGc = de.droidcachebox.Config.LastSelectedCache.getValue();
+        String sGc = Config.LastSelectedCache.getValue();
         if (sGc != null && sGc.length() > 0) {
             synchronized (Database.Data.cacheList) {
                 for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                     Cache c = Database.Data.cacheList.get(i);
                     if (c.getGcCode().equalsIgnoreCase(sGc)) {
                         Log.debug(log, "ViewManager: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
-                        de.droidcachebox.GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
+                        GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
                         break;
                     }
                 }
             }
         }
 
-        de.droidcachebox.GlobalCore.setAutoResort(de.droidcachebox.Config.StartWithAutoSelect.getValue());
+        GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
         filterSetChanged();
         GL.that.removeRenderView(this);
 
-        de.droidcachebox.AppRater.app_launched();
+        AppRater.app_launched();
 
-        if (de.droidcachebox.Config.AccessToken.getValue().equals(""))
+        if (Config.AccessToken.getValue().equals(""))
             API_ErrorEventHandlerList.handleApiKeyError(API_ERROR.NO);
 
         isInitial = true;
@@ -236,18 +234,18 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.UI_Left.getWidth(), getHeight() - UiSizes.getInstance().getInfoSliderHeight());
         leftTab = new CB_TabView(rec, "leftTab");
 
-        if (de.droidcachebox.Config.useDescriptiveCB_Buttons.getValue()) {
-            mainBtn1 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "CacheList");
-            mainBtn2 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Cache");
-            mainBtn3 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Nav");
-            mainBtn4 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Tool");
-            mainBtn5 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Misc");
+        if (Config.useDescriptiveCB_Buttons.getValue()) {
+            mainBtn1 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
+            mainBtn2 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache");
+            mainBtn3 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav");
+            mainBtn4 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool");
+            mainBtn5 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc");
         } else {
-            mainBtn1 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mainBtn2 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mainBtn3 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mainBtn4 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mainBtn5 = new GestureButton(MainBtnSize, de.droidcachebox.Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            mainBtn1 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            mainBtn2 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            mainBtn3 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            mainBtn4 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            mainBtn5 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
         CB_ButtonBar mainButtonBar = new CB_ButtonBar();
@@ -284,7 +282,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn3.addAction(ShowTrackList.getInstance(), false, GestureDirection.Left);
         mainBtn3.addAction(MapDownload.getInstance(), false);
 
-        mainBtn4.addAction(ShowDrafts.getInstance(), de.droidcachebox.Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
+        mainBtn4.addAction(ShowDrafts.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         mainBtn4.addAction(ShowSolver1.getInstance(), false, GestureDirection.Left);
         mainBtn4.addAction(ShowSolver2.getInstance(), false, GestureDirection.Right);
         actionTakePicture = new PlatformActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
@@ -300,7 +298,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn5.addAction(SwitchDayNight.getInstance(), false);
         mainBtn5.addAction(HelpOnline.getInstance(), false);
         mainBtn5.addAction(ContactOwner.getInstance(), false);
-        // mainBtn5.addAction(TranslateDescription.getInstance(), false);
         mainBtn5.addAction(SwitchTorch.getInstance(), false);
         mainBtn5.addAction(ShowAbout.getInstance(), true, GestureDirection.Up);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
@@ -309,14 +306,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     private void autoLoadTrack() {
-        String trackPath = de.droidcachebox.Config.TrackFolder.getValue() + "/Autoload";
+        String trackPath = Config.TrackFolder.getValue() + "/Autoload";
         if (FileIO.createDirectory(trackPath)) {
             File dir = FileFactory.createFile(trackPath);
             String[] files = dir.list();
             if (!(files == null)) {
                 if (files.length > 0) {
                     for (String file : files) {
-                        de.droidcachebox.RouteOverlay.LoadTrack(trackPath, file);
+                        RouteOverlay.LoadTrack(trackPath, file);
                     }
                 }
             }
@@ -348,7 +345,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         try {
             GL.that.stopRendering();
             if (switchDayNight)
-                de.droidcachebox.Config.changeDayNight();
+                Config.changeDayNight();
             GL.that.onStop();
             Sprites.loadSprites(true);
             ShowMap.getInstance().normalMapView.invalidateTexture();
@@ -363,9 +360,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             // add Slider as last
             Slider slider = new Slider(this, "Slider");
             this.addChild(slider);
-            slider.selectedCacheChanged(de.droidcachebox.GlobalCore.getSelectedCache(), de.droidcachebox.GlobalCore.getSelectedWaypoint());
+            slider.selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
-            String state = de.droidcachebox.Config.nightMode.getValue() ? "Night" : "Day";
+            String state = Config.nightMode.getValue() ? "Night" : "Day";
 
             GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 
@@ -395,7 +392,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         boolean isFiltered = FilterInstances.isLastFilterSet();
         mainBtn1.isFiltered(isFiltered);
 
-        if (!de.droidcachebox.Config.useDescriptiveCB_Buttons.getValue()) {
+        if (!Config.useDescriptiveCB_Buttons.getValue()) {
             if (isFiltered) {
                 mainBtn1.setButtonSprites(Sprites.CacheListFilter);
             } else {
@@ -440,19 +437,19 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             e.printStackTrace();
         }
 
-        if (de.droidcachebox.GlobalCore.isSetSelectedCache()) {
-            float distance = de.droidcachebox.GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
-            if (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) {
-                distance = de.droidcachebox.GlobalCore.getSelectedWaypoint().getDistance();
+        if (GlobalCore.isSetSelectedCache()) {
+            float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
+            if (GlobalCore.getSelectedWaypoint() != null) {
+                distance = GlobalCore.getSelectedWaypoint().getDistance();
             }
 
-            if (de.droidcachebox.Config.switchViewApproach.getValue() && !de.droidcachebox.GlobalCore.switchToCompassCompleted && (distance < de.droidcachebox.Config.SoundApproachDistance.getValue())) {
+            if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Config.SoundApproachDistance.getValue())) {
                 if (CompassView.getInstance().isVisible())
                     return;// don't show if showing compass
                 if (ShowMap.getInstance().normalMapView.isVisible() && ShowMap.getInstance().normalMapView.isCarMode())
                     return; // don't show on visible map at carMode
                 ShowCompass.getInstance().Execute();
-                de.droidcachebox.GlobalCore.switchToCompassCompleted = true;
+                GlobalCore.switchToCompassCompleted = true;
             }
         }
     }

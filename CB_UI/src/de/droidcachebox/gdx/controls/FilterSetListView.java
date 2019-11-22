@@ -69,27 +69,27 @@ public class FilterSetListView extends V_ListView {
 
     private FilterProperties getFilterProperties() {
         FilterProperties props = new FilterProperties();
-        props.NotAvailable = NotAvailable.getChecked();
-        props.Archived = Archived.getChecked();
-        props.Finds = Finds.getChecked();
-        props.Own = Own.getChecked();
-        props.ContainsTravelbugs = ContainsTravelBugs.getChecked();
-        props.Favorites = Favorites.getChecked();
-        props.HasUserData = HasUserData.getChecked();
-        props.ListingChanged = ListingChanged.getChecked();
-        props.WithManualWaypoint = WithManualWaypoint.getChecked();
+        props.notAvailable = NotAvailable.getChecked();
+        props.archived = Archived.getChecked();
+        props.finds = Finds.getChecked();
+        props.own = Own.getChecked();
+        props.containsTravelbugs = ContainsTravelBugs.getChecked();
+        props.favorites = Favorites.getChecked();
+        props.hasUserData = HasUserData.getChecked();
+        props.listingChanged = ListingChanged.getChecked();
+        props.withManualWaypoint = WithManualWaypoint.getChecked();
         props.hasCorrectedCoordinates = hasCorrectedCoordinates.getChecked();
 
-        props.MinDifficulty = minDifficulty.getValue();
-        props.MaxDifficulty = maxDifficulty.getValue();
-        props.MinTerrain = minTerrain.getValue();
-        props.MaxTerrain = maxTerrain.getValue();
-        props.MinContainerSize = minContainerSize.getValue();
-        props.MaxContainerSize = maxContainerSize.getValue();
-        props.MinRating = minRating.getValue();
-        props.MaxRating = maxRating.getValue();
-        props.MinFavPoints = minFavPoints.getValue();
-        props.MaxFavPoints = maxFavPoints.getValue();
+        props.minDifficulty = minDifficulty.getValue();
+        props.maxDifficulty = maxDifficulty.getValue();
+        props.minTerrain = minTerrain.getValue();
+        props.maxTerrain = maxTerrain.getValue();
+        props.minContainerSize = minContainerSize.getValue();
+        props.maxContainerSize = maxContainerSize.getValue();
+        props.minRating = minRating.getValue();
+        props.maxRating = maxRating.getValue();
+        props.minFavPoints = minFavPoints.getValue();
+        props.maxFavPoints = maxFavPoints.getValue();
 
         for (int i = 1; i < types.getChildLength(); i++) {
             FilterSetListViewItem itm = types.getChild(i);
@@ -105,27 +105,27 @@ public class FilterSetListView extends V_ListView {
     }
 
     public void setFilterProperties(FilterProperties props) {
-        NotAvailable.setValue(props.NotAvailable);
-        Archived.setValue(props.Archived);
-        Finds.setValue(props.Finds);
-        Own.setValue(props.Own);
-        ContainsTravelBugs.setValue(props.ContainsTravelbugs);
-        Favorites.setValue(props.Favorites);
-        HasUserData.setValue(props.HasUserData);
-        ListingChanged.setValue(props.ListingChanged);
-        WithManualWaypoint.setValue(props.WithManualWaypoint);
+        NotAvailable.setValue(props.notAvailable);
+        Archived.setValue(props.archived);
+        Finds.setValue(props.finds);
+        Own.setValue(props.own);
+        ContainsTravelBugs.setValue(props.containsTravelbugs);
+        Favorites.setValue(props.favorites);
+        HasUserData.setValue(props.hasUserData);
+        ListingChanged.setValue(props.listingChanged);
+        WithManualWaypoint.setValue(props.withManualWaypoint);
         hasCorrectedCoordinates.setValue(props.hasCorrectedCoordinates);
 
-        minTerrain.setValue(props.MinTerrain);
-        maxTerrain.setValue(props.MaxTerrain);
-        minDifficulty.setValue(props.MinDifficulty);
-        maxDifficulty.setValue(props.MaxDifficulty);
-        minContainerSize.setValue(props.MinContainerSize);
-        maxContainerSize.setValue(props.MaxContainerSize);
-        minRating.setValue(props.MinRating);
-        maxRating.setValue(props.MaxRating);
-        minFavPoints.setValue(props.MinFavPoints);
-        maxFavPoints.setValue(props.MaxFavPoints);
+        minTerrain.setValue(props.minTerrain);
+        maxTerrain.setValue(props.maxTerrain);
+        minDifficulty.setValue(props.minDifficulty);
+        maxDifficulty.setValue(props.maxDifficulty);
+        minContainerSize.setValue(props.minContainerSize);
+        maxContainerSize.setValue(props.maxContainerSize);
+        minRating.setValue(props.minRating);
+        maxRating.setValue(props.maxRating);
+        minFavPoints.setValue(props.minFavPoints);
+        maxFavPoints.setValue(props.maxFavPoints);
 
         for (int i = 0; i < types.getChildLength(); i++) {
             FilterSetListViewItem itm = types.getChild(i);
