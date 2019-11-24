@@ -63,8 +63,8 @@ public class ImportCBServer {
                         // GPX-Filename und Category Eintrag prüfen
                         Category cat = CoreSettingsForward.Categories.getCategory(item.getDescription());
 
-                        CategoryDAO catDao = new CategoryDAO();
                         // GpxFilenames Eintrag erzeugen
+
                         // Alle importierten Caches werdem diesem neuen GpxFilename zugeordnet
                         GpxFilename gpxFilename = cat.addGpxFilename(item.getDescription());
 

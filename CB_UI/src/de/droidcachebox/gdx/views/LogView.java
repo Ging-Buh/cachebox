@@ -30,9 +30,9 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 
@@ -48,7 +48,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
     private LogView() {
         super(ViewManager.leftTab.getContentRec(), "LogView");
-        setForceHandleTouchEvents(true);
+        setForceHandleTouchEvents();
         ItemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
@@ -95,7 +95,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
         if (aktCache == null)
             return;
 
-        CB_List<LogEntry> cleanLogs = Database.Logs(aktCache);
+        CB_List<LogEntry> cleanLogs = Database.getLogs(aktCache);
 
         String finders = Config.Friends.getValue().replace(", ", "|").replace(",", "|");
         String[] finder = finders.split("\\|");

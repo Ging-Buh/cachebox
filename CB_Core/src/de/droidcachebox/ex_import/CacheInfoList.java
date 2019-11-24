@@ -188,7 +188,7 @@ public class CacheInfoList {
             String recentOwnerLogString = "";
 
             CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-            cleanLogs = Database.Logs(cache);// cache.Logs();
+            cleanLogs = Database.getLogs(cache);// cache.Logs();
 
             if (cleanLogs.size() > 0) {
                 for (int i = 0, n = cleanLogs.size(); i < n; i++) {
@@ -311,7 +311,7 @@ public class CacheInfoList {
         String recentOwnerLogString = "";
 
         CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-        cleanLogs = Database.Logs(cache);// cache.Logs();
+        cleanLogs = Database.getLogs(cache);// cache.Logs();
 
         if (cleanLogs.size() > 0) {
             for (int i = 0, n = cleanLogs.size(); i < n; i++) {

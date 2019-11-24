@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Longri
  */
 public class Image extends CB_View_Base {
-    AtomicBoolean isAsRenderViewRegisted = new AtomicBoolean(false);
+    private AtomicBoolean isAsRenderViewRegistered = new AtomicBoolean(false);
     private AnimationBase Wait;
     private ImageLoader imageLoader;
     private Color mColor = new Color(1, 1, 1, 1);
@@ -49,13 +49,7 @@ public class Image extends CB_View_Base {
         this.imageLoader = new ImageLoader();
         this.imageLoader.reziseHeight = reziseHeight;
         if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
-            this.imageLoader.setResizeListener(new ImageLoader.resize() {
-
-                @Override
-                public void sizechanged(float newWidth, float newHeight) {
-                    Image.this.setSize(newWidth, newHeight);
-                }
-            }, this.getWidth());
+            this.imageLoader.setResizeListener(Image.this::setSize, this.getWidth());
         }
 
     }
@@ -65,7 +59,7 @@ public class Image extends CB_View_Base {
         this.imageLoader = new ImageLoader();
         this.imageLoader.reziseHeight = reziseHeight;
         if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
-            this.imageLoader.setResizeListener((newWidth, newHeight) -> Image.this.setSize(newWidth, newHeight), this.getWidth());
+            this.imageLoader.setResizeListener(Image.this::setSize, this.getWidth());
         }
     }
 
@@ -74,13 +68,7 @@ public class Image extends CB_View_Base {
         this.imageLoader = img;
         this.imageLoader.reziseHeight = reziseHeight;
         if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
-            this.imageLoader.setResizeListener(new ImageLoader.resize() {
-
-                @Override
-                public void sizechanged(float newWidth, float newHeight) {
-                    Image.this.setSize(newWidth, newHeight);
-                }
-            }, this.getWidth());
+            this.imageLoader.setResizeListener(Image.this::setSize, this.getWidth());
         }
 
     }
@@ -90,7 +78,7 @@ public class Image extends CB_View_Base {
         if (imageLoader != null) {
             if (imageLoader.getAnimDelay() > 0) {
                 GL.that.addRenderView(this, imageLoader.getAnimDelay());
-                isAsRenderViewRegisted.set(true);
+                isAsRenderViewRegistered.set(true);
             }
         }
     }
@@ -100,7 +88,7 @@ public class Image extends CB_View_Base {
         if (imageLoader != null) {
             if (imageLoader.getAnimDelay() > 0) {
                 GL.that.removeRenderView(this);
-                isAsRenderViewRegisted.set(false);
+                isAsRenderViewRegistered.set(false);
             }
         }
     }
@@ -136,28 +124,17 @@ public class Image extends CB_View_Base {
                     drawHeight = imageLoader.getSpriteHeight() * proportion;
 
                     switch (hAlignment) {
-                        case CENTER:
-                            drawX = (getWidth() - drawwidth) / 2;
-                            break;
                         case LEFT:
-                            drawX = 0;
-                            break;
-                        case RIGHT:
-                            drawX = getWidth() - drawwidth;
-                            break;
-                        case SCROLL_CENTER:
-                            drawX = (getWidth() - drawwidth) / 2;
-                            break;
                         case SCROLL_LEFT:
                             drawX = 0;
                             break;
+                        case RIGHT:
                         case SCROLL_RIGHT:
                             drawX = getWidth() - drawwidth;
                             break;
                         default:
                             drawX = (getWidth() - drawwidth) / 2;
                             break;
-
                     }
 
                     drawY = (getHeight() - drawHeight) / 2;
@@ -165,13 +142,12 @@ public class Image extends CB_View_Base {
 
                 imageLoader.getDrawable(Gdx.graphics.getDeltaTime()).draw(batch, drawX, drawY, drawwidth, drawHeight);
 
-                if (!isAsRenderViewRegisted.get() && imageLoader.getAnimDelay() > 0) {
+                if (!isAsRenderViewRegistered.get() && imageLoader.getAnimDelay() > 0) {
                     GL.that.addRenderView(this, imageLoader.getAnimDelay());
-                    isAsRenderViewRegisted.set(true);
+                    isAsRenderViewRegistered.set(true);
                 }
             } else if (imageLoader.inLoad & !imageLoader.ImageLoadError) {
                 if (Wait == null) {
-                    CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
                     Wait = new WorkAnimation();
                     GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
                     this.addChild(Wait);
@@ -183,7 +159,7 @@ public class Image extends CB_View_Base {
                     this.removeChild(Wait);
 
                     //set error image
-                    this.setSprite(new Sprite(Sprites.getSprite(IconName.disabled.name())), false);
+                    this.setSprite(new Sprite(Sprites.getSprite(IconName.disabled.name())));
 
                 }
 
@@ -214,7 +190,7 @@ public class Image extends CB_View_Base {
     @Override
     public void dispose() {
         GL.that.removeRenderView(this);
-        isAsRenderViewRegisted.set(false);
+        isAsRenderViewRegistered.set(false);
         if (imageLoader != null)
             imageLoader.dispose();
         imageLoader = null;
@@ -230,14 +206,13 @@ public class Image extends CB_View_Base {
     /**
      * Sets a Image URl and Downlowd this Image if this don't exist on Cache
      *
-     * @param iconUrl
      */
     public void setImageURL(final String iconUrl) {
         if (imageLoader != null)
             imageLoader.setImageURL(iconUrl);
     }
 
-    public void clearImage() {
+    void clearImage() {
         if (imageLoader != null)
             imageLoader.clearImage();
         mColor = new Color(1, 1, 1, 1);
@@ -249,17 +224,9 @@ public class Image extends CB_View_Base {
         this.hAlignment = alignment;
     }
 
-    public void setSprite(Sprite sprite, boolean reziseHeight) {
+    public void setSprite(Sprite sprite) {
         if (imageLoader != null)
-            imageLoader.setSprite(sprite, reziseHeight);
-    }
-
-    public void forceImageLoad() {
-        GL.that.RunOnGL(() -> {
-            if (imageLoader != null)
-                imageLoader.getDrawable(0);
-        });
-
+            imageLoader.setSprite(sprite);
     }
 
     public Drawable getDrawable() {

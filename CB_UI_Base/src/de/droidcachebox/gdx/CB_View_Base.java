@@ -8,8 +8,8 @@ import de.droidcachebox.utils.MoveableList;
 public class CB_View_Base extends GL_View_Base {
 
     public static final int FIXED = -1;
-    protected static final boolean TOPDOWN = true;
     public static final boolean BOTTOMUP = false;
+    protected static final boolean TOPDOWN = true;
     protected boolean isInitial = false;
     // row handling by arbor95: makes live much easier
     // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
@@ -24,28 +24,25 @@ public class CB_View_Base extends GL_View_Base {
     private boolean isDisposed = false;
 
     // # Constructors
-    public CB_View_Base() {
-        super();
-    }
-
-    public CB_View_Base(String Name) {
-        super(Name);
-    }
-
-    public CB_View_Base(float X, float Y, float Width, float Height, String Name) {
-        super(X, Y, Width, Height, Name);
-    }
-
-    public CB_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
-        super(X, Y, Width, Height, Parent, Name);
-    }
-
-    public CB_View_Base(CB_RectF rec, String Name) {
-        super(rec, Name);
-    }
 
     public CB_View_Base(CB_RectF rec, GL_View_Base Parent, String Name) {
         super(rec, Parent, Name);
+    }
+
+    public CB_View_Base(String name) {
+        this(new CB_RectF(), null, name);
+    }
+
+    public CB_View_Base(float x, float y, float width, float height, String name) {
+        this(new CB_RectF(x, y, width, height), null, name);
+    }
+
+    public CB_View_Base(float x, float y, float width, float height, GL_View_Base parent, String name) {
+        this(new CB_RectF(x, y, width, height), parent, name);
+    }
+
+    public CB_View_Base(CB_RectF rec, String name) {
+        this(rec, null, name);
     }
 
     public CB_View_Base(SizeF size, String Name) {
@@ -90,9 +87,8 @@ public class CB_View_Base extends GL_View_Base {
     }
 
     @Override
-    public boolean onLongClick(int x, int y, int pointer, int button) {
+    public void onLongClick(int x, int y, int pointer, int button) {
 
-        return false;
     }
 
     @Override

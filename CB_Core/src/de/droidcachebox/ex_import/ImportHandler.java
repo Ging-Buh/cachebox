@@ -5,16 +5,11 @@ import de.droidcachebox.database.*;
 
 public class ImportHandler implements IImportHandler {
 
-    public Integer cacheCount = 0;
-    public Integer logCount = 0;
-    public Integer waypointCount = 0;
     public Categories categories;
-    CacheDAO cacheDAO = new CacheDAO();
-    LogDAO logDAO = new LogDAO();
-    WaypointDAO waypointDAO = new WaypointDAO();
-    CategoryDAO categoryDAO = new CategoryDAO();
-    GpxFilenameDAO gpxFilenameDAO = new GpxFilenameDAO();
-    ImageDAO imageDAO = new ImageDAO();
+    private CacheDAO cacheDAO = new CacheDAO();
+    private LogDAO logDAO = new LogDAO();
+    private WaypointDAO waypointDAO = new WaypointDAO();
+    private ImageDAO imageDAO = new ImageDAO();
 
     @Override
     public void handleCache(Cache cache) {
@@ -33,19 +28,16 @@ public class ImportHandler implements IImportHandler {
 
         // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
         cache.setLongDescription("");
-        cacheCount++;
     }
 
     @Override
     public void handleLog(LogEntry log) {
         logDAO.WriteToDatabase(log);
-        logCount++;
     }
 
     @Override
     public void handleWaypoint(Waypoint waypoint) {
         waypointDAO.WriteImportToDatabase(waypoint);
-        waypointCount++;
     }
 
     @Override
@@ -59,11 +51,9 @@ public class ImportHandler implements IImportHandler {
     }
 
     @Override
-    public void GPXFilenameUpdateCacheCount() {
-        gpxFilenameDAO.GPXFilenameUpdateCacheCount();
-
-        categoryDAO.LoadCategoriesFromDatabase();
-        categoryDAO.DeleteEmptyCategories();
+    public void updateCacheCountForGPXFilenames() {
+        Database.Data.updateCacheCountForGPXFilenames();
+        CategoryDAO.getInstance().deleteEmptyCategories();
     }
 
     @Override

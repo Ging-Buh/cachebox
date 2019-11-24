@@ -166,7 +166,7 @@ public class Importer {
             ip.ProgressInkrement("ImportGPX", "", true);
         }
 
-        importHandler.GPXFilenameUpdateCacheCount();
+        importHandler.updateCacheCountForGPXFilenames();
 
         importHandler = null;
 

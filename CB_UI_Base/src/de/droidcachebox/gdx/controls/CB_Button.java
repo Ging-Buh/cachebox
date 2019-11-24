@@ -30,20 +30,20 @@ import de.droidcachebox.utils.MoveableList;
  * @author Longri
  */
 public class CB_Button extends CB_View_Base {
-    protected BitmapFont mFont;
+    BitmapFont mFont;
 
     protected Drawable drawableNormal;
     protected Drawable drawablePressed;
     protected Drawable drawableDisabled;
     protected Drawable drawableFocused;
-    protected MoveableList<Drawable> DrawableOverlayList = new MoveableList<>();
+    private MoveableList<Drawable> DrawableOverlayList = new MoveableList<>();
 
     protected boolean isFocused = false;
     protected boolean isPressed = false;
-    protected boolean isDisabled = false;
-    protected CB_Label lblTxt;
-    protected boolean dragableButton = false;
-    protected CB_Label.HAlignment hAlignment = CB_Label.HAlignment.CENTER;
+    boolean isDisabled = false;
+    CB_Label lblTxt;
+    boolean dragableButton = false;
+    CB_Label.HAlignment hAlignment = CB_Label.HAlignment.CENTER;
     protected CB_Label.VAlignment vAlignment = CB_Label.VAlignment.CENTER;
 
     private Object tag = null; // sometimes also referred as data, for to attach an arbitrary object
@@ -79,18 +79,6 @@ public class CB_Button extends CB_View_Base {
         this.setClickHandler(onClick);
     }
 
-    public void setninePatch(Drawable drawable) {
-        drawableNormal = drawable;
-    }
-
-    public void setninePatchPressed(Drawable drawable) {
-        drawablePressed = drawable;
-    }
-
-    public void setninePatchDisabled(Drawable drawable) {
-        drawableDisabled = drawable;
-    }
-
     public void setButtonSprites(ButtonSprites sprites) {
         if (sprites != null) {
             drawableNormal = sprites.getNormal();
@@ -102,14 +90,6 @@ public class CB_Button extends CB_View_Base {
 
     public void setFont(BitmapFont font) {
         mFont = font;
-    }
-
-    public void addOverlayDrawable(Drawable drawable) {
-        DrawableOverlayList.add(drawable);
-    }
-
-    public void removeOverlayDrawable(Drawable drawable) {
-        DrawableOverlayList.remove(drawable);
     }
 
     /**
@@ -301,10 +281,6 @@ public class CB_Button extends CB_View_Base {
         setText(Text, null, null);
     }
 
-    public void setVAlignment(CB_Label.VAlignment alignment) {
-        lblTxt.setVAlignment(alignment);
-        //GL.that.renderOnce();
-    }
     public void performClick() {
         click(0, 0, 0, 0);
 
@@ -329,10 +305,6 @@ public class CB_Button extends CB_View_Base {
 
     public void setFocus(boolean value) {
         isFocused = value;
-    }
-
-    public boolean isFocused() {
-        return isFocused;
     }
 
     public Object getTag() {

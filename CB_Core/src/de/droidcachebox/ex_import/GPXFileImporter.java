@@ -1288,7 +1288,7 @@ public class GPXFileImporter {
                     cache.coordinate = new Coordinate(lat, lon);
 
                     // create final WP with Corrected Coords
-                    String newGcCode = Database.Data.CreateFreeGcCode(cache.getGcCode());
+                    String newGcCode = Database.Data.createFreeGcCode(cache.getGcCode());
 
                     // Check if "Final GSAK Corrected" exist
                     WaypointDAO WPDao = new WaypointDAO();
@@ -1339,10 +1339,10 @@ public class GPXFileImporter {
 
         // Write Note and Solver
         if (values.containsKey("cachebox-extension_solver")) {
-            Database.SetSolver(cache, values.get("cachebox-extension_solver"));
+            Database.setSolver(cache, values.get("cachebox-extension_solver"));
         }
         if (values.containsKey("cachebox-extension_note")) {
-            Database.SetNote(cache, values.get("cachebox-extension_note"));
+            Database.setNote(cache, values.get("cachebox-extension_note"));
         }
 
         // Merge mit cache info

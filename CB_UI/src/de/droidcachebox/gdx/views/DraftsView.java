@@ -83,14 +83,14 @@ public class DraftsView extends V_ListView {
     private DraftsView() {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
         this.mCanDispose = false;
-        this.setForceHandleTouchEvents(true);
+        this.setForceHandleTouchEvents();
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
 
         setBackground(Sprites.ListBack);
 
         if (lDrafts == null)
             lDrafts = new Drafts();
-        this.setHasInvisibleItems(true);
+        this.setHasInvisibleItems();
         this.setBaseAdapter(null);
         lvAdapter = new CustomAdapter(lDrafts);
         this.setBaseAdapter(lvAdapter);
@@ -722,8 +722,7 @@ public class DraftsView extends V_ListView {
 
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheListDAO cacheListDAO = new CacheListDAO();
-            CacheList lCaches = cacheListDAO.readCacheList("Id = " + aktDraft.CacheId, false, false, false);
+            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + aktDraft.CacheId, false, false, false);
             Cache tmpCache = null;
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
@@ -765,8 +764,7 @@ public class DraftsView extends V_ListView {
             Cache tmpCache = null;
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheListDAO cacheListDAO = new CacheListDAO();
-            CacheList lCaches = cacheListDAO.readCacheList("Id = " + aktDraft.CacheId, false, false, false);
+            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + aktDraft.CacheId, false, false, false);
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
             final Cache cache = tmpCache;

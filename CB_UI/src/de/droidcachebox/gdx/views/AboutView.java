@@ -137,7 +137,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
         CachesFoundLabel.setClickHandler(new OnClickListener() {
             MessageBox messageBox;
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 messageBox = MessageBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
                         (which, data) -> {
                             switch (which) {

@@ -42,9 +42,9 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private ISolverBackStringListener mBackStringListener;
     OnClickListener oclSolverString = new OnClickListener() {
         @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             String param = "";
-            final EditTextField tb = (EditTextField) v.getData();
+            final EditTextField tb = (EditTextField) view.getData();
             if (tb != null) {
                 param = tb.getText();
             }
@@ -229,7 +229,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         scrollBox.addChild(bVariableWaypoint);
         bVariableWaypoint.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(final GL_View_Base view, int x, int y, int pointer, int button) {
                 //String param = "";
                 DataType type = DataType.Waypoint;
                 SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, mVariableField.getText(), false, type);
@@ -423,7 +423,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         this.addChild(bOK);
         bOK.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 // damit die Änderungen in sForm gespeichert werden
                 saveAktPage();
                 String result = "";
@@ -451,7 +451,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         this.addChild(bCancel);
         bCancel.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 finish();
                 return true;
             }
@@ -769,8 +769,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             }
             bZahl[i].setClickHandler(new OnClickListener() {
                 @Override
-                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    Integer i = (Integer) v.getData();
+                public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
+                    Integer i = (Integer) view.getData();
                     if (i != null) {
                         if (i == 2) {
                             // Delete
@@ -859,7 +859,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         }
         bFunction.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 // Funktionsauswahl zeigen
                 SelectSolverFunction ssf = new SelectSolverFunction(solver, dataType, new IFunctionResult() {
                     @Override
@@ -903,10 +903,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         bFunctionParam[i].setData(i);
         bFunctionParam[i].setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(final GL_View_Base view, int x, int y, int pointer, int button) {
                 String param = "";
                 DataType type = DataType.None;
-                Integer i = (Integer) v.getData();
+                Integer i = (Integer) view.getData();
                 if (i != null) {
                     param = tbFunctionParam[i].getText();
                     if (function != null) {
@@ -917,7 +917,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
                 sd2.show(new ISolverBackStringListener() {
                     @Override
                     public void BackString(String backString) {
-                        Integer i = (Integer) v.getData();
+                        Integer i = (Integer) view.getData();
                         if (i != null) {
                             tbFunctionParam[i].setText(backString);
                         }

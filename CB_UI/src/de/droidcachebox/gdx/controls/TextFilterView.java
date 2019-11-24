@@ -104,7 +104,7 @@ public class TextFilterView extends CB_View_Base {
         mBtnClear.setText(Translation.get("clear"));
         mBtnClear.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 mEingabe.setText("");
                 return true;
             }
@@ -124,7 +124,7 @@ public class TextFilterView extends CB_View_Base {
         mTglBtnTitle.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 switchFilterMode(0);
                 return true;
             }
@@ -133,7 +133,7 @@ public class TextFilterView extends CB_View_Base {
         mTglBtnGc.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 switchFilterMode(1);
                 return true;
             }
@@ -142,7 +142,7 @@ public class TextFilterView extends CB_View_Base {
         mTglBtnOwner.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 switchFilterMode(2);
                 return true;
             }

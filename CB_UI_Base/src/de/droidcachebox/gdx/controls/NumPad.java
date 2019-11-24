@@ -24,11 +24,11 @@ public class NumPad extends CB_View_Base {
     private CB_Button btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9, btn_Dot, btn_left, btn_right;
     OnClickListener onBtnClick = new OnClickListener() {
         @Override
-        public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
-            if (v instanceof CB_Button) {
+        public boolean onClick(final GL_View_Base view, int x, int y, int pointer, int button) {
+            if (view instanceof CB_Button) {
                 Thread t = new Thread(() -> {
                     if (mKeyPressedListener != null) {
-                        mKeyPressedListener.KeyPressed(((CB_Button) v).getText());
+                        mKeyPressedListener.KeyPressed(((CB_Button) view).getText());
                     }
                 });
                 t.start();
@@ -223,7 +223,7 @@ public class NumPad extends CB_View_Base {
         btn_OK.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
                     PlatformUIBase.vibrate();
                     mKeyPressedListener.KeyPressed("O");
@@ -235,7 +235,7 @@ public class NumPad extends CB_View_Base {
         btn_Cancel.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
                     PlatformUIBase.vibrate();
                     mKeyPressedListener.KeyPressed("C");
@@ -248,7 +248,7 @@ public class NumPad extends CB_View_Base {
         btn_Del.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
                     PlatformUIBase.vibrate();
                     mKeyPressedListener.KeyPressed("D");

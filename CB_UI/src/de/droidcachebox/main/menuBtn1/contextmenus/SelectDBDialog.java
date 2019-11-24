@@ -92,11 +92,10 @@ public class SelectDBDialog extends AbstractAction {
             FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
 
             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-            Database.Data.GPXFilenameUpdateCacheCount();
+            Database.Data.updateCacheCountForGPXFilenames();
 
             synchronized (Database.Data.cacheList) {
-                CacheListDAO cacheListDAO = new CacheListDAO();
-                Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
             }
 
             // set selectedCache from lastselected Cache

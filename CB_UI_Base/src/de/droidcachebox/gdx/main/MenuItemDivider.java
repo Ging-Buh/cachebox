@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.DialogElement;
+import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 
 public class MenuItemDivider extends MenuItem {
@@ -21,8 +22,12 @@ public class MenuItemDivider extends MenuItem {
         setEnabled(false);
     }
 
-    public MenuItemDivider(int Index, String Name) {
+    MenuItemDivider(int Index, String Name) {
         super(Index, Name);
+    }
+
+    @Override
+    public void onResized(CB_RectF rec) {
     }
 
     @Override

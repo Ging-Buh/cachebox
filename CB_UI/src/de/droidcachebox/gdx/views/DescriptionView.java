@@ -215,7 +215,7 @@ public class DescriptionView extends CB_View_Base {
         float contentWidth = this.getWidth() * 0.95f;
 
         LiveIcon = new Image(MainBtnSize, "LIVE-ICON", false);
-        LiveIcon.setSprite(Sprites.LiveBtn.get(0), false);
+        LiveIcon.setSprite(Sprites.LiveBtn.get(0));
 
         this.addChild(LiveIcon);
 

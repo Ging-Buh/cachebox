@@ -340,7 +340,7 @@ public class CacheDraw {
     private static String getLastFoundLogDate(Cache cache) {
         String FoundDate = "";
         CB_List<LogEntry> logs = new CB_List<LogEntry>();
-        logs = Database.Logs(cache);// cache.Logs();
+        logs = Database.getLogs(cache);// cache.Logs();
         for (int i = 0, n = logs.size(); i < n; i++) {
             LogEntry l = logs.get(i);
             if (l.Type == LogTypes.found) {

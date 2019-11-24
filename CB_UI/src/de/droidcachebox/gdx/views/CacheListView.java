@@ -172,7 +172,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        geoCacheListView.RunIfListInitial(() -> {
+        geoCacheListView.runIfListInitial(() -> {
             int id = 0;
             Point firstAndLast = geoCacheListView.getFirstAndLastVisibleIndex();
 
@@ -273,7 +273,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
             CacheListViewItem selItem = (CacheListViewItem) geoCacheListView.getSelectedItem();
             if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id) {
                 // TODO Run if ListView Initial and after showing
-                geoCacheListView.RunIfListInitial(this::setSelectedCacheVisible);
+                geoCacheListView.runIfListInitial(this::setSelectedCacheVisible);
             }
         }
     }

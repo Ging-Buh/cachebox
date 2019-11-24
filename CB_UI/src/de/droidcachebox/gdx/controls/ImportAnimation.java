@@ -95,8 +95,7 @@ public class ImportAnimation extends Box {
     // alle Touch events abfangen
 
     @Override
-    public boolean onLongClick(int x, int y, int pointer, int button) {
-        return true;
+    public void onLongClick(int x, int y, int pointer, int button) {
     }
 
     @Override

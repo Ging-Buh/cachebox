@@ -53,7 +53,7 @@ public class ConnectionError extends Toast {
         this.setWrappedText(Translation.get("ConnectionError") + AbstractGlobal.br + msg);
 
         this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon", false);
-        this.mIcon.setSprite(Sprites.getSprite("connection-error"), false);
+        this.mIcon.setSprite(Sprites.getSprite("connection-error"));
         float top = 300; // TODO set on the Top of Screen
         this.setY(top - this.getHeight());
         super.addChildToOverlay(mIcon);

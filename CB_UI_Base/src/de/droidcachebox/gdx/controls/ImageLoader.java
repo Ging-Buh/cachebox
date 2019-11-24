@@ -63,7 +63,7 @@ public class ImageLoader {
     private Drawable mDrawable = null;
     private Thread ImageDownloadThread;
     private boolean isPacking = false;
-    private HashMap<String, TextureAtlas> Atlanten;
+    private HashMap<String, TextureAtlas> atlanten;
     private String AtlasPath;
     private String ImgName;
     private boolean inGenerate = false;
@@ -75,10 +75,10 @@ public class ImageLoader {
     private float spriteHeight;
     private resize resizeListener;
     private float resizeWidth = 0;
-    private String ThumbPräfix = "";
+    private String thumbPraefix = "";
     private String originalPath = null;
 
-    public ImageLoader() {
+    ImageLoader() {
         thumbnail = false;
     }
 
@@ -86,24 +86,24 @@ public class ImageLoader {
         thumbnail = thumb;
     }
 
-    public void setResizeListener(resize listener, float width) {
+    void setResizeListener(resize listener, float width) {
         resizeListener = listener;
         resizeWidth = width;
     }
 
-    public void setThumbWidth(float width, String präfix) {
+    public void setThumbWidth(float width, String praefix) {
         resizeWidth = width;
-        ThumbPräfix = präfix;
+        thumbPraefix = praefix;
     }
 
-    public resize getResizeListener() {
+    resize getResizeListener() {
         return resizeListener;
     }
 
     /**
      * Pack the images from Folder into a Atlas and Load the Image from Atlas
      */
-    private void packImagesToTextureAtlas(String ImagePath, boolean reziseHeight) {
+    private void packImagesToTextureAtlas(String imagePath) {
         if (isPacking)
             return;
         isPacking = true;
@@ -135,7 +135,7 @@ public class ImageLoader {
         textureSettings.fast = false;
         textureSettings.debug = false;
 
-        String inputFolder = FileIO.getDirectoryName(ImagePath);
+        String inputFolder = FileIO.getDirectoryName(imagePath);
         String outputFolder = CB_UI_Base_Settings.ImageCacheFolder.getValue();
         String Name = getCachedAtlasName(inputFolder);
 
@@ -146,9 +146,9 @@ public class ImageLoader {
             ImageLoadError = true;
         }
 
-        Sprite spt = tryToLoadFromCreatedAtlas(ImagePath);
+        Sprite spt = tryToLoadFromCreatedAtlas(imagePath);
         if (spt != null)
-            setSprite(spt, reziseHeight);
+            setSprite(spt);
 
         isPacking = false;
         GL.that.renderOnce();
@@ -164,8 +164,8 @@ public class ImageLoader {
 
     private Sprite tryToLoadFromCreatedAtlas(String ImagePath) {
 
-        if (Atlanten == null)
-            Atlanten = new HashMap<String, TextureAtlas>();
+        if (atlanten == null)
+            atlanten = new HashMap<>();
 
         String inputFolder = FileIO.getDirectoryName(ImagePath);
         String ImageName = FileIO.getFileNameWithoutExtension(ImagePath);
@@ -175,8 +175,8 @@ public class ImageLoader {
         if (!FileIO.fileExistsNotEmpty(AtlasPath))
             return null;
         TextureAtlas atlas = null;
-        if (Atlanten.containsKey(AtlasPath)) {
-            atlas = Atlanten.get(AtlasPath);
+        if (atlanten.containsKey(AtlasPath)) {
+            atlas = atlanten.get(AtlasPath);
         } else {
             this.AtlasPath = AtlasPath;
             this.ImgName = ImageName;
@@ -191,21 +191,19 @@ public class ImageLoader {
 
     }
 
-    void setAtlas(String atlasPath, String imgName, boolean reziseHeight) {
+    private void setAtlas(String atlasPath, String imgName) {
         State = 7;
         TextureAtlas atlas = new TextureAtlas(Gdx.files.absolute(atlasPath));
-        Atlanten.put(atlasPath, atlas);
+        atlanten.put(atlasPath, atlas);
 
-        Sprite tmp = null;
-        if (atlas != null) {
-            tmp = atlas.createSprite(imgName);
-        }
+        Sprite tmp;
+        tmp = atlas.createSprite(imgName);
 
         if (tmp != null)
-            setSprite(tmp, reziseHeight);
+            setSprite(tmp);
     }
 
-    void ThreadLoad(final boolean reziseHeight) {
+    private void loadThread() {
         State = 5;
         if (isPacking)
             return;
@@ -217,19 +215,15 @@ public class ImageLoader {
                 loadingThread = null;
         }
 
-        loadingThread = new Thread(new Runnable() {
+        loadingThread = new Thread(() -> {
+            Sprite spt = tryToLoadFromCreatedAtlas(mPath);
 
-            @Override
-            public void run() {
-                Sprite spt = tryToLoadFromCreatedAtlas(mPath);
-
-                if (spt != null) {
-                    setSprite(spt, reziseHeight);
-                } else {
-                    packImagesToTextureAtlas(mPath, reziseHeight);
-                }
-
+            if (spt != null) {
+                setSprite(spt);
+            } else {
+                packImagesToTextureAtlas(mPath);
             }
+
         });
 
         if (loadingThread.getState() == Thread.State.NEW)
@@ -244,10 +238,8 @@ public class ImageLoader {
 
     /**
      * Sets a Image URl and Downlowd this Image if this don't exist on Cache
-     *
-     * @param iconUrl
      */
-    public void setImageURL(final String iconUrl) {
+    void setImageURL(final String iconUrl) {
         if (iconUrl == null)
             return;
         if (iconUrl.length() == 0)
@@ -260,67 +252,58 @@ public class ImageLoader {
                 ImageDownloadThread = null;
         }
 
-        ImageDownloadThread = new Thread(new Runnable() {
+        ImageDownloadThread = new Thread(() -> {
+            final String CachePath = FileFactory.createFile(CB_UI_Base_Settings.ImageCacheFolder.getValue()).getAbsolutePath();
 
-            @Override
-            public void run() {
-                final String CachePath = FileFactory.createFile(CB_UI_Base_Settings.ImageCacheFolder.getValue()).getAbsolutePath();
+            // Search first slash after Http or www
+            int slashPos;
+            slashPos = iconUrl.indexOf("http");
+            if (slashPos == -1)
+                slashPos = iconUrl.indexOf("www");
+            if (slashPos == -1)
+                slashPos = iconUrl.indexOf("file");
+            if (slashPos == -1) {
+                ImageLoadError = true;
+                return; // invalid URL
+            }
+            slashPos += 7;
+            slashPos = iconUrl.indexOf("/", slashPos);
 
-                // Search first slash after Http or www
-                int slashPos = -1;
-                slashPos = iconUrl.indexOf("http");
-                if (slashPos == -1)
-                    slashPos = iconUrl.indexOf("www");
-                if (slashPos == -1)
-                    slashPos = iconUrl.indexOf("file");
-                if (slashPos == -1) {
-                    ImageLoadError = true;
-                    return; // invalid URL
-                }
-                slashPos += 7;
-                slashPos = iconUrl.indexOf("/", slashPos);
+            final String LocalPath = iconUrl.substring(slashPos);
 
-                final String LocalPath = iconUrl.substring(slashPos);
+            // check if Image exist on Cache
+            if (FileIO.fileExistsNotEmpty(CachePath + LocalPath)) {
+                setImage(CachePath + LocalPath);
+                return;
+            }
 
-                // check if Image exist on Cache
-                if (FileIO.fileExistsNotEmpty(CachePath + LocalPath)) {
+            inLoad = true;
+
+            // Download Image to Cache
+            try {
+                new Thread(() -> {
+                    Download.download(iconUrl, CachePath + LocalPath);
+                    inLoad = false;
+
+                    // chk if Download complied
+                    if (!FileIO.fileExistsNotEmpty(CachePath + LocalPath)) {
+                        // Download Error
+                        ImageLoadError = true;
+                        return;
+                    }
+
                     setImage(CachePath + LocalPath);
-                    return;
-                }
+                }).run();
 
-                inLoad = true;
-
-                // Download Image to Cache
-                try {
-
-                    Thread DLThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Download.download(iconUrl, CachePath + LocalPath);
-                            inLoad = false;
-
-                            // chk if Download complied
-                            if (!FileIO.fileExistsNotEmpty(CachePath + LocalPath)) {
-                                // Download Error
-                                ImageLoadError = true;
-                                return;
-                            }
-
-                            setImage(CachePath + LocalPath);
-                        }
-                    });
-
-                    DLThread.run();
-                } catch (Exception e) {
-                    Log.err(log, "for " + iconUrl, e);
-                }
+            } catch (Exception e) {
+                Log.err(log, "for " + iconUrl, e);
             }
         });
         ImageDownloadThread.start();
         generate();
     }
 
-    public void clearImage() {
+    void clearImage() {
         mDrawable = null;
         mPath = null;
     }
@@ -335,7 +318,7 @@ public class ImageLoader {
         generate();
     }
 
-    public void setSprite(Sprite sprite, boolean reziseHeight) {
+    void setSprite(Sprite sprite) {
 
         State = 7;
         inLoad = false;
@@ -351,7 +334,7 @@ public class ImageLoader {
             float newWidth = spriteWidth * proportionWidth;//* UI_Size_Base.that.getScale();
             float newHeight = spriteHeight * proportionWidth;//* UI_Size_Base.that.getScale();
             sprite.scale(proportionWidth);
-            this.resizeListener.sizechanged(newWidth, newHeight);
+            this.resizeListener.sizeChanged(newWidth, newHeight);
 
         }
 
@@ -362,7 +345,7 @@ public class ImageLoader {
     private void generate() {
         inLoad = true;
         if (ImageLoadError) {
-            setSprite(Sprites.getSprite(IconName.DELETE.name()), this.reziseHeight);
+            setSprite(Sprites.getSprite(IconName.DELETE.name()));
             ImageLoadError = false;
             return;
         }
@@ -398,51 +381,40 @@ public class ImageLoader {
         }
 
         if (State == 4)
-            ThreadLoad(reziseHeight);
+            loadThread();
 
         if (State == 6)
-            setAtlas(this.AtlasPath, this.ImgName, reziseHeight);
+            setAtlas(this.AtlasPath, this.ImgName);
     }
 
     private void loadAsync() {
-
-        Thread th = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                // Log.info(log, "LoadAsync " + mPath + ":" + ImgName);
-
-                if (thumbnail)
-                    createThumb();
-                final TextureLoader tl = new TextureLoader(new AbsoluteFileHandleResolver());
-                try {
-                    tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
-                    GL.that.RunOnGL(() -> {
-                        // Log.info(log, "LoadSync " + mPath + ":" + ImgName);
-                        mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
-                        Sprite sprite = new Sprite(mImageTex);
-                        spriteWidth = sprite.getWidth();
-                        spriteHeight = sprite.getHeight();
-                        setSprite(sprite, reziseHeight);
-                        // Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
-                    });
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                }
-
+        new Thread(() -> {
+            if (thumbnail)
+                createThumb();
+            final TextureLoader tl = new TextureLoader(new AbsoluteFileHandleResolver());
+            try {
+                tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+                GL.that.RunOnGL(() -> {
+                    // Log.info(log, "LoadSync " + mPath + ":" + ImgName);
+                    mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+                    Sprite sprite = new Sprite(mImageTex);
+                    spriteWidth = sprite.getWidth();
+                    spriteHeight = sprite.getHeight();
+                    setSprite(sprite);
+                    // Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
+                });
+            } catch (Exception ignored) {
             }
-        });
-        th.start();
+        }).start();
     }
 
     private void createThumb() {
-        String tmp = FileFactory.createThumb(mPath, (int) resizeWidth, ThumbPräfix);
+        String tmp = FileFactory.createThumb(mPath, (int) resizeWidth, thumbPraefix);
         if (tmp != null) {
             originalPath = mPath;
             mPath = tmp;
         } else {
-            Log.err(log, "Thumb not generated for " + mPath + " ! " + ThumbPräfix);
+            Log.err(log, "Thumb not generated for " + mPath + " ! " + thumbPraefix);
         }
     }
 
@@ -451,10 +423,8 @@ public class ImageLoader {
      * <p>
      * If the loaded image a Animation, like GIF, so returns the drawable for the given KeyFrame.
      *
-     * @param keyFrame
-     * @return
      */
-    public Drawable getDrawable(float keyFrame) {
+    Drawable getDrawable(float keyFrame) {
         if (anim != null) {
             frameCounter += keyFrame;
             TextureRegion tex = (TextureRegion) anim.getKeyFrame(frameCounter);
@@ -473,7 +443,7 @@ public class ImageLoader {
                     float newWidth = spriteWidth * proportionWidth;
                     float newHeight = spriteHeight * proportionWidth;
                     animSprite.scale(proportionWidth);
-                    this.resizeListener.sizechanged(newWidth, newHeight);
+                    this.resizeListener.sizeChanged(newWidth, newHeight);
 
                 }
 
@@ -492,13 +462,11 @@ public class ImageLoader {
         return mDrawable;
     }
 
-    public boolean isDrawableNULL() {
-        if (mDrawable == null && anim == null)
-            return true;
-        return false;
+    boolean isDrawableNULL() {
+        return mDrawable == null && anim == null;
     }
 
-    public int getAnimDelay() {
+    int getAnimDelay() {
         if (anim != null) {
             return (int) (anim.getFrameDuration() * 1000);
         }
@@ -511,7 +479,7 @@ public class ImageLoader {
             if (mImageTex != null) {
                 try {
                     assetManager.unload(ImgName);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
                 mImageTex.dispose();
             }
@@ -522,9 +490,9 @@ public class ImageLoader {
             mPath = null;
 
             ImageDownloadThread = null;
-            if (Atlanten != null) {
-                Atlanten.clear();
-                Atlanten = null;
+            if (atlanten != null) {
+                atlanten.clear();
+                atlanten = null;
             }
 
             AtlasPath = null;
@@ -540,16 +508,8 @@ public class ImageLoader {
         return spriteWidth;
     }
 
-    public void setSpriteWidth(float spriteWidth) {
-        this.spriteWidth = spriteWidth;
-    }
-
     public float getSpriteHeight() {
         return spriteHeight;
-    }
-
-    public void setSpriteHeight(float spriteHeight) {
-        this.spriteHeight = spriteHeight;
     }
 
     public String getImagePath() {
@@ -563,7 +523,7 @@ public class ImageLoader {
     }
 
     public interface resize {
-        public void sizechanged(float width, float height);
+        void sizeChanged(float width, float height);
     }
 
 }

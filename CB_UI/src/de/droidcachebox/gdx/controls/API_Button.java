@@ -30,7 +30,7 @@ public class API_Button extends CB_Button {
     OnClickListener click = new OnClickListener() {
 
         @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             PlatformUIBase.getApiKey();
             return true;
         }

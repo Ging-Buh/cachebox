@@ -39,7 +39,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         addButtons(MessageBoxButtons.Cancel);
         btnRightNegative.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 ProgressThread.Cancel();
                 btnRightNegative.disable();
                 btnRightNegative.setText(Translation.get("waitForCancel"));

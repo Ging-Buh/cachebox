@@ -186,7 +186,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         createNewWaypoint = true;
         String newGcCode;
         try {
-            newGcCode = Database.Data.CreateFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
+            newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
         } catch (Exception e) {
             return;
         }
@@ -270,7 +270,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             switch (which) {
                 case MessageBox.BTN_LEFT_POSITIVE:
                     // Yes button clicked
-                    Database.DeleteFromDatabase(aktWaypoint);
+                    Database.deleteFromDatabase(aktWaypoint);
                     de.droidcachebox.GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
                     de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), null);
                     aktWaypoint = null;
@@ -316,7 +316,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
             String newGcCode;
             try {
-                newGcCode = Database.Data.CreateFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
+                newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
             } catch (Exception e) {
 
                 return;
@@ -346,12 +346,12 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
             String newGcCode;
             try {
-                newGcCode = Database.Data.CreateFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
+                newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
             } catch (Exception e) {
 
                 return;
             }
-            //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
+            //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
             Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
             de.droidcachebox.GlobalCore.getSelectedCache().waypoints.add(newWP);
 

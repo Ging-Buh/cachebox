@@ -31,7 +31,6 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private CB_Button bOK, bCancel, btnSelectDB, btnSelectImagesDB, btnSelectImagesPath;
     private CB_CheckBox chkLogImages;
     private ProgressBar progressBar;
-    private ScrollBox scrollBox;
     private String mDatabasePath, mImageDatabasePath, mImagesPath;
     private String mDatabaseName, mImageDatabaseName;
     private SQLiteInterface sql;
@@ -48,7 +47,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         this.addNext(bOK);
         this.addLast(bCancel);
 
-        scrollBox = new ScrollBox(0, getAvailableHeight());
+        ScrollBox scrollBox = new ScrollBox(0, getAvailableHeight());
         scrollBox.setBackground(this.getBackground());
         this.addLast(scrollBox);
         Box box = new Box(scrollBox.getInnerWidth(), 0); // height will be adjusted after containing all controls
@@ -228,6 +227,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         String ResultFields = fields + "," + memofields;
         ResultFieldsArray = ResultFields.split(",");
         // sql.beginTransaction();
+        assert sql != null;
         if (sql.openReadOnly(mDatabasePath + "/" + mDatabaseName)) {
             Config.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
             Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
@@ -269,7 +269,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         }
         PlatformUIBase.freeSQLInstance(sql);
         Database.Data.sql.endTransaction();
-        Database.Data.GPXFilenameUpdateCacheCount();
+        Database.Data.updateCacheCountForGPXFilenames();
 
         if (mImageDatabaseName.length() > 0) {
             doImportImages("CacheImages");
@@ -278,7 +278,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         }
 
         FilterInstances.setLastFilter(new FilterProperties());
-        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
     }
 

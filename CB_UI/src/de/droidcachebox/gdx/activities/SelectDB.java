@@ -117,11 +117,10 @@ public class SelectDB extends ActivityBase {
                 Config.AcceptChanges();
 
                 CoreSettingsForward.Categories = new Categories();
-                Database.Data.GPXFilenameUpdateCacheCount();
+                Database.Data.updateCacheCountForGPXFilenames();
 
                 synchronized (Database.Data.cacheList) {
-                    CacheListDAO cacheListDAO = new CacheListDAO();
-                    Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
 

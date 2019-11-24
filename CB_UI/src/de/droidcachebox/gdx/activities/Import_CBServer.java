@@ -267,14 +267,14 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
                 } catch (InterruptedException e) {
                     cancelImport();
                     FilterProperties props = FilterInstances.getLastFilter();
-                    EditFilterSettings.ApplyFilter(props);
+                    EditFilterSettings.applyFilter(props);
                     progress.ProgressChangeMsg("", "");
                     return;
                 }
 
                 if (BreakawayImportThread.isCanceled()) {
                     FilterProperties props = FilterInstances.getLastFilter();
-                    EditFilterSettings.ApplyFilter(props);
+                    EditFilterSettings.applyFilter(props);
                     progress.ProgressChangeMsg("", "");
                     return;
                 }
@@ -332,11 +332,11 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
                     break;
                 case NotesText:
                     // Note Text laden
-                    entry.note = Database.GetNote(entry.cacheId);
+                    entry.note = Database.getNote(entry.cacheId);
                     break;
                 case SolverText:
                     // Solver Text laden
-                    entry.solver = Database.GetSolver(entry.cacheId);
+                    entry.solver = Database.getSolver(entry.cacheId);
                     break;
                 default:
                     break;

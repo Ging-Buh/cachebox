@@ -122,8 +122,7 @@ public class CacheContextMenu {
                         // Reload result from DB
                         synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                            CacheListDAO cacheListDAO = new CacheListDAO();
-                            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
                             CacheListChangedListeners.getInstance().cacheListChanged();
                             GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         }
@@ -148,12 +147,11 @@ public class CacheContextMenu {
     private static void deleteSelectedCache() {
         ArrayList<String> GcCodeList = new ArrayList<>();
         GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
-        CacheListDAO dao = new CacheListDAO();
-        dao.delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+        CacheListDAO.getInstance().delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
         for (int i = 0, n = GlobalCore.getSelectedCache().waypoints.size(); i < n; i++) {
             Waypoint wp = GlobalCore.getSelectedCache().waypoints.get(i);
-            Database.DeleteFromDatabase(wp);
+            Database.deleteFromDatabase(wp);
         }
 
         Database.Data.sql.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
@@ -161,7 +159,7 @@ public class CacheContextMenu {
         LogDAO logdao = new LogDAO();
         //logdao.ClearOrphanedLogs(); // doit when you have more time
         logdao.deleteLogs(GlobalCore.getSelectedCache().Id);
-        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
         GlobalCore.setSelectedCache(null);
 
@@ -228,7 +226,13 @@ public class CacheContextMenu {
     }
 
     private static void deleteGeoCache() {
-        deleteSelectedCache();
-        GlobalCore.setSelectedWaypoint(null, null, true);
+        MessageBox.show(Translation.get("sure"), Translation.get("question"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question,
+                (which, data) -> {
+                    if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                        deleteSelectedCache();
+                        GlobalCore.setSelectedWaypoint(null, null, true);
+                    }
+                    return true;
+                });
     }
 }

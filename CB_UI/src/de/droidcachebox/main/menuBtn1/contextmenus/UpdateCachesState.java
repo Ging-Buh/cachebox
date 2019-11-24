@@ -30,8 +30,8 @@ import static de.droidcachebox.core.GroundspeakAPI.*;
 public class UpdateCachesState extends AbstractAction {
     private static final String sKlasse = "UpdateCachesState";
 
-    int ChangedCount = 0;
-    int result = 0;
+    private int ChangedCount = 0;
+    private int result = 0;
     private ProgressDialog pd;
     private boolean isCanceled = false;
 
@@ -104,7 +104,7 @@ public class UpdateCachesState extends AbstractAction {
                     /*
                     // a test for mass - uploading local notes and corrected coords (does not affect API-Limits)
                     for (Cache aktCache : caches) {
-                        String uploadText = Database.GetNote(aktCache);
+                        String uploadText = Database.getNote(aktCache);
                         boolean perhapsUploadedSomething = false;
                         if (!StringH.isEmpty(uploadText)) {
                             uploadText = uploadText.replace("<Import from Geocaching.com>", "").replace("</Import from Geocaching.com>", "").trim();
@@ -167,8 +167,7 @@ public class UpdateCachesState extends AbstractAction {
                 // Reload result from DB
                 synchronized (Database.Data.cacheList) {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                    CacheListDAO cacheListDAO = new CacheListDAO();
-                    Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 synchronized (Database.Data.cacheList) {
@@ -181,7 +180,7 @@ public class UpdateCachesState extends AbstractAction {
         }
     };
 
-    public UpdateCachesState() {
+    UpdateCachesState() {
         super("chkState", MenuID.AID_CHK_STATE);
     }
 

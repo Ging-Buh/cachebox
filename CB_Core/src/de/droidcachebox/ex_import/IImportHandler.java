@@ -16,6 +16,6 @@ public interface IImportHandler {
 
     GpxFilename NewGpxFilename(Category category, String filename);
 
-    void GPXFilenameUpdateCacheCount();
+    void updateCacheCountForGPXFilenames();
 
 }

@@ -21,8 +21,17 @@ import de.droidcachebox.utils.log.Log;
 
 public class CategoryDAO {
     private static final String log = "CategoryDAO";
+    private static CategoryDAO categoryDAO;
 
-    public Category ReadFromCursor(CoreCursor reader) {
+    private CategoryDAO() {
+    }
+
+    public static CategoryDAO getInstance() {
+        if (categoryDAO == null) categoryDAO = new CategoryDAO();
+        return categoryDAO;
+    }
+
+    private Category readFromCursor(CoreCursor reader) {
         Category result = new Category();
 
         result.Id = reader.getLong(0);
@@ -43,7 +52,7 @@ public class CategoryDAO {
         return result;
     }
 
-    public void SetPinned(Category category, boolean pinned) {
+    public void setPinned(Category category, boolean pinned) {
         if (category.pinned == pinned)
             return;
         category.pinned = pinned;
@@ -51,14 +60,14 @@ public class CategoryDAO {
         Parameters args = new Parameters();
         args.put("pinned", pinned);
         try {
-            Database.Data.sql.update("Category", args, "Id=" + String.valueOf(category.Id), null);
+            Database.Data.sql.update("Category", args, "Id=" + category.Id, null);
         } catch (Exception exc) {
-            Log.err(log, "SetPinned", "CategoryDAO", exc);
+            Log.err(log, "setPinned", "CategoryDAO", exc);
         }
     }
 
     // Categories
-    public void LoadCategoriesFromDatabase() {
+    public void loadCategoriesFromDatabase() {
         // read all Categories
 
         CoreSettingsForward.Categories.beginnTransaction();
@@ -68,7 +77,7 @@ public class CategoryDAO {
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
-                Category category = ReadFromCursor(reader);
+                Category category = readFromCursor(reader);
                 CoreSettingsForward.Categories.add(category);
                 reader.moveToNext();
             }
@@ -78,7 +87,7 @@ public class CategoryDAO {
         CoreSettingsForward.Categories.endTransaction();
     }
 
-    public void DeleteEmptyCategories() {
+    public void deleteEmptyCategories() {
         CoreSettingsForward.Categories.beginnTransaction();
 
         Categories delete = new Categories();

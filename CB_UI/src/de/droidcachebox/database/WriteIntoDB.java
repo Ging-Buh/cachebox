@@ -30,7 +30,7 @@ public class WriteIntoDB {
         Database.Data.sql.setTransactionSuccessful();
         Database.Data.sql.endTransaction();
 
-        Database.Data.GPXFilenameUpdateCacheCount();
+        Database.Data.updateCacheCountForGPXFilenames();
 
     }
 
@@ -110,7 +110,7 @@ public class WriteIntoDB {
             String begin = "<Import from Geocaching.com>";
             String end = "</Import from Geocaching.com>";
             if (keepOldCacheValues) {
-                String oldNote = Database.GetNote(cache);
+                String oldNote = Database.getNote(cache);
 
                 if (oldNote != null) {
                     oldNote = oldNote.trim();
@@ -139,9 +139,9 @@ public class WriteIntoDB {
                     newNote += "\n" + end;
                 }
                 cache.setTmpNote(newNote);
-                Database.SetNote(cache, cache.getUserNote() + cache.getTmpNote());
+                Database.setNote(cache, cache.getUserNote() + cache.getTmpNote());
             } else {
-                Database.SetNote(cache, cache.getUserNote() + "\n" + begin + "\n" + cache.getTmpNote() + "\n" + end + "\n");
+                Database.setNote(cache, cache.getUserNote() + "\n" + begin + "\n" + cache.getTmpNote() + "\n" + end + "\n");
             }
             cache.setUserNote(""); // better is it, if cache reused, will be fetch from db in NotesView
         }

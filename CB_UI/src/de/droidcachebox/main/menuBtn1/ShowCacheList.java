@@ -99,7 +99,7 @@ public class ShowCacheList extends AbstractShowAction {
                 EditFilterSettings.getInstance().Execute();
             } else {
                 FilterInstances.setLastFilter(new FilterProperties());
-                de.droidcachebox.gdx.activities.EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+                de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
             }
             return true;
         });

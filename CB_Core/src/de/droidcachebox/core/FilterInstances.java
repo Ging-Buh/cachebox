@@ -1,115 +1,56 @@
 package de.droidcachebox.core;
 
-import de.droidcachebox.database.Attributes;
 import de.droidcachebox.database.CacheTypes;
 
 import java.util.Arrays;
 
 public class FilterInstances {
 
-    // All Caches 0
+    // All Caches 0 (no where clause)
     public final static FilterProperties ALL = new FilterProperties();
 
-    // All Caches to find 1
+    //alle aktiven : (Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='<user>') and Difficulty <= 5.0 and Terrain <= 5.0 and Type in (0,3,4,21)
     public final static FilterProperties ACTIVE = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,0\"," + //"
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
-            "\"types\":\"" + setCacheTypes(true) + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
-    // (Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='arbor95') and Difficulty <= 5.0 and Terrain <= 5.0 and Type in (0,3,4,21)
+    //schnell      : (Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='<user>') and Difficulty <= 5.0 and Terrain <= 5.0 and Type in (1,4,5,22)
     public final static FilterProperties QUICK = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,1.0,2.5,1.0,2.5,0.0,4.0,0.0,5.0,0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
             "\"types\":\"" + sQuickCacheTypes() + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
+    //Anfaenger    : (Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='arbor95') and Difficulty <= 4.0 and Terrain <= 4.0 and Size >= 2.0 and Type in (1)
     public final static FilterProperties BEGINNER = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,1.0,2.0,1.0,2.0,2.0,4.0,0.0,5.0,0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
             "\"types\":\"" + sBEGINNERCacheTypes() + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
-    // Fetch some Travelbugs 3
+    //with TB      : Available=1 and Archived=0 and NumTravelbugs > 0 and Difficulty <= 6.0 and Terrain <= 6.0 and Type in (1,2,3,6,7,8,10,11,23)
     public final static FilterProperties WITHTB = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"0,-1,-1,0,1,0,0,0,0,1.0,3.0,1.0,3.0,0.0,4.0,0.0,5.0,0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
             "\"types\":\"" + sTBsCacheTypes() + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
+    //place TB     : Available=1 and Archived=0 and Difficulty <= 6.0 and Terrain <= 6.0 and Size >= 2.0 and Type in (1,2,3,6,7,8,10,11,23)
     public final static FilterProperties DROPTB = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"0,-1,-1,0,0,0,0,0,0,1.0,3.0,1.0,3.0,2.0,4.0,0.0,5.0,0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
             "\"types\":\"" + sTBsCacheTypes() + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
-    // Highlights 5
+    //Highlights   : (Found=0 or Found is null) and Available=1 and Archived=0 and Rating >= 350.0
     public final static FilterProperties HIGHLIGHTS = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"-1,-1,-1,0,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,3.5,5.0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
-            "\"types\":\"" + setCacheTypes(true) + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
-    // Favoriten
+    // Favoriten   : Favorit=1
     public final static FilterProperties FAVORITES = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"0,0,0,0,0,1,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
-            "\"types\":\"" + setCacheTypes(true) + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
-    // prepare to archive
+    // to archive  : Archived=0 and (not Owner='<user>') and (Favorit=0 or Favorit is null) and (ListingChanged=0 or ListingChanged is null) and (HasUserData = 0 or HasUserData is null)
     public final static FilterProperties TOARCHIVE = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"0,0,-1,-1,0,-1,-1,-1,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
-            "\"types\":\"" + setCacheTypes(true) + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
-    // Listing Changed
+    //Listing Changed : ListingChanged=1
     public final static FilterProperties LISTINGCHANGED = new FilterProperties("{" + //
-            "\"gpxfilenameids\":\"\"," + //
             "\"caches\":\"0,0,0,0,0,0,0,1,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,0\"," + //
-            "\"filtergc\":\"\"," + //
-            "\"filterowner\":\"\"," + //
-            "\"categories\":\"\"," + //
-            "\"attributes\":\"" + setAttributes() + "\"," + //
-            "\"types\":\"" + setCacheTypes(true) + "\"," + //
-            "\"filtername\":\"\"" + //
             "}");
     public final static FilterProperties UserDefinedSQL = new FilterProperties(true);
     public static FilterProperties HISTORY = new FilterProperties(); // == ALL, isHistory wird vor Verwendung gesetzt daher nicht final
-    // public static int hasCorrectedCoordinates = 0;
     private static FilterProperties mLastFilter = null;
 
     // Quick Cache 2
@@ -123,11 +64,11 @@ public class FilterInstances {
         mCacheTypes[CacheTypes.Camera.ordinal()] = true;
         mCacheTypes[CacheTypes.Earth.ordinal()] = true;
         mCacheTypes[CacheTypes.Munzee.ordinal()] = true;
-        String tmp = "";
+        StringBuilder tmp = new StringBuilder();
         for (int i = 0; i < mCacheTypes.length; i++) {
-            tmp = tmp + "," + mCacheTypes[i];
+            tmp.append(",").append(mCacheTypes[i]);
         }
-        return tmp;
+        return tmp.toString();
     }
 
     // Quick Cache 2
@@ -138,14 +79,14 @@ public class FilterInstances {
         boolean[] mCacheTypes = new boolean[CacheTypes.values().length];
         Arrays.fill(mCacheTypes, false);
         mCacheTypes[CacheTypes.Traditional.ordinal()] = true;
-        String tmp = "";
+        StringBuilder tmp = new StringBuilder();
         for (int i = 0; i < mCacheTypes.length; i++) {
-            tmp = tmp + "," + mCacheTypes[i];
+            tmp.append(",").append(mCacheTypes[i]);
         }
-        return tmp;
+        return tmp.toString();
     }
 
-    // Drop off Travelbugs 4
+    // Travelbugs 4
     private static String sTBsCacheTypes() {
         // "\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\"," + //
         boolean[] mCacheTypes = new boolean[CacheTypes.values().length];
@@ -159,11 +100,11 @@ public class FilterInstances {
         mCacheTypes[CacheTypes.Multi.ordinal()] = true;
         mCacheTypes[CacheTypes.Mystery.ordinal()] = true;
         mCacheTypes[CacheTypes.Wherigo.ordinal()] = true;
-        String tmp = "";
+        StringBuilder tmp = new StringBuilder();
         for (int i = 0; i < mCacheTypes.length; i++) {
-            tmp = tmp + "," + mCacheTypes[i];
+            tmp.append(",").append(mCacheTypes[i]);
         }
-        return tmp;
+        return tmp.toString();
     }
 
     public static FilterProperties getLastFilter() {
@@ -176,25 +117,6 @@ public class FilterInstances {
 
     public static boolean isLastFilterSet() {
         return mLastFilter != null && !mLastFilter.toString().equals("") && !ALL.equals(mLastFilter);
-    }
-
-    private final static String setCacheTypes(boolean with) {
-        String result = "";
-        for (int i = 0; i < CacheTypes.values().length; i++) {
-            if (i > 0)
-                result = result + "," + with;
-            else
-                result = result + with;
-        }
-        return result;
-    }
-
-    private final static String setAttributes() {
-        String result = "0";
-        for (int i = 1; i < Attributes.values().length; i++) {
-            result = result + ",0";
-        }
-        return result;
     }
 
 }

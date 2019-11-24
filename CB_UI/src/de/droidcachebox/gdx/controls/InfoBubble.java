@@ -83,13 +83,6 @@ public class InfoBubble extends CB_View_Base {
         requestLayout();
     }
 
-    public void showBubbleSelected() {
-        // Log.debug(log, "Show BubbleSelected");
-        mCacheId = GlobalCore.getSelectedCache().Id;
-        mCache = GlobalCore.getSelectedCache();
-        setVisible();
-    }
-
     @Override
     protected void render(Batch batch) {
         boolean selectedCache = false;
@@ -142,10 +135,7 @@ public class InfoBubble extends CB_View_Base {
         if (mCache == null || !mCache.isLive())
             return false;
 
-        if (saveButtonRec.contains(x, y))
-            return true;
-
-        return false;
+        return saveButtonRec.contains(x, y);
     }
 
 }

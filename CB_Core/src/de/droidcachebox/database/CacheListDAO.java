@@ -31,6 +31,15 @@ import java.util.TreeMap;
  */
 public class CacheListDAO {
     private static final String log = "CacheListDAO";
+    private static CacheListDAO cacheListDAO;
+
+    private CacheListDAO() {
+    }
+
+    public static CacheListDAO getInstance() {
+        if (cacheListDAO == null) cacheListDAO = new CacheListDAO();
+        return cacheListDAO;
+    }
 
     /**
      * selecting by a list of GCCodes
@@ -188,7 +197,7 @@ public class CacheListDAO {
         try {
             delCacheImages(getGcCodes("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
             long ret = Database.Data.sql.delete("Caches", "Archived=1", null);
-            Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
+            Database.Data.updateCacheCountForGPXFilenames(); // CoreSettingsForward.Categories will be set
             return ret;
         } catch (Exception e) {
             Log.err(log, "CacheListDAO.DelArchiv()", "Archiv ERROR", e);
@@ -207,7 +216,7 @@ public class CacheListDAO {
         try {
             delCacheImages(getGcCodes("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
             long ret = Database.Data.sql.delete("Caches", "Found=1", null);
-            Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
+            Database.Data.updateCacheCountForGPXFilenames(); // CoreSettingsForward.Categories will be set
             return ret;
         } catch (Exception e) {
             Log.err(log, "CacheListDAO.DelFound()", "Found ERROR", e);
@@ -230,7 +239,7 @@ public class CacheListDAO {
             long ret = Database.Data.sql.delete("Caches", Where, null);
             Database.Data.sql.setTransactionSuccessful();
             Database.Data.sql.endTransaction();
-            Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
+            Database.Data.updateCacheCountForGPXFilenames(); // CoreSettingsForward.Categories will be set
             return ret;
         } catch (Exception e) {
             Log.err(log, "CacheListDAO.DelFilter()", "Filter ERROR", e);

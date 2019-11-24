@@ -25,25 +25,23 @@ public class FilterSetListView extends V_ListView {
     public static final int CHECK_ITEM = 1;
     public static final int THREE_STATE_ITEM = 2;
     public static final int NUMERIC_ITEM = 3;
-    public static final int NUMERIC_INT_ITEM = 4;
-    public static final int SELECT_ALL_ITEM = 5;
-    public static boolean mustSaveFilter = false;
+    static final int NUMERIC_INT_ITEM = 4;
+    static final int SELECT_ALL_ITEM = 5;
+    static boolean mustSaveFilter = false;
     // the collapse buttons
     private static FilterSetListViewItem activeCollapseButton; // only one should be active
-    private static FilterSetListViewItem general;
-    private static FilterSetListViewItem dt;
     private static FilterSetListViewItem types;
     private static FilterSetListViewItem attribs;
     //
-    private static FilterSetListViewItem NotAvailable;
-    private static FilterSetListViewItem Archived;
-    private static FilterSetListViewItem Finds;
-    private static FilterSetListViewItem Own;
-    private static FilterSetListViewItem ContainsTravelBugs;
-    private static FilterSetListViewItem Favorites;
-    private static FilterSetListViewItem HasUserData;
-    private static FilterSetListViewItem ListingChanged;
-    private static FilterSetListViewItem WithManualWaypoint;
+    private static FilterSetListViewItem notAvailable;
+    private static FilterSetListViewItem archived;
+    private static FilterSetListViewItem finds;
+    private static FilterSetListViewItem own;
+    private static FilterSetListViewItem containsTravelBugs;
+    private static FilterSetListViewItem favorites;
+    private static FilterSetListViewItem hasUserData;
+    private static FilterSetListViewItem listingChanged;
+    private static FilterSetListViewItem withManualWaypoint;
     private static FilterSetListViewItem hasCorrectedCoordinates;
     private static FilterSetListViewItem minTerrain;
     private static FilterSetListViewItem maxTerrain;
@@ -55,41 +53,41 @@ public class FilterSetListView extends V_ListView {
     private static FilterSetListViewItem maxRating;
     private static FilterSetListViewItem minFavPoints;
     private static FilterSetListViewItem maxFavPoints;
-    int index = 0;
+    private int index = 0;
     private ArrayList<FilterSetEntry> lFilterSets;
     private ArrayList<FilterSetListViewItem> lFilterSetListViewItems;
 
     public FilterSetListView(CB_RectF rec) {
         super(rec, "FilterSetListView");
-        this.setHasInvisibleItems(true);
+        this.setHasInvisibleItems();
         fillFilterSetList();
-        this.setBaseAdapter(new CustomAdapter(lFilterSets, lFilterSetListViewItems));
+        this.setBaseAdapter(new FilterSetAdapter(lFilterSets, lFilterSetListViewItems));
         this.setDisposeFlag(false);
     }
 
     private FilterProperties getFilterProperties() {
         FilterProperties props = new FilterProperties();
-        props.notAvailable = NotAvailable.getChecked();
-        props.archived = Archived.getChecked();
-        props.finds = Finds.getChecked();
-        props.own = Own.getChecked();
-        props.containsTravelbugs = ContainsTravelBugs.getChecked();
-        props.favorites = Favorites.getChecked();
-        props.hasUserData = HasUserData.getChecked();
-        props.listingChanged = ListingChanged.getChecked();
-        props.withManualWaypoint = WithManualWaypoint.getChecked();
-        props.hasCorrectedCoordinates = hasCorrectedCoordinates.getChecked();
+        props.setFinds(finds.getChecked());
+        props.setNotAvailable(notAvailable.getChecked());
+        props.setArchived(archived.getChecked());
+        props.setOwn(own.getChecked());
+        props.setContainsTravelbugs(containsTravelBugs.getChecked());
+        props.setFavorites(favorites.getChecked());
+        props.setHasUserData(hasUserData.getChecked());
+        props.setListingChanged(listingChanged.getChecked());
+        props.setWithManualWaypoint(withManualWaypoint.getChecked());
+        props.setHasCorrectedCoordinates(hasCorrectedCoordinates.getChecked());
 
-        props.minDifficulty = minDifficulty.getValue();
-        props.maxDifficulty = maxDifficulty.getValue();
-        props.minTerrain = minTerrain.getValue();
-        props.maxTerrain = maxTerrain.getValue();
-        props.minContainerSize = minContainerSize.getValue();
-        props.maxContainerSize = maxContainerSize.getValue();
-        props.minRating = minRating.getValue();
-        props.maxRating = maxRating.getValue();
-        props.minFavPoints = minFavPoints.getValue();
-        props.maxFavPoints = maxFavPoints.getValue();
+        props.setMinDifficulty(minDifficulty.getValue());
+        props.setMaxDifficulty(maxDifficulty.getValue());
+        props.setMinTerrain(minTerrain.getValue());
+        props.setMaxTerrain(maxTerrain.getValue());
+        props.setMinContainerSize(minContainerSize.getValue());
+        props.setMaxContainerSize(maxContainerSize.getValue());
+        props.setMinRating(minRating.getValue());
+        props.setMaxRating(maxRating.getValue());
+        props.setMinFavPoints(minFavPoints.getValue());
+        props.setMaxFavPoints(maxFavPoints.getValue());
 
         for (int i = 1; i < types.getChildLength(); i++) {
             FilterSetListViewItem itm = types.getChild(i);
@@ -104,28 +102,28 @@ public class FilterSetListView extends V_ListView {
         return props;
     }
 
-    public void setFilterProperties(FilterProperties props) {
-        NotAvailable.setValue(props.notAvailable);
-        Archived.setValue(props.archived);
-        Finds.setValue(props.finds);
-        Own.setValue(props.own);
-        ContainsTravelBugs.setValue(props.containsTravelbugs);
-        Favorites.setValue(props.favorites);
-        HasUserData.setValue(props.hasUserData);
-        ListingChanged.setValue(props.listingChanged);
-        WithManualWaypoint.setValue(props.withManualWaypoint);
-        hasCorrectedCoordinates.setValue(props.hasCorrectedCoordinates);
+    private void setFilterProperties(FilterProperties props) {
+        finds.setValue(props.getFinds());
+        notAvailable.setValue(props.getNotAvailable());
+        archived.setValue(props.getArchived());
+        own.setValue(props.getOwn());
+        containsTravelBugs.setValue(props.getContainsTravelbugs());
+        favorites.setValue(props.getFavorites());
+        hasUserData.setValue(props.getHasUserData());
+        listingChanged.setValue(props.getListingChanged());
+        withManualWaypoint.setValue(props.getWithManualWaypoint());
+        hasCorrectedCoordinates.setValue(props.getHasCorrectedCoordinates());
 
-        minTerrain.setValue(props.minTerrain);
-        maxTerrain.setValue(props.maxTerrain);
-        minDifficulty.setValue(props.minDifficulty);
-        maxDifficulty.setValue(props.maxDifficulty);
-        minContainerSize.setValue(props.minContainerSize);
-        maxContainerSize.setValue(props.maxContainerSize);
-        minRating.setValue(props.minRating);
-        maxRating.setValue(props.maxRating);
-        minFavPoints.setValue(props.minFavPoints);
-        maxFavPoints.setValue(props.maxFavPoints);
+        minTerrain.setValue(props.getMinTerrain());
+        maxTerrain.setValue(props.getMaxTerrain());
+        minDifficulty.setValue(props.getMinDifficulty());
+        maxDifficulty.setValue(props.getMaxDifficulty());
+        minContainerSize.setValue(props.getMinContainerSize());
+        maxContainerSize.setValue(props.getMaxContainerSize());
+        minRating.setValue(props.getMinRating());
+        maxRating.setValue(props.getMaxRating());
+        minFavPoints.setValue(props.getMinFavPoints());
+        maxFavPoints.setValue(props.getMaxFavPoints());
 
         for (int i = 0; i < types.getChildLength(); i++) {
             FilterSetListViewItem itm = types.getChild(i);
@@ -156,36 +154,36 @@ public class FilterSetListView extends V_ListView {
     private void fillFilterSetList() {
 
         // add General
-        general = addFilterSetCollapseItem(null, Translation.get("General"), COLLAPSE_BUTTON_ITEM);
-        NotAvailable = general.addChild(addFilterSetItem(Sprites.getSprite("disabled"), Translation.get("disabled"), THREE_STATE_ITEM));
-        Archived = general.addChild(addFilterSetItem(Sprites.getSprite("not-available"), Translation.get("archived"), THREE_STATE_ITEM));
-        Finds = general.addChild(addFilterSetItem(Sprites.getSprite("log0icon"), Translation.get("myfinds"), THREE_STATE_ITEM));
-        Own = general.addChild(addFilterSetItem(Sprites.getSprite("star"), Translation.get("myowncaches"), THREE_STATE_ITEM));
-        ContainsTravelBugs = general.addChild(addFilterSetItem(Sprites.getSprite("tb"), Translation.get("withtrackables"), THREE_STATE_ITEM));
-        Favorites = general.addChild(addFilterSetItem(Sprites.getSprite("favorit"), Translation.get("Favorites"), THREE_STATE_ITEM));
-        HasUserData = general.addChild(addFilterSetItem(Sprites.getSprite("userdata"), Translation.get("hasuserdata"), THREE_STATE_ITEM));
-        ListingChanged = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.warningIcon.name()), Translation.get("ListingChanged"), THREE_STATE_ITEM));
-        WithManualWaypoint = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.manualWayPoint.name()), Translation.get("manualWayPoint"), THREE_STATE_ITEM));
+        FilterSetListViewItem general = addFilterSetCollapseItem(Translation.get("General"));
+        notAvailable = general.addChild(addFilterSetItem(Sprites.getSprite("disabled"), Translation.get("disabled"), THREE_STATE_ITEM));
+        archived = general.addChild(addFilterSetItem(Sprites.getSprite("not-available"), Translation.get("archived"), THREE_STATE_ITEM));
+        finds = general.addChild(addFilterSetItem(Sprites.getSprite("log0icon"), Translation.get("myfinds"), THREE_STATE_ITEM));
+        own = general.addChild(addFilterSetItem(Sprites.getSprite("star"), Translation.get("myowncaches"), THREE_STATE_ITEM));
+        containsTravelBugs = general.addChild(addFilterSetItem(Sprites.getSprite("tb"), Translation.get("withtrackables"), THREE_STATE_ITEM));
+        favorites = general.addChild(addFilterSetItem(Sprites.getSprite("favorit"), Translation.get("Favorites"), THREE_STATE_ITEM));
+        hasUserData = general.addChild(addFilterSetItem(Sprites.getSprite("userdata"), Translation.get("hasuserdata"), THREE_STATE_ITEM));
+        listingChanged = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.warningIcon.name()), Translation.get("ListingChanged"), THREE_STATE_ITEM));
+        withManualWaypoint = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.manualWayPoint.name()), Translation.get("manualWayPoint"), THREE_STATE_ITEM));
         hasCorrectedCoordinates = general.addChild(addFilterSetItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
         // add D/T
-        dt = addFilterSetCollapseItem(null, "D / T" + "\n" + "GC-Vote", COLLAPSE_BUTTON_ITEM);
-        minDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("minDifficulty"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
-        maxDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("maxDifficulty"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
-        minTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("minTerrain"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
-        maxTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("maxTerrain"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
-        minContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.get("minContainerSize"), NUMERIC_ITEM, 0, 4, 0, 1));
-        maxContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.get("maxContainerSize"), NUMERIC_ITEM, 0, 4, 4, 1));
-        minRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("minRating"), NUMERIC_ITEM, 0, 5, 0, 0.5f));
-        maxRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.get("maxRating"), NUMERIC_ITEM, 0, 5, 5, 0.5f));
-        minFavPoints = dt.addChild(addFilterSetItem(Sprites.getSprite(IconName.FavPoi), Translation.get("minFavPoints"), NUMERIC_INT_ITEM, -1, 10000, 0, 1.0f));
-        maxFavPoints = dt.addChild(addFilterSetItem(Sprites.getSprite(IconName.FavPoi), Translation.get("maxFavPoints"), NUMERIC_INT_ITEM, -1, 10000, 0, 1.0f));
+        FilterSetListViewItem dt = addFilterSetCollapseItem("D / T" + "\n" + "GC-Vote");
+        minDifficulty = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minDifficulty"), 1, 5, 1, 0.5f));
+        maxDifficulty = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxDifficulty"), 1, 5, 5, 0.5f));
+        minTerrain = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minTerrain"), 1, 5, 1, 0.5f));
+        maxTerrain = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxTerrain"), 1, 5, 5, 0.5f));
+        minContainerSize = dt.addChild(addFilterSetNumericItem(Sprites.SizesIcons.toArray(), Translation.get("minContainerSize"), 0, 4, 0, 1));
+        maxContainerSize = dt.addChild(addFilterSetNumericItem(Sprites.SizesIcons.toArray(), Translation.get("maxContainerSize"), 0, 4, 4, 1));
+        minRating = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minRating"), 0, 5, 0, 0.5f));
+        maxRating = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxRating"), 0, 5, 5, 0.5f));
+        minFavPoints = dt.addChild(addFilterSetIntegerItem(Sprites.getSprite(IconName.FavPoi), Translation.get("minFavPoints")));
+        maxFavPoints = dt.addChild(addFilterSetIntegerItem(Sprites.getSprite(IconName.FavPoi), Translation.get("maxFavPoints")));
 
 
         // add CacheTypes
         {
             // create categories button types
-            types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
+            types = addFilterSetCollapseItem("Cache Types");
 
             //add selectAll/deselectAll button item
             FilterSetListViewItem selectAllItem = addFilterSetItem(null, "", SELECT_ALL_ITEM);
@@ -217,20 +215,20 @@ public class FilterSetListView extends V_ListView {
 
 
         // add Attributes
-        attribs = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
+        attribs = addFilterSetCollapseItem("Attributes");
         for (int i = 1; i < Attributes.values().length; i++) {
             attribs.addChild(addFilterSetItem(Sprites.getSprite("att-" + i + "-1Icon"), Translation.get("att_" + i + "_1"), THREE_STATE_ITEM));
         }
 
     }
 
-    private FilterSetListViewItem addFilterSetItem(Sprite[] Icons, String Name, int ItemType, double i, double j, double k, double f) {
+    private FilterSetListViewItem addFilterSetNumericItem(Sprite[] Icons, String Name, double i, double j, double k, double f) {
         if (lFilterSets == null) {
             lFilterSets = new ArrayList<>();
             lFilterSetListViewItems = new ArrayList<>();
         }
         //String Name, Sprite[] Icons, int itemType, double min = i, double max = j, double iniValue = k, double Step = f
-        FilterSetEntry tmp = new FilterSetEntry(Name, Icons, ItemType, i, j, k, f);
+        FilterSetEntry tmp = new FilterSetEntry(Name, Icons, FilterSetListView.NUMERIC_ITEM, i, j, k, f);
         lFilterSets.add(tmp);
 
         FilterSetListViewItem v = new FilterSetListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, index++, tmp);
@@ -240,13 +238,13 @@ public class FilterSetListView extends V_ListView {
         return v;
     }
 
-    private FilterSetListViewItem addFilterSetItem(Sprite Icon, String Name, int ItemType, double i, double j, double k, double f) {
+    private FilterSetListViewItem addFilterSetIntegerItem(Sprite icon, String name) {
         if (lFilterSets == null) {
             lFilterSets = new ArrayList<>();
             lFilterSetListViewItems = new ArrayList<>();
         }
         //String Name, Sprite[] Icons, int itemType, double min = i, double max = j, double iniValue = k, double Step = f
-        FilterSetEntry tmp = new FilterSetEntry(Name, Icon, ItemType, i, j, k, f);
+        FilterSetEntry tmp = new FilterSetEntry(name, icon, FilterSetListView.NUMERIC_INT_ITEM, -1, 10000, 0, 1.0);
         lFilterSets.add(tmp);
 
         FilterSetListViewItem v = new FilterSetListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, index++, tmp);
@@ -274,12 +272,11 @@ public class FilterSetListView extends V_ListView {
     private FilterSetListViewItem addFilterSetItem(CacheTypes cacheType) {
         Sprite icon = Sprites.getSprite("big" + cacheType.name());
         String name = cacheType.name();
-        int itemType = CHECK_ITEM;
         if (lFilterSets == null) {
             lFilterSets = new ArrayList<>();
             lFilterSetListViewItems = new ArrayList<>();
         }
-        FilterSetEntry tmp = new FilterSetEntry(cacheType, name, icon, itemType);
+        FilterSetEntry tmp = new FilterSetEntry(cacheType, name, icon, CHECK_ITEM);
         lFilterSets.add(tmp);
 
         FilterSetListViewItem v = new FilterSetListViewItem(de.droidcachebox.gdx.activities.EditFilterSettings.ItemRec, index++, tmp);
@@ -289,12 +286,12 @@ public class FilterSetListView extends V_ListView {
         return v;
     }
 
-    private FilterSetListViewItem addFilterSetCollapseItem(Sprite Icon, String Name, int ItemType) {
+    private FilterSetListViewItem addFilterSetCollapseItem(String name) {
         if (lFilterSets == null) {
             lFilterSets = new ArrayList<>();
             lFilterSetListViewItems = new ArrayList<>();
         }
-        FilterSetEntry tmp = new FilterSetEntry(Name, Icon, ItemType);
+        FilterSetEntry tmp = new FilterSetEntry(name, null, FilterSetListView.COLLAPSE_BUTTON_ITEM);
         lFilterSets.add(tmp);
 
         FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
@@ -353,10 +350,8 @@ public class FilterSetListView extends V_ListView {
     }
 
     public static class FilterSetEntry {
-        private static int IdCounter;
         private final String mName;
         private final int mItemType;
-        private final int ID;
         private Sprite mIcon;
         private Sprite[] mIconArray;
         private int mState = 0;
@@ -366,11 +361,10 @@ public class FilterSetListView extends V_ListView {
         private double mNumericState;
         private CacheTypes cacheType;
 
-        public FilterSetEntry(String name, Sprite icon, int itemType) {
+        FilterSetEntry(String name, Sprite icon, int itemType) {
             mName = name;
             mIcon = icon;
             mItemType = itemType;
-            ID = IdCounter++;
         }
 
         public FilterSetEntry(String Name, Sprite[] Icons, int itemType, double min, double max, double iniValue, double Step) {
@@ -381,10 +375,9 @@ public class FilterSetListView extends V_ListView {
             mNumericMax = max;
             mNumericState = iniValue;
             mNumericStep = Step;
-            ID = IdCounter++;
         }
 
-        public FilterSetEntry(String Name, Sprite icon, int itemType, double min, double max, double iniValue, double Step) {
+        FilterSetEntry(String Name, Sprite icon, int itemType, double min, double max, double iniValue, double Step) {
             mName = Name;
             mIcon = icon;
             mItemType = itemType;
@@ -392,15 +385,13 @@ public class FilterSetListView extends V_ListView {
             mNumericMax = max;
             mNumericState = iniValue;
             mNumericStep = Step;
-            ID = IdCounter++;
         }
 
-        public FilterSetEntry(CacheTypes enumType, String name, Sprite icon, int itemType) {
+        FilterSetEntry(CacheTypes enumType, String name, Sprite icon, int itemType) {
             mName = name;
             mIcon = icon;
             mItemType = itemType;
             cacheType = enumType;
-            ID = IdCounter++;
         }
 
         public String getName() {
@@ -412,7 +403,7 @@ public class FilterSetListView extends V_ListView {
                 try {
                     double ArrayMultiplier = (mIconArray.length > 5) ? 2 : 1;
                     return mIconArray[(int) (mNumericState * ArrayMultiplier)];
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             return mIcon;
@@ -430,19 +421,15 @@ public class FilterSetListView extends V_ListView {
             mNumericState = State;
         }
 
-        public int getItemType() {
+        int getItemType() {
             return mItemType;
         }
 
-        public int getID() {
-            return ID;
-        }
-
-        public double getNumState() {
+        double getNumState() {
             return mNumericState;
         }
 
-        public void plusClick() {
+        void plusClick() {
             mNumericState += mNumericStep;
             if (mNumericState > mNumericMax) {
                 if (mItemType == FilterSetListView.NUMERIC_INT_ITEM) {
@@ -453,7 +440,7 @@ public class FilterSetListView extends V_ListView {
             }
         }
 
-        public void minusClick() {
+        void minusClick() {
             mNumericState -= mNumericStep;
             if (mNumericState < 0) {
                 if (mItemType == FilterSetListView.NUMERIC_INT_ITEM) {
@@ -464,7 +451,7 @@ public class FilterSetListView extends V_ListView {
             }
         }
 
-        public void plusPlusClick() {
+        void plusPlusClick() {
             if (mNumericState < 0) mNumericState++;
             mNumericState += (mNumericStep * 10);
             if (mNumericState > mNumericMax) {
@@ -476,7 +463,7 @@ public class FilterSetListView extends V_ListView {
             }
         }
 
-        public void minusMinusClick() {
+        void minusMinusClick() {
             mNumericState -= (mNumericStep * 10);
             if (mNumericState == 0) mNumericState = -1;
             if (mNumericState < 0) {
@@ -488,7 +475,7 @@ public class FilterSetListView extends V_ListView {
             }
         }
 
-        public void stateClick() {
+        void stateClick() {
             mState += 1;
             if (mItemType == FilterSetListView.CHECK_ITEM) {
                 if (mState > 1)
@@ -501,12 +488,12 @@ public class FilterSetListView extends V_ListView {
 
     }
 
-    public class CustomAdapter implements Adapter {
+    public static class FilterSetAdapter implements Adapter {
 
         private final ArrayList<FilterSetEntry> filterSetList;
         private final ArrayList<FilterSetListViewItem> lFilterSetListViewItems;
 
-        public CustomAdapter(ArrayList<FilterSetEntry> lFilterSets, ArrayList<FilterSetListViewItem> FilterSetListViewItems) {
+        FilterSetAdapter(ArrayList<FilterSetEntry> lFilterSets, ArrayList<FilterSetListViewItem> FilterSetListViewItems) {
             this.filterSetList = lFilterSets;
             this.lFilterSetListViewItems = FilterSetListViewItems;
         }
@@ -514,14 +501,6 @@ public class FilterSetListView extends V_ListView {
         @Override
         public int getCount() {
             return filterSetList.size();
-        }
-
-        public Object getItem(int position) {
-            return filterSetList.get(position);
-        }
-
-        public long getItemId(int position) {
-            return position;
         }
 
         @Override

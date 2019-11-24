@@ -82,7 +82,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
 
             // Store Solver Content into Database after editing one line
             if (GlobalCore.isSetSelectedCache())
-                Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+                Database.setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
         };
     }
 
@@ -112,7 +112,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             solver = new Solver("", GlobalCore.getInstance());
         } else {
             this.cache = GlobalCore.getSelectedCache();
-            String s = Database.GetSolver(this.cache);
+            String s = Database.getSolver(this.cache);
             if (s == null)
                 s = "";
             solver = new Solver(s, GlobalCore.getInstance());
@@ -163,7 +163,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         Log.debug(log, "onHide()");
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         if (GlobalCore.isSetSelectedCache())
-            Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+            Database.setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
     }
 
     @Override
@@ -202,7 +202,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             return; // Cache hat sich nicht geändert!
         // Solver speichern
         if (this.cache != null)
-            Database.SetSolver(this.cache, solver.getSolverString());
+            Database.setSolver(this.cache, solver.getSolverString());
         // nächsten Cache laden
         this.cache = cache;
         intiList();
@@ -231,7 +231,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
 
                 // Store Solver Content into Database after editing one line
                 if (GlobalCore.isSetSelectedCache())
-                    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+                    Database.setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 
                 reloadList();
                 return true;
@@ -282,7 +282,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             wp.setTitle("Final");
             wp.IsUserWaypoint = true;
             try {
-                wp.setGcCode(Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
+                wp.setGcCode(Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
             } catch (Exception e) {
                 return;
             }

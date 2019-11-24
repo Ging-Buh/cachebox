@@ -135,7 +135,7 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_Progressbar() {
 
-        float ref = UiSizes.getInstance().getWindowHeight() / 13;
+        float ref = UiSizes.getInstance().getWindowHeight() / 13f;
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
         CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
         CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
@@ -195,7 +195,6 @@ public class MainViewInit extends MainViewBase {
         xPos += GC_Logo.getWidth() + ref;
 
         Mapsforge_Logo.setPos(xPos, yPos);
-        xPos += Mapsforge_Logo.getWidth() + ref;
 
         yPos -= GC_Logo.getHeight();// + refHeight;
         LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
@@ -319,13 +318,14 @@ public class MainViewInit extends MainViewBase {
         } catch (Exception ex) {
             Log.err(log, "slpash.Initial()", "search number of DB3 files", ex);
         }
-        if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
-            breakForWait = true;
-            SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
-            selectDBDialog.setReturnListener(this::returnFromSelectDB);
-            selectDBDialog.show();
+        if (fileList != null) {
+            if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
+                breakForWait = true;
+                SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
+                selectDBDialog.setReturnListener(this::returnFromSelectDB);
+                selectDBDialog.show();
+            }
         }
-
     }
 
     private void returnFromSelectDB() {
@@ -348,13 +348,12 @@ public class MainViewInit extends MainViewBase {
 
             boolean replace = true;
             while (replace) {
-                String newConfigPreset = ReplaceSplitter(ConfigPreset);
+                String newConfigPreset = replaceSplitter(ConfigPreset);
                 if (newConfigPreset == null)
                     replace = false;
                 else
                     ConfigPreset = newConfigPreset;
             }
-            ;
             Config.UserFilter.setValue(ConfigPreset);
             Config.AcceptChanges();
         }
@@ -367,11 +366,10 @@ public class MainViewInit extends MainViewBase {
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 
         CoreSettingsForward.Categories = new Categories();
-        Database.Data.GPXFilenameUpdateCacheCount();
+        Database.Data.updateCacheCountForGPXFilenames();
 
         synchronized (Database.Data.cacheList) {
-            CacheListDAO cacheListDAO = new CacheListDAO();
-            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -380,7 +378,7 @@ public class MainViewInit extends MainViewBase {
 
     }
 
-    private String ReplaceSplitter(String ConfigPreset) {
+    private String replaceSplitter(String ConfigPreset) {
         try {
             int pos = ConfigPreset.indexOf("#");
             int pos2 = ConfigPreset.indexOf(";", pos);

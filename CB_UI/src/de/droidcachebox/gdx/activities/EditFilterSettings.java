@@ -30,7 +30,6 @@ import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.MultiToggleButton.OnStateChangeListener;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.list.Adapter;
@@ -49,15 +48,12 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
 public class EditFilterSettings extends ActivityBase {
-    static final FilterProperties[] presets = new FilterProperties[]{ //
+    private static final FilterProperties[] presets = new FilterProperties[]{ //
             FilterInstances.HISTORY, //
             FilterInstances.ACTIVE, //
             FilterInstances.QUICK, //
@@ -72,12 +68,11 @@ public class EditFilterSettings extends ActivityBase {
             FilterInstances.UserDefinedSQL, //
     };
     private static final String log = "EditFilterSettings";
-    public static EditFilterSettings that;
     public static CB_RectF ItemRec;
     public static FilterProperties tmpFilterProps;
-    static WaitDialog pd;
+    private static WaitDialog pd;
     private static FilterProperties props;
-    public PresetListView mPresetListView;
+    private PresetListView mPresetListView;
     private MultiToggleButton btPre;
     private MultiToggleButton btSet;
     private MultiToggleButton btCat;
@@ -91,24 +86,21 @@ public class EditFilterSettings extends ActivityBase {
 
     public EditFilterSettings(CB_RectF rec, String Name) {
         super(rec, Name);
-        that = this;
         ItemRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f);
 
         tmpFilterProps = FilterInstances.getLastFilter();
 
         float myWidth = this.getWidth() - leftBorder;
+        float yy = leftBorder;
 
-        CB_Button bOK = new CB_Button(leftBorder / 2, leftBorder, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        CB_Button btnOK = new CB_Button(leftBorder / 2, yy, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
 
-        bOK.setClickHandler((v, x, y, pointer, button) -> {
+        btnOK.setClickHandler((v, x, y, pointer, button) -> {
             finish();
-
-            Timer t = new Timer();
-            TimerTask postTask = new TimerTask() {
-
+            new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    mCategorieListView.SetCategory();
+                    mCategorieListView.setCategory();
                     FilterInstances.setLastFilter(tmpFilterProps);
 
                     // Text Filter ?
@@ -127,7 +119,7 @@ public class EditFilterSettings extends ActivityBase {
                         FilterInstances.getLastFilter().filterOwner = "";
                     }
 
-                    ApplyFilter(FilterInstances.getLastFilter());
+                    applyFilter(FilterInstances.getLastFilter());
 
                     // Save selected filter (new JSON Format)
                     // wont save History at the Moment
@@ -142,27 +134,25 @@ public class EditFilterSettings extends ActivityBase {
                     }
                     Config.AcceptChanges();
                 }
-            };
-
-            t.schedule(postTask, 300);
+            }, 300);
 
             return true;
         });
 
-        this.addChild(bOK);
+        this.addChild(btnOK);
 
-        CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
+        CB_Button btnCancel = new CB_Button(btnOK.getMaxX(), yy, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
-        bCancel.setClickHandler((v, x, y, pointer, button) -> {
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             finish();
             return true;
         });
 
-        this.addChild(bCancel);
+        this.addChild(btnCancel);
 
         float topButtonY = this.getHeight() - leftBorder - UiSizes.getInstance().getButtonHeight();
 
-        contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.getWidth(), topButtonY - bOK.getMaxY()), "contentBox");
+        contentBox = new Box(new CB_RectF(0, btnOK.getMaxY(), this.getWidth(), topButtonY - btnOK.getMaxY()), "contentBox");
         contentBox.setBackground(Sprites.activityBackground);
         this.addChild(contentBox);
 
@@ -193,12 +183,9 @@ public class EditFilterSettings extends ActivityBase {
         btCat.initialOn_Off_ToggleStates(sCat, sCat);
         btTxt.initialOn_Off_ToggleStates(sTxt, sTxt);
 
-        btPre.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchVisibility(0);
-                return true;
-            }
+        btPre.setClickHandler((v, x, y, pointer, button) -> {
+            switchVisibility(0);
+            return true;
         });
 
         btSet.setClickHandler((v, x, y, pointer, button) -> {
@@ -216,19 +203,13 @@ public class EditFilterSettings extends ActivityBase {
                 switchVisibility(0);
         });
 
-        btSet.setOnStateChangedListener(new OnStateChangeListener() {
-            @Override
-            public void onStateChange(GL_View_Base v, int State) {
-                if (State == 1)
-                    switchVisibility(1);
-            }
+        btSet.setOnStateChangedListener((v, State) -> {
+            if (State == 1)
+                switchVisibility(1);
         });
-        btCat.setOnStateChangedListener(new OnStateChangeListener() {
-            @Override
-            public void onStateChange(GL_View_Base v, int State) {
-                if (State == 1)
-                    switchVisibility(2);
-            }
+        btCat.setOnStateChangedListener((v, State) -> {
+            if (State == 1)
+                switchVisibility(2);
         });
         btTxt.setOnStateChangedListener((v, State) -> {
             if (State == 1)
@@ -236,10 +217,10 @@ public class EditFilterSettings extends ActivityBase {
         });
 
         // Translations
-        bOK.setText(Translation.get("ok"));
-        bCancel.setText(Translation.get("cancel"));
+        btnOK.setText(Translation.get("ok"));
+        btnCancel.setText(Translation.get("cancel"));
 
-        ListViewRec = new CB_RectF(0, margin, this.getWidth(), btPre.getY() - bOK.getMaxY() - margin - margin);
+        ListViewRec = new CB_RectF(0, margin, this.getWidth(), btPre.getY() - btnOK.getMaxY() - margin - margin);
 
         initialPresets();
         initialSettings();
@@ -251,7 +232,7 @@ public class EditFilterSettings extends ActivityBase {
 
     }
 
-    public static void ApplyFilter(final FilterProperties Props) {
+    public static void applyFilter(final FilterProperties Props) {
 
         props = Props;
         pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
@@ -260,10 +241,9 @@ public class EditFilterSettings extends ActivityBase {
             try {
                 synchronized (Database.Data.cacheList) {
                     String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
-                    Log.info(log, "Main.ApplyFilter: " + sqlWhere);
+                    Log.info(log, "Main.applyFilter: " + sqlWhere);
                     Database.Data.cacheList.clear();
-                    CacheListDAO cacheListDAO = new CacheListDAO();
-                    Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
@@ -337,7 +317,7 @@ public class EditFilterSettings extends ActivityBase {
             mTextFilterView.setInvisible();
             btnAddPreset.setVisible();
             if (mCategorieListView != null)
-                mCategorieListView.SetCategory();
+                mCategorieListView.setCategory();
             mPresetListView.onShow();
         }
 
@@ -348,7 +328,7 @@ public class EditFilterSettings extends ActivityBase {
             mTextFilterView.setInvisible();
             btnAddPreset.setInvisible();
             if (mCategorieListView != null)
-                mCategorieListView.SetCategory();
+                mCategorieListView.setCategory();
             mFilterSetListView.onShow();
         }
         if (btCat.getState() == 1) {
@@ -471,73 +451,36 @@ public class EditFilterSettings extends ActivityBase {
         static final int CHECK_ITEM = 1;
         static final int THREE_STATE_ITEM = 2;
         static final int NUMERIC_ITEM = 3;
-        private final CustomAdapter lvAdapter;
-        private ArrayList<CategorieEntry> lCategories;
-        private ArrayList<CategorieListViewItem> lCategorieListViewItems;
-        OnClickListener onItemClickListener = new OnClickListener() {
+        private ArrayList<CategoryEntry> categoryEntries;
+        private ArrayList<CategoryListViewItem> categoryListViewItems;
 
-            @Override
-            public boolean onClick(GL_View_Base v, int lastTouchX, int lastTouchY, int pointer, int button) {
-                CB_RectF HitRec = v.copy();
-                HitRec.setY(0);
-
-                CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
-                CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
-
-                float lastItemTouchX = ((CategorieListViewItem) v).lastItemTouchPos.x;
-                float lastItemTouchY = ((CategorieListViewItem) v).lastItemTouchPos.y;
-
-                if (plusBtnHitRec.contains(lastItemTouchX, lastItemTouchY)) {
-                    ((CategorieListViewItem) v).plusClick();
-                    if (lCategories != null) {
-                        for (CategorieEntry tmp : lCategories) {
-                            GpxFilename file = tmp.getFile();
-                            if (file != null) {
-                                tmp.setState(file.Checked ? 1 : 0);
-                            }
-
-                        }
-                    }
-                    SetCategory();
-                } else if (minusBtnHitRec.contains(lastItemTouchX, lastItemTouchY)) {
-                    ((CategorieListViewItem) v).minusClick();
-                    SetCategory();
-                }
-
-                SetCategory();
-
-                return true;
-            }
-        };
-
-        public CategorieListView(CB_RectF rec) {
+        CategorieListView(CB_RectF rec) {
             super(rec, "");
-            this.setHasInvisibleItems(true);
+            this.setHasInvisibleItems();
             fillCategorieList();
             this.setDisposeFlag(false);
             this.setBaseAdapter(null);
-            lvAdapter = new CustomAdapter(lCategories, lCategorieListViewItems);
-            this.setBaseAdapter(lvAdapter);
+            this.setBaseAdapter(new CategoryEntryAdapter(categoryEntries, categoryListViewItems));
 
         }
 
-        public void SetCategory() {
+        void setCategory() {
             // Set Categorie State
-            if (lCategorieListViewItems != null) {
-                for (CategorieListViewItem tmp : lCategorieListViewItems) {
-                    GpxFilename file = tmp.categorieEntry.getFile();
+            if (categoryListViewItems != null) {
+                for (CategoryListViewItem tmp : categoryListViewItems) {
+                    GpxFilename file = tmp.categoryEntry.getFile();
 
                     for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
                         Category cat = CoreSettingsForward.Categories.get(i);
                         int index = cat.indexOf(file);
                         if (index != -1) {
 
-                            cat.get(index).Checked = (tmp.categorieEntry.getState() == 1) ? true : false;
+                            cat.get(index).Checked = tmp.categoryEntry.getState() == 1;
 
                         } else {
-                            if (tmp.getCategorieEntry().getCat() != null) {
-                                if (cat == tmp.getCategorieEntry().getCat()) {
-                                    cat.pinned = tmp.getCategorieEntry().getCat().pinned;
+                            if (tmp.getCategoryEntry().getCat() != null) {
+                                if (cat == tmp.getCategoryEntry().getCat()) {
+                                    cat.pinned = tmp.getCategoryEntry().getCat().pinned;
                                 }
 
                             }
@@ -560,16 +503,16 @@ public class EditFilterSettings extends ActivityBase {
 
             for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
                 Category cat = CoreSettingsForward.Categories.get(i);
-                CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, Sprites.getSprite(Sprites.IconName.docIcon.name()), cat, COLLAPSE_BUTTON_ITEM);
+                CategoryListViewItem CollapseItem = addCategoryCollapseItem(Index++, Sprites.getSprite(Sprites.IconName.docIcon.name()), cat);
 
                 for (GpxFilename File : cat) {
-                    CollapseItem.addChild(addCategorieItem(Index++, Sprites.getSprite(Sprites.IconName.docIcon.name()), File, CHECK_ITEM));
+                    CollapseItem.addChild(addCategoryItem(Index++, Sprites.getSprite(Sprites.IconName.docIcon.name()), File));
                 }
             }
 
             // lCategories is filled now we set the checked attr
-            if (lCategories != null) {
-                for (CategorieEntry tmp : lCategories) {
+            if (categoryEntries != null) {
+                for (CategoryEntry tmp : categoryEntries) {
                     GpxFilename file = tmp.getFile();
                     if (file != null) {
                         tmp.setState(file.Checked ? 1 : 0);
@@ -580,31 +523,31 @@ public class EditFilterSettings extends ActivityBase {
 
         }
 
-        private CategorieListViewItem addCategorieItem(int Index, Sprite Icon, GpxFilename file, int ItemType) {
-            if (lCategories == null) {
-                lCategories = new ArrayList<>();
-                lCategorieListViewItems = new ArrayList<>();
+        private CategoryListViewItem addCategoryItem(int Index, Sprite Icon, GpxFilename file) {
+            if (categoryEntries == null) {
+                categoryEntries = new ArrayList<>();
+                categoryListViewItems = new ArrayList<>();
             }
-            CategorieEntry tmp = new CategorieEntry(file, Icon, ItemType);
-            lCategories.add(tmp);
-            CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
+            CategoryEntry tmp = new CategoryEntry(file, Icon, CategorieListView.CHECK_ITEM);
+            categoryEntries.add(tmp);
+            CategoryListViewItem v = new CategoryListViewItem(EditFilterSettings.ItemRec, Index, tmp);
             // inital mit INVISIBLE
             v.setInvisible();
-            v.setClickHandler(onItemClickListener);
-            lCategorieListViewItems.add(v);
+            v.setClickHandler(this::onCategoryListViewItemClicked);
+            categoryListViewItems.add(v);
             return v;
         }
 
-        private CategorieListViewItem addCategorieCollapseItem(int Index, Sprite Icon, Category cat, int ItemType) {
-            if (lCategories == null) {
-                lCategories = new ArrayList<>();
-                lCategorieListViewItems = new ArrayList<>();
+        private CategoryListViewItem addCategoryCollapseItem(int Index, Sprite Icon, Category cat) {
+            if (categoryEntries == null) {
+                categoryEntries = new ArrayList<>();
+                categoryListViewItems = new ArrayList<>();
             }
-            CategorieEntry tmp = new CategorieEntry(cat, Icon, ItemType);
-            lCategories.add(tmp);
+            CategoryEntry tmp = new CategoryEntry(cat, Icon, CategorieListView.COLLAPSE_BUTTON_ITEM);
+            categoryEntries.add(tmp);
 
-            CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
-            lCategorieListViewItems.add(v);
+            CategoryListViewItem v = new CategoryListViewItem(EditFilterSettings.ItemRec, Index, tmp);
+            categoryListViewItems.add(v);
 
             v.setClickHandler((v1, X, Y, pointer, button) -> {
                 CB_RectF HitRec = v1.copy();
@@ -613,14 +556,14 @@ public class EditFilterSettings extends ActivityBase {
                 CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
                 CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
 
-                float lastTouchX = ((CategorieListViewItem) v1).lastItemTouchPos.x;
-                float lastTouchY = ((CategorieListViewItem) v1).lastItemTouchPos.y;
+                float lastTouchX = ((CategoryListViewItem) v1).lastItemTouchPos.x;
+                float lastTouchY = ((CategoryListViewItem) v1).lastItemTouchPos.y;
 
-                if (((CategorieListViewItem) v1).getCategorieEntry().getItemType() == COLLAPSE_BUTTON_ITEM) {
+                if (((CategoryListViewItem) v1).getCategoryEntry().getItemType() == COLLAPSE_BUTTON_ITEM) {
                     if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                        ((CategorieListViewItem) v1).plusClick();
-                        if (lCategories != null) {
-                            for (CategorieEntry tmp1 : lCategories) {
+                        ((CategoryListViewItem) v1).plusClick();
+                        if (categoryEntries != null) {
+                            for (CategoryEntry tmp1 : categoryEntries) {
                                 GpxFilename file = tmp1.getFile();
                                 if (file != null) {
                                     tmp1.setState(file.Checked ? 1 : 0);
@@ -628,18 +571,18 @@ public class EditFilterSettings extends ActivityBase {
 
                             }
                         }
-                        SetCategory();
+                        setCategory();
                     } else if (minusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                        ((CategorieListViewItem) v1).minusClick();
-                        SetCategory();
+                        ((CategoryListViewItem) v1).minusClick();
+                        setCategory();
                     } else {
-                        collapseButton_Clicked((CategorieListViewItem) v1);
+                        collapseButton_Clicked((CategoryListViewItem) v1);
                         notifyDataSetChanged();
                     }
 
                 } else {
                     if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                        SetCategory();
+                        setCategory();
                     }
                 }
 
@@ -649,7 +592,7 @@ public class EditFilterSettings extends ActivityBase {
             return v;
         }
 
-        private void collapseButton_Clicked(CategorieListViewItem item) {
+        private void collapseButton_Clicked(CategoryListViewItem item) {
             item.toggleChildeViewState();
             this.notifyDataSetChanged();
             this.invalidate();
@@ -669,7 +612,7 @@ public class EditFilterSettings extends ActivityBase {
                         continue;
                     if (view.contains(x, y)) {
 
-                        ((CategorieListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
+                        ((CategoryListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
 
                     }
 
@@ -679,11 +622,41 @@ public class EditFilterSettings extends ActivityBase {
             return true;
         }
 
-        public static class CategorieEntry {
-            private static int IdCounter;
+        private boolean onCategoryListViewItemClicked(GL_View_Base v1, int lastTouchX, int lastTouchY, int pointer, int button) {
+            CB_RectF HitRec = v1.copy();
+            HitRec.setY(0);
+
+            CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
+            CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
+
+            float lastItemTouchX = ((CategoryListViewItem) v1).lastItemTouchPos.x;
+            float lastItemTouchY = ((CategoryListViewItem) v1).lastItemTouchPos.y;
+
+            if (plusBtnHitRec.contains(lastItemTouchX, lastItemTouchY)) {
+                ((CategoryListViewItem) v1).plusClick();
+                if (categoryEntries != null) {
+                    for (CategoryEntry tmp1 : categoryEntries) {
+                        GpxFilename file1 = tmp1.getFile();
+                        if (file1 != null) {
+                            tmp1.setState(file1.Checked ? 1 : 0);
+                        }
+
+                    }
+                }
+                setCategory();
+            } else if (minusBtnHitRec.contains(lastItemTouchX, lastItemTouchY)) {
+                ((CategoryListViewItem) v1).minusClick();
+                setCategory();
+            }
+
+            setCategory();
+
+            return true;
+        }
+
+        public static class CategoryEntry {
             private final GpxFilename mFile;
             private final int mItemType;
-            private final int ID;
             private Category mCat;
             private Sprite mIcon;
             private Sprite[] mIconArray;
@@ -692,32 +665,20 @@ public class EditFilterSettings extends ActivityBase {
             private double mNumericStep;
             private double mNumericState;
 
-            public CategorieEntry(GpxFilename file, Sprite Icon, int itemType) {
+            CategoryEntry(GpxFilename file, Sprite Icon, int itemType) {
                 mCat = null;
                 mFile = file;
                 mIcon = Icon;
                 mItemType = itemType;
-                ID = IdCounter++;
 
             }
 
-            public CategorieEntry(Category cat, Sprite Icon, int itemType) {
+            CategoryEntry(Category cat, Sprite Icon, int itemType) {
                 mCat = cat;
                 mFile = null;
                 mIcon = Icon;
                 mItemType = itemType;
-                ID = IdCounter++;
 
-            }
-
-            public CategorieEntry(GpxFilename file, Sprite[] Icons, int itemType, double min, double max, double iniValue, double Step) {
-                mFile = file;
-                mIconArray = Icons;
-                mItemType = itemType;
-                mNumericMax = max;
-                mNumericState = iniValue;
-                mNumericStep = Step;
-                ID = IdCounter++;
             }
 
             public GpxFilename getFile() {
@@ -730,7 +691,7 @@ public class EditFilterSettings extends ActivityBase {
                         double ArrayMultiplier = (mIconArray.length > 5) ? 2 : 1;
 
                         return mIconArray[(int) (mNumericState * ArrayMultiplier)];
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
 
                 }
@@ -749,19 +710,15 @@ public class EditFilterSettings extends ActivityBase {
                 mNumericState = State;
             }
 
-            public int getItemType() {
+            int getItemType() {
                 return mItemType;
             }
 
-            public int getID() {
-                return ID;
-            }
-
-            public double getNumState() {
+            double getNumState() {
                 return mNumericState;
             }
 
-            public void plusClick() {
+            void plusClick() {
 
                 if (mItemType == COLLAPSE_BUTTON_ITEM) {
                     // collabs Button chk clicked
@@ -785,11 +742,10 @@ public class EditFilterSettings extends ActivityBase {
 
             }
 
-            public void minusClick() {
+            void minusClick() {
                 if (mItemType == COLLAPSE_BUTTON_ITEM) {
                     // Collabs Button Pin Clicked
-                    CategoryDAO dao = new CategoryDAO();
-                    dao.SetPinned(this.mCat, !this.mCat.pinned);
+                    CategoryDAO.getInstance().setPinned(this.mCat, !this.mCat.pinned);
                     // this.mCat.pinned = !this.mCat.pinned;
 
                 } else {
@@ -799,7 +755,7 @@ public class EditFilterSettings extends ActivityBase {
                 }
             }
 
-            public void stateClick() {
+            void stateClick() {
 
                 mState += 1;
                 if (mItemType == CHECK_ITEM || mItemType == COLLAPSE_BUTTON_ITEM) {
@@ -811,55 +767,43 @@ public class EditFilterSettings extends ActivityBase {
                 }
 
                 if (mItemType == CHECK_ITEM) {
-                    if (mState == 0)
-                        this.mFile.Checked = false;
-                    else
-                        this.mFile.Checked = true;
+                    assert this.mFile != null;
+                    mFile.Checked = mState != 0;
                 }
             }
 
-            public String getCatName() {
+            String getCatName() {
                 return mCat.GpxFilename;
             }
 
-            public Category getCat() {
+            Category getCat() {
                 return mCat;
             }
 
         }
 
-        public class CustomAdapter implements Adapter {
+        public static class CategoryEntryAdapter implements Adapter {
 
-            private final ArrayList<CategorieEntry> categorieList;
-            private final ArrayList<CategorieListViewItem> lCategoriesListViewItems;
+            private final ArrayList<CategoryEntry> categoryEntries;
+            private final ArrayList<CategoryListViewItem> categoryListViewItems;
 
-            public CustomAdapter(ArrayList<CategorieEntry> lCategories, ArrayList<CategorieListViewItem> CategorieListViewItems) {
-                this.categorieList = lCategories;
-                this.lCategoriesListViewItems = CategorieListViewItems;
+            CategoryEntryAdapter(ArrayList<CategoryEntry> categoryEntries, ArrayList<CategoryListViewItem> categoryListViewItems) {
+                this.categoryEntries = categoryEntries;
+                this.categoryListViewItems = categoryListViewItems;
             }
 
             @Override
             public int getCount() {
-                if (categorieList == null)
+                if (categoryEntries == null)
                     return 0;
-                return categorieList.size();
-            }
-
-            public Object getItem(int position) {
-                if (categorieList == null)
-                    return null;
-                return categorieList.get(position);
-            }
-
-            public long getItemId(int position) {
-                return position;
+                return categoryEntries.size();
             }
 
             @Override
             public ListViewItemBase getView(int position) {
-                if (lCategoriesListViewItems == null)
+                if (categoryListViewItems == null)
                     return null;
-                CategorieListViewItem v = lCategoriesListViewItems.get(position);
+                CategoryListViewItem v = categoryListViewItems.get(position);
                 if (!v.isVisible())
                     return null;
 
@@ -872,12 +816,12 @@ public class EditFilterSettings extends ActivityBase {
             }
         }
 
-        public class CategorieListViewItem extends ListViewItemBackground {
-            private final SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy hh:mm ");
+        public static class CategoryListViewItem extends ListViewItemBackground {
+            private final SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy hh:mm ", Locale.US);
             // static Member
-            private final ArrayList<CategorieListViewItem> mChildList = new ArrayList<>();
-            public CategorieEntry categorieEntry;
-            public Vector2 lastItemTouchPos;
+            private final ArrayList<CategoryListViewItem> mChildList = new ArrayList<>();
+            CategoryEntry categoryEntry;
+            Vector2 lastItemTouchPos;
             // private Member
             float left;
             float top;
@@ -888,7 +832,6 @@ public class EditFilterSettings extends ActivityBase {
             private CB_RectF lPinBounds;
             private CB_RectF rBounds;
             private CB_RectF rChkBounds;
-            private float halfSize = 0;
 
             // Draw Methods
             private NinePatch btnBack;
@@ -900,27 +843,27 @@ public class EditFilterSettings extends ActivityBase {
             private BitmapFontCache EntryDate;
             private BitmapFontCache EntryCount;
 
-            public CategorieListViewItem(CB_RectF rec, int Index, CategorieEntry fne) {
+            CategoryListViewItem(CB_RectF rec, int Index, CategoryEntry fne) {
                 super(rec, Index, "");
 
-                this.categorieEntry = fne;
+                this.categoryEntry = fne;
 
             }
 
-            public CategorieEntry getCategorieEntry() {
-                return categorieEntry;
+            CategoryEntry getCategoryEntry() {
+                return categoryEntry;
             }
 
-            public CategorieListViewItem addChild(CategorieListViewItem item) {
+            public CategoryListViewItem addChild(CategoryListViewItem item) {
                 mChildList.add(item);
                 return item;
             }
 
-            public void toggleChildeViewState() {
+            void toggleChildeViewState() {
                 if (mChildList != null && mChildList.size() > 0) {
                     boolean newState = !mChildList.get(0).isVisible();
 
-                    for (CategorieListViewItem tmp : mChildList) {
+                    for (CategoryListViewItem tmp : mChildList) {
                         tmp.setVisible(newState);
                     }
                 }
@@ -929,7 +872,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             protected void render(Batch batch) {
-                if (this.categorieEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM)
+                if (this.categoryEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM)
                     super.render(batch);
 
                 if (isPressed) {
@@ -945,7 +888,7 @@ public class EditFilterSettings extends ActivityBase {
                     // right
                     // Button
                     // bounds
-                    halfSize = rBounds.getWidth() / 4;
+                    float halfSize = rBounds.getWidth() / 4;
 
                     rChkBounds = rBounds.ScaleCenter(0.8f);
                     lPinBounds = new CB_RectF(rChkBounds);
@@ -953,9 +896,9 @@ public class EditFilterSettings extends ActivityBase {
                 }
 
                 // boolean selected = false;
-                // if (this.categorieEntry == aktCategorieEntry) selected = true;
+                // if (this.categoryEntry == aktCategorieEntry) selected = true;
 
-                switch (categorieEntry.getItemType()) {
+                switch (categoryEntry.getItemType()) {
                     case FilterSetListView.COLLAPSE_BUTTON_ITEM:
                         drawCollapseButtonItem(batch);
                         break;
@@ -970,20 +913,20 @@ public class EditFilterSettings extends ActivityBase {
                 // draw Name
                 if (EntryName == null) {
 
-                    GpxFilename file = categorieEntry.getFile();
+                    GpxFilename file = categoryEntry.getFile();
 
-                    String Name = "";
-                    String Date = "";
-                    String Count = "";
+                    String Name;
+                    String Date;
+                    String Count;
 
                     if (file != null) {
                         Name = file.GpxFileName;
                         Date = postFormater.format(file.Imported);
                         Count = String.valueOf(file.CacheCount);
                     } else {
-                        Name = categorieEntry.getCatName();
-                        Date = postFormater.format(categorieEntry.getCat().LastImported());
-                        Count = String.valueOf(categorieEntry.getCat().CacheCount());
+                        Name = categoryEntry.getCatName();
+                        Date = postFormater.format(categoryEntry.getCat().LastImported());
+                        Count = String.valueOf(categoryEntry.getCat().CacheCount());
                     }
 
                     Count += " Caches";
@@ -1046,10 +989,10 @@ public class EditFilterSettings extends ActivityBase {
 
             private void drawPin(Batch batch) {
                 margin = UiSizes.getInstance().getMargin();
-                float iconHeight = this.getHeight() * 0.6f;
-                float iconWidth = iconHeight;
+                float iconHeight = getHeight() * 0.6f;
+                float iconWidth = getHeight() * 0.6f;
 
-                if (this.getCategorieEntry().getCat().pinned) {
+                if (this.getCategoryEntry().getCat().pinned) {
                     if (sPinOn == null) {
                         sPinOn = Sprites.getSprite("pin-icon");
                         sPinOn.setBounds(left, UiSizes.getInstance().getMargin(), iconWidth, iconHeight);
@@ -1070,17 +1013,16 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             private void drawChkItem(Batch batch) {
-                if (this.categorieEntry == null)
+                if (this.categoryEntry == null)
                     return;
 
-                drawIcon(batch);
                 drawRightChkBox(batch);
 
                 int ChkState;
-                if (this.categorieEntry.getItemType() == FilterSetListView.COLLAPSE_BUTTON_ITEM) {
-                    ChkState = this.categorieEntry.getCat().getCheck();
+                if (this.categoryEntry.getItemType() == FilterSetListView.COLLAPSE_BUTTON_ITEM) {
+                    ChkState = this.categoryEntry.getCat().getCheck();
                 } else {
-                    ChkState = this.categorieEntry.getState();
+                    ChkState = this.categoryEntry.getState();
                 }
 
                 if (ChkState == 1) {
@@ -1099,30 +1041,22 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             private void drawThreeStateItem(Batch batch) {
-                drawIcon(batch);
                 drawRightChkBox(batch);
 
-                if (this.categorieEntry.getCat().getCheck() == 1) {
+                if (this.categoryEntry.getCat().getCheck() == 1) {
                     if (chkOn == null) {
                         chkOn = Sprites.getSprite("check-on");
                         chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
                     }
 
                     chkOn.draw(batch);
-                } else if (this.categorieEntry.getCat().getCheck() == 0) {
+                } else if (this.categoryEntry.getCat().getCheck() == 0) {
                     if (chkNo == null) {
                         chkNo = Sprites.getSprite(Sprites.IconName.DELETE.name());
                         chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
                     }
                     chkNo.draw(batch);
                 }
-            }
-
-            private void drawIcon(Batch batch) {
-                // if (categorieEntry.getIcon() != null) ActivityUtils.PutImageTargetHeight(batch, categorieEntry.getIcon(), left, top,
-                // UiSizes.getIconSize());
-                // left += UiSizes.getIconAddCorner();
-
             }
 
             private void drawRightChkBox(Batch batch) {
@@ -1145,55 +1079,40 @@ public class EditFilterSettings extends ActivityBase {
 
             }
 
-            public void plusClick() {
-                this.categorieEntry.plusClick();
+            void plusClick() {
+                this.categoryEntry.plusClick();
             }
 
-            public void minusClick() {
-                this.categorieEntry.minusClick();
-            }
-
-            public void stateClick() {
-                this.categorieEntry.stateClick();
-            }
-
-            public int getChecked() {
-                return categorieEntry.getState();
+            void minusClick() {
+                this.categoryEntry.minusClick();
             }
 
             public float getValue() {
-                return (float) categorieEntry.getNumState();
+                return (float) categoryEntry.getNumState();
             }
 
             public void setValue(int value) {
 
-                this.categorieEntry.setState(value);
+                this.categoryEntry.setState(value);
 
             }
 
             public void setValue(float value) {
-                this.categorieEntry.setState(value);
+                this.categoryEntry.setState(value);
 
             }
 
             public void setValue(boolean b) {
-                this.categorieEntry.setState(b ? 1 : 0);
+                this.categoryEntry.setState(b ? 1 : 0);
             }
 
             @Override
-            public CategorieListViewItem getChild(int i) {
+            public CategoryListViewItem getChild(int i) {
                 return mChildList.get(i);
             }
 
-            public int getChildLength() {
-                return mChildList.size();
-            }
-
             public boolean getBoolean() {
-                if (categorieEntry.getState() == 0)
-                    return false;
-
-                return true;
+                return categoryEntry.getState() != 0;
             }
 
         }
@@ -1202,13 +1121,13 @@ public class EditFilterSettings extends ActivityBase {
 
     class PresetListView extends V_ListView {
 
-        public ArrayList<PresetListViewItem> mPresetListViewItems;
+        ArrayList<PresetListViewItem> mPresetListViewItems;
         private ArrayList<PresetEntry> mPresetEntries;
         private CustomAdapter lvAdapter;
 
-        public PresetListView(CB_RectF rec) {
+        PresetListView(CB_RectF rec) {
             super(rec, "");
-            this.setHasInvisibleItems(true);
+            this.setHasInvisibleItems();
             fillPresetList();
             this.setDisposeFlag(false);
             this.setBaseAdapter(null);
@@ -1217,7 +1136,7 @@ public class EditFilterSettings extends ActivityBase {
 
         }
 
-        public void fillPresetList() {
+        void fillPresetList() {
             if (mPresetEntries != null)
                 mPresetEntries.clear();
             else
@@ -1244,7 +1163,7 @@ public class EditFilterSettings extends ActivityBase {
 
             // add User Presets from Config.UserFilter
             if (!Config.UserFilter.getValue().equalsIgnoreCase("")) {
-                String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+                String[] userEntrys = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
                 try {
                     for (String entry : userEntrys) {
                         int pos = entry.indexOf(";");
@@ -1268,40 +1187,36 @@ public class EditFilterSettings extends ActivityBase {
             for (PresetEntry entry : mPresetEntries) {
                 PresetListViewItem v = new PresetListViewItem(ItemRec, index, entry);
 
-                v.setClickHandler(new OnClickListener() {
+                v.setClickHandler((v12, x, y, pointer, button) -> {
 
-                    @Override
-                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                    int itemIndex = ((PresetListViewItem) v12).getIndex();
 
-                        int itemIndex = ((PresetListViewItem) v).getIndex();
+                    for (PresetListViewItem presetListViewItem : mPresetListViewItems) {
+                        presetListViewItem.isSelected = false;
+                    }
 
-                        for (PresetListViewItem presetListViewItem : mPresetListViewItems) {
-                            ((ListViewItemBase) presetListViewItem).isSelected = false;
+                    if (itemIndex < presets.length) {
+                        tmpFilterProps = new FilterProperties(presets[itemIndex].toString());
+                    } else {
+                        // User Preset
+                        try {
+                            String[] userEntrys = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+                            int i = itemIndex - presets.length;
+
+                            int pos = userEntrys[i].indexOf(";");
+                            String filter = userEntrys[i].substring(pos + 1);
+                            if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1);
+                            tmpFilterProps = new FilterProperties(filter);
+                        } catch (Exception ex) {
+                            Log.err(log, "UserFilter", ex);
                         }
-
-                        if (itemIndex < presets.length) {
-                            tmpFilterProps = new FilterProperties(presets[itemIndex].toString());
-                        } else {
-                            // User Preset
-                            try {
-                                String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-                                int i = itemIndex - presets.length;
-
-                                int pos = userEntrys[i].indexOf(";");
-                                String filter = userEntrys[i].substring(pos + 1);
-                                if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1);
-                                tmpFilterProps = new FilterProperties(filter);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                        // reset TxtFilter
-                        TextFilterView.that.setFilterString("", 0);
-                        return true;
 
                     }
+
+                    // reset TxtFilter
+                    TextFilterView.that.setFilterString("", 0);
+                    return true;
+
                 });
 
                 v.setOnLongClickListener((v1, x, y, pointer, button) -> {
@@ -1316,18 +1231,18 @@ public class EditFilterSettings extends ActivityBase {
                                         return false; // Don't delete System Presets
                                     } else {
                                         try {
-                                            String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+                                            String[] userEntries = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 
                                             int i = presets.length;
                                             StringBuilder newUserEntris = new StringBuilder();
-                                            for (String entry1 : userEntrys) {
+                                            for (String entry1 : userEntries) {
                                                 if (i++ != delItemIndex)
                                                     newUserEntris.append(entry1).append(SettingString.STRING_SPLITTER);
                                             }
                                             Config.UserFilter.setValue(newUserEntris.toString());
                                             Config.AcceptChanges();
-                                            that.mPresetListView.fillPresetList();
-                                            that.mPresetListView.notifyDataSetChanged();
+                                            mPresetListView.fillPresetList();
+                                            mPresetListView.notifyDataSetChanged();
                                         } catch (Exception ex) {
                                             Log.err(log, "DelUserPreset", ex);
                                         }
@@ -1357,7 +1272,7 @@ public class EditFilterSettings extends ActivityBase {
 
         private void chkIsPreset() {
             for (PresetListViewItem item : mPresetListViewItems) {
-                ((ListViewItemBase) item).isSelected = false;
+                item.isSelected = false;
             }
 
             this.setBaseAdapter(null);
@@ -1371,7 +1286,7 @@ public class EditFilterSettings extends ActivityBase {
             private final Sprite mIcon;
             private FilterProperties filterProperties;
 
-            public PresetEntry(String Name, Sprite Icon, FilterProperties PresetFilter) {
+            PresetEntry(String Name, Sprite Icon, FilterProperties PresetFilter) {
                 mName = Name;
                 mIcon = Icon;
                 // mPresetString = PresetString;
@@ -1386,12 +1301,8 @@ public class EditFilterSettings extends ActivityBase {
                 return mIcon;
             }
 
-            public FilterProperties getFilterProperties() {
+            FilterProperties getFilterProperties() {
                 return filterProperties;
-            }
-
-            public void setFilterProperties(FilterProperties filterProperties) {
-                this.filterProperties = filterProperties;
             }
 
         }
@@ -1400,7 +1311,7 @@ public class EditFilterSettings extends ActivityBase {
 
             private final ArrayList<PresetEntry> presetList;
 
-            public CustomAdapter(ArrayList<PresetEntry> lPresets) {
+            CustomAdapter(ArrayList<PresetEntry> lPresets) {
 
                 this.presetList = lPresets;
             }
@@ -1410,20 +1321,10 @@ public class EditFilterSettings extends ActivityBase {
                 return presetList.size();
             }
 
-            public Object getItem(int position) {
-                return presetList.get(position);
-            }
-
-            public long getItemId(int position) {
-                return position;
-            }
-
             @Override
             public ListViewItemBase getView(final int position) {
 
-                ListViewItemBase v = mPresetListViewItems.get(position);
-
-                return v;
+                return mPresetListViewItems.get(position);
             }
 
             @Override
@@ -1441,7 +1342,7 @@ public class EditFilterSettings extends ActivityBase {
         float left = 0;
         float top = 0;
 
-        public PresetListViewItem(CB_RectF rec, int Index, PresetListView.PresetEntry fne) {
+        PresetListViewItem(CB_RectF rec, int Index, PresetListView.PresetEntry fne) {
             super(rec, Index, fne.getName());
             this.mPresetEntry = fne;
         }
@@ -1481,8 +1382,8 @@ public class EditFilterSettings extends ActivityBase {
 
         private void drawIcon(Batch batch) {
             if (mPresetEntry.getIcon() != null) {
-                float iconHeight = this.getHeight() * 0.8f;
-                float iconWidth = iconHeight;
+                float iconHeight = getHeight() * 0.8f;
+                float iconWidth = getHeight() * 0.8f;
                 float y = (this.getHeight() - iconHeight) / 2f; // UI_Size_Base.that.getMargin()
                 mPresetEntry.getIcon().setBounds(left, y, iconWidth, iconHeight);
                 mPresetEntry.getIcon().draw(batch);
@@ -1490,7 +1391,7 @@ public class EditFilterSettings extends ActivityBase {
             }
         }
 
-        public PresetListView.PresetEntry getEntry() {
+        PresetListView.PresetEntry getEntry() {
             return mPresetEntry;
         }
     }

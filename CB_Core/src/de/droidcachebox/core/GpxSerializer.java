@@ -219,15 +219,13 @@ public final class GpxSerializer {
     private void exportBatch(final XmlSerializer gpx, ArrayList<String> geocodesOfBatch) throws IOException {
         CacheList cacheList;
 
-        CacheListDAO clDAO = new CacheListDAO();
-
         boolean fullDetails = true;
         boolean loadAllWaypoints = true;
         boolean withDescription = true;
 
         progressListener.publishProgress(countExported, Translation.get("readCacheDetails", String.valueOf(geocodesOfBatch.size())));
 
-        cacheList = clDAO.readCacheList(geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
+        cacheList = CacheListDAO.getInstance().readCacheList(geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
 
         for (int i = 0; i < cacheList.size(); i++) {
             if (cancel)
@@ -252,10 +250,10 @@ public final class GpxSerializer {
             }
 
             String additinalIfFound = cache.isFound() ? "|Found" : "";
-            String note = Database.GetNote(cache);
+            String note = Database.getNote(cache);
             if (note == null)
                 note = "";
-            String solver = Database.GetSolver(cache);
+            String solver = Database.getSolver(cache);
             if (solver == null)
                 solver = "";
 
@@ -402,7 +400,7 @@ public final class GpxSerializer {
     }
 
     private void writeLogs(final Cache cache) throws IOException {
-        CB_List<LogEntry> cleanLogs = Database.Logs(cache);
+        CB_List<LogEntry> cleanLogs = Database.getLogs(cache);
 
         if (cleanLogs.isEmpty()) {
             return;

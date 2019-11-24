@@ -10,33 +10,23 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import java.util.ArrayList;
 
 public abstract class FrameAnimation extends AnimationBase {
-    ArrayList<Drawable> frames;
-    int count = 0;
+    private ArrayList<Drawable> frames;
+    private int count = 0;
 
-    public FrameAnimation(float X, float Y, float Width, float Height, String Name) {
-        super(X, Y, Width, Height, Name);
-    }
-
-    public FrameAnimation(CB_RectF rec, String Name) {
+    FrameAnimation(CB_RectF rec, String Name) {
         super(rec, Name);
     }
 
-    int getFrameIndex(int Duration, int Frames) {
+    private int getFrameIndex(int Duration, int Frames) {
         // Duration != 0
         // Frames != 0
         return (1 + ((int) (GL.that.getStateTime() * 1000) % Duration) / (Duration / Frames));
     }
 
-    public void addFrame(Sprite frame) {
+    void addFrame(Sprite frame) {
         if (frames == null)
-            frames = new ArrayList<Drawable>();
+            frames = new ArrayList<>();
 
-        frames.add(new SpriteDrawable(frame));
-    }
-
-    public void addLastFrame(Sprite frame) {
-        mSpriteWidth = frame.getWidth();
-        mSpriteHeight = frame.getHeight();
         frames.add(new SpriteDrawable(frame));
     }
 

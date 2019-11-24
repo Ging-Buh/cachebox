@@ -32,7 +32,9 @@ import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public abstract class GL_View_Base extends CB_RectF {
     protected static final int MOUSE_WHEEL_POINTER_UP = -280272;
@@ -43,100 +45,124 @@ public abstract class GL_View_Base extends CB_RectF {
     protected static int nDepthCounter = 0;
     private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     private static boolean calling = false;
-    private final Matrix4 rotateMatrix = new Matrix4();
-    protected final MoveableList<GL_View_Base> childs = new MoveableList<>();
-    private final ParentInfo myInfoForChild = new ParentInfo();
-    public boolean withoutScissor = false;
-    protected Pixmap debugRegPixmap = null;
-    protected Texture debugRegTexture = null;
+    protected final MoveableList<GL_View_Base> childs;
+    private final Matrix4 rotateMatrix;
+    private final ParentInfo myInfoForChild;
+    public boolean withoutScissor;
+    public CB_RectF thisWorldRec;
+    public ParentInfo myParentInfo;
+    protected Pixmap debugRegPixmap;
+    protected Texture debugRegTexture;
     protected Vector2 lastTouchPos;
-    public CB_RectF thisWorldRec = new CB_RectF();
-    protected CB_RectF intersectRec = new CB_RectF();
-    public ParentInfo myParentInfo = new ParentInfo();
-    protected String name = "";
+    protected CB_RectF intersectRec;
+    protected String name;
     protected Drawable drawableBackground;
     protected OnClickListener mOnClickListener;
+    protected Sprite DebugSprite;
+    protected boolean onTouchUp;
+    protected boolean onTouchDown;
+    protected GL_View_Base parent;
+    protected float leftBorder;
+    protected float rightBorder;
+    protected float topBorder;
+    protected float bottomBorder;
+    protected float innerWidth;
+    protected float innerHeight;
+    protected boolean childsInvalidate;
+    protected boolean thisInvalidate;
+    protected float mScale;
+    protected Object data;
+    float Weight;
     private OnClickListener mOnLongClickListener;
     private OnClickListener mOnDoubleClickListener;
-    protected Sprite DebugSprite = null;
-    protected boolean onTouchUp = false;
-    protected boolean onTouchDown = false;
-    protected GL_View_Base parent;
-    float Weight = 1f;
-    protected float leftBorder = 0;
-    protected float rightBorder = 0;
-    protected float topBorder = 0;
-    protected float bottomBorder = 0;
-    protected float innerWidth = getWidth();
-    protected float innerHeight = getHeight();
-    protected boolean childsInvalidate = false;
-    protected boolean thisInvalidate = true;
     private float mRotate = 0;
     private float mOriginX;
     private float mOriginY;
-    protected float mScale = 1f;
-    private SkinChangedEventListener mSkinChangedEventListener = this::skinIsChanged;
-    private Color mColorFilter = null;
-    protected Object data = null;
-    private boolean forceHandleTouchEvents = false;
-    private boolean isClickable = false;
-    private boolean isLongClickable = false;
-    private boolean isDoubleClickable = false;
-    private boolean ChildIsClickable = false;
-    private boolean ChildIsLongClickable = false;
-    private boolean ChildIsDoubleClickable = false;
-    private boolean mVisible = true;
-    private boolean enabled = true;
-    private boolean isDisposed = false;
+    private SkinChangedEventListener mSkinChangedEventListener;
+    private Color mColorFilter;
+    private boolean forceHandleTouchEvents;
+    private boolean isClickable;
+    private boolean isLongClickable;
+    private boolean isDoubleClickable;
+    private boolean ChildIsClickable;
+    private boolean ChildIsLongClickable;
+    private boolean ChildIsDoubleClickable;
+    private boolean mVisible;
+    private boolean enabled;
+    private boolean isDisposed;
 
-    public GL_View_Base() {
-        super();
-        name = "";
-    }
-
-    public GL_View_Base(String Name) {
-        super();
-        name = Name;
-    }
-
-    public GL_View_Base(float X, float Y, float Width, float Height, String Name) {
-        super(X, Y, Width, Height);
-        name = Name;
-    }
-
-    public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
-        super(X, Y, Width, Height);
-        parent = Parent;
-        name = Name;
-    }
-
-    public GL_View_Base(CB_RectF rec, String Name) {
+    public GL_View_Base(CB_RectF rec, GL_View_Base parent, String name) {
         super(rec);
-        name = Name;
+        this.parent = parent;
+        this.name = name;
+        innerWidth = getWidth();
+        innerHeight = getHeight();
+        childs = new MoveableList<>();
+        rotateMatrix = new Matrix4();
+        myInfoForChild = new ParentInfo();
+        withoutScissor = false;
+        thisWorldRec = new CB_RectF();
+        myParentInfo = new ParentInfo();
+        debugRegPixmap = null;
+        debugRegTexture = null;
+        intersectRec = new CB_RectF();
+        DebugSprite = null;
+        onTouchUp = false;
+        onTouchDown = false;
+        leftBorder = 0;
+        rightBorder = 0;
+        topBorder = 0;
+        bottomBorder = 0;
+        childsInvalidate = false;
+        thisInvalidate = true;
+        mScale = 1f;
+        data = null;
+        Weight = 1f;
+        mSkinChangedEventListener = this::skinIsChanged;
+        mColorFilter = null;
+        forceHandleTouchEvents = false;
+        isClickable = false;
+        isLongClickable = false;
+        isDoubleClickable = false;
+        ChildIsClickable = false;
+        ChildIsLongClickable = false;
+        ChildIsDoubleClickable = false;
+        mVisible = true;
+        enabled = true;
+        isDisposed = false;
     }
 
-    public GL_View_Base(CB_RectF rec, GL_View_Base Parent, String Name) {
-        super(rec);
-        parent = Parent;
-        name = Name;
+    public GL_View_Base(CB_RectF rec, String name) {
+        this(rec, null, name);
     }
 
-    public GL_View_Base(SizeF size, String Name) {
-        super(0, 0, size.width, size.height);
-        name = Name;
+    public GL_View_Base(float x, float y, float width, float height, GL_View_Base parent, String name) {
+        this(new CB_RectF(x, y, width, height), parent, name);
     }
 
-    public static void CallSkinChanged() {
+    public GL_View_Base(String name) {
+        this(new CB_RectF(), null, name);
+    }
+
+    public GL_View_Base(float x, float y, float width, float height, String name) {
+        this(new CB_RectF(x, y, width, height), null, name);
+    }
+
+    public GL_View_Base(SizeF size, String name) {
+        this(new CB_RectF(0, 0, size.width, size.height), null, name);
+    }
+
+    protected static void callSkinChanged() {
         calling = true;
         for (SkinChangedEventListener listener : skinChangedEventList) {
             if (listener != null)
-                listener.SkinChanged();
+                listener.skinChanged();
         }
         calling = false;
     }
 
-    public void setForceHandleTouchEvents(boolean value) {
-        this.forceHandleTouchEvents = value;
+    protected void setForceHandleTouchEvents() {
+        this.forceHandleTouchEvents = true;
     }
 
     public void setVisible() {
@@ -169,7 +195,6 @@ public abstract class GL_View_Base extends CB_RectF {
     /**
      * Returns TRUE if with and height >0, is not disposed and is not set to invisible
      *
-     * @return
      */
     public boolean isVisible() {
         if (this.isDisposed)
@@ -211,7 +236,7 @@ public abstract class GL_View_Base extends CB_RectF {
             try {
                 if (childs != null && childs.size() > 0)
                     childs.remove(view);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             chkChildClickable();
         });
@@ -222,7 +247,7 @@ public abstract class GL_View_Base extends CB_RectF {
             try {
                 if (childs != null && childs.size() > 0)
                     childs.clear();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             chkChildClickable();
         });
@@ -233,7 +258,7 @@ public abstract class GL_View_Base extends CB_RectF {
             try {
                 if (childs != null && childs.size() > 0)
                     childs.remove(Childs);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             chkChildClickable();
         });
@@ -262,7 +287,7 @@ public abstract class GL_View_Base extends CB_RectF {
                     }
 
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 
@@ -339,18 +364,10 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     /**
-     * * get available height (not filled with objects)
-     **/
-    public float getInnerHeight() {
-        return innerHeight;
-    }
-
-    /**
      * Die renderChilds() Methode wird vom GL_Listener bei jedem Render-Vorgang aufgerufen.
      * Hier wird dann zuerst die render() Methode dieser View aufgerufen.
      * Danach werden alle Childs iteriert und deren renderChilds() Methode aufgerufen, wenn die View sichtbar ist (Visibility).
      *
-     * @param batch
      */
     public void renderChilds(final Batch batch, ParentInfo parentInfo) {
         if (myParentInfo == null)
@@ -361,7 +378,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
         if (thisInvalidate) {
             myParentInfo.setParentInfo(parentInfo);
-            CalcMyInfoForChild();
+            calcMyInfoForChild();
         }
 
         if (!withoutScissor) {
@@ -462,7 +479,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
                                 batch.setProjectionMatrix(getMyInfoForChild().Matrix());
                                 nDepthCounter++;
-                                if (view != null && !view.isDisposed())
+                                if (!view.isDisposed())
                                     view.renderChilds(batch, getMyInfoForChild());
                                 nDepthCounter--;
                             }
@@ -473,17 +490,13 @@ public abstract class GL_View_Base extends CB_RectF {
                             }
                         }
                     } catch (java.lang.IllegalStateException e) {
-                        if (view != null && view.isDisposed()) {
+                        if (view.isDisposed()) {
                             // Remove disposedView from child list
                             this.removeChild(view);
                         }
                     }
 
-                } catch (java.util.NoSuchElementException e) {
-                    break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-                } catch (java.util.ConcurrentModificationException e) {
-                    break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-                } catch (java.lang.IndexOutOfBoundsException e) {
+                } catch (NoSuchElementException | ConcurrentModificationException | IndexOutOfBoundsException e) {
                     break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
                 }
             }
@@ -553,7 +566,7 @@ public abstract class GL_View_Base extends CB_RectF {
      * Die detection, wann sich etwas geaendert hat, kommt von der ueberschriebenen CB_RectF Methode CalcCrossPos, da diese bei
      * jeder Aenderung aufgerufen wird.
      */
-    protected void CalcMyInfoForChild() {
+    private void calcMyInfoForChild() {
         childsInvalidate = true;
         thisWorldRec.setRec(this);
         thisWorldRec.offset(-this.getX() + myParentInfo.Vector().x, -this.getY() + myParentInfo.Vector().y);
@@ -575,11 +588,6 @@ public abstract class GL_View_Base extends CB_RectF {
         thisInvalidate = true;
     }
 
-    /**
-     * render
-     *
-     * @param batch
-     */
     protected abstract void render(Batch batch);
 
     public void setRotate(float Rotate) {
@@ -599,7 +607,6 @@ public abstract class GL_View_Base extends CB_RectF {
     /**
      * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
      *
-     * @param value
      */
     public void setScale(float value) {
         mScale = value;
@@ -612,9 +619,8 @@ public abstract class GL_View_Base extends CB_RectF {
             innerWidth = width - leftBorder - rightBorder;
             innerHeight = height - topBorder - bottomBorder;
             onResized(this);
-        } catch (Exception e1) {
-            int i = 0;
-            i = i + 1;
+        } catch (Exception ex) {
+            Log.err(log,"resize", ex);
         }
         DebugSprite = null;
 
@@ -814,7 +820,7 @@ public abstract class GL_View_Base extends CB_RectF {
         return resultView;
     }
 
-    public final boolean touchDragged(int x, int y, int pointer, boolean KineticPan) {
+    final boolean touchDragged(int x, int y, int pointer, boolean KineticPan) {
         // Achtung: dieser touchDragged ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
         boolean behandelt = false;
@@ -843,7 +849,7 @@ public abstract class GL_View_Base extends CB_RectF {
         return behandelt;
     }
 
-    public final boolean touchUp(int x, int y, int pointer, int button) {
+    final boolean touchUp(int x, int y, int pointer, int button) {
         // Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
         boolean behandelt = false;
@@ -876,7 +882,7 @@ public abstract class GL_View_Base extends CB_RectF {
         return behandelt;
     }
 
-    public abstract boolean onLongClick(int x, int y, int pointer, int button);
+    public abstract void onLongClick(int x, int y, int pointer, int button);
 
     public abstract boolean onTouchDown(int x, int y, int pointer, int button);
 
@@ -888,9 +894,7 @@ public abstract class GL_View_Base extends CB_RectF {
     public void dispose() {
         isDisposed = true;
         DebugSprite = null;
-
         try {
-
             GL.that.RunOnGLWithThreadCheck(() -> {
                 if (debugRegTexture != null) {
                     debugRegTexture.dispose();
@@ -902,17 +906,9 @@ public abstract class GL_View_Base extends CB_RectF {
                     debugRegPixmap = null;
                 }
             });
-
-        } catch (Exception e) {
-            Log.err(log, "RunOnGLWithThreadCheck", e);
+        } catch (Exception ex) {
+            Log.err(log, "RunOnGLWithThreadCheck", ex);
         }
-
-        try {
-
-        } catch (Exception e) {
-            Log.err(log, "dummy", e);
-        }
-
         name = null;
         data = null;
         mOnClickListener = null;
@@ -969,10 +965,6 @@ public abstract class GL_View_Base extends CB_RectF {
         mOnLongClickListener = l;
     }
 
-    public OnClickListener getOnDoubleClickListener() {
-        return mOnDoubleClickListener;
-    }
-
     /**
      * Register a callback to be invoked when this view is double clicked. If this view is not clickable, it becomes clickable.
      *
@@ -984,17 +976,17 @@ public abstract class GL_View_Base extends CB_RectF {
         mOnDoubleClickListener = l;
     }
 
-    public boolean isDoubleClickable() {
+    boolean isDoubleClickable() {
         if (!this.isVisible())
             return false;
         return isDoubleClickable | ChildIsDoubleClickable;
     }
 
-    public void setDoubleClickable(boolean value) {
-        isDoubleClickable = value;
+    protected void setDoubleClickable() {
+        isDoubleClickable = true;
     }
 
-    public boolean isLongClickable() {
+    boolean isLongClickable() {
         if (!this.isVisible())
             return false;
         return isLongClickable | ChildIsLongClickable;
@@ -1004,7 +996,7 @@ public abstract class GL_View_Base extends CB_RectF {
         isLongClickable = value;
     }
 
-    public boolean isClickable() {
+    protected boolean isClickable() {
         if (!this.isVisible())
             return false;
         return isClickable | ChildIsClickable;
@@ -1012,8 +1004,6 @@ public abstract class GL_View_Base extends CB_RectF {
 
     /**
      * if value is true, clicks will be sent else not
-     *
-     * @param value
      */
     public void setClickable(boolean value) {
         isClickable = value;
@@ -1063,7 +1053,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
     // Abfrage der clickToleranz, mit der Bestimmt wird ab welcher Bewegung ein onTouchDragged erzeugt wird und beim loslassen kein click
     // dies kann hier für einzelne Views unabhängig bestimmt werden
-    public int getClickTolerance() {
+    int getClickTolerance() {
         // wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
         // innerhalb dem erstmal kein onTouchDragged aufgerufen wird
         if (isClickable())
@@ -1091,10 +1081,6 @@ public abstract class GL_View_Base extends CB_RectF {
         mColorFilter = null;
     }
 
-    public Color getColorFilter() {
-        return mColorFilter;
-    }
-
     public void setColorFilter(Color color) {
         mColorFilter = color;
     }
@@ -1115,7 +1101,7 @@ public abstract class GL_View_Base extends CB_RectF {
         this.data = data;
     }
 
-    public ParentInfo getMyInfoForChild() {
+    protected ParentInfo getMyInfoForChild() {
         return myInfoForChild;
     }
 
@@ -1123,16 +1109,11 @@ public abstract class GL_View_Base extends CB_RectF {
      * Interface definition for a callback to be invoked when a view is clicked.
      */
     public interface OnClickListener {
-        /**
-         * Called when a view has been clicked.
-         *
-         * @param v The view that was clicked.
-         */
-        boolean onClick(GL_View_Base v, int x, int y, int pointer, int button);
+        boolean onClick(GL_View_Base view, int x, int y, int pointer, int button);
     }
 
     private interface SkinChangedEventListener {
-        void SkinChanged();
+        void skinChanged();
     }
 
 }

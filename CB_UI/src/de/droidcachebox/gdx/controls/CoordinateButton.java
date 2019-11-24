@@ -32,7 +32,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     OnClickListener click = new OnClickListener() {
 
         @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             if (edCo == null)
                 initialEdCo();
             GL.that.showActivity(edCo);
@@ -85,11 +85,11 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         edCo = new EditCoord(ActivityBase.activityRec(), "EditCoord", mActCoord, new ReturnListener() {
 
             @Override
-            public void returnCoord(Coordinate coord) {
-                if (coord != null && coord.isValid()) {
-                    mActCoord = coord;
+            public void returnCoordinate(Coordinate coordinate) {
+                if (coordinate != null && coordinate.isValid()) {
+                    mActCoord = coordinate;
                     if (mCoordinateChangedListener != null)
-                        mCoordinateChangedListener.coordinateChanged(coord);
+                        mCoordinateChangedListener.coordinateChanged(coordinate);
                     setText();
                 }
                 if (edCo != null)

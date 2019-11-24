@@ -3,7 +3,6 @@ package de.droidcachebox.gdx.controls;
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.FZKDownload.MapRepositoryInfo;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
@@ -26,7 +25,7 @@ public class MapDownloadItem extends CB_View_Base {
     private final float margin;
     private final CB_Label lblName, lblSize;
     private final String workPath;
-    private final AtomicBoolean DownloadRuns = new AtomicBoolean(false);
+    private final AtomicBoolean downloadIsRunning = new AtomicBoolean(false);
     private int lastProgress = 0;
     private ProgressBar progressBar;
     private boolean canceld = false;
@@ -66,16 +65,16 @@ public class MapDownloadItem extends CB_View_Base {
         chkExists();
     }
 
-    public static boolean deleteDirectory(File directory) {
+    private static void deleteDirectory(File directory) {
         if (directory.exists()) {
             File[] files = directory.listFiles();
             if (null != files) {
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].isDirectory()) {
-                        deleteDirectory(files[i]);
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteDirectory(file);
                     } else {
                         try {
-                            files[i].delete();
+                            file.delete();
                         } catch (IOException e) {
                             Log.err(log, e.getLocalizedMessage());
                         }
@@ -84,15 +83,14 @@ public class MapDownloadItem extends CB_View_Base {
             }
         }
         try {
-            return (directory.delete());
-        } catch (IOException e) {
-            return false;
+            directory.delete();
+        } catch (IOException ignored) {
         }
     }
 
     private void chkExists() {
         int slashPos = mapInfo.Url.lastIndexOf("/");
-        String zipFile = mapInfo.Url.substring(slashPos, mapInfo.Url.length());
+        String zipFile = mapInfo.Url.substring(slashPos);
 
         String FileString = FileIO.getFileNameWithoutExtension(zipFile);
 
@@ -100,19 +98,15 @@ public class MapDownloadItem extends CB_View_Base {
         if (file.exists()) {
             checkBoxMap.setChecked(true);
             checkBoxMap.disable();
-            checkBoxMap.setClickHandler(new OnClickListener() {
-
-                @Override
-                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                    if (checkBoxMap.isDisabled()) {
-                        checkBoxMap.enable();
-                    } else {
-                        checkBoxMap.setChecked(true);
-                        checkBoxMap.disable();
-                    }
-
-                    return true;
+            checkBoxMap.setClickHandler((view, x, y, pointer, button) -> {
+                if (checkBoxMap.isDisabled()) {
+                    checkBoxMap.enable();
+                } else {
+                    checkBoxMap.setChecked(true);
+                    checkBoxMap.disable();
                 }
+
+                return true;
             });
         }
     }
@@ -125,7 +119,7 @@ public class MapDownloadItem extends CB_View_Base {
             return;
         }
 
-        DownloadRuns.set(true);
+        downloadIsRunning.set(true);
         float ProgressHeight = (Sprites.ProgressBack.getBottomHeight() + Sprites.ProgressBack.getTopHeight());
         CB_RectF rec = new CB_RectF(checkBoxMap.getMaxX() + margin, 0, innerWidth - margin * 3 - checkBoxMap.getWidth(), ProgressHeight);
 
@@ -140,7 +134,7 @@ public class MapDownloadItem extends CB_View_Base {
 
         new Thread(() -> {
             int slashPos = mapInfo.Url.lastIndexOf("/");
-            String zipFile = mapInfo.Url.substring(slashPos + 1, mapInfo.Url.length());
+            String zipFile = mapInfo.Url.substring(slashPos + 1);
             String target = workPath + "/" + zipFile;
 
             progressBar.setProgress(lastProgress, lastProgress + " %");
@@ -187,7 +181,7 @@ public class MapDownloadItem extends CB_View_Base {
 
             lastProgress = canceld ? 0 : 100;
             progressBar.setProgress(lastProgress, lastProgress + " %");
-            DownloadRuns.set(false);
+            downloadIsRunning.set(false);
             Log.info(log, "Download everything ready");
         }).start();
 
@@ -202,10 +196,7 @@ public class MapDownloadItem extends CB_View_Base {
     }
 
     public boolean isFinished() {
-        if (DownloadRuns.get())
-            return false;
-        else
-            return true;
+        return !downloadIsRunning.get();
     }
 
     public void enable() {

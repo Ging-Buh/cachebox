@@ -66,7 +66,7 @@ public class SelectSolverFunction extends ButtonDialog {
         button1.setText(Translation.get("ok"));
         button1.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mResultListener != null) {
                     try {
                         mResultListener.selectedFunction(selectedFunction);
@@ -81,7 +81,7 @@ public class SelectSolverFunction extends ButtonDialog {
         button3.setText(Translation.get("cancel"));
         button3.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mResultListener != null)
                     try {
                         mResultListener.selectedFunction(null);
@@ -210,7 +210,7 @@ public class SelectSolverFunction extends ButtonDialog {
                         btnFct.setClickHandler(new OnClickListener() {
 
                             @Override
-                            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                                 // ColorFilter aller Buttons zurück setzen
                                 Iterator<CB_Button> btnIterator = functBtnList.iterator();
                                 do {
@@ -274,7 +274,7 @@ public class SelectSolverFunction extends ButtonDialog {
                     // Bei einem Click auf dem Category Button wird die darunterliegende CollabsBox geöfnet oder geschlossen
                     categoryButton.setClickHandler(new OnClickListener() {
                         @Override
-                        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                             lay.Toggle();
                             return false;
                         }

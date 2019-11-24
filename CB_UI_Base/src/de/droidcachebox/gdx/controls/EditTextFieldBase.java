@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.popups.CopyPastePopUp;
@@ -53,7 +52,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
         super(rec, parent, Name);
         registerPopUpLongClick();
         clipboard = PlatformUIBase.getClipboard();
-        this.setDoubleClickable(true);
+        this.setDoubleClickable();
     }
 
     public static TextFieldStyle getDefaultStyle() {

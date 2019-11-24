@@ -384,7 +384,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                         wd.close();
                         CacheListChangedListeners.getInstance().cacheListChanged();
                         FilterProperties props = FilterInstances.getLastFilter();
-                        EditFilterSettings.ApplyFilter(props);
+                        EditFilterSettings.applyFilter(props);
 
                         long ImportZeit = new Date().getTime() - ImportStart.getTime();
                         String Msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;

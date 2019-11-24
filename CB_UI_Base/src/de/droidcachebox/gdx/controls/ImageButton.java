@@ -77,7 +77,7 @@ public class ImageButton extends CB_Button {
     }
 
     public void setImage(Sprite sprite) {
-        image.setSprite(sprite, false);
+        image.setSprite(sprite);
         chkImagePos();
     }
 

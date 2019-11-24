@@ -24,6 +24,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.Point;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,27 +32,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent {
     private static final String log = "ListViewBase";
-    private final long ANIMATION_TICK = 50;
-    private final CB_List<IListPosChanged> EventHandlerList = new CB_List<IListPosChanged>();
-    protected Scrollbar scrollbar;
-    protected MoveableList<GL_View_Base> noListChilds = new MoveableList<GL_View_Base>();
-    protected Boolean mBottomAnimation = false;
-    protected int mSelectedIndex = -1;
-    protected float firstItemSize = -1;
-    protected float lastItemSize = -1;
-    protected boolean hasInvisibleItems = false;
-    protected boolean isTouch = false;
-    protected CB_List<IRunOnGL> runOnGL_List = new CB_List<IRunOnGL>();
-    protected CB_List<IRunOnGL> runOnGL_ListWaitpool = new CB_List<IRunOnGL>();
-    protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
-    protected CB_List<ListViewItemBase> clearList = new CB_List<ListViewItemBase>();
-    protected float firstPos = 0;
-    protected float lastPos = 0;
-    protected float mItemPosOffset = 0;
+    private final CB_List<IListPosChanged> EventHandlerList;
+    private Scrollbar scrollbar;
+    private MoveableList<GL_View_Base> noListChilds;
+    protected Boolean mBottomAnimation;
+    protected int mSelectedIndex;
+    protected float firstItemSize;
+    protected float lastItemSize;
+    boolean hasInvisibleItems;
+    boolean isTouch;
+    private final CB_List<IRunOnGL> runOnGL_List;
+    private final CB_List<IRunOnGL> runOnGL_ListWaitpool;
+    private AtomicBoolean isWorkOnRunOnGL;
+    CB_List<ListViewItemBase> clearList;
+    float lastPos;
+    protected float mItemPosOffset;
     /**
      * Wen True, können die Items verschoben werden
      */
-    protected Boolean mIsDraggable = true;
+    protected Boolean mIsDraggable;
     /**
      * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
      */
@@ -59,67 +58,129 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     /**
      * Enthällt die Indexes, welche schon als Child exestieren.
      */
-    protected CB_List<Integer> mAddedIndexList = new CB_List<Integer>();
+    protected CB_List<Integer> mAddedIndexList;
     /**
      * Aktuelle Position der Liste
      */
-    protected float mPos = 0;
+    protected float mPos;
     /**
      * Der Start Index, ab dem gesucht wird, ob ein Item in den Sichtbaren Bereich geschoben wurde. Damit nicht eine Liste von 1000 Items
      * abgefragt werden muss wenn nur die letzten 5 sichtbar sind.
      */
-    protected int mFirstIndex = 0;
-    protected int mLastIndex = 0;
+    int mFirstIndex;
+    int mLastIndex;
     /**
      * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so groß sind wie das kleinste Item in der List.
      */
-    protected int mMaxItemCount = -1;
-    protected float minimumItemSize = 0;
-    protected float mcalcAllSizeBase = 0f;
+    protected int mMaxItemCount;
+    protected float minimumItemSize;
+    protected float mcalcAllSizeBase;
     /**
      * Komplette Breite oder Höhe aller Items
      */
-    protected float mAllSize = 0f;
-    /**
-     * Abstand zwichen zwei Items
-     */
-    protected float mDividerSize = 2f;
-    protected boolean mMustSetPosKinetic = false;
-    protected boolean mMustSetPos = false;
-    protected float mMustSetPosValue = 0;
+    protected float mAllSize;
+    protected float mDividerSize;
+    boolean mMustSetPosKinetic;
+    protected boolean mMustSetPos;
+    private float mMustSetPosValue;
     protected CB_List<Float> mPosDefault;
     /**
-     * Wenn True, werden die Items beim verlassen des sichtbaren Bereiches Disposed und auf NULL gesetzt.
+     * Wenn True, werden die Items beim verlassen des sichtbaren Bereiches disposed und auf NULL gesetzt.
      */
-    protected boolean mCanDispose = true;
-    protected int mDragged = 0;
-    protected int mLastTouch = 0;
-    protected float mLastPos_onTouch = 0;
-    protected String mEmptyMsg = null;
-    protected BitmapFontCache emptyMsg;
-    protected boolean mReloadItems = false;
-    protected boolean selectionchanged = false;
-    private float mAnimationTarget = 0;
+    protected boolean mCanDispose;
+    protected int mDragged;
+    protected int mLastTouch;
+    protected float mLastPos_onTouch;
+    private String mEmptyMsg;
+    private BitmapFontCache emptyMsg;
+    boolean mReloadItems;
+    boolean selectionChanged;
+    private float mAnimationTarget;
     private Timer mAnimationTimer;
 
-    public ListViewBase(CB_RectF rec, String Name) {
+    ListViewBase(CB_RectF rec, String Name) {
         super(rec, Name);
-        this.setClickable(true);
+        setClickable(true);
+        EventHandlerList = new CB_List<>();
+        noListChilds = new MoveableList<>();
+        runOnGL_List = new CB_List<>();
+        runOnGL_ListWaitpool = new CB_List<>();
+        isWorkOnRunOnGL = new AtomicBoolean(false);
+        clearList = new CB_List<>();
+        lastPos = 0;
+        mBottomAnimation = false;
+        mSelectedIndex = -1;
+        firstItemSize = -1;
+        lastItemSize = -1;
+        hasInvisibleItems = false;
+        isTouch = false;
+        mItemPosOffset = 0;
+        mIsDraggable = true;
+        mAddedIndexList = new CB_List<>();
+        mPos = 0;
+        mFirstIndex = 0;
+        mLastIndex = 0;
+        mMaxItemCount = -1;
+        minimumItemSize = 0;
+        mcalcAllSizeBase = 0f;
+        mAllSize = 0f;
+        mDividerSize = 2f;
+        mMustSetPosKinetic = false;
+        mMustSetPos = false;
+        mMustSetPosValue = 0;
+        mCanDispose = true;
+        mDragged = 0;
+        mLastTouch = 0;
+        mLastPos_onTouch = 0;
+        mEmptyMsg = "";
+        mReloadItems = false;
+        selectionChanged = false;
+        mAnimationTarget = 0;
     }
 
-    public ListViewBase(CB_RectF rec, GL_View_Base parent, String name) {
+    ListViewBase(CB_RectF rec, GL_View_Base parent, String name) {
         super(rec, parent, name);
         this.setClickable(true);
-    }
-
-    public void setItemPosOffset(float offset) {
-        mItemPosOffset = offset;
+        EventHandlerList = new CB_List<>();
+        noListChilds = new MoveableList<>();
+        runOnGL_List = new CB_List<>();
+        runOnGL_ListWaitpool = new CB_List<>();
+        isWorkOnRunOnGL = new AtomicBoolean(false);
+        clearList = new CB_List<>();
+        lastPos = 0;
+        mBottomAnimation = false;
+        mSelectedIndex = -1;
+        firstItemSize = -1;
+        lastItemSize = -1;
+        hasInvisibleItems = false;
+        isTouch = false;
+        mItemPosOffset = 0;
+        mIsDraggable = true;
+        mAddedIndexList = new CB_List<>();
+        mPos = 0;
+        mFirstIndex = 0;
+        mLastIndex = 0;
+        mMaxItemCount = -1;
+        minimumItemSize = 0;
+        mcalcAllSizeBase = 0f;
+        mAllSize = 0f;
+        mDividerSize = 2f;
+        mMustSetPosKinetic = false;
+        mMustSetPos = false;
+        mMustSetPosValue = 0;
+        mCanDispose = true;
+        mDragged = 0;
+        mLastTouch = 0;
+        mLastPos_onTouch = 0;
+        mEmptyMsg = null;
+        mReloadItems = false;
+        selectionChanged = false;
+        mAnimationTarget = 0;
     }
 
     /**
      * Return With for horizontal and Height for vertical ListView
      *
-     * @return
      */
     protected abstract float getListViewLength();
 
@@ -128,7 +189,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             EventHandlerList.add(handler);
     }
 
-    public void RunIfListInitial(IRunOnGL run) {
+    public void runIfListInitial(IRunOnGL run) {
 
         // if in progress put into pool
         if (isWorkOnRunOnGL.get()) {
@@ -143,7 +204,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         GL.that.renderOnce();
     }
 
-    protected void callListPosChangedEvent() {
+    void callListPosChangedEvent() {
         for (int i = 0, n = EventHandlerList.size(); i < n; i++) {
             IListPosChanged handler = EventHandlerList.get(i);
             if (handler != null)
@@ -154,10 +215,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     @Override
     public float getAllListSize() {
         return mAllSize;
-    }
-
-    public float getListPos() {
-        return mPos;
     }
 
     @Override
@@ -175,10 +232,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich länger dauert, ist
      * der Standard auf False gesetzt.
      *
-     * @param value
      */
-    public void setHasInvisibleItems(Boolean value) {
-        hasInvisibleItems = value;
+    protected void setHasInvisibleItems() {
+        hasInvisibleItems = true;
     }
 
     public void setBaseAdapter(Adapter adapter) {
@@ -216,9 +272,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     /**
-     * Stelt den Abstand zwichen zwei Items ein
+     * distance between 2 items
      *
-     * @param value
      */
     public void setDividerSize(float value) {
         mDividerSize = value;
@@ -272,7 +327,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      * Wenn Kinetic == True werden mehr Items geladen, damit beim schnellen Scrollen die Items schon erstellt sind, bevor sie in den
      * sichtbaren Bereich kommen.
      *
-     * @param Kinetic
      */
     protected abstract void addVisibleItems(boolean Kinetic);
 
@@ -311,8 +365,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                     GlyphLayout bounds = emptyMsg.setText(mEmptyMsg, 0f, 0f, this.getWidth(), Align.left, true);
                     emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                Log.err(log, "render", ex);
             }
             if (emptyMsg != null)
                 emptyMsg.draw(batch, 0.5f);
@@ -338,7 +392,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                     isWorkOnRunOnGL.set(false);
                     // work RunOnGlPool
                     synchronized (runOnGL_ListWaitpool) {
-                        if (runOnGL_ListWaitpool != null && runOnGL_ListWaitpool.size() > 0) {
+                        if (runOnGL_ListWaitpool.size() > 0) {
                             if (runOnGL_ListWaitpool.size() > 0) {
                                 for (int i = 0, n = runOnGL_ListWaitpool.size(); i < n; i++) {
                                     IRunOnGL run = runOnGL_ListWaitpool.get(i);
@@ -363,8 +417,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     public void renderChilds(final Batch batch, ParentInfo parentInfo) {
         try {
             super.renderChilds(batch, parentInfo);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(log, "renderChilds", ex);
         }
 
     }
@@ -402,14 +456,15 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         return true;
     }
 
-    protected void startAnimationtoTop() {
+    void startAnimationtoTop() {
         if (mBaseAdapter == null)
             return;
         mBottomAnimation = false;
+        float firstPos = 0;
         scrollTo(firstPos);
     }
 
-    protected void startAnimationToBottom() {
+    void startAnimationToBottom() {
         if (mBaseAdapter == null)
             return;
         mBottomAnimation = true;
@@ -435,8 +490,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             } else {
                 setListPos(mPosDefault.get(mPosDefault.size() - 1), true);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(log, "scroll to item", ex);
         }
 
     }
@@ -448,6 +503,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
         mAnimationTimer = new Timer();
         try {
+            long ANIMATION_TICK = 50;
             mAnimationTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -509,7 +565,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     public void setSelection(int i) {
         if (mSelectedIndex != i && i >= 0) {
-            selectionchanged = true;
+            selectionChanged = true;
             synchronized (childs) {
 
                 for (int j = 0, m = childs.size(); j < m; j++) {
@@ -548,13 +604,12 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      * x= first full visible Index<br>
      * y= last full visible Index<br>
      *
-     * @return
      */
     public Point getFirstAndLastVisibleIndex() {
         Point ret = new Point();
         synchronized (childs) {
 
-            CB_List<ListViewItemBase> visibleList = new CB_List<ListViewItemBase>();
+            CB_List<ListViewItemBase> visibleList = new CB_List<>();
 
             for (int j = 0, m = childs.size(); j < m; j++) {
                 GL_View_Base v = childs.get(j);
@@ -647,9 +702,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     public void removeChild(final GL_View_Base view) {
         GL.that.RunOnGL(() -> {
             try {
-                if (childs != null && childs.size() > 0)
+                if (childs.size() > 0)
                     childs.remove(view);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             chkChildClickable();
         });
@@ -660,9 +715,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
         GL.that.RunOnGLWithThreadCheck(() -> {
             try {
-                if (childs != null && childs.size() > 0)
+                if (childs.size() > 0)
                     childs.clear();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             chkChildClickable();
         });
@@ -672,9 +727,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
         GL.that.RunOnGLWithThreadCheck(() -> {
             try {
-                if (childs != null && childs.size() > 0)
+                if (childs.size() > 0)
                     childs.remove(Childs);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             chkChildClickable();
         });
@@ -701,14 +756,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         }
         clearList = null;
 
-        if (runOnGL_List != null) {
-            runOnGL_List.clear();
-        }
-        runOnGL_List = null;
-        if (runOnGL_ListWaitpool != null) {
-            runOnGL_ListWaitpool.clear();
-        }
-        runOnGL_ListWaitpool = null;
+        runOnGL_List.clear();
+        runOnGL_ListWaitpool.clear();
         if (mAddedIndexList != null) {
             mAddedIndexList.clear();
         }
@@ -727,6 +776,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     public interface IListPosChanged {
-        public void ListPosChanged();
+        void ListPosChanged();
     }
 }

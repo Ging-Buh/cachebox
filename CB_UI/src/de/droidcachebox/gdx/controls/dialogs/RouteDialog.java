@@ -103,7 +103,7 @@ public class RouteDialog extends ButtonDialog {
 
         btMotoWay.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 switchVisibility(0);
                 return true;
             }
@@ -112,7 +112,7 @@ public class RouteDialog extends ButtonDialog {
         btCycleWay.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 switchVisibility(1);
                 return true;
             }
@@ -121,7 +121,7 @@ public class RouteDialog extends ButtonDialog {
         btFootWay.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 switchVisibility(2);
                 return true;
             }

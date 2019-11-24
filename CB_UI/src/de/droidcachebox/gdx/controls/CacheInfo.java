@@ -120,7 +120,7 @@ public class CacheInfo extends CB_View_Base {
     }
 
     private static String getLastFoundLogDate(Cache mCache) {
-        CB_List<LogEntry> logs = Database.Logs(mCache);
+        CB_List<LogEntry> logs = Database.getLogs(mCache);
         for (int i = 0, n = logs.size(); i < n; i++) {
             LogEntry l = logs.get(i);
             if (l.Type == LogTypes.found) {

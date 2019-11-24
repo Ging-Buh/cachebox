@@ -75,8 +75,7 @@ public class DeleteDialog extends ButtonDialog {
 
                 @Override
                 public void run() {
-                    CacheListDAO dao = new CacheListDAO();
-                    long nun = dao.deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
+                    long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
                             CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
                     cleanupLogs();
                     cleanupWaypoints();
@@ -84,7 +83,7 @@ public class DeleteDialog extends ButtonDialog {
 
                     // reset Filter
                     FilterInstances.setLastFilter(new FilterProperties());
-                    EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());// all Caches
+                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());// all Caches
 
                     String msg = Translation.get("DeletedCaches", String.valueOf(nun));
                     GL.that.Toast(msg);
@@ -102,7 +101,7 @@ public class DeleteDialog extends ButtonDialog {
         btDelArchived.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 close();
 
                 wd = CancelWaitDialog.ShowWait(Translation.get("DelArchived"), new IcancelListener() {
@@ -115,14 +114,13 @@ public class DeleteDialog extends ButtonDialog {
 
                     @Override
                     public void run() {
-                        CacheListDAO dao = new CacheListDAO();
-                        long nun = dao.deleteArchived(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+                        long nun = CacheListDAO.getInstance().deleteArchived(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 
                         cleanupLogs();
                         cleanupWaypoints();
                         wd.close();
 
-                        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+                        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
                         String msg = Translation.get("DeletedCaches", String.valueOf(nun));
                         GL.that.Toast(msg);
@@ -141,7 +139,7 @@ public class DeleteDialog extends ButtonDialog {
         btDelFounds.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 close();
 
                 wd = CancelWaitDialog.ShowWait(Translation.get("DelFound"), new IcancelListener() {
@@ -154,13 +152,12 @@ public class DeleteDialog extends ButtonDialog {
 
                     @Override
                     public void run() {
-                        CacheListDAO dao = new CacheListDAO();
-                        long nun = dao.deleteFinds(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+                        long nun = CacheListDAO.getInstance().deleteFinds(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
                         cleanupLogs();
                         cleanupWaypoints();
                         wd.close();
 
-                        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+                        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
                         String msg = Translation.get("DeletedCaches", String.valueOf(nun));
                         GL.that.Toast(msg);

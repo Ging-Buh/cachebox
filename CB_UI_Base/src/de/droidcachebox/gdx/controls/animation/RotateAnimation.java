@@ -24,18 +24,13 @@ import de.droidcachebox.gdx.math.CB_RectF;
  * @author Longri
  */
 public abstract class RotateAnimation extends AnimationBase {
-    protected static final int ANIMATION_DURATION = 2000;
+    static final int ANIMATION_DURATION = 2000;
     private float mOriginX;
     private float mOriginY;
     private float mScale = 1f;
-    private float animateRotateValue = 0;
     private Sprite mDrawable;
 
-    public RotateAnimation(float X, float Y, float Width, float Height, String Name) {
-        super(X, Y, Width, Height, Name);
-    }
-
-    public RotateAnimation(CB_RectF rec, String Name) {
+    RotateAnimation(CB_RectF rec, String Name) {
         super(rec, Name);
     }
 
@@ -86,7 +81,7 @@ public abstract class RotateAnimation extends AnimationBase {
         // calc Rotation
         // ####################################################################
 
-        animateRotateValue = (1 + ((int) (GL.that.getStateTime() * 1000) % this.mDuration) / (this.mDuration / 360));
+        float animateRotateValue = (1 + ((int) (GL.that.getStateTime() * 1000f) % mDuration) / (mDuration / 360f));
 
         // ####################################################################
         // Draw

@@ -1583,7 +1583,7 @@ public class EditTextField extends EditTextFieldBase {
              * shows PastePopUp<br>
              */
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 hideSelectionMarker();
                 selectedArea = new Selection(getClickedCursor(x, y), getClickedCursor(x, y));
                 showSelectionMarker(SelectionMarker.Type.Left, selectedArea.cursorStart);

@@ -170,7 +170,7 @@ public class V_ListView extends ListViewBase {
                     // RenderRequest
                     GL.that.renderOnce();
 
-                    if (selectionchanged) {
+                    if (selectionChanged) {
                         Point lastAndFirst = getFirstAndLastVisibleIndex();
 
                         //						if (lastAndFirst.y == -1)
@@ -186,7 +186,7 @@ public class V_ListView extends ListViewBase {
                         } else {
                             scrollTo(0);
                         }
-                        selectionchanged = false;
+                        selectionChanged = false;
                     }
                 }
             }

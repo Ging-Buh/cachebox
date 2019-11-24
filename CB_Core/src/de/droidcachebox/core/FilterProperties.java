@@ -46,26 +46,26 @@ public class FilterProperties {
     // for an area
     // geoCache is shown, if >= minValue and <= maxValue
     // initialized with the corresponding min- and max values
-    public int finds; // 0
-    public int notAvailable; // 1
-    public int archived; // 2
-    public int own; // 3
-    public int containsTravelbugs; // 4
-    public int favorites; // 5
-    public int listingChanged; // 6
-    public int withManualWaypoint; // 7
-    public int hasUserData; // 8
-    public double minDifficulty; // 9
-    public double maxDifficulty; // 10
-    public double minTerrain; // 11
-    public double maxTerrain; // 12
-    public double minContainerSize; // 13
-    public double maxContainerSize; // 14
-    public double minRating; // 15
-    public double maxRating; // 16
-    public int hasCorrectedCoordinates; // 17
-    public double minFavPoints; // 18
-    public double maxFavPoints; // 19
+    private int finds; // 0
+    private int notAvailable; // 1
+    private int archived; // 2
+    private int own; // 3
+    private int containsTravelbugs; // 4
+    private int favorites; // 5
+    private int listingChanged; // 6
+    private int withManualWaypoint; // 7
+    private int hasUserData; // 8
+    private double minDifficulty; // 9
+    private double maxDifficulty; // 10
+    private double minTerrain; // 11
+    private double maxTerrain; // 12
+    private double minContainerSize; // 13
+    private double maxContainerSize; // 14
+    private double minRating; // 15
+    private double maxRating; // 16
+    private int hasCorrectedCoordinates; // 17
+    private double minFavPoints; // 18
+    private double maxFavPoints; // 19
     // json.getBoolean("isHistory"); // only remember, that last filter was this
     // the GCCodes are not saved in db but taken from CoreSettingsForward.cacheHistory
     public boolean isHistory;
@@ -85,8 +85,8 @@ public class FilterProperties {
     public String filterGcCode;
     // json.optString("filterOwner", "");
     public String filterOwner;
-    // json.getBoolean("isUserDefinedSQL");
-    public boolean isUserDefinedSQL;
+    // json.optString("UserDefinedSQL");
+    private String userDefinedSQL;
 
     /**
      * creates the FilterProperties with default values.
@@ -115,7 +115,7 @@ public class FilterProperties {
                 try {
                     JSONObject json = (JSONObject) tokener.nextValue();
                     isHistory = json.optBoolean("isHistory", false);
-                    isUserDefinedSQL = json.optBoolean("isUserDefinedSQL", false);
+                    userDefinedSQL = json.optString("UserDefinedSQL", "");
 
                     String caches = json.getString("caches");
                     String[] parts = caches.split(SEPARATOR);
@@ -318,7 +318,10 @@ public class FilterProperties {
 
     public FilterProperties(boolean b) {
         initCreation();
-        setUserDefinedSQL();
+        if (b)
+        userDefinedSQL = "     ";
+        else
+            userDefinedSQL = "";
     }
 
     private String join(String separator, ArrayList<String> array) {
@@ -338,8 +341,7 @@ public class FilterProperties {
      */
     private void initCreation() {
         isHistory = false;
-        isUserDefinedSQL = false;
-
+        userDefinedSQL = "";
         finds = 0;
         notAvailable = 0;
         archived = 0;
@@ -400,6 +402,166 @@ public class FilterProperties {
         return result;
     }
 
+    public int getFinds() {
+        return finds;
+    }
+
+    public void setFinds(int finds) {
+        this.finds = finds;
+    }
+
+    public int getNotAvailable() {
+        return notAvailable;
+    }
+
+    public void setNotAvailable(int notAvailable) {
+        this.notAvailable = notAvailable;
+    }
+
+    public int getArchived() {
+        return archived;
+    }
+
+    public void setArchived(int archived) {
+        this.archived = archived;
+    }
+
+    public int getOwn() {
+        return own;
+    }
+
+    public void setOwn(int own) {
+        this.own = own;
+    }
+
+    public int getContainsTravelbugs() {
+        return containsTravelbugs;
+    }
+
+    public void setContainsTravelbugs(int containsTravelbugs) {
+        this.containsTravelbugs = containsTravelbugs;
+    }
+
+    public int getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(int favorites) {
+        this.favorites = favorites;
+    }
+
+    public int getHasUserData() {
+        return hasUserData;
+    }
+
+    public void setHasUserData(int hasUserData) {
+        this.hasUserData = hasUserData;
+    }
+
+    public int getListingChanged() {
+        return listingChanged;
+    }
+
+    public void setListingChanged(int listingChanged) {
+        this.listingChanged = listingChanged;
+    }
+
+    public int getWithManualWaypoint() {
+        return withManualWaypoint;
+    }
+
+    public void setWithManualWaypoint(int withManualWaypoint) {
+        this.withManualWaypoint = withManualWaypoint;
+    }
+
+    public int getHasCorrectedCoordinates() {
+        return hasCorrectedCoordinates;
+    }
+
+    public void setHasCorrectedCoordinates(int hasCorrectedCoordinates) {
+        this.hasCorrectedCoordinates = hasCorrectedCoordinates;
+    }
+
+    public double getMinDifficulty() {
+        return minDifficulty;
+    }
+
+    public void setMinDifficulty(double minDifficulty) {
+        this.minDifficulty = minDifficulty;
+    }
+
+    public double getMaxDifficulty() {
+        return maxDifficulty;
+    }
+
+    public void setMaxDifficulty(double maxDifficulty) {
+        this.maxDifficulty = maxDifficulty;
+    }
+
+    public double getMinTerrain() {
+        return minTerrain;
+    }
+
+    public void setMinTerrain(double minTerrain) {
+        this.minTerrain = minTerrain;
+    }
+
+    public double getMaxTerrain() {
+        return maxTerrain;
+    }
+
+    public void setMaxTerrain(double maxTerrain) {
+        this.maxTerrain = maxTerrain;
+    }
+
+    public double getMinContainerSize() {
+        return minContainerSize;
+    }
+
+    public void setMinContainerSize(double minContainerSize) {
+        this.minContainerSize = minContainerSize;
+    }
+
+    public double getMaxContainerSize() {
+        return maxContainerSize;
+    }
+
+    public void setMaxContainerSize(double maxContainerSize) {
+        this.maxContainerSize = maxContainerSize;
+    }
+
+    public double getMinRating() {
+        return minRating;
+    }
+
+    public void setMinRating(double minRating) {
+        this.minRating = minRating;
+    }
+
+    public double getMaxRating() {
+        return maxRating;
+    }
+
+    public void setMaxRating(double maxRating) {
+        this.maxRating = maxRating;
+    }
+
+    public double getMinFavPoints() {
+        return minFavPoints;
+    }
+
+    public void setMinFavPoints(double minFavPoints) {
+        this.minFavPoints = minFavPoints;
+    }
+
+    public double getMaxFavPoints() {
+        return maxFavPoints;
+    }
+
+    public void setMaxFavPoints(double maxFavPoints) {
+        this.maxFavPoints = maxFavPoints;
+    }
+
     /**
      * True, wenn FilterProperties eine Filterung nach Name, Gc-Code oder Owner enth&auml;lt!
      *
@@ -421,8 +583,9 @@ public class FilterProperties {
             JSONObject json = new JSONObject();
             if (isHistory)
                 json.put("isHistory", true);
-            if (isUserDefinedSQL)
-                json.put("isUserDefinedSQL", true);
+            if (userDefinedSQL.length() > 0) {
+                json.put("UserDefinedSQL", userDefinedSQL);
+            }
             // add Cache properties
             json.put("caches", finds + SEPARATOR
                     + notAvailable + SEPARATOR
@@ -518,8 +681,9 @@ public class FilterProperties {
                 }
             }
             return join(" or ", orParts);
-        } else if (isUserDefinedSQL) {
-            return "INNER JOIN (SELECT CacheId AS cid, cnt FROM (SELECT COUNT(Type) AS cnt, CacheId FROM Logs WHERE Type = 0 GROUP BY CacheId) WHERE cnt = 0) on c.Id = cid";
+        } else if (userDefinedSQL.length() > 0) {
+            return userDefinedSQL;
+            // "     left JOIN Logs on Caches.Id = Logs.CacheId where Logs.Type is NULL";
         } else {
             userName = userName.replace("'", "''");
 
@@ -757,8 +921,11 @@ public class FilterProperties {
                 return false;
         }
 
-        if (isUserDefinedSQL != filter.isUserDefinedSQL) return false;
-
+        if (userDefinedSQL.length() > 0) {
+            if (!getSqlWhere("").equals(filter.getSqlWhere(""))) {
+                return false;
+            }
+        }
 
         return isHistory == filter.isHistory;
     }
@@ -786,7 +953,6 @@ public class FilterProperties {
             return false;
         if (chkFilterBoolean(hasCorrectedCoordinates, geoCache.hasCorrectedCoordinates()))
             return false;
-        // TODO implement => if (chkFilterBoolean(WithManualWaypoint, cache.)) return false;
         // TODO ? the other restrictions?
         return mCacheTypes[geoCache.getType().ordinal()];
     }
@@ -801,9 +967,5 @@ public class FilterProperties {
         }
         return false;
     }
-
-    public void setUserDefinedSQL() {
-        isUserDefinedSQL = true;
-    };
 
 }

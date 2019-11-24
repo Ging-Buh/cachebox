@@ -50,7 +50,7 @@ public class GestureButton extends CB_Button {
     private Image mButtonImage;
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             // create the menu for the executed action aktActionView != null and view is visible
             // for CB_Action_ShowActivity the view is always null and stays invisible, no menu is shown. you have to long click.
             // in very early previous versions only the context menu is shown.
@@ -147,7 +147,7 @@ public class GestureButton extends CB_Button {
 
     private final OnClickListener longClickListener = new OnClickListener() {
         @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             // MessageBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
             // Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
             // Actions gewählt werden kann

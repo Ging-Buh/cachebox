@@ -162,7 +162,7 @@ public class TB_Log extends ActivityBase {
                 msg = Translation.get("retrieveAt") + ": " + GlobalCore.br + c.getName();
             }
 
-            CacheIcon.setSprite(Sprites.getSprite("big" + c.getType().name()), false);
+            CacheIcon.setSprite(Sprites.getSprite("big" + c.getType().name()));
 
             lblPlaced.setWidth(contentBox.getInnerWidth() - CacheIcon.getWidth() - (margin * 3));
             lblPlaced.setWrappedText(msg);

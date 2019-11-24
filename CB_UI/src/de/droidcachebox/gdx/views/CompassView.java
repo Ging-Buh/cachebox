@@ -29,12 +29,12 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.views.MapView.MapMode;
 import de.droidcachebox.locator.*;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.MathUtils;
@@ -43,6 +43,7 @@ import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, invalidateTextureEvent, CacheListChangedListeners.CacheListChangedListener {
@@ -656,7 +657,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             else
                 directionToTarget = bearing;
 
-            String sBearing = Translation.get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
+            String sBearing = Translation.get("directionToTarget") + " : " + String.format(Locale.US,"%.0f", directionToTarget) + "°";
             lblBearing.setText(sBearing);
         }
 
@@ -887,7 +888,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             for (Image img : att) {
                 if (img != null)
                     img.dispose();
-                img = null;
             }
             att = null;
         }

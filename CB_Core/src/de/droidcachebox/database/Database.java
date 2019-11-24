@@ -22,10 +22,7 @@ import de.droidcachebox.utils.log.Log;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Map.Entry;
 
 public abstract class Database extends Database_Core {
@@ -54,35 +51,35 @@ public abstract class Database extends Database_Core {
     }
 
     // Methoden für Waypoint
-    public static void DeleteFromDatabase(Waypoint WP) {
+    public static void deleteFromDatabase(Waypoint WP) {
         Replication.WaypointDelete(WP.CacheId, 0, 1, WP.getGcCode());
         try {
             Data.sql.delete("Waypoint", "GcCode='" + WP.getGcCode() + "'", null);
         } catch (Exception exc) {
-            Log.err(Database.Data.log, "Waypoint.DeleteFromDataBase()", "", exc);
+            Log.err(log, "Waypoint.DeleteFromDataBase()", "", exc);
         }
     }
 
-    private boolean WaypointExists(String gcCode) {
+    private boolean waypointExists(String gcCode) {
         CoreCursor c = Database.Data.sql.rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[]{gcCode});
         {
             c.moveToFirst();
-            while (!c.isAfterLast()) {
-
-                try {
-                    c.close();
-                    return true;
-                } catch (Exception e) {
-                    return false;
-                }
+            if (!c.isAfterLast()) {
+                do {
+                    try {
+                        c.close();
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                } while (!c.isAfterLast());
             }
             c.close();
-
             return false;
         }
     }
 
-    public String CreateFreeGcCode(String cacheGcCode) throws Exception {
+    public String createFreeGcCode(String cacheGcCode) throws Exception {
         String suffix = cacheGcCode.substring(2);
         String firstCharCandidates = "CBXADEFGHIJKLMNOPQRSTUVWYZ0123456789";
         String secondCharCandidates = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -90,20 +87,20 @@ public abstract class Database extends Database_Core {
         for (int i = 0; i < firstCharCandidates.length(); i++)
             for (int j = 0; j < secondCharCandidates.length(); j++) {
                 String gcCode = firstCharCandidates.substring(i, i + 1) + secondCharCandidates.substring(j, j + 1) + suffix;
-                if (!Data.WaypointExists(gcCode))
+                if (!Data.waypointExists(gcCode))
                     return gcCode;
             }
         throw new Exception("Alle GcCodes sind bereits vergeben! Dies sollte eigentlich nie vorkommen!");
     }
 
     // Methodes für Cache
-    public static String GetNote(Cache cache) {
-        String resultString = GetNote(cache.Id);
+    public static String getNote(Cache cache) {
+        String resultString = getNote(cache.Id);
         cache.setNoteChecksum((int) SDBM_Hash.sdbm(resultString));
         return resultString;
     }
 
-    public static String GetNote(long cacheId) {
+    public static String getNote(long cacheId) {
         String resultString = "";
         CoreCursor c = Database.Data.sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(cacheId)});
         c.moveToFirst();
@@ -120,7 +117,7 @@ public abstract class Database extends Database_Core {
      * @param cacheId
      * @param value
      */
-    public static void SetNote(long cacheId, String value) {
+    public static void setNote(long cacheId, String value) {
         Parameters args = new Parameters();
         args.put("Notes", value);
         args.put("HasUserData", true);
@@ -128,29 +125,23 @@ public abstract class Database extends Database_Core {
         Database.Data.sql.update("Caches", args, "id=" + cacheId, null);
     }
 
-    public static void SetNote(Cache cache, String value) {
+    public static void setNote(Cache cache, String value) {
         int newNoteCheckSum = (int) SDBM_Hash.sdbm(value);
 
         Replication.NoteChanged(cache.Id, cache.getNoteChecksum(), newNoteCheckSum);
         if (newNoteCheckSum != cache.getNoteChecksum()) {
-            SetNote(cache.Id, value);
+            setNote(cache.Id, value);
             cache.setNoteChecksum(newNoteCheckSum);
         }
     }
 
-    public static void SetFound(long cacheId, boolean value) {
-        Parameters args = new Parameters();
-        args.put("found", value);
-        Database.Data.sql.update("Caches", args, "id=" + cacheId, null);
-    }
-
-    public static String GetSolver(Cache cache) {
-        String resultString = GetSolver(cache.Id);
+    public static String getSolver(Cache cache) {
+        String resultString = getSolver(cache.Id);
         cache.setSolverChecksum((int) SDBM_Hash.sdbm(resultString));
         return resultString;
     }
 
-    public static String GetSolver(long cacheId) {
+    public static String getSolver(long cacheId) {
         try {
             String resultString = "";
             CoreCursor c = Database.Data.sql.rawQuery("select Solver from Caches where Id=?", new String[]{String.valueOf(cacheId)});
@@ -168,10 +159,8 @@ public abstract class Database extends Database_Core {
     /**
      * geänderten Solver nur in die DB schreiben
      *
-     * @param cacheId
-     * @param value
      */
-    public static void SetSolver(long cacheId, String value) {
+    private static void setSolver(long cacheId, String value) {
         Parameters args = new Parameters();
         args.put("Solver", value);
         args.put("HasUserData", true);
@@ -179,17 +168,17 @@ public abstract class Database extends Database_Core {
         Database.Data.sql.update("Caches", args, "id=" + cacheId, null);
     }
 
-    public static void SetSolver(Cache cache, String value) {
+    public static void setSolver(Cache cache, String value) {
         int newSolverCheckSum = (int) SDBM_Hash.sdbm(value);
 
         Replication.SolverChanged(cache.Id, cache.getSolverChecksum(), newSolverCheckSum);
         if (newSolverCheckSum != cache.getSolverChecksum()) {
-            SetSolver(cache.Id, value);
+            setSolver(cache.Id, value);
             cache.setSolverChecksum(newSolverCheckSum);
         }
     }
 
-    public static CB_List<LogEntry> Logs(Cache cache) {
+    public static CB_List<LogEntry> getLogs(Cache cache) {
         CB_List<LogEntry> result = new CB_List<>();
         if (cache == null) // if no cache is selected!
             return result;
@@ -197,7 +186,7 @@ public abstract class Database extends Database_Core {
 
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
-            LogEntry logent = getLogEntry(cache, reader, true);
+            LogEntry logent = getLogEntry(reader);
             if (logent != null)
                 result.add(logent);
             reader.moveToNext();
@@ -207,7 +196,7 @@ public abstract class Database extends Database_Core {
         return result;
     }
 
-    private static LogEntry getLogEntry(Cache cache, CoreCursor reader, boolean filterBbCode) {
+    private static LogEntry getLogEntry(CoreCursor reader) {
         int intLogType = reader.getInt(3);
         if (intLogType < 0 || intLogType > 13)
             return null;
@@ -217,10 +206,10 @@ public abstract class Database extends Database_Core {
         retLogEntry.CacheId = reader.getLong(0);
 
         String sDate = reader.getString(1);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
             retLogEntry.Timestamp = iso8601Format.parse(sDate);
-        } catch (ParseException e) {
+        } catch (ParseException ignored) {
         }
         retLogEntry.Finder = reader.getString(2);
         retLogEntry.Type = LogTypes.values()[reader.getInt(3)];
@@ -228,17 +217,15 @@ public abstract class Database extends Database_Core {
         retLogEntry.Comment = reader.getString(4);
         retLogEntry.Id = reader.getLong(5);
 
-        if (filterBbCode) {
-            int lIndex;
+        int lIndex;
 
-            while ((lIndex = retLogEntry.Comment.indexOf('[')) >= 0) {
-                int rIndex = retLogEntry.Comment.indexOf(']', lIndex);
+        while ((lIndex = retLogEntry.Comment.indexOf('[')) >= 0) {
+            int rIndex = retLogEntry.Comment.indexOf(']', lIndex);
 
-                if (rIndex == -1)
-                    break;
+            if (rIndex == -1)
+                break;
 
-                retLogEntry.Comment = retLogEntry.Comment.substring(0, lIndex) + retLogEntry.Comment.substring(rIndex + 1);
-            }
+            retLogEntry.Comment = retLogEntry.Comment.substring(0, lIndex) + retLogEntry.Comment.substring(rIndex + 1);
         }
 
         return retLogEntry;
@@ -293,7 +280,7 @@ public abstract class Database extends Database_Core {
             // In this case changes of Waypoints, Solvertext, Notes must be noted in the Table Replication...
             MasterDatabaseId = readConfigLong("MasterDatabaseId");
         }
-        return result;
+        return true;
     }
 
     @Override
@@ -368,8 +355,8 @@ public abstract class Database extends Database_Core {
 
                         // alte Category Tabelle löschen
                         sql.delete("Category", "", null);
-                        HashMap<Long, String> gpxFilenames = new HashMap<Long, String>();
-                        HashMap<String, Long> categories = new HashMap<String, Long>();
+                        HashMap<Long, String> gpxFilenames = new HashMap<>();
+                        HashMap<String, Long> categories = new HashMap<>();
 
                         CoreCursor reader = Data.sql.rawQuery("select ID, GPXFilename from GPXFilenames", null);
                         reader.moveToFirst();
@@ -471,9 +458,6 @@ public abstract class Database extends Database_Core {
                     if (lastDatabaseSchemeVersion < 1024) {
                         Data.sql.execSQL("ALTER TABLE [Waypoint] ADD COLUMN [IsStart] BOOLEAN DEFAULT 'false' NULL");
                     }
-                    if (lastDatabaseSchemeVersion < 1025) {
-                        // nicht mehr benötigt Data.sql.execSQL("ALTER TABLE [Waypoint] ADD COLUMN [UserNote] ntext NULL");
-                    }
 
                     if (lastDatabaseSchemeVersion < 1026) {
                         // add one column for short description
@@ -570,7 +554,7 @@ public abstract class Database extends Database_Core {
     private long convertAttribute(long att) {
         // Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak
         // überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
-        long result = 0;
+        long result;
         // Maske für die untersten 15 bit
         long mask = 0;
         for (int i = 0; i < 16; i++)
@@ -600,9 +584,8 @@ public abstract class Database extends Database_Core {
     }
 
     /**
-     * @return Set To GlobalCore.Categories
      */
-    public Categories GPXFilenameUpdateCacheCount() {
+    public void updateCacheCountForGPXFilenames() {
         // welche GPXFilenamen sind in der DB erfasst
         sql.beginTransaction();
         try {
@@ -624,16 +607,12 @@ public abstract class Database extends Database_Core {
             sql.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
             reader.close();
             sql.setTransactionSuccessful();
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         } finally {
             sql.endTransaction();
         }
 
-        CategoryDAO categoryDAO = new CategoryDAO();
-        Categories categories = new Categories();
-        categoryDAO.LoadCategoriesFromDatabase();
-        return categories;
+        CategoryDAO.getInstance().loadCategoriesFromDatabase();
     }
 
     public int getCacheCountInDB() {
@@ -657,9 +636,9 @@ public abstract class Database extends Database_Core {
      * @param minToKeep      Config.settings.LogMinCount.getValue()
      * @param LogMaxMonthAge Config.settings.LogMaxMonthAge.getValue()
      */
-    public void DeleteOldLogs(int minToKeep, int LogMaxMonthAge) {
+    public void deleteOldLogs(int minToKeep, int LogMaxMonthAge) {
 
-        Log.debug(log, "DeleteOldLogs but keep " + minToKeep + " and not older than " + LogMaxMonthAge);
+        Log.debug(log, "deleteOldLogs but keep " + minToKeep + " and not older than " + LogMaxMonthAge);
         if (LogMaxMonthAge == 0) {
             // Setting are 'immediately'
             // Delete all Logs and return
@@ -691,7 +670,7 @@ public abstract class Database extends Database_Core {
                 }
                 reader.close();
             } catch (Exception ex) {
-                Log.err(log, "DeleteOldLogs", ex);
+                Log.err(log, "deleteOldLogs", ex);
             }
         }
 
@@ -729,7 +708,7 @@ public abstract class Database extends Database_Core {
                 }
                 sql.setTransactionSuccessful();
             } catch (Exception ex) {
-                Log.err(log, "DeleteOldLogs", ex);
+                Log.err(log, "deleteOldLogs", ex);
             } finally {
                 sql.endTransaction();
             }

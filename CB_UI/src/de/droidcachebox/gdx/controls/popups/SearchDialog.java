@@ -538,7 +538,7 @@ public class SearchDialog extends PopUp_Base {
                     Database.Data.sql.setTransactionSuccessful();
                     Database.Data.sql.endTransaction();
 
-                    Database.Data.GPXFilenameUpdateCacheCount();
+                    Database.Data.updateCacheCountForGPXFilenames();
 
                     CacheListChangedListeners.getInstance().cacheListChanged();
 
@@ -576,7 +576,7 @@ public class SearchDialog extends PopUp_Base {
         if (mSearchState == SearchMode.Owner)
             FilterInstances.getLastFilter().filterOwner = searchPattern;
 
-        EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
+        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
     }
 

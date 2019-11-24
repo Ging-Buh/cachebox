@@ -1085,7 +1085,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                     if (checkBoxCleanLogs.isChecked()) {
                         ip.setJobMax("DeleteLogs", 1);
                         ip.ProgressChangeMsg("DeleteLogs", "");
-                        Database.Data.DeleteOldLogs(Config.LogMinCount.getValue(), Config.LogMaxMonthAge.getValue());
+                        Database.Data.deleteOldLogs(Config.LogMinCount.getValue(), Config.LogMaxMonthAge.getValue());
                         ip.ProgressInkrement("DeleteLogs", "", true);
                     }
 
@@ -1100,14 +1100,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                     // import canceld
                     cancelImport();
                     FilterProperties props = FilterInstances.getLastFilter();
-                    EditFilterSettings.ApplyFilter(props);
+                    EditFilterSettings.applyFilter(props);
                     ip.ProgressChangeMsg("", "");
                     return;
                 }
 
                 if (BreakawayImportThread.isCanceled()) {
                     FilterProperties props = FilterInstances.getLastFilter();
-                    EditFilterSettings.ApplyFilter(props);
+                    EditFilterSettings.applyFilter(props);
                     ip.ProgressChangeMsg("", "");
                     return;
                 }
@@ -1142,7 +1142,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         Log.debug(log, Msg);
 
         FilterProperties props = FilterInstances.getLastFilter();
-        EditFilterSettings.ApplyFilter(props);
+        EditFilterSettings.applyFilter(props);
 
         // an der richtigen Stelle ausgeben, kommt auch bei CBServer import: GL.that.Toast(Msg, 3000);
 

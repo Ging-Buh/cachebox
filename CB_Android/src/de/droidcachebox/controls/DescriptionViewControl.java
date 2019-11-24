@@ -91,7 +91,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             Database.Data.sql.setTransactionSuccessful();
                             Database.Data.sql.endTransaction();
 
-                            Database.Data.GPXFilenameUpdateCacheCount();
+                            Database.Data.updateCacheCountForGPXFilenames();
                         }
                         aktCache = newCache;
                         setCache(newCache);

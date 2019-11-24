@@ -53,7 +53,7 @@ public class Menu extends ButtonDialog {
     private Menu mParentMenu;
     protected OnClickListener menuItemClickListener = new OnClickListener() {
         @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             GL.that.closeDialog(Menu.this);
             if (isMoreMenu)
                 GL.that.closeDialog(mParentMenu);
@@ -234,7 +234,7 @@ public class Menu extends ButtonDialog {
             mMoreMenuToggleButton.setClickHandler(new OnClickListener() {
 
                 @Override
-                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                     toggleMoreMenu();
                     return true;
                 }

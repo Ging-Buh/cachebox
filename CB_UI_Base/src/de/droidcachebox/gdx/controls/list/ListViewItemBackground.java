@@ -18,12 +18,12 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     /**
      * Constructor
      *
-     * @param rec
-     * @param Index Index in der List
-     * @param Name
+     * @param rec size
+     * @param index Index in der List
+     * @param name name
      */
-    public ListViewItemBackground(CB_RectF rec, int Index, String Name) {
-        super(rec, Index, Name);
+    public ListViewItemBackground(CB_RectF rec, int index, String name) {
+        super(rec, index, name);
     }
 
     public static void ResetBackground() {
@@ -70,7 +70,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
         if (!mBackIsInitial) {
             initialize();
         }
-        Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
+        boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
         if (isSelected) {
             backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
         } else if (BackGroundChanger) {

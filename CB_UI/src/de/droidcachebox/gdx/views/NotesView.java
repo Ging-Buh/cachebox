@@ -82,7 +82,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
         getSolverButton.setClickHandler((v, x, y, pointer, button) -> {
             String solver;
             if (aktCache != null) {
-                solver = Database.GetSolver(aktCache);
+                solver = Database.getSolver(aktCache);
             } else solver = null;
             solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
             String text = notes.getText();
@@ -134,7 +134,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
     public void onShow() {
         KeyboardFocusChangedEventList.Add(this);
         if (mustLoadNotes) {
-            String text = aktCache != null ? Database.GetNote(aktCache) : "";
+            String text = aktCache != null ? Database.getNote(aktCache) : "";
             if (text == null)
                 text = "";
             notes.setText(text);
@@ -152,7 +152,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
         String text = notes.getText();
         if (text != null) {
             try {
-                Database.SetNote(aktCache, text);
+                Database.setNote(aktCache, text);
             } catch (Exception e) {
                 Log.err(sKlasse, "Write note to database", e);
             }

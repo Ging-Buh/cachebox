@@ -40,7 +40,7 @@ public class CopyPastePopUp extends PopUp_Base {
         btnPaste.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 Log.err(sKlasse, "Paste Button Clicked");
                 close();
                 String Msg = copyPasteControl.pasteFromClipboard();
@@ -59,7 +59,7 @@ public class CopyPastePopUp extends PopUp_Base {
         btnCopy.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 Log.err(sKlasse, "Copy Button Clicked");
                 close();
                 String Msg = copyPasteControl.copyToClipboard();
@@ -83,7 +83,7 @@ public class CopyPastePopUp extends PopUp_Base {
              * onClick
              */
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 close();
                 String Msg = copyPasteControl.cutToClipboard();
                 if (Msg != null)

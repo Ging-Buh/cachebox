@@ -59,7 +59,7 @@ public class Box extends CB_View_Base {
             drawBorder(batch);
     }
 
-    protected void drawBorder(Batch batch) {
+    private void drawBorder(Batch batch) {
         if (borderSprite == null) {
             try {
                 GL.that.RunOnGLWithThreadCheck(() -> {
@@ -90,16 +90,8 @@ public class Box extends CB_View_Base {
 
     }
 
-    public float getBorderSize() {
+    private float getBorderSize() {
         return borderSize;
     }
 
-    public void setBorderSize(float borderSize) {
-
-        this.borderSize = borderSize;
-        leftBorder = borderSize;
-        rightBorder = borderSize;
-        topBorder = borderSize;
-        bottomBorder = borderSize;
-    }
 }

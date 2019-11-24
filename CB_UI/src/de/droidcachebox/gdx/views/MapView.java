@@ -370,8 +370,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                         // Reload result from DB
                         synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(de.droidcachebox.Config.GcLogin.getValue());
-                            CacheListDAO cacheListDAO = new CacheListDAO();
-                            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, de.droidcachebox.Config.ShowAllWaypoints.getValue());
+                            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, de.droidcachebox.Config.ShowAllWaypoints.getValue());
                         }
                         CacheListChangedListeners.getInstance().cacheListChanged();
 
@@ -795,7 +794,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
     public void createWaypointAtCenter() {
         String newGcCode;
         try {
-            newGcCode = Database.Data.CreateFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
+            newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
         } catch (Exception e) {
             return;
         }

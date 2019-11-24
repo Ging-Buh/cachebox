@@ -289,7 +289,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         CB_Button btnFromNotes = new CB_Button(Translation.get("fromNotes"));
         btnFromNotes.setClickHandler((v, x, y, pointer, button) -> {
-            String text = Database.GetNote(draft.CacheId);
+            String text = Database.getNote(draft.CacheId);
             if (text.length() > 0) {
                 String sBegin = "<Import from Geocaching.com>";
                 String sEnd = "</Import from Geocaching.com>";

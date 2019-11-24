@@ -104,7 +104,7 @@ public class ParkingDialog extends ButtonDialog {
 
         btSetGPS.setClickHandler(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
 
                 Config.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
                 Config.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
@@ -119,7 +119,7 @@ public class ParkingDialog extends ButtonDialog {
         btSelectWP.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 synchronized (Database.Data.cacheList) {
                     Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
                     if (cache != null)
@@ -133,7 +133,7 @@ public class ParkingDialog extends ButtonDialog {
         btDeleteP.setClickHandler(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 Config.ParkingLatitude.setValue(0.0);
                 Config.ParkingLongitude.setValue(0.0);
                 Config.AcceptChanges();

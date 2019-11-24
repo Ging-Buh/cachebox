@@ -135,7 +135,7 @@ public class H_ListView extends ListViewBase {
 
             // RenderRequest
             GL.that.renderOnce();
-            if (selectionchanged)
+            if (selectionChanged)
                 scrollToSelectedItem();
 
         }
@@ -149,7 +149,7 @@ public class H_ListView extends ListViewBase {
         } else {
             scrollTo(0);
         }
-        selectionchanged = false;
+        selectionChanged = false;
     }
 
     @Override

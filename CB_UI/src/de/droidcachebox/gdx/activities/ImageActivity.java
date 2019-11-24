@@ -60,7 +60,7 @@ public class ImageActivity extends ActivityBase {
     private final OnClickListener deleteClick = new OnClickListener() {
 
         @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             ImageActivity.this.finish();
             return true;
         }
@@ -105,7 +105,7 @@ public class ImageActivity extends ActivityBase {
         zoomBtn.setOnClickListenerDown(new OnClickListener() {
 
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 kineticZoom = new KineticZoom(camera.zoom, getPosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZOOM_TIME);
                 GL.that.addRenderView(ImageActivity.this, GL.FRAME_RATE_ACTION);
                 GL.that.renderOnce();
@@ -116,7 +116,7 @@ public class ImageActivity extends ActivityBase {
         });
         zoomBtn.setOnClickListenerUp(new OnClickListener() {
             @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 kineticZoom = new KineticZoom(camera.zoom, getPosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZOOM_TIME);
                 GL.that.addRenderView(ImageActivity.this, GL.FRAME_RATE_ACTION);
                 GL.that.renderOnce();

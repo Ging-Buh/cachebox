@@ -80,7 +80,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
         SelectedCacheChangedEventListeners.getInstance().add(this);
 
         if (mustLoadSolver) {
-            String sol = Database.GetSolver(aktCache);
+            String sol = Database.getSolver(aktCache);
             if (sol == null)
                 sol = "";
             edInput.setText(sol);
@@ -95,7 +95,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
         KeyboardFocusChangedEventList.Remove(this);
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         if (aktCache != null) {
-            Database.SetSolver(aktCache, edInput.getText());
+            Database.setSolver(aktCache, edInput.getText());
             // When Solver 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
             aktCache.setSolver1Changed(true);
         }

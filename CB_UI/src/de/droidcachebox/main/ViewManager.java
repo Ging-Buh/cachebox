@@ -98,8 +98,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public static void reloadCacheList() {
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
         synchronized (Database.Data.cacheList) {
-            CacheListDAO cacheListDAO = new CacheListDAO();
-            Database.Data.cacheList = cacheListDAO.readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
@@ -350,7 +349,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             Sprites.loadSprites(true);
             ShowMap.getInstance().normalMapView.invalidateTexture();
             GL.that.onStart();
-            CallSkinChanged();
+            callSkinChanged();
 
             this.removeChilds();
 
