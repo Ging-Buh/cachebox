@@ -1512,8 +1512,14 @@ public class GroundspeakAPI {
                 return CacheTypes.AdventuresExhibit;
             case 1858:
                 return CacheTypes.Wherigo;
+            case 3653:
+                return CacheTypes.CelebrationEvent;
             case 3773:
                 return CacheTypes.HQ;
+            case 3774:
+                return CacheTypes.HQCelebration;
+            case 4738:
+                return CacheTypes.HQBlockParty;
             case 7005:
                 return CacheTypes.Giga;
             case 217:
@@ -1535,20 +1541,14 @@ public class GroundspeakAPI {
 
     private static CacheSizes CacheSizeFromID(int id) {
         switch (id) {
-            case 1:
-                return CacheSizes.other; // not chosen
             case 2:
                 return CacheSizes.micro;
             case 8:
                 return CacheSizes.small;
             case 3:
-                return CacheSizes.regular; //	Medium
+                return CacheSizes.regular;
             case 4:
                 return CacheSizes.large;
-            case 5:
-                return CacheSizes.other; //	Virtual
-            case 6:
-                return CacheSizes.other;
             default:
                 return CacheSizes.other;
         }
@@ -1559,7 +1559,7 @@ public class GroundspeakAPI {
         if (d.endsWith("Z"))
             ps = ps + "'Z'";
         try {
-            return new SimpleDateFormat(ps).parse(d);
+            return new SimpleDateFormat(ps, Locale.US).parse(d);
         } catch (Exception e) {
             Log.err(log, "DateFromString", e);
             return new Date();
@@ -1567,19 +1567,19 @@ public class GroundspeakAPI {
     }
 
     private static String getDate(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(date);
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).format(date);
     }
 
     private static String getUTCDate(Date date) {
         // check "2001-09-28T00:00:00"
-        Log.debug(log, "getUTCDate In:" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date));
+        Log.debug(log, "getUTCDate In:" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(date));
         long utc = date.getTime();
         // TimeZone tzp = TimeZone.getTimeZone("GMT");
         // utc = utc - tzp.getOffset(utc);
         long newUtc = utc + date.getTimezoneOffset() * 60 * 1000;
         Date newDate = new Date();
         newDate.setTime(newUtc);
-        String ret = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(newDate);
+        String ret = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(newDate);
         Log.debug(log, "getUTCDate Out:" + ret);
         return ret;
     }

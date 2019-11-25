@@ -28,9 +28,8 @@ import de.droidcachebox.gdx.math.SizeF;
 public class MenuItem extends ListViewItemBackground {
 
     protected Object data = null;
-    protected boolean mIsCheckable = false;
-    protected boolean mIsChecked = false;
-    protected boolean mLeft = false;
+    boolean mIsCheckable = false;
+    private boolean mIsChecked = false;
     protected boolean isPressed = false;
     private CB_Label mLabel;
     private Image checkImage;
@@ -47,11 +46,11 @@ public class MenuItem extends ListViewItemBackground {
         super(new CB_RectF(), Index, Name);
     }
 
-    public void toggleCheck() {
+    void toggleCheck() {
         if (mIsCheckable) {
             mIsChecked = !mIsChecked;
 
-            Drawable drawable = null;
+            Drawable drawable;
             if (mIsChecked) {
                 drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
             } else {
@@ -72,34 +71,34 @@ public class MenuItem extends ListViewItemBackground {
     @Override
     protected void initialize() {
         super.initialize();
-        this.removeChilds();
+        removeChilds();
 
         mLabel = new CB_Label(this);
 
         boolean hasIcon = (mIcon != null);
         if (hasIcon) {
-            CB_RectF rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
+            CB_RectF rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()).ScaleCenter(0.75f);
             iconImage = new Image(rec, "MenuItemImage", false);
             iconImage.setDrawable(mIcon);
             if (!mIsEnabled) {
                 iconImage.setColor(COLOR.getDisableFontColor());
             }
-            this.addChild(iconImage);
+            addChild(iconImage);
         }
 
         if (mIsCheckable) {
             CB_RectF rec;
             if (hasIcon) {
-                rec = new CB_RectF(this.getWidth() - 2 * this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - 2 * getHeight(), 0, getHeight(), getHeight()).ScaleCenter(0.75f);
             } else {
-                rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()); // .ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()); // .ScaleCenter(0.75f);
             }
 
             rec.setHeight(rec.getWidth());
 
             checkImage = new Image(rec, "MenuItemCheckImage", false);
 
-            Drawable drawable = null;
+            Drawable drawable;
             if (mIsChecked) {
                 drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
             } else {
@@ -107,7 +106,7 @@ public class MenuItem extends ListViewItemBackground {
             }
 
             checkImage.setDrawable(drawable);
-            this.addChild(checkImage);
+            addChild(checkImage);
         }
 
         if (mTitle != null)
@@ -115,7 +114,7 @@ public class MenuItem extends ListViewItemBackground {
         if (!mIsEnabled) {
             mLabel.setTextColor(COLOR.getDisableFontColor());
         }
-        this.addChild(mLabel);
+        addChild(mLabel);
         setContentSize();
     }
 
@@ -128,29 +127,27 @@ public class MenuItem extends ListViewItemBackground {
     private void setContentSize() {
         boolean hasIcon = (mIcon != null);
 
-        float left = this.getHeight() * 0.2f;
-        float right = hasIcon ? this.getHeight() : 0;
-        float labelWidth = this.getWidth() - right - left;
+        float left = getHeight() * 0.2f;
+        float right = hasIcon ? getHeight() : 0;
+        float labelWidth = getWidth() - right - left;
         mLabel.setWidth(labelWidth);
 
         if (hasIcon && iconImage != null) {
-            iconImage.setPos(this.getWidth() - this.getHeight(), (this.getHeight() - iconImage.getHeight()) / 2);
+            iconImage.setPos(getWidth() - getHeight(), (getHeight() - iconImage.getHeight()) / 2);
         }
 
         if (mIsCheckable && checkImage != null) {
             CB_RectF rec;
             if (hasIcon) {
-                rec = new CB_RectF(this.getWidth() - 2 * this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - 2 * getHeight(), 0, getHeight(), getHeight()).ScaleCenter(0.75f);
             } else {
-                rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()); // .ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()); // .ScaleCenter(0.75f);
             }
             rec.setHeight(rec.getWidth());
             checkImage.setSize(rec);
         }
 
-        float x = left;
-        float y = (this.getHeight() - mLabel.getHeight()) / 2;
-        mLabel.setPos(x, y);
+        mLabel.setPos(left, (getHeight() - mLabel.getHeight()) / 2);
     }
 
     /**
@@ -171,7 +168,7 @@ public class MenuItem extends ListViewItemBackground {
     public MenuItem setTitle(String title) {
         mTitle = title;
         if (mLabel == null)
-            mLabel = new CB_Label(this.name + " mLabel", this, title);
+            mLabel = new CB_Label(name + " mLabel", this, title);
         else
             mLabel.setText(title);
         return this;
@@ -186,7 +183,7 @@ public class MenuItem extends ListViewItemBackground {
      */
     public MenuItem setIcon(Drawable icon) {
         mIcon = icon;
-        this.resetInitial();
+        resetInitial();
         return this;
     }
 
@@ -232,13 +229,13 @@ public class MenuItem extends ListViewItemBackground {
             setOnLongClickListener(null);
         }
 
-        this.resetInitial();
+        resetInitial();
     }
 
     public void setDisabled(boolean enabled) {
         // same as enabled but without deleting the click listeners
         mIsEnabled = enabled;
-        this.resetInitial();
+        resetInitial();
     }
 
     public boolean isChecked() {
@@ -247,22 +244,17 @@ public class MenuItem extends ListViewItemBackground {
 
     public void setChecked(boolean checked) {
         mIsChecked = checked;
-        this.resetInitial();
+        resetInitial();
     }
 
     public void setCheckable(boolean isCheckable) {
         mIsCheckable = isCheckable;
-        this.resetInitial();
-    }
-
-    public void setLeft(boolean value) {
-        mLeft = value;
-        this.resetInitial();
+        resetInitial();
     }
 
     @Override
     public Object getData() {
-        return this.data;
+        return data;
     }
 
     @Override
