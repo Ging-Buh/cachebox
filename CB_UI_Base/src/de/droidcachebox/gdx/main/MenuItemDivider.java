@@ -28,6 +28,7 @@ public class MenuItemDivider extends MenuItem {
 
     @Override
     public void onResized(CB_RectF rec) {
+        // setContentSize, called in onResized in MenuItem does't reflect that there is no mLabel for a divider
     }
 
     @Override
