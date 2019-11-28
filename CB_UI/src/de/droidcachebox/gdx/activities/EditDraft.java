@@ -23,7 +23,6 @@ import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.FilterSetListView.FilterSetEntry;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
@@ -41,6 +40,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 
 public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent {
     private FilterSetListViewItem GcVote;
@@ -263,7 +264,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private void iniGC_VoteItem() {
         if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             if (!draft.isTbDraft) {
-                FilterSetEntry tmp = new FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), FilterSetListView.NUMERIC_ITEM, 0, 5, draft.gc_Vote / 100.0, 0.5f);
+                FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, draft.gc_Vote / 100.0, 0.5f);
                 GcVote = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, tmp);
                 scrollBoxContent.addLast(GcVote);
             }

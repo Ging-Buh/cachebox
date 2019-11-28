@@ -51,8 +51,8 @@ public class GalleryView extends H_ListView {
         float countPos = this.getWidth();
         minimumItemSize = this.getWidth();
         mAllSize = 0;
-        for (int i = 0; i < mBaseAdapter.getCount(); i++) {
-            float itemWidth = mBaseAdapter.getItemSize(i);
+        for (int i = 0; i < adapter.getCount(); i++) {
+            float itemWidth = adapter.getItemSize(i);
             countPos -= itemWidth + mDividerSize;
             mPosDefault.add(0, countPos - mItemPosOffset);
             mAllSize += itemWidth + mDividerSize;
@@ -75,7 +75,7 @@ public class GalleryView extends H_ListView {
 
             //search item at center and set as selected
 
-            float itemWidth = mBaseAdapter.getItemSize(0);
+            float itemWidth = adapter.getItemSize(0);
 
             int n = mPosDefault.size() - 1;
             for (int i = 0; i < n; i++) {
@@ -89,11 +89,11 @@ public class GalleryView extends H_ListView {
 
                     if (div1 <= div2) {
                         // setSelection(i);
-                        mBaseAdapter.getView(i).click(0, 0, 0, 0);
+                        adapter.getView(i).click(0, 0, 0, 0);
                         scrollItemToCenter(i);
                     } else {
                         // setSelection(i + 1);
-                        mBaseAdapter.getView(i + 1).click(0, 0, 0, 0);
+                        adapter.getView(i + 1).click(0, 0, 0, 0);
                         scrollItemToCenter(i + 1);
                     }
                     break;
@@ -188,7 +188,7 @@ public class GalleryView extends H_ListView {
         if (idx < 0)
             return;
         float defaultpos = mPosDefault.get(idx);
-        float sollpos = defaultpos - this.getHalfWidth() + (mBaseAdapter.getItemSize(idx) / 2);
+        float sollpos = defaultpos - this.getHalfWidth() + (adapter.getItemSize(idx) / 2);
         mBottomAnimation = sollpos > mPos;
         scrollTo(sollpos);
         this.mSelectedIndex = idx;
@@ -196,21 +196,21 @@ public class GalleryView extends H_ListView {
 
     @Override
     public ListViewItemBase getSelectedItem() {
-        if (mBaseAdapter == null)
+        if (adapter == null)
             return null;
 
         //get selected idx
 
         int idx = 0;
-        for (int n = mBaseAdapter.getCount(); idx < n; idx++) {
+        for (int n = adapter.getCount(); idx < n; idx++) {
             if (mPosDefault.get(idx) > mPos - 50 && mPosDefault.get(idx) < mPos + 50)
                 break;
         }
 
         if (idx == -1)
             return null;
-        if (idx >= mBaseAdapter.getCount())
+        if (idx >= adapter.getCount())
             return null;
-        return mBaseAdapter.getView(idx);
+        return adapter.getView(idx);
     }
 }

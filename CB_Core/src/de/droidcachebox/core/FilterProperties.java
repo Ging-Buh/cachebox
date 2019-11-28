@@ -32,7 +32,26 @@ public class FilterProperties {
 
     private final static String SEPARATOR = ",";
     private final static String GPXSEPARATOR = "^";
-
+    // json.getBoolean("isHistory"); // only remember, that last filter was this
+    // the GCCodes are not saved in db but taken from CoreSettingsForward.cacheHistory
+    public boolean isHistory;
+    // json.getString("types")
+    // was a boolean for each geoCachetype in CacheTypes.caches() !!! no waypoints
+    // now only the ordinals of a cacheType of  CacheTypes.caches() separated by ,
+    public String cacheTypes;
+    // json.getString("attributes");
+    // an int for each Attribute in Attributes.values()
+    public int[] attributes;
+    // json.optString("gpxfilenameids", "");
+    public ArrayList<Long> gpxFilenameIds;
+    // json.optString("categories", "");
+    public ArrayList<Long> categories;
+    // json.optString("filtername", "");
+    public String filterName;
+    // json.optString("filterGcCode", "");
+    public String filterGcCode;
+    // json.optString("filterOwner", "");
+    public String filterOwner;
     // json object "caches":
     // the elements are identified by fixed sequence
     // for boolean geoCacheProperties the filterProperty definition is by int:
@@ -66,25 +85,6 @@ public class FilterProperties {
     private int hasCorrectedCoordinates; // 17
     private double minFavPoints; // 18
     private double maxFavPoints; // 19
-    // json.getBoolean("isHistory"); // only remember, that last filter was this
-    // the GCCodes are not saved in db but taken from CoreSettingsForward.cacheHistory
-    public boolean isHistory;
-    // json.getString("types")
-    // a boolean for each geoCachetype in CacheTypes.values()
-    public boolean[] mCacheTypes;
-    // json.getString("attributes");
-    // an int for each Attribute in Attributes.values()
-    public int[] mAttributes;
-    // json.optString("gpxfilenameids", "");
-    public ArrayList<Long> gpxFilenameIds;
-    // json.optString("categories", "");
-    public ArrayList<Long> categories;
-    // json.optString("filtername", "");
-    public String filterName;
-    // json.optString("filterGcCode", "");
-    public String filterGcCode;
-    // json.optString("filterOwner", "");
-    public String filterOwner;
     // json.optString("UserDefinedSQL");
     private String userDefinedSQL;
 
@@ -184,32 +184,33 @@ public class FilterProperties {
                         }
                     }
 
-                    String jsonString = json.optString("types", "");
-                    if (jsonString.length() > 0) mCacheTypes = parseCacheTypes(jsonString);
+                    cacheTypes = json.optString("CacheTypes", "");
 
-                    jsonString = json.optString("attributes", "");
+                    String jsonString = json.optString("attributes", "");
                     if (jsonString.length() > 0) {
                         parts = jsonString.split(SEPARATOR);
-                        mAttributes = new int[Attributes.values().length];
-                        mAttributes[0] = 0; // gibts nicht
+                        attributes = new int[Attributes.values().length];
+                        attributes[0] = 0; // gibts nicht
                         int og = parts.length;
-                        if (parts.length == mAttributes.length) {
+                        if (parts.length == attributes.length) {
                             og = parts.length - 1; // falls doch schon mal mit mehr gespeichert
                         }
                         for (int i = 0; i < (og); i++)
-                            mAttributes[i + 1] = Integer.parseInt(parts[i]);
+                            attributes[i + 1] = Integer.parseInt(parts[i]);
                         // aus älteren Versionen
-                        for (int i = og; i < mAttributes.length - 1; i++)
-                            mAttributes[i + 1] = 0;
+                        for (int i = og; i < attributes.length - 1; i++)
+                            attributes[i + 1] = 0;
                     }
 
                     gpxFilenameIds = new ArrayList<>();
                     String gpxFileNames = json.optString("gpxfilenameids", "");
                     if (gpxFileNames.length() > 0) {
                         for (String gpxFileName : gpxFileNames.split(SEPARATOR)) {
+                            // !!! String, starting with GPXSEPARATOR gives first item empty String)
                             String[] gpxFileNameIds = gpxFileName.split("\\" + GPXSEPARATOR);
                             for (String gpxFileNameId : gpxFileNameIds) {
-                                gpxFilenameIds.add(Long.parseLong(gpxFileNameId));
+                                if (gpxFileNameId.length() > 0)
+                                    gpxFilenameIds.add(Long.parseLong(gpxFileNameId));
                             }
                         }
                     }
@@ -222,6 +223,7 @@ public class FilterProperties {
                     String filtercategories = json.optString("categories", "");
                     if (filtercategories.length() > 0) {
                         String[] partsGPX = filtercategories.split("\\" + GPXSEPARATOR);
+                        // !!! String, starting with GPXSEPARATOR gives first item empty String)
                         for (String filterCategory : partsGPX) {
                             if (filterCategory.length() > 0)
                                 categories.add(Long.parseLong(filterCategory));
@@ -235,83 +237,6 @@ public class FilterProperties {
                 Log.err(log, "Json Version FilterProperties(" + serialization + ")");
             }
         } else {
-            /*
-            // Filter ist noch in alten Einstellungen gegeben...
-            try {
-                String[] parts = serialization.split(SEPARATOR);
-                int cnt = 0;
-                finds = Integer.parseInt(parts[cnt++]);
-                notAvailable = Integer.parseInt(parts[cnt++]);
-                archived = Integer.parseInt(parts[cnt++]);
-                own = Integer.parseInt(parts[cnt++]);
-                containsTravelbugs = Integer.parseInt(parts[cnt++]);
-                favorites = Integer.parseInt(parts[cnt++]);
-                hasUserData = Integer.parseInt(parts[cnt++]);
-                listingChanged = Integer.parseInt(parts[cnt++]);
-                withManualWaypoint = Integer.parseInt(parts[cnt++]);
-
-                MinDifficulty = Float.parseFloat(parts[cnt++]);
-                MaxDifficulty = Float.parseFloat(parts[cnt++]);
-                MinTerrain = Float.parseFloat(parts[cnt++]);
-                MaxTerrain = Float.parseFloat(parts[cnt++]);
-                MinContainerSize = Float.parseFloat(parts[cnt++]);
-                MaxContainerSize = Float.parseFloat(parts[cnt++]);
-                MinRating = Float.parseFloat(parts[cnt++]);
-                MaxRating = Float.parseFloat(parts[cnt++]);
-
-                mCacheTypes = new boolean[CacheTypes.values().length];
-                for (int i = 0; i < 11; i++)
-                    mCacheTypes[i] = Boolean.parseBoolean(parts[cnt++]);
-                for (int i = 11; i < CacheTypes.values().length; i++) {
-                    mCacheTypes[i] = true;
-                }
-
-                mAttributes = new int[Attributes.values().length];
-                mAttributes[0] = 0;
-                for (int i = 0; i < 66; i++) {
-                    if (parts.length > cnt)
-                        mAttributes[i + 1] = Integer.parseInt(parts[cnt++]);
-                }
-                for (int i = 66; i < mAttributes.length; i++)
-                    mAttributes[i + 1] = 0;
-
-                GPXFilenameIds = new ArrayList<Long>();
-                GPXFilenameIds.clear();
-                if (parts.length > cnt) {
-                    String tempGPX = parts[cnt++];
-                    String[] partsGPX = new String[]{};
-                    partsGPX = tempGPX.split("\\" + GPXSEPARATOR);
-                    for (int i = 1; i < partsGPX.length; i++) {
-                        GPXFilenameIds.add(Long.parseLong(partsGPX[i]));
-                    }
-                }
-                if (parts.length > cnt)
-                    filterName = parts[cnt++];
-                else
-                    filterName = "";
-                if (parts.length > cnt)
-                    filterGcCode = parts[cnt++];
-                else
-                    filterGcCode = "";
-                if (parts.length > cnt)
-                    filterOwner = parts[cnt++];
-                else
-                    filterOwner = "";
-
-                if (parts.length > cnt) {
-                    String tempGPX = parts[cnt++];
-                    String[] partsGPX = new String[]{};
-                    partsGPX = tempGPX.split("\\" + GPXSEPARATOR);
-                    Categories = new ArrayList<Long>();
-                    for (int i = 1; i < partsGPX.length; i++) {
-                        Categories.add(Long.parseLong(partsGPX[i]));
-                    }
-                }
-            } catch (Exception exc) {
-                Log.err(log, "old Version FilterProperties(" + serialization + ")", "", exc);
-            }
-
-             */
             Log.err(log, "old Version FilterProperties are no longer supported");
         }
     }
@@ -319,7 +244,7 @@ public class FilterProperties {
     public FilterProperties(boolean b) {
         initCreation();
         if (b)
-        userDefinedSQL = "     ";
+            userDefinedSQL = "     ";
         else
             userDefinedSQL = "";
     }
@@ -364,11 +289,10 @@ public class FilterProperties {
         minFavPoints = -1;
         maxFavPoints = -1;
 
-        mCacheTypes = new boolean[CacheTypes.values().length];
-        Arrays.fill(mCacheTypes, true);
+        cacheTypes = "";
 
-        mAttributes = new int[Attributes.values().length]; // !!! attention: Attributes 0 not used
-        Arrays.fill(mAttributes, 0);
+        attributes = new int[Attributes.values().length]; // !!! attention: Attributes 0 not used
+        Arrays.fill(attributes, 0);
 
         gpxFilenameIds = new ArrayList<>();
         filterName = "";
@@ -376,30 +300,6 @@ public class FilterProperties {
         filterOwner = "";
 
         categories = new ArrayList<>();
-    }
-
-    private boolean[] parseCacheTypes(String types) {
-        String[] parts = types.split(SEPARATOR);
-        final boolean[] result = new boolean[CacheTypes.values().length];
-        if (parts.length < CacheTypes.values().length) {
-            // old (json) version
-            for (int i = 0; i < result.length; i++) {
-                if (i < parts.length) {
-                    result[i] = Boolean.parseBoolean(parts[i]);
-                } else {
-                    result[i] = true;
-                }
-            }
-            result[CacheTypes.Munzee.ordinal()] = result[11];
-            result[CacheTypes.Giga.ordinal()] = result[12];
-            result[11] = true;
-            result[12] = true;
-        } else {
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Boolean.parseBoolean(parts[i]);
-            }
-        }
-        return result;
     }
 
     public int getFinds() {
@@ -563,15 +463,6 @@ public class FilterProperties {
     }
 
     /**
-     * True, wenn FilterProperties eine Filterung nach Name, Gc-Code oder Owner enth&auml;lt!
-     *
-     * @return if it contains or not
-     */
-    public boolean isDefinedFilterExtensions() {
-        return filterName.length() > 0 || filterGcCode.length() > 0 || filterOwner.length() > 0;
-    }
-
-    /**
      * a String to save in the database
      */
     @Override
@@ -609,25 +500,17 @@ public class FilterProperties {
                     + maxFavPoints);
 
             // add Cache Types
-            StringBuilder tmp = new StringBuilder();
-            boolean notAllCachetypes = false;
-            for (int i = 0; i < mCacheTypes.length; i++) {
-                if (i > 0)
-                    tmp.append(SEPARATOR);
-                tmp.append(mCacheTypes[i]);
-                if (!mCacheTypes[i]) notAllCachetypes = true;
-            }
-            if (notAllCachetypes)
-                json.put("types", tmp.toString());
+            if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length)
+                json.put("CacheTypes", cacheTypes);
 
             // add Cache Attributes
             boolean notAllAttributes = false;
-            tmp = new StringBuilder();
-            for (int i = 1; i < mAttributes.length; i++) {
+            StringBuilder tmp = new StringBuilder();
+            for (int i = 1; i < attributes.length; i++) {
                 if (tmp.length() > 0)
                     tmp.append(SEPARATOR);
-                tmp.append(mAttributes[i]);
-                if (mAttributes[i] != 0) notAllAttributes = true;
+                tmp.append(attributes[i]);
+                if (attributes[i] != 0) notAllAttributes = true;
             }
             if (notAllAttributes)
                 if (tmp.length() > 0)
@@ -759,31 +642,20 @@ public class FilterProperties {
             if (hasCorrectedCoordinates == -1)
                 andParts.add("CorrectedCoordinates=0 OR Name like '%hallenge%' OR NOT ID in (select CacheId FROM Waypoint Where Type = 18 and Latitude > 0 and Longitude > 0)");
 
-            StringBuilder csvTypes = new StringBuilder();
-            boolean notAllCachetypes = false;
-            for (int i = 0; i < mCacheTypes.length; i++) {
-                if (mCacheTypes[i])
-                    csvTypes.append(i).append(",");
-                else notAllCachetypes = true;
-            }
-            if (notAllCachetypes) {
-                if (csvTypes.length() > 0) {
-                    csvTypes = new StringBuilder(csvTypes.substring(0, csvTypes.length() - 1));
-                    andParts.add("Type in (" + csvTypes + ")");
-                }
-            }
+            if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length)
+                andParts.add("Type in (" + cacheTypes + ")");
 
-            for (int i = 1; i < mAttributes.length; i++) {
-                if (mAttributes[i] != 0) {
+            for (int i = 1; i < attributes.length; i++) {
+                if (attributes[i] != 0) {
                     if (i < 62) {
                         long shift = DLong.UL1 << (i);
-                        if (mAttributes[i] == 1)
+                        if (attributes[i] == 1)
                             andParts.add("(AttributesPositive & " + shift + ") > 0");
                         else
                             andParts.add("(AttributesNegative &  " + shift + ") > 0");
                     } else {
                         long shift = DLong.UL1 << (i - 61);
-                        if (mAttributes[i] == 1)
+                        if (attributes[i] == 1)
                             andParts.add("(AttributesPositiveHigh &  " + shift + ") > 0");
                         else
                             andParts.add("(AttributesNegativeHigh & " + shift + ") > 0");
@@ -863,24 +735,19 @@ public class FilterProperties {
         if (hasCorrectedCoordinates != filter.hasCorrectedCoordinates)
             return false;
 
-        if (mCacheTypes == null) {
-            if (filter.mCacheTypes != null) return false;
-        } else {
-            if (filter.mCacheTypes == null) return false;
-            if (filter.mCacheTypes.length != mCacheTypes.length) return false;
-            for (int i = 0; i < mCacheTypes.length; i++) {
-                if (filter.mCacheTypes[i] != mCacheTypes[i])
-                    return false;
-            }
-        }
+        String[] thisCacheTypes = cacheTypes.split(",");
+        String[] filterCacheTypes = filter.cacheTypes.split(",");
+        Arrays.sort(thisCacheTypes);
+        Arrays.sort(filterCacheTypes);
+        if (!Arrays.equals(thisCacheTypes, filterCacheTypes)) return false;
 
-        if (mAttributes == null) {
-            if (filter.mAttributes != null) return false;
+        if (attributes == null) {
+            if (filter.attributes != null) return false;
         } else {
-            if (filter.mAttributes == null) return false;
-            if (filter.mAttributes.length != mAttributes.length) return false;
-            for (int i = 1; i < mAttributes.length; i++) {
-                if (filter.mAttributes[i] != mAttributes[i])
+            if (filter.attributes == null) return false;
+            if (filter.attributes.length != attributes.length) return false;
+            for (int i = 1; i < attributes.length; i++) {
+                if (filter.attributes[i] != attributes[i])
                     return false; // nicht gleich!!!
             }
         }
@@ -932,7 +799,7 @@ public class FilterProperties {
 
     /**
      * @param geoCache apply the filter on a single geoCache
-     * @return true if
+     * @return true if geoCache fulfills all properties
      */
     boolean passed(Cache geoCache) {
         if (chkFilterBoolean(finds, geoCache.isFound()))
@@ -954,7 +821,7 @@ public class FilterProperties {
         if (chkFilterBoolean(hasCorrectedCoordinates, geoCache.hasCorrectedCoordinates()))
             return false;
         // TODO ? the other restrictions?
-        return mCacheTypes[geoCache.getType().ordinal()];
+        return cacheTypes.contains("" + geoCache.getType().ordinal());
     }
 
     private boolean chkFilterBoolean(int filterProperty, boolean geoCacheProperty) {

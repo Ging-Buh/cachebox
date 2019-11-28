@@ -54,7 +54,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     /**
      * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
      */
-    protected Adapter mBaseAdapter;
+    protected Adapter adapter;
     /**
      * Enthällt die Indexes, welche schon als Child exestieren.
      */
@@ -237,8 +237,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         hasInvisibleItems = true;
     }
 
-    public void setBaseAdapter(Adapter adapter) {
-        mBaseAdapter = adapter;
+    public void setAdapter(Adapter adapter) {
+        this.adapter = adapter;
 
         if (mAddedIndexList != null)
             mAddedIndexList.clear();
@@ -250,23 +250,17 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                             break;
                         childs.get(i).dispose();
                     }
-                } catch (Exception e) {
-                    // Dann Disposen wir halt nicht, dann muss der GC ran!
+                } catch (Exception ignored) {
                 }
             }
         }
         this.removeChilds();
 
-        if (mBaseAdapter != null) {
+        if (this.adapter != null) {
             calcDefaultPosList();
-
-            // Items neu laden
             reloadItems();
-
-            // set first and Last Item Size
-            firstItemSize = mBaseAdapter.getItemSize(0);
-            lastItemSize = mBaseAdapter.getItemSize(mBaseAdapter.getCount() - 1);
-
+            firstItemSize = this.adapter.getItemSize(0);
+            lastItemSize = this.adapter.getItemSize(this.adapter.getCount() - 1);
         }
 
     }
@@ -302,15 +296,12 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         mIsDraggable = false;
     }
 
-    /**
-     * Setzt die ListView in in den Draggable Modus
-     */
     public void setDraggable() {
         mIsDraggable = true;
     }
 
-    public void setDisposeFlag(Boolean CanDispose) {
-        mCanDispose = CanDispose;
+    public void setDisposeFlag(boolean canDispose) {
+        mCanDispose = canDispose;
     }
 
     protected void setListPos(float value, boolean Kinetic) {
@@ -358,7 +349,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             // return; why? after initializing it should be possible to render
         }
 
-        if (this.childs.size() == 0 && (this.mBaseAdapter == null || this.mBaseAdapter.getCount() == 0)) {
+        if (this.childs.size() == 0 && (this.adapter == null || this.adapter.getCount() == 0)) {
             try {
                 if (emptyMsg == null && mEmptyMsg != null) {
                     emptyMsg = new BitmapFontCache(Fonts.getBig());
@@ -457,7 +448,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     void startAnimationtoTop() {
-        if (mBaseAdapter == null)
+        if (adapter == null)
             return;
         mBottomAnimation = false;
         float firstPos = 0;
@@ -465,14 +456,14 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     void startAnimationToBottom() {
-        if (mBaseAdapter == null)
+        if (adapter == null)
             return;
         mBottomAnimation = true;
         scrollTo(lastPos);
     }
 
     public void scrollToItem(int i) {
-        if (mPosDefault == null || mBaseAdapter == null)
+        if (mPosDefault == null || adapter == null)
             return;
 
         Point lastAndFirst = getFirstAndLastVisibleIndex();
@@ -482,7 +473,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             return;
         }
 
-        float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
+        float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.adapter.getItemSize(i) : 0;
 
         try {
             if (i >= 0 && i < mPosDefault.size()) {
@@ -550,13 +541,13 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     public ListViewItemBase getSelectedItem() {
-        if (mBaseAdapter == null)
+        if (adapter == null)
             return null;
         if (mSelectedIndex == -1)
             return null;
-        if (mSelectedIndex >= mBaseAdapter.getCount())
+        if (mSelectedIndex >= adapter.getCount())
             return null;
-        return mBaseAdapter.getView(mSelectedIndex);
+        return adapter.getView(mSelectedIndex);
     }
 
     public int getSelectedIndex() {
@@ -771,7 +762,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
         isWorkOnRunOnGL = null;
 
-        mBaseAdapter = null;
+        adapter = null;
         super.dispose();
     }
 

@@ -52,7 +52,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
         ItemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
-        this.setBaseAdapter(null);
+        this.setAdapter(null);
         setCache(GlobalCore.getSelectedCache());
         this.setDisposeFlag(false);
     }
@@ -80,7 +80,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
         createItemList();
 
         lvAdapter = new LogListAdapter();
-        this.setBaseAdapter(lvAdapter);
+        this.setAdapter(lvAdapter);
 
         this.setEmptyMsg(Translation.get("EmptyLogList"));
 
@@ -158,7 +158,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
     @Override
     public void dispose() {
-        this.setBaseAdapter(null);
+        this.setAdapter(null);
         aktCache = null;
         lvAdapter = null;
         if (itemList != null)

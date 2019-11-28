@@ -116,7 +116,7 @@ public class SelectDB extends ActivityBase {
 
                 Config.AcceptChanges();
 
-                CoreSettingsForward.Categories = new Categories();
+                CoreSettingsForward.categories = new Categories();
                 Database.Data.updateCacheCountForGPXFilenames();
 
                 synchronized (Database.Data.cacheList) {
@@ -460,7 +460,7 @@ public class SelectDB extends ActivityBase {
             this.lvDBSelection = lvDBSelection;
             this.dbFiles = dbFiles;
             recItem = new CB_RectF(0, 0, lvDBSelection.getInnerWidth(), UiSizes.getInstance().getButtonHeight() * 1.2f);
-            lvDBSelection.setBaseAdapter(this);
+            lvDBSelection.setAdapter(this);
         }
 
         @Override

@@ -17,8 +17,8 @@
 package de.droidcachebox.gdx.controls;
 
 import de.droidcachebox.WrapType;
+import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.gdx.CB_View_Base;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -28,8 +28,6 @@ import de.droidcachebox.translation.Translation;
  * @author Longri
  */
 public class TextFilterView extends CB_View_Base {
-
-    public static TextFilterView that;
     /**
      * Clear button, for clearing text input
      */
@@ -60,8 +58,6 @@ public class TextFilterView extends CB_View_Base {
 
     public TextFilterView(CB_RectF rec, String Name) {
         super(rec, Name);
-
-        that = this;
 
         float margin = UiSizes.getInstance().getMargin() * 2;
         float btnWidth = (this.getWidth() - (margin * 7)) / 3;
@@ -102,15 +98,11 @@ public class TextFilterView extends CB_View_Base {
         mBtnClear.setY(mEingabe.getY() - margin - mBtnClear.getHeight());
         mBtnClear.setX(this.getWidth() - margin - mBtnClear.getWidth());
         mBtnClear.setText(Translation.get("clear"));
-        mBtnClear.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                mEingabe.setText("");
-                return true;
-            }
+        mBtnClear.setClickHandler((view, x, y14, pointer, button) -> {
+            mEingabe.setText("");
+            return true;
         });
 
-        // Controls zum Dialog hinzufügen
         this.addChild(mTglBtnTitle);
         this.addChild(mTglBtnGc);
         this.addChild(mTglBtnOwner);
@@ -121,31 +113,19 @@ public class TextFilterView extends CB_View_Base {
         mTglBtnGc.initialOn_Off_ToggleStates(Translation.get("GCCode"), Translation.get("GCCode"));
         mTglBtnOwner.initialOn_Off_ToggleStates(Translation.get("Owner"), Translation.get("Owner"));
 
-        mTglBtnTitle.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                switchFilterMode(0);
-                return true;
-            }
+        mTglBtnTitle.setClickHandler((view, x, y1, pointer, button) -> {
+            switchFilterMode(0);
+            return true;
         });
 
-        mTglBtnGc.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                switchFilterMode(1);
-                return true;
-            }
+        mTglBtnGc.setClickHandler((view, x, y12, pointer, button) -> {
+            switchFilterMode(1);
+            return true;
         });
 
-        mTglBtnOwner.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                switchFilterMode(2);
-                return true;
-            }
+        mTglBtnOwner.setClickHandler((view, x, y13, pointer, button) -> {
+            switchFilterMode(2);
+            return true;
         });
 
         switchFilterMode(0);
@@ -210,4 +190,20 @@ public class TextFilterView extends CB_View_Base {
         switchFilterMode(filterState);
     }
 
+    public void setTextFilterPart(FilterProperties tmpFilterProps) {
+        String txtFilter = getFilterString(); // only the text to search for
+        if (txtFilter.length() > 0) {
+            int FilterMode = getFilterState();
+            if (FilterMode == 0)
+                tmpFilterProps.filterName = txtFilter;
+            else if (FilterMode == 1)
+                tmpFilterProps.filterGcCode = txtFilter;
+            else if (FilterMode == 2)
+                tmpFilterProps.filterOwner = txtFilter;
+        } else {
+            tmpFilterProps.filterName = "";
+            tmpFilterProps.filterGcCode = "";
+            tmpFilterProps.filterOwner = "";
+        }
+    }
 }

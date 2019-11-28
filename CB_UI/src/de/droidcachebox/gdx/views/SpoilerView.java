@@ -77,8 +77,8 @@ public class SpoilerView extends CB_View_Base {
     public void ForceReload() {
         forceReload = true;
         actCache = null;
-        gallery.setBaseAdapter(new GalaryImageAdapter());
-        galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
+        gallery.setAdapter(new GalaryImageAdapter());
+        galleryOverwiew.setAdapter(new OverviewImageAdapter());
     }
 
     @Override
@@ -175,8 +175,8 @@ public class SpoilerView extends CB_View_Base {
                     }
                 }
                 // Log.info(log, "Images loaded");
-                gallery.setBaseAdapter(new GalaryImageAdapter());
-                galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
+                gallery.setAdapter(new GalaryImageAdapter());
+                galleryOverwiew.setAdapter(new OverviewImageAdapter());
 
                 //select first item
                 if (firstItem != null) {

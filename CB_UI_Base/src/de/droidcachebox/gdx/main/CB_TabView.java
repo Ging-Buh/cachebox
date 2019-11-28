@@ -35,7 +35,7 @@ public class CB_TabView extends CB_View_Base {
         if (mButtonList == null)
             return;
         buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), MainBtnSize.getHeight()), "ButtonList von " + this.getName());
-        buttonListView.setBaseAdapter(new CustomAdapter());
+        buttonListView.setAdapter(new CustomAdapter());
         buttonListView.setUnDraggable();
         buttonListView.setBackground(Sprites.ButtonBack);
         buttonListView.setDisposeFlag(false);

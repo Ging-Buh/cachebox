@@ -80,9 +80,9 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
         if (aktCache != cache) {
             aktCache = de.droidcachebox.GlobalCore.getSelectedCache();
-            this.setBaseAdapter(null);
+            this.setAdapter(null);
             lvAdapter = new CustomAdapter(aktCache);
-            this.setBaseAdapter(lvAdapter);
+            this.setAdapter(lvAdapter);
         }
         // aktuellen Waypoint in der List anzeigen
 
@@ -217,7 +217,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
                     de.droidcachebox.GlobalCore.getSelectedCache().waypoints.add(waypoint);
                     lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-                    that.setBaseAdapter(lvAdapter);
+                    that.setAdapter(lvAdapter);
                     aktWaypoint = waypoint;
                     de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), waypoint);
                     if (waypoint.IsStart) {
@@ -257,7 +257,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                     waypointDAO.UpdateDatabase(aktWaypoint);
 
                     lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-                    that.setBaseAdapter(lvAdapter);
+                    that.setAdapter(lvAdapter);
                 }
             }
         }, showCoordinateDialog, false);
@@ -275,7 +275,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                     de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), null);
                     aktWaypoint = null;
                     lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-                    that.setBaseAdapter(lvAdapter);
+                    that.setAdapter(lvAdapter);
 
                     int itemCount = lvAdapter.getCount();
                     int itemSpace = that.getMaxItemCount();
@@ -325,7 +325,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
             de.droidcachebox.GlobalCore.getSelectedCache().waypoints.add(newWP);
             lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-            that.setBaseAdapter(lvAdapter);
+            that.setAdapter(lvAdapter);
             aktWaypoint = newWP;
             de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), newWP);
             WaypointDAO waypointDAO = new WaypointDAO();
@@ -356,7 +356,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             de.droidcachebox.GlobalCore.getSelectedCache().waypoints.add(newWP);
 
             lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-            that.setBaseAdapter(lvAdapter);
+            that.setAdapter(lvAdapter);
 
             aktWaypoint = newWP;
             de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), newWP);

@@ -21,6 +21,7 @@ package de.droidcachebox.settings;
  * @author Longri  2016
  */
 public class SettingStringList extends SettingBase<String[]> {
+    public static final String STRINGSPLITTER = "�";
 
     public SettingStringList(String name, SettingCategory category, SettingModus modus, String[] defaultValue, SettingStoreType StoreType, SettingUsage usage) {
         super(name, category, modus, StoreType, usage);
@@ -35,7 +36,7 @@ public class SettingStringList extends SettingBase<String[]> {
         for (String str : value) {
             sb.append(str);
             if (idx++ < value.length - 1)
-                sb.append(SettingString.STRING_SPLITTER);
+                sb.append(STRINGSPLITTER);
         }
         return sb.toString();
     }
@@ -43,7 +44,7 @@ public class SettingStringList extends SettingBase<String[]> {
     @Override
     public boolean fromDBString(String dbString) {
         try {
-            value = dbString.split(SettingString.STRING_SPLITTER);
+            value = dbString.split(STRINGSPLITTER);
             return true;
         } catch (Exception ex) {
             value = defaultValue;

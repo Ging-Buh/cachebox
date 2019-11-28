@@ -197,8 +197,8 @@ public class SettingsItem_QuickButton extends CB_View_Base {
     }
 
     private void reloadListViewItems() {
-        listView.setBaseAdapter(null);
-        listView.setBaseAdapter(new CustomAdapter());
+        listView.setAdapter(null);
+        listView.setAdapter(new CustomAdapter());
         listView.notifyDataSetChanged();
     }
 

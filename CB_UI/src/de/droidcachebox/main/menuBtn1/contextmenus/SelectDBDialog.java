@@ -87,7 +87,7 @@ public class SelectDBDialog extends AbstractAction {
 
             Config.settings.ReadFromDB();
 
-            CoreSettingsForward.Categories = new Categories();
+            CoreSettingsForward.categories = new Categories();
 
             FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
 

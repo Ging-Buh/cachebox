@@ -180,7 +180,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
     private void refreshExportList() {
 
-        lvExport.setBaseAdapter(null);
+        lvExport.setAdapter(null);
         lvExport.notifyDataSetChanged();
         refreshExportList.disable();
 
@@ -188,7 +188,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             exportList = new ExportList();
             exportList.loadExportList();
 
-            lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
+            lvExport.setAdapter(new CustomAdapterExportCBServer());
             lvExport.notifyDataSetChanged();
 
             stopTimer();
@@ -355,7 +355,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             Database.Data.sql.execSQL(sql);
             // Liste neu laden
             exportList.loadExportList();
-            lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
+            lvExport.setAdapter(new CustomAdapterExportCBServer());
             lvExport.notifyDataSetChanged();
         }
     }

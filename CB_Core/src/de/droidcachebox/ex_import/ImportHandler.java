@@ -22,7 +22,7 @@ public class ImportHandler implements IImportHandler {
 
         if (cache.waypoints.size() > 0) {
             for (int i = 0; i < cache.waypoints.size(); i++) {
-                handleWaypoint(cache.waypoints.get(i));
+                handleWayPoint(cache.waypoints.get(i));
             }
         }
 
@@ -36,29 +36,24 @@ public class ImportHandler implements IImportHandler {
     }
 
     @Override
-    public void handleWaypoint(Waypoint waypoint) {
-        waypointDAO.WriteImportToDatabase(waypoint);
+    public void handleWayPoint(Waypoint wayPoint) {
+        waypointDAO.WriteImportToDatabase(wayPoint);
     }
 
     @Override
-    public Category getCategory(String filename) {
-        return CoreSettingsForward.Categories.getCategory(filename);
+    public Category getCategory(String fileName) {
+        return CoreSettingsForward.categories.getCategory(fileName);
     }
 
     @Override
-    public GpxFilename NewGpxFilename(Category category, String filename) {
-        return category.addGpxFilename(filename);
+    public GpxFilename NewGpxFilename(Category category, String fileName) {
+        return category.addGpxFilename(fileName);
     }
 
     @Override
     public void updateCacheCountForGPXFilenames() {
         Database.Data.updateCacheCountForGPXFilenames();
         CategoryDAO.getInstance().deleteEmptyCategories();
-    }
-
-    @Override
-    public void handleImage(ImageEntry image, Boolean ignoreExisting) {
-        imageDAO.WriteToDatabase(image, ignoreExisting);
     }
 
 }

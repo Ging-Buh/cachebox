@@ -61,7 +61,7 @@ public class ImportCBServer {
                         RpcAnswer_GetCacheList gclAnswer = (RpcAnswer_GetCacheList) answer;
                         System.out.println("************* CacheList ***************");
                         // GPX-Filename und Category Eintrag prüfen
-                        Category cat = CoreSettingsForward.Categories.getCategory(item.getDescription());
+                        Category cat = CoreSettingsForward.categories.getCategory(item.getDescription());
 
                         // GpxFilenames Eintrag erzeugen
 

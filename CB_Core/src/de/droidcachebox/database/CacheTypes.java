@@ -38,7 +38,7 @@ public enum CacheTypes {
     Letterbox(true), // = 9,
     Wherigo(true), // = 10,
     ReferencePoint(false), // = 11,
-    Wikipedia(false), // = 12,
+    Wikipedia(true), // = 12,
     Undefined(true), // = 13,
     MultiStage(false), // = 14,
     MultiQuestion(false), // = 15,

@@ -8,13 +8,11 @@ public interface IImportHandler {
 
     void handleLog(LogEntry log);
 
-    void handleImage(ImageEntry image, Boolean ignoreExisting);
+    void handleWayPoint(Waypoint wayPoint);
 
-    void handleWaypoint(Waypoint waypoint);
+    Category getCategory(String fileName);
 
-    Category getCategory(String Filename);
-
-    GpxFilename NewGpxFilename(Category category, String filename);
+    GpxFilename NewGpxFilename(Category category, String fileName);
 
     void updateCacheCountForGPXFilenames();
 

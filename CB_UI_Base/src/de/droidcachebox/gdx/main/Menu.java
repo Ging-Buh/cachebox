@@ -211,7 +211,7 @@ public class Menu extends ButtonDialog {
         mListView.setSize(this.getContentSize());
 
         this.addChild(mListView);
-        mListView.setBaseAdapter(new CustomAdapter());
+        mListView.setAdapter(new CustomAdapter());
 
         if (mMoreMenu != null && !mMoreMenuIsInitial) {
             mMoreMenu.initialize();

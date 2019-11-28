@@ -50,7 +50,7 @@ public class ScrollBox extends CB_View_Base {
         item.setClickable(true);
         thisAdapter = new CustomAdapter();
         lv.setDisposeFlag(false);
-        lv.setBaseAdapter(thisAdapter);
+        lv.setAdapter(thisAdapter);
         Layout();
         this.childs.add(lv);
     }

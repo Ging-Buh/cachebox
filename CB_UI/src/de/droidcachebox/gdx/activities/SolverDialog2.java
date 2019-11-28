@@ -472,11 +472,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     @Override
-    public void onStateChange(GL_View_Base v, int State) {
+    public void onStateChange(GL_View_Base v, int state) {
 
         pages newPage = null;
         // Statusänderung eines MultiToggleButtons
-        if (State == 1) {
+        if (state == 1) {
             // Werte der aktuellen Seite in den String sForm speichern
             saveAktPage();
 
@@ -517,7 +517,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             if (checkDataType(newPage)) {
                 showPage(newPage);
             } else {
-                // Button States zurück setzen
+                // Button State zurück setzen
                 setButtonStates();
             }
         }

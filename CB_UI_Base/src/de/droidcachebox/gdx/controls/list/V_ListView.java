@@ -131,7 +131,7 @@ public class V_ListView extends ListViewBase {
 
         try {
 
-            if (mBaseAdapter == null)
+            if (adapter == null)
                 return;
             if (mPosDefault == null)
                 calcDefaultPosList();
@@ -139,7 +139,7 @@ public class V_ListView extends ListViewBase {
             final float workPos = mPos;
 
             synchronized (childs) {
-                for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++) {
+                for (int i = mFirstIndex; i < adapter.getCount(); i++) {
                     if (!mAddedIndexList.contains(i)) {
                         if (mPosDefault.size() - 1 < i)
                             return;
@@ -147,8 +147,8 @@ public class V_ListView extends ListViewBase {
                         float itemPos = mPosDefault.get(i);
                         itemPos -= workPos;
 
-                        if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize)) {
-                            ListViewItemBase tmp = mBaseAdapter.getView(i);
+                        if (itemPos < this.getMaxY() && itemPos + adapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize)) {
+                            ListViewItemBase tmp = adapter.getView(i);
                             if (tmp != null) {
                                 tmp.setY(itemPos);
                                 if (i == mSelectedIndex) {
@@ -160,7 +160,7 @@ public class V_ListView extends ListViewBase {
 
                             // Log.debug(log, "Add Item " + i);
                             mAddedIndexList.add(i);
-                        } else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize)) {
+                        } else if (itemPos + adapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize)) {
                             mLastIndex = i;
                             break;
                         }
@@ -202,7 +202,7 @@ public class V_ListView extends ListViewBase {
             return;
         }
         isInCalculation.set(true);
-        if (mBaseAdapter == null) {
+        if (adapter == null) {
             isInCalculation.set(false);
             return; // can't calc
         }
@@ -220,11 +220,11 @@ public class V_ListView extends ListViewBase {
 
             mAllSize = 0;
             if (hasInvisibleItems) {
-                for (int i = 0; i < mBaseAdapter.getCount(); i++) {
+                for (int i = 0; i < adapter.getCount(); i++) {
                     float itemHeight = 0;
-                    ListViewItemBase item = mBaseAdapter.getView(i);
+                    ListViewItemBase item = adapter.getView(i);
                     if (item != null && item.isVisible() && item.getHeight() > 0) {
-                        itemHeight = mBaseAdapter.getItemSize(i);
+                        itemHeight = adapter.getItemSize(i);
                         countPos -= itemHeight + mDividerSize;
                         if (itemHeight < minimumItemSize)
                             minimumItemSize = itemHeight;
@@ -235,8 +235,8 @@ public class V_ListView extends ListViewBase {
 
                 }
             } else {
-                for (int i = 0; i < mBaseAdapter.getCount(); i++) {
-                    float itemHeight = mBaseAdapter.getItemSize(i);
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    float itemHeight = adapter.getItemSize(i);
                     countPos -= itemHeight + mDividerSize;
                     if (itemHeight < minimumItemSize)
                         minimumItemSize = itemHeight;
@@ -310,10 +310,8 @@ public class V_ListView extends ListViewBase {
     public void notifyDataSetChanged() {
         calcDefaultPosList();
         reloadItems();
-
-        if (mBaseAdapter != null && mBaseAdapter.getCount() <= mSelectedIndex)
-            setSelection(mBaseAdapter.getCount() - 1);
-
+        if (adapter != null && adapter.getCount() <= mSelectedIndex)
+            setSelection(adapter.getCount() - 1);
     }
 
     @Override

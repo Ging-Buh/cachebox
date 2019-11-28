@@ -43,94 +43,74 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.main.menuBtn3.ShowMap;
-import de.droidcachebox.settings.SettingString;
+import de.droidcachebox.settings.SettingStringList;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.*;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
+/*
+ Defining a Filter for geoCaches to show is done by selection within 4 Tabs (in contentBox):
+ first  tab (presets) : combined from settings the predefined filters (in FilterInstances) and the saved filters named by the user can be selected with one click + ok
+ second tab (settings): 4 Buttons (general, dt, cacheTypes, attributes) for genaral (common) boolean properties, valued ranges (difficulty, terrain,..), geoCacheTypes and attributes.
+ third  tab (CategorieView): buttons for categories and subcategories reflecting the different imports of the actual database
+ forth  tab (TextView): string filters by GCCodes, owner and geocache title
+ */
 public class EditFilterSettings extends ActivityBase {
-    private static final FilterProperties[] presets = new FilterProperties[]{ //
-            FilterInstances.HISTORY, //
-            FilterInstances.ACTIVE, //
-            FilterInstances.QUICK, //
-            FilterInstances.BEGINNER, //
-            FilterInstances.WITHTB, //
-            FilterInstances.DROPTB, //
-            FilterInstances.HIGHLIGHTS, //
-            FilterInstances.FAVORITES, //
-            FilterInstances.TOARCHIVE, //
-            FilterInstances.LISTINGCHANGED, //
-            FilterInstances.ALL, //
-            FilterInstances.UserDefinedSQL, //
-    };
     private static final String log = "EditFilterSettings";
-    public static CB_RectF ItemRec;
-    public static FilterProperties tmpFilterProps;
+    private static final int presetTabId = 0;
+    private static final int filterSetTabId = 1;
+    private static final int categoryTabId = 2;
+    private static final int textFilterTabId = 3;
+    private static CB_RectF itemRec;
+    private static FilterProperties tmpFilterProps; // this is the storage for the filter
     private static WaitDialog pd;
-    private static FilterProperties props;
-    private PresetListView mPresetListView;
-    private MultiToggleButton btPre;
-    private MultiToggleButton btSet;
-    private MultiToggleButton btCat;
-    private MultiToggleButton btTxt;
-    private Box contentBox;
-    private FilterSetListView mFilterSetListView;
-    private CategorieListView mCategorieListView;
-    private TextFilterView mTextFilterView;
-    private CB_Button btnAddPreset;
-    private CB_RectF ListViewRec;
+    private MultiToggleButton btnPresetFilters;
+    private MultiToggleButton btnFilterSetFilters;
+    private MultiToggleButton btnCategoryFilters;
+    private MultiToggleButton btnTextFilters;
+    private CB_Button btnAddUserDefinedFilter;
+    private PresetListView presetTab;
+    private FilterSetListView filterSetTab;
+    private CategoryListView categoryTab;
+    private TextFilterView textFilterTab;
+    private int lastTabId;
 
     public EditFilterSettings(CB_RectF rec, String Name) {
         super(rec, Name);
-        ItemRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f);
+        itemRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f);
 
         tmpFilterProps = FilterInstances.getLastFilter();
 
-        float myWidth = this.getWidth() - leftBorder;
+        float myWidth = getWidth() - leftBorder;
         float yy = leftBorder;
-
         CB_Button btnOK = new CB_Button(leftBorder / 2, yy, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
-
+        btnOK.setText(Translation.get("ok"));
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
             finish();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    mCategorieListView.setCategory();
-                    FilterInstances.setLastFilter(tmpFilterProps);
+                    categoryTab.setCategoryFilterPart(); // categories to tmpFilter
+                    textFilterTab.setTextFilterPart(tmpFilterProps);
 
-                    // Text Filter ?
-                    String txtFilter = mTextFilterView.getFilterString();
-                    if (txtFilter.length() > 0) {
-                        int FilterMode = mTextFilterView.getFilterState();
-                        if (FilterMode == 0)
-                            FilterInstances.getLastFilter().filterName = txtFilter;
-                        else if (FilterMode == 1)
-                            FilterInstances.getLastFilter().filterGcCode = txtFilter;
-                        else if (FilterMode == 2)
-                            FilterInstances.getLastFilter().filterOwner = txtFilter;
-                    } else {
-                        FilterInstances.getLastFilter().filterName = "";
-                        FilterInstances.getLastFilter().filterGcCode = "";
-                        FilterInstances.getLastFilter().filterOwner = "";
-                    }
-
-                    applyFilter(FilterInstances.getLastFilter());
+                    FilterInstances.setLastFilter(tmpFilterProps); // remember and access from everywhere
+                    applyFilter(tmpFilterProps);
 
                     // Save selected filter (new JSON Format)
                     // wont save History at the Moment
                     // Marker must be removed, else isFiltered is shown
                     // wont change the LastFilter
-                    if (FilterInstances.getLastFilter().isHistory) {
-                        FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
+                    if (tmpFilterProps.isHistory) {
+                        FilterProperties tmp = new FilterProperties(tmpFilterProps.toString());
                         tmp.isHistory = false;
                         Config.FilterNew.setValue(tmp.toString());
                     } else {
-                        Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+                        Config.FilterNew.setValue(tmpFilterProps.toString());
                     }
                     Config.AcceptChanges();
                 }
@@ -138,109 +118,119 @@ public class EditFilterSettings extends ActivityBase {
 
             return true;
         });
-
-        this.addChild(btnOK);
+        addChild(btnOK);
 
         CB_Button btnCancel = new CB_Button(btnOK.getMaxX(), yy, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
-
+        btnCancel.setText(Translation.get("cancel"));
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             finish();
             return true;
         });
+        addChild(btnCancel);
 
-        this.addChild(btnCancel);
+        float topButtonY = getHeight() - leftBorder - UiSizes.getInstance().getButtonHeight();
 
-        float topButtonY = this.getHeight() - leftBorder - UiSizes.getInstance().getButtonHeight();
-
-        contentBox = new Box(new CB_RectF(0, btnOK.getMaxY(), this.getWidth(), topButtonY - btnOK.getMaxY()), "contentBox");
+        Box contentBox = new Box(new CB_RectF(0, btnOK.getMaxY(), getWidth(), topButtonY - btnOK.getMaxY()), "contentBox");
         contentBox.setBackground(Sprites.activityBackground);
-        this.addChild(contentBox);
+        addChild(contentBox);
 
         CB_RectF MTBRec = new CB_RectF(leftBorder / 2, topButtonY, myWidth / 4, UiSizes.getInstance().getButtonHeight());
 
-        btPre = new MultiToggleButton(MTBRec, "btPre");
-        btSet = new MultiToggleButton(MTBRec, "btSet");
-        btCat = new MultiToggleButton(MTBRec, "btCat");
-        btTxt = new MultiToggleButton(MTBRec, "btTxt");
+        btnPresetFilters = new MultiToggleButton(MTBRec, "btPre");
+        btnFilterSetFilters = new MultiToggleButton(MTBRec, "btSet");
+        btnCategoryFilters = new MultiToggleButton(MTBRec, "btCat");
+        btnTextFilters = new MultiToggleButton(MTBRec, "btTxt");
 
-        // btPre.setX(leftBorder);
-        btSet.setX(btPre.getMaxX());
-        btCat.setX(btSet.getMaxX());
-        btTxt.setX(btCat.getMaxX());
-
-        this.addChild(btPre);
-        this.addChild(btSet);
-        this.addChild(btCat);
-        this.addChild(btTxt);
+        btnFilterSetFilters.setX(btnPresetFilters.getMaxX());
+        btnCategoryFilters.setX(btnFilterSetFilters.getMaxX());
+        btnTextFilters.setX(btnCategoryFilters.getMaxX());
 
         String sPre = Translation.get("preset");
         String sSet = Translation.get("setting");
         String sCat = Translation.get("category");
         String sTxt = Translation.get("text");
 
-        btPre.initialOn_Off_ToggleStates(sPre, sPre);
-        btSet.initialOn_Off_ToggleStates(sSet, sSet);
-        btCat.initialOn_Off_ToggleStates(sCat, sCat);
-        btTxt.initialOn_Off_ToggleStates(sTxt, sTxt);
+        btnPresetFilters.initialOn_Off_ToggleStates(sPre, sPre);
+        btnFilterSetFilters.initialOn_Off_ToggleStates(sSet, sSet);
+        btnCategoryFilters.initialOn_Off_ToggleStates(sCat, sCat);
+        btnTextFilters.initialOn_Off_ToggleStates(sTxt, sTxt);
 
-        btPre.setClickHandler((v, x, y, pointer, button) -> {
-            switchVisibility(0);
+        btnPresetFilters.setClickHandler((v, x, y, pointer, button) -> {
+            setTabVisible(presetTabId);
             return true;
         });
 
-        btSet.setClickHandler((v, x, y, pointer, button) -> {
-            switchVisibility(1);
+        btnFilterSetFilters.setClickHandler((v, x, y, pointer, button) -> {
+            setTabVisible(filterSetTabId);
             return true;
         });
 
-        btCat.setClickHandler((v, x, y, pointer, button) -> {
-            switchVisibility(2);
+        btnCategoryFilters.setClickHandler((v, x, y, pointer, button) -> {
+            setTabVisible(categoryTabId);
             return true;
         });
 
-        btPre.setOnStateChangedListener((v, State) -> {
-            if (State == 1)
-                switchVisibility(0);
+        btnTextFilters.setClickHandler((v, x, y, pointer, button) -> {
+            setTabVisible(textFilterTabId);
+            return true;
         });
 
-        btSet.setOnStateChangedListener((v, State) -> {
-            if (State == 1)
-                switchVisibility(1);
+        addChild(btnPresetFilters);
+        addChild(btnFilterSetFilters);
+        addChild(btnCategoryFilters);
+        addChild(btnTextFilters);
+
+        btnAddUserDefinedFilter = new CB_Button(new CB_RectF(leftBorder, margin, innerWidth, UiSizes.getInstance().getButtonHeight()), "AddPresetButon");
+        btnAddUserDefinedFilter.setText(Translation.get("AddOwnFilterPreset"));
+        btnAddUserDefinedFilter.setClickHandler((v, x, y, pointer, button) -> {
+            addUserDefinedFilter();
+            return true;
         });
-        btCat.setOnStateChangedListener((v, State) -> {
-            if (State == 1)
-                switchVisibility(2);
-        });
-        btTxt.setOnStateChangedListener((v, State) -> {
-            if (State == 1)
-                switchVisibility(3);
-        });
+        contentBox.addChild(btnAddUserDefinedFilter);
 
-        // Translations
-        btnOK.setText(Translation.get("ok"));
-        btnCancel.setText(Translation.get("cancel"));
+        CB_RectF listViewRec = new CB_RectF(0, margin, getWidth(), btnPresetFilters.getY() - btnOK.getMaxY() - margin - margin);
+        CB_RectF preRec = new CB_RectF(listViewRec);
+        preRec.setHeight(listViewRec.getHeight() - UiSizes.getInstance().getButtonHeight() - margin);
+        preRec.setY(btnAddUserDefinedFilter.getMaxY() + margin);
 
-        ListViewRec = new CB_RectF(0, margin, this.getWidth(), btPre.getY() - btnOK.getMaxY() - margin - margin);
+        presetTab = new PresetListView(preRec);
+        contentBox.addChild(presetTab);
 
-        initialPresets();
-        initialSettings();
-        initialCategorieView();
-        fillListViews();
-        initialTextView();
+        filterSetTab = new FilterSetListView(listViewRec);
+        contentBox.addChild(filterSetTab);
 
-        switchVisibility(0);
+        categoryTab = new CategoryListView(listViewRec);
+        contentBox.addChild(categoryTab);
+
+        textFilterTab = new TextFilterView(listViewRec, "TextFilterView");
+        contentBox.addChild(textFilterTab);
+
+        // init FilterSetListView from tmpFilterProps/FilterInstances.getLastFilter()
+        // select entry, if possible
+
+        // init CategoryListView from tmpFilterProps/FilterInstances.getLastFilter()
+
+        // init TextFilterView from tmpFilterProps/FilterInstances.getLastFilter()
+        if (tmpFilterProps.filterName.length() > 0)
+            textFilterTab.setFilterString(tmpFilterProps.filterName, 0);
+        else if (tmpFilterProps.filterGcCode.length() > 0)
+            textFilterTab.setFilterString(tmpFilterProps.filterGcCode, 1);
+        else if (tmpFilterProps.filterOwner.length() > 0)
+            textFilterTab.setFilterString(tmpFilterProps.filterOwner, 2);
+
+        lastTabId = -1;
+        setTabVisible(0);
 
     }
 
-    public static void applyFilter(final FilterProperties Props) {
+    public static void applyFilter(final FilterProperties filterProperties) {
 
-        props = Props;
         pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
 
         new Thread(() -> {
             try {
                 synchronized (Database.Data.cacheList) {
-                    String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
+                    String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
                     Log.info(log, "Main.applyFilter: " + sqlWhere);
                     Database.Data.cacheList.clear();
                     Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
@@ -254,7 +244,7 @@ public class EditFilterSettings extends ActivityBase {
                 ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 // Save selected filter (new JSON Format)
-                // wont save History at the Moment
+                // wont save History
                 // Marker must be removed, else isFiltered is shown
                 // wont change the LastFilter
                 if (FilterInstances.getLastFilter().isHistory) {
@@ -272,120 +262,82 @@ public class EditFilterSettings extends ActivityBase {
 
     }
 
-    private void initialPresets() {
-        CB_RectF rec = new CB_RectF(leftBorder, margin, innerWidth, UiSizes.getInstance().getButtonHeight());
-        btnAddPreset = new CB_Button(rec, "AddPresetButon");
-        btnAddPreset.setText(Translation.get("AddOwnFilterPreset"));
-        btnAddPreset.setClickHandler((v, x, y, pointer, button) -> {
-            addUserPreset();
-            return true;
-        });
-        contentBox.addChild(btnAddPreset);
-
-        CB_RectF preRec = new CB_RectF(ListViewRec);
-        preRec.setHeight(ListViewRec.getHeight() - UiSizes.getInstance().getButtonHeight() - margin);
-        preRec.setY(btnAddPreset.getMaxY() + margin);
-
-        mPresetListView = new PresetListView(preRec);
-        contentBox.addChild(mPresetListView);
+    private void setTabVisible(int tabId) {
+        if (lastTabId == tabId) return;
+        if (tabId == presetTabId) {
+            btnPresetFilters.setState(1);
+            btnFilterSetFilters.setState(0);
+            btnCategoryFilters.setState(0);
+            btnTextFilters.setState(0);
+            filterSetTab.setInvisible();
+            presetTab.setVisible();
+            categoryTab.setInvisible();
+            textFilterTab.setInvisible();
+            btnAddUserDefinedFilter.setVisible();
+            // set tmpFilterProps from filterSetTabId
+            // set tmpFilterProps from CategoryListView
+            if (categoryTab != null)
+                categoryTab.setCategoryFilterPart();
+            // set tmpFilterProps from TextFilterView
+            textFilterTab.setTextFilterPart(tmpFilterProps);
+            presetTab.onShow();
+        }
+        if (tabId == filterSetTabId) {
+            btnPresetFilters.setState(0);
+            btnFilterSetFilters.setState(1);
+            btnCategoryFilters.setState(0);
+            btnTextFilters.setState(0);
+            presetTab.setInvisible();
+            filterSetTab.setVisible();
+            categoryTab.setInvisible();
+            textFilterTab.setInvisible();
+            btnAddUserDefinedFilter.setInvisible();
+            // set tmpFilterProps from CategoryListView
+            if (categoryTab != null)
+                categoryTab.setCategoryFilterPart();
+            // set tmpFilterProps from TextFilterView
+            textFilterTab.setTextFilterPart(tmpFilterProps);
+            filterSetTab.onShow();
+        }
+        if (tabId == categoryTabId) {
+            btnPresetFilters.setState(0);
+            btnFilterSetFilters.setState(0);
+            btnCategoryFilters.setState(1);
+            btnTextFilters.setState(0);
+            presetTab.setInvisible();
+            filterSetTab.setInvisible();
+            categoryTab.setVisible();
+            textFilterTab.setInvisible();
+            btnAddUserDefinedFilter.setInvisible();
+            // set tmpFilterProps from TextFilterView
+            textFilterTab.setTextFilterPart(tmpFilterProps);
+            categoryTab.onShow();
+        }
+        if (tabId == textFilterTabId) {
+            btnPresetFilters.setState(0);
+            btnFilterSetFilters.setState(0);
+            btnCategoryFilters.setState(0);
+            btnTextFilters.setState(1);
+            presetTab.setInvisible();
+            filterSetTab.setInvisible();
+            categoryTab.setInvisible();
+            textFilterTab.setVisible();
+            btnAddUserDefinedFilter.setInvisible();
+            // set tmpFilterProps from CategoryListView
+            if (categoryTab != null)
+                categoryTab.setCategoryFilterPart();
+            textFilterTab.onShow();
+        }
+        lastTabId = tabId;
     }
 
-    private void initialSettings() {
-        mFilterSetListView = new FilterSetListView(ListViewRec);
-        contentBox.addChild(mFilterSetListView);
-
-    }
-
-    private void initialCategorieView() {
-        mCategorieListView = new CategorieListView(ListViewRec);
-        contentBox.addChild(mCategorieListView);
-    }
-
-    private void initialTextView() {
-        mTextFilterView = new TextFilterView(ListViewRec, "TextFilterView");
-        contentBox.addChild(mTextFilterView);
-    }
-
-    private void fillListViews() {
-    }
-
-    private void switchVisibility() {
-        if (btPre.getState() == 1) {
-            mFilterSetListView.setInvisible();
-            mPresetListView.setVisible();
-            mCategorieListView.setInvisible();
-            mTextFilterView.setInvisible();
-            btnAddPreset.setVisible();
-            if (mCategorieListView != null)
-                mCategorieListView.setCategory();
-            mPresetListView.onShow();
-        }
-
-        if (btSet.getState() == 1) {
-            mPresetListView.setInvisible();
-            mFilterSetListView.setVisible();
-            mCategorieListView.setInvisible();
-            mTextFilterView.setInvisible();
-            btnAddPreset.setInvisible();
-            if (mCategorieListView != null)
-                mCategorieListView.setCategory();
-            mFilterSetListView.onShow();
-        }
-        if (btCat.getState() == 1) {
-            mPresetListView.setInvisible();
-            mFilterSetListView.setInvisible();
-            mCategorieListView.setVisible();
-            mTextFilterView.setInvisible();
-            btnAddPreset.setInvisible();
-            mCategorieListView.onShow();
-        }
-        if (btTxt.getState() == 1) {
-            mPresetListView.setInvisible();
-            mFilterSetListView.setInvisible();
-            mCategorieListView.setInvisible();
-            mTextFilterView.setVisible();
-            btnAddPreset.setInvisible();
-            mTextFilterView.onShow();
-        }
-
-    }
-
-    private void switchVisibility(int state) {
-        if (state == 0) {
-            btPre.setState(1);
-            btSet.setState(0);
-            btCat.setState(0);
-            btTxt.setState(0);
-        }
-        if (state == 1) {
-            btPre.setState(0);
-            btSet.setState(1);
-            btCat.setState(0);
-            btTxt.setState(0);
-        }
-        if (state == 2) {
-            btPre.setState(0);
-            btSet.setState(0);
-            btCat.setState(1);
-            btTxt.setState(0);
-        }
-        if (state == 3) {
-            btPre.setState(0);
-            btSet.setState(0);
-            btCat.setState(0);
-            btTxt.setState(1);
-        }
-
-        switchVisibility();
-    }
-
-    private void addUserPreset() {
+    private void addUserDefinedFilter() {
         GL.that.closeActivity();
 
         // Check if Preset exist
         boolean exist = false;
         String existName = "";
-        for (PresetListViewItem v : mPresetListView.mPresetListViewItems) {
+        for (PresetListView.PresetListViewItem v : presetTab.presetListViewItems) {
             if (v.getEntry().getFilterProperties().equals(tmpFilterProps)) {
                 exist = true;
                 existName = v.getEntry().getName();
@@ -403,23 +355,22 @@ public class EditFilterSettings extends ActivityBase {
 
         StringInputBox.Show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset",
                 (which, data) -> {
-                    String text = StringInputBox.editText.getText();
-                    // Behandle das ergebniss
                     if (which == MessageBox.BTN_LEFT_POSITIVE) { // ok Clicked
-                        String uF = Config.UserFilter.getValue();
-                        String aktFilter = tmpFilterProps.toString();
+                        String nameOfNewFilter = StringInputBox.editText.getText();
+                        String userFilters = Config.UserFilters.getValue();
+                        String newFilterString = tmpFilterProps.toString();
 
                         // Category Filterungen aus Filter entfernen
-                        int pos = aktFilter.indexOf("^");
-                        int posE = aktFilter.indexOf("\"", pos);
-                        String after = aktFilter.substring(posE);
-                        aktFilter = aktFilter.substring(0, pos) + after;
+                        int pos = newFilterString.indexOf("^");
+                        int posE = newFilterString.indexOf("\"", pos);
+                        String after = newFilterString.substring(posE);
+                        newFilterString = newFilterString.substring(0, pos) + after;
 
-                        uF += text + ";" + aktFilter + "#";
-                        Config.UserFilter.setValue(uF);
+                        userFilters += nameOfNewFilter + ";" + newFilterString + "#";
+                        Config.UserFilters.setValue(userFilters);
                         Config.AcceptChanges();
-                        mPresetListView.fillPresetList();
-                        mPresetListView.notifyDataSetChanged();
+                        presetTab.fillPresetList();
+                        presetTab.notifyDataSetChanged();
                     }
                     de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
                     return true;
@@ -428,81 +379,634 @@ public class EditFilterSettings extends ActivityBase {
 
     @Override
     public void onShow() {
-        //	tmpFilterProps = FilterInstances.LastFilter;
-
-        if (mPresetListView != null) {
-            mPresetListView.notifyDataSetChanged();
-        }
-
-        // Load and set TxtFilter
-        if (mTextFilterView != null) {
-            if (FilterInstances.getLastFilter().filterName.length() > 0)
-                mTextFilterView.setFilterString(FilterInstances.getLastFilter().filterName, 0);
-            else if (FilterInstances.getLastFilter().filterGcCode.length() > 0)
-                mTextFilterView.setFilterString(FilterInstances.getLastFilter().filterGcCode, 1);
-            else if (FilterInstances.getLastFilter().filterOwner.length() > 0)
-                mTextFilterView.setFilterString(FilterInstances.getLastFilter().filterOwner, 2);
+        if (presetTab != null) {
+            presetTab.notifyDataSetChanged();
         }
     }
 
-    private static class CategorieListView extends V_ListView {
+    public interface ISelectAllHandler {
+        void selectAllCacheTypes();
 
-        static final int COLLAPSE_BUTTON_ITEM = 0;
-        static final int CHECK_ITEM = 1;
-        static final int THREE_STATE_ITEM = 2;
-        static final int NUMERIC_ITEM = 3;
-        private ArrayList<CategoryEntry> categoryEntries;
-        private ArrayList<CategoryListViewItem> categoryListViewItems;
+        void selectNoCacheType();
+    }
 
-        CategorieListView(CB_RectF rec) {
+    private static class PresetListView extends V_ListView {
+
+        ArrayList<PresetListViewItem> presetListViewItems;
+        private ArrayList<Preset> presets;
+        private PresetsAdapter presetsAdapter;
+
+        PresetListView(CB_RectF rec) {
             super(rec, "");
-            this.setHasInvisibleItems();
-            fillCategorieList();
-            this.setDisposeFlag(false);
-            this.setBaseAdapter(null);
-            this.setBaseAdapter(new CategoryEntryAdapter(categoryEntries, categoryListViewItems));
+            setHasInvisibleItems();
+            fillPresetList();
+            setDisposeFlag(false);
+            presetsAdapter = new PresetsAdapter(presets);
+            setAdapter(presetsAdapter);
+        }
+
+        void fillPresetList() {
+            if (presets == null) presets = new ArrayList<>();
+            else presets.clear();
+            if (presetListViewItems == null) presetListViewItems = new ArrayList<>();
+            else presetListViewItems.clear();
+
+            FilterInstances.HISTORY.isHistory = true;
+
+            presets.add(new Preset(Translation.get("HISTORY"), Sprites.getSprite("HISTORY"), FilterInstances.HISTORY));
+            presets.add(new Preset(Translation.get("AllCachesToFind"), Sprites.getSprite("log0icon"), FilterInstances.ACTIVE));
+            presets.add(new Preset(Translation.get("QuickCaches"), Sprites.getSprite("QuickCaches"), FilterInstances.QUICK));
+            presets.add(new Preset(Translation.get("BEGINNER"), Sprites.getSprite("BEGINNER"), FilterInstances.BEGINNER));
+            presets.add(new Preset(Translation.get("GrabTB"), Sprites.getSprite(Sprites.IconName.TBGRAB), FilterInstances.WITHTB));
+            presets.add(new Preset(Translation.get("DropTB"), Sprites.getSprite(Sprites.IconName.TBDROP), FilterInstances.DROPTB));
+            presets.add(new Preset(Translation.get("Highlights"), Sprites.getSprite("star"), FilterInstances.HIGHLIGHTS));
+            presets.add(new Preset(Translation.get("Favorites"), Sprites.getSprite("favorit"), FilterInstances.FAVORITES));
+            presets.add(new Preset(Translation.get("PrepareToArchive"), Sprites.getSprite(Sprites.IconName.DELETE), FilterInstances.TOARCHIVE));
+            presets.add(new Preset(Translation.get("ListingChanged"), Sprites.getSprite(Sprites.IconName.warningIcon), FilterInstances.LISTINGCHANGED));
+            presets.add(new Preset(Translation.get("AllCaches"), Sprites.getSprite("earth"), FilterInstances.ALL));
+            int index = 0;
+            for (Preset entry : presets) {
+                PresetListViewItem v = new PresetListViewItem(itemRec, index, entry);
+                v.setClickHandler((v12, x, y, pointer, button) -> {
+                    PresetListViewItem clickedItem = (PresetListViewItem) v12;
+                    tmpFilterProps = new FilterProperties(clickedItem.mPreset.filterProperties.toString());
+                    return true;
+                });
+                presetListViewItems.add(v);
+                index++;
+            }
+
+            // add userFilters from Config.UserFilter
+            if (Config.UserFilters.getValue().length() > 0) {
+                String[] userFilters = Config.UserFilters.getValue().split(SettingStringList.STRINGSPLITTER);
+                try {
+                    for (String userFilter : userFilters) {
+                        int pos = userFilter.indexOf(";");
+                        String name = userFilter.substring(0, pos);
+                        String filter = userFilter.substring(pos + 1);
+                        // if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1); // relikt?
+                        Preset entry = new Preset(name, Sprites.getSprite("userdata"), new FilterProperties(filter));
+                        presets.add(entry);
+                        PresetListViewItem v = new PresetListViewItem(itemRec, index, entry);
+                        presetListViewItems.add(v);
+                        index++;
+                        v.setClickHandler((v12, x, y, pointer, button) -> {
+                            PresetListViewItem clickedItem = (PresetListViewItem) v12;
+                            tmpFilterProps = new FilterProperties(clickedItem.mPreset.filterProperties.toString());
+                            return true;
+                        });
+                        v.setOnLongClickListener((v1, x, y, pointer, button) -> {
+                            GL.that.closeActivity();
+                            PresetListViewItem clickedItem = (PresetListViewItem) v1;
+                            tmpFilterProps = new FilterProperties(clickedItem.mPreset.filterProperties.toString());
+                            MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                                    (which, data) -> {
+                                        // NO clicked
+                                        if (which == MessageBox.BTN_LEFT_POSITIVE) { // YES Clicked
+                                            try {
+                                                String userEntries = Config.UserFilters.getValue();
+                                                int p1 = userEntries.indexOf(clickedItem.mPreset.mName);
+                                                int p2 = userEntries.indexOf(SettingStringList.STRINGSPLITTER, p1) + 1;
+                                                String newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
+                                                Config.UserFilters.setValue(newUserEntries);
+                                                Config.AcceptChanges();
+                                                fillPresetList();
+                                                notifyDataSetChanged();
+                                            } catch (Exception ex) {
+                                                Log.err(log, "DelUserPreset", ex);
+                                            }
+                                        }
+                                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
+                                        return true;
+                                    });
+                            return true;
+                        });
+                    }
+                } catch (Exception ex) {
+                    Log.err("PresetListView", "", ex);
+                }
+            }
+        }
+
+        @Override
+        public void setVisible(boolean visible) {
+            super.setVisible(visible);
+            if (visible) {
+                for (PresetListViewItem item : presetListViewItems) {
+                    item.isSelected = false;
+                }
+                setAdapter(null);
+                presetsAdapter = new PresetsAdapter(presets);
+                setAdapter(presetsAdapter);
+            }
+        }
+
+        public static class Preset {
+            private final String mName;
+            private final Sprite mIcon;
+            private FilterProperties filterProperties;
+
+            Preset(String Name, Sprite Icon, FilterProperties PresetFilter) {
+                mName = Name;
+                mIcon = Icon;
+                filterProperties = PresetFilter;
+            }
+
+            public String getName() {
+                return mName;
+            }
+
+            public Sprite getIcon() {
+                return mIcon;
+            }
+
+            FilterProperties getFilterProperties() {
+                return filterProperties;
+            }
 
         }
 
-        void setCategory() {
+        private static class PresetListViewItem extends ListViewItemBackground {
+            private final PresetListView.Preset mPreset;
+            BitmapFontCache EntryName;
+            float left = 0;
+            float top = 0;
+
+            PresetListViewItem(CB_RectF rec, int Index, PresetListView.Preset fne) {
+                super(rec, Index, fne.getName());
+                mPreset = fne;
+            }
+
+            @Override
+            protected void render(Batch batch) {
+                if (isDisposed())
+                    return;
+
+                if (tmpFilterProps != null) {
+                    if (mPreset.getFilterProperties().equals(tmpFilterProps)) isSelected = true;
+                    else isSelected = false;
+                }
+
+                super.render(batch);
+
+                if (isPressed) {
+                    isPressed = GL_Input.that.getIsTouchDown();
+                }
+
+                // initial
+                left = getLeftWidth();
+                top = (getHeight() + Fonts.getNormal().getLineHeight()) / 2f; //getTopHeight();
+
+                drawIcon(batch);
+
+                // draw Name
+                if (EntryName == null) {
+                    EntryName = new BitmapFontCache(Fonts.getNormal());
+                    EntryName.setColor(COLOR.getFontColor());
+                    EntryName.setText(name, left + 10, top);
+                }
+                EntryName.draw(batch);
+
+            }
+
+            private void drawIcon(Batch batch) {
+                if (mPreset.getIcon() != null) {
+                    float iconHeight = getHeight() * 0.8f;
+                    float iconWidth = getHeight() * 0.8f;
+                    float y = (getHeight() - iconHeight) / 2f; // UI_Size_Base.that.getMargin()
+                    mPreset.getIcon().setBounds(left, y, iconWidth, iconHeight);
+                    mPreset.getIcon().draw(batch);
+                    left = left + iconWidth + y + getLeftWidth();
+                }
+            }
+
+            PresetListView.Preset getEntry() {
+                return mPreset;
+            }
+        }
+
+        public class PresetsAdapter implements Adapter {
+
+            private final ArrayList<Preset> presets;
+
+            PresetsAdapter(ArrayList<Preset> presets) {
+                this.presets = presets;
+            }
+
+            @Override
+            public int getCount() {
+                return presets.size();
+            }
+
+            @Override
+            public ListViewItemBase getView(final int position) {
+                return presetListViewItems.get(position);
+            }
+
+            @Override
+            public float getItemSize(int position) {
+                return EditFilterSettings.itemRec.getHeight();
+            }
+        }
+
+    }
+
+    private static class FilterSetListView extends V_ListView {
+        // the collapse buttons
+        private FilterSetListViewItem activeCollapseButton; // only one should be active
+        private FilterSetListViewItem cacheTypes;
+        private FilterSetListViewItem attributes;
+        //
+        private FilterSetListViewItem notAvailable;
+        private FilterSetListViewItem archived;
+        private FilterSetListViewItem finds;
+        private FilterSetListViewItem own;
+        private FilterSetListViewItem containsTravelBugs;
+        private FilterSetListViewItem favorites;
+        private FilterSetListViewItem hasUserData;
+        private FilterSetListViewItem listingChanged;
+        private FilterSetListViewItem withManualWaypoint;
+        private FilterSetListViewItem hasCorrectedCoordinates;
+        private FilterSetListViewItem minTerrain;
+        private FilterSetListViewItem maxTerrain;
+        private FilterSetListViewItem minDifficulty;
+        private FilterSetListViewItem maxDifficulty;
+        private FilterSetListViewItem minContainerSize;
+        private FilterSetListViewItem maxContainerSize;
+        private FilterSetListViewItem minRating;
+        private FilterSetListViewItem maxRating;
+        private FilterSetListViewItem minFavPoints;
+        private FilterSetListViewItem maxFavPoints;
+        private int index = 0;
+        private ArrayList<FilterSetEntry> filterSetEntries;
+        private ArrayList<FilterSetListViewItem> filterSetListViewItems;
+
+        FilterSetListView(CB_RectF rec) {
+            super(rec, "FilterSetListView");
+            setHasInvisibleItems();
+            fillFilterSetList();
+            setAdapter(new FilterSetAdapter(filterSetEntries, filterSetListViewItems));
+            setDisposeFlag(false);
+        }
+
+        private FilterProperties getFilterProperties() {
+            FilterProperties props = new FilterProperties();
+            props.setFinds(finds.getChecked());
+            props.setNotAvailable(notAvailable.getChecked());
+            props.setArchived(archived.getChecked());
+            props.setOwn(own.getChecked());
+            props.setContainsTravelbugs(containsTravelBugs.getChecked());
+            props.setFavorites(favorites.getChecked());
+            props.setHasUserData(hasUserData.getChecked());
+            props.setListingChanged(listingChanged.getChecked());
+            props.setWithManualWaypoint(withManualWaypoint.getChecked());
+            props.setHasCorrectedCoordinates(hasCorrectedCoordinates.getChecked());
+
+            props.setMinDifficulty(minDifficulty.getValue());
+            props.setMaxDifficulty(maxDifficulty.getValue());
+            props.setMinTerrain(minTerrain.getValue());
+            props.setMaxTerrain(maxTerrain.getValue());
+            props.setMinContainerSize(minContainerSize.getValue());
+            props.setMaxContainerSize(maxContainerSize.getValue());
+            props.setMinRating(minRating.getValue());
+            props.setMaxRating(maxRating.getValue());
+            props.setMinFavPoints(minFavPoints.getValue());
+            props.setMaxFavPoints(maxFavPoints.getValue());
+
+            props.cacheTypes = "";
+            String sep = "";
+            for (int i = 1; i < cacheTypes.getChildLength(); i++) {
+                FilterSetListViewItem itm = cacheTypes.getChild(i);
+                if (itm.getBoolean()) {
+                    props.cacheTypes = props.cacheTypes + sep + itm.getFilterSetEntry().getCacheType().ordinal();
+                    sep = ",";
+                }
+            }
+
+            for (int i = 0; i < attributes.getChildLength(); i++) {
+                props.attributes[i + 1] = attributes.getChild(i).getChecked();
+            }
+
+            return props;
+        }
+
+        private void setFilterProperties(FilterProperties props) {
+            finds.setValue(props.getFinds());
+            notAvailable.setValue(props.getNotAvailable());
+            archived.setValue(props.getArchived());
+            own.setValue(props.getOwn());
+            containsTravelBugs.setValue(props.getContainsTravelbugs());
+            favorites.setValue(props.getFavorites());
+            hasUserData.setValue(props.getHasUserData());
+            listingChanged.setValue(props.getListingChanged());
+            withManualWaypoint.setValue(props.getWithManualWaypoint());
+            hasCorrectedCoordinates.setValue(props.getHasCorrectedCoordinates());
+
+            minTerrain.setValue(props.getMinTerrain());
+            maxTerrain.setValue(props.getMaxTerrain());
+            minDifficulty.setValue(props.getMinDifficulty());
+            maxDifficulty.setValue(props.getMaxDifficulty());
+            minContainerSize.setValue(props.getMinContainerSize());
+            maxContainerSize.setValue(props.getMaxContainerSize());
+            minRating.setValue(props.getMinRating());
+            maxRating.setValue(props.getMaxRating());
+            minFavPoints.setValue(props.getMinFavPoints());
+            maxFavPoints.setValue(props.getMaxFavPoints());
+
+            String propsCacheTypes = "'" + props.cacheTypes.replace(",", "','") + "'";
+            for (int i = 0; i < cacheTypes.getChildLength(); i++) {
+                FilterSetListViewItem itm = cacheTypes.getChild(i);
+                if (itm.getFilterSetEntry().getCacheType() != null) {
+                    int ct = itm.getFilterSetEntry().getCacheType().ordinal();
+                    itm.setValue(propsCacheTypes.contains("'" + ct + "'"));
+                }
+            }
+
+            for (int i = 0; i < attributes.getChildLength(); i++) {
+                attributes.getChild(i).setValue(props.attributes[i + 1]);
+            }
+
+        }
+
+        @Override
+        protected void render(Batch batch) {
+            super.render(batch);
+            if (mustSaveFilter) {
+                tmpFilterProps = getFilterProperties();
+                mustSaveFilter = false;
+            }
+        }
+
+        @Override
+        public void onShow() {
+            if (tmpFilterProps != null && !tmpFilterProps.toString().equals("")) {
+                setFilterProperties(tmpFilterProps);
+            }
+        }
+
+        private void fillFilterSetList() {
+
+            // add General
+            FilterSetListViewItem general = addGroupTitleButton(Translation.get("General"));
+            notAvailable = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("disabled"), Translation.get("disabled"), THREE_STATE_ITEM));
+            archived = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("not-available"), Translation.get("archived"), THREE_STATE_ITEM));
+            finds = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("log0icon"), Translation.get("myfinds"), THREE_STATE_ITEM));
+            own = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("star"), Translation.get("myowncaches"), THREE_STATE_ITEM));
+            containsTravelBugs = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("tb"), Translation.get("withtrackables"), THREE_STATE_ITEM));
+            favorites = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("favorit"), Translation.get("Favorites"), THREE_STATE_ITEM));
+            hasUserData = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("userdata"), Translation.get("hasuserdata"), THREE_STATE_ITEM));
+            listingChanged = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite(Sprites.IconName.warningIcon.name()), Translation.get("ListingChanged"), THREE_STATE_ITEM));
+            withManualWaypoint = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite(Sprites.IconName.manualWayPoint.name()), Translation.get("manualWayPoint"), THREE_STATE_ITEM));
+            hasCorrectedCoordinates = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("hasCorrectedCoordinates"), Translation.get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
+
+            // add D/T
+            FilterSetListViewItem dt = addGroupTitleButton("D / T" + "\n" + "GC-Vote");
+            minDifficulty = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minDifficulty"), 1, 5, 1, 0.5f));
+            maxDifficulty = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxDifficulty"), 1, 5, 5, 0.5f));
+            minTerrain = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minTerrain"), 1, 5, 1, 0.5f));
+            maxTerrain = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxTerrain"), 1, 5, 5, 0.5f));
+            minContainerSize = dt.addChild(addFilterSetNumericItem(Sprites.SizesIcons.toArray(), Translation.get("minContainerSize"), 0, 4, 0, 1));
+            maxContainerSize = dt.addChild(addFilterSetNumericItem(Sprites.SizesIcons.toArray(), Translation.get("maxContainerSize"), 0, 4, 4, 1));
+            minRating = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minRating"), 0, 5, 0, 0.5f));
+            maxRating = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxRating"), 0, 5, 5, 0.5f));
+            minFavPoints = dt.addChild(addFilterSetIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("minFavPoints")));
+            maxFavPoints = dt.addChild(addFilterSetIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("maxFavPoints")));
+
+
+            // add CacheTypes
+            cacheTypes = addGroupTitleButton("Cache Types");
+
+            //add selectAllCacheTypes/selectNoCacheType button item
+            FilterSetListViewItem selectAllItem = addSelectAllOrNoneButtons(null, "", SELECT_ALL_ITEM);
+            selectAllItem.setSelectAllHandler(new ISelectAllHandler() {
+                @Override
+                public void selectAllCacheTypes() {
+                    for (int i = 0; i < cacheTypes.getChildLength(); i++) {
+                        FilterSetListViewItem itm = cacheTypes.getChild(i);
+                        itm.setChecked();
+                    }
+                }
+
+                @Override
+                public void selectNoCacheType() {
+                    for (int i = 0; i < cacheTypes.getChildLength(); i++) {
+                        FilterSetListViewItem itm = cacheTypes.getChild(i);
+                        itm.unCheck();
+                    }
+                }
+            });
+            cacheTypes.addChild(selectAllItem);
+
+            for (CacheTypes c : CacheTypes.caches()) {
+                cacheTypes.addChild(addFilterSetCacheTypeItem(c)).setChecked();
+            }
+
+            // add Attributes
+            attributes = addGroupTitleButton("Attributes");
+            for (int i = 1; i < Attributes.values().length; i++) {
+                attributes.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("att-" + i + "-1Icon"), Translation.get("att_" + i + "_1"), THREE_STATE_ITEM));
+            }
+
+        }
+
+        private FilterSetListViewItem addFilterSetNumericItem(Sprite[] Icons, String Name, double i, double j, double k, double f) {
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            //String Name, Sprite[] Icons, int itemType, double min = i, double max = j, double iniValue = k, double Step = f
+            FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(Name, Icons, NUMERIC_ITEM, i, j, k, f);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            // initial mit GONE
+            v.setInvisible();
+            filterSetListViewItems.add(v);
+            return v;
+        }
+
+        private FilterSetListViewItem addFilterSetIntegerItem(Sprite icon, String name) {
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(name, icon, NUMERIC_INT_ITEM, -1, 10000, 0, 1.0);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            v.setInvisible();
+            filterSetListViewItems.add(v);
+            return v;
+        }
+
+        private FilterSetListViewItem addSelectAllOrNoneButtons(Sprite icon, String name, int itemType) {
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            FilterSetEntry tmp = new FilterSetEntry(name, icon, itemType);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            v.setInvisible();
+            filterSetListViewItems.add(v);
+            return v;
+        }
+
+        private FilterSetListViewItem addFilterSetCacheTypeItem(CacheTypes cacheType) {
+            Sprite icon = Sprites.getSprite("big" + cacheType.name());
+            String name = cacheType.name();
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            FilterSetEntry tmp = new FilterSetEntry(cacheType, name, icon, CHECK_ITEM);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            v.setInvisible();
+            filterSetListViewItems.add(v);
+            return v;
+        }
+
+        private FilterSetListViewItem addGroupTitleButton(String name) {
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            FilterSetEntry tmp = new FilterSetEntry(name, null, COLLAPSE_BUTTON_ITEM);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            filterSetListViewItems.add(v);
+            v.setClickHandler((v1, x, y, pointer, button) -> {
+                // only one or none should be active
+                if (activeCollapseButton == null) {
+                    activeCollapseButton = (FilterSetListViewItem) v1;
+                } else {
+                    if (activeCollapseButton == v1) {
+                        // active one clicked
+                        activeCollapseButton = null;
+                    } else {
+                        // not the active clicked, close the active one
+                        collapseButton_Clicked(activeCollapseButton);
+                        // prepare open the clicked one
+                        activeCollapseButton = (FilterSetListViewItem) v1;
+                    }
+                }
+                collapseButton_Clicked((FilterSetListViewItem) v1);
+                return false;
+            });
+            return v;
+        }
+
+        private void collapseButton_Clicked(FilterSetListViewItem item) {
+            item.toggleChildViewState();
+            notifyDataSetChanged();
+            invalidate();
+        }
+
+        @Override
+        public boolean onTouchDown(int x, int y, int pointer, int button) {
+            super.onTouchDown(x, y, pointer, button);
+            synchronized (childs) {
+                for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                    GL_View_Base view = iterator.next();
+                    if (view.isVisible()) {
+                        if (view.contains(x, y)) {
+                            ((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
+                            return true; // only one item is clicked
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+            super.onTouchDragged(x, y, pointer, KineticPan);
+            for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
+                GL_View_Base view = iterator.next();
+                ((FilterSetListViewItem) view).lastItemTouchPos = null;
+            }
+            return false;
+        }
+
+        private static class FilterSetAdapter implements Adapter {
+
+            private final ArrayList<FilterSetEntry> filterSetList;
+            private final ArrayList<FilterSetListViewItem> filterSetViewList;
+
+            FilterSetAdapter(ArrayList<FilterSetEntry> filterSetList, ArrayList<FilterSetListViewItem> filterSetViewList) {
+                this.filterSetList = filterSetList;
+                this.filterSetViewList = filterSetViewList;
+            }
+
+            @Override
+            public int getCount() {
+                return filterSetList.size();
+            }
+
+            @Override
+            public ListViewItemBase getView(int position) {
+                FilterSetListViewItem v = filterSetViewList.get(position);
+                if (!v.isVisible())
+                    return null;
+                return v;
+            }
+
+            @Override
+            public float getItemSize(int position) {
+                FilterSetListViewItem v = filterSetViewList.get(position);
+                if (!v.isVisible())
+                    return 0;
+                return v.getHeight();
+            }
+        }
+
+    }
+
+    private static class CategoryListView extends V_ListView {
+
+        private ArrayList<CategoryEntry> categoryEntries;
+        private ArrayList<CategoryListViewItem> categoryListViewItems;
+
+        CategoryListView(CB_RectF rec) {
+            super(rec, "");
+            setHasInvisibleItems();
+            fillCategorieList();
+            setDisposeFlag(false);
+            setAdapter(null);
+            setAdapter(new CategoryEntryAdapter(categoryEntries, categoryListViewItems));
+        }
+
+        void setCategoryFilterPart() {
             // Set Categorie State
             if (categoryListViewItems != null) {
                 for (CategoryListViewItem tmp : categoryListViewItems) {
                     GpxFilename file = tmp.categoryEntry.getFile();
-
-                    for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
-                        Category cat = CoreSettingsForward.Categories.get(i);
+                    for (int i = 0, n = CoreSettingsForward.categories.size(); i < n; i++) {
+                        Category cat = CoreSettingsForward.categories.get(i);
                         int index = cat.indexOf(file);
                         if (index != -1) {
-
                             cat.get(index).Checked = tmp.categoryEntry.getState() == 1;
-
                         } else {
                             if (tmp.getCategoryEntry().getCat() != null) {
                                 if (cat == tmp.getCategoryEntry().getCat()) {
                                     cat.pinned = tmp.getCategoryEntry().getCat().pinned;
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
             }
-            CoreSettingsForward.Categories.WriteToFilter(EditFilterSettings.tmpFilterProps);
-
+            CoreSettingsForward.categories.writeToFilter(tmpFilterProps);
         }
 
         private void fillCategorieList() {
 
-            CoreSettingsForward.Categories.ReadFromFilter(EditFilterSettings.tmpFilterProps);
+            CoreSettingsForward.categories.readFromFilter(tmpFilterProps);
 
             int Index = 0;
 
-            for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
-                Category cat = CoreSettingsForward.Categories.get(i);
+            for (int i = 0, n = CoreSettingsForward.categories.size(); i < n; i++) {
+                Category cat = CoreSettingsForward.categories.get(i);
                 CategoryListViewItem CollapseItem = addCategoryCollapseItem(Index++, Sprites.getSprite(Sprites.IconName.docIcon.name()), cat);
 
                 for (GpxFilename File : cat) {
@@ -528,9 +1032,9 @@ public class EditFilterSettings extends ActivityBase {
                 categoryEntries = new ArrayList<>();
                 categoryListViewItems = new ArrayList<>();
             }
-            CategoryEntry tmp = new CategoryEntry(file, Icon, CategorieListView.CHECK_ITEM);
+            CategoryEntry tmp = new CategoryEntry(file, Icon, CHECK_ITEM);
             categoryEntries.add(tmp);
-            CategoryListViewItem v = new CategoryListViewItem(EditFilterSettings.ItemRec, Index, tmp);
+            CategoryListViewItem v = new CategoryListViewItem(EditFilterSettings.itemRec, Index, tmp);
             // inital mit INVISIBLE
             v.setInvisible();
             v.setClickHandler(this::onCategoryListViewItemClicked);
@@ -543,10 +1047,10 @@ public class EditFilterSettings extends ActivityBase {
                 categoryEntries = new ArrayList<>();
                 categoryListViewItems = new ArrayList<>();
             }
-            CategoryEntry tmp = new CategoryEntry(cat, Icon, CategorieListView.COLLAPSE_BUTTON_ITEM);
+            CategoryEntry tmp = new CategoryEntry(cat, Icon, COLLAPSE_BUTTON_ITEM);
             categoryEntries.add(tmp);
 
-            CategoryListViewItem v = new CategoryListViewItem(EditFilterSettings.ItemRec, Index, tmp);
+            CategoryListViewItem v = new CategoryListViewItem(EditFilterSettings.itemRec, Index, tmp);
             categoryListViewItems.add(v);
 
             v.setClickHandler((v1, X, Y, pointer, button) -> {
@@ -571,10 +1075,10 @@ public class EditFilterSettings extends ActivityBase {
 
                             }
                         }
-                        setCategory();
+                        setCategoryFilterPart();
                     } else if (minusBtnHitRec.contains(lastTouchX, lastTouchY)) {
                         ((CategoryListViewItem) v1).minusClick();
-                        setCategory();
+                        setCategoryFilterPart();
                     } else {
                         collapseButton_Clicked((CategoryListViewItem) v1);
                         notifyDataSetChanged();
@@ -582,7 +1086,7 @@ public class EditFilterSettings extends ActivityBase {
 
                 } else {
                     if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                        setCategory();
+                        setCategoryFilterPart();
                     }
                 }
 
@@ -594,8 +1098,8 @@ public class EditFilterSettings extends ActivityBase {
 
         private void collapseButton_Clicked(CategoryListViewItem item) {
             item.toggleChildeViewState();
-            this.notifyDataSetChanged();
-            this.invalidate();
+            notifyDataSetChanged();
+            invalidate();
         }
 
         @Override
@@ -643,42 +1147,38 @@ public class EditFilterSettings extends ActivityBase {
 
                     }
                 }
-                setCategory();
+                setCategoryFilterPart();
             } else if (minusBtnHitRec.contains(lastItemTouchX, lastItemTouchY)) {
                 ((CategoryListViewItem) v1).minusClick();
-                setCategory();
+                setCategoryFilterPart();
             }
 
-            setCategory();
+            setCategoryFilterPart();
 
             return true;
         }
 
-        public static class CategoryEntry {
+        private static class CategoryEntry {
             private final GpxFilename mFile;
             private final int mItemType;
             private Category mCat;
             private Sprite mIcon;
-            private Sprite[] mIconArray;
             private int mState = 0;
-            private double mNumericMax;
-            private double mNumericStep;
-            private double mNumericState;
 
+            // itemType is always CHECK_ITEM -> GpxFilename mFile
             CategoryEntry(GpxFilename file, Sprite Icon, int itemType) {
                 mCat = null;
                 mFile = file;
                 mIcon = Icon;
                 mItemType = itemType;
-
             }
 
+            // itemType is always COLLAPSE_BUTTON_ITEM -> Category mCat
             CategoryEntry(Category cat, Sprite Icon, int itemType) {
                 mCat = cat;
                 mFile = null;
                 mIcon = Icon;
                 mItemType = itemType;
-
             }
 
             public GpxFilename getFile() {
@@ -686,15 +1186,6 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             public Sprite getIcon() {
-                if (mItemType == NUMERIC_ITEM) {
-                    try {
-                        double ArrayMultiplier = (mIconArray.length > 5) ? 2 : 1;
-
-                        return mIconArray[(int) (mNumericState * ArrayMultiplier)];
-                    } catch (Exception ignored) {
-                    }
-
-                }
                 return mIcon;
             }
 
@@ -706,16 +1197,8 @@ public class EditFilterSettings extends ActivityBase {
                 mState = State;
             }
 
-            public void setState(float State) {
-                mNumericState = State;
-            }
-
             int getItemType() {
                 return mItemType;
-            }
-
-            double getNumState() {
-                return mNumericState;
             }
 
             void plusClick() {
@@ -744,14 +1227,7 @@ public class EditFilterSettings extends ActivityBase {
 
             void minusClick() {
                 if (mItemType == COLLAPSE_BUTTON_ITEM) {
-                    // Collabs Button Pin Clicked
-                    CategoryDAO.getInstance().setPinned(this.mCat, !this.mCat.pinned);
-                    // this.mCat.pinned = !this.mCat.pinned;
-
-                } else {
-                    mNumericState -= mNumericStep;
-                    if (mNumericState < 0)
-                        mNumericState = mNumericMax;
+                    CategoryDAO.getInstance().setPinned(mCat, !mCat.pinned);
                 }
             }
 
@@ -767,7 +1243,7 @@ public class EditFilterSettings extends ActivityBase {
                 }
 
                 if (mItemType == CHECK_ITEM) {
-                    assert this.mFile != null;
+                    assert mFile != null;
                     mFile.Checked = mState != 0;
                 }
             }
@@ -782,7 +1258,7 @@ public class EditFilterSettings extends ActivityBase {
 
         }
 
-        public static class CategoryEntryAdapter implements Adapter {
+        private static class CategoryEntryAdapter implements Adapter {
 
             private final ArrayList<CategoryEntry> categoryEntries;
             private final ArrayList<CategoryListViewItem> categoryListViewItems;
@@ -812,11 +1288,11 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             public float getItemSize(int position) {
-                return EditFilterSettings.ItemRec.getHeight();
+                return EditFilterSettings.itemRec.getHeight();
             }
         }
 
-        public static class CategoryListViewItem extends ListViewItemBackground {
+        private static class CategoryListViewItem extends ListViewItemBackground {
             private final SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy hh:mm ", Locale.US);
             // static Member
             private final ArrayList<CategoryListViewItem> mChildList = new ArrayList<>();
@@ -846,7 +1322,7 @@ public class EditFilterSettings extends ActivityBase {
             CategoryListViewItem(CB_RectF rec, int Index, CategoryEntry fne) {
                 super(rec, Index, "");
 
-                this.categoryEntry = fne;
+                categoryEntry = fne;
 
             }
 
@@ -872,7 +1348,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             protected void render(Batch batch) {
-                if (this.categoryEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM)
+                if (categoryEntry.getItemType() != COLLAPSE_BUTTON_ITEM)
                     super.render(batch);
 
                 if (isPressed) {
@@ -881,7 +1357,7 @@ public class EditFilterSettings extends ActivityBase {
 
                 // initial
                 left = getLeftWidth();
-                top = this.getHeight() - this.getTopHeight();
+                top = getHeight() - getTopHeight();
 
                 if (rBounds == null || rChkBounds == null || lPinBounds == null) {
                     rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// =
@@ -896,16 +1372,16 @@ public class EditFilterSettings extends ActivityBase {
                 }
 
                 // boolean selected = false;
-                // if (this.categoryEntry == aktCategorieEntry) selected = true;
+                // if (categoryEntry == aktCategorieEntry) selected = true;
 
                 switch (categoryEntry.getItemType()) {
-                    case FilterSetListView.COLLAPSE_BUTTON_ITEM:
+                    case COLLAPSE_BUTTON_ITEM:
                         drawCollapseButtonItem(batch);
                         break;
-                    case FilterSetListView.CHECK_ITEM:
+                    case CHECK_ITEM:
                         drawChkItem(batch);
                         break;
-                    case FilterSetListView.THREE_STATE_ITEM:
+                    case THREE_STATE_ITEM:
                         drawThreeStateItem(batch);
                         break;
 
@@ -966,7 +1442,7 @@ public class EditFilterSettings extends ActivityBase {
 
             private void drawCollapseButtonItem(Batch batch) {
 
-                if (this.isPressed) {
+                if (isPressed) {
                     if (btnBack_pressed == null) {
                         btnBack_pressed = new NinePatch(Sprites.getSprite("btn-pressed"), 16, 16, 16, 16);
                     }
@@ -992,7 +1468,7 @@ public class EditFilterSettings extends ActivityBase {
                 float iconHeight = getHeight() * 0.6f;
                 float iconWidth = getHeight() * 0.6f;
 
-                if (this.getCategoryEntry().getCat().pinned) {
+                if (getCategoryEntry().getCat().pinned) {
                     if (sPinOn == null) {
                         sPinOn = Sprites.getSprite("pin-icon");
                         sPinOn.setBounds(left, UiSizes.getInstance().getMargin(), iconWidth, iconHeight);
@@ -1013,16 +1489,16 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             private void drawChkItem(Batch batch) {
-                if (this.categoryEntry == null)
+                if (categoryEntry == null)
                     return;
 
                 drawRightChkBox(batch);
 
                 int ChkState;
-                if (this.categoryEntry.getItemType() == FilterSetListView.COLLAPSE_BUTTON_ITEM) {
-                    ChkState = this.categoryEntry.getCat().getCheck();
+                if (categoryEntry.getItemType() == COLLAPSE_BUTTON_ITEM) {
+                    ChkState = categoryEntry.getCat().getCheck();
                 } else {
-                    ChkState = this.categoryEntry.getState();
+                    ChkState = categoryEntry.getState();
                 }
 
                 if (ChkState == 1) {
@@ -1043,14 +1519,14 @@ public class EditFilterSettings extends ActivityBase {
             private void drawThreeStateItem(Batch batch) {
                 drawRightChkBox(batch);
 
-                if (this.categoryEntry.getCat().getCheck() == 1) {
+                if (categoryEntry.getCat().getCheck() == 1) {
                     if (chkOn == null) {
                         chkOn = Sprites.getSprite("check-on");
                         chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
                     }
 
                     chkOn.draw(batch);
-                } else if (this.categoryEntry.getCat().getCheck() == 0) {
+                } else if (categoryEntry.getCat().getCheck() == 0) {
                     if (chkNo == null) {
                         chkNo = Sprites.getSprite(Sprites.IconName.DELETE.name());
                         chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
@@ -1080,30 +1556,19 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             void plusClick() {
-                this.categoryEntry.plusClick();
+                categoryEntry.plusClick();
             }
 
             void minusClick() {
-                this.categoryEntry.minusClick();
-            }
-
-            public float getValue() {
-                return (float) categoryEntry.getNumState();
+                categoryEntry.minusClick();
             }
 
             public void setValue(int value) {
-
-                this.categoryEntry.setState(value);
-
-            }
-
-            public void setValue(float value) {
-                this.categoryEntry.setState(value);
-
+                categoryEntry.setState(value);
             }
 
             public void setValue(boolean b) {
-                this.categoryEntry.setState(b ? 1 : 0);
+                categoryEntry.setState(b ? 1 : 0);
             }
 
             @Override
@@ -1117,283 +1582,6 @@ public class EditFilterSettings extends ActivityBase {
 
         }
 
-    }
-
-    class PresetListView extends V_ListView {
-
-        ArrayList<PresetListViewItem> mPresetListViewItems;
-        private ArrayList<PresetEntry> mPresetEntries;
-        private CustomAdapter lvAdapter;
-
-        PresetListView(CB_RectF rec) {
-            super(rec, "");
-            this.setHasInvisibleItems();
-            fillPresetList();
-            this.setDisposeFlag(false);
-            this.setBaseAdapter(null);
-            lvAdapter = new CustomAdapter(mPresetEntries);
-            this.setBaseAdapter(lvAdapter);
-
-        }
-
-        void fillPresetList() {
-            if (mPresetEntries != null)
-                mPresetEntries.clear();
-            else
-                mPresetEntries = new ArrayList<>();
-            if (mPresetListViewItems != null)
-                mPresetListViewItems.clear();
-            else
-                mPresetListViewItems = new ArrayList<>();
-
-            FilterInstances.HISTORY.isHistory = true;
-
-            mPresetEntriesAdd("HISTORY", "HISTORY", FilterInstances.HISTORY);
-            mPresetEntriesAdd("AllCachesToFind", "log0icon", FilterInstances.ACTIVE);
-            mPresetEntriesAdd("QuickCaches", "QuickCaches", FilterInstances.QUICK);
-            mPresetEntriesAdd("BEGINNER", "BEGINNER", FilterInstances.BEGINNER);
-            mPresetEntriesAdd("GrabTB", Sprites.IconName.TBGRAB.name(), FilterInstances.WITHTB);
-            mPresetEntriesAdd("DropTB", Sprites.IconName.TBDROP.name(), FilterInstances.DROPTB);
-            mPresetEntriesAdd("Highlights", "star", FilterInstances.HIGHLIGHTS);
-            mPresetEntriesAdd("Favorites", "favorit", FilterInstances.FAVORITES);
-            mPresetEntriesAdd("PrepareToArchive", Sprites.IconName.DELETE.name(), FilterInstances.TOARCHIVE);
-            mPresetEntriesAdd("ListingChanged", Sprites.IconName.warningIcon.name(), FilterInstances.LISTINGCHANGED);
-            mPresetEntriesAdd("AllCaches", "earth", FilterInstances.ALL);
-            // mPresetEntriesAdd("SQL", null, FilterInstances.UserDefinedSQL);
-
-            // add User Presets from Config.UserFilter
-            if (!Config.UserFilter.getValue().equalsIgnoreCase("")) {
-                String[] userEntrys = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-                try {
-                    for (String entry : userEntrys) {
-                        int pos = entry.indexOf(";");
-                        String name = entry.substring(0, pos);
-                        String filter = entry.substring(pos + 1);
-                        if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1);
-                        FilterProperties fp = new FilterProperties(filter);
-                        mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), fp));
-                    }
-                } catch (Exception ex) {
-                    Log.err("PresetListView", "", ex);
-                }
-            }
-
-            fillItemList();
-        }
-
-        private void fillItemList() {
-
-            int index = 0;
-            for (PresetEntry entry : mPresetEntries) {
-                PresetListViewItem v = new PresetListViewItem(ItemRec, index, entry);
-
-                v.setClickHandler((v12, x, y, pointer, button) -> {
-
-                    int itemIndex = ((PresetListViewItem) v12).getIndex();
-
-                    for (PresetListViewItem presetListViewItem : mPresetListViewItems) {
-                        presetListViewItem.isSelected = false;
-                    }
-
-                    if (itemIndex < presets.length) {
-                        tmpFilterProps = new FilterProperties(presets[itemIndex].toString());
-                    } else {
-                        // User Preset
-                        try {
-                            String[] userEntrys = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-                            int i = itemIndex - presets.length;
-
-                            int pos = userEntrys[i].indexOf(";");
-                            String filter = userEntrys[i].substring(pos + 1);
-                            if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1);
-                            tmpFilterProps = new FilterProperties(filter);
-                        } catch (Exception ex) {
-                            Log.err(log, "UserFilter", ex);
-                        }
-
-                    }
-
-                    // reset TxtFilter
-                    TextFilterView.that.setFilterString("", 0);
-                    return true;
-
-                });
-
-                v.setOnLongClickListener((v1, x, y, pointer, button) -> {
-                    final int delItemIndex = ((PresetListViewItem) v1).getIndex();
-                    GL.that.closeActivity();
-                    MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
-                            (which, data) -> {
-                                // NO clicked
-                                if (which == MessageBox.BTN_LEFT_POSITIVE) { // YES Clicked
-
-                                    if (delItemIndex < presets.length) {
-                                        return false; // Don't delete System Presets
-                                    } else {
-                                        try {
-                                            String[] userEntries = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-
-                                            int i = presets.length;
-                                            StringBuilder newUserEntris = new StringBuilder();
-                                            for (String entry1 : userEntries) {
-                                                if (i++ != delItemIndex)
-                                                    newUserEntris.append(entry1).append(SettingString.STRING_SPLITTER);
-                                            }
-                                            Config.UserFilter.setValue(newUserEntris.toString());
-                                            Config.AcceptChanges();
-                                            mPresetListView.fillPresetList();
-                                            mPresetListView.notifyDataSetChanged();
-                                        } catch (Exception ex) {
-                                            Log.err(log, "DelUserPreset", ex);
-                                        }
-                                    }
-                                }
-                                de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
-                                return true;
-                            });
-                    return true;
-                });
-
-                mPresetListViewItems.add(v);
-                index++;
-            }
-        }
-
-        private void mPresetEntriesAdd(String name, String icon, FilterProperties PresetFilter) {
-            mPresetEntries.add(new PresetEntry(Translation.get(name), Sprites.getSprite(icon), PresetFilter));
-        }
-
-        @Override
-        public void setVisible(boolean On) {
-            super.setVisible(On);
-            if (On)
-                chkIsPreset();
-        }
-
-        private void chkIsPreset() {
-            for (PresetListViewItem item : mPresetListViewItems) {
-                item.isSelected = false;
-            }
-
-            this.setBaseAdapter(null);
-            lvAdapter = new CustomAdapter(mPresetEntries);
-            this.setBaseAdapter(lvAdapter);
-
-        }
-
-        public class PresetEntry {
-            private final String mName;
-            private final Sprite mIcon;
-            private FilterProperties filterProperties;
-
-            PresetEntry(String Name, Sprite Icon, FilterProperties PresetFilter) {
-                mName = Name;
-                mIcon = Icon;
-                // mPresetString = PresetString;
-                filterProperties = PresetFilter;
-            }
-
-            public String getName() {
-                return mName;
-            }
-
-            public Sprite getIcon() {
-                return mIcon;
-            }
-
-            FilterProperties getFilterProperties() {
-                return filterProperties;
-            }
-
-        }
-
-        public class CustomAdapter implements Adapter {
-
-            private final ArrayList<PresetEntry> presetList;
-
-            CustomAdapter(ArrayList<PresetEntry> lPresets) {
-
-                this.presetList = lPresets;
-            }
-
-            @Override
-            public int getCount() {
-                return presetList.size();
-            }
-
-            @Override
-            public ListViewItemBase getView(final int position) {
-
-                return mPresetListViewItems.get(position);
-            }
-
-            @Override
-            public float getItemSize(int position) {
-                return EditFilterSettings.ItemRec.getHeight();
-            }
-        }
-
-    }
-
-
-    public class PresetListViewItem extends ListViewItemBackground {
-        private final PresetListView.PresetEntry mPresetEntry;
-        BitmapFontCache EntryName;
-        float left = 0;
-        float top = 0;
-
-        PresetListViewItem(CB_RectF rec, int Index, PresetListView.PresetEntry fne) {
-            super(rec, Index, fne.getName());
-            this.mPresetEntry = fne;
-        }
-
-        @Override
-        protected void render(Batch batch) {
-            if (this.isDisposed())
-                return;
-
-            if (tmpFilterProps != null) {
-                if (mPresetEntry.getFilterProperties().equals(tmpFilterProps)) {
-                    isSelected = !EditFilterSettings.tmpFilterProps.isDefinedFilterExtensions();
-                }
-            }
-
-            super.render(batch);
-
-            if (isPressed) {
-                isPressed = GL_Input.that.getIsTouchDown();
-            }
-
-            // initial
-            left = getLeftWidth();
-            top = (this.getHeight() + Fonts.getNormal().getLineHeight()) / 2f; //this.getTopHeight();
-
-            drawIcon(batch);
-
-            // draw Name
-            if (EntryName == null) {
-                EntryName = new BitmapFontCache(Fonts.getNormal());
-                EntryName.setColor(COLOR.getFontColor());
-                EntryName.setText(name, left + 10, top);
-            }
-            EntryName.draw(batch);
-
-        }
-
-        private void drawIcon(Batch batch) {
-            if (mPresetEntry.getIcon() != null) {
-                float iconHeight = getHeight() * 0.8f;
-                float iconWidth = getHeight() * 0.8f;
-                float y = (this.getHeight() - iconHeight) / 2f; // UI_Size_Base.that.getMargin()
-                mPresetEntry.getIcon().setBounds(left, y, iconWidth, iconHeight);
-                mPresetEntry.getIcon().draw(batch);
-                left = left + iconWidth + y + getLeftWidth();
-            }
-        }
-
-        PresetListView.PresetEntry getEntry() {
-            return mPresetEntry;
-        }
     }
 
 }

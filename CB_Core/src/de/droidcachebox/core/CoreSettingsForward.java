@@ -1,5 +1,7 @@
 package de.droidcachebox.core;
 
+import de.droidcachebox.database.Categories;
+
 /**
  * Struktur die alle Infos enthält, die an den Core übergeben werden müssen
  *
@@ -7,7 +9,7 @@ package de.droidcachebox.core;
  */
 public class CoreSettingsForward {
 
-    public static de.droidcachebox.database.Categories Categories;
+    public static Categories categories;
 
     public static String cacheHistory = "";
 

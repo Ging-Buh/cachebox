@@ -34,10 +34,10 @@ import java.util.ArrayList;
 
 public class MultiToggleButton extends CB_Button {
 
-    private final ArrayList<States> State = new ArrayList<MultiToggleButton.States>();
-    boolean wasLongClicked = false;
-    private States aktState;
-    private int StateId = 0;
+    private final ArrayList<State> states = new ArrayList<>();
+    private boolean wasLongClicked = false;
+    private State aktState;
+    private int stateId = 0;
     private Drawable led;
     private OnStateChangeListener mOnStateChangeListener;
     /**
@@ -69,7 +69,7 @@ public class MultiToggleButton extends CB_Button {
             return;
 
         // verschiebe Text nach oben, wegen Platz für LED
-        CB_RectF r = this.ScaleCenter(0.9f);
+        CB_RectF r = ScaleCenter(0.9f);
         float l = (r.getHeight() / 2);
         lblTxt.setY(l);
         lblTxt.setHeight(l);
@@ -83,19 +83,16 @@ public class MultiToggleButton extends CB_Button {
         if (isDisabled || wasLongClicked) {
             return true;
         }
-
         if (lastStateWithLongClick) {
-            if (StateId == State.size() - 2) {
-                StateId = 0;
+            if (stateId == states.size() - 2) {
+                stateId = 0;
             } else {
-                StateId++;
+                stateId++;
             }
         } else {
-            StateId++;
+            stateId++;
         }
-
-        setState(StateId, true);
-
+        setState(stateId, true);
         return super.click(x, y, pointer, button);
 
     }
@@ -117,7 +114,7 @@ public class MultiToggleButton extends CB_Button {
         }
 
         if (lastStateWithLongClick) {
-            setState(State.size() - 1, true);
+            setState(states.size() - 1, true);
         } else {
             onLongClick(x, y, pointer, button);
         }
@@ -125,32 +122,32 @@ public class MultiToggleButton extends CB_Button {
     }
 
     public void addState(String Text, HSV_Color color) {
-        State.add(new States(Text, color));
+        states.add(new State(Text, color));
         setState(0, true);
     }
 
-    public void setState(int ID, boolean force) {
-        if (StateId == ID && !force)
+    private void setState(int stateId, boolean force) {
+        if (this.stateId == stateId && !force)
             return;
 
-        StateId = ID;
-        if (StateId > State.size() - 1)
-            StateId = 0;
-        aktState = State.get(StateId);
-        this.setText(aktState.Text);
+        this.stateId = stateId;
+        if (stateId > states.size() - 1)
+            this.stateId = 0;
+        aktState = states.get(stateId);
+        setText(aktState.Text);
         led = null;
 
         if (mOnStateChangeListener != null)
-            mOnStateChangeListener.onStateChange(this, StateId);
+            mOnStateChangeListener.onStateChange(this, stateId);
 
     }
 
-    public void clearStates() {
-        State.clear();
+    private void clearStates() {
+        states.clear();
     }
 
     public int getState() {
-        return StateId;
+        return stateId;
     }
 
     public void setState(int ID) {
@@ -181,7 +178,7 @@ public class MultiToggleButton extends CB_Button {
                 led = new NinePatchDrawable(new NinePatch(sprite, patch, patch, 1, 1));
             }
 
-            float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
+            float A, R, G, B; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
 
             Color c = batch.getColor();
             A = c.a;
@@ -213,7 +210,7 @@ public class MultiToggleButton extends CB_Button {
         drawableDisabled = null;
         mFont = null;
         lblTxt = null;
-        this.removeChilds();
+        removeChilds();
         setState(getState(), true);
 
     }
@@ -226,16 +223,16 @@ public class MultiToggleButton extends CB_Button {
          * Called when the state from ToggleButton changed.
          *
          * @param v     The view that was state changed.
-         * @param State The state to changed.
+         * @param state The state to changed.
          */
-        void onStateChange(GL_View_Base v, int State);
+        void onStateChange(GL_View_Base v, int state);
     }
 
-    public class States {
+    public static class State {
         public String Text;
         public HSV_Color color;
 
-        public States(String text, HSV_Color color) {
+        State(String text, HSV_Color color) {
             Text = text;
             this.color = color;
         }

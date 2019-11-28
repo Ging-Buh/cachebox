@@ -41,7 +41,6 @@ import de.droidcachebox.gdx.main.MainViewBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
-import de.droidcachebox.settings.SettingString;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.File;
@@ -339,24 +338,6 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_CacheDB() {
         Log.info(log, "ini_CacheDB");
-        // chk if exist filter preset splitter "#" and Replace
-        String ConfigPreset = Config.UserFilter.getValue();
-        if (ConfigPreset.endsWith("#")) {
-            // Preset implements old splitter, replaced!
-
-            ConfigPreset = ConfigPreset.substring(0, ConfigPreset.length() - 1) + SettingString.STRING_SPLITTER;
-
-            boolean replace = true;
-            while (replace) {
-                String newConfigPreset = replaceSplitter(ConfigPreset);
-                if (newConfigPreset == null)
-                    replace = false;
-                else
-                    ConfigPreset = newConfigPreset;
-            }
-            Config.UserFilter.setValue(ConfigPreset);
-            Config.AcceptChanges();
-        }
 
         Database.Data.startUp(Config.mWorkPath + "/" + Config.DatabaseName.getValue());
 
@@ -365,7 +346,7 @@ public class MainViewInit extends MainViewBase {
         FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 
-        CoreSettingsForward.Categories = new Categories();
+        CoreSettingsForward.categories = new Categories();
         Database.Data.updateCacheCountForGPXFilenames();
 
         synchronized (Database.Data.cacheList) {
@@ -376,26 +357,6 @@ public class MainViewInit extends MainViewBase {
 
         Database.Drafts.startUp(Config.mWorkPath + "/User/FieldNotes.db3");
 
-    }
-
-    private String replaceSplitter(String ConfigPreset) {
-        try {
-            int pos = ConfigPreset.indexOf("#");
-            int pos2 = ConfigPreset.indexOf(";", pos);
-
-            String PresetName = (String) ConfigPreset.subSequence(pos + 1, pos2);
-            if (!PresetName.contains(",")) {
-                String s1 = (String) ConfigPreset.subSequence(0, pos);
-                String s2 = (String) ConfigPreset.subSequence(pos2, ConfigPreset.length());
-
-                ConfigPreset = s1 + SettingString.STRING_SPLITTER + PresetName + s2;
-                return ConfigPreset;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-
-        return null;
     }
 
     /**

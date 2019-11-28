@@ -74,7 +74,7 @@ public class WriteIntoDB {
             } else if (oldCache.getGPXFilename_ID() == 0) {
                 cache.setGPXFilename_ID(forCategory.Id);
             } else {
-                Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(oldCache.getGPXFilename_ID());
+                Category c = CoreSettingsForward.categories.getCategoryByGpxFilenameId(oldCache.getGPXFilename_ID());
                 if (c.GpxFilename.equals(forCategory.GpxFileName)) {
                     // update with the new Date
                     cache.setGPXFilename_ID(forCategory.Id);

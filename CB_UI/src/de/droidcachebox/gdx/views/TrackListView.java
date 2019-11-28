@@ -31,8 +31,7 @@ public class TrackListView extends V_ListView {
 
         setBackground(Sprites.ListBack);
 
-        this.setBaseAdapter(null);
-        this.setBaseAdapter(new CustomAdapter());
+        setAdapter(new CustomAdapter());
 
     }
 
@@ -135,7 +134,6 @@ public class TrackListView extends V_ListView {
             if (GlobalCore.AktuelleRoute != null && position == 1) {
                 return ItemRec.getHeight() + ItemRec.getHalfHeight();
             }
-
             return ItemRec.getHeight();
         }
 

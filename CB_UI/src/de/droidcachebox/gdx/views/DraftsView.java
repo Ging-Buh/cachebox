@@ -82,20 +82,20 @@ public class DraftsView extends V_ListView {
 
     private DraftsView() {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
-        this.mCanDispose = false;
-        this.setForceHandleTouchEvents();
-        ItemRec = new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
+        mCanDispose = false;
+        setForceHandleTouchEvents();
+        ItemRec = new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
 
         setBackground(Sprites.ListBack);
 
         if (lDrafts == null)
             lDrafts = new Drafts();
-        this.setHasInvisibleItems();
-        this.setBaseAdapter(null);
+        setHasInvisibleItems();
+        setAdapter(null);
         lvAdapter = new CustomAdapter(lDrafts);
-        this.setBaseAdapter(lvAdapter);
+        setAdapter(lvAdapter);
 
-        this.setEmptyMsg(Translation.get("EmptyDrafts"));
+        setEmptyMsg(Translation.get("EmptyDrafts"));
         firstShow = true;
     }
 
@@ -399,9 +399,9 @@ public class DraftsView extends V_ListView {
             lDrafts = new Drafts();
         lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
 
-        setBaseAdapter(null);
+        setAdapter(null);
         lvAdapter = new CustomAdapter(lDrafts);
-        setBaseAdapter(lvAdapter);
+        setAdapter(lvAdapter);
     }
 
     public Menu getContextMenu() {
@@ -489,9 +489,9 @@ public class DraftsView extends V_ListView {
                     lDrafts.clear();
                     aktDraft = null;
 
-                    that.setBaseAdapter(null);
+                    that.setAdapter(null);
                     lvAdapter = new CustomAdapter(lDrafts);
-                    that.setBaseAdapter(lvAdapter);
+                    that.setAdapter(lvAdapter);
 
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
                     break;
@@ -518,7 +518,7 @@ public class DraftsView extends V_ListView {
 
     @Override
     public void dispose() {
-        this.setBaseAdapter(null);
+        setAdapter(null);
         if (lvAdapter != null)
             lvAdapter.dispose();
         lvAdapter = null;
@@ -812,9 +812,9 @@ public class DraftsView extends V_ListView {
 
                         lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
 
-                        that.setBaseAdapter(null);
+                        that.setAdapter(null);
                         lvAdapter = new CustomAdapter(lDrafts);
-                        that.setBaseAdapter(lvAdapter);
+                        that.setAdapter(lvAdapter);
 
                         createGeoCacheVisits();
 

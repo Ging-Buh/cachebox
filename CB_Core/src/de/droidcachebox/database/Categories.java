@@ -16,18 +16,18 @@ public class Categories extends MoveableList<Category> {
     public Categories() {
     }
 
-    public Category getCategory(String filename) {
-        filename = FileFactory.createFile(filename).getName();
-        for (int i = 0, n = this.size(); i < n; i++) {
-            Category category = this.get(i);
-            if (filename.toUpperCase().equals(category.GpxFilename.toUpperCase())) {
+    public Category getCategory(String gpxFilename) {
+        // if necessary, adds a new Category entry and then returns the entry from Categories
+        gpxFilename = FileFactory.createFile(gpxFilename).getName();
+        for (int i = 0, n = size(); i < n; i++) {
+            Category category = get(i);
+            if (gpxFilename.toUpperCase().equals(category.GpxFilename.toUpperCase())) {
                 return category;
             }
         }
-
-        Category cat = createNewCategory(filename);
-        this.add(cat);
-        return cat;
+        Category newCategory = createNewCategory(gpxFilename);
+        this.add(newCategory);
+        return newCategory;
     }
 
     public Category getCategoryByGpxFilenameId(long gpxFilenameId) {
@@ -40,7 +40,7 @@ public class Categories extends MoveableList<Category> {
         return null;
     }
 
-    public Category createNewCategory(String filename) {
+    Category createNewCategory(String filename) {
         filename = FileFactory.createFile(filename).getName();
 
         // neue Category in DB anlegen
@@ -80,7 +80,7 @@ public class Categories extends MoveableList<Category> {
         }
     }
 
-    public void ReadFromFilter(FilterProperties filter) {
+    public void readFromFilter(FilterProperties filter) {
         checkAll();
         boolean foundOne = false;
         for (long id : filter.categories) {
@@ -120,10 +120,10 @@ public class Categories extends MoveableList<Category> {
         }
     }
 
-    public void WriteToFilter(FilterProperties filter) {
+    public void writeToFilter(FilterProperties filter) {
         if (filter.gpxFilenameIds == null) filter.gpxFilenameIds = new ArrayList<>();
         filter.gpxFilenameIds.clear();
-        if(filter.categories ==null)filter.categories =new ArrayList<>();
+        if (filter.categories == null) filter.categories = new ArrayList<>();
         filter.categories.clear();
         int n = this.size();
         for (int i = 0; i < n; i++) {

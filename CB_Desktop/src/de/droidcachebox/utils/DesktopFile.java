@@ -17,19 +17,19 @@ public class DesktopFile extends File {
         mFile = file;
     }
 
-    public DesktopFile(String path) {
+    DesktopFile(String path) {
         mFile = new java.io.File(path);
     }
 
-    public DesktopFile(File parent) {
+    DesktopFile(File parent) {
         mFile = ((DesktopFile) parent).mFile;
     }
 
-    public DesktopFile(File parent, String child) {
+    DesktopFile(File parent, String child) {
         mFile = new java.io.File(((DesktopFile) parent).mFile, child);
     }
 
-    public DesktopFile(String parent, String child) {
+    DesktopFile(String parent, String child) {
         mFile = new java.io.File(parent, child);
     }
 
@@ -39,7 +39,7 @@ public class DesktopFile extends File {
     }
 
     @Override
-    public boolean delete() throws IOException {
+    public boolean delete() {
         return mFile.delete();
     }
 
@@ -75,14 +75,7 @@ public class DesktopFile extends File {
 
     @Override
     public String[] list(final FilenameFilter filenameFilter) {
-
-        String[] list = mFile.list(new java.io.FilenameFilter() {
-            @Override
-            public boolean accept(java.io.File dir, String name) {
-                return filenameFilter.accept(new DesktopFile(dir), name);
-            }
-        });
-        return list;
+        return mFile.list((dir, name) -> filenameFilter.accept(new DesktopFile(dir), name));
     }
 
     @Override
@@ -102,14 +95,14 @@ public class DesktopFile extends File {
 
     @Override
     public File[] listFiles(final FilenameFilter filenameFilter) {
-        String names[] = list();
+        String[] names = list();
         if (names == null || filenameFilter == null) {
             return null;
         }
-        List<String> v = new ArrayList<String>();
-        for (int i = 0; i < names.length; i++) {
-            if (filenameFilter.accept(this, names[i])) {
-                v.add(names[i]);
+        List<String> v = new ArrayList<>();
+        for (String name : names) {
+            if (filenameFilter.accept(this, name)) {
+                v.add(name);
             }
         }
 
@@ -156,9 +149,8 @@ public class DesktopFile extends File {
     @Override
     public File[] listFiles() {
         String[] list = mFile.list();
-
+        if (list == null) list = new String[]{};
         File[] ret = new File[list.length];
-
         int index = 0;
         for (String s : list) {
             ret[index++] = new DesktopFile(this, s);
@@ -178,7 +170,7 @@ public class DesktopFile extends File {
 
     @Override
     public URL toURL() throws MalformedURLException {
-        return mFile.toURL();
+        return mFile.toURI().toURL();
     }
 
     @Override
@@ -188,7 +180,8 @@ public class DesktopFile extends File {
 
     @Override
     public void setLastModified(long time) {
-        mFile.setLastModified(time);
+        if (!mFile.setLastModified(time))
+            throw new IllegalArgumentException("Negative time");
     }
 
     @Override

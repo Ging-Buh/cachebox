@@ -1,5 +1,6 @@
 package de.droidcachebox.gdx.controls;
 
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -7,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import de.droidcachebox.database.CacheTypes;
 import de.droidcachebox.gdx.*;
-import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.FilterSetListView.*;
+import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -17,36 +18,35 @@ import de.droidcachebox.translation.Translation;
 
 import java.util.ArrayList;
 
-import static de.droidcachebox.gdx.controls.FilterSetListView.*;
-
-interface ISelectAllHandler {
-    void selectAll();
-
-    void deselectAll();
-}
-
 public class FilterSetListViewItem extends ListViewItemBackground {
-    private static NinePatch btnBack;
-    private static NinePatch btnBack_pressed;
-    private static Sprite minusBtn;
-    private static Sprite plusBtn;
-    private static Sprite chkOff;
-    private static Sprite chkOn;
-    private static Sprite chkNo;
-    private static CB_RectF lBounds;
-    private static CB_RectF rBounds;
-    private static CB_RectF rChkBounds;
-    private static BitmapFontCache Minus;
-    private static BitmapFontCache Plus;
-    private static BitmapFontCache MinusMinus;
-    private static BitmapFontCache PlusPlus;
-    private static BitmapFontCache SelectAll;
-    private static BitmapFontCache DeselectAll;
-    private static float MARGIN;
-    private static float BUTTON_MARGIN;
-    private final FilterSetEntry mFilterSetEntry;
+    public static final int COLLAPSE_BUTTON_ITEM = 0;
+    public static final int CHECK_ITEM = 1;
+    public static final int THREE_STATE_ITEM = 2;
+    public static final int NUMERIC_ITEM = 3;
+    public static final int NUMERIC_INT_ITEM = 4;
+    public static final int SELECT_ALL_ITEM = 5;
+    public static boolean mustSaveFilter;
+    private final FilterSetEntry filterSetEntry;
     private final ArrayList<FilterSetListViewItem> mChildList = new ArrayList<>();
     public Vector2 lastItemTouchPos;
+    private NinePatch btnBack;
+    private NinePatch btnBack_pressed;
+    private Sprite minusBtn;
+    private Sprite plusBtn;
+    private Sprite chkOff;
+    private Sprite chkOn;
+    private Sprite chkNo;
+    private CB_RectF lBounds;
+    private CB_RectF rBounds;
+    private CB_RectF rChkBounds;
+    private BitmapFontCache Minus;
+    private BitmapFontCache Plus;
+    private BitmapFontCache MinusMinus;
+    private BitmapFontCache PlusPlus;
+    private BitmapFontCache SelectAll;
+    private BitmapFontCache DeselectAll;
+    private float MARGIN;
+    private float BUTTON_MARGIN;
     // private Member
     private float left;
     private BitmapFontCache entryName;
@@ -54,17 +54,17 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private BitmapFontCache Value;
     private boolean clicked = false;
 
-    private ISelectAllHandler selectAllHandler;
+    private EditFilterSettings.ISelectAllHandler selectAllHandler;
 
     public FilterSetListViewItem(CB_RectF rec, int Index, FilterSetEntry fne) {
         super(rec, Index, fne.getName());
-        this.mFilterSetEntry = fne;
+        filterSetEntry = fne;
         MARGIN = UiSizes.getInstance().getMargin();
         BUTTON_MARGIN = -(MARGIN / 10);
     }
 
-    FilterSetEntry getFilterSetEntry() {
-        return mFilterSetEntry;
+    public FilterSetEntry getFilterSetEntry() {
+        return filterSetEntry;
     }
 
     public FilterSetListViewItem addChild(FilterSetListViewItem item) {
@@ -72,11 +72,11 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         return item;
     }
 
-    void setSelectAllHandler(ISelectAllHandler handler) {
+    public void setSelectAllHandler(EditFilterSettings.ISelectAllHandler handler) {
         selectAllHandler = handler;
     }
 
-    void toggleChildViewState() {
+    public void toggleChildViewState() {
         if (mChildList != null && mChildList.size() > 0) {
             boolean newState = !mChildList.get(0).isVisible();
 
@@ -89,7 +89,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     @Override
     protected void render(Batch batch) {
-        if (this.mFilterSetEntry.getItemType() != de.droidcachebox.gdx.controls.FilterSetListView.COLLAPSE_BUTTON_ITEM) {
+        if (filterSetEntry.getItemType() != COLLAPSE_BUTTON_ITEM) {
             super.render(batch);
         }
 
@@ -101,10 +101,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
             // initial
             left = getLeftWidth();
-            //top = this.getHeight() - this.getTopHeight();
-            float top = (this.getHeight() + Fonts.getNormal().getLineHeight()) / 2f; //this.getTopHeight();
+            //top = getHeight() - getTopHeight();
+            float top = (getHeight() + Fonts.getNormal().getLineHeight()) / 2f; //getTopHeight();
 
-            switch (this.mFilterSetEntry.getItemType()) {
+            switch (filterSetEntry.getItemType()) {
                 case COLLAPSE_BUTTON_ITEM:
                     drawCollapseButtonItem(batch);
                     break;
@@ -115,15 +115,15 @@ public class FilterSetListViewItem extends ListViewItemBackground {
                     drawThreeStateItem(batch);
                     break;
                 case NUMERIC_ITEM:
-                    top = this.getHeight() - this.getTopHeight();
+                    top = getHeight() - getTopHeight();
                     drawNumericItem(batch);
                     break;
                 case NUMERIC_INT_ITEM:
-                    top = this.getHeight() - this.getTopHeight();
+                    top = getHeight() - getTopHeight();
                     drawNumericIntItem(batch);
                     break;
                 case SELECT_ALL_ITEM:
-                    // top = this.getHeight() - this.getTopHeight();
+                    // top = getHeight() - getTopHeight();
                     drawSelectItem(batch);
                     return;
             }
@@ -131,7 +131,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             if (entryName == null) {
                 entryName = new BitmapFontCache(Fonts.getNormal());
                 entryName.setColor(COLOR.getFontColor());
-                if (this.mFilterSetEntry.getItemType() == de.droidcachebox.gdx.controls.FilterSetListView.THREE_STATE_ITEM) {
+                if (filterSetEntry.getItemType() == THREE_STATE_ITEM) {
                     float TextWidth = getWidth() - (left + 20) - getRightWidth() - getHeight();
                     entryName.setText(name, left + 20, top, TextWidth, Align.left, true);
                 } else {
@@ -140,8 +140,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             }
             entryName.draw(batch);
 
-            if (this.mFilterSetEntry.getItemType() == NUMERIC_ITEM ||
-                    this.mFilterSetEntry.getItemType() == NUMERIC_INT_ITEM) {
+            if (filterSetEntry.getItemType() == NUMERIC_ITEM ||
+                    filterSetEntry.getItemType() == NUMERIC_INT_ITEM) {
                 if (Value == null) {
                     Value = new BitmapFontCache(Fonts.getBig());
                     Value.setColor(COLOR.getFontColor());
@@ -150,14 +150,14 @@ public class FilterSetListViewItem extends ListViewItemBackground {
                 if (setValueFont) {
                     float valueOffsetX = 0;
                     String valueString = String.valueOf(getValue());
-                    if (this.mFilterSetEntry.getItemType() == NUMERIC_INT_ITEM) {
+                    if (filterSetEntry.getItemType() == NUMERIC_INT_ITEM) {
                         int val = (int) getValue();
                         if (val >= 0) {
                             valueString = String.valueOf(val);
                             valueOffsetX = MARGIN * 4;
                         } else {
                             valueString = Translation.get("DoesntMatter");
-                            valueOffsetX = this.getHeight() * 2;
+                            valueOffsetX = getHeight() * 2;
                         }
                     }
 
@@ -174,7 +174,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     private void drawCollapseButtonItem(Batch batch) {
 
-        if (this.isPressed) {
+        if (isPressed) {
             if (btnBack_pressed == null) {
                 btnBack_pressed = new NinePatch(Sprites.getSprite("btn-pressed"), 16, 16, 16, 16);
             }
@@ -183,7 +183,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
         } else {
             if (btnBack == null) {
-                btnBack = new NinePatch(Sprites.getSprite(IconName.btnNormal.name()), 16, 16, 16, 16);
+                btnBack = new NinePatch(Sprites.getSprite(Sprites.IconName.btnNormal.name()), 16, 16, 16, 16);
             }
 
             btnBack.draw(batch, 0, 0, getWidth(), getHeight());
@@ -195,20 +195,20 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private void drawChkItem(Batch batch) {
         drawIcon(batch);
         drawRightChkBox(batch);
-        if (this.mFilterSetEntry.getState() == 1) {
+        if (filterSetEntry.getState() == 1) {
             if (chkOn == null) {
                 chkOn = Sprites.getSprite("check-on");
                 chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
             }
             chkOn.draw(batch);
         }
-        if (this.lastItemTouchPos != null) {
+        if (lastItemTouchPos != null) {
             if (isPressed) {
-                // if (rBounds.contains(this.lastItemTouchPos))
+                // if (rBounds.contains(lastItemTouchPos))
                 clicked = true;
             } else if (clicked) {
                 clicked = false;
-                // if (rBounds.contains(this.lastItemTouchPos))
+                // if (rBounds.contains(lastItemTouchPos))
                 stateClick();
             }
         }
@@ -218,7 +218,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         drawIcon(batch);
         drawRightChkBox(batch);
 
-        if (this.mFilterSetEntry.getState() == 1) {
+        if (filterSetEntry.getState() == 1) {
             if (chkOn == null) {
                 chkOn = Sprites.getSprite("check-on");
 
@@ -227,9 +227,9 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             }
 
             chkOn.draw(batch);
-        } else if (this.mFilterSetEntry.getState() == -1) {
+        } else if (filterSetEntry.getState() == -1) {
             if (chkNo == null) {
-                chkNo = Sprites.getSprite(IconName.DELETE.name());
+                chkNo = Sprites.getSprite(Sprites.IconName.DELETE.name());
 
                 chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -239,16 +239,16 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         }
 
         boolean rClick;
-        if (this.lastItemTouchPos != null) {
-            if (this.isPressed) {
-                rClick = rBounds.contains(this.lastItemTouchPos);
+        if (lastItemTouchPos != null) {
+            if (isPressed) {
+                rClick = rBounds.contains(lastItemTouchPos);
 
                 if (rClick)
                     clicked = true;
             } else {
                 if (clicked) {
                     clicked = false;
-                    rClick = rBounds.contains(this.lastItemTouchPos);
+                    rClick = rBounds.contains(lastItemTouchPos);
                     if (rClick)
                         stateClick();
                 }
@@ -266,18 +266,18 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
         boolean rClick = false;
         boolean lClick = false;
-        if (this.lastItemTouchPos != null) {
-            if (this.isPressed) {
-                lClick = lBounds.contains(this.lastItemTouchPos);
-                rClick = rBounds.contains(this.lastItemTouchPos);
+        if (lastItemTouchPos != null) {
+            if (isPressed) {
+                lClick = lBounds.contains(lastItemTouchPos);
+                rClick = rBounds.contains(lastItemTouchPos);
 
                 if (lClick || rClick)
                     clicked = true;
             } else {
                 if (clicked) {
                     clicked = false;
-                    lClick = lBounds.contains(this.lastItemTouchPos);
-                    rClick = rBounds.contains(this.lastItemTouchPos);
+                    lClick = lBounds.contains(lastItemTouchPos);
+                    rClick = rBounds.contains(lastItemTouchPos);
                     if (rClick)
                         plusClick();
                     if (lClick)
@@ -286,8 +286,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             }
         }
 
-        plusBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
-        minusBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+        plusBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(Sprites.IconName.btnNormal.name());
+        minusBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(Sprites.IconName.btnNormal.name());
 
         minusBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
 
@@ -319,11 +319,11 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
         left += minusBtn.getWidth() + minusBtn.getX();
 
-        if (mFilterSetEntry.getIcon() != null) {
-            float iconHeight = this.getHalfHeight() * 0.8f;
+        if (filterSetEntry.getIcon() != null) {
+            float iconHeight = getHalfHeight() * 0.8f;
             float iconWidth = iconHeight * 5;
-            mFilterSetEntry.getIcon().setBounds(left, MARGIN, iconWidth, iconHeight);
-            mFilterSetEntry.getIcon().draw(batch);
+            filterSetEntry.getIcon().setBounds(left, MARGIN, iconWidth, iconHeight);
+            filterSetEntry.getIcon().draw(batch);
             // top += UiSizes.getIconSize() / 1.5;
         }
 
@@ -346,21 +346,21 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         boolean lClick = false;
         boolean rrClick = false;
         boolean llClick = false;
-        if (this.lastItemTouchPos != null) {
-            if (this.isPressed) {
-                lClick = lBounds.contains(this.lastItemTouchPos);
-                rClick = rBounds.contains(this.lastItemTouchPos);
-                llClick = llBounds.contains(this.lastItemTouchPos);
-                rrClick = rrBounds.contains(this.lastItemTouchPos);
+        if (lastItemTouchPos != null) {
+            if (isPressed) {
+                lClick = lBounds.contains(lastItemTouchPos);
+                rClick = rBounds.contains(lastItemTouchPos);
+                llClick = llBounds.contains(lastItemTouchPos);
+                rrClick = rrBounds.contains(lastItemTouchPos);
                 if (lClick || rClick || llClick || rrClick)
                     clicked = true;
             } else {
                 if (clicked) {
                     clicked = false;
-                    lClick = lBounds.contains(this.lastItemTouchPos);
-                    rClick = rBounds.contains(this.lastItemTouchPos);
-                    llClick = llBounds.contains(this.lastItemTouchPos);
-                    rrClick = rrBounds.contains(this.lastItemTouchPos);
+                    lClick = lBounds.contains(lastItemTouchPos);
+                    rClick = rBounds.contains(lastItemTouchPos);
+                    llClick = llBounds.contains(lastItemTouchPos);
+                    rrClick = rrBounds.contains(lastItemTouchPos);
                     if (rClick)
                         plusPlusClick();
                     if (lClick)
@@ -373,10 +373,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             }
         }
 
-        plusBtn = rrClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
-        minusBtn = llClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
-        Sprite plusPlusBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
-        Sprite minusMinusBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+        plusBtn = rrClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(Sprites.IconName.btnNormal.name());
+        minusBtn = llClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(Sprites.IconName.btnNormal.name());
+        Sprite plusPlusBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(Sprites.IconName.btnNormal.name());
+        Sprite minusMinusBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(Sprites.IconName.btnNormal.name());
 
         minusBtn.setBounds(llBounds.getX(), llBounds.getY(), llBounds.getWidth(), llBounds.getHeight());
         plusBtn.setBounds(rrBounds.getX(), rrBounds.getY(), rrBounds.getWidth(), rrBounds.getHeight());
@@ -423,11 +423,11 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
         left += minusMinusBtn.getWidth() + minusMinusBtn.getX();
 
-        if (mFilterSetEntry.getIcon() != null) {
+        if (filterSetEntry.getIcon() != null) {
             float iconHeight = getHalfHeight() * 0.8f;
             float iconWidth = getHalfHeight() * 0.8f;
-            mFilterSetEntry.getIcon().setBounds(left, MARGIN, iconWidth, iconHeight);
-            mFilterSetEntry.getIcon().draw(batch);
+            filterSetEntry.getIcon().setBounds(left, MARGIN, iconWidth, iconHeight);
+            filterSetEntry.getIcon().draw(batch);
             // top += UiSizes.getIconSize() / 1.5;
         }
 
@@ -443,22 +443,22 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
         boolean rClick = false;
         boolean lClick = false;
-        if (this.lastItemTouchPos != null) {
-            if (this.isPressed) {
-                lClick = lBounds.contains(this.lastItemTouchPos);
-                rClick = rBounds.contains(this.lastItemTouchPos);
+        if (lastItemTouchPos != null) {
+            if (isPressed) {
+                lClick = lBounds.contains(lastItemTouchPos);
+                rClick = rBounds.contains(lastItemTouchPos);
 
                 if (lClick || rClick)
                     clicked = true;
             } else {
                 if (clicked && selectAllHandler != null) {
                     clicked = false;
-                    lClick = lBounds.contains(this.lastItemTouchPos);
-                    rClick = rBounds.contains(this.lastItemTouchPos);
+                    lClick = lBounds.contains(lastItemTouchPos);
+                    rClick = rBounds.contains(lastItemTouchPos);
                     if (rClick)
-                        selectAllHandler.selectAll();
+                        selectAllHandler.selectAllCacheTypes();
                     if (lClick)
-                        selectAllHandler.deselectAll();
+                        selectAllHandler.selectNoCacheType();
                 }
             }
         }
@@ -489,12 +489,12 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     }
 
     private void drawIcon(Batch batch) {
-        if (mFilterSetEntry.getIcon() != null) {
+        if (filterSetEntry.getIcon() != null) {
             float iconHeight = getHeight() * 0.8f;
             float iconWidth = getHeight() * 0.8f;
-            float y = (this.getHeight() - iconHeight) / 2f; // MARGIN
-            mFilterSetEntry.getIcon().setBounds(left, y, iconWidth, iconHeight);
-            mFilterSetEntry.getIcon().draw(batch);
+            float y = (getHeight() - iconHeight) / 2f; // MARGIN
+            filterSetEntry.getIcon().setBounds(left, y, iconWidth, iconHeight);
+            filterSetEntry.getIcon().draw(batch);
             left += iconWidth + MARGIN + getLeftWidth();
         }
 
@@ -519,75 +519,75 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     }
 
     private void plusClick() {
-        this.mFilterSetEntry.plusClick();
+        filterSetEntry.plusClick();
         setValueFont = true;
-        de.droidcachebox.gdx.controls.FilterSetListView.mustSaveFilter = true;
-        this.isPressed = false;
-        this.lastItemTouchPos = null;
+        mustSaveFilter = true;
+        isPressed = false;
+        lastItemTouchPos = null;
         GL.that.renderOnce();
     }
 
     private void minusClick() {
-        this.mFilterSetEntry.minusClick();
+        filterSetEntry.minusClick();
         setValueFont = true;
-        de.droidcachebox.gdx.controls.FilterSetListView.mustSaveFilter = true;
-        this.isPressed = false;
-        this.lastItemTouchPos = null;
+        mustSaveFilter = true;
+        isPressed = false;
+        lastItemTouchPos = null;
         GL.that.renderOnce();
     }
 
     private void plusPlusClick() {
-        this.mFilterSetEntry.plusPlusClick();
+        filterSetEntry.plusPlusClick();
         setValueFont = true;
-        de.droidcachebox.gdx.controls.FilterSetListView.mustSaveFilter = true;
-        this.isPressed = false;
-        this.lastItemTouchPos = null;
+        mustSaveFilter = true;
+        isPressed = false;
+        lastItemTouchPos = null;
         GL.that.renderOnce();
     }
 
     private void minusMinusClick() {
-        this.mFilterSetEntry.minusMinusClick();
+        filterSetEntry.minusMinusClick();
         setValueFont = true;
-        de.droidcachebox.gdx.controls.FilterSetListView.mustSaveFilter = true;
-        this.isPressed = false;
-        this.lastItemTouchPos = null;
+        mustSaveFilter = true;
+        isPressed = false;
+        lastItemTouchPos = null;
         GL.that.renderOnce();
     }
 
     private void stateClick() {
-        this.mFilterSetEntry.stateClick();
-        FilterSetListView.mustSaveFilter = true;
-        this.isPressed = false;
-        this.lastItemTouchPos = null;
+        filterSetEntry.stateClick();
+        mustSaveFilter = true;
+        isPressed = false;
+        lastItemTouchPos = null;
         GL.that.renderOnce();
     }
 
-    int getChecked() {
-        return mFilterSetEntry.getState();
+    public int getChecked() {
+        return filterSetEntry.getState();
     }
 
-    void unCheck() {
-        mFilterSetEntry.setState(0);
+    public void unCheck() {
+        filterSetEntry.setState(0);
     }
 
-    void check() {
-        mFilterSetEntry.setState(1);
+    public void setChecked() {
+        filterSetEntry.setState(1);
     }
 
     public double getValue() {
-        return mFilterSetEntry.getNumState();
+        return filterSetEntry.getNumState();
     }
 
     public void setValue(int value) {
-        this.mFilterSetEntry.setState(value);
+        filterSetEntry.setState(value);
     }
 
     public void setValue(double value) {
-        this.mFilterSetEntry.setState(value);
+        filterSetEntry.setState(value);
     }
 
     public void setValue(boolean b) {
-        this.mFilterSetEntry.setState(b ? 1 : 0);
+        filterSetEntry.setState(b ? 1 : 0);
     }
 
     @Override
@@ -595,11 +595,155 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         return mChildList.get(i);
     }
 
-    int getChildLength() {
+    public int getChildLength() {
         return mChildList.size();
     }
 
     public boolean getBoolean() {
-        return mFilterSetEntry.getState() != 0;
+        return filterSetEntry.getState() != 0;
     }
+
+    public static class FilterSetEntry {
+        private final String mName;
+        private final int mItemType;
+        private Sprite mIcon;
+        private Sprite[] mIconArray;
+        private int mState = 0;
+        private double mNumericMax;
+        private double mNumericMin;
+        private double mNumericStep;
+        private double mNumericState;
+        private CacheTypes cacheType;
+
+        public FilterSetEntry(String name, Sprite icon, int itemType) {
+            mName = name;
+            mIcon = icon;
+            mItemType = itemType;
+        }
+
+        public FilterSetEntry(String Name, Sprite[] Icons, int itemType, double min, double max, double iniValue, double Step) {
+            mName = Name;
+            mIconArray = Icons;
+            mItemType = itemType;
+            mNumericMin = min;
+            mNumericMax = max;
+            mNumericState = iniValue;
+            mNumericStep = Step;
+        }
+
+        public FilterSetEntry(String Name, Sprite icon, int itemType, double min, double max, double iniValue, double Step) {
+            mName = Name;
+            mIcon = icon;
+            mItemType = itemType;
+            mNumericMin = min;
+            mNumericMax = max;
+            mNumericState = iniValue;
+            mNumericStep = Step;
+        }
+
+        public FilterSetEntry(CacheTypes cacheType, String name, Sprite icon, int itemType) {
+            mName = name;
+            mIcon = icon;
+            mItemType = itemType;
+            this.cacheType = cacheType;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        public Sprite getIcon() {
+            if (mItemType == NUMERIC_ITEM) {
+                try {
+                    double ArrayMultiplier = (mIconArray.length > 5) ? 2 : 1;
+                    return mIconArray[(int) (mNumericState * ArrayMultiplier)];
+                } catch (Exception ignored) {
+                }
+            }
+            return mIcon;
+        }
+
+        public int getState() {
+            return mState;
+        }
+
+        public void setState(int State) {
+            mState = State;
+        }
+
+        public void setState(double State) {
+            mNumericState = State;
+        }
+
+        int getItemType() {
+            return mItemType;
+        }
+
+        double getNumState() {
+            return mNumericState;
+        }
+
+        public CacheTypes getCacheType() {
+            return cacheType;
+        }
+
+        void plusClick() {
+            mNumericState += mNumericStep;
+            if (mNumericState > mNumericMax) {
+                if (mItemType == NUMERIC_INT_ITEM) {
+                    mNumericState = mNumericMax;
+                } else {
+                    mNumericState = mNumericMin;
+                }
+            }
+        }
+
+        void minusClick() {
+            mNumericState -= mNumericStep;
+            if (mNumericState < 0) {
+                if (mItemType == NUMERIC_INT_ITEM) {
+                    mNumericState = mNumericMin;
+                } else {
+                    mNumericState = mNumericMax;
+                }
+            }
+        }
+
+        void plusPlusClick() {
+            if (mNumericState < 0) mNumericState++;
+            mNumericState += (mNumericStep * 10);
+            if (mNumericState > mNumericMax) {
+                if (mItemType == NUMERIC_INT_ITEM) {
+                    mNumericState = mNumericMax;
+                } else {
+                    mNumericState = mNumericMin;
+                }
+            }
+        }
+
+        void minusMinusClick() {
+            mNumericState -= (mNumericStep * 10);
+            if (mNumericState == 0) mNumericState = -1;
+            if (mNumericState < 0) {
+                if (mItemType == NUMERIC_INT_ITEM) {
+                    mNumericState = mNumericMin;
+                } else {
+                    mNumericState = mNumericMax;
+                }
+            }
+        }
+
+        void stateClick() {
+            mState += 1;
+            if (mItemType == CHECK_ITEM) {
+                if (mState > 1)
+                    mState = 0;
+            } else if (mItemType == THREE_STATE_ITEM) {
+                if (mState > 1)
+                    mState = -1;
+            }
+        }
+
+    }
+
 }

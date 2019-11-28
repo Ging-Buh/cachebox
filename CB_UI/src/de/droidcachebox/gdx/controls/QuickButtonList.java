@@ -7,10 +7,10 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.H_ListView;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
-import de.droidcachebox.main.QuickAction;
-import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.main.QuickAction;
+import de.droidcachebox.main.QuickButtonItem;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
 
@@ -33,7 +33,7 @@ public class QuickButtonList extends H_ListView {
 
         btnYPos = this.getHalfHeight() - btnRec.getHalfHeight();
 
-        this.setBaseAdapter(new CustomAdapter());
+        this.setAdapter(new CustomAdapter());
         this.setDisposeFlag(false);
 
         registerSkinChangedEvent();

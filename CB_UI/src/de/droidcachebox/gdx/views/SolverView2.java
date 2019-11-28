@@ -124,7 +124,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         }
 
         lvAdapter = new CustomAdapter(solver);
-        this.setBaseAdapter(lvAdapter);
+        this.setAdapter(lvAdapter);
 
         int itemCount = solver.size();
         int itemSpace = this.getMaxItemCount();
@@ -144,7 +144,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
 
     private void reloadList() {
         lvAdapter = new CustomAdapter(solver);
-        this.setBaseAdapter(lvAdapter);
+        this.setAdapter(lvAdapter);
         int itemCount = solver.size();
         int itemSpace = this.getMaxItemCount();
 
@@ -314,7 +314,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     @Override
     public void dispose() {
 
-        this.setBaseAdapter(null);
+        this.setAdapter(null);
         lvAdapter = null;
         solver = null;
         cache = null;

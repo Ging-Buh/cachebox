@@ -70,29 +70,29 @@ public class CategoryDAO {
     public void loadCategoriesFromDatabase() {
         // read all Categories
 
-        CoreSettingsForward.Categories.beginnTransaction();
-        CoreSettingsForward.Categories.clear();
+        CoreSettingsForward.categories.beginnTransaction();
+        CoreSettingsForward.categories.clear();
 
         CoreCursor reader = Database.Data.sql.rawQuery("select ID, GPXFilename, Pinned from Category", null);
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
                 Category category = readFromCursor(reader);
-                CoreSettingsForward.Categories.add(category);
+                CoreSettingsForward.categories.add(category);
                 reader.moveToNext();
             }
             reader.close();
         }
-        CoreSettingsForward.Categories.sort();
-        CoreSettingsForward.Categories.endTransaction();
+        CoreSettingsForward.categories.sort();
+        CoreSettingsForward.categories.endTransaction();
     }
 
     public void deleteEmptyCategories() {
-        CoreSettingsForward.Categories.beginnTransaction();
+        CoreSettingsForward.categories.beginnTransaction();
 
         Categories delete = new Categories();
-        for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
-            Category cat = CoreSettingsForward.Categories.get(i);
+        for (int i = 0, n = CoreSettingsForward.categories.size(); i < n; i++) {
+            Category cat = CoreSettingsForward.categories.get(i);
             if (cat.CacheCount() == 0) {
                 Database.Data.sql.delete("Category", "Id=?", new String[]{String.valueOf(cat.Id)});
                 delete.add(cat);
@@ -100,8 +100,8 @@ public class CategoryDAO {
         }
 
         for (int i = 0, n = delete.size(); i < n; i++) {
-            CoreSettingsForward.Categories.remove(delete.get(i));
+            CoreSettingsForward.categories.remove(delete.get(i));
         }
-        CoreSettingsForward.Categories.endTransaction();
+        CoreSettingsForward.categories.endTransaction();
     }
 }

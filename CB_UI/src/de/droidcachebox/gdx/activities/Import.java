@@ -724,7 +724,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     private void refreshPqList() {
 
-        lvPQs.setBaseAdapter(null);
+        lvPQs.setAdapter(null);
         lvPQs.notifyDataSetChanged();
         refreshPqList.disable();
 
@@ -735,7 +735,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
             // even if error: you can use PqList, may be empty
             Collections.sort(PqList, (p1, p2) -> p1.name.compareTo(p2.name));
-            lvPQs.setBaseAdapter(new PqListAdapter());
+            lvPQs.setAdapter(new PqListAdapter());
             lvPQs.notifyDataSetChanged();
 
             stopAnimationTimer();
@@ -772,7 +772,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     private void refreshCBServerList() {
 
-        lvCBServer.setBaseAdapter(null);
+        lvCBServer.setAdapter(null);
         lvCBServer.notifyDataSetChanged();
         refreshCBServerList.disable();
 
@@ -791,7 +791,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 cbServerExportList = null;
             }
 
-            lvCBServer.setBaseAdapter(new CustomAdapterCBServer());
+            lvCBServer.setAdapter(new CustomAdapterCBServer());
             lvCBServer.notifyDataSetChanged();
 
             stopAnimationTimer();

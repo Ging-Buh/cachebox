@@ -94,18 +94,18 @@ public class H_ListView extends ListViewBase {
 
     @Override
     protected void addVisibleItems(boolean Kinetic) {
-        if (mBaseAdapter == null)
+        if (adapter == null)
             return;
         if (mPosDefault == null)
             calcDefaultPosList();
 
-        for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++) {
+        for (int i = mFirstIndex; i < adapter.getCount(); i++) {
             if (!mAddedIndexList.contains(i)) {
 
-                if (mPosDefault.size() - 1 < i || mBaseAdapter.getCount() < i)
+                if (mPosDefault.size() - 1 < i || adapter.getCount() < i)
                     return;
 
-                ListViewItemBase tmp = mBaseAdapter.getView(i);
+                ListViewItemBase tmp = adapter.getView(i);
 
                 if (tmp == null)
                     return;
@@ -163,8 +163,8 @@ public class H_ListView extends ListViewBase {
         float countPos = this.getWidth();
         minimumItemSize = this.getWidth();
         mAllSize = 0;
-        for (int i = 0; i < mBaseAdapter.getCount(); i++) {
-            float itemWidth = mBaseAdapter.getItemSize(i);
+        for (int i = 0; i < adapter.getCount(); i++) {
+            float itemWidth = adapter.getItemSize(i);
             countPos -= itemWidth + mDividerSize;
             mPosDefault.add(0, countPos + mItemPosOffset);
             mAllSize += itemWidth + mDividerSize;
@@ -241,8 +241,8 @@ public class H_ListView extends ListViewBase {
             this.setUnDraggable();
         }
 
-        if (mBaseAdapter.getCount() <= mSelectedIndex)
-            setSelection(mBaseAdapter.getCount() - 1);
+        if (adapter.getCount() <= mSelectedIndex)
+            setSelection(adapter.getCount() - 1);
     }
 
     @Override

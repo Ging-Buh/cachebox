@@ -135,7 +135,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         synchronized (Database.Data.cacheList) {
             try {
                 geoCacheListViewAdapter = new GeoCacheListViewAdapter(Database.Data.cacheList);
-                geoCacheListView.setBaseAdapter(geoCacheListViewAdapter);
+                geoCacheListView.setAdapter(geoCacheListViewAdapter);
 
                 int itemCount = Database.Data.cacheList.size();
                 int itemSpace = geoCacheListView.getMaxItemCount();
@@ -224,21 +224,15 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         }
 
         geoCacheListViewAdapter = null;
-        geoCacheListView.setBaseAdapter(geoCacheListViewAdapter);
+        geoCacheListView.setAdapter(null);
     }
 
     @Override
     public void cacheListChanged() {
-        Log.debug(log, "CacheListChangedEvent on Cache List");
-        try {
-            geoCacheListView.setBaseAdapter(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         synchronized (Database.Data.cacheList) {
+            geoCacheListView.setAdapter(null);
             geoCacheListViewAdapter = new GeoCacheListViewAdapter(Database.Data.cacheList);
-
-            geoCacheListView.setBaseAdapter(geoCacheListViewAdapter);
+            geoCacheListView.setAdapter(geoCacheListViewAdapter);
 
             int itemCount = Database.Data.cacheList.size();
             int itemSpace = geoCacheListView.getMaxItemCount();

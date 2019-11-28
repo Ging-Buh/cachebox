@@ -1404,7 +1404,7 @@ public class GPXFileImporter {
         if (mip != null)
             mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentwpt + "/" + countwpt + "\n" + waypoint.getGcCode() + " - " + waypoint.getDescription(), false);
 
-        mImportHandler.handleWaypoint(waypoint);
+        mImportHandler.handleWayPoint(waypoint);
 
         waypoint.clear();
 

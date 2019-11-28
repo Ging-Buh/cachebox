@@ -289,7 +289,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                     // GpxFilename
                     // API-Import
                     // Category suchen, die dazu gehört
-                    Category category = CoreSettingsForward.Categories.getCategory("API-Import");
+                    Category category = CoreSettingsForward.categories.getCategory("API-Import");
                     if (category != null) // should not happen!!!
                     {
                         GpxFilename gpxFilename = category.addGpxFilename("API-Import");

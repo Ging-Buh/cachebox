@@ -93,7 +93,7 @@ public interface CB_UI_Settings {
     SettingIntArray SoundApproachDistance = new SettingIntArray("SoundApproachDistance", Misc, NORMAL, 50, Global, ACB, approachDistanceArray);
     SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", Misc, NEVER, 3, Global, ACB, trackDistanceArray);
     SettingLongString FilterNew = new SettingLongString("FilterNew", Misc, NEVER, "", SettingStoreType.Local, ALL);
-    SettingLongString UserFilter = new SettingLongString("UserFilter", Misc, NEVER, "", Global, ACB);
+    SettingLongString UserFilters = new SettingLongString("UserFilters", Misc, NEVER, "", Global, ACB);
     SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", Misc, EXPERT, true, Global, ACB);
     SettingBool StartWithAutoSelect = new SettingBool("StartWithAutoSelect", Misc, EXPERT, false, Global, ACB);
     SettingBool ImperialUnits = new SettingBool("ImperialUnits", Misc, NORMAL, false, Global, ACB);

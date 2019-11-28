@@ -670,7 +670,7 @@ public class Sprites {
         }
     }
 
-    public static enum IconName {
+    public enum IconName {
         btnNormal, //
         button, //
         docIcon, //

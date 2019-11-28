@@ -74,7 +74,7 @@ public class TrackableListView extends CB_View_Base {
 
         listView = new V_ListView(new CB_RectF(0, 0, getWidth(), 0), "listView");
         listView.setEmptyMsg(Translation.get("TB_List_Empty"));
-        listView.setBaseAdapter(lvAdapter);
+        listView.setAdapter(lvAdapter);
 
         Layout();
     }
@@ -83,7 +83,7 @@ public class TrackableListView extends CB_View_Base {
         mTB_List = TrackableListDAO.ReadTbList("");
         lvAdapter = new CustomAdapter();
         if (listView != null)
-            listView.setBaseAdapter(lvAdapter);
+            listView.setAdapter(lvAdapter);
     }
 
     private boolean fetchTB(final String TBCode) {
