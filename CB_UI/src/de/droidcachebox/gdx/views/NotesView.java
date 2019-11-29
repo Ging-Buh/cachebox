@@ -147,7 +147,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
 
     @Override
     public void onHide() {
-        KeyboardFocusChangedEventList.Remove(this);
+        KeyboardFocusChangedEventList.remove(this);
         // Save changed Note text to Database
         String text = notes.getText();
         if (text != null) {

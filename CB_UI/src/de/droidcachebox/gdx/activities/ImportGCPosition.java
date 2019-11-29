@@ -368,7 +368,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     @Override
     public void onHide() {
-        KeyboardFocusChangedEventList.Remove(this);
+        KeyboardFocusChangedEventList.remove(this);
     }
 
     private void scrollToY(final EditTextField editTextField) {

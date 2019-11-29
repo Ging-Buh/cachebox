@@ -16,10 +16,11 @@
 
 package de.droidcachebox.gdx.controls;
 
+import de.droidcachebox.KeyboardFocusChangedEvent;
+import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.gdx.CB_View_Base;
-import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
@@ -27,11 +28,13 @@ import de.droidcachebox.translation.Translation;
 /**
  * @author Longri
  */
-public class TextFilterView extends CB_View_Base {
+public class TextFilterView extends CB_View_Base implements KeyboardFocusChangedEvent {
+    private static FilterProperties tmpFilterProps;
+
     /**
      * Clear button, for clearing text input
      */
-    private CB_Button mBtnClear;
+    private CB_Button mBtnClear, getSql;
     /**
      * Option Title, der drei Optionen Title/GC-Code/Owner
      */
@@ -47,67 +50,42 @@ public class TextFilterView extends CB_View_Base {
     /**
      * Eingabe Feld
      */
-    private EditTextField mEingabe;
+    private EditTextField mEingabe, sql;
+    private float originalSqlY;
     /**
      * represented the actual filter mode <br/>
      * 0 = Title <br/>
      * 1 = Gc-Code <br/>
      * 2 = Owner <br/>
      */
-    private int maktFilterMode = 0;
+    private int aktFilterMode = 0;
 
     public TextFilterView(CB_RectF rec, String Name) {
         super(rec, Name);
 
-        float margin = UiSizes.getInstance().getMargin() * 2;
-        float btnWidth = (this.getWidth() - (margin * 7)) / 3;
+        float margin = UiSizes.getInstance().getMargin();
+        setBorders(margin, margin);
+        topBorder = margin;
+        bottomBorder = margin;
 
-        CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UiSizes.getInstance().getButtonHeight());
-
-        mTglBtnTitle = new MultiToggleButton(btnRrec, "mTglBtnTitle");
-        mTglBtnGc = new MultiToggleButton(btnRrec, "mTglBtnGc");
-        mTglBtnOwner = new MultiToggleButton(btnRrec, "mTglBtnOwner");
-
-        float y = this.getHeight() - margin - btnRrec.getHeight();
-
-        mTglBtnTitle.setPos(margin + margin, y);
-        mTglBtnGc.setPos(mTglBtnTitle.getMaxX() + margin, y);
-        mTglBtnOwner.setPos(mTglBtnGc.getMaxX() + margin, y);
-
-        btnRrec.setWidth(this.getWidth() - (margin * 2));
-
-        mEingabe = new EditTextField(btnRrec, this, "mEingabe", WrapType.SINGLELINE);
-
-        mEingabe.setTextFieldListener(new TextFieldListener() {
-
-            @Override
-            public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
-
-            }
-
-            @Override
-            public void keyTyped(EditTextFieldBase textField, char key) {
-                // textBox_TextChanged();
-            }
-        });
-
+        mTglBtnTitle = new MultiToggleButton("mTglBtnTitle");
+        mTglBtnGc = new MultiToggleButton("mTglBtnGc");
+        mTglBtnOwner = new MultiToggleButton("mTglBtnOwner");
+        mEingabe = new EditTextField(this, "mEingabe");
         mEingabe.setText("");
-        mEingabe.setPos(margin, mTglBtnTitle.getY() - margin - mEingabe.getHeight());
-
         mBtnClear = new CB_Button("clear");
-        mBtnClear.setY(mEingabe.getY() - margin - mBtnClear.getHeight());
-        mBtnClear.setX(this.getWidth() - margin - mBtnClear.getWidth());
         mBtnClear.setText(Translation.get("clear"));
-        mBtnClear.setClickHandler((view, x, y14, pointer, button) -> {
+        mBtnClear.setClickHandler((view, x, y, pointer, button) -> {
             mEingabe.setText("");
+            sql.setText("");
             return true;
         });
 
-        this.addChild(mTglBtnTitle);
-        this.addChild(mTglBtnGc);
-        this.addChild(mTglBtnOwner);
-        this.addChild(mEingabe);
-        this.addChild(mBtnClear);
+        addNext(mTglBtnTitle);
+        addNext(mTglBtnGc);
+        addLast(mTglBtnOwner);
+        addLast(mEingabe);
+        addLast(mBtnClear, -0.5f);
 
         mTglBtnTitle.initialOn_Off_ToggleStates(Translation.get("Title"), Translation.get("Title"));
         mTglBtnGc.initialOn_Off_ToggleStates(Translation.get("GCCode"), Translation.get("GCCode"));
@@ -130,6 +108,31 @@ public class TextFilterView extends CB_View_Base {
 
         switchFilterMode(0);
 
+        addNext(new CB_Label("select * from Caches as c "));
+        getSql = new CB_Button(Translation.get("getSql"));
+        getSql.setClickHandler((view, x, y, pointer, button) -> {
+            if (tmpFilterProps.isUserDefinedSQL())
+                sql.setText(tmpFilterProps.getSqlWhere("").trim());
+            else
+                sql.setText("where " + tmpFilterProps.getSqlWhere("").trim());
+            return true;
+        });
+        addLast(getSql, -0.3f);
+        sql = new EditTextField(this, "sql");
+        sql.setWrapType(WrapType.WRAPPED);
+        sql.setHeight(getAvailableHeight());
+        addLast(sql);
+        originalSqlY = sql.getY();
+    }
+
+    @Override
+    public void onShow() {
+        KeyboardFocusChangedEventList.Add(this);
+    }
+
+    @Override
+    public void onHide() {
+        KeyboardFocusChangedEventList.remove(this);
     }
 
     /**
@@ -141,7 +144,7 @@ public class TextFilterView extends CB_View_Base {
      *              2 = Owner <br/>
      */
     private void switchFilterMode(int state) {
-        maktFilterMode = state;
+        aktFilterMode = state;
 
         if (state == 0) {
             mTglBtnTitle.setState(1);
@@ -162,48 +165,51 @@ public class TextFilterView extends CB_View_Base {
     }
 
     /**
-     * Returns the text from EditTextField </br> Formated to lower case!
-     *
-     * @return String
-     */
-    public String getFilterString() {
-        return mEingabe.getText().toLowerCase();
-    }
-
-    /**
-     * Returns the selected Filter state!</br> 0 = Title </br> 1 = GcCode </br> 2 = Owner </br>
-     *
-     * @return
-     */
-    public int getFilterState() {
-        return maktFilterMode;
-    }
-
-    /**
      * Sets the filter to the EditText Field and activate the given filterstate
      *
      * @param filter      String for EditTextField
      * @param filterState Filter state!</br> 0 = Title </br> 1 = GcCode </br> 2 = Owner </br>
      */
-    public void setFilterString(String filter, int filterState) {
+    private void setFilterString(String filter, int filterState) {
         mEingabe.setText(filter);
         switchFilterMode(filterState);
     }
 
-    public void setTextFilterPart(FilterProperties tmpFilterProps) {
-        String txtFilter = getFilterString(); // only the text to search for
-        if (txtFilter.length() > 0) {
-            int FilterMode = getFilterState();
-            if (FilterMode == 0)
-                tmpFilterProps.filterName = txtFilter;
-            else if (FilterMode == 1)
-                tmpFilterProps.filterGcCode = txtFilter;
-            else if (FilterMode == 2)
-                tmpFilterProps.filterOwner = txtFilter;
+    public void setFilter(FilterProperties filter) {
+        tmpFilterProps = filter;
+        if (filter.isUserDefinedSQL()) {
+            sql.setText(filter.getSqlWhere("").trim());
         } else {
-            tmpFilterProps.filterName = "";
-            tmpFilterProps.filterGcCode = "";
-            tmpFilterProps.filterOwner = "";
+            if (tmpFilterProps.filterName.length() > 0)
+                setFilterString(tmpFilterProps.filterName, 0);
+            else if (tmpFilterProps.filterGcCode.length() > 0)
+                setFilterString(tmpFilterProps.filterGcCode, 1);
+            else if (tmpFilterProps.filterOwner.length() > 0)
+                setFilterString(tmpFilterProps.filterOwner, 2);
+        }
+    }
+
+    public FilterProperties updateFilterProperties(FilterProperties filter) {
+        if (sql.getText().length() > 0) {
+            filter.setUserDefinedSQL(sql.getText());
+        } else {
+            String txtFilter = mEingabe.getText().toLowerCase(); // only the text to search for
+            if (aktFilterMode == 0)
+                filter.filterName = txtFilter;
+            else if (aktFilterMode == 1)
+                filter.filterGcCode = txtFilter;
+            else if (aktFilterMode == 2)
+                filter.filterOwner = txtFilter;
+        }
+        return filter;
+    }
+
+    @Override
+    public void KeyboardFocusChanged(EditTextField focus) {
+        if (focus == sql) {
+            sql.setY(mTglBtnTitle.getY() + mTglBtnTitle.getHeight() - sql.getHeight());
+        } else {
+            sql.setY(originalSqlY);
         }
     }
 }

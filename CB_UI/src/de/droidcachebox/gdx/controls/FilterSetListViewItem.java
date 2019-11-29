@@ -25,7 +25,6 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     public static final int NUMERIC_ITEM = 3;
     public static final int NUMERIC_INT_ITEM = 4;
     public static final int SELECT_ALL_ITEM = 5;
-    public static boolean mustSaveFilter;
     private final FilterSetEntry filterSetEntry;
     private final ArrayList<FilterSetListViewItem> mChildList = new ArrayList<>();
     public Vector2 lastItemTouchPos;
@@ -458,7 +457,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
                     if (rClick)
                         selectAllHandler.selectAllCacheTypes();
                     if (lClick)
-                        selectAllHandler.selectNoCacheType();
+                        selectAllHandler.selectNoCacheTypes();
                 }
             }
         }
@@ -521,7 +520,6 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private void plusClick() {
         filterSetEntry.plusClick();
         setValueFont = true;
-        mustSaveFilter = true;
         isPressed = false;
         lastItemTouchPos = null;
         GL.that.renderOnce();
@@ -530,7 +528,6 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private void minusClick() {
         filterSetEntry.minusClick();
         setValueFont = true;
-        mustSaveFilter = true;
         isPressed = false;
         lastItemTouchPos = null;
         GL.that.renderOnce();
@@ -539,7 +536,6 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private void plusPlusClick() {
         filterSetEntry.plusPlusClick();
         setValueFont = true;
-        mustSaveFilter = true;
         isPressed = false;
         lastItemTouchPos = null;
         GL.that.renderOnce();
@@ -548,7 +544,6 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private void minusMinusClick() {
         filterSetEntry.minusMinusClick();
         setValueFont = true;
-        mustSaveFilter = true;
         isPressed = false;
         lastItemTouchPos = null;
         GL.that.renderOnce();
@@ -556,7 +551,6 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     private void stateClick() {
         filterSetEntry.stateClick();
-        mustSaveFilter = true;
         isPressed = false;
         lastItemTouchPos = null;
         GL.that.renderOnce();

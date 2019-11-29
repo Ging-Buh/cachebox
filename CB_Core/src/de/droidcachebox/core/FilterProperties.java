@@ -241,14 +241,6 @@ public class FilterProperties {
         }
     }
 
-    public FilterProperties(boolean b) {
-        initCreation();
-        if (b)
-            userDefinedSQL = "     ";
-        else
-            userDefinedSQL = "";
-    }
-
     private String join(String separator, ArrayList<String> array) {
         StringBuilder retString = new StringBuilder();
         int count = 0;
@@ -547,6 +539,18 @@ public class FilterProperties {
         return asJsonString;
     }
 
+    public boolean isUserDefinedSQL() {
+        return userDefinedSQL.length() > 0;
+    }
+
+    public void setUserDefinedSQL(String userDefinedSQL) {
+        if (userDefinedSQL.startsWith("     ")) {
+            this.userDefinedSQL = userDefinedSQL;
+        } else {
+            this.userDefinedSQL = "     " + userDefinedSQL;
+        }
+    }
+
     /**
      * Gibt den SQL Where String dieses Filters zurück
      *
@@ -692,54 +696,46 @@ public class FilterProperties {
      * Filter miteinander vergleichen wobei Category Einstellungen ignoriert werden sollen
      */
     public boolean equals(FilterProperties filter) {
-        if (finds != filter.finds)
-            return false;
-        if (notAvailable != filter.notAvailable)
-            return false;
-        if (archived != filter.archived)
-            return false;
-        if (own != filter.own)
-            return false;
-        if (containsTravelbugs != filter.containsTravelbugs)
-            return false;
-        if (favorites != filter.favorites)
-            return false;
-        if (listingChanged != filter.listingChanged)
-            return false;
-        if (withManualWaypoint != filter.withManualWaypoint)
-            return false;
-        if (hasUserData != filter.hasUserData)
-            return false;
+        if (isUserDefinedSQL() != filter.isUserDefinedSQL()) return false;
+        if (finds != filter.finds) return false;
+        if (notAvailable != filter.notAvailable) return false;
+        if (archived != filter.archived) return false;
+        if (own != filter.own) return false;
+        if (containsTravelbugs != filter.containsTravelbugs) return false;
+        if (favorites != filter.favorites) return false;
+        if (listingChanged != filter.listingChanged) return false;
+        if (withManualWaypoint != filter.withManualWaypoint) return false;
+        if (hasUserData != filter.hasUserData) return false;
 
-        if (minDifficulty != filter.minDifficulty)
-            return false;
-        if (maxDifficulty != filter.maxDifficulty)
-            return false;
-        if (minTerrain != filter.minTerrain)
-            return false;
-        if (maxTerrain != filter.maxTerrain)
-            return false;
-        if (minContainerSize != filter.minContainerSize)
-            return false;
-        if (maxContainerSize != filter.maxContainerSize)
-            return false;
-        if (minRating != filter.minRating)
-            return false;
-        if (maxRating != filter.maxRating)
-            return false;
-        if (minFavPoints != filter.minFavPoints)
-            return false;
-        if (maxFavPoints != filter.maxFavPoints)
-            return false;
+        if (minDifficulty != filter.minDifficulty) return false;
+        if (maxDifficulty != filter.maxDifficulty) return false;
+        if (minTerrain != filter.minTerrain) return false;
+        if (maxTerrain != filter.maxTerrain) return false;
+        if (minContainerSize != filter.minContainerSize) return false;
+        if (maxContainerSize != filter.maxContainerSize) return false;
+        if (minRating != filter.minRating) return false;
+        if (maxRating != filter.maxRating) return false;
+        if (minFavPoints != filter.minFavPoints) return false;
+        if (maxFavPoints != filter.maxFavPoints) return false;
 
-        if (hasCorrectedCoordinates != filter.hasCorrectedCoordinates)
-            return false;
+        if (hasCorrectedCoordinates != filter.hasCorrectedCoordinates) return false;
 
-        String[] thisCacheTypes = cacheTypes.split(",");
-        String[] filterCacheTypes = filter.cacheTypes.split(",");
-        Arrays.sort(thisCacheTypes);
-        Arrays.sort(filterCacheTypes);
-        if (!Arrays.equals(thisCacheTypes, filterCacheTypes)) return false;
+        if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length) {
+            // this != all CacheTypes
+            String[] thisCacheTypes = cacheTypes.split(",");
+            String[] filterCacheTypes = filter.cacheTypes.split(",");
+            Arrays.sort(thisCacheTypes);
+            Arrays.sort(filterCacheTypes);
+            if (!Arrays.equals(thisCacheTypes, filterCacheTypes)) return false;
+        }
+        else {
+            // this == all CacheTypes
+            if (filter.cacheTypes.length() > 0 && filter.cacheTypes.split(",").length != CacheTypes.caches().length) {
+                // filter != all CacheTypes
+                return false;
+            }
+        }
+
 
         if (attributes == null) {
             if (filter.attributes != null) return false;
@@ -788,7 +784,7 @@ public class FilterProperties {
                 return false;
         }
 
-        if (userDefinedSQL.length() > 0) {
+        if (isUserDefinedSQL() && filter.isUserDefinedSQL()) {
             if (!getSqlWhere("").equals(filter.getSqlWhere(""))) {
                 return false;
             }

@@ -30,7 +30,7 @@ public class KeyboardFocusChangedEventList {
         }
     }
 
-    public static void Remove(KeyboardFocusChangedEvent event) {
+    public static void remove(KeyboardFocusChangedEvent event) {
         synchronized (list) {
             list.remove(event);
         }

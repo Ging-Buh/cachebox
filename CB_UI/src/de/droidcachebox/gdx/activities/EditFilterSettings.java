@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreSettingsForward;
@@ -62,10 +63,10 @@ import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
  */
 public class EditFilterSettings extends ActivityBase {
     private static final String log = "EditFilterSettings";
-    private static final int presetTabId = 0;
-    private static final int filterSetTabId = 1;
-    private static final int categoryTabId = 2;
-    private static final int textFilterTabId = 3;
+    private static final int presetViewId = 0;
+    private static final int filterSetViewId = 1;
+    private static final int categoryViewId = 2;
+    private static final int textFilterViewId = 3;
     private static CB_RectF itemRec;
     private static FilterProperties tmpFilterProps; // this is the storage for the filter
     private static WaitDialog pd;
@@ -74,11 +75,11 @@ public class EditFilterSettings extends ActivityBase {
     private MultiToggleButton btnCategoryFilters;
     private MultiToggleButton btnTextFilters;
     private CB_Button btnAddUserDefinedFilter;
-    private PresetListView presetTab;
-    private FilterSetListView filterSetTab;
-    private CategoryListView categoryTab;
-    private TextFilterView textFilterTab;
-    private int lastTabId;
+    private PresetListView presetView;
+    private FilterSetListView filterSetView;
+    private CategoryListView categoryView;
+    private TextFilterView textFilterView;
+    private int lastViewId;
 
     public EditFilterSettings(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -91,31 +92,44 @@ public class EditFilterSettings extends ActivityBase {
         CB_Button btnOK = new CB_Button(leftBorder / 2, yy, myWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
         btnOK.setText(Translation.get("ok"));
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
+            switch (lastViewId) {
+                case presetViewId:
+                    break;
+                case filterSetViewId:
+                    tmpFilterProps = filterSetView.updateFilterProperties(tmpFilterProps);
+                    break;
+                case categoryViewId:
+                    tmpFilterProps = categoryView.updateFilterProperties(tmpFilterProps); // categories to tmpFilterProps
+                    break;
+                case textFilterViewId:
+                    tmpFilterProps = textFilterView.updateFilterProperties(tmpFilterProps); // textFilters to tmpFilterProps
+                    break;
+                default:
+            }
+
+            FilterInstances.setLastFilter(tmpFilterProps); // remember and access from everywhere
+            KeyboardFocusChangedEventList.remove(textFilterView);
             finish();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    categoryTab.setCategoryFilterPart(); // categories to tmpFilter
-                    textFilterTab.setTextFilterPart(tmpFilterProps);
-
-                    FilterInstances.setLastFilter(tmpFilterProps); // remember and access from everywhere
-                    applyFilter(tmpFilterProps);
+                    FilterProperties filter = FilterInstances.getLastFilter();
+                    applyFilter(filter);
 
                     // Save selected filter (new JSON Format)
                     // wont save History at the Moment
                     // Marker must be removed, else isFiltered is shown
                     // wont change the LastFilter
-                    if (tmpFilterProps.isHistory) {
-                        FilterProperties tmp = new FilterProperties(tmpFilterProps.toString());
+                    if (filter.isHistory) {
+                        FilterProperties tmp = new FilterProperties(filter.toString());
                         tmp.isHistory = false;
                         Config.FilterNew.setValue(tmp.toString());
                     } else {
-                        Config.FilterNew.setValue(tmpFilterProps.toString());
+                        Config.FilterNew.setValue(filter.toString());
                     }
                     Config.AcceptChanges();
                 }
             }, 300);
-
             return true;
         });
         addChild(btnOK);
@@ -156,22 +170,22 @@ public class EditFilterSettings extends ActivityBase {
         btnTextFilters.initialOn_Off_ToggleStates(sTxt, sTxt);
 
         btnPresetFilters.setClickHandler((v, x, y, pointer, button) -> {
-            setTabVisible(presetTabId);
+            setViewVisible(presetViewId);
             return true;
         });
 
         btnFilterSetFilters.setClickHandler((v, x, y, pointer, button) -> {
-            setTabVisible(filterSetTabId);
+            setViewVisible(filterSetViewId);
             return true;
         });
 
         btnCategoryFilters.setClickHandler((v, x, y, pointer, button) -> {
-            setTabVisible(categoryTabId);
+            setViewVisible(categoryViewId);
             return true;
         });
 
         btnTextFilters.setClickHandler((v, x, y, pointer, button) -> {
-            setTabVisible(textFilterTabId);
+            setViewVisible(textFilterViewId);
             return true;
         });
 
@@ -193,142 +207,97 @@ public class EditFilterSettings extends ActivityBase {
         preRec.setHeight(listViewRec.getHeight() - UiSizes.getInstance().getButtonHeight() - margin);
         preRec.setY(btnAddUserDefinedFilter.getMaxY() + margin);
 
-        presetTab = new PresetListView(preRec);
-        contentBox.addChild(presetTab);
+        presetView = new PresetListView(preRec);
+        contentBox.addChild(presetView);
 
-        filterSetTab = new FilterSetListView(listViewRec);
-        contentBox.addChild(filterSetTab);
+        filterSetView = new FilterSetListView(listViewRec);
+        contentBox.addChild(filterSetView);
 
-        categoryTab = new CategoryListView(listViewRec);
-        contentBox.addChild(categoryTab);
+        categoryView = new CategoryListView(listViewRec);
+        contentBox.addChild(categoryView);
 
-        textFilterTab = new TextFilterView(listViewRec, "TextFilterView");
-        contentBox.addChild(textFilterTab);
+        textFilterView = new TextFilterView(listViewRec, "TextFilterView");
+        contentBox.addChild(textFilterView);
 
+        // PresetListView: select entry, if possible checked for equal in render
+        //
         // init FilterSetListView from tmpFilterProps/FilterInstances.getLastFilter()
-        // select entry, if possible
-
+        filterSetView.setFilter(tmpFilterProps);
         // init CategoryListView from tmpFilterProps/FilterInstances.getLastFilter()
-
+        // implicit in creator: fillCategorieList()/ CoreSettingsForward.categories.readFromFilter(tmpFilterProps)
+        //
         // init TextFilterView from tmpFilterProps/FilterInstances.getLastFilter()
-        if (tmpFilterProps.filterName.length() > 0)
-            textFilterTab.setFilterString(tmpFilterProps.filterName, 0);
-        else if (tmpFilterProps.filterGcCode.length() > 0)
-            textFilterTab.setFilterString(tmpFilterProps.filterGcCode, 1);
-        else if (tmpFilterProps.filterOwner.length() > 0)
-            textFilterTab.setFilterString(tmpFilterProps.filterOwner, 2);
+        textFilterView.setFilter(tmpFilterProps);
 
-        lastTabId = -1;
-        setTabVisible(0);
+        lastViewId = -1;
+        setViewVisible(0);
 
     }
 
-    public static void applyFilter(final FilterProperties filterProperties) {
-
-        pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
-
-        new Thread(() -> {
-            try {
-                synchronized (Database.Data.cacheList) {
-                    String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
-                    Log.info(log, "Main.applyFilter: " + sqlWhere);
-                    Database.Data.cacheList.clear();
-                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
-                    GlobalCore.checkSelectedCacheValid();
-                }
-                CacheListChangedListeners.getInstance().cacheListChanged();
-                pd.dismis();
-                ViewManager.that.filterSetChanged();
-
-                // Notify Map
-                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
-
-                // Save selected filter (new JSON Format)
-                // wont save History
-                // Marker must be removed, else isFiltered is shown
-                // wont change the LastFilter
-                if (FilterInstances.getLastFilter().isHistory) {
-                    FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
-                    tmp.isHistory = false;
-                    Config.FilterNew.setValue(tmp.toString());
-                } else {
-                    Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
-                }
-                Config.AcceptChanges();
-            } catch (Exception e) {
-                pd.dismis();
-            }
-        }).start();
-
-    }
-
-    private void setTabVisible(int tabId) {
-        if (lastTabId == tabId) return;
-        if (tabId == presetTabId) {
-            btnPresetFilters.setState(1);
-            btnFilterSetFilters.setState(0);
-            btnCategoryFilters.setState(0);
-            btnTextFilters.setState(0);
-            filterSetTab.setInvisible();
-            presetTab.setVisible();
-            categoryTab.setInvisible();
-            textFilterTab.setInvisible();
-            btnAddUserDefinedFilter.setVisible();
-            // set tmpFilterProps from filterSetTabId
-            // set tmpFilterProps from CategoryListView
-            if (categoryTab != null)
-                categoryTab.setCategoryFilterPart();
-            // set tmpFilterProps from TextFilterView
-            textFilterTab.setTextFilterPart(tmpFilterProps);
-            presetTab.onShow();
+    private void setViewVisible(int viewId) {
+        if (lastViewId == viewId) return;
+        switch (lastViewId) {
+            case presetViewId:
+                btnPresetFilters.setState(0);
+                presetView.setInvisible();
+                btnAddUserDefinedFilter.setInvisible();
+                break;
+            case filterSetViewId:
+                btnFilterSetFilters.setState(0);
+                filterSetView.setInvisible();
+                tmpFilterProps = filterSetView.updateFilterProperties(tmpFilterProps);
+                break;
+            case categoryViewId:
+                btnCategoryFilters.setState(0);
+                categoryView.setInvisible();
+                tmpFilterProps = categoryView.updateFilterProperties(tmpFilterProps);
+                break;
+            case textFilterViewId:
+                btnTextFilters.setState(0);
+                textFilterView.setInvisible();
+                tmpFilterProps = textFilterView.updateFilterProperties(tmpFilterProps);
+                break;
+            default:
+                btnPresetFilters.setState(0);
+                presetView.setInvisible();
+                btnAddUserDefinedFilter.setInvisible();
+                btnFilterSetFilters.setState(0);
+                filterSetView.setInvisible();
+                btnCategoryFilters.setState(0);
+                categoryView.setInvisible();
+                btnTextFilters.setState(0);
+                textFilterView.setInvisible();
         }
-        if (tabId == filterSetTabId) {
-            btnPresetFilters.setState(0);
-            btnFilterSetFilters.setState(1);
-            btnCategoryFilters.setState(0);
-            btnTextFilters.setState(0);
-            presetTab.setInvisible();
-            filterSetTab.setVisible();
-            categoryTab.setInvisible();
-            textFilterTab.setInvisible();
-            btnAddUserDefinedFilter.setInvisible();
-            // set tmpFilterProps from CategoryListView
-            if (categoryTab != null)
-                categoryTab.setCategoryFilterPart();
-            // set tmpFilterProps from TextFilterView
-            textFilterTab.setTextFilterPart(tmpFilterProps);
-            filterSetTab.onShow();
+        switch (viewId) {
+            case presetViewId:
+                btnPresetFilters.setState(1);
+                presetView.setVisible();
+                btnAddUserDefinedFilter.setVisible();
+                // data by other views reflected for selection marking on render
+                presetView.onShow();
+                break;
+            case filterSetViewId:
+                btnFilterSetFilters.setState(1);
+                filterSetView.setVisible();
+                // cause may be changed by preset
+                filterSetView.setFilter(tmpFilterProps);
+                filterSetView.onShow();
+                break;
+            case categoryViewId:
+                btnCategoryFilters.setState(1);
+                categoryView.setVisible();
+                // data unchanged by other views
+                categoryView.onShow();
+                break;
+            case textFilterViewId:
+                btnTextFilters.setState(1);
+                textFilterView.setVisible();
+                textFilterView.setFilter(tmpFilterProps);
+                textFilterView.onShow();
+                break;
+            default:
         }
-        if (tabId == categoryTabId) {
-            btnPresetFilters.setState(0);
-            btnFilterSetFilters.setState(0);
-            btnCategoryFilters.setState(1);
-            btnTextFilters.setState(0);
-            presetTab.setInvisible();
-            filterSetTab.setInvisible();
-            categoryTab.setVisible();
-            textFilterTab.setInvisible();
-            btnAddUserDefinedFilter.setInvisible();
-            // set tmpFilterProps from TextFilterView
-            textFilterTab.setTextFilterPart(tmpFilterProps);
-            categoryTab.onShow();
-        }
-        if (tabId == textFilterTabId) {
-            btnPresetFilters.setState(0);
-            btnFilterSetFilters.setState(0);
-            btnCategoryFilters.setState(0);
-            btnTextFilters.setState(1);
-            presetTab.setInvisible();
-            filterSetTab.setInvisible();
-            categoryTab.setInvisible();
-            textFilterTab.setVisible();
-            btnAddUserDefinedFilter.setInvisible();
-            // set tmpFilterProps from CategoryListView
-            if (categoryTab != null)
-                categoryTab.setCategoryFilterPart();
-            textFilterTab.onShow();
-        }
-        lastTabId = tabId;
+        lastViewId = viewId;
     }
 
     private void addUserDefinedFilter() {
@@ -337,7 +306,7 @@ public class EditFilterSettings extends ActivityBase {
         // Check if Preset exist
         boolean exist = false;
         String existName = "";
-        for (PresetListView.PresetListViewItem v : presetTab.presetListViewItems) {
+        for (PresetListView.PresetListViewItem v : presetView.presetListViewItems) {
             if (v.getEntry().getFilterProperties().equals(tmpFilterProps)) {
                 exist = true;
                 existName = v.getEntry().getName();
@@ -369,8 +338,8 @@ public class EditFilterSettings extends ActivityBase {
                         userFilters += nameOfNewFilter + ";" + newFilterString + "#";
                         Config.UserFilters.setValue(userFilters);
                         Config.AcceptChanges();
-                        presetTab.fillPresetList();
-                        presetTab.notifyDataSetChanged();
+                        presetView.fillPresetList();
+                        presetView.notifyDataSetChanged();
                     }
                     de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
                     return true;
@@ -379,15 +348,15 @@ public class EditFilterSettings extends ActivityBase {
 
     @Override
     public void onShow() {
-        if (presetTab != null) {
-            presetTab.notifyDataSetChanged();
+        if (presetView != null) {
+            presetView.notifyDataSetChanged();
         }
     }
 
     public interface ISelectAllHandler {
         void selectAllCacheTypes();
 
-        void selectNoCacheType();
+        void selectNoCacheTypes();
     }
 
     private static class PresetListView extends V_ListView {
@@ -543,8 +512,7 @@ public class EditFilterSettings extends ActivityBase {
                     return;
 
                 if (tmpFilterProps != null) {
-                    if (mPreset.getFilterProperties().equals(tmpFilterProps)) isSelected = true;
-                    else isSelected = false;
+                    isSelected = mPreset.getFilterProperties().equals(tmpFilterProps);
                 }
 
                 super.render(batch);
@@ -649,48 +617,47 @@ public class EditFilterSettings extends ActivityBase {
             setDisposeFlag(false);
         }
 
-        private FilterProperties getFilterProperties() {
-            FilterProperties props = new FilterProperties();
-            props.setFinds(finds.getChecked());
-            props.setNotAvailable(notAvailable.getChecked());
-            props.setArchived(archived.getChecked());
-            props.setOwn(own.getChecked());
-            props.setContainsTravelbugs(containsTravelBugs.getChecked());
-            props.setFavorites(favorites.getChecked());
-            props.setHasUserData(hasUserData.getChecked());
-            props.setListingChanged(listingChanged.getChecked());
-            props.setWithManualWaypoint(withManualWaypoint.getChecked());
-            props.setHasCorrectedCoordinates(hasCorrectedCoordinates.getChecked());
+        FilterProperties updateFilterProperties(FilterProperties filter) {
+            filter.setFinds(finds.getChecked());
+            filter.setNotAvailable(notAvailable.getChecked());
+            filter.setArchived(archived.getChecked());
+            filter.setOwn(own.getChecked());
+            filter.setContainsTravelbugs(containsTravelBugs.getChecked());
+            filter.setFavorites(favorites.getChecked());
+            filter.setHasUserData(hasUserData.getChecked());
+            filter.setListingChanged(listingChanged.getChecked());
+            filter.setWithManualWaypoint(withManualWaypoint.getChecked());
+            filter.setHasCorrectedCoordinates(hasCorrectedCoordinates.getChecked());
 
-            props.setMinDifficulty(minDifficulty.getValue());
-            props.setMaxDifficulty(maxDifficulty.getValue());
-            props.setMinTerrain(minTerrain.getValue());
-            props.setMaxTerrain(maxTerrain.getValue());
-            props.setMinContainerSize(minContainerSize.getValue());
-            props.setMaxContainerSize(maxContainerSize.getValue());
-            props.setMinRating(minRating.getValue());
-            props.setMaxRating(maxRating.getValue());
-            props.setMinFavPoints(minFavPoints.getValue());
-            props.setMaxFavPoints(maxFavPoints.getValue());
+            filter.setMinDifficulty(minDifficulty.getValue());
+            filter.setMaxDifficulty(maxDifficulty.getValue());
+            filter.setMinTerrain(minTerrain.getValue());
+            filter.setMaxTerrain(maxTerrain.getValue());
+            filter.setMinContainerSize(minContainerSize.getValue());
+            filter.setMaxContainerSize(maxContainerSize.getValue());
+            filter.setMinRating(minRating.getValue());
+            filter.setMaxRating(maxRating.getValue());
+            filter.setMinFavPoints(minFavPoints.getValue());
+            filter.setMaxFavPoints(maxFavPoints.getValue());
 
-            props.cacheTypes = "";
+            filter.cacheTypes = "";
             String sep = "";
             for (int i = 1; i < cacheTypes.getChildLength(); i++) {
                 FilterSetListViewItem itm = cacheTypes.getChild(i);
                 if (itm.getBoolean()) {
-                    props.cacheTypes = props.cacheTypes + sep + itm.getFilterSetEntry().getCacheType().ordinal();
+                    filter.cacheTypes = String.format(Locale.US, "%s%s%d", filter.cacheTypes, sep, itm.getFilterSetEntry().getCacheType().ordinal());
                     sep = ",";
                 }
             }
 
             for (int i = 0; i < attributes.getChildLength(); i++) {
-                props.attributes[i + 1] = attributes.getChild(i).getChecked();
+                filter.attributes[i + 1] = attributes.getChild(i).getChecked();
             }
 
-            return props;
+            return filter;
         }
 
-        private void setFilterProperties(FilterProperties props) {
+        private void setFilter(FilterProperties props) {
             finds.setValue(props.getFinds());
             notAvailable.setValue(props.getNotAvailable());
             archived.setValue(props.getArchived());
@@ -717,8 +684,12 @@ public class EditFilterSettings extends ActivityBase {
             for (int i = 0; i < cacheTypes.getChildLength(); i++) {
                 FilterSetListViewItem itm = cacheTypes.getChild(i);
                 if (itm.getFilterSetEntry().getCacheType() != null) {
-                    int ct = itm.getFilterSetEntry().getCacheType().ordinal();
-                    itm.setValue(propsCacheTypes.contains("'" + ct + "'"));
+                    if (props.cacheTypes.length() == 0) {
+                        itm.setValue(true);
+                    } else {
+                        int ct = itm.getFilterSetEntry().getCacheType().ordinal();
+                        itm.setValue(propsCacheTypes.contains("'" + ct + "'"));
+                    }
                 }
             }
 
@@ -728,57 +699,40 @@ public class EditFilterSettings extends ActivityBase {
 
         }
 
-        @Override
-        protected void render(Batch batch) {
-            super.render(batch);
-            if (mustSaveFilter) {
-                tmpFilterProps = getFilterProperties();
-                mustSaveFilter = false;
-            }
-        }
-
-        @Override
-        public void onShow() {
-            if (tmpFilterProps != null && !tmpFilterProps.toString().equals("")) {
-                setFilterProperties(tmpFilterProps);
-            }
-        }
-
         private void fillFilterSetList() {
 
             // add General
-            FilterSetListViewItem general = addGroupTitleButton(Translation.get("General"));
-            notAvailable = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("disabled"), Translation.get("disabled"), THREE_STATE_ITEM));
-            archived = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("not-available"), Translation.get("archived"), THREE_STATE_ITEM));
-            finds = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("log0icon"), Translation.get("myfinds"), THREE_STATE_ITEM));
-            own = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("star"), Translation.get("myowncaches"), THREE_STATE_ITEM));
-            containsTravelBugs = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("tb"), Translation.get("withtrackables"), THREE_STATE_ITEM));
-            favorites = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("favorit"), Translation.get("Favorites"), THREE_STATE_ITEM));
-            hasUserData = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("userdata"), Translation.get("hasuserdata"), THREE_STATE_ITEM));
-            listingChanged = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite(Sprites.IconName.warningIcon.name()), Translation.get("ListingChanged"), THREE_STATE_ITEM));
-            withManualWaypoint = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite(Sprites.IconName.manualWayPoint.name()), Translation.get("manualWayPoint"), THREE_STATE_ITEM));
-            hasCorrectedCoordinates = general.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("hasCorrectedCoordinates"), Translation.get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
+            FilterSetListViewItem general = addTitleItem(Translation.get("General"));
+            notAvailable = general.addChild(addItem(Sprites.getSprite("disabled"), Translation.get("disabled"), THREE_STATE_ITEM));
+            archived = general.addChild(addItem(Sprites.getSprite("not-available"), Translation.get("archived"), THREE_STATE_ITEM));
+            finds = general.addChild(addItem(Sprites.getSprite("log0icon"), Translation.get("myfinds"), THREE_STATE_ITEM));
+            own = general.addChild(addItem(Sprites.getSprite("star"), Translation.get("myowncaches"), THREE_STATE_ITEM));
+            containsTravelBugs = general.addChild(addItem(Sprites.getSprite("tb"), Translation.get("withtrackables"), THREE_STATE_ITEM));
+            favorites = general.addChild(addItem(Sprites.getSprite("favorit"), Translation.get("Favorites"), THREE_STATE_ITEM));
+            hasUserData = general.addChild(addItem(Sprites.getSprite("userdata"), Translation.get("hasuserdata"), THREE_STATE_ITEM));
+            listingChanged = general.addChild(addItem(Sprites.getSprite(Sprites.IconName.warningIcon.name()), Translation.get("ListingChanged"), THREE_STATE_ITEM));
+            withManualWaypoint = general.addChild(addItem(Sprites.getSprite(Sprites.IconName.manualWayPoint.name()), Translation.get("manualWayPoint"), THREE_STATE_ITEM));
+            hasCorrectedCoordinates = general.addChild(addItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
             // add D/T
-            FilterSetListViewItem dt = addGroupTitleButton("D / T" + "\n" + "GC-Vote");
-            minDifficulty = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minDifficulty"), 1, 5, 1, 0.5f));
-            maxDifficulty = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxDifficulty"), 1, 5, 5, 0.5f));
-            minTerrain = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minTerrain"), 1, 5, 1, 0.5f));
-            maxTerrain = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxTerrain"), 1, 5, 5, 0.5f));
-            minContainerSize = dt.addChild(addFilterSetNumericItem(Sprites.SizesIcons.toArray(), Translation.get("minContainerSize"), 0, 4, 0, 1));
-            maxContainerSize = dt.addChild(addFilterSetNumericItem(Sprites.SizesIcons.toArray(), Translation.get("maxContainerSize"), 0, 4, 4, 1));
-            minRating = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("minRating"), 0, 5, 0, 0.5f));
-            maxRating = dt.addChild(addFilterSetNumericItem(Sprites.Stars.toArray(), Translation.get("maxRating"), 0, 5, 5, 0.5f));
-            minFavPoints = dt.addChild(addFilterSetIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("minFavPoints")));
-            maxFavPoints = dt.addChild(addFilterSetIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("maxFavPoints")));
+            FilterSetListViewItem dt = addTitleItem("D / T" + "\n" + "GC-Vote");
+            minDifficulty = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("minDifficulty"), 1, 5, 1, 0.5f));
+            maxDifficulty = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("maxDifficulty"), 1, 5, 5, 0.5f));
+            minTerrain = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("minTerrain"), 1, 5, 1, 0.5f));
+            maxTerrain = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("maxTerrain"), 1, 5, 5, 0.5f));
+            minContainerSize = dt.addChild(addNumericItem(Sprites.SizesIcons.toArray(), Translation.get("minContainerSize"), 0, 4, 0, 1));
+            maxContainerSize = dt.addChild(addNumericItem(Sprites.SizesIcons.toArray(), Translation.get("maxContainerSize"), 0, 4, 4, 1));
+            minRating = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("minRating"), 0, 5, 0, 0.5f));
+            maxRating = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("maxRating"), 0, 5, 5, 0.5f));
+            minFavPoints = dt.addChild(addIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("minFavPoints")));
+            maxFavPoints = dt.addChild(addIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("maxFavPoints")));
 
 
             // add CacheTypes
-            cacheTypes = addGroupTitleButton("Cache Types");
-
-            //add selectAllCacheTypes/selectNoCacheType button item
-            FilterSetListViewItem selectAllItem = addSelectAllOrNoneButtons(null, "", SELECT_ALL_ITEM);
-            selectAllItem.setSelectAllHandler(new ISelectAllHandler() {
+            cacheTypes = addTitleItem("Cache Types");
+            //add selectAllCacheTypes/selectNoCacheTypes button item
+            FilterSetListViewItem setAllCacheTypes = addItem(null, "", SELECT_ALL_ITEM);
+            setAllCacheTypes.setSelectAllHandler(new ISelectAllHandler() {
                 @Override
                 public void selectAllCacheTypes() {
                     for (int i = 0; i < cacheTypes.getChildLength(); i++) {
@@ -788,84 +742,24 @@ public class EditFilterSettings extends ActivityBase {
                 }
 
                 @Override
-                public void selectNoCacheType() {
+                public void selectNoCacheTypes() {
                     for (int i = 0; i < cacheTypes.getChildLength(); i++) {
                         FilterSetListViewItem itm = cacheTypes.getChild(i);
                         itm.unCheck();
                     }
                 }
             });
-            cacheTypes.addChild(selectAllItem);
-
+            cacheTypes.addChild(setAllCacheTypes);
             for (CacheTypes c : CacheTypes.caches()) {
-                cacheTypes.addChild(addFilterSetCacheTypeItem(c)).setChecked();
+                cacheTypes.addChild(addCacheTypeItem(c)).setChecked();
             }
-
-            // add Attributes
-            attributes = addGroupTitleButton("Attributes");
+            attributes = addTitleItem("Attributes");
             for (int i = 1; i < Attributes.values().length; i++) {
-                attributes.addChild(addSelectAllOrNoneButtons(Sprites.getSprite("att-" + i + "-1Icon"), Translation.get("att_" + i + "_1"), THREE_STATE_ITEM));
+                attributes.addChild(addItem(Sprites.getSprite("att-" + i + "-1Icon"), Translation.get("att_" + i + "_1"), THREE_STATE_ITEM));
             }
-
         }
 
-        private FilterSetListViewItem addFilterSetNumericItem(Sprite[] Icons, String Name, double i, double j, double k, double f) {
-            if (filterSetEntries == null) {
-                filterSetEntries = new ArrayList<>();
-                filterSetListViewItems = new ArrayList<>();
-            }
-            //String Name, Sprite[] Icons, int itemType, double min = i, double max = j, double iniValue = k, double Step = f
-            FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(Name, Icons, NUMERIC_ITEM, i, j, k, f);
-            filterSetEntries.add(tmp);
-            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
-            // initial mit GONE
-            v.setInvisible();
-            filterSetListViewItems.add(v);
-            return v;
-        }
-
-        private FilterSetListViewItem addFilterSetIntegerItem(Sprite icon, String name) {
-            if (filterSetEntries == null) {
-                filterSetEntries = new ArrayList<>();
-                filterSetListViewItems = new ArrayList<>();
-            }
-            FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(name, icon, NUMERIC_INT_ITEM, -1, 10000, 0, 1.0);
-            filterSetEntries.add(tmp);
-            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
-            v.setInvisible();
-            filterSetListViewItems.add(v);
-            return v;
-        }
-
-        private FilterSetListViewItem addSelectAllOrNoneButtons(Sprite icon, String name, int itemType) {
-            if (filterSetEntries == null) {
-                filterSetEntries = new ArrayList<>();
-                filterSetListViewItems = new ArrayList<>();
-            }
-            FilterSetEntry tmp = new FilterSetEntry(name, icon, itemType);
-            filterSetEntries.add(tmp);
-            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
-            v.setInvisible();
-            filterSetListViewItems.add(v);
-            return v;
-        }
-
-        private FilterSetListViewItem addFilterSetCacheTypeItem(CacheTypes cacheType) {
-            Sprite icon = Sprites.getSprite("big" + cacheType.name());
-            String name = cacheType.name();
-            if (filterSetEntries == null) {
-                filterSetEntries = new ArrayList<>();
-                filterSetListViewItems = new ArrayList<>();
-            }
-            FilterSetEntry tmp = new FilterSetEntry(cacheType, name, icon, CHECK_ITEM);
-            filterSetEntries.add(tmp);
-            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
-            v.setInvisible();
-            filterSetListViewItems.add(v);
-            return v;
-        }
-
-        private FilterSetListViewItem addGroupTitleButton(String name) {
+        private FilterSetListViewItem addTitleItem(String name) {
             if (filterSetEntries == null) {
                 filterSetEntries = new ArrayList<>();
                 filterSetListViewItems = new ArrayList<>();
@@ -892,6 +786,62 @@ public class EditFilterSettings extends ActivityBase {
                 collapseButton_Clicked((FilterSetListViewItem) v1);
                 return false;
             });
+            return v;
+        }
+
+        private FilterSetListViewItem addItem(Sprite icon, String name, int itemType) {
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            FilterSetEntry tmp = new FilterSetEntry(name, icon, itemType);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            v.setInvisible();
+            filterSetListViewItems.add(v);
+            return v;
+        }
+
+        private FilterSetListViewItem addNumericItem(Sprite[] Icons, String Name, double i, double j, double k, double f) {
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            //String Name, Sprite[] Icons, int itemType, double min = i, double max = j, double iniValue = k, double Step = f
+            FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(Name, Icons, NUMERIC_ITEM, i, j, k, f);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            // initial mit GONE
+            v.setInvisible();
+            filterSetListViewItems.add(v);
+            return v;
+        }
+
+        private FilterSetListViewItem addIntegerItem(Sprite icon, String name) {
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(name, icon, NUMERIC_INT_ITEM, -1, 10000, 0, 1.0);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            v.setInvisible();
+            filterSetListViewItems.add(v);
+            return v;
+        }
+
+        private FilterSetListViewItem addCacheTypeItem(CacheTypes cacheType) {
+            Sprite icon = Sprites.getSprite("big" + cacheType.name());
+            String name = cacheType.name();
+            if (filterSetEntries == null) {
+                filterSetEntries = new ArrayList<>();
+                filterSetListViewItems = new ArrayList<>();
+            }
+            FilterSetEntry tmp = new FilterSetEntry(cacheType, name, icon, CHECK_ITEM);
+            filterSetEntries.add(tmp);
+            FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.itemRec, index++, tmp);
+            v.setInvisible();
+            filterSetListViewItems.add(v);
             return v;
         }
 
@@ -976,7 +926,7 @@ public class EditFilterSettings extends ActivityBase {
             setAdapter(new CategoryEntryAdapter(categoryEntries, categoryListViewItems));
         }
 
-        void setCategoryFilterPart() {
+        FilterProperties updateFilterProperties(FilterProperties filter) {
             // Set Categorie State
             if (categoryListViewItems != null) {
                 for (CategoryListViewItem tmp : categoryListViewItems) {
@@ -996,7 +946,7 @@ public class EditFilterSettings extends ActivityBase {
                     }
                 }
             }
-            CoreSettingsForward.categories.writeToFilter(tmpFilterProps);
+            return CoreSettingsForward.categories.updateFilterProperties(filter);
         }
 
         private void fillCategorieList() {
@@ -1072,24 +1022,23 @@ public class EditFilterSettings extends ActivityBase {
                                 if (file != null) {
                                     tmp1.setState(file.Checked ? 1 : 0);
                                 }
-
                             }
                         }
-                        setCategoryFilterPart();
+                        // updateFilterProperties();
                     } else if (minusBtnHitRec.contains(lastTouchX, lastTouchY)) {
                         ((CategoryListViewItem) v1).minusClick();
-                        setCategoryFilterPart();
+                        // updateFilterProperties();
                     } else {
                         collapseButton_Clicked((CategoryListViewItem) v1);
                         notifyDataSetChanged();
                     }
-
+                    /*
                 } else {
                     if (plusBtnHitRec.contains(lastTouchX, lastTouchY)) {
-                        setCategoryFilterPart();
+                        // updateFilterProperties();
                     }
+                 */
                 }
-
                 return true;
             });
 
@@ -1147,13 +1096,13 @@ public class EditFilterSettings extends ActivityBase {
 
                     }
                 }
-                setCategoryFilterPart();
+                // updateFilterProperties();
             } else if (minusBtnHitRec.contains(lastItemTouchX, lastItemTouchY)) {
                 ((CategoryListViewItem) v1).minusClick();
-                setCategoryFilterPart();
+                // updateFilterProperties();
             }
 
-            setCategoryFilterPart();
+            // updateFilterProperties();
 
             return true;
         }
@@ -1581,6 +1530,46 @@ public class EditFilterSettings extends ActivityBase {
             }
 
         }
+
+    }
+
+    public static void applyFilter(final FilterProperties filterProperties) {
+
+        pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
+
+        new Thread(() -> {
+            try {
+                synchronized (Database.Data.cacheList) {
+                    String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
+                    Log.info(log, "Main.applyFilter: " + sqlWhere);
+                    Database.Data.cacheList.clear();
+                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                    GlobalCore.checkSelectedCacheValid();
+                }
+                CacheListChangedListeners.getInstance().cacheListChanged();
+                pd.dismis();
+                ViewManager.that.filterSetChanged();
+
+                // Notify Map
+                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+
+                // Save selected filter (new JSON Format)
+                // wont save History
+                // Marker must be removed, else isFiltered is shown
+                // wont change the LastFilter
+                if (FilterInstances.getLastFilter().isHistory) {
+                    FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
+                    tmp.isHistory = false;
+                    Config.FilterNew.setValue(tmp.toString());
+                } else {
+                    Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+                }
+                Config.AcceptChanges();
+            } catch (Exception ex) {
+                Log.err(log, "applyFilter", ex);
+                pd.dismis();
+            }
+        }).start();
 
     }
 

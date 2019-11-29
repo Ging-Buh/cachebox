@@ -92,7 +92,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
 
     @Override
     public void onHide() {
-        KeyboardFocusChangedEventList.Remove(this);
+        KeyboardFocusChangedEventList.remove(this);
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         if (aktCache != null) {
             Database.setSolver(aktCache, edInput.getText());

@@ -437,7 +437,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     @Override
     public void onHide() {
-        KeyboardFocusChangedEventList.Remove(this);
+        KeyboardFocusChangedEventList.remove(this);
     }
 
     @Override

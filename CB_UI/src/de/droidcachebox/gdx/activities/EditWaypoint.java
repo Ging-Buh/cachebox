@@ -426,7 +426,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     @Override
     public void onHide() {
-        KeyboardFocusChangedEventList.Remove(this);
+        KeyboardFocusChangedEventList.remove(this);
     }
 
     @Override

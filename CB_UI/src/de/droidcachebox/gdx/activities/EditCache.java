@@ -13,15 +13,14 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.CoordinateButton.ICoordinateChangedListener;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldStyle;
 import de.droidcachebox.gdx.controls.Spinner.ISelectionChangedListener;
 import de.droidcachebox.gdx.views.CacheListView;
-import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 
 import java.util.Date;
+import java.util.Locale;
 
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent {
     // Allgemein
@@ -134,7 +133,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         int count = 0;
         do {
             count++;
-            newValues.setGcCode(prefix + String.format("%04d", count));
+            newValues.setGcCode(prefix + String.format(Locale.US, "%04d", count));
         } while (Database.Data.cacheList.getCacheByIdFromCacheList(Cache.GenerateCacheId(newValues.getGcCode())) != null);
         newValues.setName(newValues.getGcCode());
         newValues.setOwner("Unbekannt");
@@ -221,7 +220,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
             cache.setLongDescription("");
-            GL.that.RunOnGL(() -> finish());
+            GL.that.RunOnGL(this::finish);
             return true;
         });
     }
@@ -233,7 +232,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         });
     }
 
-    public SpinnerAdapter cacheTypList() {
+    private SpinnerAdapter cacheTypList() {
         return new SpinnerAdapter() {
             @Override
             public String getText(int index) {
@@ -254,16 +253,13 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private ISelectionChangedListener cacheTypSelection() {
-        return new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                EditCache.this.show();
-                newValues.setType(CacheTypNumbers[index]);
-            }
+        return index -> {
+            EditCache.this.show();
+            newValues.setType(CacheTypNumbers[index]);
         };
     }
 
-    public SpinnerAdapter cacheSizeList() {
+    private SpinnerAdapter cacheSizeList() {
         return new SpinnerAdapter() {
             @Override
             public String getText(int index) {
@@ -285,26 +281,20 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private ISelectionChangedListener cacheSizeSelection() {
-        return new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                EditCache.this.show();
-                newValues.Size = CacheSizeNumbers[index];
-            }
+        return index -> {
+            EditCache.this.show();
+            newValues.Size = CacheSizeNumbers[index];
         };
     }
 
     private void setCacheCoordsChangeListener() {
-        cacheCoords.setCoordinateChangedListener(new ICoordinateChangedListener() {
-            @Override
-            public void coordinateChanged(Coordinate coord) {
-                EditCache.this.show();
-                newValues.coordinate = coord; // oder = cacheCoords.getMyPosition()
-            }
+        cacheCoords.setCoordinateChangedListener(coord -> {
+            EditCache.this.show();
+            newValues.coordinate = coord; // oder = cacheCoords.getMyPosition()
         });
     }
 
-    public SpinnerAdapter cacheDifficultyList() {
+    private SpinnerAdapter cacheDifficultyList() {
         return new SpinnerAdapter() {
             @Override
             public String getText(int index) {
@@ -324,16 +314,13 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private ISelectionChangedListener cacheDifficultySelection() {
-        return new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                EditCache.this.show();
-                newValues.setDifficulty((index + 2.0f) / 2.0f);
-            }
+        return index -> {
+            EditCache.this.show();
+            newValues.setDifficulty((index + 2.0f) / 2.0f);
         };
     }
 
-    public SpinnerAdapter cacheTerrainList() {
+    private SpinnerAdapter cacheTerrainList() {
         return new SpinnerAdapter() {
             @Override
             public String getText(int index) {
@@ -353,12 +340,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private ISelectionChangedListener cacheTerrainSelection() {
-        return new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(int index) {
-                EditCache.this.show();
-                newValues.setTerrain((index + 2.0f) / 2.0f);
-            }
+        return index -> {
+            EditCache.this.show();
+            newValues.setTerrain((index + 2.0f) / 2.0f);
         };
     }
 
@@ -373,7 +357,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     @Override
     public void onHide() {
-        KeyboardFocusChangedEventList.Remove(this);
+        KeyboardFocusChangedEventList.remove(this);
     }
 
 }
