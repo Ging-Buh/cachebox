@@ -464,73 +464,75 @@ public class FilterProperties {
         try {
 
             JSONObject json = new JSONObject();
-            if (isHistory)
-                json.put("isHistory", true);
             if (userDefinedSQL.length() > 0) {
                 json.put("UserDefinedSQL", userDefinedSQL);
             }
-            // add Cache properties
-            json.put("caches", finds + SEPARATOR
-                    + notAvailable + SEPARATOR
-                    + archived + SEPARATOR
-                    + own + SEPARATOR
-                    + containsTravelbugs + SEPARATOR
-                    + favorites + SEPARATOR
-                    + hasUserData + SEPARATOR
-                    + listingChanged + SEPARATOR
-                    + withManualWaypoint + SEPARATOR
-                    + minDifficulty + SEPARATOR
-                    + maxDifficulty + SEPARATOR
-                    + minTerrain + SEPARATOR
-                    + maxTerrain + SEPARATOR
-                    + minContainerSize + SEPARATOR
-                    + maxContainerSize + SEPARATOR
-                    + minRating + SEPARATOR
-                    + maxRating + SEPARATOR
-                    + hasCorrectedCoordinates + SEPARATOR
-                    + minFavPoints + SEPARATOR
-                    + maxFavPoints);
+            else {
+                if (isHistory)
+                    json.put("isHistory", true);
+                // add Cache properties
+                json.put("caches", finds + SEPARATOR
+                        + notAvailable + SEPARATOR
+                        + archived + SEPARATOR
+                        + own + SEPARATOR
+                        + containsTravelbugs + SEPARATOR
+                        + favorites + SEPARATOR
+                        + hasUserData + SEPARATOR
+                        + listingChanged + SEPARATOR
+                        + withManualWaypoint + SEPARATOR
+                        + minDifficulty + SEPARATOR
+                        + maxDifficulty + SEPARATOR
+                        + minTerrain + SEPARATOR
+                        + maxTerrain + SEPARATOR
+                        + minContainerSize + SEPARATOR
+                        + maxContainerSize + SEPARATOR
+                        + minRating + SEPARATOR
+                        + maxRating + SEPARATOR
+                        + hasCorrectedCoordinates + SEPARATOR
+                        + minFavPoints + SEPARATOR
+                        + maxFavPoints);
 
-            // add Cache Types
-            if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length)
-                json.put("CacheTypes", cacheTypes);
+                // add Cache Types
+                if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length)
+                    json.put("CacheTypes", cacheTypes);
 
-            // add Cache Attributes
-            boolean notAllAttributes = false;
-            StringBuilder tmp = new StringBuilder();
-            for (int i = 1; i < attributes.length; i++) {
+                // add Cache Attributes
+                boolean notAllAttributes = false;
+                StringBuilder tmp = new StringBuilder();
+                for (int i = 1; i < attributes.length; i++) {
+                    if (tmp.length() > 0)
+                        tmp.append(SEPARATOR);
+                    tmp.append(attributes[i]);
+                    if (attributes[i] != 0) notAllAttributes = true;
+                }
+                if (notAllAttributes)
+                    if (tmp.length() > 0)
+                        json.put("attributes", tmp.toString());
+
+                // GPX Filenames
+                tmp = new StringBuilder();
+                for (int i = 0; i <= gpxFilenameIds.size() - 1; i++) {
+                    tmp.append(GPXSEPARATOR).append(gpxFilenameIds.get(i));
+                }
                 if (tmp.length() > 0)
-                    tmp.append(SEPARATOR);
-                tmp.append(attributes[i]);
-                if (attributes[i] != 0) notAllAttributes = true;
-            }
-            if (notAllAttributes)
+                    json.put("gpxfilenameids", tmp.toString());
+
+                // title, GCCode, owner
+                if (filterName.length() > 0)
+                    json.put("filtername", filterName);
+                if (filterGcCode.length() > 0)
+                    json.put("filtergc", filterGcCode);
+                if (filterOwner.length() > 0)
+                    json.put("filterowner", filterOwner);
+
+                // Categories
+                tmp = new StringBuilder();
+                for (long i : categories) {
+                    tmp.append(GPXSEPARATOR).append(i);
+                }
                 if (tmp.length() > 0)
-                    json.put("attributes", tmp.toString());
-
-            // GPX Filenames
-            tmp = new StringBuilder();
-            for (int i = 0; i <= gpxFilenameIds.size() - 1; i++) {
-                tmp.append(GPXSEPARATOR).append(gpxFilenameIds.get(i));
+                    json.put("categories", tmp.toString());
             }
-            if (tmp.length() > 0)
-                json.put("gpxfilenameids", tmp.toString());
-
-            // title, GCCode, owner
-            if (filterName.length() > 0)
-                json.put("filtername", filterName);
-            if (filterGcCode.length() > 0)
-                json.put("filtergc", filterGcCode);
-            if (filterOwner.length() > 0)
-                json.put("filterowner", filterOwner);
-
-            // Categories
-            tmp = new StringBuilder();
-            for (long i : categories) {
-                tmp.append(GPXSEPARATOR).append(i);
-            }
-            if (tmp.length() > 0)
-                json.put("categories", tmp.toString());
 
             asJsonString = json.toString();
         } catch (JSONException ex) {

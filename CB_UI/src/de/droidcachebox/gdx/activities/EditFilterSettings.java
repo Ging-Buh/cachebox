@@ -234,6 +234,46 @@ public class EditFilterSettings extends ActivityBase {
 
     }
 
+    public static void applyFilter(final FilterProperties filterProperties) {
+
+        pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
+
+        new Thread(() -> {
+            try {
+                synchronized (Database.Data.cacheList) {
+                    String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
+                    Log.info(log, "Main.applyFilter: " + sqlWhere);
+                    Database.Data.cacheList.clear();
+                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                    GlobalCore.checkSelectedCacheValid();
+                }
+                CacheListChangedListeners.getInstance().cacheListChanged();
+                pd.dismis();
+                ViewManager.that.filterSetChanged();
+
+                // Notify Map
+                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+
+                // Save selected filter (new JSON Format)
+                // wont save History
+                // Marker must be removed, else isFiltered is shown
+                // wont change the LastFilter
+                if (FilterInstances.getLastFilter().isHistory) {
+                    FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
+                    tmp.isHistory = false;
+                    Config.FilterNew.setValue(tmp.toString());
+                } else {
+                    Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+                }
+                Config.AcceptChanges();
+            } catch (Exception ex) {
+                Log.err(log, "applyFilter", ex);
+                pd.dismis();
+            }
+        }).start();
+
+    }
+
     private void setViewVisible(int viewId) {
         if (lastViewId == viewId) return;
         switch (lastViewId) {
@@ -256,6 +296,7 @@ public class EditFilterSettings extends ActivityBase {
                 btnTextFilters.setState(0);
                 textFilterView.setInvisible();
                 tmpFilterProps = textFilterView.updateFilterProperties(tmpFilterProps);
+                KeyboardFocusChangedEventList.remove(textFilterView);
                 break;
             default:
                 btnPresetFilters.setState(0);
@@ -331,11 +372,13 @@ public class EditFilterSettings extends ActivityBase {
 
                         // Category Filterungen aus Filter entfernen
                         int pos = newFilterString.indexOf("^");
-                        int posE = newFilterString.indexOf("\"", pos);
-                        String after = newFilterString.substring(posE);
-                        newFilterString = newFilterString.substring(0, pos) + after;
+                        if (pos > -1) {
+                            int posE = newFilterString.indexOf("\"", pos);
+                            String after = newFilterString.substring(posE);
+                            newFilterString = newFilterString.substring(0, pos) + after;
+                        }
 
-                        userFilters += nameOfNewFilter + ";" + newFilterString + "#";
+                        userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + "#";
                         Config.UserFilters.setValue(userFilters);
                         Config.AcceptChanges();
                         presetView.fillPresetList();
@@ -413,7 +456,7 @@ public class EditFilterSettings extends ActivityBase {
                         int pos = userFilter.indexOf(";");
                         String name = userFilter.substring(0, pos);
                         String filter = userFilter.substring(pos + 1);
-                        // if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1); // relikt?
+                        if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1); // relikt?
                         Preset entry = new Preset(name, Sprites.getSprite("userdata"), new FilterProperties(filter));
                         presets.add(entry);
                         PresetListViewItem v = new PresetListViewItem(itemRec, index, entry);
@@ -436,7 +479,10 @@ public class EditFilterSettings extends ActivityBase {
                                                 String userEntries = Config.UserFilters.getValue();
                                                 int p1 = userEntries.indexOf(clickedItem.mPreset.mName);
                                                 int p2 = userEntries.indexOf(SettingStringList.STRINGSPLITTER, p1) + 1;
-                                                String newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
+                                                String newUserEntries;
+                                                if (p2 > p1)
+                                                    newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
+                                                else newUserEntries = userEntries.substring(0, p1);
                                                 Config.UserFilters.setValue(newUserEntries);
                                                 Config.AcceptChanges();
                                                 fillPresetList();
@@ -1530,46 +1576,6 @@ public class EditFilterSettings extends ActivityBase {
             }
 
         }
-
-    }
-
-    public static void applyFilter(final FilterProperties filterProperties) {
-
-        pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
-
-        new Thread(() -> {
-            try {
-                synchronized (Database.Data.cacheList) {
-                    String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
-                    Log.info(log, "Main.applyFilter: " + sqlWhere);
-                    Database.Data.cacheList.clear();
-                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
-                    GlobalCore.checkSelectedCacheValid();
-                }
-                CacheListChangedListeners.getInstance().cacheListChanged();
-                pd.dismis();
-                ViewManager.that.filterSetChanged();
-
-                // Notify Map
-                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
-
-                // Save selected filter (new JSON Format)
-                // wont save History
-                // Marker must be removed, else isFiltered is shown
-                // wont change the LastFilter
-                if (FilterInstances.getLastFilter().isHistory) {
-                    FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
-                    tmp.isHistory = false;
-                    Config.FilterNew.setValue(tmp.toString());
-                } else {
-                    Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
-                }
-                Config.AcceptChanges();
-            } catch (Exception ex) {
-                Log.err(log, "applyFilter", ex);
-                pd.dismis();
-            }
-        }).start();
 
     }
 

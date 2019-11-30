@@ -5,7 +5,21 @@
 • Streichungen = -
 • Offen = •
 
-Aktuelle Änderungen:
+Änderungen bis Version 3525:
+    + Filtercaches mit freiem SQL
+    + Sicherheitsfrage zum Löschen des Caches
+    + Erinnere dich an einen Cache
+    + Ortungsdienst (kontinuierliches GPS)
+    + Laufen Sie über den Sperrbildschirm für Android> = O_MR1
+    + Mapsforge Text skalieren
+    ~ Filter überarbeiten
+    ~ cachelist itemcontext menu
+	~ GDX Version 1.9.10 update
+    ~ Android Version 29 update
+    ~ Mapsforge Version 012 update
+    * Spoiler Bildauswahl
+
+Änderungen bis Version 3483:
     + Kontakt über das Nachrichtencenter
 	* Automatische Überwachung der Limitierungen (Err 429) beim Hochladen der Notizen und der Korrigierten Koordinaten
 	* Sortierung der Signalstärke der Sats

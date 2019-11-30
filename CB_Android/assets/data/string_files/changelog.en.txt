@@ -3,7 +3,20 @@
 • Fixes = *
 • Deletions = -
 
-Recent changes:
+Changes up to version 3525:
+    + filter caches with free sql	
+	+ safty question for delete cache
+	+ remember a cache
+	+ location service (continous gps)
+	+ run over lockscreen for android >= O_MR1
+	+ scale mapsforge text
+	~ rework filters
+	~ cachelist itemcontext menu
+	~ target android 29
+	~ mapsforge 0.12
+	* spoiler imgae selection
+
+Changes up to version 3483:
     + add contact owner by message center and correct send mail to owner
 	* correct retry for upload note and corrected coordinates
 	* compare GPS strength
