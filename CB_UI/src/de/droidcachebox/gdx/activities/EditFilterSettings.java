@@ -309,9 +309,14 @@ public class EditFilterSettings extends ActivityBase {
                 btnTextFilters.setState(0);
                 textFilterView.setInvisible();
         }
+        btnPresetFilters.setClickable(true);
+        btnFilterSetFilters.setClickable(true);
+        btnCategoryFilters.setClickable(true);
+        btnTextFilters.setClickable(true);
         switch (viewId) {
             case presetViewId:
                 btnPresetFilters.setState(1);
+                btnPresetFilters.setClickable(false);
                 presetView.setVisible();
                 btnAddUserDefinedFilter.setVisible();
                 // data by other views reflected for selection marking on render
@@ -319,6 +324,7 @@ public class EditFilterSettings extends ActivityBase {
                 break;
             case filterSetViewId:
                 btnFilterSetFilters.setState(1);
+                btnFilterSetFilters.setClickable(false);
                 filterSetView.setVisible();
                 // cause may be changed by preset
                 filterSetView.setFilter(tmpFilterProps);
@@ -326,12 +332,14 @@ public class EditFilterSettings extends ActivityBase {
                 break;
             case categoryViewId:
                 btnCategoryFilters.setState(1);
+                btnCategoryFilters.setClickable(false);
                 categoryView.setVisible();
                 // data unchanged by other views
                 categoryView.onShow();
                 break;
             case textFilterViewId:
                 btnTextFilters.setState(1);
+                btnTextFilters.setClickable(false);
                 textFilterView.setVisible();
                 textFilterView.setFilter(tmpFilterProps);
                 textFilterView.onShow();

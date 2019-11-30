@@ -78,6 +78,9 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
         mBtnClear.setClickHandler((view, x, y, pointer, button) -> {
             mEingabe.setText("");
             sql.setText("");
+            if (tmpFilterProps.isUserDefinedSQL()) {
+                tmpFilterProps.setUserDefinedSQL("");
+            }
             return true;
         });
 
@@ -111,10 +114,12 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
         addNext(new CB_Label("select * from Caches as c "));
         getSql = new CB_Button(Translation.get("getSql"));
         getSql.setClickHandler((view, x, y, pointer, button) -> {
-            if (tmpFilterProps.isUserDefinedSQL())
-                sql.setText(tmpFilterProps.getSqlWhere("").trim());
-            else
-                sql.setText("where " + tmpFilterProps.getSqlWhere("").trim());
+            String sqlString = tmpFilterProps.getSqlWhere("").trim();
+            if (tmpFilterProps.isUserDefinedSQL() || sqlString.length() == 0)
+                sql.setText(sqlString);
+            else {
+                sql.setText("where " + sqlString);
+            }
             return true;
         });
         addLast(getSql, -0.3f);

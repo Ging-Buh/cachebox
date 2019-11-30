@@ -570,7 +570,7 @@ public class FilterProperties {
                 }
             }
             return join(" or ", orParts);
-        } else if (userDefinedSQL.length() > 0) {
+        } else if (userDefinedSQL.startsWith("     ")) {
             return userDefinedSQL;
             // "     left JOIN Logs on Caches.Id = Logs.CacheId where Logs.Type is NULL";
         } else {
