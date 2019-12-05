@@ -118,7 +118,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextField editTextField) {
+    public void keyboardFocusChanged(EditTextField editTextField) {
         btnUpload.setText(Translation.get("Upload"));
         btnUpload.enable();
         if (editTextField == notes) {

@@ -14,7 +14,7 @@ Changes up to version 3525:
 	~ cachelist itemcontext menu
 	~ target android 29
 	~ mapsforge 0.12
-	* spoiler imgae selection
+	* spoiler image selection
 
 Changes up to version 3483:
     + add contact owner by message center and correct send mail to owner

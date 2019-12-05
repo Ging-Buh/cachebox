@@ -466,8 +466,7 @@ public class FilterProperties {
             JSONObject json = new JSONObject();
             if (userDefinedSQL.length() > 5) {
                 json.put("UserDefinedSQL", userDefinedSQL);
-            }
-            else {
+            } else {
                 if (isHistory)
                     json.put("isHistory", true);
                 // add Cache properties
@@ -546,10 +545,14 @@ public class FilterProperties {
     }
 
     public void setUserDefinedSQL(String userDefinedSQL) {
-        if (userDefinedSQL.startsWith("     ")) {
-            this.userDefinedSQL = userDefinedSQL;
+        if (userDefinedSQL.length() > 0) {
+            if (userDefinedSQL.startsWith("     ")) {
+                this.userDefinedSQL = userDefinedSQL;
+            } else {
+                this.userDefinedSQL = "     " + userDefinedSQL;
+            }
         } else {
-            this.userDefinedSQL = "     " + userDefinedSQL;
+            this.userDefinedSQL = "";
         }
     }
 
@@ -729,8 +732,7 @@ public class FilterProperties {
             Arrays.sort(thisCacheTypes);
             Arrays.sort(filterCacheTypes);
             if (!Arrays.equals(thisCacheTypes, filterCacheTypes)) return false;
-        }
-        else {
+        } else {
             // this == all CacheTypes
             if (filter.cacheTypes.length() > 0 && filter.cacheTypes.split(",").length != CacheTypes.caches().length) {
                 // filter != all CacheTypes

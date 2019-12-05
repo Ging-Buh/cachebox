@@ -342,7 +342,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextField editTextField) {
+    public void keyboardFocusChanged(EditTextField editTextField) {
         if (editTextField != null) {
             scrollToY(editTextField);
             editTextField.setCursorPosition(editTextField.getText().length());

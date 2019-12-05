@@ -9,15 +9,15 @@
     + Filtercaches mit freiem SQL
     + Sicherheitsfrage zum Löschen des Caches
     + Erinnere dich an einen Cache
-    + Ortungsdienst (kontinuierliches GPS)
-    + Laufen Sie über den Sperrbildschirm für Android> = O_MR1
-    + Mapsforge Text skalieren
+    + Dienst für kontinuierliches GPS-Signal
+    + ACB vor dem Sperrbildschirm (Code für Android> = O_MR1)
+    + Mapsforge: Text skalieren
     ~ Filter überarbeiten
-    ~ cachelist itemcontext menu
+    ~ Cachelist Itemcontext Menu erweitert und Klickreaktion
 	~ GDX Version 1.9.10 update
     ~ Android Version 29 update
     ~ Mapsforge Version 012 update
-    * Spoiler Bildauswahl
+    * Spoiler Bildauswahl intuitiver
 
 Änderungen bis Version 3483:
     + Kontakt über das Nachrichtencenter

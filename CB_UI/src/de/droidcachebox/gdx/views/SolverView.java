@@ -61,7 +61,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextField editTextField) {
+    public void keyboardFocusChanged(EditTextField editTextField) {
         layoutEditFields(editTextField);
     }
 

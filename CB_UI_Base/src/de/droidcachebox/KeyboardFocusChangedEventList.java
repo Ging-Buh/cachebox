@@ -42,7 +42,7 @@ public class KeyboardFocusChangedEventList {
                 for (int i = 0, n = list.size(); i < n; i++) {
                     KeyboardFocusChangedEvent event = list.get(i);
                     Log.debug("KeyboardFocusChangedEventList", "call event: " + event + " for " + editTextField);
-                    event.KeyboardFocusChanged(editTextField);
+                    event.keyboardFocusChanged(editTextField);
                 }
             }
         }

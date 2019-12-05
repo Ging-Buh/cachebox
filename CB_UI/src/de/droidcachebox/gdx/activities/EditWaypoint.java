@@ -430,7 +430,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextField editTextField) {
+    public void keyboardFocusChanged(EditTextField editTextField) {
         if (editTextField != null) {
             scrollToY(editTextField.getY(), editTextField.getMaxY());
         }

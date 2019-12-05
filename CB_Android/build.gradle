@@ -17,14 +17,14 @@ dependencies {
     implementation project(path: ':CB_UI_Base', transitive: false)
     implementation project(path: ':CB_Locator_Base', transitive: false)
     implementation project(path: ':CB_Core', transitive: false)
-    implementation (project(path: ':CB_UI')){
+    implementation(project(path: ':CB_UI')) {
         exclude group: 'com.github.tony19'
     }
 
     implementation fileTree(dir: '../libs', include: ['sjxp-2.2.jar'])
     implementation fileTree(dir: '../libs', include: ['logback-android-1.1.1-3.jar'])
     // https://mvnrepository.com/artifact/com.caverock/androidsvg)
-    implementation (group: 'com.caverock', name: 'androidsvg', version: '1.4')
+    implementation(group: 'com.caverock', name: 'androidsvg', version: '1.4')
     // https://mvnrepository.com/artifact/net.sf.kxml/kxml2
     implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'
 
@@ -41,7 +41,7 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
-    
+
 
 //    // https://mvnrepository.com/artifact/com.github.tony19/logback-android-core
 //    implementation group: 'com.github.tony19', name: 'logback-android-core', version: '1.1.1-6'
@@ -75,10 +75,10 @@ android {
         applicationId "de.droidcachebox"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode = Integer.decode(buildTime())
-        versionName = buildTime()
-        versionCode = 20191031
-        versionName = "20191031RC3"
+        // versionCode = Integer.decode(buildTime())
+        // versionName = buildTime()
+        setVersionCode(20191031)
+        setVersionName("20191031RC4")
         multiDexEnabled true
     }
 
@@ -105,10 +105,10 @@ task copyAndroidNatives {
             def outputDir = null
             if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
             if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
-            if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
-            if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-            if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-            if(outputDir != null) {
+            if (jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+            if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if (jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if (outputDir != null) {
                 copy {
                     from zipTree(jar)
                     into outputDir

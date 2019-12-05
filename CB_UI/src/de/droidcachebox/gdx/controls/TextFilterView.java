@@ -210,7 +210,7 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextField focus) {
+    public void keyboardFocusChanged(EditTextField focus) {
         if (focus == sql) {
             sql.setY(mTglBtnTitle.getY() + mTglBtnTitle.getHeight() - sql.getHeight());
         } else {

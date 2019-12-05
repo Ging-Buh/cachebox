@@ -441,7 +441,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextField editTextField) {
+    public void keyboardFocusChanged(EditTextField editTextField) {
         if (editTextField == null) {
             if (scrollBoxContent != null)
                 scrollBoxContent.setY(0);
