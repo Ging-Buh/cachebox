@@ -26,7 +26,7 @@ import de.droidcachebox.utils.IChanged;
 public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
 
     private static int indexCount = 0;
-    protected CB_List<IChanged> SettingChangedListeners = new CB_List<>();
+    protected final CB_List<IChanged> SettingChangedListeners = new CB_List<>();
     protected SettingCategory category;
     protected String name;
     protected SettingModus modus;

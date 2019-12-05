@@ -114,122 +114,122 @@ public class FilterProperties {
                 JSONTokener tokener = new JSONTokener(serialization);
                 try {
                     JSONObject json = (JSONObject) tokener.nextValue();
-                    isHistory = json.optBoolean("isHistory", false);
                     userDefinedSQL = json.optString("UserDefinedSQL", "");
-
-                    String caches = json.getString("caches");
-                    String[] parts = caches.split(SEPARATOR);
-                    for (int cnt = 0; cnt < (parts.length); cnt++) {
-                        switch (cnt) {
-                            case 0:
-                                finds = Integer.parseInt(parts[0]);
-                                break;
-                            case 1:
-                                notAvailable = Integer.parseInt(parts[1]);
-                                break;
-                            case 2:
-                                archived = Integer.parseInt(parts[2]);
-                                break;
-                            case 3:
-                                own = Integer.parseInt(parts[3]);
-                                break;
-                            case 4:
-                                containsTravelbugs = Integer.parseInt(parts[4]);
-                                break;
-                            case 5:
-                                favorites = Integer.parseInt(parts[5]);
-                                break;
-                            case 6:
-                                hasUserData = Integer.parseInt(parts[6]);
-                                break;
-                            case 7:
-                                listingChanged = Integer.parseInt(parts[7]);
-                                break;
-                            case 8:
-                                withManualWaypoint = Integer.parseInt(parts[8]);
-                                break;
-                            case 9:
-                                minDifficulty = Float.parseFloat(parts[9]);
-                                break;
-                            case 10:
-                                maxDifficulty = Float.parseFloat(parts[10]);
-                                break;
-                            case 11:
-                                minTerrain = Float.parseFloat(parts[11]);
-                                break;
-                            case 12:
-                                maxTerrain = Float.parseFloat(parts[12]);
-                                break;
-                            case 13:
-                                minContainerSize = Float.parseFloat(parts[13]);
-                                break;
-                            case 14:
-                                maxContainerSize = Float.parseFloat(parts[14]);
-                                break;
-                            case 15:
-                                minRating = Float.parseFloat(parts[15]);
-                                break;
-                            case 16:
-                                maxRating = Float.parseFloat(parts[16]);
-                                break;
-                            case 17:
-                                hasCorrectedCoordinates = Integer.parseInt(parts[17]);
-                                break;
-                            case 18:
-                                minFavPoints = Double.parseDouble(parts[18]);
-                                break;
-                            case 19:
-                                maxFavPoints = Double.parseDouble(parts[19]);
-                                break;
+                    if (userDefinedSQL.length() == 0) {
+                        isHistory = json.optBoolean("isHistory", false);
+                        String caches = json.optString("caches", "");
+                        String[] parts = caches.split(SEPARATOR);
+                        for (int cnt = 0; cnt < (parts.length); cnt++) {
+                            switch (cnt) {
+                                case 0:
+                                    finds = Integer.parseInt(parts[0]);
+                                    break;
+                                case 1:
+                                    notAvailable = Integer.parseInt(parts[1]);
+                                    break;
+                                case 2:
+                                    archived = Integer.parseInt(parts[2]);
+                                    break;
+                                case 3:
+                                    own = Integer.parseInt(parts[3]);
+                                    break;
+                                case 4:
+                                    containsTravelbugs = Integer.parseInt(parts[4]);
+                                    break;
+                                case 5:
+                                    favorites = Integer.parseInt(parts[5]);
+                                    break;
+                                case 6:
+                                    hasUserData = Integer.parseInt(parts[6]);
+                                    break;
+                                case 7:
+                                    listingChanged = Integer.parseInt(parts[7]);
+                                    break;
+                                case 8:
+                                    withManualWaypoint = Integer.parseInt(parts[8]);
+                                    break;
+                                case 9:
+                                    minDifficulty = Float.parseFloat(parts[9]);
+                                    break;
+                                case 10:
+                                    maxDifficulty = Float.parseFloat(parts[10]);
+                                    break;
+                                case 11:
+                                    minTerrain = Float.parseFloat(parts[11]);
+                                    break;
+                                case 12:
+                                    maxTerrain = Float.parseFloat(parts[12]);
+                                    break;
+                                case 13:
+                                    minContainerSize = Float.parseFloat(parts[13]);
+                                    break;
+                                case 14:
+                                    maxContainerSize = Float.parseFloat(parts[14]);
+                                    break;
+                                case 15:
+                                    minRating = Float.parseFloat(parts[15]);
+                                    break;
+                                case 16:
+                                    maxRating = Float.parseFloat(parts[16]);
+                                    break;
+                                case 17:
+                                    hasCorrectedCoordinates = Integer.parseInt(parts[17]);
+                                    break;
+                                case 18:
+                                    minFavPoints = Double.parseDouble(parts[18]);
+                                    break;
+                                case 19:
+                                    maxFavPoints = Double.parseDouble(parts[19]);
+                                    break;
+                            }
                         }
-                    }
 
-                    cacheTypes = json.optString("CacheTypes", "");
+                        cacheTypes = json.optString("CacheTypes", "");
 
-                    String jsonString = json.optString("attributes", "");
-                    if (jsonString.length() > 0) {
-                        parts = jsonString.split(SEPARATOR);
-                        attributes = new int[Attributes.values().length];
-                        attributes[0] = 0; // gibts nicht
-                        int og = parts.length;
-                        if (parts.length == attributes.length) {
-                            og = parts.length - 1; // falls doch schon mal mit mehr gespeichert
+                        String jsonString = json.optString("attributes", "");
+                        if (jsonString.length() > 0) {
+                            parts = jsonString.split(SEPARATOR);
+                            attributes = new int[Attributes.values().length];
+                            attributes[0] = 0; // gibts nicht
+                            int og = parts.length;
+                            if (parts.length == attributes.length) {
+                                og = parts.length - 1; // falls doch schon mal mit mehr gespeichert
+                            }
+                            for (int i = 0; i < (og); i++)
+                                attributes[i + 1] = Integer.parseInt(parts[i]);
+                            // aus älteren Versionen
+                            for (int i = og; i < attributes.length - 1; i++)
+                                attributes[i + 1] = 0;
                         }
-                        for (int i = 0; i < (og); i++)
-                            attributes[i + 1] = Integer.parseInt(parts[i]);
-                        // aus älteren Versionen
-                        for (int i = og; i < attributes.length - 1; i++)
-                            attributes[i + 1] = 0;
-                    }
 
-                    gpxFilenameIds = new ArrayList<>();
-                    String gpxFileNames = json.optString("gpxfilenameids", "");
-                    if (gpxFileNames.length() > 0) {
-                        for (String gpxFileName : gpxFileNames.split(SEPARATOR)) {
+                        gpxFilenameIds = new ArrayList<>();
+                        String gpxFileNames = json.optString("gpxfilenameids", "");
+                        if (gpxFileNames.length() > 0) {
+                            for (String gpxFileName : gpxFileNames.split(SEPARATOR)) {
+                                // !!! String, starting with GPXSEPARATOR gives first item empty String)
+                                String[] gpxFileNameIds = gpxFileName.split("\\" + GPXSEPARATOR);
+                                for (String gpxFileNameId : gpxFileNameIds) {
+                                    if (gpxFileNameId.length() > 0)
+                                        gpxFilenameIds.add(Long.parseLong(gpxFileNameId));
+                                }
+                            }
+                        }
+
+                        filterName = json.optString("filtername", "");
+                        filterGcCode = json.optString("filtergc", "");
+                        filterOwner = json.optString("filterowner", "");
+
+                        categories = new ArrayList<>();
+                        String filtercategories = json.optString("categories", "");
+                        if (filtercategories.length() > 0) {
+                            String[] partsGPX = filtercategories.split("\\" + GPXSEPARATOR);
                             // !!! String, starting with GPXSEPARATOR gives first item empty String)
-                            String[] gpxFileNameIds = gpxFileName.split("\\" + GPXSEPARATOR);
-                            for (String gpxFileNameId : gpxFileNameIds) {
-                                if (gpxFileNameId.length() > 0)
-                                    gpxFilenameIds.add(Long.parseLong(gpxFileNameId));
+                            for (String filterCategory : partsGPX) {
+                                if (filterCategory.length() > 0)
+                                    categories.add(Long.parseLong(filterCategory));
                             }
                         }
                     }
-
-                    filterName = json.optString("filtername", "");
-                    filterGcCode = json.optString("filtergc", "");
-                    filterOwner = json.optString("filterowner", "");
-
-                    categories = new ArrayList<>();
-                    String filtercategories = json.optString("categories", "");
-                    if (filtercategories.length() > 0) {
-                        String[] partsGPX = filtercategories.split("\\" + GPXSEPARATOR);
-                        // !!! String, starting with GPXSEPARATOR gives first item empty String)
-                        for (String filterCategory : partsGPX) {
-                            if (filterCategory.length() > 0)
-                                categories.add(Long.parseLong(filterCategory));
-                        }
-                    }
-
                 } catch (JSONException ex) {
                     Log.err(log, "Json Version FilterProperties(" + serialization + ")", ex);
                 }

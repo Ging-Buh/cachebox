@@ -386,7 +386,7 @@ public class EditFilterSettings extends ActivityBase {
                             newFilterString = newFilterString.substring(0, pos) + after;
                         }
 
-                        userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + "#";
+                        userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.STRINGSPLITTER;
                         Config.UserFilters.setValue(userFilters);
                         Config.AcceptChanges();
                         presetView.fillPresetList();
