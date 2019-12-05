@@ -101,7 +101,7 @@ public class TrackListView extends V_ListView {
                 if (position == 0) {
                     aktRouteItem = new TrackListViewItem(ItemRec, index, GlobalCore.AktuelleRoute, route -> {
                         // Notify Map to Reload RouteOverlay
-                        RouteOverlay.RoutesChanged();
+                        RouteOverlay.routesChanged();
                     });
                     aktRouteItem.setClickHandler((v, x, y, pointer, button) -> {
                         selectedTrackItem = ((ListViewItemBase) v).getIndex();
@@ -117,7 +117,7 @@ public class TrackListView extends V_ListView {
 
             TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.getRoute(position), route -> {
                 // Notify Map to Reload RouteOverlay
-                RouteOverlay.RoutesChanged();
+                RouteOverlay.routesChanged();
             });
 
             v.setClickHandler((v1, x, y, pointer, button) -> {

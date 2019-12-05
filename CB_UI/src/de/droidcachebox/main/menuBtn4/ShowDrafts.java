@@ -24,7 +24,7 @@ public class ShowDrafts extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.leftTab.ShowView(DraftsView.getInstance());
     }
 

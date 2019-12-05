@@ -195,8 +195,8 @@ public class UpdateCachesState extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
-        Log.debug(sKlasse, "Execute ProgressDialog");
+    public void execute() {
+        Log.debug(sKlasse, "execute ProgressDialog");
         // todo set the ICancelListener of ProgressDialog by setCancelListener(...) else updateStatusOfCaches.run() can never be canceled
         pd = ProgressDialog.Show(Translation.get("chkState"), DownloadAnimation.GetINSTANCE(), updateStatusOfCaches);
     }

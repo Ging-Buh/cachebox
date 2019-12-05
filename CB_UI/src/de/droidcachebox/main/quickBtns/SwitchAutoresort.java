@@ -33,7 +33,7 @@ public class SwitchAutoresort extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
         if (GlobalCore.getAutoResort()) {
             synchronized (Database.Data.cacheList) {

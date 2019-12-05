@@ -22,9 +22,6 @@ public class PointD {
             return false;
         }
         PointD other = (PointD) obj;
-        if (X == other.X && Y == other.Y)
-            return true;
-        else
-            return false;
+        return X == other.X && Y == other.Y;
     }
 }

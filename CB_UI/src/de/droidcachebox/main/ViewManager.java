@@ -301,7 +301,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn5.addAction(ShowAbout.getInstance(), true, GestureDirection.Up);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
 
-        ShowAbout.getInstance().Execute();
+        ShowAbout.getInstance().execute();
     }
 
     private void autoLoadTrack() {
@@ -312,7 +312,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             if (!(files == null)) {
                 if (files.length > 0) {
                     for (String file : files) {
-                        RouteOverlay.LoadTrack(trackPath, file);
+                        RouteOverlay.loadTrack(trackPath, file);
                     }
                 }
             }
@@ -447,7 +447,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                     return;// don't show if showing compass
                 if (ShowMap.getInstance().normalMapView.isVisible() && ShowMap.getInstance().normalMapView.isCarMode())
                     return; // don't show on visible map at carMode
-                ShowCompass.getInstance().Execute();
+                ShowCompass.getInstance().execute();
                 GlobalCore.switchToCompassCompleted = true;
             }
         }

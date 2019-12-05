@@ -31,7 +31,7 @@ public class Add_WP extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         // wenn MapView sichtbar und im Modus Free, dann nehme Koordinaten vom Mittelpunkt der Karte
         // ansonsten mit den aktuellen Koordinaten!
         if (ShowMap.getInstance().normalMapView.isVisible()) {

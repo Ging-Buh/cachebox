@@ -22,10 +22,10 @@ public class SearchDialog extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
 
         if (!CacheListView.getInstance().isVisible()) {
-            ShowCacheList.getInstance().Execute();
+            ShowCacheList.getInstance().execute();
         }
 
         if (de.droidcachebox.gdx.controls.popups.SearchDialog.that == null) {

@@ -31,7 +31,7 @@ public class EditFilterSettings extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         de.droidcachebox.gdx.activities.EditFilterSettings edFi = new de.droidcachebox.gdx.activities.EditFilterSettings(ActivityBase.activityRec(), "Filter");
         edFi.show();
 

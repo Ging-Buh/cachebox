@@ -307,7 +307,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         if (result != null) {
             // Set Map Center
             ShowMap.getInstance().normalMapView.setCenter(result);
-            ShowMap.getInstance().Execute();
+            ShowMap.getInstance().execute();
         }
     }
 

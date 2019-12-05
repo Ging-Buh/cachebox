@@ -94,7 +94,7 @@ public class GestureButton extends CB_Button {
                 for (CB_ActionButton ba : cb_actionButtons) {
                     AbstractAction action = ba.getAction();
                     if (aktActionView.getTitleTranlationId().equals(action.getTitleTranlationId())) {
-                        action.Execute();
+                        action.execute();
                         aktActionView = (AbstractShowAction) action;
                         setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                         actionExecuted = true;
@@ -109,7 +109,7 @@ public class GestureButton extends CB_Button {
                     if (ba.isDefault()) {
                         AbstractAction action = ba.getAction();
                         if (action != null) {
-                            action.Execute();
+                            action.execute();
                             // ?
                             if (action instanceof AbstractShowAction) {
                                 aktActionView = (AbstractShowAction) action;
@@ -159,7 +159,7 @@ public class GestureButton extends CB_Button {
                 CB_ActionButton ba = cb_actionButtons.get(0);
                 AbstractAction action = ba.getAction();
                 if (action != null) {
-                    action.Execute();
+                    action.execute();
                     aktActionView = (AbstractShowAction) action;
                     setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
                 }
@@ -294,7 +294,7 @@ public class GestureButton extends CB_Button {
                 cm.close();
                 MenuItem clickedItem = (MenuItem) v;
                 AbstractAction btnAction = (AbstractAction) clickedItem.getData();
-                btnAction.Execute();
+                btnAction.execute();
                 if (btnAction instanceof AbstractShowAction) {
                     aktActionView = (AbstractShowAction) btnAction;
                     setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
@@ -428,7 +428,7 @@ public class GestureButton extends CB_Button {
             if (ba.getGestureDirection() == direction) {
                 AbstractAction action = ba.getAction();
                 if (action != null) {
-                    action.Execute();
+                    action.execute();
                     if (action instanceof AbstractShowAction) {
                         aktActionView = (AbstractShowAction) action;
                         setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());

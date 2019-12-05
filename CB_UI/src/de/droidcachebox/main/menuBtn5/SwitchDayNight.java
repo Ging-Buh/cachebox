@@ -31,7 +31,7 @@ public class SwitchDayNight extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.that.switchDayNight();
     }
 }

@@ -55,7 +55,7 @@ public enum CacheTypes {
     CelebrationEvent(true),
     HQ(true),
     HQCelebration(true),
-    HQBlockParty(true);
+    HQBlockParty(true),
     ;
 
     public boolean isCache;
@@ -64,18 +64,17 @@ public enum CacheTypes {
         this.isCache = isCache;
     }
 
-    public final static CacheTypes[] caches() {
-        ArrayList<CacheTypes> result = new ArrayList<CacheTypes>();
+    public static CacheTypes[] caches() {
+        ArrayList<CacheTypes> result = new ArrayList<>();
         for (CacheTypes c : CacheTypes.values()) {
             if (c.isCache) {
                 result.add(c);
             }
         }
-        return result.toArray(new CacheTypes[result.size()]);
+        return result.toArray(new CacheTypes[0]);
     }
 
     public static CacheTypes parseString(String string) {
-
         if (string.toLowerCase().contains("virtual cache")) {
             return Virtual;
         } else if (string.equalsIgnoreCase("Cache In Trash Out Event")) {
@@ -126,17 +125,11 @@ public enum CacheTypes {
                 return Undefined;
         }
 
-        try
-
-        {
+        try {
             return valueOf(string);
-        } catch (
-
-                Exception ex)
-
-        {
+        } catch (Exception ex) {
             CacheTypes cacheType = Undefined;
-            Boolean blnCacheTypeFound = false;
+            boolean blnCacheTypeFound = false;
             for (CacheTypes ct : CacheTypes.values()) {
                 if (ct.toString().toLowerCase().equals(string.toLowerCase())) {
                     cacheType = ct;
@@ -149,7 +142,6 @@ public enum CacheTypes {
             }
             return cacheType;
         }
-
     }
 
     public static String toShortString(Cache cache) {
@@ -157,6 +149,9 @@ public enum CacheTypes {
 
         switch (cache.getType()) {
             case CITO:
+            case Event:
+            case Giga:
+            case MegaEvent:
                 return "X";
             case Cache:
                 return "C";
@@ -164,14 +159,8 @@ public enum CacheTypes {
                 return "W";
             case Earth:
                 return "E";
-            case Event:
-                return "X";
-            case Giga:
-                return "X";
             case Letterbox:
                 return "L";
-            case MegaEvent:
-                return "X";
             case Multi:
                 return "M";
             case Munzee:
@@ -188,7 +177,6 @@ public enum CacheTypes {
                 return "?";
             default:
                 break;
-
         }
         return " ";
     }
@@ -198,32 +186,18 @@ public enum CacheTypes {
         switch (this) {
             case CITO:
                 return "Cache In Trash Out Event";
-            case Cache:
-                break;
-            case Camera:
-                break;
             case Earth:
                 return "Earthcache";
             case Event:
                 return "Event Cache";
             case Final:
                 return "Final Location";
-            case Giga:
-                break;
-            case Letterbox:
-                break;
-            case MegaEvent:
-                break;
             case Multi:
                 return "Multi-cache";
             case MultiQuestion:
                 return "Virtual Stage"; // "Question to Answer";
             case MultiStage:
                 return "Physical Stage"; //"Stages of a Multicache";
-            case Munzee:
-                break;
-            case MyParking:
-                break;
             case Mystery:
                 return "Unknown Cache";
             case ParkingArea:
@@ -232,22 +206,9 @@ public enum CacheTypes {
                 return "Reference Point";
             case Traditional:
                 return "Traditional Cache";
-            case Trailhead:
-                break;
-            case Undefined:
-                break;
-            case Virtual:
-                break;
-            case Wherigo:
-                break;
-            case Wikipedia:
-                break;
             default:
                 break;
-
         }
-
         return super.toString();
     }
-
 }

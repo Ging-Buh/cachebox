@@ -31,7 +31,7 @@ public class ContactOwner extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         Menu menu = new Menu("contactOwner");
         menu.addMenuItem("MailToOwner", Sprites.getSprite("bigLetterbox"), () -> {
             try {

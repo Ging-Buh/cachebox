@@ -30,7 +30,7 @@ public class DeleteDialog extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         de.droidcachebox.gdx.controls.dialogs.DeleteDialog d = new de.droidcachebox.gdx.controls.dialogs.DeleteDialog();
         d.show();
     }

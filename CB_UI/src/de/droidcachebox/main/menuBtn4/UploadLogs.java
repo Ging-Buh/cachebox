@@ -20,7 +20,7 @@ public class UploadLogs extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         new UploadDraftsOrLogs().upload(true);
     }
 

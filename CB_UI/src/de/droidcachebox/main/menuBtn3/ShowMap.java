@@ -87,7 +87,7 @@ public class ShowMap extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.leftTab.ShowView(normalMapView);
     }
 

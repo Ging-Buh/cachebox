@@ -468,7 +468,7 @@ public abstract class GL_View_Base extends CB_RectF {
                     // view enthaldenen Childs nicht aufgerufen werden.
                     try {
                         if (view != null && !view.isDisposed() && view.isVisible()) {
-                            synchronized (view) {
+                            synchronized (childs) {
                                 if (childsInvalidate)
                                     view.invalidate();
 

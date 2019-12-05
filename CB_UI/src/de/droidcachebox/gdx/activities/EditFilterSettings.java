@@ -365,7 +365,7 @@ public class EditFilterSettings extends ActivityBase {
         if (exist) {
             MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning,
                     (which, data) -> {
-                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
+                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().execute();
                         return true;
                     });
             return;
@@ -392,7 +392,7 @@ public class EditFilterSettings extends ActivityBase {
                         presetView.fillPresetList();
                         presetView.notifyDataSetChanged();
                     }
-                    de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
+                    de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().execute();
                     return true;
                 });
     }
@@ -499,7 +499,7 @@ public class EditFilterSettings extends ActivityBase {
                                                 Log.err(log, "DelUserPreset", ex);
                                             }
                                         }
-                                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().Execute();
+                                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().execute();
                                         return true;
                                     });
                             return true;

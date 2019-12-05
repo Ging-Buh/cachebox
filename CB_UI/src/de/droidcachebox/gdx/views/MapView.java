@@ -450,7 +450,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             iconSize = 2; // default Images
 
         if (Mode != MapMode.Compass)
-            de.droidcachebox.RouteOverlay.RenderRoute(batch, this);
+            de.droidcachebox.RouteOverlay.renderRoute(batch, this);
         renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
         renderPositionMarker(batch);
         RenderTargetArrow(batch);

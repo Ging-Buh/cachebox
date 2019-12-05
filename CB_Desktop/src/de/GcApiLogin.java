@@ -291,7 +291,7 @@ public class GcApiLogin {
             nameValuePairs.add(new BasicNameValuePair("ctl00$ContentBody$uxLogin", "Sign+In"));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-            // Execute HTTP Post Request
+            // execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost, localContext);
             System.out.println("Send Auth info User/PW");
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -358,7 +358,7 @@ public class GcApiLogin {
         StringBuilder builder = new StringBuilder();
         try {
 
-            // Execute HTTP Post Request
+            // execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost, localContext);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -423,7 +423,7 @@ public class GcApiLogin {
             nameValuePairs.add(new BasicNameValuePair("ctl00$ContentPlaceHolder1$OAuthAuthorizationSecToken", Token));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-            // Execute HTTP Post Request
+            // execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost, localContext);
             System.out.println("Click Allow Access");
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -482,7 +482,7 @@ public class GcApiLogin {
         StringBuilder builder = new StringBuilder();
         try {
 
-            // Execute HTTP Post Request
+            // execute HTTP Post Request
             HttpResponse response = httpclient.execute(httpget, localContext);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));

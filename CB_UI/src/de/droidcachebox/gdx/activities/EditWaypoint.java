@@ -339,7 +339,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
             // Show WP View?
             if (showWaypointListAfterFinish) {
-                ShowWaypoint.getInstance().Execute();
+                ShowWaypoint.getInstance().execute();
             }
 
             return true;

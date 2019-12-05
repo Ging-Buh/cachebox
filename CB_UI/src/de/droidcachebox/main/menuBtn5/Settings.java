@@ -33,7 +33,7 @@ public class Settings extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
 
         SettingsActivity settingsActivity = new SettingsActivity();
         lastNightValue = CB_UI_Base_Settings.nightMode.getValue();

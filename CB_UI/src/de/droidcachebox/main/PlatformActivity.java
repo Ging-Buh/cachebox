@@ -16,7 +16,7 @@ public class PlatformActivity extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         PlatformUIBase.showView(viewID, 0, 0, 0, 0, 0, 0);
     }
 

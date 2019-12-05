@@ -45,7 +45,7 @@ public class ShowCacheList extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.leftTab.ShowView(CacheListView.getInstance());
     }
 
@@ -96,7 +96,7 @@ public class ShowCacheList extends AbstractShowAction {
             if (((MenuItem) v).isCheckboxClicked(x))
                 checked = !checked;
             if (checked) {
-                EditFilterSettings.getInstance().Execute();
+                EditFilterSettings.getInstance().execute();
             } else {
                 FilterInstances.setLastFilter(new FilterProperties());
                 de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
@@ -113,7 +113,7 @@ public class ShowCacheList extends AbstractShowAction {
             }
             SearchDialog.that.showNotCloseAutomaticly();
         });
-        cm.addMenuItem("importExport", Sprites.getSprite(IconName.importIcon.name()), () -> ShowImportMenu.getInstance().Execute());
+        cm.addMenuItem("importExport", Sprites.getSprite(IconName.importIcon.name()), () -> ShowImportMenu.getInstance().execute());
         mi = cm.addMenuItem("setOrResetFavorites", "", Sprites.getSprite(IconName.favorit.name()), (v, x, y, pointer, button) -> {
             cm.close();
             boolean checked = ((MenuItem) v).isChecked();
@@ -144,7 +144,7 @@ public class ShowCacheList extends AbstractShowAction {
         });
         mi.setCheckable(true);
         mi.setChecked(true); // default is to mark as Favorite
-        cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> SelectDBDialog.getInstance().Execute());
+        cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> SelectDBDialog.getInstance().execute());
         mi = cm.addMenuItem("AutoResort", null, () -> {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {
@@ -160,7 +160,7 @@ public class ShowCacheList extends AbstractShowAction {
             if (editCache.isDisposed()) editCache = new EditCache();
             editCache.create();
         });
-        cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> DeleteDialog.getInstance().Execute());
+        cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> DeleteDialog.getInstance().execute());
 
         return cm;
     }

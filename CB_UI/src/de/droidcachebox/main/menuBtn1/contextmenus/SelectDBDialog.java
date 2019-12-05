@@ -62,7 +62,7 @@ public class SelectDBDialog extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
 
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft

@@ -202,7 +202,7 @@ public class SelectDB extends ActivityBase {
         bCancel.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             if (MustSelect) {
-                ShowQuit.getInstance().Execute();
+                ShowQuit.getInstance().execute();
             } else {
                 finish();
             }

@@ -159,26 +159,26 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         if (waypoints.size() == 2) {
             // Two Points, begins with Track drawing
             Track track = new Track("generate", Color.RED);
-            GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(0)));
-            GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(1)));
+            GlobalCore.AktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(0)));
+            GlobalCore.AktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(1)));
         }
 
         if (waypoints.size() > 2) {
-            GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(wp));
+            GlobalCore.AktuelleRoute.trackPoints.add(convertToTrackPoint(wp));
         }
 
         if (waypoints.size() > 1) {
-            RouteOverlay.RoutesChanged();
+            RouteOverlay.routesChanged();
         }
     }
 
     private void createNewTrack() {
         GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
-        GlobalCore.AktuelleRoute.ShowRoute = true;
-        GlobalCore.AktuelleRoute.IsActualTrack = true;
+        GlobalCore.AktuelleRoute.showRoute = true;
+        GlobalCore.AktuelleRoute.isActualTrack = true;
         GlobalCore.aktuelleRouteCount = 0;
-        GlobalCore.AktuelleRoute.TrackLength = 0;
-        GlobalCore.AktuelleRoute.AltitudeDifference = 0;
+        GlobalCore.AktuelleRoute.trackLength = 0;
+        GlobalCore.AktuelleRoute.altitudeDifference = 0;
     }
 
     private TrackPoint convertToTrackPoint(Waypoint wp) {

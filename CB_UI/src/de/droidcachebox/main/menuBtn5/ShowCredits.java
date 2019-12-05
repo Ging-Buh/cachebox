@@ -22,7 +22,7 @@ public class ShowCredits extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.leftTab.ShowView(CreditsView.getInstance());
     }
 

@@ -63,7 +63,7 @@ public class ShowImportMenu extends AbstractShowAction {
                     TimerTask tt = new TimerTask() {
                         @Override
                         public void run() {
-                            GL.that.postAsync(() -> new UpdateCachesState().Execute());
+                            GL.that.postAsync(() -> new UpdateCachesState().execute());
                         }
                     };
                     Timer t = new Timer();
@@ -74,7 +74,7 @@ public class ShowImportMenu extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         getContextMenu().show();
     }
 
@@ -82,7 +82,7 @@ public class ShowImportMenu extends AbstractShowAction {
     public CB_View_Base getView() {
         // don't return a view.
         // show menu direct.
-        GL.that.RunOnGL(this::Execute);
+        GL.that.RunOnGL(this::execute);
         return null;
     }
 

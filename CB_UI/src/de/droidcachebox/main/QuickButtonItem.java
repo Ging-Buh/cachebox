@@ -62,7 +62,7 @@ public class QuickButtonItem extends ListViewItemBase {
         state = -1;
 
         mButton.setClickHandler((v, x, y, pointer, button) -> {
-            mAction.Execute();
+            mAction.execute();
             return true;
         });
     }

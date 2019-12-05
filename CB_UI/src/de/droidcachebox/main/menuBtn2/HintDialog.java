@@ -40,7 +40,7 @@ public class HintDialog extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         if (getEnabled()) {
             showHint();
         }

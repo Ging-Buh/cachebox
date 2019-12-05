@@ -19,9 +19,6 @@ allprojects {
     ext {
         appName = "droidcachebox"
         gdxVersion = '1.9.10'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.0'
     }
 
     repositories {

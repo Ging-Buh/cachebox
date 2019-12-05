@@ -55,7 +55,7 @@ public class QuickDraft extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         Menu cm = new Menu("QuickDraft");
         Cache cache = GlobalCore.getSelectedCache();
         switch (cache.getType()) {

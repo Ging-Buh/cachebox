@@ -121,8 +121,8 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
         NetworkSend = false;
 
-        trackPointIndexEnd = simulationRoute.Points.size() - 1;
-        long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.Points.get(trackPointIndex).TimeStamp.getTime());
+        trackPointIndexEnd = simulationRoute.trackPoints.size() - 1;
+        long nextTimeStamp = (simulationRoute.trackPoints.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.trackPoints.get(trackPointIndex).TimeStamp.getTime());
 
         if (!chekRealSpeed.getState())
             nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
@@ -134,7 +134,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                TrackPoint trk = simulationRoute.Points.get(trackPointIndex);
+                TrackPoint trk = simulationRoute.trackPoints.get(trackPointIndex);
                 Coordinate pos = new CoordinateGPS(trk.Y, trk.X);
                 Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, ProviderType.GPS));
 
@@ -239,22 +239,22 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
     @SuppressWarnings("deprecation")
     private void loadSimulateRoute(String Path) {
 
-        simulationRoute = RouteOverlay.MultiLoadRoute(Path, Color.BLACK);
+        simulationRoute = RouteOverlay.multiLoadRoute(Path, Color.BLACK);
 
         // Dont display loadet simulat route
         RouteOverlay.remove(simulationRoute);
 
         // TODO set GPX File Name to lblGPX
-        if (simulationRoute != null && simulationRoute.Name != null) {
+        if (simulationRoute != null && simulationRoute.name != null) {
             trackPointIndex = 0;
-            int idx = simulationRoute.FileName.lastIndexOf("\\");
+            int idx = simulationRoute.fileName.lastIndexOf("\\");
 
             String Name = "";
 
             if (idx == -1)
-                Name = simulationRoute.FileName;
+                Name = simulationRoute.fileName;
             else
-                Name = simulationRoute.FileName.substring(idx + 1);
+                Name = simulationRoute.fileName.substring(idx + 1);
 
             lblGPX.setText(Name);
         } else {

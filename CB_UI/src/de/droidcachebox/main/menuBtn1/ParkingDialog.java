@@ -30,7 +30,7 @@ public class ParkingDialog extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         de.droidcachebox.gdx.controls.dialogs.ParkingDialog d = new de.droidcachebox.gdx.controls.dialogs.ParkingDialog();
         d.show();
     }

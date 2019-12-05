@@ -464,7 +464,7 @@ public class FilterProperties {
         try {
 
             JSONObject json = new JSONObject();
-            if (userDefinedSQL.length() > 0) {
+            if (userDefinedSQL.length() > 5) {
                 json.put("UserDefinedSQL", userDefinedSQL);
             }
             else {

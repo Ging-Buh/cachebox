@@ -324,7 +324,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
         Log.info(sKlasse, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
         if (coordinate.isValid()) {
-            ShowMap.getInstance().Execute();
+            ShowMap.getInstance().execute();
             ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
             ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
             ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));

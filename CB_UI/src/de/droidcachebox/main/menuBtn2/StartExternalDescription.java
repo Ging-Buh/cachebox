@@ -55,10 +55,10 @@ public class StartExternalDescription extends AbstractAction {
     }
 
     /**
-     * Execute
+     * execute
      */
     @Override
-    public void Execute() {
+    public void execute() {
         if (getEnabled()) {
 
             //save desc Html local and show ext

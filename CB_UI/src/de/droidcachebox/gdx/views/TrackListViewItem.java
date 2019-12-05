@@ -33,7 +33,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     private boolean Clicked = false;
 
     public TrackListViewItem(CB_RectF rec, int Index, Track route, IRouteChangedListener listener) {
-        super(rec, Index, route.Name);
+        super(rec, Index, route.name);
         mRoute = route;
         mRouteChangedListener = listener;
     }
@@ -94,7 +94,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             CB_RectF rec = new CB_RectF(left, this.getHeight() / 2, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
             EntryName = new CB_Label(rec);
 
-            EntryName.setText(mRoute.Name);
+            EntryName.setText(mRoute.name);
 
             this.addChild(EntryName);
         }
@@ -104,7 +104,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
             CB_RectF rec = new CB_RectF(left, 0, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
             EntryLength = new CB_Label(this.name + " EntryLength", rec, "");
-            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
+            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.trackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.altitudeDifference));
 
             this.addChild(EntryLength);
         }
@@ -149,7 +149,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
         }
 
-        if (mRoute.ShowRoute) {
+        if (mRoute.showRoute) {
             chkOn.draw(batch);
         } else {
             chkOff.draw(batch);
@@ -161,7 +161,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         // Log.debug(log, "TrackListViewItem => Chk Clicked");
 
         GL.that.RunOnGL(() -> {
-            mRoute.ShowRoute = !mRoute.ShowRoute;
+            mRoute.showRoute = !mRoute.showRoute;
             if (mRouteChangedListener != null)
                 mRouteChangedListener.routeChanged(mRoute);
         });
@@ -188,7 +188,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     public void notifyTrackChanged(Track route) {
         mRoute = route;
         if (EntryLength != null)
-            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
+            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.trackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.altitudeDifference));
 
     }
 

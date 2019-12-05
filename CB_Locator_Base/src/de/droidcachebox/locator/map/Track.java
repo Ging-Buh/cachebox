@@ -5,27 +5,27 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 
 public class Track {
-    public ArrayList<TrackPoint> Points;
-    public String Name;
-    public String FileName;
-    public boolean ShowRoute = false;
-    public boolean IsActualTrack = false;
-    public Color mColor;
-    public double TrackLength;
-    public double AltitudeDifference;
+    public final ArrayList<TrackPoint> trackPoints;
+    public String name;
+    public String fileName;
+    public boolean showRoute = false;
+    public boolean isActualTrack = false;
+    public Color color;
+    public double trackLength;
+    public double altitudeDifference;
 
     public Track(String name, Color color) {
-        Points = new ArrayList<TrackPoint>();
-        Name = name;
-        mColor = color;
+        trackPoints = new ArrayList<>();
+        this.name = name;
+        this.color = color;
     }
 
     public Color getColor() {
-        return mColor;
+        return color;
     }
 
     public void setColor(Color color) {
-        mColor = color;
+        this.color = color;
     }
 
 }

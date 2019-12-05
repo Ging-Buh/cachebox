@@ -22,7 +22,7 @@ public class MapDownload extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         Menu downloadMenu = new Menu("MapDownload");
         downloadMenu.addMenuItem("LoadMapFreizeitkarteMenuTitle", Sprites.getSprite(Sprites.IconName.freizeit.name()), FZKDownload.getInstance()::show);
         downloadMenu.addMenuItem("LoadMapFromOpenAndroMapsMenuTitle", Sprites.getSprite(Sprites.IconName.mapsforge_logo.name()),

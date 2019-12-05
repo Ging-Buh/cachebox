@@ -23,7 +23,7 @@ public class ShowSolver1 extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.leftTab.ShowView(SolverView.getInstance());
     }
 

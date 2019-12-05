@@ -50,7 +50,7 @@ public class SwitchTorch extends AbstractAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         PlatformUIBase.switchTorch();
     }
 }

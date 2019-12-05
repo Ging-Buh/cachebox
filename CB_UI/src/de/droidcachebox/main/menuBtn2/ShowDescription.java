@@ -20,10 +20,10 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.AbstractShowAction;
-import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.views.DescriptionView;
 import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
 
 public class ShowDescription extends AbstractShowAction {
 
@@ -40,7 +40,7 @@ public class ShowDescription extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.leftTab.ShowView(DescriptionView.getInstance());
     }
 

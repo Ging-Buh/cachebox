@@ -62,7 +62,7 @@ public class ShowTrackList extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         ViewManager.leftTab.ShowView(TrackListView.getInstance());
     }
 
@@ -94,13 +94,13 @@ public class ShowTrackList extends AbstractShowAction {
 
         // rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
         TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
-        if (selectedTrackItem != null && !selectedTrackItem.getRoute().IsActualTrack) {
+        if (selectedTrackItem != null && !selectedTrackItem.getRoute().isActualTrack) {
             cm.addMenuItem("rename", null, () -> {
-                StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.get("RenameTrack"), selectedTrackItem.getRoute().Name, (which, data) -> {
+                StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().name, Translation.get("RenameTrack"), selectedTrackItem.getRoute().name, (which, data) -> {
                     String text = StringInputBox.editText.getText();
                     switch (which) {
                         case 1: // ok Clicket
-                            selectedTrackItem.getRoute().Name = text;
+                            selectedTrackItem.getRoute().name = text;
                             TrackListView.getInstance().notifyDataSetChanged();
                             break;
                         case 2: // cancel clicket
@@ -123,7 +123,7 @@ public class ShowTrackList extends AbstractShowAction {
                         @Override
                         public void returnFile(String Path) {
                             if (Path != null) {
-                                RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
+                                RouteOverlay.saveRoute(Path, selectedTrackItem.getRoute());
                                 Log.debug(log, "Load Track :" + Path);
                                 TrackListView.getInstance().notifyDataSetChanged();
                             }
@@ -134,7 +134,7 @@ public class ShowTrackList extends AbstractShowAction {
 
                 if (mTrackItem == null) {
                     MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
-                } else if (mTrackItem.getRoute().IsActualTrack) {
+                } else if (mTrackItem.getRoute().isActualTrack) {
                     MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
                 } else {
                     RouteOverlay.remove(mTrackItem.getRoute());
@@ -147,13 +147,13 @@ public class ShowTrackList extends AbstractShowAction {
 
     private void showMenuCreate() {
         Menu cm2 = new Menu("TrackListViewCreateTrackTitle");
-        cm2.addMenuItem("Point2Point", null, this::GenTrackP2P);
-        cm2.addMenuItem("Projection", null, this::GenTrackProjection);
-        cm2.addMenuItem("Circle", null, this::GenTrackCircle);
+        cm2.addMenuItem("Point2Point", null, this::genTrackP2P);
+        cm2.addMenuItem("Projection", null, this::genTrackProjection);
+        cm2.addMenuItem("Circle", null, this::genTrackCircle);
         cm2.show();
     }
 
-    private void GenTrackP2P() {
+    private void genTrackP2P() {
         Coordinate coord = GlobalCore.getSelectedCoord();
 
         if (coord == null)
@@ -168,14 +168,14 @@ public class ShowTrackList extends AbstractShowAction {
             TrackColor = RouteOverlay.getNextColor();
             Track route = new Track(null, TrackColor);
 
-            route.Name = "Point 2 Point Route";
-            route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-            route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            route.name = "Point 2 Point Route";
+            route.trackPoints.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            route.trackPoints.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
             MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-            route.TrackLength = dist[0];
+            route.trackLength = dist[0];
 
-            route.ShowRoute = true;
+            route.showRoute = true;
             RouteOverlay.add(route);
             TrackListView.getInstance().notifyDataSetChanged();
         }, Type.p2p, null);
@@ -183,7 +183,7 @@ public class ShowTrackList extends AbstractShowAction {
 
     }
 
-    private void GenTrackProjection() {
+    private void genTrackProjection() {
         Coordinate coord = GlobalCore.getSelectedCoord();
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
@@ -196,15 +196,15 @@ public class ShowTrackList extends AbstractShowAction {
             float[] dist = new float[4];
             TrackColor = RouteOverlay.getNextColor();
             Track route = new Track(null, TrackColor);
-            route.Name = "Projected Route";
+            route.name = "Projected Route";
 
-            route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-            route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            route.trackPoints.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            route.trackPoints.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
             MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-            route.TrackLength = dist[0];
+            route.trackLength = dist[0];
 
-            route.ShowRoute = true;
+            route.showRoute = true;
             RouteOverlay.add(route);
             TrackListView.getInstance().notifyDataSetChanged();
         }, Type.projetion, null);
@@ -213,7 +213,7 @@ public class ShowTrackList extends AbstractShowAction {
 
     }
 
-    private void GenTrackCircle() {
+    private void genTrackCircle() {
         Coordinate coord = GlobalCore.getSelectedCoord();
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
@@ -226,9 +226,9 @@ public class ShowTrackList extends AbstractShowAction {
             float[] dist = new float[4];
             TrackColor = RouteOverlay.getNextColor();
             Track route = new Track(null, TrackColor);
-            route.Name = "Circle Route";
+            route.name = "Circle Route";
 
-            route.ShowRoute = true;
+            route.showRoute = true;
             RouteOverlay.add(route);
 
             Coordinate Projektion;
@@ -237,16 +237,13 @@ public class ShowTrackList extends AbstractShowAction {
             // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme mit dem Reduktionsalgorythmus
             for (int i = 0; i <= 360; i += 10) {
                 Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
-                route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
-                if (!LastCoord.isValid()) {
-                    LastCoord = Projektion;
-                    LastCoord.setValid(true);
-                } else {
+                route.trackPoints.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
+                if (LastCoord.isValid()) {
                     MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
-                    route.TrackLength += dist[0];
-                    LastCoord = Projektion;
-                    LastCoord.setValid(true);
+                    route.trackLength = route.trackLength + dist[0];
                 }
+                LastCoord = Projektion; // !! LastCoord = new Coordinate(Projektion);
+                LastCoord.setValid(true);
             }
             TrackListView.getInstance().notifyDataSetChanged();
         }, Type.circle, null);
@@ -257,7 +254,7 @@ public class ShowTrackList extends AbstractShowAction {
         PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), Path -> {
             if (Path != null) {
                 TrackColor = RouteOverlay.getNextColor();
-                RouteOverlay.MultiLoadRoute(Path, TrackColor);
+                RouteOverlay.multiLoadRoute(Path, TrackColor);
                 Log.debug(log, "Load Track :" + Path);
                 TrackListView.getInstance().notifyDataSetChanged();
             }

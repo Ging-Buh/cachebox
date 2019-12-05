@@ -52,7 +52,7 @@ public class ShowLogs extends AbstractShowAction {
     }
 
     @Override
-    public void Execute() {
+    public void execute() {
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
         ViewManager.leftTab.ShowView(LogView.getInstance());
     }

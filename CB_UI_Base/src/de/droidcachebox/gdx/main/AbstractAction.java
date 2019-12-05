@@ -35,7 +35,7 @@ public abstract class AbstractAction {
         this.titleExtension = titleExtension;
     }
 
-    public abstract void Execute();
+    public abstract void execute();
 
     public abstract Sprite getIcon();
 
