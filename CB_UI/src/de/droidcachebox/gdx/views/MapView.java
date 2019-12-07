@@ -434,7 +434,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         OnResumeListeners.getInstance().addListener(this::onResume);
 
         distanceCirclePaint = new GL_Paint();
-        distanceCirclePaint.setGLColor(Color.GOLD);
+        distanceCirclePaint.setGLColor(Color.GOLDENROD);
+        distanceCirclePaint.setStrokeWidth( 2 * UiSizes.getInstance().getScale());
         distanceCirclePaint.setStyle(GL_Paint.GL_Style.STROKE);
 
     }
@@ -699,6 +700,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 infoBubble.setPos(pos);
             }
         }
+
     }
 
     @Override
