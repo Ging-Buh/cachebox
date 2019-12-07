@@ -21,10 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.AbstractGlobal;
-import de.droidcachebox.Energy;
-import de.droidcachebox.OnResumeListeners;
-import de.droidcachebox.WaypointListChangedEventList;
+import de.droidcachebox.*;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -40,10 +37,7 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.MapInfoPanel.CoordType;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.graphics.GL_Paint;
-import de.droidcachebox.gdx.graphics.HSV_Color;
-import de.droidcachebox.gdx.graphics.KineticZoom;
-import de.droidcachebox.gdx.graphics.PolygonDrawable;
+import de.droidcachebox.gdx.graphics.*;
 import de.droidcachebox.gdx.math.*;
 import de.droidcachebox.gdx.views.MapViewCacheList.MapViewCacheListUpdateData;
 import de.droidcachebox.gdx.views.MapViewCacheList.WaypointRenderInfo;
@@ -65,11 +59,11 @@ import java.util.*;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.Sprites.*;
 
-public class MapView extends MapViewBase implements de.droidcachebox.SelectedCacheChangedEventListener, PositionChangedEvent {
+public class MapView extends MapViewBase implements SelectedCacheChangedEventListener, PositionChangedEvent {
     private static final String log = "MapView";
-    private CB_RectF TargetArrow = new CB_RectF();
-    private SortedMap<Integer, Integer> DistanceZoomLevel;
-    private MapMode Mode;
+    private CB_RectF targetArrow = new CB_RectF();
+    private SortedMap<Integer, Integer> distanceZoomLevel;
+    private MapMode mapMode;
     private LiveButton liveButton;
     private MultiToggleButton togBtn;
     private InfoBubble infoBubble;
@@ -85,22 +79,24 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
     private Cache lastSelectedCache = null;
     private Waypoint lastSelectedWaypoint = null;
     private GlyphLayout layout = null;
-    private CB_RectF TargetArrowScreenRec;
+    private CB_RectF targetArrowScreenRec;
     private MapViewCacheList mapCacheList;
     private int lastCompassMapZoom = -1;
     private MapInfoPanel info;
     private PointL lastScreenCenter;
+    private GL_Paint distanceCirclePaint;
 
-    public MapView(CB_RectF cb_RectF, MapMode Mode) {
-        super(cb_RectF, Mode.name());
+
+    public MapView(CB_RectF cb_RectF, MapMode mapMode) {
+        super(cb_RectF, mapMode.name());
         lastScreenCenter = new PointL(0, 0);
-        this.Mode = Mode;
-        Log.info(log, "creating Mapview for " + Mode + " map");
+        this.mapMode = mapMode;
+        Log.info(log, "creating Mapview for " + mapMode + " map");
         mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
-        if (Mode != MapMode.Normal) {
+        if (mapMode != MapMode.Normal) {
             setOnDoubleClickListener((v, x, y, pointer, button) -> {
-                if (this.Mode == MapMode.Track)
+                if (this.mapMode == MapMode.Track)
                     setMapState(MapState.FREE);
                 else setMapState(MapState.GPS);
                 // Center own position!
@@ -109,10 +105,10 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             });
         }
 
-        de.droidcachebox.Config.MapsforgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        de.droidcachebox.Config.MapsforgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
-        de.droidcachebox.Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        de.droidcachebox.Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
 
         registerSkinChangedEvent();
 
@@ -132,9 +128,9 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         // maxNumTiles between 20 and 60
         mapTileLoader = new MapTileLoader(maxNumTiles);
 
-        mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, de.droidcachebox.Config.ImperialUnits.getValue());
+        mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
 
-        if (Mode == MapMode.Normal) {
+        if (mapMode == MapMode.Normal) {
             addChild(mapScale);
         } else {
             mapScale.setInvisible();
@@ -174,7 +170,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             return true;
         });
 
-        if (Mode == MapMode.Compass) {
+        if (mapMode == MapMode.Compass) {
             zoomBtn.setInvisible();
         } else {
             addChild(zoomBtn);
@@ -184,13 +180,13 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         setClickHandler((v, x, y, pointer, button) -> {
             WaypointRenderInfo minWpi = null;
 
-            if (TargetArrow != null && TargetArrow.contains(x, y)) {
-                if (de.droidcachebox.GlobalCore.isSetSelectedCache()) {
-                    if (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) {
-                        Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos;
+            if (targetArrow != null && targetArrow.contains(x, y)) {
+                if (GlobalCore.isSetSelectedCache()) {
+                    if (GlobalCore.getSelectedWaypoint() != null) {
+                        Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     } else {
-                        Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
+                        Coordinate tmp = GlobalCore.getSelectedCache().coordinate;
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     }
 
@@ -222,14 +218,14 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                 // check for showing the bubble
                 if (minDist < 40) {
                     if (minWpi.Waypoint != null) {
-                        if (de.droidcachebox.GlobalCore.getSelectedCache() != minWpi.Cache) {
+                        if (GlobalCore.getSelectedCache() != minWpi.Cache) {
                             // show bubble at the location of the waypoint!!!
                             infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
                             infoBubble.setVisible();
                         } else {
                             // if only waypoint changes, the bubble will not be shown. (why not ?)
                             // so we must do the selection here
-                            de.droidcachebox.GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
+                            GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
                             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
                             data.hideMyFinds = hideMyFinds;
                             data.showAllWaypoints = showAllWaypoints;
@@ -248,7 +244,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         });
 
         float InfoHeight = 0;
-        if (Mode == MapMode.Normal) {
+        if (mapMode == MapMode.Normal) {
             info = (MapInfoPanel) addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel", this));
             InfoHeight = info.getHeight();
         }
@@ -258,7 +254,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
         zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
-        if (Mode == MapMode.Normal)
+        if (mapMode == MapMode.Normal)
             addChild(zoomScale);
 
         mapIntWidth = (int) getWidth();
@@ -270,9 +266,9 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
 
         if (mapTileLoader.getCurrentLayer() == null) {
-            mapTileLoader.setCurrentLayer(LayerManager.getInstance().getLayer(de.droidcachebox.Config.currentMapLayer.getValue()), isCarMode);
+            mapTileLoader.setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()), isCarMode);
         }
-        String[] currentOverlayLayerName = new String[]{de.droidcachebox.Config.CurrentMapOverlayLayerName.getValue()};
+        String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayerName.getValue()};
         if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
             mapTileLoader.setCurrentOverlayLayer(LayerManager.getInstance().getOverlayLayer(currentOverlayLayerName));
         initializeMap();
@@ -282,15 +278,15 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
         // from create
 
-        if (de.droidcachebox.Config.MapViewDPIFaktor.getValue() == 1) {
-            de.droidcachebox.Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
-            de.droidcachebox.Config.AcceptChanges();
+        if (Config.MapViewDPIFaktor.getValue() == 1) {
+            Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+            Config.AcceptChanges();
         }
-        iconFactor = de.droidcachebox.Config.MapViewDPIFaktor.getValue();
+        iconFactor = Config.MapViewDPIFaktor.getValue();
 
         liveButton = new LiveButton();
-        liveButton.setState(de.droidcachebox.Config.LiveMapEnabeld.getDefaultValue());
-        de.droidcachebox.Config.DisableLiveMap.addSettingChangedListener(this::requestLayout);
+        liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
+        Config.DisableLiveMap.addSettingChangedListener(this::requestLayout);
 
         togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
@@ -301,13 +297,13 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         togBtn.addState("Car", new HSV_Color(Color.YELLOW));
         togBtn.setLastStateWithLongClick(true);
 
-        MapState last = MapState.values()[de.droidcachebox.Config.LastMapToggleBtnState.getValue()];
+        MapState last = MapState.values()[Config.lastMapToggleBtnState.getValue()];
         togBtn.setState(last.ordinal());
 
         togBtn.setOnStateChangedListener((v, State) -> setMapState(MapState.values()[State]));
         togBtn.registerSkinChangedEvent();
 
-        switch (Mode) {
+        switch (mapMode) {
             case Compass:
                 setMapState(MapState.GPS);
                 break;
@@ -319,8 +315,8 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                 break;
         }
 
-        if (Mode == MapMode.Normal) {
-            switch (de.droidcachebox.Config.LastMapToggleBtnState.getValue()) {
+        if (mapMode == MapMode.Normal) {
+            switch (Config.lastMapToggleBtnState.getValue()) {
                 case 0:
                     info.setCoordType(CoordType.Map);
                     break;
@@ -335,9 +331,9 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             }
         }
 
-        if (Mode == MapMode.Normal) {
+        if (mapMode == MapMode.Normal) {
             addChild(togBtn);
-            if (de.droidcachebox.Config.DisableLiveMap.getValue()) {
+            if (Config.DisableLiveMap.getValue()) {
                 liveButton.setState(false);
             }
             addChild(liveButton);
@@ -369,13 +365,13 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
                         // Reload result from DB
                         synchronized (Database.Data.cacheList) {
-                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(de.droidcachebox.Config.GcLogin.getValue());
-                            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, de.droidcachebox.Config.ShowAllWaypoints.getValue());
+                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
+                            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                         }
                         CacheListChangedListeners.getInstance().cacheListChanged();
 
                         Cache selCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
-                        de.droidcachebox.GlobalCore.setSelectedCache(selCache);
+                        GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         wd.close();
                     }
@@ -392,31 +388,31 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                     // wenn ein Cache keine Final hat, aber einen StartWaypointm, dann wird dieser gleich selektiert
                     if (waypoint == null)
                         waypoint = infoBubble.getCache().getStartWaypoint();
-                    de.droidcachebox.GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
+                    GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
                 } else {
-                    de.droidcachebox.GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
+                    GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
                 }
             }
 
             infoBubble.setInvisible();
             return true;
         });
-        if (Mode == MapMode.Normal)
+        if (mapMode == MapMode.Normal)
             addChild(infoBubble);
 
         resize(getWidth(), getHeight());
 
         try {
-            center = new CoordinateGPS(de.droidcachebox.Config.MapInitLatitude.getValue(), de.droidcachebox.Config.MapInitLongitude.getValue());
+            center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
         } catch (Exception ex) {
             Log.err(log, "MapView/CoordinateGPS", ex);
         }
 
         // Info aktualisieren
-        if (Mode == MapMode.Normal)
+        if (mapMode == MapMode.Normal)
             info.setCoord(center);
 
-        zoomBtn.setZoom(de.droidcachebox.Config.lastZoomLevel.getValue());
+        zoomBtn.setZoom(Config.lastZoomLevel.getValue());
         calcPixelsPerMeter();
         mapScale.zoomChanged();
 
@@ -426,16 +422,21 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         }
 
         // Initial SettingsChanged Events
-        SetNightMode(de.droidcachebox.Config.nightMode.getValue());
-        de.droidcachebox.Config.nightMode.addSettingChangedListener(() -> SetNightMode(de.droidcachebox.Config.nightMode.getValue()));
+        SetNightMode(Config.nightMode.getValue());
+        Config.nightMode.addSettingChangedListener(() -> SetNightMode(Config.nightMode.getValue()));
 
-        SetNorthOriented(de.droidcachebox.Config.MapNorthOriented.getValue());
-        de.droidcachebox.Config.MapNorthOriented.addSettingChangedListener(() -> {
-            SetNorthOriented(de.droidcachebox.Config.MapNorthOriented.getValue());
+        SetNorthOriented(Config.isMapNorthOriented.getValue());
+        Config.isMapNorthOriented.addSettingChangedListener(() -> {
+            SetNorthOriented(Config.isMapNorthOriented.getValue());
             this.positionChanged();
         });
         // to force generation of tiles in loadTiles();
         OnResumeListeners.getInstance().addListener(this::onResume);
+
+        distanceCirclePaint = new GL_Paint();
+        distanceCirclePaint.setGLColor(Color.GOLD);
+        distanceCirclePaint.setStyle(GL_Paint.GL_Style.STROKE);
+
     }
 
     @Override
@@ -449,11 +450,11 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         else if (aktZoom > 14)
             iconSize = 2; // default Images
 
-        if (Mode != MapMode.Compass)
-            de.droidcachebox.RouteOverlay.renderRoute(batch, this);
+        if (mapMode != MapMode.Compass)
+            RouteOverlay.renderRoute(batch, this);
         renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
         renderPositionMarker(batch);
-        RenderTargetArrow(batch);
+        renderTargetArrow(batch);
     }
 
     @Override
@@ -496,12 +497,12 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         }
     }
 
-    private void RenderTargetArrow(Batch batch) {
+    private void renderTargetArrow(Batch batch) {
 
-        if (de.droidcachebox.GlobalCore.getSelectedCache() == null)
+        if (GlobalCore.getSelectedCache() == null)
             return;
 
-        Coordinate coord = (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) ? de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos : de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
+        Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().coordinate;
 
         if (coord == null) {
             return;
@@ -514,14 +515,14 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
         // create ScreenRec
         try {
-            if (TargetArrowScreenRec == null) {
-                TargetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
-                if (Mode != MapMode.Compass) {
-                    TargetArrowScreenRec.ScaleCenter(0.9f);
+            if (targetArrowScreenRec == null) {
+                targetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
+                if (mapMode != MapMode.Compass) {
+                    targetArrowScreenRec.ScaleCenter(0.9f);
 
-                    if (Mode == MapMode.Normal) {
-                        TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
-                        TargetArrowScreenRec.setY(zoomBtn.getMaxY());
+                    if (mapMode == MapMode.Normal) {
+                        targetArrowScreenRec.setHeight(targetArrowScreenRec.getHeight() - (targetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
+                        targetArrowScreenRec.setY(zoomBtn.getMaxY());
                     }
                 }
             }
@@ -531,7 +532,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             Vector2 screen = worldToScreen(new Vector2(x, y));
             Vector2 target = new Vector2(screen.x, screen.y);
 
-            Vector2 newTarget = TargetArrowScreenRec.getIntersection(ScreenCenter, target);
+            Vector2 newTarget = targetArrowScreenRec.getIntersection(ScreenCenter, target);
 
             // Rotation berechnen
             if (newTarget != null) {
@@ -557,12 +558,12 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                 float minX = Math.min(Math.min(t[0], t[5]), Math.min(t[10], t[15]));
                 float maxY = Math.max(Math.max(t[1], t[6]), Math.max(t[11], t[16]));
                 float minY = Math.min(Math.min(t[1], t[6]), Math.min(t[11], t[16]));
-                TargetArrow.set(minX, minY, maxX - minX, maxY - minY);
+                targetArrow.set(minX, minY, maxX - minX, maxY - minY);
             } else {
-                TargetArrow.set(0, 0, 0, 0);
+                targetArrow.set(0, 0, 0, 0);
             }
         } catch (Exception e) {
-            TargetArrow.set(0, 0, 0, 0);
+            targetArrow.set(0, 0, 0, 0);
         }
     }
 
@@ -593,7 +594,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
         screen.y -= ySpeedVersatz;
         // FIXME create a LineDrawable class for create one times and set the Coordinates with calculated Triangles
-        if (myPointOnScreen != null && showDirectLine && (wpi.Selected) && (wpi.Waypoint == de.droidcachebox.GlobalCore.getSelectedWaypoint())) {
+        if (myPointOnScreen != null && showDirectLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
             // FIXME render only if visible on screen (intersect the screen rec)
             Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UiSizes.getInstance().getScale());
             if (paint == null) {
@@ -616,7 +617,11 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
         float NameYMovement = 0;
 
-        if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == de.droidcachebox.GlobalCore.getSelectedWaypoint())) {
+        if (showDistanceCircle) {
+            new CircleDrawable(screen.x, screen.y, pixelsPerMeter * 161, distanceCirclePaint, mapIntWidth, mapIntHeight).draw(batch, 0, 0, getWidth(), getHeight(), 0);
+        }
+
+        if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
             // Draw Cross and move screen vector
             Sprite cross = getMapOverlay(IconName.cross);
             cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
@@ -686,7 +691,6 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
             terrain.setRotation(90);
             terrain.draw(batch);
-
         }
 
         if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
@@ -759,12 +763,12 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         if (info != null) {
             info.setSpeed(Locator.getInstance().SpeedString());
 
-            if (getMapState() == MapState.CAR && de.droidcachebox.Config.dynamicZoom.getValue()) {
+            if (getMapState() == MapState.CAR && Config.dynamicZoom.getValue()) {
                 // calculate dynamic Zoom
 
-                double maxSpeed = de.droidcachebox.Config.MoveMapCenterMaxSpeed.getValue();
-                int maxZoom = de.droidcachebox.Config.dynamicZoomLevelMax.getValue();
-                int minZoom = de.droidcachebox.Config.dynamicZoomLevelMin.getValue();
+                double maxSpeed = Config.MoveMapCenterMaxSpeed.getValue();
+                int maxZoom = Config.dynamicZoomLevelMax.getValue();
+                int minZoom = Config.dynamicZoomLevelMin.getValue();
 
                 double percent = Locator.getInstance().SpeedOverGround() / maxSpeed;
 
@@ -794,7 +798,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
     public void createWaypointAtCenter() {
         String newGcCode;
         try {
-            newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGcCode());
+            newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
         } catch (Exception e) {
             return;
         }
@@ -804,25 +808,25 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         if ((coord == null) || (!coord.isValid()))
             return;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
-        Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
+        Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
 
         EditWaypoint EdWp = new EditWaypoint(newWP, waypoint -> {
             if (waypoint != null) {
 
-                de.droidcachebox.GlobalCore.getSelectedCache().waypoints.add(waypoint);
-                de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), waypoint);
+                GlobalCore.getSelectedCache().waypoints.add(waypoint);
+                GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 if (waypoint.IsStart) {
                     // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                     // definiert
                     // ist!!!
                     WaypointDAO wpd = new WaypointDAO();
-                    wpd.ResetStartWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), waypoint);
+                    wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 }
                 WaypointDAO waypointDAO = new WaypointDAO();
                 waypointDAO.WriteToDatabase(waypoint);
 
                 // informiere WaypointListView über Änderung
-                WaypointListChangedEventList.Call(de.droidcachebox.GlobalCore.getSelectedCache());
+                WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
                 GL.that.renderOnce();
             }
         }, true, false);
@@ -832,20 +836,20 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
     @Override
     public void dispose() {
-        de.droidcachebox.SelectedCacheChangedEventListeners.getInstance().remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         super.dispose();
     }
 
     @Override
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
-        TargetArrowScreenRec = null;
+        targetArrowScreenRec = null;
     }
 
     @Override
     public void onHide() {
         Log.info(log, "Map gets invisible");
-        de.droidcachebox.SelectedCacheChangedEventListeners.getInstance().remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         super.onHide();
     }
 
@@ -880,7 +884,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             MapTileLoader.isWorking.set(false);
 
 
-            if (isCarMode && de.droidcachebox.CB_UI_Settings.LiveMapEnabeld.getValue()) {
+            if (isCarMode && CB_UI_Settings.LiveMapEnabeld.getValue()) {
                 LiveMapQue.setCenterDescriptor(center);
                 // LiveMap queue complete screen
                 lowerTile.Data = center;
@@ -892,7 +896,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
     @Override
     public void setCenter(CoordinateGPS value) {
-        if (Mode == MapMode.Normal)
+        if (mapMode == MapMode.Normal)
             info.setCoord(value);
         super.setCenter(value);
     }
@@ -904,8 +908,8 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
             try {
                 Coordinate position = Locator.getInstance().getMyPosition();
 
-                if (de.droidcachebox.GlobalCore.isSetSelectedCache()) {
-                    Coordinate dest = (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) ? de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos : de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
+                if (GlobalCore.isSetSelectedCache()) {
+                    Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().coordinate;
 
                     if (dest == null)
                         return;
@@ -929,22 +933,22 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
     @Override
     public void initializeMap() {
-        zoomCross = de.droidcachebox.Config.ZoomCross.getValue();
+        zoomCross = Config.ZoomCross.getValue();
         super.initializeMap();
     }
 
     @Override
     protected void setZoomScale(int zoom) {
-        if (Mode == MapMode.Normal)
+        if (mapMode == MapMode.Normal)
             zoomScale.setZoom(zoom);
-        if (Mode == MapMode.Normal)
+        if (mapMode == MapMode.Normal)
             mapScale.zoomChanged();
     }
 
     @Override
     protected void calcCenter() {
         super.calcCenter();
-        if (Mode == MapMode.Normal) {
+        if (mapMode == MapMode.Normal) {
             info.setCoord(center);
         }
     }
@@ -957,14 +961,14 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         float margin = GL_UISizes.margin;
 
         float infoHeight = 0;
-        if (Mode == MapMode.Normal) {
+        if (mapMode == MapMode.Normal) {
             info.setPos(new Vector2(margin, mapIntHeight - margin - info.getHeight()));
-            info.setVisible(de.droidcachebox.Config.MapShowInfo.getValue());
+            info.setVisible(Config.showInfo.getValue());
             infoHeight = info.getHeight();
         }
         togBtn.setPos(new Vector2(mapIntWidth - margin - togBtn.getWidth(), mapIntHeight - margin - togBtn.getHeight()));
 
-        if (de.droidcachebox.Config.DisableLiveMap.getValue()) {
+        if (Config.DisableLiveMap.getValue()) {
             liveButton.setInvisible();
         } else {
             liveButton.setVisible();
@@ -990,12 +994,12 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         if (super.getMapState() == state)
             return;
 
-        de.droidcachebox.Config.LastMapToggleBtnState.setValue(state.ordinal());
-        de.droidcachebox.Config.AcceptChanges();
+        Config.lastMapToggleBtnState.setValue(state.ordinal());
+        Config.AcceptChanges();
 
         boolean wasCarMode = isCarMode;
 
-        if (Mode == MapMode.Normal) {
+        if (mapMode == MapMode.Normal) {
             info.setCoordType(CoordType.Map);
             if (state == MapState.CAR) {
                 if (!wasCarMode) {
@@ -1029,33 +1033,33 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
                 info.setCoord(center);
             }
 
-            if (de.droidcachebox.GlobalCore.getSelectedCoord() != null) {
-                info.setDistance(de.droidcachebox.GlobalCore.getSelectedCoord().Distance(CalculationType.ACCURATE));
+            if (GlobalCore.getSelectedCoord() != null) {
+                info.setDistance(GlobalCore.getSelectedCoord().Distance(CalculationType.ACCURATE));
             }
             this.orientationChanged();
         }
 
-        if (Mode == MapMode.Compass) {
+        if (mapMode == MapMode.Compass) {
             // Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
             // if ((GlobalCore.Marker != null) && (GlobalCore.Marker.isValid)) position = GlobalCore.Marker;
             Coordinate position = Locator.getInstance().getMyPosition();
 
             float distance = -1;
-            if (de.droidcachebox.GlobalCore.isSetSelectedCache() && position.isValid()) {
+            if (GlobalCore.isSetSelectedCache() && position.isValid()) {
                 try {
-                    if (de.droidcachebox.GlobalCore.getSelectedWaypoint() == null)
-                        distance = position.Distance(de.droidcachebox.GlobalCore.getSelectedCache().coordinate, CalculationType.ACCURATE);
+                    if (GlobalCore.getSelectedWaypoint() == null)
+                        distance = position.Distance(GlobalCore.getSelectedCache().coordinate, CalculationType.ACCURATE);
                     else
-                        distance = position.Distance(de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos, CalculationType.ACCURATE);
+                        distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos, CalculationType.ACCURATE);
                 } catch (Exception e) {
                     distance = 10;
                 }
             }
             int setZoomTo = zoomBtn.getMinZoom();
 
-            if (DistanceZoomLevel != null) {
+            if (distanceZoomLevel != null) {
                 for (int i = zoomBtn.getMaxZoom(); i > zoomBtn.getMinZoom(); i--) {
-                    if (distance < DistanceZoomLevel.get(i)) {
+                    if (distance < distanceZoomLevel.get(i)) {
                         setZoomTo = i;
                         break;
                     }
@@ -1093,7 +1097,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
     @Override
     public void onStop() {
-        if (Mode == MapMode.Normal) // save last zoom and position only from Map, not from CompassMap
+        if (mapMode == MapMode.Normal) // save last zoom and position only from Map, not from CompassMap
         {
             super.onStop();
         }
@@ -1102,9 +1106,9 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
     @Override
     public void onShow() {
         super.onShow();
-        de.droidcachebox.SelectedCacheChangedEventListeners.getInstance().add(this);
-        NorthOriented = Mode == MapMode.Normal ? de.droidcachebox.Config.MapNorthOriented.getValue() : false;
-        selectedCacheChanged(de.droidcachebox.GlobalCore.getSelectedCache(), de.droidcachebox.GlobalCore.getSelectedWaypoint());
+        SelectedCacheChangedEventListeners.getInstance().add(this);
+        NorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
+        selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
     }
 
     /**
@@ -1113,51 +1117,52 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
     @Override
     public void setNewSettings(int InitialFlags) {
         if ((InitialFlags & INITIAL_SETTINGS) != 0) {
-            showRating = Mode == MapMode.Compass ? false : de.droidcachebox.Config.MapShowRating.getValue();
-            showDT = Mode == MapMode.Compass ? false : de.droidcachebox.Config.MapShowDT.getValue();
-            showTitles = Mode == MapMode.Compass ? false : de.droidcachebox.Config.MapShowTitles.getValue();
-            hideMyFinds = de.droidcachebox.Config.MapHideMyFinds.getValue();
-            showDirectLine = Mode == MapMode.Compass ? false : de.droidcachebox.Config.ShowDirektLine.getValue();
-            showAllWaypoints = Mode == MapMode.Compass ? false : de.droidcachebox.Config.ShowAllWaypoints.getValue();
-            showAccuracyCircle = Mode == MapMode.Compass ? false : de.droidcachebox.Config.ShowAccuracyCircle.getValue();
-            showMapCenterCross = Mode == MapMode.Compass ? false : de.droidcachebox.Config.ShowMapCenterCross.getValue();
-            showAtOriginalPosition = Mode == MapMode.Compass ? false : de.droidcachebox.Config.ShowAtOriginalPosition.getValue();
+            showRating = mapMode == MapMode.Compass ? false : Config.showRating.getValue();
+            showDT = mapMode == MapMode.Compass ? false : Config.showDifficultyTerrain.getValue();
+            showTitles = mapMode == MapMode.Compass ? false : Config.showTitles.getValue();
+            hideMyFinds = Config.hideMyFinds.getValue();
+            showDirectLine = mapMode == MapMode.Compass ? false : Config.showDirectLine.getValue();
+            showAllWaypoints = mapMode == MapMode.Compass ? false : Config.showAllWaypoints.getValue();
+            showAccuracyCircle = mapMode == MapMode.Compass ? false : Config.showAccuracyCircle.getValue();
+            showMapCenterCross = mapMode == MapMode.Compass ? false : Config.showMapCenterCross.getValue();
+            showAtOriginalPosition = mapMode == MapMode.Compass ? false : Config.showAtOriginalPosition.getValue();
+            showDistanceCircle = mapMode == MapMode.Compass ? false : Config.showDistanceCircle.getValue();
 
-            if (Mode == MapMode.Track) {
+            if (mapMode == MapMode.Track) {
                 showMapCenterCross = true;
                 setMapState(MapState.FREE);
             }
 
             if (info != null)
-                info.setVisible(Mode == MapMode.Compass ? false : de.droidcachebox.Config.MapShowInfo.getValue());
+                info.setVisible(mapMode == MapMode.Compass ? false : Config.showInfo.getValue());
 
             if (InitialFlags == INITIAL_ALL) {
 
-                if (de.droidcachebox.Config.MapViewDPIFaktor.getValue() == 1) {
-                    de.droidcachebox.Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
-                    de.droidcachebox.Config.AcceptChanges();
+                if (Config.MapViewDPIFaktor.getValue() == 1) {
+                    Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+                    Config.AcceptChanges();
                 }
-                iconFactor = de.droidcachebox.Config.MapViewDPIFaktor.getValue();
+                iconFactor = Config.MapViewDPIFaktor.getValue();
 
-                int setMaxZoom = Mode == MapMode.Compass ? de.droidcachebox.Config.CompassMapMaxZommLevel.getValue() : de.droidcachebox.Config.OsmMaxLevel.getValue();
-                int setMinZoom = Mode == MapMode.Compass ? de.droidcachebox.Config.CompassMapMinZoomLevel.getValue() : de.droidcachebox.Config.OsmMinLevel.getValue();
+                int setMaxZoom = mapMode == MapMode.Compass ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();
+                int setMinZoom = mapMode == MapMode.Compass ? Config.CompassMapMinZoomLevel.getValue() : Config.OsmMinLevel.getValue();
 
                 zoomBtn.setMaxZoom(setMaxZoom);
                 zoomBtn.setMinZoom(setMinZoom);
-                zoomBtn.setZoom(de.droidcachebox.Config.lastZoomLevel.getValue());
+                zoomBtn.setZoom(Config.lastZoomLevel.getValue());
 
                 zoomScale.setMaxZoom(setMaxZoom);
                 zoomScale.setMinZoom(setMinZoom);
 
-                if (Mode == MapMode.Compass) {
+                if (mapMode == MapMode.Compass) {
                     // Berechne die darstellbare Entfernung für jedes ZoomLevel
-                    DistanceZoomLevel = new TreeMap<>();
+                    distanceZoomLevel = new TreeMap<>();
 
                     int possiblePixel = (int) getHalfHeight();
 
                     for (int i = setMaxZoom; i > setMinZoom; i--) {
                         float PixelForZoomLevel = getPixelsPerMeter(i);
-                        DistanceZoomLevel.put(i, (int) (possiblePixel / PixelForZoomLevel));
+                        distanceZoomLevel.put(i, (int) (possiblePixel / PixelForZoomLevel));
                     }
                 }
 
@@ -1167,7 +1172,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         if ((InitialFlags & INITIAL_THEME) != 0) {
             if (mapTileLoader.getCurrentLayer() != null) {
                 if (mapTileLoader.getCurrentLayer().isMapsForge()) {
-                    Log.info(log, "modify layer " + mapTileLoader.getCurrentLayer().getName() + " for mapview " + Mode);
+                    Log.info(log, "modify layer " + mapTileLoader.getCurrentLayer().getName() + " for mapview " + mapMode);
                     mapTileLoader.modifyCurrentLayer(isCarMode);
                     renderOnce("INITIAL_THEME");
                 }
@@ -1183,11 +1188,11 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
         if ((InitialFlags & INITIAL_WP_LIST) != 0) {
             if (mapCacheList != null) {
                 MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
-                hideMyFinds = de.droidcachebox.Config.MapHideMyFinds.getValue();
+                hideMyFinds = Config.hideMyFinds.getValue();
                 data.hideMyFinds = hideMyFinds;
-                showAllWaypoints = Mode == MapMode.Compass ? false : de.droidcachebox.Config.ShowAllWaypoints.getValue();
+                showAllWaypoints = mapMode == MapMode.Compass ? false : Config.showAllWaypoints.getValue();
                 data.showAllWaypoints = showAllWaypoints;
-                showAtOriginalPosition = Mode == MapMode.Compass ? false : de.droidcachebox.Config.ShowAtOriginalPosition.getValue();
+                showAtOriginalPosition = mapMode == MapMode.Compass ? false : Config.showAtOriginalPosition.getValue();
                 data.showAtOriginalPosition = showAtOriginalPosition;
                 mapCacheList.update(data);
             }
@@ -1227,12 +1232,12 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
 
     @Override
     public void MapStateChangedToWP() {
-        if (de.droidcachebox.GlobalCore.isSetSelectedCache()) {
-            if (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) {
-                Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedWaypoint().Pos;
+        if (GlobalCore.isSetSelectedCache()) {
+            if (GlobalCore.getSelectedWaypoint() != null) {
+                Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             } else {
-                Coordinate tmp = de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
+                Coordinate tmp = GlobalCore.getSelectedCache().coordinate;
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             }
         }
@@ -1241,7 +1246,7 @@ public class MapView extends MapViewBase implements de.droidcachebox.SelectedCac
     @Override
     public void SetAlignToCompass(boolean value) {
         super.SetAlignToCompass(value);
-        de.droidcachebox.Config.MapNorthOriented.setValue(!value);
+        Config.isMapNorthOriented.setValue(!value);
     }
 
     private void onResume() {

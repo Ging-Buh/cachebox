@@ -54,17 +54,6 @@ public interface CB_UI_Settings {
     SettingString quickButtonList = new SettingString("quickButtonList", QuickList, NEVER, "1,15,14,19,12,23,2,13", Global, ACB);
     SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", QuickList, NEVER, false, Global, ACB);
 
-    SettingBool ShowAtOriginalPosition = new SettingBool("ShowAtOriginalPosition", Map, NEVER, false, Global, ACB);
-    SettingBool MapShowRating = new SettingBool("MapShowRating", Map, NEVER, true, Global, ACB);
-    SettingBool MapShowDT = new SettingBool("MapShowDT", Map, NEVER, true, Global, ACB);
-    SettingBool MapShowTitles = new SettingBool("MapShowTitles", Map, NEVER, true, Global, ACB);
-    SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", Map, NEVER, false, Global, ACB);
-    SettingBool MapShowInfo = new SettingBool("MapShowCompass", Map, NEVER, true, Global, ACB);
-    SettingBool MapNorthOriented = new SettingBool("MapNorthOriented", Map, NEVER, true, Global, ACB);
-    SettingBool ShowDirektLine = new SettingBool("ShowDirektLine", Map, NEVER, false, Global, ACB);
-    SettingBool MapHideMyFinds = new SettingBool("MapHideMyFinds", Map, NEVER, false, Global, ACB);
-    SettingInt LastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", Map, NEVER, 0, Global, ACB);
-
     SettingBool LiveMapEnabeld = new SettingBool("LiveMapEnabeld", LiveMap, NEVER, false, Global, ACB);
 
     SettingInt HardwareCompassLevel = new SettingInt("HardwareCompassLevel", Gps, NORMAL, 5, Global, ACB);

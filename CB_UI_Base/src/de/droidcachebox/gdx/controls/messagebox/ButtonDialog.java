@@ -36,10 +36,6 @@ import java.util.Iterator;
 
 public class ButtonDialog extends Dialog {
 
-    public final int BUTTON_POSITIVE = 1;
-    public final int BUTTON_NEUTRAL = 2;
-    public final int BUTTON_NEGATIVE = 3;
-
     private final ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
     public CB_Button button1;

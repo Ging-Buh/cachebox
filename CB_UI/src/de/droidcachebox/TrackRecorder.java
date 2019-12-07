@@ -60,7 +60,7 @@ public class TrackRecorder {
     private static boolean mustRecPos = false;
     private static boolean writePos = false;
 
-    public static void StartRecording() {
+    public static void startRecording() {
         distanceForNextTrackpoint = Config.TrackDistance.getValue();
 
         GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
@@ -273,11 +273,11 @@ public class TrackRecorder {
         }
     }
 
-    public static void PauseRecording() {
+    public static void pauseRecording() {
         pauseRecording = !pauseRecording;
     }
 
-    public static void StopRecording() {
+    public static void stopRecording() {
         if (GlobalCore.AktuelleRoute != null) {
             GlobalCore.AktuelleRoute.isActualTrack = false;
             GlobalCore.AktuelleRoute.name = Translation.get("recordetTrack");

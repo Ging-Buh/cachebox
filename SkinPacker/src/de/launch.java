@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import de.droidcachebox.utils.DesktopFileFactory;
+import de.droidcachebox.utils.FileFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -30,7 +32,6 @@ public class launch extends JFrame {
      */
     private static final long serialVersionUID = 1L;
     public static launch that;
-    final String directoryPath = "Android_GUI/";
     private final String BR = System.getProperty("line.separator");
     protected JTree m_tree;
     protected DefaultTreeModel m_model;
@@ -161,10 +162,18 @@ public class launch extends JFrame {
 
     private void run() {
 
+        new DesktopFileFactory();
+
         Thread t = new Thread() {
             public void run() {
-                CreateTextureAndCopy("/default");
-                CreateTextureAndCopy("/small");
+                de.droidcachebox.utils.File f = FileFactory.createFile(selectedPath + "/Icons");
+                for (de.droidcachebox.utils.File dir : f.listFiles()) {
+                    if (dir.isDirectory()) {
+                        CreateTextureAndCopy(dir.getName());
+                    }
+                }
+                // CreateTextureAndCopy("/default");
+                // CreateTextureAndCopy("/small");
                 JOptionPane.showMessageDialog(null, "Ready", "", JOptionPane.OK_OPTION);
             }
 
@@ -175,6 +184,8 @@ public class launch extends JFrame {
     }
 
     private void CreateTextureAndCopy(String skinFolderName) {
+
+        if (!skinFolderName.startsWith("/")) skinFolderName = "/" + skinFolderName;
 
         Settings textureSettings = new Settings();
 
@@ -295,6 +306,8 @@ public class launch extends JFrame {
                 }
             });
 
+            if (files == null) break;
+
             for (File tmp : files) {
                 // now open and change Line
                 // "filter: Linear,Linear"
@@ -412,6 +425,16 @@ public class launch extends JFrame {
             return null;
     }
 
+    void deleteDir(File file) {
+        File[] contents = file.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                deleteDir(f);
+            }
+        }
+        file.delete();
+    }
+
     // Make sure expansion is threaded and updating the tree model
     // only occurs within the event dispatching thread.
     class DirExpansionListener implements TreeExpansionListener {
@@ -449,9 +472,10 @@ public class launch extends JFrame {
 
                 File folder = new File(selectedPath);
                 if (folder.isDirectory()) {
-                    File defaultFolder = new File(selectedPath + "/Icons/default");
-                    File smallFolder = new File(selectedPath + "/Icons/small");
-                    if (defaultFolder.isDirectory() && smallFolder.isDirectory()) {
+                    // File defaultFolder = new File(selectedPath + "/Icons/default");
+                    // File smallFolder = new File(selectedPath + "/Icons/small");
+                    File Folder = new File(selectedPath + "/Icons");
+                    if (Folder.isDirectory()) {
                         btnPackNow.setEnabled(true);
                     } else {
                         btnPackNow.setEnabled(false);
@@ -475,16 +499,6 @@ public class launch extends JFrame {
                 }
             }
         }
-    }
-
-    void deleteDir(File file) {
-        File[] contents = file.listFiles();
-        if (contents != null) {
-            for (File f : contents) {
-                deleteDir(f);
-            }
-        }
-        file.delete();
     }
 
 }
@@ -512,9 +526,7 @@ class IconCellRenderer extends JLabel implements TreeCellRenderer {
         setOpaque(false);
     }
 
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus)
-
-    {
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         Object obj = node.getUserObject();
         setText(obj.toString());

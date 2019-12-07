@@ -67,6 +67,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected float arrowHeading = 0;
     protected Vector2 myPointOnScreen;
     protected boolean showAccuracyCircle;
+    protected boolean showDistanceCircle;
     protected int aktZoom;
     protected KineticZoom kineticZoom = null;
     protected float maxTilesPerScreen = 0;
@@ -496,7 +497,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         if (showAccuracyCircle) {
 
             if (accuracyDrawable == null) {
-                accuracyDrawable = new AccuracyDrawable(this.mapIntWidth, this.mapIntWidth);
+                accuracyDrawable = new AccuracyDrawable(mapIntWidth, mapIntWidth);
             }
 
             float radius = (pixelsPerMeter * Locator.getInstance().getMyPosition().getAccuracy());

@@ -2,13 +2,11 @@ package de.droidcachebox.gdx.controls.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -20,24 +18,22 @@ import de.droidcachebox.translation.Translation;
 public class RouteDialog extends ButtonDialog {
 
     int state = -1;
-    private Linearlayout layout;
-    private float TextFieldHeight;
-    private SizeF msgBoxContentSize;
     private ImageMultiToggleButton btMotoWay, btCycleWay, btFootWay;
     private CB_CheckBox chkTmc;
     private IReturnListener mReturnListener;
 
     public RouteDialog(IReturnListener listener) {
-        super(Menu.getMenuRec(), "PW-Dialog", "", Translation.get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
+        super(Menu.getMenuRec(), "RouteDialog", "", Translation.get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
         mReturnListener = listener;
 
-        msgBoxContentSize = getContentSize();
+        SizeF msgBoxContentSize = getContentSize();
         // initial VariableField
-        TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
+        float textFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
         float innerWidth = msgBoxContentSize.width + leftBorder + rightBorder;
+        innerWidth = Menu.getMenuRec().getWidth();
 
-        layout = new Linearlayout(innerWidth, "Layout");
+        Linearlayout layout = new Linearlayout(innerWidth, "Layout");
         layout.setX(0);
         // layout.setBackground(new ColorDrawable(Color.GREEN));
 
@@ -47,21 +43,22 @@ public class RouteDialog extends ButtonDialog {
         btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
         btFootWay = new ImageMultiToggleButton(MTBRec, "btFootWay");
 
-        btMotoWay.setImage(new SpriteDrawable(Sprites.getSprite("pictureBox2")));
-        btCycleWay.setImage(new SpriteDrawable(Sprites.getSprite("pictureBox1")));
-        btFootWay.setImage(new SpriteDrawable(Sprites.getSprite("pictureBox3")));
+        btMotoWay.setImage(new SpriteDrawable(Sprites.getSprite("car")));
+        btCycleWay.setImage(new SpriteDrawable(Sprites.getSprite("bicycle")));
+        btFootWay.setImage(new SpriteDrawable(Sprites.getSprite("pedestrian")));
 
+        /*
         btMotoWay.setX(0);
         btCycleWay.setX(btMotoWay.getMaxX());
         btFootWay.setX(btCycleWay.getMaxX());
+         */
 
         Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 2), "");
+        layout.addLast(box);
 
-        box.addChild(btMotoWay);
-        box.addChild(btCycleWay);
-        box.addChild(btFootWay);
-
-        layout.addChild(box);
+        box.addNext(btMotoWay);
+        box.addNext(btCycleWay);
+        box.addLast(btFootWay);
 
         btMotoWay.initialOn_Off_ToggleStates("", "");
         btCycleWay.initialOn_Off_ToggleStates("", "");
@@ -81,50 +78,34 @@ public class RouteDialog extends ButtonDialog {
         this.addChild(layout);
 
         Size msgBoxSize = MessageBox.calcMsgBoxSize("teste", true, true, false);
-        msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
+        msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (textFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 
-        mMsgBoxClickListener = new OnMsgBoxClickListener() {
-
-            @Override
-            public boolean onClick(int which, Object data) {
-                if (which == BUTTON_POSITIVE) {
-
-                    if (mReturnListener != null)
-                        mReturnListener.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
-                } else {
-                    if (mReturnListener != null)
-                        mReturnListener.returnFromRoute_Dialog(true, false, false, false, false);
-                }
-
-                return true;
+        mMsgBoxClickListener = (which, data) -> {
+            if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                if (mReturnListener != null)
+                    mReturnListener.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
+            } else {
+                if (mReturnListener != null)
+                    mReturnListener.returnFromRoute_Dialog(true, false, false, false, false);
             }
+
+            return true;
         };
 
-        btMotoWay.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                switchVisibility(0);
-                return true;
-            }
+        btMotoWay.setClickHandler((view, x, y, pointer, button) -> {
+            switchVisibility(0);
+            return true;
         });
 
-        btCycleWay.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                switchVisibility(1);
-                return true;
-            }
+        btCycleWay.setClickHandler((view, x, y, pointer, button) -> {
+            switchVisibility(1);
+            return true;
         });
 
-        btFootWay.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                switchVisibility(2);
-                return true;
-            }
+        btFootWay.setClickHandler((view, x, y, pointer, button) -> {
+            switchVisibility(2);
+            return true;
         });
 
         switchVisibility(0);
@@ -153,7 +134,7 @@ public class RouteDialog extends ButtonDialog {
     }
 
     public interface IReturnListener {
-        public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc);
+        void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc);
     }
 
 }

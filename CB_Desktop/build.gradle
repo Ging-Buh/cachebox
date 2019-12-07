@@ -1,8 +1,10 @@
-apply plugin: "java"
+plugins {
+    id 'java'
+}
 
 sourceCompatibility = 1.8
-sourceSets.main.java.srcDirs = [ "src/" ]
 
+sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
     implementation project(path: ':CB_Utils', transitive: false)

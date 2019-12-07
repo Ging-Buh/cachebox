@@ -147,7 +147,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
 
         // remove Detail Info from old selectedCache
         if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.detail != null)) {
-            selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
+            selectedCache.deleteDetail(Config.showAllWaypoints.getValue());
         }
         selectedCache = cache;
         Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGcCode());

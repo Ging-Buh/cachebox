@@ -122,7 +122,7 @@ public class CacheContextMenu {
                         // Reload result from DB
                         synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                             CacheListChangedListeners.getInstance().cacheListChanged();
                             GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         }

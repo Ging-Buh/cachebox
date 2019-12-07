@@ -64,9 +64,6 @@ public class SettingBool extends SettingBase<Boolean> {
         SettingBool inst = (SettingBool) obj;
         if (!(inst.name.equals(this.name)))
             return false;
-        if (inst.value != this.value)
-            return false;
-
-        return true;
+        return inst.value == this.value;
     }
 }

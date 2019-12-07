@@ -244,7 +244,7 @@ public class EditFilterSettings extends ActivityBase {
                     String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
                     Log.info(log, "Main.applyFilter: " + sqlWhere);
                     Database.Data.cacheList.clear();
-                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();

@@ -266,16 +266,17 @@ public class ShowMap extends AbstractShowAction {
 
     private void showMapViewLayerMenu() {
         OptionMenu menuMapElements = new OptionMenu("MapViewLayerMenuTitle");
-        menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Config.ShowAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Config.ShowAtOriginalPosition));
-        menuMapElements.addCheckableMenuItem("HideFinds", Config.MapHideMyFinds.getValue(), () -> toggleSettingWithReload(Config.MapHideMyFinds));
-        menuMapElements.addCheckableMenuItem("MapShowInfoBar", Config.MapShowInfo.getValue(), () -> toggleSetting(Config.MapShowInfo));
-        menuMapElements.addCheckableMenuItem("ShowAllWaypoints", Config.ShowAllWaypoints.getValue(), () -> toggleSetting(Config.ShowAllWaypoints));
-        menuMapElements.addCheckableMenuItem("ShowRatings", Config.MapShowRating.getValue(), () -> toggleSetting(Config.MapShowRating));
-        menuMapElements.addCheckableMenuItem("ShowDT", Config.MapShowDT.getValue(), () -> toggleSetting(Config.MapShowDT));
-        menuMapElements.addCheckableMenuItem("ShowTitle", Config.MapShowTitles.getValue(), () -> toggleSetting(Config.MapShowTitles));
-        menuMapElements.addCheckableMenuItem("ShowDirectLine", Config.ShowDirektLine.getValue(), () -> toggleSetting(Config.ShowDirektLine));
-        menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Config.ShowAccuracyCircle.getValue(), () -> toggleSetting(Config.ShowAccuracyCircle));
-        menuMapElements.addCheckableMenuItem("ShowCenterCross", Config.ShowMapCenterCross.getValue(), () -> toggleSetting(Config.ShowMapCenterCross));
+        menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Config.showAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Config.showAtOriginalPosition));
+        menuMapElements.addCheckableMenuItem("HideFinds", Config.hideMyFinds.getValue(), () -> toggleSettingWithReload(Config.hideMyFinds));
+        menuMapElements.addCheckableMenuItem("MapShowInfoBar", Config.showInfo.getValue(), () -> toggleSetting(Config.showInfo));
+        menuMapElements.addCheckableMenuItem("ShowAllWaypoints", Config.showAllWaypoints.getValue(), () -> toggleSetting(Config.showAllWaypoints));
+        menuMapElements.addCheckableMenuItem("ShowRatings", Config.showRating.getValue(), () -> toggleSetting(Config.showRating));
+        menuMapElements.addCheckableMenuItem("ShowDT", Config.showDifficultyTerrain.getValue(), () -> toggleSetting(Config.showDifficultyTerrain));
+        menuMapElements.addCheckableMenuItem("ShowTitle", Config.showTitles.getValue(), () -> toggleSetting(Config.showTitles));
+        menuMapElements.addCheckableMenuItem("ShowDirectLine", Config.showDirectLine.getValue(), () -> toggleSetting(Config.showDirectLine));
+        menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Config.showAccuracyCircle.getValue(), () -> toggleSetting(Config.showAccuracyCircle));
+        menuMapElements.addCheckableMenuItem("ShowCenterCross", Config.showMapCenterCross.getValue(), () -> toggleSetting(Config.showMapCenterCross));
+        menuMapElements.addCheckableMenuItem("ShowDistanceCircle", Config.showDistanceCircle.getValue(), () -> toggleSetting(Config.showDistanceCircle));
         menuMapElements.show();
     }
 
@@ -293,12 +294,23 @@ public class ShowMap extends AbstractShowAction {
 
     private void showMenuTrackRecording() {
         Menu cm2 = new Menu("TrackRecordMenuTitle");
-        cm2.addMenuItem("start", null, TrackRecorder::StartRecording).setEnabled(!TrackRecorder.recording);
+        /*
+        cm2.addMenuItem("generateRoute", null, () -> {
+            new RouteDialog(new RouteDialog.IReturnListener() {
+                @Override
+                public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc) {
+                    // OpenRouteService generateOpenRoute
+                    // BRouterServiceConnection getTrackFromParams
+                }
+            }).show();
+        });
+         */
+        cm2.addMenuItem("start", null, TrackRecorder::startRecording).setEnabled(!TrackRecorder.recording);
         if (TrackRecorder.pauseRecording)
-            cm2.addMenuItem("continue", null, TrackRecorder::PauseRecording).setEnabled(TrackRecorder.recording);
+            cm2.addMenuItem("continue", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
         else
-            cm2.addMenuItem("pause", null, TrackRecorder::PauseRecording).setEnabled(TrackRecorder.recording);
-        cm2.addMenuItem("stop", null, TrackRecorder::StopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
+            cm2.addMenuItem("pause", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
+        cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
         cm2.addMenuItem("TrackDistance", null, () -> {
             OptionMenu tdMenu = new OptionMenu("TrackDistance");
             tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {

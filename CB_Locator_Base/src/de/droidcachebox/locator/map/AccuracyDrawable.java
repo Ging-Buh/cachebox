@@ -39,29 +39,31 @@ public class AccuracyDrawable {
 
         size = Math.max(maxWidth, maxHeight);
         // create CIRCLE_COUNT circle with different radius
-        step = size / (CIRCLE_COUNT);
+        step = size / CIRCLE_COUNT;
 
-        int index = 0;
-        for (float radius = step; index < CIRCLE_COUNT; radius += step) {
-            createDrawablesFor(index++, radius);
+
+        float radius = step;
+        for (int index = 0; index < CIRCLE_COUNT; index = index + 1) {
+            strokes[index] = createStroke(radius);
+            fills[index] = createFill(radius);
+            radien[index] = radius;
+            radius = radius + step;
         }
-
     }
 
-    private void createDrawablesFor(int index, float radius) {
+    private CircleDrawable createFill(float radius) {
+        GL_Paint paint = new GL_Paint();
+        paint.setColor(Color.BLUE);
+        paint.setAlpha(50);
+        return new CircleDrawable(0, 0, radius, paint, size, size);
+    }
 
+    private CircleDrawable createStroke(float radius) {
         GL_Paint paint = new GL_Paint();
         paint.setColor(Color.BLUE);
         paint.setStyle(GL_Paint.GL_Style.STROKE);
         paint.setStrokeWidth(3 * UiSizes.getInstance().getScale());
-        strokes[index] = new CircleDrawable(0, 0, radius, paint, size, size);
-
-        GL_Paint paint2 = new GL_Paint();
-        paint2.setColor(Color.BLUE);
-        paint2.setAlpha(50);
-        fills[index] = new CircleDrawable(0, 0, radius, paint2, size, size);
-
-        radien[index] = radius;
+        return new CircleDrawable(0, 0, radius, paint, size, size);
     }
 
     public void draw(Batch batch, float x, float y, float radius) {

@@ -70,7 +70,7 @@ public class PasswortDialog extends ButtonDialog {
 
             @Override
             public boolean onClick(int which, Object data) {
-                if (which == BUTTON_POSITIVE) {
+                if (which == MessageBox.BTN_LEFT_POSITIVE) {
 
                     if (mReturnListener != null)
                         mReturnListener.returnFromPW_Dialog(editTextUser.getText(), editTextPW.getText());

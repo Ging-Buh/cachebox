@@ -44,12 +44,12 @@ public class CB_Skin {
 
     private void init() {
 
-        if (CB_UI_Base_Settings.SkinFolder.getValue().equals("default")) {
+        if (CB_UI_Base_Settings.skinFolder.getValue().equals("default")) {
             SkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
-        } else if (CB_UI_Base_Settings.SkinFolder.getValue().equals("small")) {
+        } else if (CB_UI_Base_Settings.skinFolder.getValue().equals("small")) {
             SkinFolder = AbstractGlobal.getInternalFileHandle("skins/small");
         } else {
-            SkinFolder = Gdx.files.absolute(CB_UI_Base_Settings.SkinFolder.getValue());
+            SkinFolder = Gdx.files.absolute(CB_UI_Base_Settings.skinFolder.getValue());
             if (!SkinFolder.isDirectory()) {
                 SkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
             }

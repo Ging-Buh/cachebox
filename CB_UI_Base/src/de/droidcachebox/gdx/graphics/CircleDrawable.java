@@ -15,7 +15,6 @@
  */
 package de.droidcachebox.gdx.graphics;
 
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
@@ -25,49 +24,44 @@ public class CircleDrawable extends PolygonDrawable {
 
     final static float MIN_SEGMENTH_LENGTH = 10;
     final static int MIN_SEGMENTH_COUNT = 18;
-    final float RADIUS;
-    final float X;
-    final float Y;
-    public SolidTextureRegion solidTextureRegion;
-    int SEGMENTE;
-
-    PolygonRegion polygonRegion;
+    final float radius;
+    final float x;
+    final float y;
+    int segmente;
 
     public CircleDrawable(float x, float y, float radius, GL_Paint paint, float width, float height) {
         super(paint, width, height);
-
-        RADIUS = radius;
-        X = x;
-        Y = y;
-
+        this.radius = radius;
+        this.x = x;
+        this.y = y;
         createTriangles();
     }
 
     private void createTriangles() {
         // calculate segment count
-        double alpha = (360 * MIN_SEGMENTH_LENGTH) / (MathUtils.PI2 * RADIUS);
-        SEGMENTE = Math.max(MIN_SEGMENTH_COUNT, (int) (360 / alpha));
+        double alpha = (360 * MIN_SEGMENTH_LENGTH) / (MathUtils.PI2 * radius);
+        segmente = Math.max(MIN_SEGMENTH_COUNT, (int) (360 / alpha));
 
         // calculate theta step
-        double thetaStep = (MathUtils.PI2 / SEGMENTE);
+        double thetaStep = (MathUtils.PI2 / segmente);
 
-        if (PAINT.getGL_Style() == GL_Paint.GL_Style.FILL) {
+        if (paint.getGL_Style() == GL_Paint.GL_Style.FILL) {
             // initialize arrays
-            VERTICES = new float[(SEGMENTE + 1) * 2];
-            TRIANGLES = new short[(SEGMENTE) * 3];
+            vertices = new float[(segmente + 1) * 2];
+            triangles = new short[(segmente) * 3];
 
             int index = 0;
 
             // first point is the center point
-            VERTICES[index++] = X;
-            VERTICES[index++] = Y;
+            vertices[index++] = x;
+            vertices[index++] = y;
 
             int triangleIndex = 0;
             int verticeIdex = 1;
             boolean beginnTriangles = false;
-            for (double i = 0; index < (SEGMENTE + 1) * 2; i += thetaStep) {
-                VERTICES[index++] = (float) (X + RADIUS * Math.cos(i));
-                VERTICES[index++] = (float) (Y + RADIUS * Math.sin(i));
+            for (double i = 0; index < (segmente + 1) * 2; i += thetaStep) {
+                vertices[index++] = (float) (x + radius * Math.cos(i));
+                vertices[index++] = (float) (y + radius * Math.sin(i));
 
                 if (!beginnTriangles) {
                     if (index % 6 == 0)
@@ -75,37 +69,37 @@ public class CircleDrawable extends PolygonDrawable {
                 }
 
                 if (beginnTriangles) {
-                    TRIANGLES[triangleIndex++] = 0;
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex++;
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex;
+                    triangles[triangleIndex++] = 0;
+                    triangles[triangleIndex++] = (short) verticeIdex++;
+                    triangles[triangleIndex++] = (short) verticeIdex;
                 }
 
             }
 
             // last Triangle
-            TRIANGLES[triangleIndex++] = 0;
-            TRIANGLES[triangleIndex++] = (short) verticeIdex++;
-            TRIANGLES[triangleIndex++] = (short) 1;
+            triangles[triangleIndex++] = 0;
+            triangles[triangleIndex++] = (short) verticeIdex++;
+            triangles[triangleIndex++] = (short) 1;
 
         } else {
 
-            VERTICES = new float[(SEGMENTE) * 4];
-            TRIANGLES = new short[(SEGMENTE) * 6];
+            vertices = new float[(segmente) * 4];
+            triangles = new short[(segmente) * 6];
 
-            float halfStrokeWidth = (PAINT.strokeWidth) / 2;
+            float halfStrokeWidth = (paint.strokeWidth) / 2;
 
-            float radius1 = RADIUS - halfStrokeWidth;
-            float radius2 = RADIUS + halfStrokeWidth;
+            float radius1 = radius - halfStrokeWidth;
+            float radius2 = radius + halfStrokeWidth;
 
             int index = 0;
             int triangleIndex = 0;
             int verticeIdex = 0;
             boolean beginnTriangles = false;
-            for (float i = 0; index < (SEGMENTE * 4); i += thetaStep) {
-                VERTICES[index++] = X + radius1 * MathUtils.cos(i);
-                VERTICES[index++] = Y + radius1 * MathUtils.sin(i);
-                VERTICES[index++] = X + radius2 * MathUtils.cos(i);
-                VERTICES[index++] = Y + radius2 * MathUtils.sin(i);
+            for (float i = 0; index < (segmente * 4); i += thetaStep) {
+                vertices[index++] = x + radius1 * MathUtils.cos(i);
+                vertices[index++] = y + radius1 * MathUtils.sin(i);
+                vertices[index++] = x + radius2 * MathUtils.cos(i);
+                vertices[index++] = y + radius2 * MathUtils.sin(i);
 
                 if (!beginnTriangles) {
                     if (index % 8 == 0)
@@ -113,25 +107,25 @@ public class CircleDrawable extends PolygonDrawable {
                 }
 
                 if (beginnTriangles) {
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex++;
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex++;
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex--;
+                    triangles[triangleIndex++] = (short) verticeIdex++;
+                    triangles[triangleIndex++] = (short) verticeIdex++;
+                    triangles[triangleIndex++] = (short) verticeIdex--;
 
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex++;
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex++;
-                    TRIANGLES[triangleIndex++] = (short) verticeIdex--;
+                    triangles[triangleIndex++] = (short) verticeIdex++;
+                    triangles[triangleIndex++] = (short) verticeIdex++;
+                    triangles[triangleIndex++] = (short) verticeIdex--;
                 }
 
             }
 
             // last two Triangles
-            TRIANGLES[triangleIndex++] = (short) verticeIdex++;
-            TRIANGLES[triangleIndex++] = (short) verticeIdex;
-            TRIANGLES[triangleIndex++] = (short) 0;
+            triangles[triangleIndex++] = (short) verticeIdex++;
+            triangles[triangleIndex++] = (short) verticeIdex;
+            triangles[triangleIndex++] = (short) 0;
 
-            TRIANGLES[triangleIndex++] = (short) 0;
-            TRIANGLES[triangleIndex++] = (short) 1;
-            TRIANGLES[triangleIndex++] = (short) verticeIdex;
+            triangles[triangleIndex++] = (short) 0;
+            triangles[triangleIndex++] = (short) 1;
+            triangles[triangleIndex++] = (short) verticeIdex;
         }
     }
 
@@ -144,17 +138,17 @@ public class CircleDrawable extends PolygonDrawable {
      */
     public boolean contains(float x, float y) {
 
-        float dx = Math.abs(x - X);
-        float dy = Math.abs(y - Y);
+        float dx = Math.abs(x - this.x);
+        float dy = Math.abs(y - this.y);
 
-        if (dx > RADIUS)
+        if (dx > radius)
             return false;
-        if (dy > RADIUS)
+        if (dy > radius)
             return false;
-        if (dx + dy <= RADIUS)
+        if (dx + dy <= radius)
             return true;
 
-        if ((dx * dx) + (dy * dy) <= (RADIUS * RADIUS))
+        if ((dx * dx) + (dy * dy) <= (radius * radius))
             return true;
         else
             return false;

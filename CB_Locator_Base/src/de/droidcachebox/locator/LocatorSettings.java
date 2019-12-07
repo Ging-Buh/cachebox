@@ -32,8 +32,21 @@ public interface LocatorSettings {
     SettingStringList currentMapLayer = new SettingStringList("CurrentMapLayer", Map, NEVER, new String[]{"Mapnik"}, Global, ACB);
     SettingString CurrentMapOverlayLayerName = new SettingString("CurrentMapOverlayLayer", Map, NEVER, "", Global, ACB);
     SettingInt lastZoomLevel = new SettingInt("lastZoomLevel", Map, NEVER, 14, Global, ALL);
-    SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", Map, NEVER, true, Global, ACB);
-    SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", Map, NEVER, true, Global, ACB);
+
+    SettingBool showRating = new SettingBool("MapShowRating", Map, NEVER, true, Global, ACB);
+    SettingBool showDifficultyTerrain = new SettingBool("MapShowDT", Map, NEVER, true, Global, ACB);
+    SettingBool showTitles = new SettingBool("MapShowTitles", Map, NEVER, true, Global, ACB);
+    SettingBool showAllWaypoints = new SettingBool("ShowAllWaypoints", Map, NEVER, false, Global, ACB);
+    SettingBool showAccuracyCircle = new SettingBool("ShowAccuracyCircle", Map, NEVER, true, Global, ACB);
+    SettingBool showMapCenterCross = new SettingBool("ShowMapCenterCross", Map, NEVER, true, Global, ACB);
+    SettingBool showAtOriginalPosition = new SettingBool("ShowAtOriginalPosition", Map, NEVER, false, Global, ACB);
+    SettingBool showDistanceCircle = new SettingBool("ShowDistanceCircle", Map, NEVER, true, Global, ACB);
+    SettingBool showInfo = new SettingBool("", Map, NEVER, true, Global, ACB);
+    SettingBool isMapNorthOriented = new SettingBool("MapNorthOriented", Map, NEVER, true, Global, ACB);
+    SettingBool showDirectLine = new SettingBool("ShowDirektLine", Map, NEVER, false, Global, ACB);
+    SettingBool hideMyFinds = new SettingBool("MapHideMyFinds", Map, NEVER, false, Global, ACB);
+    SettingInt lastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", Map, NEVER, 0, Global, ACB);
+
     SettingFile MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", Map, NEVER, "", Global, ACB, "xml");
     SettingFile MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", Map, NEVER, "", Global, ACB, "xml");
     SettingFile MapsforgeCarDayTheme = new SettingFile("MapsforgeCarDayTheme", Map, NEVER, "CAR", Global, ACB, "xml");

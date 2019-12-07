@@ -33,7 +33,7 @@ public interface CB_UI_Base_Settings {
     SettingBool nightMode = new SettingBool("nightMode", Internal, NEVER, false, Global, ACB);
     SettingBool useAndroidKeyboard = new SettingBool("useAndroidKeyboard", Skin, NORMAL, false, Global, ACB);
 
-    SettingFolder SkinFolder = new SettingFolder("SkinFolder", Folder, DEVELOPER, "default", Global, ACB, false);
+    SettingFolder skinFolder = new SettingFolder("SkinFolder", Folder, DEVELOPER, "default", Global, ACB, false, true);
 
     SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, true, Global, ACB, true);
     SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, true, Global, ACB, true);

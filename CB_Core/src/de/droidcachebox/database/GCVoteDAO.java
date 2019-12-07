@@ -23,18 +23,18 @@ public class GCVoteDAO {
     }
 
     public ArrayList<GCVoteCacheInfo> getGCVotePackage(String whereClause, int packagesize, int offset) {
-        ArrayList<GCVoteCacheInfo> caches = new ArrayList<GCVoteCacheInfo>();
+        ArrayList<GCVoteCacheInfo> caches = new ArrayList<>();
 
-        CoreCursor reader = Database.Data.sql.rawQuery("select Id, GcCode, VotePending from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + " LIMIT " + String.valueOf(offset) + "," + String.valueOf(packagesize), null);
+        CoreCursor reader = Database.Data.sql.rawQuery("select Id, GcCode, VotePending from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + " LIMIT " + offset + "," + packagesize, null);
 
         reader.moveToFirst();
 
         while (!reader.isAfterLast()) {
-            GCVoteCacheInfo info = new GCVoteCacheInfo();
-            info.Id = reader.getLong(0);
-            info.GcCode = reader.getString(1);
-            info.VotePending = (reader.getInt(2) == 1 ? true : false);
-            caches.add(info);
+            GCVoteCacheInfo gcVoteCacheInfo = new GCVoteCacheInfo();
+            gcVoteCacheInfo.setId(reader.getLong(0));
+            gcVoteCacheInfo.setGcCode(reader.getString(1));
+            gcVoteCacheInfo.setVotePending(reader.getInt(2) == 1);
+            caches.add(gcVoteCacheInfo);
 
             reader.moveToNext();
         }
@@ -72,7 +72,7 @@ public class GCVoteDAO {
      * @return GCVoteCacheInfo the ArrayList with the changed votes to upload to gcvote
      */
     public ArrayList<GCVoteCacheInfo> getPendingGCVotes() {
-        ArrayList<GCVoteCacheInfo> caches = new ArrayList<GCVoteCacheInfo>();
+        ArrayList<GCVoteCacheInfo> caches = new ArrayList<>();
 
         CoreCursor reader = Database.Data.sql.rawQuery("select Id, GcCode, Url, Vote from Caches where VotePending=1", null);
 
@@ -80,10 +80,10 @@ public class GCVoteDAO {
 
         while (!reader.isAfterLast()) {
             GCVoteCacheInfo info = new GCVoteCacheInfo();
-            info.Id = reader.getLong(0);
-            info.GcCode = reader.getString(1);
-            info.URL = reader.getString(2);
-            info.Vote = reader.getInt(3);
+            info.setId(reader.getLong(0));
+            info.setGcCode(reader.getString(1));
+            info.setUrl(reader.getString(2));
+            info.setVote(reader.getInt(3));
             caches.add(info);
 
             reader.moveToNext();

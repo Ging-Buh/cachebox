@@ -40,7 +40,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
      * saves whether this setting is changed and needs to be saved
      */
     protected boolean dirty;
-    private int index = -1;
+    private int index;
 
     public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
         this.name = name;
@@ -99,32 +99,23 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
         return modus;
     }
 
-    public void changeSettingsModus(SettingModus Modus) {
-        this.modus = Modus;
-    }
-
     public abstract String toDBString();
 
     public abstract boolean fromDBString(String dbString);
 
     @Override
     public int compareTo(SettingBase<T> o) {
-        if (this.index > o.index) return 1;
-        if (this.index == o.index) return 0;
-        else return -1;
+        return Integer.compare(this.index, o.index);
     }
 
     private void fireChangedEvent() {
         synchronized (SettingChangedListeners) {
             // do this at new Thread, dont't block Ui-Thread
-            Thread th = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0, n = SettingChangedListeners.size(); i < n; i++) {
-                        IChanged listener = SettingChangedListeners.get(i);
-                        listener.handleChange();
-                        // de.droidcachebox.utils.log.Log.info("Setting ", "Setting " + name + " changed");
-                    }
+            Thread th = new Thread(() -> {
+                for (int i = 0, n = SettingChangedListeners.size(); i < n; i++) {
+                    IChanged listener = SettingChangedListeners.get(i);
+                    listener.handleChange();
+                    // de.droidcachebox.utils.log.Log.info("Setting ", "Setting " + name + " changed");
                 }
             });
             th.start();
@@ -150,12 +141,6 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
         return this.value.equals(newValue);
     }
 
-    public void forceDefaultChange(T defaultValue) {
-        if (this.defaultValue.equals(defaultValue))
-            return;
-        this.defaultValue = defaultValue;
-    }
-
     public void loadDefault() {
         value = defaultValue;
     }
@@ -176,8 +161,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
     public void setValueFrom(SettingBase<?> cpy) {
         try {
             this.value = (T) cpy.value;
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
     }
 
@@ -192,8 +176,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
         return value.equals(defaultValue);
     }
 
-    public SettingBase<T> setNeedRestart() {
+    public void setNeedRestart() {
         needRestart = true;
-        return this;
     }
 }

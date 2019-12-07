@@ -186,7 +186,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         addControlToLinearLayout(langView, margin);
 
         ArrayList<SettingBase<?>> AllSettingList = new ArrayList<>();// Config.settings.values().toArray();
-        for (SettingBase settingItem : Config.settings) {
+        for (SettingBase<?> settingItem : Config.settings) {
             if (settingItem.getUsage() == SettingUsage.ACB || settingItem.getUsage() == SettingUsage.ALL)
                 // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
                 if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
@@ -197,7 +197,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         for (SettingCategory cat : Categorys) {
             ArrayList<SettingBase<?>> CatList = new ArrayList<>();
-            for (SettingBase settingItem : AllSettingList) {
+            for (SettingBase<?> settingItem : AllSettingList) {
                 if (settingItem.getCategory().name().equals(cat.name())) {
                     CatList.add(settingItem);
                 }
@@ -243,7 +243,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     break;
                 case Skin:
                     SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<>("Skin", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
-                    CB_View_Base skinView = getSkinSpinnerView(skin);
+                    CB_View_Base skinView = getSkinSpinnerView();
                     lay.addChild(skinView);
                     entryCount++;
                     break;
@@ -274,7 +274,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             boolean expandLayout = false;
 
-            for (SettingBase settingItem : CatList) {
+            for (SettingBase<?> settingItem : CatList) {
                 final CB_View_Base view = getView(settingItem, position++);
 
                 if (Config.DraftsLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("DraftsLoadLength")) {
@@ -368,13 +368,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         } else if (SB instanceof SettingString) {
             return getStringView((SettingString) SB, BackgroundChanger);
         } else if (SB instanceof SettingsListCategoryButton) {
-            return getButtonView((SettingsListCategoryButton<?>) SB, BackgroundChanger);
+            return getButtonView((SettingsListCategoryButton<?>) SB);
         } else if (SB instanceof SettingsListGetApiButton) {
-            return getApiKeyButtonView((SettingsListGetApiButton<?>) SB, BackgroundChanger);
+            return getApiKeyButtonView();
         } else if (SB instanceof SettingsListButtonLangSpinner) {
             return getLangSpinnerView();
         } else if (SB instanceof SettingsListButtonSkinSpinner) {
-            return getSkinSpinnerView((SettingsListButtonSkinSpinner<?>) SB);
+            return getSkinSpinnerView();
         } else if (SB instanceof SettingsAudio) {
             return getAudioView((SettingsAudio) SB, BackgroundChanger);
         } else if (SB instanceof SettingColor) {
@@ -820,7 +820,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     }
 
-    private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB, int backgroundChanger) {
+    private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB) {
         CB_Button btn = new CB_Button(ButtonRec, "Button");
 
         btn.setDraggable();
@@ -861,7 +861,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return btn;
     }
 
-    private CB_View_Base getApiKeyButtonView(final SettingsListGetApiButton<?> SB, int backgroundChanger) {
+    private CB_View_Base getApiKeyButtonView() {
         apiBtn = new API_Button(itemRec);
         apiBtn.setImage();
         return apiBtn;
@@ -1060,7 +1060,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return spinner;
     }
 
-    private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB) {
+    private CB_View_Base getSkinSpinnerView() {
         String SkinFolder = Config.mWorkPath + "/skins";
         File dir = FileFactory.createFile(SkinFolder);
         final ArrayList<String> skinFolders = new ArrayList<>();
@@ -1080,12 +1080,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         items[1] = "small";
         int index = 2;
         int selection = -1;
-        if (Config.SkinFolder.getValue().equals("default"))
+        if (Config.skinFolder.getValue().equals("default"))
             selection = 0;
-        if (Config.SkinFolder.getValue().equals("small"))
+        if (Config.skinFolder.getValue().equals("small"))
             selection = 1;
         for (String tmp : skinFolders) {
-            if (Config.SkinFolder.getValue().endsWith(tmp))
+            if (Config.skinFolder.getValue().endsWith(tmp))
                 selection = index;
             items[index++] = tmp;
         }
@@ -1110,11 +1110,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         final Spinner spinner = new Spinner(itemRec, "SelectSkin", adapter, index1 -> {
             String selected = items[index1];
             if (selected.equals("default")) {
-                Config.SkinFolder.setValue("default");
+                Config.skinFolder.setValue("default");
             } else if (selected.equals("small")) {
-                Config.SkinFolder.setValue("small");
+                Config.skinFolder.setValue("small");
             } else {
-                Config.SkinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
+                Config.skinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
             }
         });
 

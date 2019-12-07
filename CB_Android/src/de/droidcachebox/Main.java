@@ -503,7 +503,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                         wakeLock.release();
                     }
 
-                    TrackRecorder.StopRecording();
+                    TrackRecorder.stopRecording();
                     // GPS Verbindung beenden
                     androidUIBaseMethods.getLocationManager().removeUpdates(this);
                     SelectedCacheChangedEventListeners.getInstance().clear();

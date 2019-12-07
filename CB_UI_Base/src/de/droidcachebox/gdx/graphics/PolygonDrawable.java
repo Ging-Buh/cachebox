@@ -32,12 +32,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Longri
  */
 public class PolygonDrawable implements IRotateDrawable {
-    protected final float WIDTH, HEIGHT;
+    protected final float width, height;
     private final AtomicBoolean isDisposed = new AtomicBoolean(false);
-    public String DEBUG_NAME;
-    protected GL_Paint PAINT;
-    protected float[] VERTICES;
-    protected short[] TRIANGLES;
+    protected GL_Paint paint;
+    protected float[] vertices;
+    protected short[] triangles;
     protected TextureRegion texReg;
     protected Texture tex;
     protected Pixmap pix;
@@ -45,16 +44,16 @@ public class PolygonDrawable implements IRotateDrawable {
 
     public PolygonDrawable(final float[] vertices, final short[] triangles, final GL_Paint paint, float width, float height) {
         this(paint, width, height);
-        this.VERTICES = new float[vertices.length];
-        System.arraycopy(vertices, 0, this.VERTICES, 0, vertices.length);
-        this.TRIANGLES = new short[triangles.length];
-        System.arraycopy(triangles, 0, this.TRIANGLES, 0, triangles.length);
+        this.vertices = new float[vertices.length];
+        System.arraycopy(vertices, 0, this.vertices, 0, vertices.length);
+        this.triangles = new short[triangles.length];
+        System.arraycopy(triangles, 0, this.triangles, 0, triangles.length);
     }
 
     protected PolygonDrawable(final GL_Paint paint, float width, float height) {
-        this.PAINT = paint;
-        this.WIDTH = width;
-        this.HEIGHT = height;
+        this.paint = paint;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -66,15 +65,15 @@ public class PolygonDrawable implements IRotateDrawable {
 
             if (po == null) {
 
-                if (this.PAINT.getBitmapShader() == null) {
+                if (this.paint.getBitmapShader() == null) {
                     if (texReg == null)
                         createTexRegFromPixMap();
-                    po = new PolygonRegion(texReg, VERTICES, TRIANGLES);
+                    po = new PolygonRegion(texReg, vertices, triangles);
                 } else {
-                    Texture inputTex = this.PAINT.getBitmapShader().getTexture();
+                    Texture inputTex = this.paint.getBitmapShader().getTexture();
                     if (inputTex != null) {
                         inputTex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-                        po = new PolygonRegion(new TextureRegion(inputTex, (int) this.WIDTH, (int) this.HEIGHT), VERTICES, TRIANGLES);
+                        po = new PolygonRegion(new TextureRegion(inputTex, (int) this.width, (int) this.height), vertices, triangles);
                     }
                 }
 
@@ -89,8 +88,8 @@ public class PolygonDrawable implements IRotateDrawable {
             if (po == null)
                 return true;
 
-            if (this.PAINT.getBitmapShader() == null) {
-                GL.that.setBatchColor(PAINT.getGlColor());
+            if (this.paint.getBitmapShader() == null) {
+                GL.that.setBatchColor(paint.getGlColor());
             } else {
                 batch.setColor(new Color(Color.WHITE));
             }
@@ -125,7 +124,7 @@ public class PolygonDrawable implements IRotateDrawable {
 
         if (tex != null) {
             tex.setFilter(TextureFilter.Linear, TextureFilter.MipMapLinearLinear);
-            texReg = new TextureRegion(tex, (int) this.WIDTH, (int) this.HEIGHT);
+            texReg = new TextureRegion(tex, (int) this.width, (int) this.height);
 
         }
 
@@ -142,10 +141,10 @@ public class PolygonDrawable implements IRotateDrawable {
         synchronized (isDisposed) {
             if (isDisposed.get())
                 return;
-            PAINT = null;
+            paint = null;
 
-            VERTICES = null;
-            TRIANGLES = null;
+            vertices = null;
+            triangles = null;
             texReg = null;
             if (tex != null)
                 tex.dispose();

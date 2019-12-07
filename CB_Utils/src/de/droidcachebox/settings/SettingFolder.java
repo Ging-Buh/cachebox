@@ -26,6 +26,12 @@ public class SettingFolder extends SettingLongString {
         this.needWritePermission = needwritePermission;
     }
 
+    public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission, boolean needRestart) {
+        super(name, category, modus, defaultValue, StoreType, usage);
+        this.needWritePermission = needwritePermission;
+        if (needRestart) setNeedRestart();
+    }
+
     @Override
     public String getValue() {
         return replacePathSaperator(value);

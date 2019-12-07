@@ -16,7 +16,6 @@
 package de.droidcachebox.ex_import;
 
 import de.droidcachebox.core.*;
-import de.droidcachebox.core.GroundspeakAPI.PQ;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GCVoteDAO;
@@ -27,27 +26,25 @@ import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.log.Log;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.zip.ZipException;
 
 public class Importer {
     private static final String log = "Importer";
 
-    public void importGC(ArrayList<PQ> pqList) {
-        ProgresssChangedEventList.Call("import Gc.com", "", 0);
-    }
-
     /**
      * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
      * falls eine einzelne Datei übergeben wird.
      *
-     * @param directoryPath
-     * @param ip
-     * @return Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
-     * @throws Exception
+     * @param directoryPath ?
+     * @param ip ?
+     * Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
+     * @throws Exception ?
      */
     public void importGpx(String directoryPath, ImporterProgress ip) throws Exception {
         // resest import Counter
@@ -60,7 +57,7 @@ public class Importer {
         File file = FileFactory.createFile(directoryPath);
 
         if (file.isDirectory()) {
-            ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(file, new ArrayList<File>(), "zip", false);
+            ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(file, new ArrayList<>(), "zip", false);
 
             ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
 
@@ -101,7 +98,7 @@ public class Importer {
         ImportHandler importHandler = new ImportHandler();
 
         Integer countwpt = 0;
-        HashMap<String, Integer> wptCount = new HashMap<String, Integer>();
+        HashMap<String, Integer> wptCount = new HashMap<>();
 
         for (File fFile : FileList) {
 
@@ -121,10 +118,8 @@ public class Importer {
                     if (strLine.contains("<wpt"))
                         countwpt++;
                 }
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 Log.err(log, e1.getLocalizedMessage(), e1);
-            } catch (IOException e) {
-                Log.err(log, e.getLocalizedMessage(), e);
             }
 
             wptCount.put(fFile.getAbsolutePath(), countwpt);
@@ -168,8 +163,6 @@ public class Importer {
 
         importHandler.updateCacheCountForGPXFilenames();
 
-        importHandler = null;
-
         // Indexierte CacheInfos zurück schreiben
         CacheInfoList.writeListToDB();
         CacheInfoList.dispose();
@@ -177,8 +170,8 @@ public class Importer {
     }
 
     /**
-     * @param whereClause
-     * @param ip
+     * @param whereClause ?
+     * @param ip ?
      */
     public void importGcVote(String whereClause, ImporterProgress ip) {
 
@@ -201,12 +194,12 @@ public class Importer {
 
                 i++;
 
-                ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")", false);
+                ip.ProgressInkrement("sendGcVote", "Sending Votes (" + i + " / " + pendingVotes.size() + ")", false);
 
-                Boolean ret = GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
+                Boolean ret = GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.getVote(), info.getUrl(), info.getGcCode());
 
                 if (ret) {
-                    gcVoteDAO.updatePendingVote(info.Id);
+                    gcVoteDAO.updatePendingVote(info.getId());
                 }
             }
 
@@ -215,7 +208,7 @@ public class Importer {
             }
         }
 
-        Integer count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
+        int count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
 
         ip.setJobMax("importGcVote", count);
 
@@ -225,26 +218,26 @@ public class Importer {
         i = 0;
 
         while (offset < count) {
-            ArrayList<GCVoteCacheInfo> workpackage = gcVoteDAO.getGCVotePackage(whereClause, packageSize, i);
-            ArrayList<String> requests = new ArrayList<String>();
-            HashMap<String, Boolean> resetVote = new HashMap<String, Boolean>();
-            HashMap<String, Long> idLookup = new HashMap<String, Long>();
+            ArrayList<GCVoteCacheInfo> gcVotePackage = gcVoteDAO.getGCVotePackage(whereClause, packageSize, i);
+            ArrayList<String> requests = new ArrayList<>();
+            HashMap<String, Boolean> resetVote = new HashMap<>();
+            HashMap<String, Long> idLookup = new HashMap<>();
 
-            for (GCVoteCacheInfo info : workpackage) {
+            for (GCVoteCacheInfo gcVoteCacheInfo : gcVotePackage) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e2) {
                     return; // Thread Canceld
                 }
 
-                if (!info.GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) {
+                if (!gcVoteCacheInfo.getGcCode().toLowerCase(Locale.getDefault()).startsWith("gc")) {
                     ip.ProgressInkrement("importGcVote", "Not a GC.com Cache", false);
                     continue;
                 }
 
-                requests.add(info.GcCode);
-                resetVote.put(info.GcCode, !info.VotePending);
-                idLookup.put(info.GcCode, info.Id);
+                requests.add(gcVoteCacheInfo.getGcCode());
+                resetVote.put(gcVoteCacheInfo.getGcCode(), !gcVoteCacheInfo.isVotePending());
+                idLookup.put(gcVoteCacheInfo.getGcCode(), gcVoteCacheInfo.getId());
             }
 
             ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
@@ -264,7 +257,7 @@ public class Importer {
 
                     i++;
 
-                    ip.ProgressInkrement("importGcVote", "Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")", false);
+                    ip.ProgressInkrement("importGcVote", "Writing Ratings (" + (i + failCount) + " / " + count + ")", false);
                 }
 
             }
@@ -280,9 +273,9 @@ public class Importer {
     }
 
     /**
-     * @param ip
-     * @param importImages
-     * @param importSpoiler
+     * @param ip ?
+     * @param importImages ?
+     * @param importSpoiler ?
      * @param where         [Last Filter]FilterInstances.LastFilter.getSqlWhere();
      * @return ErrorCode Use with<br>
      */
@@ -318,7 +311,7 @@ public class Importer {
 
                     if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
                     {
-                        ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
+                        ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + cnt + " / " + numCaches + ")", false);
 
                         String description = reader.getString(1);
                         String uri = reader.getString(4);
@@ -365,7 +358,7 @@ public class Importer {
     }
 
     private File[] GetFilesToLoad(String directoryPath) {
-        ArrayList<File> files = new ArrayList<File>();
+        ArrayList<File> files = new ArrayList<>();
 
         File file = FileFactory.createFile(directoryPath);
         if (file.isFile()) {
@@ -376,23 +369,20 @@ public class Importer {
             }
         }
 
-        File[] fileArray = files.toArray(new File[files.size()]);
+        File[] fileArray = files.toArray(new File[0]);
 
-        Arrays.sort(fileArray, new Comparator<File>() {
-            @Override
-            public int compare(File f1, File f2) {
+        Arrays.sort(fileArray, (f1, f2) -> {
 
-                if (f1.getName().equalsIgnoreCase(f2.getName().replace(".gpx", "") + "-wpts.gpx")) {
-                    return 1;
-                } else if (f2.getName().equalsIgnoreCase(f1.getName().replace(".gpx", "") + "-wpts.gpx")) {
-                    return -1;
-                } else if (f1.lastModified() > f2.lastModified()) {
-                    return 1;
-                } else if (f1.lastModified() < f2.lastModified()) {
-                    return -1;
-                } else {
-                    return f1.getAbsolutePath().compareToIgnoreCase(f2.getAbsolutePath()) * -1;
-                }
+            if (f1.getName().equalsIgnoreCase(f2.getName().replace(".gpx", "") + "-wpts.gpx")) {
+                return 1;
+            } else if (f2.getName().equalsIgnoreCase(f1.getName().replace(".gpx", "") + "-wpts.gpx")) {
+                return -1;
+            } else if (f1.lastModified() > f2.lastModified()) {
+                return 1;
+            } else if (f1.lastModified() < f2.lastModified()) {
+                return -1;
+            } else {
+                return f1.getAbsolutePath().compareToIgnoreCase(f2.getAbsolutePath()) * -1;
             }
         });
 

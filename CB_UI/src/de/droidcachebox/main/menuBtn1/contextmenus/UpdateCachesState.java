@@ -167,7 +167,7 @@ public class UpdateCachesState extends AbstractAction {
                 // Reload result from DB
                 synchronized (Database.Data.cacheList) {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 synchronized (Database.Data.cacheList) {

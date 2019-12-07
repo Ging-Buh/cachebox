@@ -350,7 +350,7 @@ public class MainViewInit extends MainViewBase {
         Database.Data.updateCacheCountForGPXFilenames();
 
         synchronized (Database.Data.cacheList) {
-            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();

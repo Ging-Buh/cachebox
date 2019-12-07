@@ -98,7 +98,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public static void reloadCacheList() {
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
         synchronized (Database.Data.cacheList) {
-            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.ShowAllWaypoints.getValue());
+            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
@@ -113,7 +113,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
         Config.ImperialUnits.addSettingChangedListener(() -> UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue()));
 
-        Config.ShowAllWaypoints.addSettingChangedListener(() -> {
+        Config.showAllWaypoints.addSettingChangedListener(() -> {
             reloadCacheList();
             // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
             ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
@@ -193,7 +193,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         autoLoadTrack();
 
         if (Config.TrackRecorderStartup.getValue() && PlatformUIBase.isGPSon()) {
-            TrackRecorder.StartRecording();
+            TrackRecorder.startRecording();
         }
         Config.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Config.TrackDistance.getValue());
 
