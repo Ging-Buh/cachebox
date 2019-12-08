@@ -834,7 +834,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         renderOnce("OrientationChanged");
     }
 
-    public void SetAlignToCompass(boolean value) {
+    public void setAlignToCompass(boolean value) {
         if (!value) {
             drawingWidth = mapIntWidth;
             drawingHeight = mapIntHeight;
@@ -1196,7 +1196,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             isCarMode = true;
             invalidateTexture();
         } else if (mapState == MapState.WP) {
-            MapStateChangedToWP();
+            mapStateChangedToWP();
         } else if (mapState == MapState.LOCK || mapState == MapState.GPS) {
             setCenter(Locator.getInstance().getMyPosition());
         }
@@ -1211,7 +1211,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     }
 
-    public abstract void MapStateChangedToWP();
+    public abstract void mapStateChangedToWP();
 
     public void SetZoom(int newZoom) {
 

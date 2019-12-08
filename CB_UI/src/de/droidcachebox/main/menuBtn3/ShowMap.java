@@ -121,7 +121,7 @@ public class ShowMap extends AbstractShowAction {
         }
         icm.addMenuItem("overlays", null, this::showMapOverlayMenu);
         icm.addMenuItem("view", null, this::showMapViewLayerMenu);
-        icm.addCheckableMenuItem("AlignToCompass", normalMapView.GetAlignToCompass(), () -> normalMapView.SetAlignToCompass(!normalMapView.GetAlignToCompass()));
+        icm.addCheckableMenuItem("AlignToCompass", normalMapView.GetAlignToCompass(), () -> normalMapView.setAlignToCompass(!normalMapView.GetAlignToCompass()));
         icm.addMenuItem("CenterWP", null, () -> normalMapView.createWaypointAtCenter());
         icm.addMenuItem("gotoPlace", null, () -> {
             searchCoordinates = new SearchCoordinates() {

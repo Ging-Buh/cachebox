@@ -623,7 +623,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (aktZoom >= 15) {
                 if (distanceCircle == null)
                     distanceCircle = new CircleDrawable(0, 0, pixelsPerMeter * 161, distanceCirclePaint, mapIntWidth, mapIntHeight);
-                distanceCircle.setPosition(screen.x, screen.y);
+                distanceCircle.setPosition(screen.x, screen.y, pixelsPerMeter * 161);
                 distanceCircle.draw(batch, 0, 0, getWidth(), getHeight(), 0);
             }
         }
@@ -1239,7 +1239,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    public void MapStateChangedToWP() {
+    public void mapStateChangedToWP() {
         if (GlobalCore.isSetSelectedCache()) {
             if (GlobalCore.getSelectedWaypoint() != null) {
                 Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
@@ -1252,8 +1252,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    public void SetAlignToCompass(boolean value) {
-        super.SetAlignToCompass(value);
+    public void setAlignToCompass(boolean value) {
+        super.setAlignToCompass(value);
         Config.isMapNorthOriented.setValue(!value);
     }
 

@@ -24,7 +24,7 @@ public class CircleDrawable extends PolygonDrawable {
 
     private final static float MIN_SEGMENTH_LENGTH = 10;
     private final static int MIN_SEGMENTH_COUNT = 18;
-    private final float radius;
+    private float radius;
     private float x;
     private float y;
 
@@ -36,9 +36,10 @@ public class CircleDrawable extends PolygonDrawable {
         createTriangles();
     }
 
-    public void setPosition(float x, float y) {
+    public void setPosition(float x, float y, float radius) {
         this.x = x;
         this.y = y;
+        this.radius = radius;
         po = null;
         createTriangles();
     }
