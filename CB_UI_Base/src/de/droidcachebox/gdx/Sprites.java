@@ -368,7 +368,7 @@ public class Sprites {
         }
 
         if (Arrows == null)
-            Arrows = new ArrayList<Sprite>();
+            Arrows = new ArrayList<>();
         synchronized (Arrows) {
 
             float scale = UiSizes.getInstance().getScale();

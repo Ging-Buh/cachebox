@@ -65,15 +65,15 @@ public class PolygonDrawable implements IRotateDrawable {
 
             if (po == null) {
 
-                if (this.paint.getBitmapShader() == null) {
+                if (paint.getBitmapShader() == null) {
                     if (texReg == null)
                         createTexRegFromPixMap();
                     po = new PolygonRegion(texReg, vertices, triangles);
                 } else {
-                    Texture inputTex = this.paint.getBitmapShader().getTexture();
+                    Texture inputTex = paint.getBitmapShader().getTexture();
                     if (inputTex != null) {
                         inputTex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-                        po = new PolygonRegion(new TextureRegion(inputTex, (int) this.width, (int) this.height), vertices, triangles);
+                        po = new PolygonRegion(new TextureRegion(inputTex, (int) width, (int) height), vertices, triangles);
                     }
                 }
 
@@ -88,7 +88,7 @@ public class PolygonDrawable implements IRotateDrawable {
             if (po == null)
                 return true;
 
-            if (this.paint.getBitmapShader() == null) {
+            if (paint.getBitmapShader() == null) {
                 GL.that.setBatchColor(paint.getGlColor());
             } else {
                 batch.setColor(new Color(Color.WHITE));
@@ -124,7 +124,7 @@ public class PolygonDrawable implements IRotateDrawable {
 
         if (tex != null) {
             tex.setFilter(TextureFilter.Linear, TextureFilter.MipMapLinearLinear);
-            texReg = new TextureRegion(tex, (int) this.width, (int) this.height);
+            texReg = new TextureRegion(tex, (int) width, (int) height);
 
         }
 

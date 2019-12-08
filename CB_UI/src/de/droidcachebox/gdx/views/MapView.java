@@ -85,6 +85,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     private MapInfoPanel info;
     private PointL lastScreenCenter;
     private GL_Paint distanceCirclePaint;
+    private CircleDrawable distanceCircle;
 
 
     public MapView(CB_RectF cb_RectF, MapMode mapMode) {
@@ -435,9 +436,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         distanceCirclePaint = new GL_Paint();
         distanceCirclePaint.setGLColor(Color.GOLDENROD);
-        distanceCirclePaint.setStrokeWidth( 2 * UiSizes.getInstance().getScale());
+        distanceCirclePaint.setStrokeWidth(2 * UiSizes.getInstance().getScale());
         distanceCirclePaint.setStyle(GL_Paint.GL_Style.STROKE);
-
+        distanceCircle = null;
     }
 
     @Override
@@ -448,7 +449,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         int iconSize = 0; // 8x8
         if ((aktZoom >= 13) && (aktZoom <= 14))
             iconSize = 1; // 13x13
-        else if (aktZoom > 14)
+        else if (aktZoom >= 15)
             iconSize = 2; // default Images
 
         if (mapMode != MapMode.Compass)
@@ -542,15 +543,15 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 direction = 180 - direction;
 
                 // draw sprite
-                Sprite arrow = Arrows.get(4);
+                Sprite arrow = Arrows.get(4); // 4 = target-arrow
                 arrow.setRotation(direction);
 
-                float boundsX = newTarget.x - GL_UISizes.TargetArrow.halfWidth;
-                float boundsY = newTarget.y - GL_UISizes.TargetArrow.height;
+                float boundsX = newTarget.x - GL_UISizes.targetArrow.halfWidth;
+                float boundsY = newTarget.y - GL_UISizes.targetArrow.height;
 
-                arrow.setBounds(boundsX, boundsY, GL_UISizes.TargetArrow.width, GL_UISizes.TargetArrow.height);
+                arrow.setBounds(boundsX, boundsY, GL_UISizes.targetArrow.width, GL_UISizes.targetArrow.height);
 
-                arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
+                arrow.setOrigin(GL_UISizes.targetArrow.halfWidth, GL_UISizes.targetArrow.height);
                 arrow.draw(batch);
 
                 // get real bounding box of TargetArrow
@@ -619,7 +620,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         float NameYMovement = 0;
 
         if (showDistanceCircle) {
-            new CircleDrawable(screen.x, screen.y, pixelsPerMeter * 161, distanceCirclePaint, mapIntWidth, mapIntHeight).draw(batch, 0, 0, getWidth(), getHeight(), 0);
+            if (aktZoom >= 15) {
+                if (distanceCircle == null)
+                    distanceCircle = new CircleDrawable(0, 0, pixelsPerMeter * 161, distanceCirclePaint, mapIntWidth, mapIntHeight);
+                distanceCircle.setPosition(screen.x, screen.y);
+                distanceCircle.draw(batch, 0, 0, getWidth(), getHeight(), 0);
+            }
         }
 
         if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {

@@ -22,12 +22,11 @@ import com.badlogic.gdx.math.MathUtils;
  */
 public class CircleDrawable extends PolygonDrawable {
 
-    final static float MIN_SEGMENTH_LENGTH = 10;
-    final static int MIN_SEGMENTH_COUNT = 18;
-    final float radius;
-    final float x;
-    final float y;
-    int segmente;
+    private final static float MIN_SEGMENTH_LENGTH = 10;
+    private final static int MIN_SEGMENTH_COUNT = 18;
+    private final float radius;
+    private float x;
+    private float y;
 
     public CircleDrawable(float x, float y, float radius, GL_Paint paint, float width, float height) {
         super(paint, width, height);
@@ -37,10 +36,17 @@ public class CircleDrawable extends PolygonDrawable {
         createTriangles();
     }
 
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+        po = null;
+        createTriangles();
+    }
+
     private void createTriangles() {
         // calculate segment count
         double alpha = (360 * MIN_SEGMENTH_LENGTH) / (MathUtils.PI2 * radius);
-        segmente = Math.max(MIN_SEGMENTH_COUNT, (int) (360 / alpha));
+        int segmente = Math.max(MIN_SEGMENTH_COUNT, (int) (360 / alpha));
 
         // calculate theta step
         double thetaStep = (MathUtils.PI2 / segmente);
