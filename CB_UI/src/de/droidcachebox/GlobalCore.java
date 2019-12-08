@@ -113,7 +113,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
             return false;
     }
 
-    static Cache NearestCache() {
+    static Cache getNearestCache() {
         return nearestCache;
     }
 

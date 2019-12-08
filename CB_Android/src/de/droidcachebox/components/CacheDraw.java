@@ -339,16 +339,15 @@ public class CacheDraw {
 
     private static String getLastFoundLogDate(Cache cache) {
         String FoundDate = "";
-        CB_List<LogEntry> logs = new CB_List<LogEntry>();
-        logs = Database.getLogs(cache);// cache.Logs();
-        for (int i = 0, n = logs.size(); i < n; i++) {
+        CB_List<LogEntry> logs = Database.getLogs(cache);
+        int n = logs.size();
+        for (int i = 0; i < n; i++) {
             LogEntry l = logs.get(i);
-            if (l.Type == LogTypes.found) {
+            if (l.logTypes == LogTypes.found) {
                 try {
                     SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-                    FoundDate = postFormater.format(l.Timestamp);
-                } catch (Exception e) {
-
+                    FoundDate = postFormater.format(l.logDate);
+                } catch (Exception ignored) {
                 }
                 break;
             }

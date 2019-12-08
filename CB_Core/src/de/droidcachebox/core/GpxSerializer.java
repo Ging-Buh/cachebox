@@ -410,21 +410,21 @@ public final class GpxSerializer {
         for (int i = 0; i < cleanLogs.size(); i++) {
             LogEntry log = cleanLogs.get(i);
             gpx.startTag(PREFIX_GROUNDSPEAK, "log");
-            gpx.attribute("", "id", Integer.toString((int) log.Id));
+            gpx.attribute("", "id", Integer.toString((int) log.logId));
 
-            multipleTexts(gpx, PREFIX_GROUNDSPEAK, "date", dateFormatZ.format(log.Timestamp), "type", log.Type.toString());
+            multipleTexts(gpx, PREFIX_GROUNDSPEAK, "date", dateFormatZ.format(log.logDate), "type", log.logTypes.toString());
 
             gpx.startTag(PREFIX_GROUNDSPEAK, "finder");
             gpx.attribute("", "id", "");
-            gpx.text(validateChar(log.Finder));
+            gpx.text(validateChar(log.finder));
             gpx.endTag(PREFIX_GROUNDSPEAK, "finder");
 
             gpx.startTag(PREFIX_GROUNDSPEAK, "text");
             gpx.attribute("", "encoded", "False");
             try {
-                gpx.text(validateChar(log.Comment));
+                gpx.text(validateChar(log.logText));
             } catch (final IllegalArgumentException e) {
-                Log.err(sKlasse, "GpxSerializer.writeLogs: cannot write log " + log.Id + " for cache " + cache.getGcCode(), e);
+                Log.err(sKlasse, "GpxSerializer.writeLogs: cannot write log " + log.logId + " for cache " + cache.getGcCode(), e);
                 gpx.text(" [end of log omitted due to an invalid character]");
             }
             gpx.endTag(PREFIX_GROUNDSPEAK, "text");

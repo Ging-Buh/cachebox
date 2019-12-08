@@ -40,16 +40,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class LogView extends V_ListView implements SelectedCacheChangedEventListener {
-    private static CB_RectF ItemRec;
-    private static LogView that;
+    private static CB_RectF itemRec;
+    private static LogView logView;
     private Cache aktCache;
-    private LogListAdapter lvAdapter;
-    private CB_List<LogViewItem> itemList;
+    private LogListAdapter logListAdapter;
+    private CB_List<LogViewItem> logViewItems;
 
     private LogView() {
         super(ViewManager.leftTab.getContentRec(), "LogView");
         setForceHandleTouchEvents();
-        ItemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
+        itemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
         this.setAdapter(null);
@@ -58,8 +58,8 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
     }
 
     public static LogView getInstance() {
-        if (that == null) that = new LogView();
-        return that;
+        if (logView == null) logView = new LogView();
+        return logView;
     }
 
     @Override
@@ -79,8 +79,8 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
         createItemList();
 
-        lvAdapter = new LogListAdapter();
-        this.setAdapter(lvAdapter);
+        logListAdapter = new LogListAdapter();
+        this.setAdapter(logListAdapter);
 
         this.setEmptyMsg(Translation.get("EmptyLogList"));
 
@@ -88,9 +88,9 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
     }
 
     private void createItemList() {
-        if (itemList == null)
-            itemList = new CB_List<>();
-        itemList.clear();
+        if (logViewItems == null)
+            logViewItems = new CB_List<>();
+        logViewItems.clear();
 
         if (aktCache == null)
             return;
@@ -107,12 +107,12 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
             LogEntry logEntry = cleanLogs.get(i);
             if (GlobalCore.filterLogsOfFriends) {
                 // nur die Logs der eingetragenen Freunde anzeigen
-                if (!friendList.contains(logEntry.Finder)) {
+                if (!friendList.contains(logEntry.finder)) {
                     continue;
                 }
             }
-            CB_RectF rec = ItemRec.copy();
-            rec.setHeight(MeasureItemHeight(logEntry));
+            CB_RectF rec = itemRec.copy();
+            rec.setHeight(measureItemHeight(logEntry));
             final LogViewItem v = new LogViewItem(rec, index++, logEntry);
 
             v.setOnLongClickListener((view, x, y, pointer, button) -> {
@@ -121,21 +121,21 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
                 return true;
             });
 
-            itemList.add(v);
+            logViewItems.add(v);
         }
 
         this.notifyDataSetChanged();
 
     }
 
-    private float MeasureItemHeight(LogEntry logEntry) {
+    private float measureItemHeight(LogEntry logEntry) {
         // object ist nicht von Dialog abgeleitet, daher
         float margin = UiSizes.getInstance().getMargin();
         float headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + margin;
 
-        float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (margin * 2);
+        float mesurdWidth = itemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (margin * 2);
 
-        float commentHeight = (margin * 4) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
+        float commentHeight = (margin * 4) + Fonts.MeasureWrapped(logEntry.logText, mesurdWidth).height;
 
         return headHeight + commentHeight;
     }
@@ -160,10 +160,10 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
     public void dispose() {
         this.setAdapter(null);
         aktCache = null;
-        lvAdapter = null;
-        if (itemList != null)
-            itemList.clear();
-        itemList = null;
+        logListAdapter = null;
+        if (logViewItems != null)
+            logViewItems.clear();
+        logViewItems = null;
         super.dispose();
         //Log.debug(log, "LogView disposed");
     }
@@ -174,8 +174,8 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
         @Override
         public int getCount() {
-            if (itemList != null) {
-                return itemList.size();
+            if (logViewItems != null) {
+                return logViewItems.size();
             } else {
                 return 0;
             }
@@ -183,17 +183,17 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
         @Override
         public ListViewItemBase getView(int position) {
-            if (itemList != null) {
-                return itemList.get(position);
+            if (logViewItems != null) {
+                return logViewItems.get(position);
             } else
                 return null;
         }
 
         @Override
         public float getItemSize(int position) {
-            if (itemList.size() == 0)
+            if (logViewItems.size() == 0)
                 return 0;
-            return itemList.get(position).getHeight();
+            return logViewItems.get(position).getHeight();
         }
 
     }

@@ -386,12 +386,12 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             // ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
             progressBar.setProgress(count * 100 / anz, "" + count + "/" + anz);
             LogEntry logEntry = new LogEntry();
-            logEntry.CacheId = Cache.GenerateCacheId(LogsReader.getString("lParent"));
-            logEntry.Comment = LogsReader.getString("lText");
-            logEntry.Finder = LogsReader.getString("lBy");
-            logEntry.Timestamp = DateFromString(LogsReader.getString("lDate"));
-            logEntry.Type = LogTypes.parseString(LogsReader.getString("lType"));
-            logEntry.Id = LogsReader.getInt("lLogId");
+            logEntry.cacheId = Cache.GenerateCacheId(LogsReader.getString("lParent"));
+            logEntry.logText = LogsReader.getString("lText");
+            logEntry.finder = LogsReader.getString("lBy");
+            logEntry.logDate = DateFromString(LogsReader.getString("lDate"));
+            logEntry.logTypes = LogTypes.parseString(LogsReader.getString("lType"));
+            logEntry.logId = LogsReader.getInt("lLogId");
 
             WriteIntoDB.logDAO.WriteToDatabase(logEntry);
 

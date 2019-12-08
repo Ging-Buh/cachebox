@@ -123,8 +123,8 @@ public class CacheInfo extends CB_View_Base {
         CB_List<LogEntry> logs = Database.getLogs(mCache);
         for (int i = 0, n = logs.size(); i < n; i++) {
             LogEntry l = logs.get(i);
-            if (l.Type == LogTypes.found) {
-                return new SimpleDateFormat("dd.MM.yy").format(l.Timestamp);
+            if (l.logTypes == LogTypes.found) {
+                return new SimpleDateFormat("dd.MM.yy").format(l.logDate);
             }
         }
         return "";

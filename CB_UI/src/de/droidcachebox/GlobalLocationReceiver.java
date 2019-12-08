@@ -137,19 +137,19 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                         // only when showing Map or cacheList
                         if (!Database.Data.cacheList.ResortAtWork) {
                             if (GlobalCore.getAutoResort()) {
-                                if ((GlobalCore.NearestCache() == null)) {
+                                if ((GlobalCore.getNearestCache() == null)) {
                                     GlobalCore.setNearestCache(GlobalCore.getSelectedCache());
                                 }
                                 int z = 0;
-                                if (!(GlobalCore.NearestCache() == null)) {
+                                if (!(GlobalCore.getNearestCache() == null)) {
                                     boolean resort = false;
-                                    if (GlobalCore.NearestCache().isFound()) {
+                                    if (GlobalCore.getNearestCache().isFound()) {
                                         resort = true;
                                     } else {
-                                        if (GlobalCore.getSelectedCache() != GlobalCore.NearestCache()) {
-                                            GlobalCore.setSelectedWaypoint(GlobalCore.NearestCache(), null, false);
+                                        if (GlobalCore.getSelectedCache() != GlobalCore.getNearestCache()) {
+                                            GlobalCore.setSelectedWaypoint(GlobalCore.getNearestCache(), null, false);
                                         }
-                                        float nearestDistance = GlobalCore.NearestCache().Distance(CalculationType.FAST, true);
+                                        float nearestDistance = GlobalCore.getNearestCache().Distance(CalculationType.FAST, true);
 
                                         for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                                             Cache cache = Database.Data.cacheList.get(i);

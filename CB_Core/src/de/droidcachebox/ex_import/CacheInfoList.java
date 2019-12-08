@@ -127,8 +127,8 @@ public class CacheInfoList {
     /**
      * True wenn der Cache in der Liste Existiert
      *
-     * @param GcCode
-     * @return
+     * @param GcCode ?
+     * @return ?
      */
     public static boolean ExistCache(String GcCode) {
         if (mCacheInfoList == null)
@@ -161,7 +161,7 @@ public class CacheInfoList {
      * Fügt die CacheInfo in der Liste mit dem Infos des übergebenen Caches zusammen und ändert gegebenenfalls die Changed Attribute neu!
      *
      */
-    public static void mergeCacheInfo(Cache cache) throws IOException {
+    public static void mergeCacheInfo(Cache cache) {
         String gcCode = cache.getGcCode();
         CacheInfo cacheInfo = mCacheInfoList.get(gcCode);
         if (cacheInfo != null) {
@@ -187,17 +187,16 @@ public class CacheInfoList {
             String stringForListingCheckSum = Database.getDescription(cache);
             String recentOwnerLogString = "";
 
-            CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-            cleanLogs = Database.getLogs(cache);// cache.Logs();
+            CB_List<LogEntry> cleanLogs = Database.getLogs(cache);
 
             if (cleanLogs.size() > 0) {
-                for (int i = 0, n = cleanLogs.size(); i < n; i++) {
+                int n = cleanLogs.size();
+                for (int i = 0; i < n; i++) {
                     LogEntry entry = cleanLogs.get(i);
-                    String Comment = entry.Comment;
-                    String Finder = entry.Finder;
-
-                    if (Finder.equalsIgnoreCase(cache.getOwner())) {
-                        recentOwnerLogString += Comment;
+                    String comment = entry.logText;
+                    String finder = entry.finder;
+                    if (finder.equalsIgnoreCase(cache.getOwner())) {
+                        recentOwnerLogString += comment;
                         break;
                     }
                 }
@@ -316,8 +315,8 @@ public class CacheInfoList {
         if (cleanLogs.size() > 0) {
             for (int i = 0, n = cleanLogs.size(); i < n; i++) {
                 LogEntry entry = cleanLogs.get(i);
-                String Comment = entry.Comment;
-                String Finder = entry.Finder;
+                String Comment = entry.logText;
+                String Finder = entry.finder;
 
                 if (Finder.equalsIgnoreCase(cache.getOwner())) {
                     recentOwnerLogString += Comment;

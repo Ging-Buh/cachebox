@@ -182,6 +182,7 @@ public abstract class Database extends Database_Core {
         CB_List<LogEntry> result = new CB_List<>();
         if (cache == null) // if no cache is selected!
             return result;
+        Log.info(log, "getLogs for cache: " + cache.getGcCode());
         CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]{Long.toString(cache.Id)});
 
         reader.moveToFirst();
@@ -203,29 +204,29 @@ public abstract class Database extends Database_Core {
 
         LogEntry retLogEntry = new LogEntry();
 
-        retLogEntry.CacheId = reader.getLong(0);
+        retLogEntry.cacheId = reader.getLong(0);
 
         String sDate = reader.getString(1);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
-            retLogEntry.Timestamp = iso8601Format.parse(sDate);
+            retLogEntry.logDate = iso8601Format.parse(sDate);
         } catch (ParseException ignored) {
         }
-        retLogEntry.Finder = reader.getString(2);
-        retLogEntry.Type = LogTypes.values()[reader.getInt(3)];
+        retLogEntry.finder = reader.getString(2);
+        retLogEntry.logTypes = LogTypes.values()[reader.getInt(3)];
         // retLogEntry.TypeIcon = reader.getInt(3);
-        retLogEntry.Comment = reader.getString(4);
-        retLogEntry.Id = reader.getLong(5);
+        retLogEntry.logText = reader.getString(4);
+        retLogEntry.logId = reader.getLong(5);
 
         int lIndex;
 
-        while ((lIndex = retLogEntry.Comment.indexOf('[')) >= 0) {
-            int rIndex = retLogEntry.Comment.indexOf(']', lIndex);
+        while ((lIndex = retLogEntry.logText.indexOf('[')) >= 0) {
+            int rIndex = retLogEntry.logText.indexOf(']', lIndex);
 
             if (rIndex == -1)
                 break;
 
-            retLogEntry.Comment = retLogEntry.Comment.substring(0, lIndex) + retLogEntry.Comment.substring(rIndex + 1);
+            retLogEntry.logText = retLogEntry.logText.substring(0, lIndex) + retLogEntry.logText.substring(rIndex + 1);
         }
 
         return retLogEntry;

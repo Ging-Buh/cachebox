@@ -8,7 +8,6 @@ import de.droidcachebox.utils.Plattform;
 public abstract class AbstractGlobal {
     public static final String br = System.getProperty("line.separator");
     public static final String fs = System.getProperty("file.separator");
-    public static boolean useSmallSkin = false;
     public static DisplayType displayType = DisplayType.Normal;
     public static float displayDensity = 1;
     protected static AbstractGlobal Instance;
@@ -29,12 +28,8 @@ public abstract class AbstractGlobal {
             return Gdx.files.internal(path);
         } else {
             FileHandle ret = Gdx.files.classpath(path);
-
-            if (ret != null & !ret.exists()) {
-                //try internal
-                ret = Gdx.files.internal(path);
-            }
-
+            //try internal
+            if (ret != null && !ret.exists()) ret = Gdx.files.internal(path);
             return ret;
         }
     }

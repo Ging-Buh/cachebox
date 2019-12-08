@@ -284,7 +284,6 @@ public class Splash extends Activity {
                 GlobalCore.displayType = DisplayType.Normal;
             else
                 GlobalCore.displayType = DisplayType.Small;
-            GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
 
             // class UiSizes
             DevicesSizes ui = new DevicesSizes();

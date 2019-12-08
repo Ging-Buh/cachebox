@@ -52,6 +52,7 @@ import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
 import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.Android_TextInput;
@@ -198,7 +199,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                 } else {
                     Log.info(sKlasse, "=> onCreate; initializations from savedInstanceState");
                     // ? everything, that is initialized in Splash
-                    GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
+                    if (savedInstanceState.getBoolean("useSmallSkin"))
+                        GlobalCore.displayType = DisplayType.Small;
                     new Config(savedInstanceState.getString("WorkPath"));
                     if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
                         return;
@@ -352,7 +354,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.info(sKlasse, "=> onSaveInstanceState");
-        savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
+        savedInstanceState.putBoolean("useSmallSkin", GlobalCore.displayType == DisplayType.Small);
         savedInstanceState.putString("WorkPath", Config.mWorkPath);
 
         savedInstanceState.putInt("WindowWidth", UiSizes.getInstance().getWindowWidth());

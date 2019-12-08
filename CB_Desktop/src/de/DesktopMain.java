@@ -9,32 +9,33 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
 import de.droidcachebox.PlatformUIBase.IgetFolderReturnListener;
 import de.droidcachebox.PlatformUIBase.Methods;
-import de.droidcachebox.database.DesktopDB;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
+import de.droidcachebox.database.DesktopDB;
+import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Listener_Interface;
 import de.droidcachebox.gdx.GL_View_Base;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.DesktopTexturePacker;
+import de.droidcachebox.gdx.utils.DesktopClipboard;
 import de.droidcachebox.gdx.views.MainViewInit;
 import de.droidcachebox.locator.DesktopLocatorBaseMethods;
 import de.droidcachebox.locator.Location;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
 import de.droidcachebox.settings.SettingString;
-import de.droidcachebox.gdx.utils.DesktopClipboard;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.Log;
-import de.droidcachebox.database.SQLiteClass;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -95,7 +96,8 @@ public class DesktopMain {
         int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 
         // chek if use small skin
-        GlobalCore.useSmallSkin = sw < 360 ? true : false;
+        if (sw < 360) GlobalCore.displayType = DisplayType.Small;
+        else GlobalCore.displayType = DisplayType.Normal;
 
         sw /= ui.Density;
 

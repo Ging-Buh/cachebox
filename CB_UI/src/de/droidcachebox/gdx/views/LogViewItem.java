@@ -71,19 +71,19 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     private void iniImage() {
         ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
         this.addChild(ivTyp);
-        ivTyp.setDrawable(new SpriteDrawable(Sprites.LogIcons.get(logEntry.Type.getIconID())));
+        ivTyp.setDrawable(new SpriteDrawable(Sprites.LogIcons.get(logEntry.logTypes.getIconID())));
         secondTab = ivTyp.getMaxX() + (UiSizes.getInstance().getMargin() * 2);
     }
 
     private void iniFoundLabel() {
-        lblFinder = new CB_Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UiSizes.getInstance().getMargin(), MeasuredLabelHeight, logEntry.Finder);
+        lblFinder = new CB_Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UiSizes.getInstance().getMargin(), MeasuredLabelHeight, logEntry.finder);
         this.addChild(lblFinder);
     }
 
     private void iniDateLabel() {
         // SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
         SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
-        String dateString = postFormater.format(logEntry.Timestamp);
+        String dateString = postFormater.format(logEntry.logDate);
         float DateLength = Fonts.Measure(dateString).width;
 
         lblDate = new CB_Label(this.name + " lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, dateString);
@@ -96,7 +96,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         CB_RectF rectF = new CB_RectF(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2), this.getHeight() - headHeight - UiSizes.getInstance().getMargin());
         mComment = new EditTextField(rectF, this, "mComment");
         mComment.setWrapType(WrapType.WRAPPED);
-        mComment.setText(logEntry.Comment);
+        mComment.setText(logEntry.logText);
         mComment.setEditable(false);
         mComment.setClickable(false);
         mComment.setBackground(null, null);
@@ -150,8 +150,8 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
     @Override
     public String copyToClipboard() {
-        clipboard.setContents(this.logEntry.Comment);
-        return this.logEntry.Comment;
+        clipboard.setContents(this.logEntry.logText);
+        return this.logEntry.logText;
     }
 
     @Override

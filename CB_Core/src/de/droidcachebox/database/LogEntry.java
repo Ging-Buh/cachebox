@@ -10,53 +10,47 @@ public class LogEntry implements Serializable {
     /**
      * Benutzername des Loggers
      */
-    public String Finder = "";
+    public String finder = "";
 
     /**
      * Logtyp, z.B. "Found it!"
      */
-    public LogTypes Type;
-
-    // /**
-    // * Index des zu verwendenden Bildchens
-    // */
-    // public int TypeIcon = -1;
+    public LogTypes logTypes;
 
     /**
      * Geschriebener Text
      */
-    public String Comment = "";
+    public String logText = "";
 
     /**
      * Zeitpunkt
      */
-    public Date Timestamp = new Date(0);
+    public Date logDate = new Date(0);
 
     /**
      * Id des Caches
      */
-    public long CacheId = -1;
+    public long cacheId = -1;
 
     /**
      * Id des Logs
      */
-    public long Id = -1;
+    public long logId = -1;
 
     public void clear() {
-        Finder = "";
-        Type = null;
-        // TypeIcon = -1;
-        Comment = "";
-        Timestamp = new Date(0);
-        CacheId = -1;
-        Id = -1;
+        finder = "";
+        logTypes = null;
+        logText = "";
+        logDate = new Date(0);
+        cacheId = -1;
+        logId = -1;
     }
 
     public void dispose() {
-        Finder = null;
-        Type = null;
-        Comment = null;
-        Timestamp = null;
+        finder = null;
+        logTypes = null;
+        logText = null;
+        logDate = null;
     }
 
 }

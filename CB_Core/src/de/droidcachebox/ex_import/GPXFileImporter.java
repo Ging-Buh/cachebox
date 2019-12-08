@@ -1233,34 +1233,34 @@ public class GPXFileImporter {
                 int count = Integer.parseInt(values.get("cache_logs_count"));
 
                 for (int i = 1; i <= count; i++) {
-                    log.CacheId = cache.Id;
+                    log.cacheId = cache.Id;
                     String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
                     if (attrValue != null) {
                         try {
-                            log.Id = Long.parseLong(attrValue);
+                            log.logId = Long.parseLong(attrValue);
                             // GSAK Special improvisiert
-                            if (log.Id < 0)
-                                log.Id = log.CacheId + log.Id;
+                            if (log.logId < 0)
+                                log.logId = log.cacheId + log.logId;
                         } catch (Exception ex) {
                             // Cache ID konnte nicht als Zahl interpretiert werden -> in eine eindeutige Zahl wandeln
-                            log.Id = Cache.GenerateCacheId(attrValue);
+                            log.logId = Cache.GenerateCacheId(attrValue);
                         }
                     }
 
                     if (values.containsKey("cache_log_" + String.valueOf(i) + "_date")) {
-                        log.Timestamp = parseDate(values.get("cache_log_" + String.valueOf(i) + "_date"));
+                        log.logDate = parseDate(values.get("cache_log_" + String.valueOf(i) + "_date"));
                     }
 
                     if (values.containsKey("cache_log_" + String.valueOf(i) + "_finder")) {
-                        log.Finder = values.get("cache_log_" + String.valueOf(i) + "_finder");
+                        log.finder = values.get("cache_log_" + String.valueOf(i) + "_finder");
                     }
 
                     if (values.containsKey("cache_log_" + String.valueOf(i) + "_text")) {
-                        log.Comment = values.get("cache_log_" + String.valueOf(i) + "_text");
+                        log.logText = values.get("cache_log_" + String.valueOf(i) + "_text");
                     }
 
                     if (values.containsKey("cache_log_" + String.valueOf(i) + "_type")) {
-                        log.Type = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
+                        log.logTypes = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
                     }
 
                     if (log != null) {

@@ -1330,18 +1330,18 @@ public class GroundspeakAPI {
 
     private static LogEntry createLog(JSONObject geocacheLog, long cacheId) {
         LogEntry logEntry = new LogEntry();
-        logEntry.CacheId = cacheId;
-        logEntry.Comment = geocacheLog.optString("text", "");
-        logEntry.Finder = getStringValue(geocacheLog, "owner", "username");
+        logEntry.cacheId = cacheId;
+        logEntry.logText = geocacheLog.optString("text", "");
+        logEntry.finder = getStringValue(geocacheLog, "owner", "username");
         String dateCreated = geocacheLog.optString("loggedDate", "");
         try {
-            logEntry.Timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(dateCreated);
+            logEntry.logDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(dateCreated);
         } catch (Exception e) {
-            logEntry.Timestamp = new Date();
+            logEntry.logDate = new Date();
         }
-        logEntry.Type = LogTypes.parseString(geocacheLog.optString("type", ""));
+        logEntry.logTypes = LogTypes.parseString(geocacheLog.optString("type", ""));
         String referenceCode = geocacheLog.optString("referenceCode", "");
-        logEntry.Id = generateLogId(referenceCode);
+        logEntry.logId = generateLogId(referenceCode);
         return logEntry;
     }
 
