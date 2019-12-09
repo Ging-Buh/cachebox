@@ -29,26 +29,26 @@ public class ImageButton extends CB_Button {
     public ImageButton(String name) {
         super(name);
         this.setText("");
-        image = new Image(this.ScaleCenter(0.8f), "", false);
+        image = new Image(this.scaleCenter(0.8f), "", false);
         this.addChild(image);
     }
 
     public ImageButton(CB_RectF rec, String name) {
         super(rec, name);
-        image = new Image(this.ScaleCenter(0.8f), "", false);
+        image = new Image(this.scaleCenter(0.8f), "", false);
         this.addChild(image);
     }
 
     public ImageButton(ImageLoader img) {
         super("");
-        image = new Image(img, this.ScaleCenter(0.8f), "", false);
+        image = new Image(img, this.scaleCenter(0.8f), "", false);
         this.addChild(image);
     }
 
     public ImageButton(Image image) {
         super("");
         if (image == null) {
-            this.image = new Image(this.ScaleCenter(0.8f), "", false);
+            this.image = new Image(this.scaleCenter(0.8f), "", false);
         } else {
             this.image = image;
         }
@@ -68,7 +68,7 @@ public class ImageButton extends CB_Button {
     private void chkImagePos() {
         CB_RectF thisRectF = this.copy();
         thisRectF.setPos(0, 0);
-        image.setRec(thisRectF.ScaleCenter(0.8f * mScale));
+        image.setRec(thisRectF.scaleCenter(0.8f * mScale));
     }
 
     public void setImage(Drawable drawable) {

@@ -35,8 +35,7 @@ import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.gdx.views.MapView.MapMode;
-import de.droidcachebox.gdx.views.MapViewCacheList;
-import de.droidcachebox.gdx.views.MapViewCacheList.WaypointRenderInfo;
+import de.droidcachebox.gdx.views.MapViewCacheList.WayPointRenderInfo;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.locator.map.Track;
@@ -56,7 +55,7 @@ import static de.droidcachebox.gdx.Sprites.*;
  * @author Longri
  */
 public class CreateTrackOverMapActivity extends ActivityBase {
-    private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
+    private final MoveableList<WayPointRenderInfo> wayPointRenderInfos = new MoveableList<>();
     public MapView mTrackMapView;
     private CB_Label lblName;
     private EditTextField editName;
@@ -118,12 +117,12 @@ public class CreateTrackOverMapActivity extends ActivityBase {
             // chk if any TrackPoint clicked
 
             double minDist = Double.MAX_VALUE;
-            WaypointRenderInfo minWpi = null;
+            WayPointRenderInfo minWpi = null;
             Vector2 clickedAt = new Vector2(x, y);
 
-            for (int i = 0, n = tmplist.size(); i < n; i++) {
-                WaypointRenderInfo wpi = tmplist.get(i);
-                Vector2 screen = mTrackMapView.worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+            for (int i = 0, n = wayPointRenderInfos.size(); i < n; i++) {
+                WayPointRenderInfo wpi = wayPointRenderInfos.get(i);
+                Vector2 screen = mTrackMapView.worldToScreen(new Vector2(Math.round(wpi.mapX), Math.round(wpi.mapY)));
                 if (clickedAt != null) {
                     double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
                     if (aktDist < minDist) {
@@ -134,12 +133,12 @@ public class CreateTrackOverMapActivity extends ActivityBase {
             }
 
             if (minDist < 40) {
-                selectedWP = minWpi.Waypoint;
+                selectedWP = minWpi.waypoint;
 
                 // Show PopUpMenu
                 //					CB_RectF rec = new CB_RectF(x - 1, y - 1, 2, 2);
                 //					CB_RectF mapWorld = mapView.getWorldRec();
-                //					rec = rec.ScaleCenter(150);
+                //					rec = rec.scaleCenter(150);
                 //					PopUpMenu menu = new PopUpMenu(rec, "popUpMenu");
                 //					menu.setPos(mapWorld.getX() + x - menu.getHalfWidth(), mapView.getY() + y - menu.getHalfHeight());
                 //					menu.showNotCloseAutomaticly();
@@ -195,7 +194,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         // render WPs
         if (waypoints == null)
             return;
-        tmplist.clear();
+        wayPointRenderInfos.clear();
 
         for (int i = 0; i < waypoints.size(); i++) {
             Waypoint wp = waypoints.get(i);
@@ -204,22 +203,22 @@ public class CreateTrackOverMapActivity extends ActivityBase {
             double MapY = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, wp.Pos.getLatitude());
             if (true)// isVisible(MapX, MapY)
             {
-                WaypointRenderInfo wpi = new WaypointRenderInfo();
-                wpi.MapX = (float) MapX;
-                wpi.MapY = (float) MapY;
-                wpi.Icon = getSprite("mapTrailhead");
-                wpi.Cache = null;
-                wpi.Waypoint = wp;
-                wpi.UnderlayIcon = null;
+                WayPointRenderInfo wpi = new WayPointRenderInfo();
+                wpi.mapX = (float) MapX;
+                wpi.mapY = (float) MapY;
+                wpi.icon = getSprite("mapTrailhead");
+                wpi.cache = null;
+                wpi.waypoint = wp;
+                wpi.underlayIcon = null;
 
-                wpi.Selected = false;
+                wpi.selected = false;
                 if (selectedWP != null) {
                     if (selectedWP.getGcCode().equals(wp.getGcCode())) {
-                        wpi.Selected = true;
-                        wpi.UnderlayIcon = getMapOverlay(IconName.shaddowrectselected);
+                        wpi.selected = true;
+                        wpi.underlayIcon = getMapOverlay(IconName.shaddowrectselected);
                     }
                 }
-                tmplist.add(wpi);
+                wayPointRenderInfos.add(wpi);
             }
         }
 
@@ -229,11 +228,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
         SizeF drawingSize = new SizeF(40, 40);
-
-        for (int i = 0; i < tmplist.size(); i++) {
-
-            mTrackMapView.renderWPI(batch, drawingSize, drawingSize, tmplist.get(i));
-
+        for (WayPointRenderInfo wayPointRenderInfo : wayPointRenderInfos) {
+            mTrackMapView.renderWPI(batch, drawingSize, drawingSize, wayPointRenderInfo);
         }
 
     }

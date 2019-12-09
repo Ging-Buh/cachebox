@@ -268,14 +268,14 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (showSunMoon)
             compassHeight -= Sun.getHeight();
 
-        SizeF s = new SizeF(compassHeight, compassHeight);
+        SizeF s = new SizeF(compassHeight);
 
         frame.setSize(s);
         scale.setSize(s);
 
         // calc center
 
-        float left = leftBox.getHalfWidth() - s.halfWidth;
+        float left = leftBox.getHalfWidth() - s.getHalfWidth();
 
         frame.setX(left);
         scale.setX(left);
@@ -288,7 +288,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
         arrow.setSize(frame);
         arrow.setX(frame.getX());
-        arrow.setRec(arrow.ScaleCenter(0.8f));
+        arrow.setRec(arrow.scaleCenter(0.8f));
         arrow.setScale(0.7f);
 
         scale.setOriginCenter();
@@ -361,7 +361,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         topContentBox = new Box(topBox, "topContent");
         topContentBox.setWidth(topBox.getInnerWidth());
 
-        CB_RectF attRec = new CB_RectF(0, 0, attHeight, attHeight);
+        CB_RectF attRec = new CB_RectF(0, 0, attHeight);
 
         topContentBox.setHeight(contentHeight);
         topContentBox.setZeroPos();
@@ -420,7 +420,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         topContentBox.setMargins(margin, margin);
         topContentBox.initRow();
 
-        imageRec = (new CB_RectF(0, 0, getWidth(), getWidth())).ScaleCenter(0.6f);
+        imageRec = (new CB_RectF(0, 0, getWidth(), getWidth())).scaleCenter(0.6f);
         this.setBackground(Sprites.ListBack);
 
         frame = new Image(imageRec, "frame", false);
@@ -437,7 +437,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
         if (showSunMoon) {
 
-            CB_RectF rec = showMap ? attRec.ScaleCenter(0.7f) : attRec.copy();
+            CB_RectF rec = showMap ? attRec.scaleCenter(0.7f) : attRec.copy();
 
             Sun = new Image(rec, "sun", false);
             Sun.setDrawable(Sprites.Compass.get(5));

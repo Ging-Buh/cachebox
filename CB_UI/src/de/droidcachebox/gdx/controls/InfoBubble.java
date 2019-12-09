@@ -75,7 +75,7 @@ public class InfoBubble extends CB_View_Base {
 
         cacheInfo = new CacheInfo(size, "CacheInfo", cache);
         cacheInfo.setViewMode(mCache.isEvent() ? CacheInfo.VIEW_MODE_BUBBLE_EVENT : CacheInfo.VIEW_MODE_BUBBLE);
-        cacheInfo.setY(getHeight() - size.height);
+        cacheInfo.setY(getHeight() - size.getHeight());
         cacheInfo.setFont(Fonts.getBubbleNormal());
         cacheInfo.setSmallFont(Fonts.getBubbleSmall());
         this.removeChilds();
@@ -114,7 +114,7 @@ public class InfoBubble extends CB_View_Base {
         // SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
         SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
         cacheInfo.setSize(size);
-        cacheInfo.setY(getHeight() - size.height);
+        cacheInfo.setY(getHeight() - size.getHeight());
     }
 
     public Cache getCache() {

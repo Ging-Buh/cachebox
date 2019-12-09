@@ -138,7 +138,7 @@ public class MessageBox extends Dialog {
 
         SizeF contentSize = msgBox.getContentSize();
 
-        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, contentSize.getHeight() - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
 
         Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
         if (icon != MessageBoxIcon.None)

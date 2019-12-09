@@ -559,7 +559,7 @@ public class DraftsView extends V_ListView {
                 fne = drafts.get(position);
             }
 
-            CB_RectF rec = ItemRec.copy().ScaleCenter(0.97f);
+            CB_RectF rec = ItemRec.copy().scaleCenter(0.97f);
             rec.setHeight(MeasureItemHeight(fne));
             DraftViewItem v = new DraftViewItem(rec, position, fne);
 

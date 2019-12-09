@@ -49,7 +49,7 @@ public class QuickButtonItem extends ListViewItemBase {
         name = type.getAction() == null ? "" : type.getAction().getTitleTranlationId();
         quickAction = type;
         mAction = type.getAction();
-        mButtonIcon = new Image(rec.ScaleCenter(0.7f), "QuickListItemImage", false);
+        mButtonIcon = new Image(rec.scaleCenter(0.7f), "QuickListItemImage", false);
         mButtonIcon.setDrawable(new SpriteDrawable(mAction.getIcon()));
         mButtonIcon.setClickable(false);
 

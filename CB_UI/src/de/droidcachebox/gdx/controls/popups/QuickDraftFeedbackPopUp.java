@@ -41,14 +41,14 @@ public class QuickDraftFeedbackPopUp extends PopUp_Base {
                     if (counter < -5) {
                         toSmall = false;
                     } else {
-                        setRec(ScaleCenter(0.9f));
+                        setRec(scaleCenter(0.9f));
                         counter--;
                     }
                 } else {
                     if (counter > 0) {
                         toSmall = true;
                     } else {
-                        setRec(ScaleCenter(1.1111f));
+                        setRec(scaleCenter(1.1111f));
                         counter++;
                     }
                 }

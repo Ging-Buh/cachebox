@@ -277,7 +277,7 @@ public class GL_UISizes implements SizeChangedEvent {
         WPSizes = new SizeF[]{new SizeF(13 * DPI, 13 * DPI), new SizeF(20 * DPI, 20 * DPI), new SizeF(32 * DPI, 32 * DPI)};
 
         Bubble.setSize((float) 273.3333334 * defaultDPI, (float) 113.333334 * defaultDPI);
-        halfBubble = Bubble.width / 2;
+        halfBubble = Bubble.getWidth() / 2;
         bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
 
         // DT_Size = new SizeF(37 * DPI, (37 * DPI * 0.2f));
@@ -293,7 +293,7 @@ public class GL_UISizes implements SizeChangedEvent {
     }
 
     public static void writeDebug(String name, SizeF sizeF) {
-        Log.debug(log, name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
+        Log.debug(log, name + "   ------ W/H =  " + sizeF.getWidth() + "/" + sizeF.getHeight());
     }
 
     public static void writeDebug(String name, SizeF[] SizeArray) {

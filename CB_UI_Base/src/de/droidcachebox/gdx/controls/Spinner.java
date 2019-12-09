@@ -116,7 +116,7 @@ public class Spinner extends CB_Button {
             if (drw != null) {
                 lblTxt.setHAlignment(HAlignment.LEFT);
                 if (icon == null) {
-                    CB_RectF rec = (new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.7f);
+                    CB_RectF rec = (new CB_RectF(0, 0, this.getHeight(), this.getHeight())).scaleCenter(0.7f);
 
                     icon = new Image(rec, "", false);
                     icon.setY(this.getHalfHeight() - icon.getHalfHeight());

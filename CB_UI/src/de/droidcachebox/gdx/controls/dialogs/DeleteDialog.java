@@ -37,7 +37,7 @@ public class DeleteDialog extends ButtonDialog {
 
         msgBoxContentSize = getContentSize();
 
-        float innerWidth = msgBoxContentSize.width;
+        float innerWidth = msgBoxContentSize.getWidth();
 
         CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getInstance().getButtonHeight() * 2);
 

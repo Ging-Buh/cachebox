@@ -33,7 +33,7 @@ public class HSV_Color extends Color {
     /**
      * Constructor for color as Hex String WITHOUT # RGBA or RGB
      *
-     * @param hex
+     * @param hex ?
      */
     public HSV_Color(String hex) {
         if (hex.length() != 6 && hex.length() != 8)
@@ -108,15 +108,15 @@ public class HSV_Color extends Color {
         return ((color[0] & 0xFF) << 24) | ((color[1] & 0xFF) << 16) | ((color[2] & 0xFF) << 8) | ((color[3] & 0xFF));
     }
 
+    /*
     public static Color colorMatrixManipulation(Color color, float[] nightColorMatrix) {
         return new HSV_Color(colorMatrixManipulation(color.toIntBits(), nightColorMatrix));
     }
+     */
 
     private int hexToInt(char c1, char c2) {
-        String s = String.valueOf(c1) + String.valueOf(c2);
-        int z = Integer.parseInt(s, 16);
-
-        return z;
+        String s = c1 + String.valueOf(c2);
+        return Integer.parseInt(s, 16);
     }
 
     @Override
@@ -129,11 +129,11 @@ public class HSV_Color extends Color {
     }
 
     private void calculateHSV() {
-        float max = (r > g) ? r : g;
-        max = (max > b) ? max : b;
+        float max = Math.max(r, g);
+        max = Math.max(max, b);
 
-        float min = (r < g) ? r : g;
-        min = (min < b) ? min : b;
+        float min = Math.min(r, g);
+        min = Math.min(min, b);
 
         float delta;
 

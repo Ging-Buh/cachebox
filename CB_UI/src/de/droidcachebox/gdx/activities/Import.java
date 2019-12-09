@@ -574,7 +574,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lblButKeepLeast.setText(Translation.get("ButKeepLeast"));
         LogCollapseBox.addChild(lblButKeepLeast);
 
-        final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox, "*" + Translation.get("ButKeepLeast"));
+        final EditTextField input = new EditTextField(checkBoxCleanLogs.scaleCenter(2), LogCollapseBox, "*" + Translation.get("ButKeepLeast"));
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         input.setHeight(SmallLineHeight * 2.5f);
@@ -1258,7 +1258,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         public ListViewItemBase getView(int position) {
             final PQ pq = PqList.get(position);
             if (itemRec == null) {
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
                 float itemWidth = PQ_ListCollapseBox.getInnerWidth();
 
                 itemRec = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -1271,7 +1271,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         @Override
         public float getItemSize(int position) {
             if (itemHeight == -1)
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
             return itemHeight;
         }
 
@@ -1294,7 +1294,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         public ListViewItemBase getView(int position) {
             final RpcAnswer_GetExportList.ListItem it = cbServerExportList.get(position);
             if (itemRecCBServer == null) {
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
                 float itemWidth = CBServerCollapseBox.getInnerWidth();
 
                 itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -1307,7 +1307,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         @Override
         public float getItemSize(int position) {
             if (itemHeight == -1)
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
             return itemHeight;
         }
 
@@ -1334,7 +1334,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             lblInfo.setText(dateString + Count); // + "  " + FileSize
 
             CB_CheckBox chk = new CB_CheckBox("");
-            chk.setRec(chk.ScaleCenter(0.6f));
+            chk.setRec(chk.scaleCenter(0.6f));
             chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
             chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
             chk.setChecked(pq.doDownload);

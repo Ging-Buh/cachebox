@@ -227,7 +227,7 @@ public class Menu extends ButtonDialog {
 
             mMoreMenuToggleButton = new CB_Button("");
             mMoreMenuToggleButton.setWidth(mMoreMenuToggleButtonWidth);
-            mMoreMenuToggleButton.setHeight(this.getContentSize().height);
+            mMoreMenuToggleButton.setHeight(this.getContentSize().getHeight());
             float MenuY = mParentMenu != null ? mParentMenu.getY() : this.getY();
             mMoreMenuToggleButton.setY(MenuY + mFooterHeight);
             GL.that.getDialogLayer().addChild(mMoreMenuToggleButton);
@@ -296,7 +296,7 @@ public class Menu extends ButtonDialog {
             GL.that.renderOnce();
         } else if (mAnimationState == -1) {
             if (mMoreMenu != null) {
-                mMoreMenuToggleButton.setHeight(this.getContentSize().height);
+                mMoreMenuToggleButton.setHeight(this.getContentSize().getHeight());
                 mAnimationState = 3;
                 layout();
             }
@@ -387,7 +387,7 @@ public class Menu extends ButtonDialog {
             if (!isMoreMenu && mMoreMenu != null)
                 WithOffset = mMoreMenuToggleButtonWidth / 1.1f;
             if (mListView != null) {
-                mListView.setSize(this.getContentSize().width - WithOffset, this.getContentSize().height);
+                mListView.setSize(this.getContentSize().getWidth() - WithOffset, this.getContentSize().getHeight());
                 mListView.setZeroPos();
                 if (isMoreMenu && mMoreMenu != null)
                     WithOffset /= 2;

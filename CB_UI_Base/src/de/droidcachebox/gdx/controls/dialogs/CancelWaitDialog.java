@@ -74,7 +74,7 @@ public class CancelWaitDialog extends WaitDialog {
         };
 
         SizeF contentSize = wd.getContentSize();
-        float imageYPos = (contentSize.height < (wd.animation.getHeight() * 1.7)) ? contentSize.halfHeight - wd.animation.getHalfHeight() : contentSize.height - wd.animation.getHeight() - margin;
+        float imageYPos = (contentSize.getHeight() < (wd.animation.getHeight() * 1.7)) ? contentSize.getHalfHeight() - wd.animation.getHalfHeight() : contentSize.getHeight() - wd.animation.getHeight() - margin;
         wd.animation.setY(imageYPos);
         wd.addChild(wd.animation);
         wd.animation.play();

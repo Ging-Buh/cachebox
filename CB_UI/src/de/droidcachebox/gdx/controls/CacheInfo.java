@@ -243,7 +243,7 @@ public class CacheInfo extends CB_View_Base {
 
                 // mStarSize.scale(mScaleFactor);
                 mSSprite = new Sprite(Sprites.SizesIcons.get((mCache.Size.ordinal())));
-                mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+                mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.getWidth(), mStarSize.getHeight());
                 // Difficulty
                 mLeft += mSSprite.getWidth() + mMargin + mMargin;
                 mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
@@ -251,7 +251,7 @@ public class CacheInfo extends CB_View_Base {
                 mD_FontCache.setText("D", mLeft, mBottom);
                 mLeft += mD_FontCache.getLayouts().first().width + mMargin;
                 mDSprite = new Sprite(Sprites.Stars.get((int) (mCache.getDifficulty() * 2)));
-                mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+                mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.getWidth(), mStarSize.getHeight());
                 mDSprite.setRotation(0);
                 // Terrain
                 mLeft += mDSprite.getWidth() + mMargin + mMargin;
@@ -260,13 +260,13 @@ public class CacheInfo extends CB_View_Base {
                 mT_FontCache.setText("T", mLeft, mBottom);
                 mLeft += mT_FontCache.getLayouts().first().width + mMargin;
                 mTSprite = new Sprite(Sprites.Stars.get((int) (mCache.getTerrain() * 2)));
-                mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+                mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.getWidth(), mStarSize.getHeight());
                 mTSprite.setRotation(0);
                 // Draw TB
                 mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
                 int numTb = mCache.NumTravelbugs;
                 if (numTb > 0) {
-                    float sizes = mStarSize.width / 2.1f;
+                    float sizes = mStarSize.getWidth() / 2.1f;
 
                     mTBSprite = new Sprite(Sprites.getSprite(IconName.tb.name()));
                     mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
@@ -288,7 +288,7 @@ public class CacheInfo extends CB_View_Base {
                 //Draw FavPoints
                 int numFP = mCache.favPoints;
                 if (numFP > 0) {
-                    float sizes = mStarSize.width / 4f;
+                    float sizes = mStarSize.getWidth() / 4f;
 
                     mFPSprite = new Sprite(Sprites.getSprite(IconName.FavPoi.name()));
                     mFPSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
@@ -311,8 +311,8 @@ public class CacheInfo extends CB_View_Base {
 
                 mStarSize.scale(0.7f);
                 mRatingSprite = new Sprite(Sprites.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
-                mRatingSprite.setBounds(mLeft + mStarSize.height, getHeight() - mTop - mStarSize.width - mMargin - mMargin - mMargin, mStarSize.width, mStarSize.height);
-                mRatingSprite.setOrigin(0, mStarSize.halfHeight);
+                mRatingSprite.setBounds(mLeft + mStarSize.getHeight(), getHeight() - mTop - mStarSize.getWidth() - mMargin - mMargin - mMargin, mStarSize.getWidth(), mStarSize.getHeight());
+                mRatingSprite.setOrigin(0, mStarSize.getHalfHeight());
                 mRatingSprite.setRotation(90);
                 mRatingSprite.setColor(gcVoteColor);
                 //

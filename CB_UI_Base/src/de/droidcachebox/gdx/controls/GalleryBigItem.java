@@ -64,7 +64,7 @@ public class GalleryBigItem extends ListViewItemBackground {
         super.onResized(rec);
         //CB_RectF imgRec = rec.copy();
         //imgRec.setPos(0, 0);
-        //img.setRec(imgRec.ScaleCenter(0.95f));
+        //img.setRec(imgRec.scaleCenter(0.95f));
     }
 
     public Image getImage() {

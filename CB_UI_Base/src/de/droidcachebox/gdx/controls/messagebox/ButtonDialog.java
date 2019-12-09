@@ -58,7 +58,7 @@ public class ButtonDialog extends Dialog {
         setButtonCaptions(buttons);
         SizeF contentSize = getContentSize();
 
-        CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, contentSize.getHeight() - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
 
         if (icon != MessageBoxIcon.None && icon != null) {
             Image iconImage = new Image(imageRec, "MsgBoxIcon", false);

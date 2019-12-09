@@ -47,22 +47,22 @@ public class CB_RectF {
     }
 
     public CB_RectF(SizeF size) {
-        member[3] = size.height;
-        member[2] = size.width;
+        member[3] = size.getHeight();
+        member[2] = size.getWidth();
         calcCrossCorner();
     }
 
-    public CB_RectF(float X, float Y, float Width, float Height) {
-        member[0] = X;
-        member[1] = Y;
-        member[3] = Height;
-        member[2] = Width;
+    public CB_RectF(float x, float y, float width, float height) {
+        member[0] = x;
+        member[1] = y;
+        member[3] = height;
+        member[2] = width;
         calcCrossCorner();
     }
 
-    public CB_RectF(float X, float Y, float sideLength) {
-        member[0] = X;
-        member[1] = Y;
+    public CB_RectF(float x, float y, float sideLength) {
+        member[0] = x;
+        member[1] = y;
         member[3] = sideLength;
         member[2] = sideLength;
         calcCrossCorner();
@@ -74,7 +74,7 @@ public class CB_RectF {
         }
     }
 
-    public static CB_RectF ScaleCenter(CB_RectF rectangle, float ScaleFactor) {
+    public static CB_RectF scaleCenter(CB_RectF rectangle, float ScaleFactor) {
         float newWidth = rectangle.getWidth() * ScaleFactor;
         float newHeight = rectangle.getHeight() * ScaleFactor;
         float newX = rectangle.member[0] + ((rectangle.getWidth() - newWidth) / 2);
@@ -105,8 +105,8 @@ public class CB_RectF {
         return member[5];
     }
 
-    public boolean setSize(SizeF Size) {
-        return setSize(Size.width, Size.height);
+    public boolean setSize(SizeF size) {
+        return setSize(size.getWidth(), size.getHeight());
     }
 
     /**
@@ -322,8 +322,8 @@ public class CB_RectF {
         return new CB_RectF(this);
     }
 
-    public CB_RectF ScaleCenter(float ScaleFactor) {
-        return ScaleCenter(this, ScaleFactor);
+    public CB_RectF scaleCenter(float ScaleFactor) {
+        return scaleCenter(this, ScaleFactor);
     }
 
     /**

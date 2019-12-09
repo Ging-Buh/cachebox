@@ -15,7 +15,6 @@
  */
 package de.droidcachebox.gdx.graphics;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import de.droidcachebox.gdx.GL;
@@ -29,7 +28,7 @@ import org.mapsforge.core.model.Point;
  * @author Longri
  */
 public class GL_Paint implements GDXPaint {
-    protected HSV_Color color;
+    protected HSV_Color hsvColor;
     protected GL_Align align;
     protected Join join;
     protected float strokeWidth = 1f;
@@ -44,61 +43,52 @@ public class GL_Paint implements GDXPaint {
     private BitmapFont font;
 
     public GL_Paint() {
-        this.cap = GL_Cap.BUTT;
-        this.join = Join.MITER;
-        this.color = new HSV_Color(com.badlogic.gdx.graphics.Color.BLACK);
-        this.style = GL_Style.FILL;
+        cap = GL_Cap.BUTT;
+        join = Join.MITER;
+        hsvColor = new HSV_Color(com.badlogic.gdx.graphics.Color.BLACK);
+        style = GL_Style.FILL;
     }
 
     /*
     public GL_Paint(Paint paint) {
         if (paint instanceof GL_Paint) {
             GL_Paint p = (GL_Paint) paint;
-            this.cap = p.cap;
-            this.join = p.join;
-            this.color = new HSV_Color(p.color);
-            this.style = p.style;
-            this.textSize = p.textSize;
-            this.strokeWidth = p.strokeWidth;
-            this.strokeDasharray = p.strokeDasharray;
+            cap = p.cap;
+            join = p.join;
+            color = new HSV_Color(p.color);
+            style = p.style;
+            textSize = p.textSize;
+            strokeWidth = p.strokeWidth;
+            strokeDasharray = p.strokeDasharray;
         } else {
             Cap cap = paint.getCap();
             switch (cap) {
                 case BUTT:
-                    this.cap = GL_Cap.BUTT;
+                    cap = GL_Cap.BUTT;
                     break;
                 case SQUARE:
-                    this.cap = GL_Cap.SQUARE;
+                    cap = GL_Cap.SQUARE;
                     break;
                 default:
-                    this.cap = GL_Cap.ROUND;
+                    cap = GL_Cap.ROUND;
                     break;
             }
 
-            this.color = new HSV_Color(paint.getColor());
+            color = new HSV_Color(paint.getColor());
 
             Style style = paint.getStyle();
             if (style == Style.STROKE) {
-                this.style = GL_Style.STROKE;
+                style = GL_Style.STROKE;
             } else {
-                this.style = GL_Style.FILL;
+                style = GL_Style.FILL;
             }
         }
-        this.textSize = paint.getTextSize();
-        this.strokeWidth = paint.getStrokeWidth();
-        this.strokeDasharray = paint.getDashArray();
+        textSize = paint.getTextSize();
+        strokeWidth = paint.getStrokeWidth();
+        strokeDasharray = paint.getDashArray();
     }
 
      */
-
-    @Override
-    public HSV_Color getHSV_Color() {
-        if (color == null)
-            return null;
-        HSV_Color c = new HSV_Color(color);
-        c.clamp();
-        return c;
-    }
 
     @Override
     public int getTextHeight(String text) {
@@ -127,21 +117,20 @@ public class GL_Paint implements GDXPaint {
 
     @Override
     public void setDashPathEffect(float[] strokeDasharray) {
-        this.strokeDasharray = strokeDasharray;
+        strokeDasharray = strokeDasharray;
     }
 
     private void createFont() {
-        if (this.textSize > 0) {
+        if (textSize > 0) {
             GL.that.RunOnGL(() -> GL_Paint.this.font = FontCache.get(GL_Paint.this.getGLFontFamily(), GL_Paint.this.getGLFontStyle(), GL_Paint.this.getTextSize()));
-
         } else {
-            this.font = null;
+            font = null;
         }
     }
 
     @Override
     public boolean isTransparent() {
-        return this.bitmapShader == null && this.color.a == 0;
+        return bitmapShader == null && hsvColor.a == 0;
     }
 
     @Override
@@ -168,14 +157,14 @@ public class GL_Paint implements GDXPaint {
     // Override mapsforge getDashArray
     public float[] getDashArray() {
         // chk if DashArray empty, then return null
-        if (this.strokeDasharray != null && this.strokeDasharray.length < 2)
+        if (strokeDasharray != null && strokeDasharray.length < 2)
             return null;
-        return this.strokeDasharray;
+        return strokeDasharray;
     }
 
     @Override
     public void setAlpha(int i) {
-        color.a = i / 255f;
+        hsvColor.a = i / 255f;
     }
 
     @Override
@@ -200,7 +189,7 @@ public class GL_Paint implements GDXPaint {
 
     @Override
     public float getTextSize() {
-        return this.textSize;
+        return textSize;
     }
 
     @Override
@@ -211,7 +200,7 @@ public class GL_Paint implements GDXPaint {
 
     @Override
     public void delDashPathEffect() {
-        this.strokeDasharray = null;
+        strokeDasharray = null;
     }
 
     @Override
@@ -256,7 +245,7 @@ public class GL_Paint implements GDXPaint {
 
     @Override
     public GL_Style getGL_Style() {
-        return this.style;
+        return style;
     }
 
     @Override
@@ -270,11 +259,11 @@ public class GL_Paint implements GDXPaint {
     }
 
     public BitmapFont getFont() {
-        if (this.font == null) {
-            this.font = FontCache.get(this.getGLFontFamily(), this.fontStyle, this.textSize);
+        if (font == null) {
+            font = FontCache.get(getGLFontFamily(), fontStyle, textSize);
         }
 
-        return this.font;
+        return font;
     }
 
     // @Override von mapsforge
@@ -290,13 +279,9 @@ public class GL_Paint implements GDXPaint {
         }
     }
 
-    HSV_Color getGlColor() {
-        return this.color;
-    }
-
     // @Override von mapsforge
     public Style getStyle() {
-        if (this.style == GL_Style.STROKE) {
+        if (style == GL_Style.STROKE) {
             return Style.STROKE;
         }
         return Style.FILL;
@@ -316,10 +301,6 @@ public class GL_Paint implements GDXPaint {
         }
     }
 
-    public void setGLColor(Color color) {
-        this.color = new HSV_Color(color);
-    }
-
     @Override
     public void setBitmapShaderShift(Point origin) {
     }
@@ -330,24 +311,28 @@ public class GL_Paint implements GDXPaint {
 
     @Override
     public int getColor() {
-        return 0;
+        return hsvColor.toInt(); // ? argb // set 0
     }
 
-    public void setColor(Color color) {
-        this.color = new HSV_Color(color);
+    public void setColor(com.badlogic.gdx.graphics.Color color) {
+        hsvColor = new HSV_Color(color);
+    }
+
+    HSV_Color getGlColor() {
+        return hsvColor;
     }
 
     @Override
     public void setColor(int color) {
-        this.color = new HSV_Color(color);
+        hsvColor = new HSV_Color(color);
     }
 
     @Override
     public void setColor(org.mapsforge.core.graphics.Color color) {
-        this.color = new HSV_Color(getColor(color));
+        hsvColor = new HSV_Color(color2HSVColor(color));
     }
 
-    private HSV_Color getColor(org.mapsforge.core.graphics.Color color) {
+    private HSV_Color color2HSVColor(org.mapsforge.core.graphics.Color color) {
         switch (color) {
             case BLACK:
                 return new HSV_Color(com.badlogic.gdx.graphics.Color.BLACK);
@@ -362,7 +347,6 @@ public class GL_Paint implements GDXPaint {
             case WHITE:
                 return new HSV_Color(com.badlogic.gdx.graphics.Color.WHITE);
         }
-
         throw new IllegalArgumentException("unknown color: " + color);
     }
 

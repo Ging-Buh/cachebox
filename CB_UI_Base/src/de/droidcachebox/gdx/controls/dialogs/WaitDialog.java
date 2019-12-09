@@ -67,7 +67,7 @@ public class WaitDialog extends ButtonDialog {
             waitDialog.label.setVAlignment(VAlignment.TOP);
         }
 
-        float imageYPos = (contentSize.height < (waitDialog.animation.getHeight() * 1.7)) ? contentSize.halfHeight - waitDialog.animation.getHalfHeight() : contentSize.height - waitDialog.animation.getHeight() - margin;
+        float imageYPos = (contentSize.getHeight() < (waitDialog.animation.getHeight() * 1.7)) ? contentSize.getHalfHeight() - waitDialog.animation.getHalfHeight() : contentSize.getHeight() - waitDialog.animation.getHeight() - margin;
         waitDialog.animation.setY(imageYPos);
 
         waitDialog.addChild(waitDialog.label);

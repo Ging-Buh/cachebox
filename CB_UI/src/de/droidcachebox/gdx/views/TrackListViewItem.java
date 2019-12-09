@@ -117,7 +117,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             return;
         if (lBounds == null) {
             lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
-            lBounds = lBounds.ScaleCenter(0.95f);
+            lBounds = lBounds.scaleCenter(0.95f);
         }
 
         if (colorReck == null) {
@@ -136,7 +136,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (rBounds == null || rChkBounds == null) {
             rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// = right Button bounds
 
-            rChkBounds = rBounds.ScaleCenter(0.8f);
+            rChkBounds = rBounds.scaleCenter(0.8f);
         }
 
         if (chkOff == null) {

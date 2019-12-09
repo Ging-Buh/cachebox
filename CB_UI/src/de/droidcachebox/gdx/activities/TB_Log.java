@@ -94,7 +94,7 @@ public class TB_Log extends ActivityBase {
         contentBox.setBackground(Sprites.activityBackground);
 
         CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight());
-        iconRec = iconRec.ScaleCenter(0.8f);
+        iconRec = iconRec.scaleCenter(0.8f);
 
         icon = new Image(iconRec, "Icon", false);
         lblName = new EditTextField(iconRec, this, "lblName");

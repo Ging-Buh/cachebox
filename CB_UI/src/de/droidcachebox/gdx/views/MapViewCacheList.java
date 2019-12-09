@@ -38,7 +38,7 @@ import static de.droidcachebox.gdx.Sprites.*;
  */
 public class MapViewCacheList implements CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "MapViewCacheList";
-    public final CB_List<WaypointRenderInfo> list = new CB_List<>();
+    public final CB_List<WayPointRenderInfo> list = new CB_List<>();
     private final int maxZoomLevel;
     /**
      * State 0: warten auf neuen Update Befehl <br>
@@ -48,7 +48,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
      * State 4: QueueProcessor abgebrochen
      */
     private final AtomicInteger state = new AtomicInteger(0);
-    private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<>();
+    private final MoveableList<WayPointRenderInfo> wayPointRenderInfos = new MoveableList<>();
     public int anz = 0;
     private MapViewCacheListUpdateData savedQuery = null;
     private MapViewCacheListUpdateData lastUpdateData = null;
@@ -56,7 +56,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     private Vector2 point1;
     private Vector2 point2;
     private int zoom = 15;
-    private WaypointRenderInfo selectedWP;
+    private WayPointRenderInfo selectedWP;
     private boolean hideMyFinds = false;
     private boolean showAllWaypoints = false;
     private boolean showAtOriginalPosition = false;
@@ -100,22 +100,20 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     }
 
     private void addWaypoint(Cache cache, Waypoint wp, int iconSize) {
-        // im Bild ?
-        double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
-        double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
-        if (isVisible(MapX, MapY) || (GlobalCore.getSelectedWaypoint() == wp)) {
-            WaypointRenderInfo wpi = new WaypointRenderInfo();
-            wpi.MapX = (float) MapX;
-            wpi.MapY = (float) MapY;
-
-            wpi.Icon = getWaypointIcon(wp);
-            wpi.Cache = cache;
-            wpi.Waypoint = wp;
-            wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint, iconSize);
-            wpi.Selected = (GlobalCore.getSelectedWaypoint() == wp);
-            if (wpi.Selected)
-                selectedWP = wpi;
-            tmplist.add(wpi);
+        double mapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
+        double mapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
+        if (isVisible(mapX, mapY) || (GlobalCore.getSelectedWaypoint() == wp)) {
+            WayPointRenderInfo wayPointRenderInfo = new WayPointRenderInfo();
+            wayPointRenderInfo.mapX = (float) mapX;
+            wayPointRenderInfo.mapY = (float) mapY;
+            wayPointRenderInfo.icon = getWaypointIcon(wp);
+            wayPointRenderInfo.cache = cache;
+            wayPointRenderInfo.waypoint = wp;
+            wayPointRenderInfo.underlayIcon = getUnderlayIcon(wayPointRenderInfo.cache, wayPointRenderInfo.waypoint, iconSize);
+            wayPointRenderInfo.selected = (GlobalCore.getSelectedWaypoint() == wp);
+            if (wayPointRenderInfo.selected)
+                selectedWP = wayPointRenderInfo;
+            wayPointRenderInfos.add(wayPointRenderInfo);
         }
     }
 
@@ -342,15 +340,22 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
         }
     }
 
-    public static class WaypointRenderInfo {
-        public float MapX;
-        public float MapY;
-        public Cache Cache;
-        public Waypoint Waypoint;
-        public boolean Selected;
-        public Sprite Icon;
-        public Sprite UnderlayIcon;
-        public Sprite OverlayIcon;
+    public static class WayPointRenderInfo {
+        public float mapX;
+        public float mapY;
+        public Cache cache;
+        public Waypoint waypoint;
+        public boolean selected;
+        public Sprite icon;
+        public Sprite underlayIcon;
+        public Sprite overlayIcon;
+        public boolean showDistanceCircle() {
+            if (waypoint != null) {
+                if (waypoint.Type == CacheTypes.ReferencePoint || waypoint.Type == CacheTypes.ParkingArea || waypoint.Type == CacheTypes.Trailhead || waypoint.Type == CacheTypes.Virtual)
+                    return false;
+            }
+            return true;
+        }
     }
 
     private class QueueProcessor extends Thread {
@@ -367,7 +372,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                         else if (zoom > 14)
                             iconSize = 2; // default Images
 
-                        tmplist.clear();
+                        wayPointRenderInfos.clear();
                         selectedWP = null;
                         synchronized (Database.Data.cacheList) {
                             for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
@@ -410,19 +415,19 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                 }
                                 // Cache Icon Overlay, ...
                                 if (isVisible(MapX, MapY) || selectedCache) {
-                                    WaypointRenderInfo wpi = new WaypointRenderInfo();
-                                    wpi.MapX = (float) MapX;
-                                    wpi.MapY = (float) MapY;
+                                    WayPointRenderInfo wpi = new WayPointRenderInfo();
+                                    wpi.mapX = (float) MapX;
+                                    wpi.mapY = (float) MapY;
                                     if (cache.isArchived() || !cache.isAvailable())
-                                        wpi.OverlayIcon = getMapOverlay(IconName.deact);
-                                    wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
-                                    wpi.Icon = getCacheIcon(cache, iconSize);
-                                    wpi.Cache = cache;
-                                    wpi.Waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
-                                    wpi.Selected = selectedCache;
-                                    if (wpi.Selected && selectedWP == null)
+                                        wpi.overlayIcon = getMapOverlay(IconName.deact);
+                                    wpi.underlayIcon = getUnderlayIcon(cache, null, iconSize);
+                                    wpi.icon = getCacheIcon(cache, iconSize);
+                                    wpi.cache = cache;
+                                    wpi.waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
+                                    wpi.selected = selectedCache;
+                                    if (wpi.selected && selectedWP == null)
                                         selectedWP = wpi;// select nur wenn kein WP selectiert ist (draw last)
-                                    tmplist.add(wpi);
+                                    wayPointRenderInfos.add(wpi);
                                 }
                             }
                         }
@@ -430,16 +435,16 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                         synchronized (list) {
 
                             // move selected WPI to last
-                            int index = tmplist.indexOf(selectedWP);
-                            if (index >= 0 && index <= tmplist.size())
-                                tmplist.MoveItemLast(index);
+                            int index = wayPointRenderInfos.indexOf(selectedWP);
+                            if (index >= 0 && index <= wayPointRenderInfos.size())
+                                wayPointRenderInfos.MoveItemLast(index);
 
                             list.clear();
 
-                            for (int i = 0, n = tmplist.size(); i < n; i++) {
-                                list.add(tmplist.get(i));
+                            for (int i = 0, n = wayPointRenderInfos.size(); i < n; i++) {
+                                list.add(wayPointRenderInfos.get(i));
                             }
-                            tmplist.clear();
+                            wayPointRenderInfos.clear();
                         }
                         Thread.sleep(50);
                         state.set(0);

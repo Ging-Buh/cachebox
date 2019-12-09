@@ -30,6 +30,7 @@ class MultiThreadQueueProcessor extends Thread {
     long startTime;
     private String log = "MapTileQueueThread";
     private OrderData newOrder;
+    private boolean doStop;
 
     MultiThreadQueueProcessor(MapTiles mapTiles) {
         threadIndex++;
@@ -39,6 +40,8 @@ class MultiThreadQueueProcessor extends Thread {
         startTime = System.currentTimeMillis();
         orders = new Array<>(true, mapTiles.getCapacity());
         canTakeOrder = true;
+        Log.info(log, "Starting a new thread with index: " + threadIndex);
+        doStop = false;
     }
 
     /**
@@ -73,9 +76,9 @@ class MultiThreadQueueProcessor extends Thread {
                     // Log.info(log, "got Order: " + newOrder.descriptor + " Distance: " + (Integer) newOrder.descriptor.Data + " for " + newOrder.orderGroup);
                     newOrder.descriptor.Data = newOrder.mapView;
                     if (newOrder.forOverlay) {
-                        mapTiles.loadOverlayTile(newOrder.descriptor);
+                        if (!doStop) mapTiles.loadOverlayTile(newOrder.descriptor);
                     } else {
-                        mapTiles.loadTile(newOrder.descriptor);
+                        if (!doStop) mapTiles.loadTile(newOrder.descriptor);
                     }
                     isWorking = false;
                 } else {
@@ -85,7 +88,8 @@ class MultiThreadQueueProcessor extends Thread {
                     } catch (InterruptedException ignored) {
                     }
                 }
-            } while (true);
+            } while (!doStop);
+            Log.info(log, "stopping");
         } catch (Exception ex3) {
             Log.err(log, log, ex3);
             try {
@@ -93,6 +97,11 @@ class MultiThreadQueueProcessor extends Thread {
             } catch (InterruptedException ignored) {
             }
         }
+    }
+
+    public void doStop() {
+        doStop = true;
+        mapTiles.setIsReady();
     }
 
     private static class OrderData {

@@ -16,7 +16,6 @@
 package de.droidcachebox.gdx.graphics.mapsforge;
 
 import de.droidcachebox.gdx.graphics.GL_Paint;
-import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.graphics.Join;
 import de.droidcachebox.gdx.graphics.TileMode;
 
@@ -50,8 +49,6 @@ public interface GDXPaint extends org.mapsforge.core.graphics.Paint {
     GL_Paint.GL_FontStyle getGLFontStyle();
 
     GL_Paint.GL_FontFamily getGLFontFamily();
-
-    HSV_Color getHSV_Color();
 
     @Override
     float getStrokeWidth();

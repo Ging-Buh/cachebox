@@ -63,8 +63,7 @@ public class MapTileLoader {
                     boolean isHanging = (System.currentTimeMillis() - threadToCheck.startTime > 30000) && threadToCheck.isWorking; // or less or more??
                     if (!threadToCheck.isAlive() || isHanging) {
                         try {
-                            //Log.info(log, "Starting a new thread with index: " + threadToCheck.threadIndex);
-                            queueProcessors.remove(threadToCheck);
+                            stopQueueProzessor(threadToCheck);
                             MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(mapTiles);
                             queueProcessors.add(newThread);
                             newThread.setPriority(Thread.MIN_PRIORITY);
@@ -88,6 +87,20 @@ public class MapTileLoader {
             threadIndex++;
         }
         queueProcessorAliveCheck.start();
+    }
+
+    public void stopQueueProzessors() {
+        for (MultiThreadQueueProcessor mtp : queueProcessors) {
+            mtp.doStop();
+            mtp.interrupt();
+        }
+        queueProcessors.clear();
+    }
+
+    private void stopQueueProzessor(MultiThreadQueueProcessor threadToStop) {
+        threadToStop.doStop();
+        threadToStop.interrupt();
+        queueProcessors.remove(threadToStop);
     }
 
     public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
@@ -143,8 +156,7 @@ public class MapTileLoader {
                     if (nextQueueProcessor == previousQueueProcessor) {
                         try {
                             Thread.sleep(1000);
-                        }
-                        catch (Exception ignored) {
+                        } catch (Exception ignored) {
                         }
                     }
                 }
@@ -170,7 +182,7 @@ public class MapTileLoader {
             if (finishYourself.get()) {
                 return;
             }
-            if (mapTiles.currentOverlayLayer != null) {
+            if (mapTiles.getCurrentOverlayLayer() != null) {
                 if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false) && !alreadyOrderedOverlays.contains(descriptor.getHashCode(), false)) {
                     MultiThreadQueueProcessor thread;
                     int previousQueueProcessor = nextQueueProcessor;
@@ -180,8 +192,7 @@ public class MapTileLoader {
                         if (nextQueueProcessor == previousQueueProcessor) {
                             try {
                                 Thread.sleep(1000);
-                            }
-                            catch (Exception ignored) {
+                            } catch (Exception ignored) {
                             }
                         }
                     }
@@ -240,15 +251,15 @@ public class MapTileLoader {
     }
 
     public Layer getCurrentLayer() {
-        return mapTiles.currentLayer;
+        return mapTiles.getCurrentLayer();
     }
 
     public boolean setCurrentLayer(Layer layer, boolean isCarMode) {
-        if (layer != mapTiles.currentLayer) {
+        if (layer != mapTiles.getCurrentLayer()) {
             mapTiles.clearTiles();
             Log.info(log, "set layer to " + layer.name);
             layer.prepareLayer(isCarMode);
-            mapTiles.currentLayer = layer;
+            mapTiles.setCurrentLayer(layer);
             return true;
         }
         return false;
@@ -256,15 +267,15 @@ public class MapTileLoader {
 
     public void modifyCurrentLayer(boolean isCarMode) {
         mapTiles.clearTiles();
-        mapTiles.currentLayer.prepareLayer(isCarMode);
+        mapTiles.getCurrentLayer().prepareLayer(isCarMode);
     }
 
     public Layer getCurrentOverlayLayer() {
-        return mapTiles.currentOverlayLayer;
+        return mapTiles.getCurrentOverlayLayer();
     }
 
     public void setCurrentOverlayLayer(Layer layer) {
-        mapTiles.currentOverlayLayer = layer;
+        mapTiles.setCurrentOverlayLayer(layer);
         mapTiles.clearOverlayTiles();
     }
 

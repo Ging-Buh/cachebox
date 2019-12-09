@@ -238,7 +238,7 @@ public class GestureButton extends CB_Button {
     private void addAction(CB_ActionButton Action) {
         if (useDescriptiveCB_Buttons) {
             if (mButtonImage == null) {
-                mButtonImage = new Image(this.ScaleCenter(0.6f), "mButtonImage", false);
+                mButtonImage = new Image(this.scaleCenter(0.6f), "mButtonImage", false);
                 mButtonImage.setClickable(false);
                 mButtonImage.setDrawable(new SpriteDrawable(Action.getIcon()));
                 addChild(mButtonImage);

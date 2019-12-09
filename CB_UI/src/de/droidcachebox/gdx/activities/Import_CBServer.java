@@ -429,7 +429,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         public ListViewItemBase getView(int position) {
             final ExportEntry it = exportList.get(position);
             if (itemRecCBServer == null) {
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
                 float itemWidth = scrollBox.getInnerWidth();
 
                 itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -441,7 +441,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         @Override
         public float getItemSize(int position) {
             if (itemHeight == -1)
-                itemHeight = UiSizes.getInstance().getChkBoxSize().height + UiSizes.getInstance().getChkBoxSize().halfHeight;
+                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
             return itemHeight;
         }
 

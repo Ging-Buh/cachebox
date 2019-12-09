@@ -39,7 +39,7 @@ public class ParkingDialog extends ButtonDialog {
         // initial VariableField
         TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
-        float innerWidth = msgBoxContentSize.width;
+        float innerWidth = msgBoxContentSize.getWidth();
 
         layout = new Linearlayout(innerWidth, "Layout");
         layout.setX(0);
@@ -69,9 +69,9 @@ public class ParkingDialog extends ButtonDialog {
 
         Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 2), "");
 
-        lblSetGPS = new CB_Label(btSetGPS.ScaleCenter(0.8f));
-        lblSelectWP = new CB_Label(btSelectWP.ScaleCenter(0.8f));
-        lblDeleteP = new CB_Label(btDeleteP.ScaleCenter(0.8f));
+        lblSetGPS = new CB_Label(btSetGPS.scaleCenter(0.8f));
+        lblSelectWP = new CB_Label(btSelectWP.scaleCenter(0.8f));
+        lblDeleteP = new CB_Label(btDeleteP.scaleCenter(0.8f));
 
         lblSetGPS.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
         lblSelectWP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);

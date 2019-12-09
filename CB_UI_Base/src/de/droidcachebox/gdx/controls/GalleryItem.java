@@ -41,7 +41,7 @@ public class GalleryItem extends ListViewItemBackground {
         CB_RectF imgRec = rec.copy();
         imgRec.setPos(0, 0);
 
-        img = new Image(iloader, imgRec.ScaleCenter(0.95f), "", false);
+        img = new Image(iloader, imgRec.scaleCenter(0.95f), "", false);
         img.setHAlignment(HAlignment.CENTER);
         this.addChild(img);
     }
@@ -55,7 +55,7 @@ public class GalleryItem extends ListViewItemBackground {
         super.onResized(rec);
         CB_RectF imgRec = rec.copy();
         imgRec.setPos(0, 0);
-        img.setRec(imgRec.ScaleCenter(0.95f));
+        img.setRec(imgRec.scaleCenter(0.95f));
     }
 
     public Image getImage() {

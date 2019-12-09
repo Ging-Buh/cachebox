@@ -49,7 +49,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
     private LogView() {
         super(ViewManager.leftTab.getContentRec(), "LogView");
         setForceHandleTouchEvents();
-        itemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
+        itemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).scaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
         this.setAdapter(null);

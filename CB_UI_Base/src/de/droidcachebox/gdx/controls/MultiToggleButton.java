@@ -69,7 +69,7 @@ public class MultiToggleButton extends CB_Button {
             return;
 
         // verschiebe Text nach oben, wegen Platz für LED
-        CB_RectF r = ScaleCenter(0.9f);
+        CB_RectF r = scaleCenter(0.9f);
         float l = (r.getHeight() / 2);
         lblTxt.setY(l);
         lblTxt.setHeight(l);

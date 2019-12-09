@@ -55,7 +55,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         progressMessageTextView = new CB_Label(this.name + " progressMessageTextView", leftBorder, margin, innerWidth, measuredLabelHeight);
         this.addChild(progressMessageTextView);
 
-        CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width, UiSizes.getInstance().getButtonHeight() * 0.75f);
+        CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().getWidth(), UiSizes.getInstance().getButtonHeight() * 0.75f);
 
         progressBar = new ProgressBar(rec, "");
         progressBar.setProgress(0);

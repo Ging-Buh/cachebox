@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.math.Quadrangle;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -50,10 +51,16 @@ public class PolygonDrawable implements IRotateDrawable {
         System.arraycopy(triangles, 0, this.triangles, 0, triangles.length);
     }
 
-    protected PolygonDrawable(final GL_Paint paint, float width, float height) {
+    public PolygonDrawable(final GL_Paint paint, float width, float height) {
         this.paint = paint;
         this.width = width;
         this.height = height;
+    }
+
+    public void setVerticesAndTriangles(final Quadrangle line) {
+        this.vertices = line.getVertices();
+        this.triangles = line.getTriangles();
+        po = null;
     }
 
     @Override
@@ -64,7 +71,6 @@ public class PolygonDrawable implements IRotateDrawable {
                 return true;
 
             if (po == null) {
-
                 if (paint.getBitmapShader() == null) {
                     if (texReg == null)
                         createTexRegFromPixMap();

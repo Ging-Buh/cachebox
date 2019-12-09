@@ -149,7 +149,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public GL_View_Base(SizeF size, String name) {
-        this(new CB_RectF(0, 0, size.width, size.height), null, name);
+        this(new CB_RectF(0, 0, size.getWidth(), size.getHeight()), null, name);
     }
 
     protected static void callSkinChanged() {

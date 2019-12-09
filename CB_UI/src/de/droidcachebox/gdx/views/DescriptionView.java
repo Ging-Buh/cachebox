@@ -263,7 +263,7 @@ public class DescriptionView extends CB_View_Base {
                 Quadrangle q1 = new Quadrangle(l1, strokeWidth);
 
                 GL_Paint paint = new GL_Paint();
-                paint.setGLColor(Color.DARK_GRAY);
+                paint.setColor(Color.DARK_GRAY);
                 Line = new PolygonDrawable(q1.getVertices(), q1.getTriangles(), paint, this.getWidth(), this.getHeight());
 
                 l1.dispose();

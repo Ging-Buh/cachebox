@@ -258,10 +258,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     private void drawNumericItem(Batch batch) {
         lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
-        lBounds = lBounds.ScaleCenter(0.95f);
+        lBounds = lBounds.scaleCenter(0.95f);
 
         rBounds = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight());
-        rBounds = rBounds.ScaleCenter(0.95f);
+        rBounds = rBounds.scaleCenter(0.95f);
 
         boolean rClick = false;
         boolean lClick = false;
@@ -330,16 +330,16 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     private void drawNumericIntItem(Batch batch) {
         CB_RectF llBounds = new CB_RectF(0, 0, getHeight(), getHeight());
-        llBounds = llBounds.ScaleCenter(0.95f);
+        llBounds = llBounds.scaleCenter(0.95f);
 
         lBounds = new CB_RectF(llBounds.getMaxX() + BUTTON_MARGIN, 0, getHeight(), getHeight());
-        lBounds = lBounds.ScaleCenter(0.95f);
+        lBounds = lBounds.scaleCenter(0.95f);
 
         CB_RectF rrBounds = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight());
-        rrBounds = rrBounds.ScaleCenter(0.95f);
+        rrBounds = rrBounds.scaleCenter(0.95f);
 
         rBounds = new CB_RectF(rrBounds.getX() - (BUTTON_MARGIN + getHeight()), 0, getHeight(), getHeight());
-        rBounds = rBounds.ScaleCenter(0.95f);
+        rBounds = rBounds.scaleCenter(0.95f);
 
         boolean rClick = false;
         boolean lClick = false;
@@ -435,10 +435,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private void drawSelectItem(Batch batch) {
         float btnWidth = (getWidth() / 2) - 2 * MARGIN;
         lBounds = new CB_RectF(MARGIN, 0, btnWidth, getHeight());
-        lBounds = lBounds.ScaleCenter(0.95f);
+        lBounds = lBounds.scaleCenter(0.95f);
 
         rBounds = new CB_RectF(getWidth() - (btnWidth + MARGIN), 0, btnWidth, getHeight());
-        rBounds = rBounds.ScaleCenter(0.95f);
+        rBounds = rBounds.scaleCenter(0.95f);
 
         boolean rClick = false;
         boolean lClick = false;
@@ -503,7 +503,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         if (rBounds == null || rChkBounds == null) {
             rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// = right Button bounds
 
-            rChkBounds = rBounds.ScaleCenter(0.8f);
+            rChkBounds = rBounds.scaleCenter(0.8f);
         }
 
         if (chkOff == null) {

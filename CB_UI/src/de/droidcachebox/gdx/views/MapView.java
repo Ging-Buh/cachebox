@@ -40,7 +40,7 @@ import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.graphics.*;
 import de.droidcachebox.gdx.math.*;
 import de.droidcachebox.gdx.views.MapViewCacheList.MapViewCacheListUpdateData;
-import de.droidcachebox.gdx.views.MapViewCacheList.WaypointRenderInfo;
+import de.droidcachebox.gdx.views.MapViewCacheList.WayPointRenderInfo;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
@@ -54,7 +54,10 @@ import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.PointL;
 import de.droidcachebox.utils.log.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
 
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.Sprites.*;
@@ -62,7 +65,7 @@ import static de.droidcachebox.gdx.Sprites.*;
 public class MapView extends MapViewBase implements SelectedCacheChangedEventListener, PositionChangedEvent {
     private static final String log = "MapView";
     private CB_RectF targetArrow = new CB_RectF();
-    private SortedMap<Integer, Integer> distanceZoomLevel;
+    private TreeMap<Integer, Integer> distanceZoomLevel;
     private MapMode mapMode;
     private LiveButton liveButton;
     private MultiToggleButton togBtn;
@@ -86,6 +89,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     private PointL lastScreenCenter;
     private GL_Paint distanceCirclePaint;
     private CircleDrawable distanceCircle;
+    private GL_Paint directLinePaint;
+    private PolygonDrawable directLine;
 
 
     public MapView(CB_RectF cb_RectF, MapMode mapMode) {
@@ -179,7 +184,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         }
 
         setClickHandler((v, x, y, pointer, button) -> {
-            WaypointRenderInfo minWpi = null;
+            WayPointRenderInfo minWpi = null;
 
             if (targetArrow != null && targetArrow.contains(x, y)) {
                 if (GlobalCore.isSetSelectedCache()) {
@@ -200,8 +205,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             synchronized (mapCacheList.list) {
                 double minDist = Double.MAX_VALUE;
                 for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
-                    WaypointRenderInfo wpi = mapCacheList.list.get(i);
-                    Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+                    WayPointRenderInfo wpi = mapCacheList.list.get(i);
+                    Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.mapX), Math.round(wpi.mapY)));
                     double aktDist = Math.sqrt(Math.pow(screen.x - x, 2) + Math.pow(screen.y - y, 2));
                     if (aktDist < minDist) {
                         minDist = aktDist;
@@ -209,7 +214,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     }
                 }
                 // empty mapCacheList
-                if (minWpi == null || minWpi.Cache == null) {
+                if (minWpi == null || minWpi.cache == null) {
                     return true;
                 }
                 // always hide the bubble
@@ -218,15 +223,15 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 }
                 // check for showing the bubble
                 if (minDist < 40) {
-                    if (minWpi.Waypoint != null) {
-                        if (GlobalCore.getSelectedCache() != minWpi.Cache) {
+                    if (minWpi.waypoint != null) {
+                        if (GlobalCore.getSelectedCache() != minWpi.cache) {
                             // show bubble at the location of the waypoint!!!
-                            infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
+                            infoBubble.setCache(minWpi.cache, minWpi.waypoint);
                             infoBubble.setVisible();
                         } else {
                             // if only waypoint changes, the bubble will not be shown. (why not ?)
                             // so we must do the selection here
-                            GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
+                            GlobalCore.setSelectedWaypoint(minWpi.cache, minWpi.waypoint);
                             MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
                             data.hideMyFinds = hideMyFinds;
                             data.showAllWaypoints = showAllWaypoints;
@@ -235,7 +240,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                         }
                     } else {
                         // show bubble
-                        infoBubble.setCache(minWpi.Cache, null);
+                        infoBubble.setCache(minWpi.cache, null);
                         infoBubble.setVisible();
                     }
                     inputState = InputState.Idle;
@@ -434,8 +439,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // to force generation of tiles in loadTiles();
         OnResumeListeners.getInstance().addListener(this::onResume);
 
+        directLinePaint = new GL_Paint();
+        directLinePaint.setColor(Color.RED);
+        directLine = null;
+
         distanceCirclePaint = new GL_Paint();
-        distanceCirclePaint.setGLColor(Color.GOLDENROD);
+        distanceCirclePaint.setColor(Color.GOLDENROD);
         distanceCirclePaint.setStrokeWidth(2 * UiSizes.getInstance().getScale());
         distanceCirclePaint.setStyle(GL_Paint.GL_Style.STROKE);
         distanceCircle = null;
@@ -483,7 +492,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     geomList.add(q2);
 
                     GL_Paint paint = new GL_Paint();
-                    paint.setGLColor(COLOR.getCrossColor());
+                    paint.setColor(COLOR.getCrossColor());
                     CrossLines = new PolygonDrawable(geomList.getVertices(), geomList.getTriangles(), paint, mapIntWidth, mapIntHeight);
 
                     geomList.dispose();
@@ -520,7 +529,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (targetArrowScreenRec == null) {
                 targetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
                 if (mapMode != MapMode.Compass) {
-                    targetArrowScreenRec.ScaleCenter(0.9f);
+                    targetArrowScreenRec.scaleCenter(0.9f);
 
                     if (mapMode == MapMode.Normal) {
                         targetArrowScreenRec.setHeight(targetArrowScreenRec.getHeight() - (targetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
@@ -546,12 +555,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 Sprite arrow = Arrows.get(4); // 4 = target-arrow
                 arrow.setRotation(direction);
 
-                float boundsX = newTarget.x - GL_UISizes.targetArrow.halfWidth;
-                float boundsY = newTarget.y - GL_UISizes.targetArrow.height;
+                float boundsX = newTarget.x - GL_UISizes.targetArrow.getHalfWidth();
+                float boundsY = newTarget.y - GL_UISizes.targetArrow.getHeight();
 
-                arrow.setBounds(boundsX, boundsY, GL_UISizes.targetArrow.width, GL_UISizes.targetArrow.height);
+                arrow.setBounds(boundsX, boundsY, GL_UISizes.targetArrow.getWidth(), GL_UISizes.targetArrow.getHeight());
 
-                arrow.setOrigin(GL_UISizes.targetArrow.halfWidth, GL_UISizes.targetArrow.height);
+                arrow.setOrigin(GL_UISizes.targetArrow.getHalfWidth(), GL_UISizes.targetArrow.getHeight());
                 arrow.draw(batch);
 
                 // get real bounding box of TargetArrow
@@ -575,8 +584,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             synchronized (mapCacheList.list) {
 
                 for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
-                    WaypointRenderInfo wpi = mapCacheList.list.get(i);
-                    if (wpi.Selected) {
+                    WayPointRenderInfo wpi = mapCacheList.list.get(i);
+                    if (wpi.selected) {
                         // wenn der Wp selectiert ist, dann immer in der größten Darstellung
                         renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
                     } else if (isCarMode) {
@@ -591,88 +600,85 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         outScreenDraw = 0;
     }
 
-    public void renderWPI(Batch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi) {
-        Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
+    public void renderWPI(Batch batch, SizeF wpUnderlay, SizeF wpSize, WayPointRenderInfo wayPointRenderInfo) {
+        Vector2 screen = worldToScreen(new Vector2(wayPointRenderInfo.mapX, wayPointRenderInfo.mapY));
 
-        screen.y -= ySpeedVersatz;
-        // FIXME create a LineDrawable class for create one times and set the Coordinates with calculated Triangles
-        if (myPointOnScreen != null && showDirectLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
+        screen.y = screen.y - ySpeedVersatz;
+        if (myPointOnScreen != null && showDirectLine && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWaypoint())) {
+            if (directLine == null) directLine = new PolygonDrawable(directLinePaint, mapIntWidth, mapIntHeight);
             // FIXME render only if visible on screen (intersect the screen rec)
-            Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UiSizes.getInstance().getScale());
-            if (paint == null) {
-                paint = new GL_Paint();
-                paint.setGLColor(Color.RED);
-            }
-            PolygonDrawable po = new PolygonDrawable(line.getVertices(), line.getTriangles(), paint, mapIntWidth, mapIntHeight);
-            po.draw(batch, 0, 0, mapIntWidth, mapIntHeight, 0);
-            po.dispose();
+            directLine.setVerticesAndTriangles(new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UiSizes.getInstance().getScale()));
+            directLine.draw(batch, 0, 0, mapIntWidth, mapIntHeight, 0);
         }
+
         // Don't render if outside of screen !!
-        if ((screen.x < 0 - WpSize.width || screen.x > getWidth() + WpSize.height) || (screen.y < 0 - WpSize.height || screen.y > getHeight() + WpSize.height)) {
-            if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
+        if ((screen.x < 0 - wpSize.getWidth() || screen.x > getWidth() + wpSize.getHeight()) || (screen.y < 0 - wpSize.getHeight() || screen.y > getHeight() + wpSize.getHeight())) {
+            if (wayPointRenderInfo.cache != null && (wayPointRenderInfo.cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
                 // check if wp selected
-                if (wpi.Waypoint != null && wpi.Waypoint.equals(infoBubble.getWaypoint()) || wpi.Waypoint == null && infoBubble.getWaypoint() == null)
+                if (wayPointRenderInfo.waypoint != null && wayPointRenderInfo.waypoint.equals(infoBubble.getWaypoint()) || wayPointRenderInfo.waypoint == null && infoBubble.getWaypoint() == null)
                     infoBubble.setInvisible();
             }
             return;
         }
 
-        float NameYMovement = 0;
+        float nameYMovement = 0;
 
         if (showDistanceCircle) {
             if (aktZoom >= 15) {
-                if (distanceCircle == null)
-                    distanceCircle = new CircleDrawable(0, 0, pixelsPerMeter * 161, distanceCirclePaint, mapIntWidth, mapIntHeight);
-                distanceCircle.setPosition(screen.x, screen.y, pixelsPerMeter * 161);
-                distanceCircle.draw(batch, 0, 0, getWidth(), getHeight(), 0);
+                if (wayPointRenderInfo.showDistanceCircle()) {
+                    if (distanceCircle == null)
+                        distanceCircle = new CircleDrawable(0, 0, pixelsPerMeter * 161, distanceCirclePaint, mapIntWidth, mapIntHeight);
+                    distanceCircle.setPosition(screen.x, screen.y, pixelsPerMeter * 161);
+                    distanceCircle.draw(batch, 0, 0, getWidth(), getHeight(), 0);
+                }
             }
         }
 
-        if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
+        if ((aktZoom >= zoomCross) && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWaypoint())) {
             // Draw Cross and move screen vector
             Sprite cross = getMapOverlay(IconName.cross);
-            cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
+            cross.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight(), wpUnderlay.getWidth(), wpUnderlay.getHeight());
             cross.draw(batch);
 
-            screen.add(-WpUnderlay.width, WpUnderlay.height);
-            NameYMovement = WpUnderlay.height;
+            screen.add(-wpUnderlay.getWidth(), wpUnderlay.getHeight());
+            nameYMovement = wpUnderlay.getHeight();
         }
 
-        if (wpi.UnderlayIcon != null) {
-            wpi.UnderlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
-            wpi.UnderlayIcon.draw(batch);
+        if (wayPointRenderInfo.underlayIcon != null) {
+            wayPointRenderInfo.underlayIcon.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight(), wpUnderlay.getWidth(), wpUnderlay.getHeight());
+            wayPointRenderInfo.underlayIcon.draw(batch);
         }
-        if (wpi.Icon != null) {
-            wpi.Icon.setBounds(screen.x - WpSize.halfWidth, screen.y - WpSize.halfHeight, WpSize.width, WpSize.height);
-            wpi.Icon.draw(batch);
+        if (wayPointRenderInfo.icon != null) {
+            wayPointRenderInfo.icon.setBounds(screen.x - wpSize.getHalfWidth(), screen.y - wpSize.getHalfHeight(), wpSize.getWidth(), wpSize.getHeight());
+            wayPointRenderInfo.icon.draw(batch);
         }
 
         // draw Favorite symbol
-        if (wpi.Cache != null && wpi.Cache.isFavorite()) {
-            batch.draw(getSprite(IconName.favorit.name()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
+        if (wayPointRenderInfo.cache != null && wayPointRenderInfo.cache.isFavorite()) {
+            batch.draw(getSprite(IconName.favorit.name()), screen.x + (wpSize.getHalfWidth() / 2), screen.y + (wpSize.getHalfHeight() / 2), wpSize.getWidth(), wpSize.getHeight());
         }
 
-        if (wpi.OverlayIcon != null) {
-            wpi.OverlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
-            wpi.OverlayIcon.draw(batch);
+        if (wayPointRenderInfo.overlayIcon != null) {
+            wayPointRenderInfo.overlayIcon.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight(), wpUnderlay.getWidth(), wpUnderlay.getHeight());
+            wayPointRenderInfo.overlayIcon.draw(batch);
         }
 
-        boolean drawAsWaypoint = wpi.Waypoint != null;
+        boolean drawAsWaypoint = wayPointRenderInfo.waypoint != null;
 
         // Rating des Caches darstellen
-        if (wpi.Cache != null && showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15)) {
-            Sprite rating = MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
-            rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width, WpUnderlay.Height4_8);
-            rating.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
+        if (wayPointRenderInfo.cache != null && showRating && (!drawAsWaypoint) && (wayPointRenderInfo.cache.Rating > 0) && (aktZoom >= 15)) {
+            Sprite rating = MapStars.get((int) Math.min(wayPointRenderInfo.cache.Rating * 2, 5 * 2));
+            rating.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight() - wpUnderlay.getHeight48(), wpUnderlay.getWidth(), wpUnderlay.getHeight48());
+            rating.setOrigin(wpUnderlay.getWidth() / 2, wpUnderlay.getHeight48() / 2);
             rating.setRotation(0);
             rating.draw(batch);
-            NameYMovement += WpUnderlay.Height4_8;
+            nameYMovement += wpUnderlay.getHeight48();
         }
 
         // Beschriftung
-        if (wpi.Cache != null && showTitles && (aktZoom >= 15)) {
+        if (wayPointRenderInfo.cache != null && showTitles && (aktZoom >= 15)) {
             try {
-                String Name = drawAsWaypoint ? wpi.Waypoint.getTitleForGui() : wpi.Cache.getName();
+                String Name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getName();
 
                 if (layout == null)
                     layout = new GlyphLayout(Fonts.getNormal(), Name);
@@ -680,28 +686,28 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     layout.setText(Fonts.getNormal(), Name);
 
                 float halfWidth = layout.width / 2;
-                Fonts.getNormal().draw(batch, layout, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
+                Fonts.getNormal().draw(batch, layout, screen.x - halfWidth, screen.y - wpUnderlay.getHalfHeight() - nameYMovement);
             } catch (Exception ignored) {
             }
         }
 
         // Show D/T-Rating
-        if (wpi.Cache != null && showDT && (!drawAsWaypoint) && (aktZoom >= 15)) {
-            Sprite difficulty = MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
-            difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
-            difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
+        if (wayPointRenderInfo.cache != null && showDT && (!drawAsWaypoint) && (aktZoom >= 15)) {
+            Sprite difficulty = MapStars.get((int) Math.min(wayPointRenderInfo.cache.getDifficulty() * 2, 5 * 2));
+            difficulty.setBounds(screen.x - wpUnderlay.getWidth() - GL_UISizes.infoShadowHeight, screen.y - (wpUnderlay.getHeight48() / 2), wpUnderlay.getWidth(), wpUnderlay.getHeight48());
+            difficulty.setOrigin(wpUnderlay.getWidth() / 2, wpUnderlay.getHeight48() / 2);
             difficulty.setRotation(90);
             difficulty.draw(batch);
 
-            Sprite terrain = MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
-            terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
-            terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
+            Sprite terrain = MapStars.get((int) Math.min(wayPointRenderInfo.cache.getTerrain() * 2, 5 * 2));
+            terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (wpUnderlay.getHeight48() / 2), wpUnderlay.getWidth(), wpUnderlay.getHeight48());
+            terrain.setOrigin(wpUnderlay.getWidth() / 2, wpUnderlay.getHeight48() / 2);
             terrain.setRotation(90);
             terrain.draw(batch);
         }
 
-        if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
-            if (infoBubble.getWaypoint() == wpi.Waypoint) {
+        if (wayPointRenderInfo.cache != null && (wayPointRenderInfo.cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
+            if (infoBubble.getWaypoint() == wayPointRenderInfo.waypoint) {
                 Vector2 pos = new Vector2(screen.x - infoBubble.getHalfWidth(), screen.y);
                 infoBubble.setPos(pos);
             }

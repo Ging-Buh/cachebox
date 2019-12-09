@@ -176,31 +176,31 @@ public class MapInfoPanel extends CB_View_Base {
 
         float margin = GL_UISizes.margin;
 
-        lblSpeed = new CB_Label(ScaleCenter(0.4f));
+        lblSpeed = new CB_Label(scaleCenter(0.4f));
         lblSpeed.setFont(Fonts.getSmall());
         lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.getHeight() * 0.1f));
         lblSpeed.setText("---");
         this.addChild(lblSpeed);
 
-        lblDistance = new CB_Label(ScaleCenter(0.4f));
+        lblDistance = new CB_Label(scaleCenter(0.4f));
         lblDistance.setFont(Fonts.getBig());
         lblDistance.setPos(new Vector2(CompassRec.getWidth() + margin, CompassRec.getWidth() / 2));
         lblDistance.setText("---");
         this.addChild(lblDistance);
 
-        lblLatitude = new CB_Label(ScaleCenter(0.4f));
+        lblLatitude = new CB_Label(scaleCenter(0.4f));
         lblLatitude.setFont(Fonts.getSmall());
         lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
         lblLatitude.setText("---");
         this.addChild(lblLatitude);
 
-        lblLongitude = new CB_Label(ScaleCenter(0.4f));
+        lblLongitude = new CB_Label(scaleCenter(0.4f));
         lblLongitude.setFont(Fonts.getSmall());
         lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth() - rightBorder, this.getHeight() * 0.1f));
         lblLongitude.setText("---");
         this.addChild(lblLongitude);
 
-        CoordSymbol = new Image((new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.62f), "CoordSymbol", false);
+        CoordSymbol = new Image((new CB_RectF(0, 0, this.getHeight(), this.getHeight())).scaleCenter(0.62f), "CoordSymbol", false);
         CoordSymbol.setX(this.getWidth() - CoordSymbol.getWidth() - (rightBorder / 3));
         CoordSymbol.setDrawable(new SpriteDrawable(Sprites.getSprite("cache-icon")));
         this.addChild(CoordSymbol);

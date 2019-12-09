@@ -77,7 +77,7 @@ public class MenuItem extends ListViewItemBackground {
 
         boolean hasIcon = (mIcon != null);
         if (hasIcon) {
-            CB_RectF rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()).ScaleCenter(0.75f);
+            CB_RectF rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()).scaleCenter(0.75f);
             iconImage = new Image(rec, "MenuItemImage", false);
             iconImage.setDrawable(mIcon);
             if (!mIsEnabled) {
@@ -89,9 +89,9 @@ public class MenuItem extends ListViewItemBackground {
         if (mIsCheckable) {
             CB_RectF rec;
             if (hasIcon) {
-                rec = new CB_RectF(getWidth() - 2 * getHeight(), 0, getHeight(), getHeight()).ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - 2 * getHeight(), 0, getHeight(), getHeight()).scaleCenter(0.75f);
             } else {
-                rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()); // .ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()); // .scaleCenter(0.75f);
             }
 
             rec.setHeight(rec.getWidth());
@@ -139,9 +139,9 @@ public class MenuItem extends ListViewItemBackground {
         if (mIsCheckable && checkImage != null) {
             CB_RectF rec;
             if (hasIcon) {
-                rec = new CB_RectF(getWidth() - 2 * getHeight(), 0, getHeight(), getHeight()).ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - 2 * getHeight(), 0, getHeight(), getHeight()).scaleCenter(0.75f);
             } else {
-                rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()); // .ScaleCenter(0.75f);
+                rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()); // .scaleCenter(0.75f);
             }
             rec.setHeight(rec.getWidth());
             checkImage.setSize(rec);

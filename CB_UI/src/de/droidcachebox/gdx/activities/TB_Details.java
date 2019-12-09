@@ -70,7 +70,7 @@ public class TB_Details extends ActivityBase {
         });
 
         CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight());
-        iconRec = iconRec.ScaleCenter(0.8f);
+        iconRec = iconRec.scaleCenter(0.8f);
         icon = new Image(iconRec, "Icon", false);
         title = new EditTextField(iconRec, this, "title");
         // on scrollbox

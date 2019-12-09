@@ -1369,7 +1369,7 @@ public class EditFilterSettings extends ActivityBase {
                     // bounds
                     float halfSize = rBounds.getWidth() / 4;
 
-                    rChkBounds = rBounds.ScaleCenter(0.8f);
+                    rChkBounds = rBounds.scaleCenter(0.8f);
                     lPinBounds = new CB_RectF(rChkBounds);
                     lPinBounds.offset(-(getWidth() - (halfSize * 2) - rChkBounds.getWidth()), 0);
                 }
@@ -1544,7 +1544,7 @@ public class EditFilterSettings extends ActivityBase {
                     rBounds = new CB_RectF(getWidth() - getHeight() - margin, margin, getHeight() - margin, getHeight() - margin);// = right Button
                     // bounds
 
-                    rChkBounds = rBounds.ScaleCenter(0.8f);
+                    rChkBounds = rBounds.scaleCenter(0.8f);
                 }
 
                 if (chkBox == null) {

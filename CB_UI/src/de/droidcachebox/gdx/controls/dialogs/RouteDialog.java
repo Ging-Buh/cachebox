@@ -30,7 +30,7 @@ public class RouteDialog extends ButtonDialog {
         // initial VariableField
         float textFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
-        float innerWidth = msgBoxContentSize.width + leftBorder + rightBorder;
+        float innerWidth = msgBoxContentSize.getWidth() + leftBorder + rightBorder;
         innerWidth = Menu.getMenuRec().getWidth();
 
         Linearlayout layout = new Linearlayout(innerWidth, "Layout");

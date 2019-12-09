@@ -131,7 +131,7 @@ public abstract class Dialog extends CB_View_Base {
         }
         Height += calcFooterHeight(hasButtons);
         if (hasRemember)
-            Height += UiSizes.getInstance().getChkBoxSize().height;
+            Height += UiSizes.getInstance().getChkBoxSize().getHeight();
         Height += calcHeaderHeight();
 
         // min Height festlegen
@@ -218,7 +218,7 @@ public abstract class Dialog extends CB_View_Base {
         }
         super.removeChildsDirekt();
 
-        mContent = new Box(this.ScaleCenter(0.95f), "Dialog Content Box");
+        mContent = new Box(this.scaleCenter(0.95f), "Dialog Content Box");
 
         // debug mContent.setBackground(new ColorDrawable(Color.RED));
 

@@ -25,14 +25,17 @@ class MapTiles {
     private final MapTileCache tiles;
     private final MapTileCache overlayTiles;
 
-    Layer currentLayer = null;
-    Layer currentOverlayLayer = null;
+    private Layer currentLayer;
+    private Layer currentOverlayLayer;
 
-    private AtomicBoolean isReady = new AtomicBoolean(true);
+    private AtomicBoolean isReady;
 
     MapTiles(int capacity) {
         tiles = new MapTileCache((short) capacity);
         overlayTiles = new MapTileCache((short) capacity);
+        currentOverlayLayer = null;
+        currentLayer = null;
+        isReady = new AtomicBoolean(true);
     }
 
     int getCapacity() {
@@ -55,7 +58,9 @@ class MapTiles {
             isReady.set(true);
         });
 
-        while (!isReady.get()) {
+        int timeout = 0; // with timeout
+        while (!isReady.get() && timeout < 10) {
+            timeout++;
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {
@@ -81,24 +86,28 @@ class MapTiles {
         // overlay is never mapsforge: so no new thread
         TileGL tile = currentOverlayLayer.getTileGL(descriptor);
         if (tile == null) {
-            isReady.set(false);
+            // isReady.set(false);
             GL.that.postAsync(() -> {
                 // download in separate thread
                 if (currentOverlayLayer.cacheTileToFile(descriptor)) {
                     addOverlayTile(descriptor, currentOverlayLayer.getTileGL(descriptor));
                 }
-                isReady.set(false);
+                // isReady.set(true);
             });
         } else {
             addOverlayTile(descriptor, tile);
         }
 
+        // don't wait
+        /*
         while (!isReady.get()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {
             }
         }
+
+         */
 
     }
 
@@ -216,6 +225,26 @@ class MapTiles {
                 overlayTiles.sortByAge();
             }
         }
+    }
+
+    public Layer getCurrentLayer() {
+        return currentLayer;
+    }
+
+    public void setCurrentLayer(Layer layer) {
+        currentLayer = layer;
+    }
+
+    public Layer getCurrentOverlayLayer() {
+        return currentOverlayLayer;
+    }
+
+    public void setCurrentOverlayLayer(Layer layer) {
+        currentOverlayLayer = layer;
+    }
+
+    public void setIsReady() {
+        isReady.set(true);
     }
 
 
