@@ -78,7 +78,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     private boolean hideMyFinds;
     private boolean showDirectLine;
     private boolean showAllWaypoints;
-    private GL_Paint paint;
     private Cache lastSelectedCache = null;
     private Waypoint lastSelectedWaypoint = null;
     private GlyphLayout layout = null;
@@ -434,7 +433,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         SetNorthOriented(Config.isMapNorthOriented.getValue());
         Config.isMapNorthOriented.addSettingChangedListener(() -> {
             SetNorthOriented(Config.isMapNorthOriented.getValue());
-            this.positionChanged();
+            positionChanged();
         });
         // to force generation of tiles in loadTiles();
         OnResumeListeners.getInstance().addListener(this::onResume);
@@ -742,7 +741,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         mapCacheList.update(data);
 
         if (getCenterGps()) {
-            this.positionChanged();
+            positionChanged();
             return;
         }
 
@@ -760,16 +759,14 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 
         // für 2sec rendern lassen, bis Änderungen der WPI-list neu berechnet wurden
-        TimerTask task = new TimerTask() {
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 GL.that.removeRenderView(MapView.this);
             }
-        };
+        }, 2000);
 
-        Timer timer = new Timer();
-        timer.schedule(task, 2000);
-        this.positionChanged();
+        positionChanged();
     }
 
     @Override
@@ -1050,7 +1047,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (GlobalCore.getSelectedCoord() != null) {
                 info.setDistance(GlobalCore.getSelectedCoord().Distance(CalculationType.ACCURATE));
             }
-            this.orientationChanged();
+            orientationChanged();
         }
 
         if (mapMode == MapMode.Compass) {

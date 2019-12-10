@@ -208,7 +208,6 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                     icon = "small5";
                     break;
                 case MyParking:
-                    return getSprite("map" + cache.getType().name());
                 case Munzee:
                     return getSprite("map" + cache.getType().name());
                 default:
@@ -234,17 +233,15 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
         } else {
             if (waypoint == null) {
                 if ((cache == null) || selectedCache) {
-                    if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
-
-                        return getMapOverlay(IconName.liveSelected);
-                    }
+                    if (cache != null)
+                        if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
+                            return getMapOverlay(IconName.liveSelected);
+                        }
                     return getMapOverlay(IconName.shaddowrectselected);
                 } else {
                     if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
-
                         return getMapOverlay(IconName.live);
                     }
-
                     return getMapOverlay(IconName.shaddowrect);
                 }
             } else {
@@ -259,8 +256,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
 
     public void update(MapViewCacheListUpdateData data) {
         lastUpdateData = data;
-        this.showAllWaypoints = data.showAllWaypoints;
-        this.hideMyFinds = data.hideMyFinds;
+        showAllWaypoints = data.showAllWaypoints;
+        hideMyFinds = data.hideMyFinds;
         showAtOriginalPosition = data.showAtOriginalPosition;
 
         if (data.point1 == null || data.point2 == null)
@@ -304,9 +301,11 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
         state.set(1);
     }
 
+    /*
     public boolean hasNewResult() {
         return state.get() == 3;
     }
+     */
 
     @Override
     public void cacheListChanged() {
@@ -321,22 +320,30 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
         public Vector2 point2;
         public int zoom;
         public boolean doNotCheck;
-        public boolean hideMyFinds = false;
-        public boolean showAllWaypoints = false;
-        public boolean showAtOriginalPosition = false;
+        public boolean hideMyFinds;
+        public boolean showAllWaypoints;
+        public boolean showAtOriginalPosition;
 
         public MapViewCacheListUpdateData(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck) {
             this.point1 = point1;
             this.point2 = point2;
             this.zoom = zoom;
             this.doNotCheck = doNotCheck;
+            hideMyFinds = false;
+            showAllWaypoints = false;
+            showAtOriginalPosition = false;
         }
 
         public MapViewCacheListUpdateData(MapViewCacheListUpdateData data) {
-            this.point1 = data.point1;
-            this.point2 = data.point2;
-            this.zoom = data.zoom;
-            this.doNotCheck = data.doNotCheck;
+            point1 = data.point1;
+            point2 = data.point2;
+            zoom = data.zoom;
+            doNotCheck = data.doNotCheck;
+            hideMyFinds = false;
+            hideMyFinds = data.hideMyFinds;
+            showAllWaypoints = false;
+            showAllWaypoints = data.showAllWaypoints;
+            showAtOriginalPosition = data.showAtOriginalPosition;
         }
     }
 
@@ -349,20 +356,18 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
         public Sprite icon;
         public Sprite underlayIcon;
         public Sprite overlayIcon;
+
         public boolean showDistanceCircle() {
             if (waypoint != null) {
-                if (waypoint.Type == CacheTypes.ReferencePoint || waypoint.Type == CacheTypes.ParkingArea || waypoint.Type == CacheTypes.Trailhead || waypoint.Type == CacheTypes.Virtual)
-                    return false;
+                return waypoint.Type != CacheTypes.ReferencePoint && waypoint.Type != CacheTypes.ParkingArea && waypoint.Type != CacheTypes.Trailhead && waypoint.Type != CacheTypes.Virtual;
             }
             return true;
         }
     }
 
     private class QueueProcessor extends Thread {
-
         @Override
         public void run() {
-            // boolean queueEmpty = false;
             try {
                 do {
                     if (state.compareAndSet(1, 2)) {
@@ -433,7 +438,6 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                         }
 
                         synchronized (list) {
-
                             // move selected WPI to last
                             int index = wayPointRenderInfos.indexOf(selectedWP);
                             if (index >= 0 && index <= wayPointRenderInfos.size())
@@ -469,7 +473,6 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                 // wenn der Thread beendet wurde, muss er neu gestartet werden!
                 state.set(4);
             }
-            return;
         }
     }
 }

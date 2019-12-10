@@ -94,10 +94,6 @@ public class Layer {
     public void clearAdditionalMaps() {
     }
 
-    public boolean hasAdditionalMaps() {
-        return false;
-    }
-
     public String[] getAllLayerNames() {
         String[] ret = new String[1];
         ret[0] = name;

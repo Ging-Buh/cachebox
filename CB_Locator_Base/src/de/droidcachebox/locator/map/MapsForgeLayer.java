@@ -120,11 +120,6 @@ public class MapsForgeLayer extends Layer {
     }
 
     @Override
-    public boolean hasAdditionalMaps() {
-        return additionalMapsforgeLayers.size() > 0;
-    }
-
-    @Override
     public String[] getAllLayerNames() {
         String[] ret = new String[additionalMapsforgeLayers.size() + 1];
         ret[0] = getName();
