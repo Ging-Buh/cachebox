@@ -58,7 +58,7 @@ class MapTiles {
             isReady.set(true);
         });
 
-        int timeout = 0; // with timeout
+        int timeout = 0; // with timeout ~ one second (10 * 100)
         while (!isReady.get() && timeout < 10) {
             timeout++;
             try {

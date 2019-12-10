@@ -19,7 +19,6 @@ import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.utils.log.Log;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,6 +35,7 @@ public class MapTileLoader {
     private Comparator<Descriptor> byDistanceFromCenter;
     private Thread queueProcessorAliveCheck;
     private Array<Long> alreadyOrdered, alreadyOrderedOverlays;
+    private boolean queueProcessorsIsStarted;
 
     public MapTileLoader(int capacity) {
         mapTiles = new MapTiles(capacity);
@@ -48,6 +48,7 @@ public class MapTileLoader {
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
         Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
+        queueProcessorsIsStarted = false;
         nextQueueProcessor = 0;
         byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.Data, (Integer) o2.Data);
 
@@ -58,10 +59,19 @@ public class MapTileLoader {
                     Thread.sleep(10000);
                 } catch (InterruptedException ignored) {
                 }
-                for (Iterator<MultiThreadQueueProcessor> iterator = queueProcessors.iterator(); iterator.hasNext(); ) {
-                    MultiThreadQueueProcessor threadToCheck = iterator.next();
-                    boolean isHanging = (System.currentTimeMillis() - threadToCheck.startTime > 30000) && threadToCheck.isWorking; // or less or more??
-                    if (!threadToCheck.isAlive() || isHanging) {
+                for (MultiThreadQueueProcessor threadToCheck : queueProcessors) {
+                    boolean abortAndNew = false;
+                    if (!threadToCheck.isAlive()) {
+                        // is down (?Exception)
+                        abortAndNew = true;
+                        Log.info(log, "thread is down.");
+                    }
+                    if ((System.currentTimeMillis() - threadToCheck.startTime > 60000) && threadToCheck.isWorking) {
+                        // is hanging (loading maptile for more than one minute) loading maptile
+                        abortAndNew = true;
+                        Log.info(log, "thread is hanging.");
+                    }
+                    if (abortAndNew) {
                         try {
                             stopQueueProzessor(threadToCheck);
                             MultiThreadQueueProcessor newThread = new MultiThreadQueueProcessor(mapTiles);
@@ -69,7 +79,7 @@ public class MapTileLoader {
                             newThread.setPriority(Thread.MIN_PRIORITY);
                             newThread.start();
                         } catch (Exception ex) {
-                            Log.err(log, "Started a new thread with index: ");
+                            Log.err(log, "Start a new thread", ex);
                         }
                     }
                 }
@@ -78,14 +88,13 @@ public class MapTileLoader {
     }
 
     private void startQueueProzessors() {
-        int threadIndex = 0;
-        while (threadIndex < PROCESSOR_COUNT) {
+        for (int i = 0; i < PROCESSOR_COUNT; i++) {
             MultiThreadQueueProcessor thread = new MultiThreadQueueProcessor(mapTiles);
             queueProcessors.add(thread);
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();
-            threadIndex++;
         }
+        queueProcessorsIsStarted = true;
         queueProcessorAliveCheck.start();
     }
 
@@ -104,7 +113,7 @@ public class MapTileLoader {
     }
 
     public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
-        if (queueProcessors.size() == 0) startQueueProzessors();
+        if (!queueProcessorsIsStarted) startQueueProzessors();
         // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
         // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
 

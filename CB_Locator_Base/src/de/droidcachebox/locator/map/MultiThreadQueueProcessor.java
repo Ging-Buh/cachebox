@@ -26,11 +26,10 @@ class MultiThreadQueueProcessor extends Thread {
     private static int threadIndex = -1;
     private final MapTiles mapTiles;
     private final Array<OrderData> orders;
-    boolean isWorking, canTakeOrder;
+    boolean isWorking, canTakeOrder, doStop;
     long startTime;
     private String log = "MapTileQueueThread";
     private OrderData newOrder;
-    private boolean doStop;
 
     MultiThreadQueueProcessor(MapTiles mapTiles) {
         threadIndex++;
