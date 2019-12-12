@@ -42,7 +42,7 @@ public class FunctionDistance extends Function {
             MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, coord[0].getLatitude(), coord[0].getLongitude(), coord[1].getLatitude(), coord[1].getLongitude(), dist);
             return String.valueOf(dist[0]);
         } catch (Exception ex) {
-            return Translation.get("StdError", "$solverFuncDistance", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+            return Translation.get("StdError", "$solverFuncDistance", ex.getMessage(), coord[0].formatCoordinate() + " -> " + coord[1].formatCoordinate());
         }
     }
 

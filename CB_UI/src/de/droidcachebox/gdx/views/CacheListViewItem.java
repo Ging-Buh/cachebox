@@ -30,7 +30,7 @@ import de.droidcachebox.utils.UnitFormatter;
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent {
 
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-    protected ExtendedCacheInfo info;
+    protected ExtendedCacheInfo cacheInfo;
     protected boolean isPressed = false;
     double heading = 0;
     private Sprite liveCacheIcon;
@@ -47,10 +47,10 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     public CacheListViewItem(CB_RectF rec, int Index, Cache cache) {
         super(rec, Index, cache.getName());
         mCache = cache;
-        info = new ExtendedCacheInfo(UiSizes.getInstance().getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
-        info.setZeroPos();
+        cacheInfo = new ExtendedCacheInfo(UiSizes.getInstance().getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+        cacheInfo.setZeroPos();
         distance.setColor(COLOR.getFontColor());
-        this.addChild(info);
+        this.addChild(cacheInfo);
         PositionChangedListeners.addListener(this);
 
         float size = this.getHeight() / 2.3f;
@@ -120,7 +120,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
             Waypoint FinalWp = mCache.getCorrectedFinal();
 
-            Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.coordinate;
+            Coordinate Final = FinalWp != null ? FinalWp.getCoordinate() : mCache.coordinate;
             CalculationType calcType = CalculationType.FAST;
             Cache c = GlobalCore.getSelectedCache();
             if (c != null) {
@@ -157,7 +157,6 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     @Override
     protected void render(Batch batch) {
         super.render(batch);
-
         if (liveCacheIcon != null)
             liveCacheIcon.draw(batch);
         if (arrow != null)
@@ -166,17 +165,15 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
             synchronized (distance) {
                 distance.draw(batch);
             }
-
         }
-
     }
 
     @Override
     public void dispose() {
         PositionChangedListeners.removeListener(this);
-        if (info != null)
-            info.dispose();
-        info = null;
+        if (cacheInfo != null)
+            cacheInfo.dispose();
+        cacheInfo = null;
 
         arrow = null;
         // if (distance != null) distance.dispose();

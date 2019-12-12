@@ -100,8 +100,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     }
 
     private void addWaypoint(Cache cache, Waypoint wp, int iconSize) {
-        double mapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
-        double mapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
+        double mapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.getLongitude());
+        double mapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.getLatitude());
         if (isVisible(mapX, mapY) || (GlobalCore.getSelectedWaypoint() == wp)) {
             WayPointRenderInfo wayPointRenderInfo = new WayPointRenderInfo();
             wayPointRenderInfo.mapX = (float) mapX;
@@ -122,10 +122,10 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     }
 
     private Sprite getWaypointIcon(Waypoint waypoint) {
-        if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart))
+        if ((waypoint.waypointType == CacheTypes.MultiStage) && (waypoint.isStartWaypoint))
             return getSprite("mapMultiStageStartP"); //
         else
-            return getSprite("map" + waypoint.Type.name());
+            return getSprite("map" + waypoint.waypointType.name());
     }
 
     private Sprite getCacheIcon(Cache cache, int iconSize) {
@@ -359,7 +359,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
 
         public boolean showDistanceCircle() {
             if (waypoint != null) {
-                return waypoint.Type != CacheTypes.ReferencePoint && waypoint.Type != CacheTypes.ParkingArea && waypoint.Type != CacheTypes.Trailhead && waypoint.Type != CacheTypes.Virtual;
+                return waypoint.waypointType != CacheTypes.ReferencePoint && waypoint.waypointType != CacheTypes.ParkingArea && waypoint.waypointType != CacheTypes.Trailhead && waypoint.waypointType != CacheTypes.Virtual;
             }
             return true;
         }
@@ -402,8 +402,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                         finalWaypoint = cache.getCorrectedFinal();
                                         if (finalWaypoint != null) {
                                             // show cache at Final coords
-                                            MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, finalWaypoint.Pos.getLongitude());
-                                            MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, finalWaypoint.Pos.getLatitude());
+                                            MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, finalWaypoint.getLongitude());
+                                            MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, finalWaypoint.getLatitude());
                                         }
                                     }
                                     // or show Cache at Startwaypoint (only for Multi and Mysterie)
@@ -412,8 +412,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                         if (!cache.hasCorrectedCoordinates() && (finalWaypoint == null)) {
                                             startWaypoint = cache.getStartWaypoint();
                                             if (startWaypoint != null) {
-                                                MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, startWaypoint.Pos.getLongitude());
-                                                MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, startWaypoint.Pos.getLatitude());
+                                                MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, startWaypoint.getLongitude());
+                                                MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, startWaypoint.getLatitude());
                                             }
                                         }
                                     }

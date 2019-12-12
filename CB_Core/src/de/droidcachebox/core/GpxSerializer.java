@@ -357,7 +357,7 @@ public final class GpxSerializer {
         for (int i = 0; i < cache.waypoints.size(); i++) {
             Waypoint wp = cache.waypoints.get(i);
 
-            if (wp.IsUserWaypoint) {
+            if (wp.isUserWaypoint) {
                 ownWaypoints.add(wp);
             } else {
                 originWaypoints.add(wp);
@@ -376,7 +376,7 @@ public final class GpxSerializer {
      * Writes one waypoint entry for cache waypoint.
      */
     private void writeCacheWaypoint(Cache cache, final Waypoint wp) throws IOException {
-        final Coordinate coords = wp.Pos;
+        final Coordinate coords = wp.getCoordinate();
         if (coords != null) {
             gpx.startTag(PREFIX_GPX, "wpt");
             gpx.attribute("", "lat", Double.toString(coords.getLatitude()));
@@ -385,8 +385,8 @@ public final class GpxSerializer {
                     "name", wp.getGcCode(), //
                     "cmt", wp.getDescription(), //
                     "desc", wp.getTitle(), //
-                    "sym", wp.Type.toString(), //
-                    "type", "Waypoint|" + wp.Type.toString()); //
+                    "sym", wp.waypointType.toString(), //
+                    "type", "Waypoint|" + wp.waypointType.toString()); //
 
             gpx.startTag(PREFIX_GPX, PREFIX_CACHEBOX);
 
@@ -400,15 +400,12 @@ public final class GpxSerializer {
     }
 
     private void writeLogs(final Cache cache) throws IOException {
-        CB_List<LogEntry> cleanLogs = Database.getLogs(cache);
-
-        if (cleanLogs.isEmpty()) {
+        CB_List<LogEntry> logEntries = Database.getLogs(cache);
+        if (logEntries.isEmpty()) {
             return;
         }
         gpx.startTag(PREFIX_GROUNDSPEAK, "logs");
-
-        for (int i = 0; i < cleanLogs.size(); i++) {
-            LogEntry log = cleanLogs.get(i);
+        for (LogEntry log : logEntries) {
             gpx.startTag(PREFIX_GROUNDSPEAK, "log");
             gpx.attribute("", "id", Integer.toString((int) log.logId));
 
@@ -431,7 +428,6 @@ public final class GpxSerializer {
 
             gpx.endTag(PREFIX_GROUNDSPEAK, "log");
         }
-
         gpx.endTag(PREFIX_GROUNDSPEAK, "logs");
     }
 

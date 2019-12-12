@@ -167,9 +167,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     private void setCache() {
 
         try {
-            if (aktCache == null)
-                return;
             synchronized (aktCache) {
+                if (aktCache == null)
+                    return;
                 Log.debug(log, "new cache: " + aktCache.getGcCode() + ":" + aktCache.getName());
 
                 if (aktCache.mustLoadDetail()) {
@@ -207,7 +207,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
                             Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getType().name())));
                         }
                     } else {
-                        Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktWaypoint.Type.name())));
+                        Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktWaypoint.waypointType.name())));
                     }
                 }
 
@@ -225,9 +225,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
                 if (showCoords && lblCoords != null) {
                     if (aktWaypoint == null) {
-                        lblCoords.setText(aktCache.coordinate.FormatCoordinate());
+                        lblCoords.setText(aktCache.coordinate.formatCoordinate());
                     } else {
-                        lblCoords.setText(aktWaypoint.Pos.FormatCoordinate());
+                        lblCoords.setText(aktWaypoint.getCoordinate().formatCoordinate());
                     }
                 }
 
@@ -634,9 +634,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         double heading = Locator.getInstance().getHeading();
 
         if (lblOwnCoords != null)
-            lblOwnCoords.setText(position.FormatCoordinate());
+            lblOwnCoords.setText(position.formatCoordinate());
 
-        Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.coordinate;
+        Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.coordinate;
 
         float[] result = new float[4];
 
@@ -710,7 +710,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             Coordinate position = Locator.getInstance().getMyPosition();
             double heading = Locator.getInstance().getHeading();
 
-            Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.coordinate;
+            Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.coordinate;
 
             float[] result = new float[2];
 

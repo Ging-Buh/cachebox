@@ -22,6 +22,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static de.droidcachebox.database.Database.forceRereadingOfGeoCacheLogs;
+
 public class LogDAO {
     private static final String log = "LogDAO";
 
@@ -40,7 +42,7 @@ public class LogDAO {
         } catch (Exception exc) {
             Log.err(log, "Write Log", exc);
         }
-
+        forceRereadingOfGeoCacheLogs();
     }
 
     /**
@@ -49,6 +51,7 @@ public class LogDAO {
     public void ClearOrphanedLogs() {
         String SQL = "DELETE  FROM  Logs WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Logs.CacheId = c.Id)";
         Database.Data.sql.execSQL(SQL);
+        forceRereadingOfGeoCacheLogs();
     }
 
     /**
@@ -57,6 +60,7 @@ public class LogDAO {
     public void deleteLogs(long cacheId) {
         String SQL = "DELETE  FROM  Logs WHERE Logs.CacheId = " + cacheId;
         Database.Data.sql.execSQL(SQL);
+        forceRereadingOfGeoCacheLogs();
     }
 
 }

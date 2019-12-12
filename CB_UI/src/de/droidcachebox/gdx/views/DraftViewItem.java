@@ -71,7 +71,7 @@ public class DraftViewItem extends ListViewItemBackground {
             });
             addLast(btnLoadMore);
         } else {
-            mBackIsInitial = false;
+            backGroundIsInitialized = false;
             MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
             headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 

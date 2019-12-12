@@ -303,7 +303,7 @@ public class Coordinate extends LatLong implements Serializable {
      *
      * @return
      */
-    public String FormatCoordinate() {
+    public String formatCoordinate() {
         if (valid)
             return Formatter.FormatLatitudeDM(getLatitude()) + " / " + Formatter.FormatLongitudeDM(getLongitude());
         else
@@ -403,7 +403,7 @@ public class Coordinate extends LatLong implements Serializable {
 
     @Override
     public String toString() {
-        return FormatCoordinate();
+        return formatCoordinate();
     }
 
 }

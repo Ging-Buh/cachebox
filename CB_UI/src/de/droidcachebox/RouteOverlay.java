@@ -515,27 +515,27 @@ public class RouteOverlay {
             Log.err(log, "SaveTrack", e1);
         }
 
-        try {
-            for (int i = 0; i < track.trackPoints.size(); i++) {
-                assert writer != null;
-                writer.append("<trkpt lat=\"").append(String.valueOf(track.trackPoints.get(i).Y)).append("\" lon=\"").append(String.valueOf(track.trackPoints.get(i).X)).append("\">\n");
+        if (writer != null) {
+            try {
+                for (int i = 0; i < track.trackPoints.size(); i++) {
+                    writer.append("<trkpt lat=\"").append(String.valueOf(track.trackPoints.get(i).Y)).append("\" lon=\"").append(String.valueOf(track.trackPoints.get(i).X)).append("\">\n");
 
-                writer.append("   <ele>").append(String.valueOf(track.trackPoints.get(i).Elevation)).append("</ele>\n");
-                SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                String sDate = datFormat.format(track.trackPoints.get(i).TimeStamp);
-                datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                sDate += "T" + datFormat.format(track.trackPoints.get(i).TimeStamp) + "Z";
-                writer.append("   <time>").append(sDate).append("</time>\n");
-                writer.append("</trkpt>\n");
+                    writer.append("   <ele>").append(String.valueOf(track.trackPoints.get(i).Elevation)).append("</ele>\n");
+                    SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    String sDate = datFormat.format(track.trackPoints.get(i).TimeStamp);
+                    datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                    sDate += "T" + datFormat.format(track.trackPoints.get(i).TimeStamp) + "Z";
+                    writer.append("   <time>").append(sDate).append("</time>\n");
+                    writer.append("</trkpt>\n");
+                }
+                writer.append("</trkseg>\n");
+                writer.append("</trk>\n");
+                writer.append("</gpx>\n");
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                Log.err(log, "SaveTrack", e);
             }
-            assert writer != null;
-            writer.append("</trkseg>\n");
-            writer.append("</trk>\n");
-            writer.append("</gpx>\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            Log.err(log, "SaveTrack", e);
         }
     }
 

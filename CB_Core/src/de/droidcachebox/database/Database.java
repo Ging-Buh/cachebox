@@ -32,6 +32,8 @@ public abstract class Database extends Database_Core {
     public static Database Settings;
     public CacheList cacheList;
     private DatabaseType databaseType;
+    private static CB_List<LogEntry> cacheLogs;
+    private static String lastGeoCache;
 
     public Database(DatabaseType databaseType) {
         super();
@@ -41,6 +43,8 @@ public abstract class Database extends Database_Core {
             case CacheBox:
                 latestDatabaseChange = DatabaseVersions.CachesDBLatestVersion;
                 cacheList = new CacheList();
+                cacheLogs = new CB_List<>();
+                lastGeoCache = "";
                 break;
             case Drafts:
                 latestDatabaseChange = DatabaseVersions.DraftsLatestVersion;
@@ -52,7 +56,7 @@ public abstract class Database extends Database_Core {
 
     // Methoden für Waypoint
     public static void deleteFromDatabase(Waypoint WP) {
-        Replication.WaypointDelete(WP.CacheId, 0, 1, WP.getGcCode());
+        Replication.WaypointDelete(WP.geoCacheId, 0, 1, WP.getGcCode());
         try {
             Data.sql.delete("Waypoint", "GcCode='" + WP.getGcCode() + "'", null);
         } catch (Exception exc) {
@@ -178,23 +182,32 @@ public abstract class Database extends Database_Core {
         }
     }
 
+    public static void forceRereadingOfGeoCacheLogs() {
+        lastGeoCache = "";
+    }
+
     public static CB_List<LogEntry> getLogs(Cache cache) {
-        CB_List<LogEntry> result = new CB_List<>();
-        if (cache == null) // if no cache is selected!
-            return result;
+        if (cache == null)
+            return cacheLogs;
+        if (cache.getGcCode().equals(lastGeoCache)) return cacheLogs;
+        lastGeoCache = cache.getGcCode();
+        cacheLogs.clear();
         Log.info(log, "getLogs for cache: " + cache.getGcCode());
         CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]{Long.toString(cache.Id)});
-
-        reader.moveToFirst();
-        while (!reader.isAfterLast()) {
-            LogEntry logent = getLogEntry(reader);
-            if (logent != null)
-                result.add(logent);
-            reader.moveToNext();
+        if (reader != null) {
+            reader.moveToFirst();
+            while (!reader.isAfterLast()) {
+                LogEntry logent = getLogEntry(reader);
+                if (logent != null)
+                    cacheLogs.add(logent);
+                reader.moveToNext();
+            }
+            reader.close();
         }
-        reader.close();
-
-        return result;
+        else {
+            lastGeoCache = "";
+        }
+        return cacheLogs;
     }
 
     private static LogEntry getLogEntry(CoreCursor reader) {

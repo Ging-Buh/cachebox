@@ -182,7 +182,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
     private TrackPoint convertToTrackPoint(Waypoint wp) {
 
-        TrackPoint trp = new TrackPoint(wp.Pos.getLongitude(), wp.Pos.getLatitude(), 0, 0, new Date());
+        TrackPoint trp = new TrackPoint(wp.getLongitude(), wp.getLatitude(), 0, 0, new Date());
         return trp;
 
     }
@@ -199,8 +199,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         for (int i = 0; i < waypoints.size(); i++) {
             Waypoint wp = waypoints.get(i);
 
-            double MapX = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, wp.Pos.getLongitude());
-            double MapY = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, wp.Pos.getLatitude());
+            double MapX = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, wp.getLongitude());
+            double MapY = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, wp.getLatitude());
             if (true)// isVisible(MapX, MapY)
             {
                 WayPointRenderInfo wpi = new WayPointRenderInfo();

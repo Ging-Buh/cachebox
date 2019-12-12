@@ -872,7 +872,7 @@ public class EditCoord extends ActivityBase {
         }
 
         CoordinateGPS newCoord = new CoordinateGPS(sCoord.toString());
-        Log.info(log, "Buttons of aktPage " + aktPage + " = '" + sCoord + "'" + " --> " + newCoord.FormatCoordinate());
+        Log.info(log, "Buttons of aktPage " + aktPage + " = '" + sCoord + "'" + " --> " + newCoord.formatCoordinate());
         if (newCoord.isValid()) {
             coord = newCoord;
             return true;

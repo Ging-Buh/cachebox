@@ -229,7 +229,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         if ((waypoints != null) && (!showAllWaypoints)) {
             for (int i = 0; i < waypoints.size(); i++) {
                 Waypoint wp = waypoints.get(i);
-                if (wp.IsStart || wp.Type == CacheTypes.Final) {
+                if (wp.isStartWaypoint || wp.waypointType == CacheTypes.Final) {
 
                     if (wp.detail != null)
                         wp.detail.dispose();
@@ -313,10 +313,10 @@ public class Cache implements Comparable<Cache>, Serializable {
 
         for (int i = 0, n = waypoints.size(); i < n; i++) {
             Waypoint wp = waypoints.get(i);
-            if (wp.Type == CacheTypes.Final) {
-                if (!wp.Pos.isValid() || wp.Pos.isZero())
+            if (wp.waypointType == CacheTypes.Final) {
+                if (!wp.getCoordinate().isValid() || wp.getCoordinate().isZero())
                     continue;
-                if (wp.IsUserWaypoint) return wp;
+                if (wp.isUserWaypoint) return wp;
             }
         }
         return null;
@@ -335,7 +335,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
         for (int i = 0, n = waypoints.size(); i < n; i++) {
             Waypoint wp = waypoints.get(i);
-            if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart)) {
+            if ((wp.waypointType == CacheTypes.MultiStage) && (wp.isStartWaypoint)) {
                 return wp;
             }
         }
@@ -395,9 +395,9 @@ public class Cache implements Comparable<Cache>, Serializable {
         // the final not the the cache coordinates
         Coordinate toPos = coordinate;
         if (waypoint != null) {
-            toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+            toPos = new Coordinate(waypoint.getLatitude(), waypoint.getLongitude());
             // nur sinnvolles Final, sonst vom Cache
-            if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0)
+            if (waypoint.getLatitude() == 0 && waypoint.getLongitude() == 0)
                 toPos = coordinate;
         }
         float[] dist = new float[4];
@@ -477,9 +477,9 @@ public class Cache implements Comparable<Cache>, Serializable {
             } else {
                 // this waypoint is already in our list -> Copy Informations
                 aktWaypoint.setDescription(newWaypoint.getDescription());
-                aktWaypoint.Pos = newWaypoint.Pos;
+                aktWaypoint.setCoordinate(newWaypoint.getCoordinate());
                 aktWaypoint.setTitle(newWaypoint.getTitle());
-                aktWaypoint.Type = newWaypoint.Type;
+                aktWaypoint.waypointType = newWaypoint.waypointType;
             }
         }
         // this.spoilerRessources = null;

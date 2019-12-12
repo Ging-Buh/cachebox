@@ -236,10 +236,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 case Debug:
                     SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<>("DebugDisplayInfo", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
                     final CB_View_Base btnDisp = getView(disp, 1);
-                    assert btnDisp != null;
-                    btnDisp.setSize(itemRec);
-                    lay.addChild(btnDisp);
-                    entryCount++;
+                    if (btnDisp != null) {
+                        btnDisp.setSize(itemRec);
+                        lay.addChild(btnDisp);
+                        entryCount++;
+                    }
                     break;
                 case Skin:
                     SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<>("Skin", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
@@ -276,22 +277,24 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             for (SettingBase<?> settingItem : CatList) {
                 final CB_View_Base view = getView(settingItem, position++);
+                if (view != null) {
 
-                if (Config.DraftsLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("DraftsLoadLength")) {
-                    assert view != null;
-                    ((SettingsItemBase) view).disable();
+                    if (Config.DraftsLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("DraftsLoadLength")) {
+                        ((SettingsItemBase) view).disable();
+                    }
+
+                    if (view instanceof CB_Button) {
+                        view.setSize(itemRec);
+                    }
+
+                    lay.addChild(view);
+                    entryCount++;
+                    Config.settings.indexOf(settingItem);
+                    if (Config.settings.indexOf(settingItem) == EditKey) {
+                        expandLayout = true;
+                    }
                 }
 
-                if (view instanceof CB_Button) {
-                    view.setSize(itemRec);
-                }
-
-                lay.addChild(view);
-                entryCount++;
-                Config.settings.indexOf(settingItem);
-                if (Config.settings.indexOf(settingItem) == EditKey) {
-                    expandLayout = true;
-                }
             }
 
             if (entryCount > 0) {
@@ -303,11 +306,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 addControlToLinearLayout(btn, margin);
                 addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
 
-                assert btn != null;
-                btn.setClickHandler((v, x, y, pointer, button) -> {
-                    lay.Toggle();
-                    return true;
-                });
+                if (btn != null)
+                    btn.setClickHandler((v, x, y, pointer, button) -> {
+                        lay.Toggle();
+                        return true;
+                    });
             }
         }
 

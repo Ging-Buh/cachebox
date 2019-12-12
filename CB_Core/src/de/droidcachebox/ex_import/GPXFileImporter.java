@@ -1360,9 +1360,9 @@ public class GPXFileImporter {
 
     private void createWaypoint(Map<String, String> values) throws Exception {
         if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon")) {
-            waypoint.Pos = new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(values.get("wpt_attribute_lon")).doubleValue());
+            waypoint.setCoordinate(new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(values.get("wpt_attribute_lon")).doubleValue()));
         } else {
-            waypoint.Pos = new CoordinateGPS(0, 0);
+            waypoint.setCoordinate(new CoordinateGPS(0, 0));
         }
 
         if (values.containsKey("wpt_name")) {
@@ -1372,9 +1372,9 @@ public class GPXFileImporter {
 
             if (values.containsKey("cache_gsak_Parent")) {
                 String parent = values.get("cache_gsak_Parent");
-                waypoint.CacheId = Cache.GenerateCacheId(parent);
+                waypoint.geoCacheId = Cache.GenerateCacheId(parent);
             } else {
-                waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
+                waypoint.geoCacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
             }
 
         }

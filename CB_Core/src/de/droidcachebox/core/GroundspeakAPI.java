@@ -1277,16 +1277,16 @@ public class GroundspeakAPI {
             for (int j = 0; j < wpts.length(); j++) {
                 JSONObject wpt = wpts.optJSONObject(j);
                 Waypoint waypoint = new Waypoint(true);
-                waypoint.CacheId = cache.Id;
+                waypoint.geoCacheId = cache.Id;
                 JSONObject coordinates = wpt.optJSONObject("coordinates");
                 if (coordinates != null) {
-                    waypoint.Pos = new Coordinate(coordinates.optDouble("latitude", 0), coordinates.optDouble("longitude", 0));
+                    waypoint.setCoordinate(new Coordinate(coordinates.optDouble("latitude", 0), coordinates.optDouble("longitude", 0)));
                 } else {
-                    waypoint.Pos = new Coordinate();
+                    waypoint.setCoordinate(new Coordinate());
                 }
                 waypoint.setTitle(wpt.optString("name", ""));
                 waypoint.setDescription(wpt.optString("description", ""));
-                waypoint.Type = CacheTypeFromID(wpt.optInt("typeId", 0));
+                waypoint.waypointType = CacheTypeFromID(wpt.optInt("typeId", 0));
                 waypoint.setGcCode(wpt.optString("prefix", "XX") + cache.getGcCode().substring(2));
                 cache.waypoints.add(waypoint);
             }
@@ -1301,16 +1301,16 @@ public class GroundspeakAPI {
                 boolean isCorrectedCoordinates = wpt.optBoolean("isCorrectedCoordinates", false);
                 if (CoordinateOverride || isCorrectedCoordinates) {
                     Waypoint waypoint = new Waypoint(true);
-                    waypoint.CacheId = cache.Id;
+                    waypoint.geoCacheId = cache.Id;
                     JSONObject coordinates = wpt.optJSONObject("coordinates");
                     if (coordinates != null) {
-                        waypoint.Pos = new Coordinate(coordinates.optDouble("latitude", 0), coordinates.optDouble("longitude", 0));
+                        waypoint.setCoordinate(new Coordinate(coordinates.optDouble("latitude", 0), coordinates.optDouble("longitude", 0)));
                     } else {
-                        waypoint.Pos = new Coordinate();
+                        waypoint.setCoordinate(new Coordinate());
                     }
                     waypoint.setTitle("Corrected Coordinates (API)");
                     waypoint.setDescription(wpt.optString("description", ""));
-                    waypoint.Type = CacheTypes.Final;
+                    waypoint.waypointType = CacheTypes.Final;
                     waypoint.setGcCode("CO" + cache.getGcCode().substring(2));
                     cache.waypoints.add(waypoint);
                 }

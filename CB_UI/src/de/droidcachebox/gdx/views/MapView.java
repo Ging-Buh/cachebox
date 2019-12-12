@@ -90,10 +90,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     private CircleDrawable distanceCircle;
     private GL_Paint directLinePaint;
     private PolygonDrawable directLine;
+    private long lastLoad;
 
 
     public MapView(CB_RectF cb_RectF, MapMode mapMode) {
         super(cb_RectF, mapMode.name());
+        lastLoad = System.currentTimeMillis();
         lastScreenCenter = new PointL(0, 0);
         this.mapMode = mapMode;
         Log.info(log, "creating Mapview for " + mapMode + " map");
@@ -188,7 +190,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (targetArrow != null && targetArrow.contains(x, y)) {
                 if (GlobalCore.isSetSelectedCache()) {
                     if (GlobalCore.getSelectedWaypoint() != null) {
-                        Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
+                        Coordinate tmp = GlobalCore.getSelectedWaypoint().getCoordinate();
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     } else {
                         Coordinate tmp = GlobalCore.getSelectedCache().coordinate;
@@ -512,7 +514,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().coordinate;
+        Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().coordinate;
 
         if (coord == null) {
             return;
@@ -751,7 +753,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             setMapState(MapState.FREE);
 
         try {
-            CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new CoordinateGPS(cache.coordinate.getLatitude(), cache.coordinate.getLongitude());
+            CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.getLatitude(), waypoint.getLongitude()) : new CoordinateGPS(cache.coordinate.getLatitude(), cache.coordinate.getLongitude());
             setCenter(target);
         } catch (Exception ignored) {
         }
@@ -826,7 +828,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
                 GlobalCore.getSelectedCache().waypoints.add(waypoint);
                 GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
-                if (waypoint.IsStart) {
+                if (waypoint.isStartWaypoint) {
                     // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                     // definiert
                     // ist!!!
@@ -881,6 +883,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     protected void directLoadTiles(Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
         if (Energy.isDisplayOff()) return;
         if (isCreated) {
+            long now = System.currentTimeMillis();
+            Log.debug(log, "last now - lastLoad: " + (now - lastLoad));
+            if ((now - lastLoad) < 1000) return;
+            Log.debug(log, "area " + lowerTile + " : " + upperTile);
+            if (lowerTile != upperTile) lastLoad = now;
             MapTileLoader.finishYourself.set(true);
             while (MapTileLoader.isWorking.get()) {
                 try {
@@ -920,7 +927,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 Coordinate position = Locator.getInstance().getMyPosition();
 
                 if (GlobalCore.isSetSelectedCache()) {
-                    Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().coordinate;
+                    Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().coordinate;
 
                     if (dest == null)
                         return;
@@ -1061,7 +1068,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     if (GlobalCore.getSelectedWaypoint() == null)
                         distance = position.Distance(GlobalCore.getSelectedCache().coordinate, CalculationType.ACCURATE);
                     else
-                        distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos, CalculationType.ACCURATE);
+                        distance = position.Distance(GlobalCore.getSelectedWaypoint().getCoordinate(), CalculationType.ACCURATE);
                 } catch (Exception e) {
                     distance = 10;
                 }
@@ -1245,7 +1252,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     public void mapStateChangedToWP() {
         if (GlobalCore.isSetSelectedCache()) {
             if (GlobalCore.getSelectedWaypoint() != null) {
-                Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
+                Coordinate tmp = GlobalCore.getSelectedWaypoint().getCoordinate();
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             } else {
                 Coordinate tmp = GlobalCore.getSelectedCache().coordinate;

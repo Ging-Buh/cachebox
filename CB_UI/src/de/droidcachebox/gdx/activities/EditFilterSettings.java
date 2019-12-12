@@ -1246,8 +1246,8 @@ public class EditFilterSettings extends ActivityBase {
                 }
 
                 if (mItemType == CHECK_ITEM) {
-                    assert mFile != null;
-                    mFile.Checked = mState != 0;
+                    if (mFile != null)
+                        mFile.Checked = mState != 0;
                 }
             }
 

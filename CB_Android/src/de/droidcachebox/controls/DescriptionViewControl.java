@@ -75,7 +75,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                                 for (int j = 0, m = aktCache.waypoints.size(); j < m; j++) {
                                     Waypoint wp = aktCache.waypoints.get(j);
                                     if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
-                                        if (wp.IsUserWaypoint)
+                                        if (wp.isUserWaypoint)
                                             update = false;
                                         break;
                                     }

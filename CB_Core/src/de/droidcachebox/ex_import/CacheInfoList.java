@@ -159,7 +159,6 @@ public class CacheInfoList {
 
     /**
      * Fügt die CacheInfo in der Liste mit dem Infos des übergebenen Caches zusammen und ändert gegebenenfalls die Changed Attribute neu!
-     *
      */
     public static void mergeCacheInfo(Cache cache) {
         String gcCode = cache.getGcCode();
@@ -183,25 +182,17 @@ public class CacheInfoList {
                 cacheInfo.GpxFilename_Id = cache.getGPXFilename_ID();
             }
 
-            // handling logs
-            String stringForListingCheckSum = Database.getDescription(cache);
+            // get recent logtext of owner
             String recentOwnerLogString = "";
-
-            CB_List<LogEntry> cleanLogs = Database.getLogs(cache);
-
-            if (cleanLogs.size() > 0) {
-                int n = cleanLogs.size();
-                for (int i = 0; i < n; i++) {
-                    LogEntry entry = cleanLogs.get(i);
-                    String comment = entry.logText;
-                    String finder = entry.finder;
-                    if (finder.equalsIgnoreCase(cache.getOwner())) {
-                        recentOwnerLogString += comment;
-                        break;
-                    }
+            CB_List<LogEntry> logEntries = Database.getLogs(cache);
+            for (LogEntry logEntry : logEntries) {
+                if (logEntry.finder.equalsIgnoreCase(cache.getOwner())) {
+                    recentOwnerLogString = logEntry.logText;
+                    break;
                 }
             }
 
+            String stringForListingCheckSum = Database.getDescription(cache);
             int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
 
             boolean ListingChanged = cacheInfo.ListingChanged;
@@ -265,7 +256,6 @@ public class CacheInfoList {
 
             // bei einem Update müssen nicht alle infos überschrieben werden
 
-            args.put("ListingCheckSum", info.ListingCheckSum);
             args.put("ListingChanged", info.ListingChanged ? 1 : 0);
             args.put("ImagesUpdated", info.ImagesUpdated ? 1 : 0);
             args.put("DescriptionImagesUpdated", info.DescriptionImagesUpdated ? 1 : 0);
@@ -281,7 +271,7 @@ public class CacheInfoList {
         }
     }
 
-    private static void CreateChangedListingFile(String changedFileString) throws IOException {
+    private static void createChangedListingFile(String changedFileString) throws IOException {
         File file = FileFactory.createFile(changedFileString);
 
         if (!file.exists()) {
@@ -302,30 +292,23 @@ public class CacheInfoList {
     /**
      * Packt eine neue CacheInfo des übergebenen Caches in die Liste
      *
-     * @param cache
+     * @param cache ?
      */
     public static void putNewInfo(Cache cache) {
-        CacheInfo info = new CacheInfo(cache.Id, cache.getGPXFilename_ID());
-        String stringForListingCheckSum = Database.getDescription(cache);
+        // get recent logtext of owner
         String recentOwnerLogString = "";
-
-        CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-        cleanLogs = Database.getLogs(cache);// cache.Logs();
-
-        if (cleanLogs.size() > 0) {
-            for (int i = 0, n = cleanLogs.size(); i < n; i++) {
-                LogEntry entry = cleanLogs.get(i);
-                String Comment = entry.logText;
-                String Finder = entry.finder;
-
-                if (Finder.equalsIgnoreCase(cache.getOwner())) {
-                    recentOwnerLogString += Comment;
-                    break;
-                }
+        CB_List<LogEntry> logEntries = Database.getLogs(cache);
+        for (LogEntry logEntry : logEntries) {
+            if (logEntry.finder.equalsIgnoreCase(cache.getOwner())) {
+                recentOwnerLogString = logEntry.logText;
+                break;
             }
         }
 
+        String stringForListingCheckSum = Database.getDescription(cache);
         int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
+
+        CacheInfo info = new CacheInfo(cache.Id, cache.getGPXFilename_ID());
         info.ListingCheckSum = ListingCheckSum;
         info.Latitude = cache.getLatitude();
         info.Longitude = cache.getLongitude();

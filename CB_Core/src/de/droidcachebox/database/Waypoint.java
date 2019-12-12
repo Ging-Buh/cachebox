@@ -8,69 +8,70 @@ import de.droidcachebox.utils.MathUtils.CalculationType;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class Waypoint implements Serializable {
-    public static final Charset US_ASCII = Charset.forName("US-ASCII");
-    public static final Charset UTF_8 = Charset.forName("UTF-8");
+    public static final Charset US_ASCII = StandardCharsets.US_ASCII;
+    public static final Charset UTF_8 = StandardCharsets.UTF_8;
     public static final String EMPTY_STRING = "";
     private static final long serialVersionUID = 67610567646416L;
     /**
      * Id des dazugehörigen Caches in der Datenbank von geocaching.com
      */
-    public long CacheId;
-    public Coordinate Pos;
+    public long geoCacheId;
+    private Coordinate coordinate;
     /**
      * Art des Wegpunkts
      */
-    public CacheTypes Type;
+    public CacheTypes waypointType;
     /**
      * true, falls der Wegpunkt vom Benutzer erstellt wurde
      */
-    public boolean IsUserWaypoint;
+    public boolean isUserWaypoint;
     /**
      * true, falls der Wegpunkt von der Synchronisation ausgeschlossen wird
      */
-    public boolean IsSyncExcluded;
+    public boolean isSyncExcluded;
     /**
      * True wenn dies der Startpunkt für den nächsten Besuch ist.<br>
      * Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert<br>
      * Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!<br>
      */
-    public boolean IsStart = false;
+    public boolean isStartWaypoint;
     // Detail Information of Waypoint which are not always loaded
     public WaypointDetail detail = null;
     /**
      * Waypoint Code
      */
-    private byte[] GcCode;
+    private byte[] gcCode;
     /**
      * Titel des Wegpunktes
      */
-    private byte[] Title;
+    private byte[] title;
 
     public Waypoint(boolean withDetails) {
-        CacheId = -1;
+        geoCacheId = -1;
         setGcCode("");
-        Pos = new Coordinate(0, 0);
+        coordinate = new Coordinate(0, 0);
         setDescription("");
-        IsStart = false;
+        isStartWaypoint = false;
         if (withDetails) {
             detail = new WaypointDetail();
         }
     }
 
-    public Waypoint(String gcCode, CacheTypes type, String description, double latitude, double longitude, long cacheId, String clue, String title) {
+    public Waypoint(String gcCode, CacheTypes waypointType, String description, double latitude, double longitude, long geoCacheId, String clue, String title) {
         setGcCode(gcCode);
-        CacheId = cacheId;
-        Pos = new Coordinate(latitude, longitude);
+        this.geoCacheId = geoCacheId;
+        coordinate = new Coordinate(latitude, longitude);
         setDescription(description);
-        Type = type;
-        IsSyncExcluded = true;
-        IsUserWaypoint = true;
+        this.waypointType = waypointType;
+        isSyncExcluded = true;
+        isUserWaypoint = true;
         setClue(clue);
         setTitle(title);
-        IsStart = false;
+        isStartWaypoint = false;
         detail = new WaypointDetail();
     }
 
@@ -81,16 +82,12 @@ public class Waypoint implements Serializable {
         Coordinate fromPos = Locator.getInstance().getLocation().toCordinate();
         float[] dist = new float[4];
 
-        MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(), Pos.getLongitude(), dist);
+        MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude(), dist);
         return dist[0];
     }
 
-    public void setCoordinate(Coordinate result) {
-        Pos = result;
-    }
-
     /**
-     * @param strText
+     * @param strText ?
      */
     public void parseTypeString(String strText) {
         // Log.d(TAG, "Parsing type string: " + strText);
@@ -103,7 +100,7 @@ public class Waypoint implements Serializable {
 
         String[] arrSplitted = strText.split("\\|");
         if (arrSplitted[0].toLowerCase().equals("geocache")) {
-            this.Type = CacheTypes.Cache;
+            this.waypointType = CacheTypes.Cache;
         } else {
             String strCacheType;
             if (arrSplitted.length > 1)
@@ -114,8 +111,8 @@ public class Waypoint implements Serializable {
             String[] strFirstWord = strCacheType.split(" ");
 
             for (String word : strFirstWord) {
-                this.Type = CacheTypes.parseString(word);
-                if (this.Type != CacheTypes.Undefined)
+                this.waypointType = CacheTypes.parseString(word);
+                if (this.waypointType != CacheTypes.Undefined)
                     break;
             }
 
@@ -123,50 +120,50 @@ public class Waypoint implements Serializable {
     }
 
     public void clear() {
-        CacheId = -1;
+        geoCacheId = -1;
         setGcCode("");
-        Pos = new Coordinate(0, 0);
+        coordinate = new Coordinate(0, 0);
         setTitle("");
         setDescription("");
-        Type = null;
-        IsUserWaypoint = false;
-        IsSyncExcluded = false;
+        waypointType = null;
+        isUserWaypoint = false;
+        isSyncExcluded = false;
         setClue("");
         setCheckSum(0);
     }
 
     @Override
     public String toString() {
-        return "WP:" + getGcCode() + " " + Pos.toString();
+        return "WP:" + getGcCode() + " " + coordinate.toString();
     }
 
     public void dispose() {
         setGcCode(null);
-        Pos = null;
+        coordinate = null;
         setTitle(null);
         setDescription(null);
-        Type = null;
+        waypointType = null;
         setClue(null);
     }
 
     public String getGcCode() {
-        if (GcCode == null)
+        if (gcCode == null)
             return EMPTY_STRING;
-        return new String(GcCode, US_ASCII);
+        return new String(gcCode, US_ASCII);
     }
 
     public void setGcCode(String gcCode) {
         if (gcCode == null) {
-            GcCode = null;
+            this.gcCode = null;
             return;
         }
-        GcCode = gcCode.getBytes(US_ASCII);
+        this.gcCode = gcCode.getBytes(US_ASCII);
     }
 
     public String getTitle() {
-        if (Title == null)
+        if (title == null)
             return EMPTY_STRING;
-        return new String(Title, UTF_8);
+        return new String(title, UTF_8);
     }
 
     public String getTitleForGui() {
@@ -178,10 +175,10 @@ public class Waypoint implements Serializable {
 
     public void setTitle(String title) {
         if (title == null) {
-            Title = null;
+            this.title = null;
             return;
         }
-        Title = title.getBytes(UTF_8);
+        this.title = title.getBytes(UTF_8);
     }
 
     public String getDescription() {
@@ -233,17 +230,35 @@ public class Waypoint implements Serializable {
         if (obj instanceof Waypoint) {
 
             Waypoint wp = (Waypoint) obj;
-            if (wp.GcCode == null)
+            if (wp.gcCode == null)
                 return false;
-            if (this.GcCode == null)
+            if (this.gcCode == null)
                 return false;
-            return Arrays.equals(wp.GcCode, this.GcCode);
+            return Arrays.equals(wp.gcCode, this.gcCode);
         }
         return false;
     }
 
     public boolean isCorrectedFinal() {
         // return new String(Title, (UTF_8)).equals("Final GSAK Corrected");
-        return this.Type == CacheTypes.Final && this.IsUserWaypoint && this.Pos.isValid();
+        return this.waypointType == CacheTypes.Final && this.isUserWaypoint && this.coordinate.isValid();
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate value) {
+        coordinate = value;
+    }
+
+    public double getLatitude() {
+        if (coordinate == null) coordinate = new Coordinate(0,0);
+        return coordinate.getLatitude();
+    }
+
+    public double getLongitude() {
+        if (coordinate == null) coordinate = new Coordinate(0,0);
+        return coordinate.getLongitude();
     }
 }

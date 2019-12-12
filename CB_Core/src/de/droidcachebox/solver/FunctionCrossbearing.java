@@ -45,9 +45,9 @@ public class FunctionCrossbearing extends Function {
         }
 
         try {
-            return CoordinateGPS.Crossbearing(CalculationType.ACCURATE, coord[0], angle[0], coord[1], angle[1]).FormatCoordinate();
+            return CoordinateGPS.Crossbearing(CalculationType.ACCURATE, coord[0], angle[0], coord[1], angle[1]).formatCoordinate();
         } catch (Exception ex) {
-            return Translation.get("StdError", "$solverFuncCrossbearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+            return Translation.get("StdError", "$solverFuncCrossbearing", ex.getMessage(), coord[0].formatCoordinate() + " -> " + coord[1].formatCoordinate());
         }
     }
 

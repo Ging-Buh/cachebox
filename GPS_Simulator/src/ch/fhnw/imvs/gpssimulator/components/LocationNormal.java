@@ -102,7 +102,9 @@ public class LocationNormal extends JPanel implements GPSDataListener {
             public void stateChanged(ChangeEvent e) {
                 if (valueChangedNotification > 0) {
                     double latitude = GPSData.getLatitude();
-                    assert latitude >= 0;
+                    if (latitude < 0) {
+                        latitude = 0;
+                    }
                     int lat = (int) Math.round(latitude * 3600);
                     latitudeSecond.setValue(lat % 60);
                     lat = lat / 60;
@@ -184,7 +186,7 @@ public class LocationNormal extends JPanel implements GPSDataListener {
             public void stateChanged(ChangeEvent e) {
                 if (valueChangedNotification > 0) {
                     double longitude = GPSData.getLongitude();
-                    assert longitude >= 0;
+                    if (longitude < 0) longitude = 0;
                     int lng = (int) Math.round(longitude * 3600);
                     longitudeSecond.setValue(lng % 60);
                     lng = lng / 60;

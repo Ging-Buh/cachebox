@@ -502,8 +502,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 lon = GlobalCore.getSelectedCache().coordinate.getLongitude();
                 targetName = GlobalCore.getSelectedCache().getGcCode();
             } else {
-                lat = GlobalCore.getSelectedWaypoint().Pos.getLatitude();
-                lon = GlobalCore.getSelectedWaypoint().Pos.getLongitude();
+                lat = GlobalCore.getSelectedWaypoint().getLatitude();
+                lon = GlobalCore.getSelectedWaypoint().getLongitude();
                 targetName = GlobalCore.getSelectedWaypoint().getGcCode();
             }
 
@@ -880,7 +880,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 if (cache.hasCorrectedCoordinates()) {
                     text = text + ("\n" + Formatter.FormatCoordinate(cache.coordinate, ""));
                 } else {
-                    text = text + ("\n" + Formatter.FormatCoordinate(cache.getCorrectedFinal().Pos, ""));
+                    text = text + ("\n" + Formatter.FormatCoordinate(cache.getCorrectedFinal().getCoordinate(), ""));
                 }
             } else {
                 text = text + ("\n\n" + "Location");

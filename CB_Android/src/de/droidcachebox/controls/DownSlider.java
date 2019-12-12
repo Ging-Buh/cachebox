@@ -33,9 +33,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import de.droidcachebox.*;
 import de.droidcachebox.components.CacheDraw;
 import de.droidcachebox.components.CacheDraw.DrawStyle;
-import de.droidcachebox.*;
 import de.droidcachebox.database.Attributes;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
@@ -47,7 +47,6 @@ import de.droidcachebox.locator.*;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.UnitFormatter;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.Iterator;
 
@@ -483,8 +482,8 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         int iconWidth = 0;
         try {
             // draw icon
-            if ((mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length)
-                iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[mWaypoint.Type.ordinal()], UiSizes.getInstance().getHalfCornerSize(), UiSizes.getInstance().getCornerSize(), imgSize);
+            if ((mWaypoint.waypointType.ordinal()) < Global.CacheIconsBig.length)
+                iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[mWaypoint.waypointType.ordinal()], UiSizes.getInstance().getHalfCornerSize(), UiSizes.getInstance().getCornerSize(), imgSize);
         } catch (Exception e1) {
 
         }
@@ -586,45 +585,42 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     {
 
         if (mainActivity != null) {
-            mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            mainActivity.runOnUiThread(() -> {
 
-                    boolean QuickButtonShow = Config.quickButtonShow.getValue();
+                boolean QuickButtonShow = Config.quickButtonShow.getValue();
 
-                    // check if QuickButtonList snap in
-                    if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow) {
-                        QuickButtonHeight = QuickButtonMaxHeight;
-                        Config.quickButtonLastShow.setValue(true);
-                        Config.AcceptChanges();
-                    } else {
-                        QuickButtonHeight = 0;
-                        Config.quickButtonLastShow.setValue(false);
-                        Config.AcceptChanges();
-                    }
-
-                    main.setQuickButtonHeight(QuickButtonHeight);
-
-                    if (swipeUp || swipeDown) {
-                        if (swipeUp) {
-                            startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
-                        } else {
-                            startAnimationTo((int) (height - (UiSizes.getInstance().getScaledFontSize() * 2.2)));
-                        }
-                        swipeUp = swipeDown = false;
-
-                    } else {
-                        if (yPos > height * 0.7) {
-                            startAnimationTo((int) (height - (UiSizes.getInstance().getScaledFontSize() * 2.2)));
-                        } else {
-                            startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
-                            // isVisible=false;
-                        }
-                    }
-
-                    invalidate();
-
+                // check if QuickButtonList snap in
+                if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow) {
+                    QuickButtonHeight = QuickButtonMaxHeight;
+                    Config.quickButtonLastShow.setValue(true);
+                    Config.AcceptChanges();
+                } else {
+                    QuickButtonHeight = 0;
+                    Config.quickButtonLastShow.setValue(false);
+                    Config.AcceptChanges();
                 }
+
+                main.setQuickButtonHeight(QuickButtonHeight);
+
+                if (swipeUp || swipeDown) {
+                    if (swipeUp) {
+                        startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
+                    } else {
+                        startAnimationTo((int) (height - (UiSizes.getInstance().getScaledFontSize() * 2.2)));
+                    }
+                    swipeUp = swipeDown = false;
+
+                } else {
+                    if (yPos > height * 0.7) {
+                        startAnimationTo((int) (height - (UiSizes.getInstance().getScaledFontSize() * 2.2)));
+                    } else {
+                        startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
+                        // isVisible=false;
+                    }
+                }
+
+                invalidate();
+
             });
         }
 
@@ -653,11 +649,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         mainActivity.runOnUiThread(() -> {
             mCache = cache;
-            if (waypoint == null) {
-                mWaypoint = null;
-            } else {
-                mWaypoint = waypoint;
-            }
+            mWaypoint = waypoint;
             attCompleadHeight = 0;
             CacheInfoHeight = 0;
             WPInfoHeight = 0;
@@ -677,7 +669,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
                     Clue = mWaypoint.getClue();
                 WPLayoutTextPaint.setAntiAlias(true);
                 WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-                WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / " + UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
+                WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.getLatitude()) + " / " + UnitFormatter.FormatLongitudeDM(waypoint.getLongitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
                         false);
                 WPLayoutDesc = new StaticLayout(mWaypoint.getDescription(), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                 WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);

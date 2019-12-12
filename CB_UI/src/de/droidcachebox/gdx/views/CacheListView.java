@@ -24,10 +24,7 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.SelectedCacheChangedEventListener;
 import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheList;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -372,6 +369,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                 if (cacheList.size() <= index) return null;
                 CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, cacheList.get(index));
                 v.setClickable(true);
+
+                if (cacheList.get(index).getType() == CacheTypes.Traditional) v.setEnabled(false);
 
                 v.setClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();

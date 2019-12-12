@@ -52,7 +52,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         super(rec, Index, "");
         this.setLongClickable(true);
         this.logEntry = logEntry;
-        mBackIsInitial = false;
+        backGroundIsInitialized = false;
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
         headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 

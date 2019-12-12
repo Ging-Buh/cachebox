@@ -1155,7 +1155,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         if (bCoord == null)
             return;
         if (bCoord.getCoordinate().isValid()) {
-            sForm = "\"" + bCoord.getCoordinate().FormatCoordinate() + "\"";
+            sForm = "\"" + bCoord.getCoordinate().formatCoordinate() + "\"";
         }
     }
 

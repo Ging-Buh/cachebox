@@ -14,9 +14,10 @@ import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.UnitFormatter;
+import de.droidcachebox.utils.log.Log;
 
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
+import java.util.*;
 
 public class CacheInfo extends CB_View_Base {
     public static final Color gcVoteColor = new Color(0.5f, 0.5f, 1f, 1f);
@@ -37,14 +38,6 @@ public class CacheInfo extends CB_View_Base {
      */
     public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 19;
     /**
-     * SHOW_COMPASS, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_HIDDEN_DATE
-     */
-    public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_HIDDEN_DATE + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 29;
-    /**
-     * SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND
-     */
-    public static final int VIEW_MODE_COMPAS = 60;
-    /**
      * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES, SHOW_HIDDEN_DATE
      */
     public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_HIDDEN_DATE + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 126
@@ -64,24 +57,11 @@ public class CacheInfo extends CB_View_Base {
      * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
      */
     public static final int VIEW_MODE_BUBBLE_EVENT = SHOW_COORDS + SHOW_HIDDEN_DATE + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T;
-    /**
-     * SHOW_S_D_T
-     */
-    public static final int VIEW_MODE_SDT_ONLY = SHOW_S_D_T;
-    /**
-     * SHOW_LAST_FOUND
-     */
-    public static final int VIEW_MODE_LAST_FOUND_ONLY = SHOW_LAST_FOUND;
-    /**
-     * SHOW_LAST_FOUND , SHOW_S_D_T
-     */
-    public static final int VIEW_MODE_LAST_FOUND_AND_DTS = SHOW_LAST_FOUND + SHOW_S_D_T;
     private final int AttributesPerLine = 12;
     GlyphLayout layout;
     private int mViewMode = VIEW_MODE_CACHE_LIST;
     private Cache mCache;
     private float mIconSize;
-    private SizeF mStarSize;
     private float mMargin = 0;
     private Sprite mRatingSprite;
     private Sprite mIconSprite;
@@ -119,12 +99,42 @@ public class CacheInfo extends CB_View_Base {
         initialMesure();
     }
 
-    private static String getLastFoundLogDate(Cache mCache) {
-        CB_List<LogEntry> logs = Database.getLogs(mCache);
-        for (int i = 0, n = logs.size(); i < n; i++) {
-            LogEntry l = logs.get(i);
-            if (l.logTypes == LogTypes.found) {
-                return new SimpleDateFormat("dd.MM.yy").format(l.logDate);
+    public boolean needsMaintenance() {
+        Date lastNeedsMaintenance = null;
+        CB_List<LogEntry> logEntries = Database.getLogs(mCache);
+        for (int i = 0; i < logEntries.size(); i++) {
+            LogEntry logEntry = logEntries.get(i);
+            if (logEntry.logTypes == LogTypes.owner_maintenance) {
+                return false;
+            }
+            if (logEntry.logTypes == LogTypes.needs_maintenance && lastNeedsMaintenance == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int numberOfDNFsAfterLastFound() {
+        int dnfCount = 0;
+        CB_List<LogEntry> logEntries = Database.getLogs(mCache);
+        for (int i = 0; i < logEntries.size(); i++) {
+            LogEntry logEntry = logEntries.get(i);
+            if (logEntry.logTypes == LogTypes.found) {
+                return dnfCount;
+            }
+            if (logEntry.logTypes == LogTypes.didnt_find) {
+                dnfCount++;
+            }
+        }
+        return dnfCount;
+    }
+
+    private String getLastFoundLogDate() {
+        CB_List<LogEntry> logEntries = Database.getLogs(mCache);
+        for (int i = 0; i < logEntries.size(); i++) {
+            LogEntry logEntry = logEntries.get(i);
+            if (logEntry.logTypes == LogTypes.found) {
+                return new SimpleDateFormat("dd.MM.yy", Locale.US).format(logEntry.logDate);
             }
         }
         return "";
@@ -205,9 +215,7 @@ public class CacheInfo extends CB_View_Base {
         mFavoriteSprite = null;
         mAvailableSprite = null;
         if (mAttrSprites != null) {
-            for (int i = 0; i < mAttrSprites.length; i++) {
-                mAttrSprites[i] = null;
-            }
+            Arrays.fill(mAttrSprites, null);
             mAttrSprites = null;
         }
     }
@@ -231,7 +239,7 @@ public class CacheInfo extends CB_View_Base {
             mS_FontCache.setColor(COLOR.getFontColor());
             // float starHeight = mS_FontCache.getLayouts().first().height * 1.1f;
             float starHeight = mIconSize / 3.5f;
-            mStarSize = new SizeF(starHeight * 5, starHeight);
+            SizeF mStarSize = new SizeF(starHeight * 5, starHeight);
 
             if (ifModeFlag(SHOW_S_D_T)) {
                 String CacheSize = CacheSizes.toShortString(mCache);
@@ -299,7 +307,6 @@ public class CacheInfo extends CB_View_Base {
                     mFP_FontCache.setText("x" + numFP, mLeft, mBottom);
                 } else {
                     mFPSprite = null;
-                    mFPSprite = null;
                 }
             }
 
@@ -316,7 +323,7 @@ public class CacheInfo extends CB_View_Base {
                 mRatingSprite.setRotation(90);
                 mRatingSprite.setColor(gcVoteColor);
                 //
-                mLeft += starHeight;
+                mLeft = mLeft + starHeight;
                 mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
             }
 
@@ -398,35 +405,36 @@ public class CacheInfo extends CB_View_Base {
                     attY += ((attSize + mMargin) * (lineCount - 1));
                 }
 
-                Iterator<Attributes> attrs = mCache.getAttributes().iterator();
-                mAttrSprites = new Sprite[attCount];
-                int count = 0;
-                int actLineCount = 0;
-                if (attrs != null && attrs.hasNext()) {
-                    do {
-                        Attributes attribute = attrs.next();
-                        mAttrSprites[count] = Sprites.getSprite(attribute.getImageName().replace("_", "-") + "Icon");
-                        mAttrSprites[count].setSize(attSize, attSize);
-                        mAttrSprites[count].setPosition(attX, attY);
+                ArrayList<Attributes> attributes = mCache.getAttributes();
+                if (attributes != null) {
+                    Iterator<Attributes> attributesIterator = attributes.iterator();
+                    mAttrSprites = new Sprite[attCount];
+                    int count = 0;
+                    int actLineCount = 0;
+                    if (attributesIterator.hasNext()) {
+                        do {
+                            Attributes attribute = attributesIterator.next();
+                            mAttrSprites[count] = Sprites.getSprite(attribute.getImageName().replace("_", "-") + "Icon");
+                            mAttrSprites[count].setSize(attSize, attSize);
+                            mAttrSprites[count].setPosition(attX, attY);
 
-                        attX += mAttrSprites[count].getWidth() + mMargin;
+                            attX += mAttrSprites[count].getWidth() + mMargin;
 
-                        if (AttributesPerLine == ++actLineCount) {
-                            //next line
-                            attY -= (attSize + mMargin);
-                            actLineCount = 0;
-                            attX = mMargin;
-                        }
+                            if (AttributesPerLine == ++actLineCount) {
+                                //next line
+                                attY -= (attSize + mMargin);
+                                actLineCount = 0;
+                                attX = mMargin;
+                            }
 
-                        count++;
-                    } while (attrs.hasNext());
+                            count++;
+                        } while (attributesIterator.hasNext());
+                    }
                 }
-
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err("CacheInfo", "requestLayout", ex);
         }
-
     }
 
     private StringBuilder createText() {
@@ -439,7 +447,7 @@ public class CacheInfo extends CB_View_Base {
             text.append(mCache.getName());
             text.append(br);
         }
-        if (mCache instanceof Cache && (ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_HIDDEN_DATE))) {
+        if (mCache != null && (ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_HIDDEN_DATE))) {
             if (ifModeFlag(SHOW_OWNER)) {
                 text.append("by " + mCache.getOwner());
                 if (ifModeFlag(SHOW_HIDDEN_DATE)) {
@@ -463,7 +471,7 @@ public class CacheInfo extends CB_View_Base {
                     text.append(mCache.coordinate.formatCoordinateLineBreak());
                     text.append(br);
                 } else {
-                    text.append(mCache.coordinate.FormatCoordinate());
+                    text.append(mCache.coordinate.formatCoordinate());
                     text.append(br);
                 }
             }
@@ -474,12 +482,14 @@ public class CacheInfo extends CB_View_Base {
             text.append(mCache.getGcCode());
             text.append(br);
         }
+
         if (ifModeFlag(SHOW_LAST_FOUND)) {
-            String LastFound = getLastFoundLogDate(mCache);
-            if (!LastFound.equals("")) {
-                text.append("last found: " + LastFound);
+            String lastFoundLogDate = getLastFoundLogDate();
+            if (!lastFoundLogDate.equals("")) {
+                text.append("last found: " + lastFoundLogDate);
             }
         }
+
         return text;
     }
 

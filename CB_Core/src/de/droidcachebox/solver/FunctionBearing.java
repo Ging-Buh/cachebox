@@ -42,7 +42,7 @@ public class FunctionBearing extends Function {
                 bearing = bearing + 360;
             return String.valueOf(bearing);
         } catch (Exception ex) {
-            return Translation.get("StdError", "$solverFuncBearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+            return Translation.get("StdError", "$solverFuncBearing", ex.getMessage(), coord[0].formatCoordinate() + " -> " + coord[1].formatCoordinate());
         }
     }
 

@@ -123,8 +123,8 @@ public class SQLiteClass implements SQLiteInterface {
             e.printStackTrace();
         } finally {
             try {
-                assert statement2 != null;
-                statement2.close();
+                if (statement2 != null)
+                    statement2.close();
             } catch (SQLException ignored) {
             }
         }
@@ -216,8 +216,8 @@ public class SQLiteClass implements SQLiteInterface {
             return 0;
         } finally {
             try {
-                assert st != null;
-                st.close();
+                if (st != null)
+                    st.close();
             } catch (SQLException ignored) {
             }
         }
@@ -273,8 +273,8 @@ public class SQLiteClass implements SQLiteInterface {
             return 0;
         } finally {
             try {
-                assert st != null;
-                st.close();
+                if (st != null)
+                    st.close();
             } catch (SQLException ignored) {
             }
         }

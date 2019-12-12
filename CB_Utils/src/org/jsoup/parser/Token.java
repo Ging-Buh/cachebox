@@ -186,11 +186,6 @@ abstract class Token {
             pendingAttributeValue.append(append);
         }
 
-        final void appendAttributeValue(char[] append) {
-            ensureAttributeValue();
-            pendingAttributeValue.append(append);
-        }
-
         final void appendAttributeValue(int[] appendCodepoints) {
             ensureAttributeValue();
             for (int codepoint : appendCodepoints) {
@@ -223,7 +218,6 @@ abstract class Token {
         Tag reset() {
             super.reset();
             attributes = new Attributes();
-            // todo - would prefer these to be null, but need to check Element assertions
             return this;
         }
 

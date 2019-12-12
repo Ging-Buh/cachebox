@@ -5,10 +5,10 @@ import android.content.Context;
 import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
+import de.droidcachebox.views.forms.MessageBox;
 
 public class Android_TextInput implements TextInputInterface {
     private Activity activity;
@@ -61,8 +61,8 @@ public class Android_TextInput implements TextInputInterface {
                 input.postDelayed(() -> {
                     input.requestFocus();
                     input.setSelection(input.getText().length());
-                    assert manager != null;
-                    manager.showSoftInput(input, 0);
+                    if (manager != null)
+                        manager.showSoftInput(input, 0);
                 }, 100);
             });
         } catch (Exception ex) {

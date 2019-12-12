@@ -227,59 +227,59 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         String ResultFields = fields + "," + memofields;
         ResultFieldsArray = ResultFields.split(",");
         // sql.beginTransaction();
-        assert sql != null;
-        if (sql.openReadOnly(mDatabasePath + "/" + mDatabaseName)) {
-            Config.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
-            Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
-            Config.withLogImages.setValue(chkLogImages.isChecked());
-            Config.AcceptChanges();
-            Database.Data.sql.beginTransaction();
+        if (sql != null) {
+            if (sql.openReadOnly(mDatabasePath + "/" + mDatabaseName)) {
+                Config.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
+                Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
+                Config.withLogImages.setValue(chkLogImages.isChecked());
+                Config.AcceptChanges();
+                Database.Data.sql.beginTransaction();
 
-            int count = 0;
-            CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
-            c.moveToFirst();
-            int anz = c.getInt(0);
-            CoreCursor reader = sql.rawQuery("select " + ResultFields + " from Caches inner join CacheMemo on Caches.Code = CacheMemo.Code", null);
-            reader.moveToFirst();
-            while (!reader.isAfterLast() && !isCanceled) {
-                count++;
-                ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
-                String GcCode = "";
-                try {
-                    GcCode = reader.getString("Code");
-                    // Log.trace(sKlasse, GcCode);
-                    Cache cache = createGeoCache(reader);
-                    if (cache != null && GcCode.length() > 0) {
-                        cache = addAttributes(cache);
-                        cache = addWayPoints(cache);
-                        // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
-                        GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
-                        WriteIntoDB.CacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
+                int count = 0;
+                CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
+                c.moveToFirst();
+                int anz = c.getInt(0);
+                CoreCursor reader = sql.rawQuery("select " + ResultFields + " from Caches inner join CacheMemo on Caches.Code = CacheMemo.Code", null);
+                reader.moveToFirst();
+                while (!reader.isAfterLast() && !isCanceled) {
+                    count++;
+                    ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
+                    String GcCode = "";
+                    try {
+                        GcCode = reader.getString("Code");
+                        // Log.trace(sKlasse, GcCode);
+                        Cache cache = createGeoCache(reader);
+                        if (cache != null && GcCode.length() > 0) {
+                            cache = addAttributes(cache);
+                            cache = addWayPoints(cache);
+                            // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
+                            GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
+                            WriteIntoDB.CacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
+                        }
+                    } catch (Exception ex) {
+                        Log.err(sKlasse, "Import " + GcCode, ex);
                     }
-                } catch (Exception ex) {
-                    Log.err(sKlasse, "Import " + GcCode, ex);
+                    reader.moveToNext();
                 }
-                reader.moveToNext();
+                reader.close();
+
+                writeLogs();
+
+                Database.Data.sql.setTransactionSuccessful();
             }
-            reader.close();
+            PlatformUIBase.freeSQLInstance(sql);
+            Database.Data.sql.endTransaction();
+            Database.Data.updateCacheCountForGPXFilenames();
 
-            writeLogs();
+            if (mImageDatabaseName.length() > 0) {
+                doImportImages("CacheImages");
+                if (chkLogImages.isChecked())
+                    doImportImages("LogImages");
+            }
 
-            Database.Data.sql.setTransactionSuccessful();
+            FilterInstances.setLastFilter(new FilterProperties());
+            EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
         }
-        PlatformUIBase.freeSQLInstance(sql);
-        Database.Data.sql.endTransaction();
-        Database.Data.updateCacheCountForGPXFilenames();
-
-        if (mImageDatabaseName.length() > 0) {
-            doImportImages("CacheImages");
-            if (chkLogImages.isChecked())
-                doImportImages("LogImages");
-        }
-
-        FilterInstances.setLastFilter(new FilterProperties());
-        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-
     }
 
     private void doImportImages(String tableName) {
@@ -407,11 +407,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         WaypointsReader.moveToFirst();
         while (!WaypointsReader.isAfterLast()) {
             Waypoint waypoint = new Waypoint(true);
-            waypoint.CacheId = cache.Id;
-            waypoint.Pos = new Coordinate((float) WaypointsReader.getDouble("cLat"), (float) WaypointsReader.getDouble("cLon"));
+            waypoint.geoCacheId = cache.Id;
+            waypoint.setCoordinate(new Coordinate((float) WaypointsReader.getDouble("cLat"), (float) WaypointsReader.getDouble("cLon")));
             waypoint.setTitle(WaypointsReader.getString("cName"));
             waypoint.setDescription(WaypointsReader.getString("cComment"));
-            waypoint.Type = CacheTypeFromGSString(WaypointsReader.getString("cType"));
+            waypoint.waypointType = CacheTypeFromGSString(WaypointsReader.getString("cType"));
             waypoint.setGcCode(WaypointsReader.getString("cCode"));
             cache.waypoints.add(waypoint);
             WaypointsReader.moveToNext();

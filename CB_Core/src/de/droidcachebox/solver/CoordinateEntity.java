@@ -59,7 +59,7 @@ public class CoordinateEntity extends Entity {
                 for (int i = 0, n = selCache.waypoints.size(); i < n; i++) {
                     Waypoint wp = selCache.waypoints.get(i);
                     if (wp.getGcCode().equalsIgnoreCase(gcCode)) {
-                        coord = wp.Pos;
+                        coord = wp.getCoordinate();
                         break;
                     }
                 }
@@ -74,7 +74,7 @@ public class CoordinateEntity extends Entity {
         if (coord == null)
             return Translation.get("CacheOrWaypointNotFound", gcCode);
         else
-            return coord.FormatCoordinate();
+            return coord.formatCoordinate();
     }
 
     public String SetCoordinate(String sCoord) {
@@ -103,33 +103,33 @@ public class CoordinateEntity extends Entity {
         try {
             // if ((CB_UI.GlobalCore.getSelectedCache() == null) || (CB_UI.GlobalCore.getSelectedCache().Id != dbWaypoint.CacheId))
             if (Solver.solverCacheInterface != null) {
-                if ((Solver.solverCacheInterface.sciGetSelectedCache() == null) || (Solver.solverCacheInterface.sciGetSelectedCache().Id != dbWaypoint.CacheId)) {
+                if ((Solver.solverCacheInterface.sciGetSelectedCache() == null) || (Solver.solverCacheInterface.sciGetSelectedCache().Id != dbWaypoint.geoCacheId)) {
                     // Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
                     // Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
                     CacheDAO cacheDAO = new CacheDAO();
-                    Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.CacheId);
+                    Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.geoCacheId);
                     // String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
                     // sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
-                    // String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
+                    // String s = String.format(sFmt, cache.Name, waypoint.Title, coord.formatCoordinate());
                     // MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
-                    return Translation.get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.getTitle(), cache.getName());
+                    return Translation.get("solverErrDiffCache", coord.formatCoordinate(), dbWaypoint.getTitle(), cache.getName());
                 }
             }
-            dbWaypoint.Pos = new Coordinate(coord);
+            dbWaypoint.setCoordinate(new Coordinate(coord));
 
             waypointDAO.UpdateDatabase(dbWaypoint);
 
             // evtl. bereits geladenen Waypoint aktualisieren
             Cache cacheFromCacheList;
             synchronized (Database.Data.cacheList) {
-                cacheFromCacheList = Database.Data.cacheList.getCacheByIdFromCacheList(dbWaypoint.CacheId);
+                cacheFromCacheList = Database.Data.cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
             }
             cacheFromCacheList = Solver.solverCacheInterface.sciGetSelectedCache();
             if (cacheFromCacheList != null) {
                 for (int i = 0, n = cacheFromCacheList.waypoints.size(); i < n; i++) {
                     Waypoint wp = cacheFromCacheList.waypoints.get(i);
                     if (wp.getGcCode().equalsIgnoreCase(this.gcCode)) {
-                        wp.Pos = new Coordinate(coord);
+                        wp.setCoordinate(new Coordinate(coord));
                         break;
                     }
                 }
@@ -146,7 +146,7 @@ public class CoordinateEntity extends Entity {
         } catch (Exception e) {
             return Translation.get("CacheOrWaypointNotFound", this.gcCode);
         }
-        return gcCode + "=" + coord.FormatCoordinate();
+        return gcCode + "=" + coord.formatCoordinate();
     }
 
     @Override

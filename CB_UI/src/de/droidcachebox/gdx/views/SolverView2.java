@@ -276,11 +276,11 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         if (result != null) {
             // Create New Waypoint
             Waypoint wp = new Waypoint(true);
-            wp.CacheId = GlobalCore.getSelectedCache().Id;
+            wp.geoCacheId = GlobalCore.getSelectedCache().Id;
             wp.setCoordinate(result);
-            wp.Type = CacheTypes.Final;
+            wp.waypointType = CacheTypes.Final;
             wp.setTitle("Final");
-            wp.IsUserWaypoint = true;
+            wp.isUserWaypoint = true;
             try {
                 wp.setGcCode(Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
             } catch (Exception e) {

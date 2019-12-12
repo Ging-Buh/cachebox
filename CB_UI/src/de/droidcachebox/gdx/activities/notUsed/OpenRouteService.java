@@ -39,7 +39,7 @@ public class OpenRouteService {
         }
 
         if (GlobalCore.getSelectedWaypoint() != null) {
-            target = GlobalCore.getSelectedWaypoint().Pos;
+            target = GlobalCore.getSelectedWaypoint().getCoordinate();
         } else if (GlobalCore.isSetSelectedCache()) {
             target = GlobalCore.getSelectedCache().coordinate;
         } else {

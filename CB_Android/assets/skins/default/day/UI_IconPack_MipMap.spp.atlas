@@ -3010,6 +3010,13 @@ small4
   orig: 15, 15
   offset: 0, 0
   index: -1
+small4Solved
+  rotate: false
+  xy: 449, 686
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
 small4no
   rotate: false
   xy: 1829, 1500

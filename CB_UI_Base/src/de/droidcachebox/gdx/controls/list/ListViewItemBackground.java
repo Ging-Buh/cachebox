@@ -9,10 +9,10 @@ import de.droidcachebox.gdx.math.CB_RectF;
 
 public abstract class ListViewItemBackground extends ListViewItemBase {
 
-    protected static boolean mBackIsInitial = false;
-    private static NinePatch backSelect;
-    private static NinePatch back1;
-    private static NinePatch back2;
+    protected static boolean backGroundIsInitialized = false;
+    private static NinePatch backGroundColorForSelectedLine;
+    private static NinePatch backGroundColorForEvenLine;
+    private static NinePatch backGroundColorForOddLine;
     protected boolean isPressed = false;
 
     /**
@@ -27,31 +27,30 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     }
 
     public static void ResetBackground() {
-        mBackIsInitial = false;
+        backGroundIsInitialized = false;
     }
 
     public static float getLeftWidthStatic() {
-        if (mBackIsInitial) {
-            return backSelect.getLeftWidth();
+        if (backGroundIsInitialized) {
+            return backGroundColorForSelectedLine.getLeftWidth();
         }
         return 0;
     }
 
     public static float getRightWidthStatic() {
-        if (mBackIsInitial) {
-            return backSelect.getRightWidth();
+        if (backGroundIsInitialized) {
+            return backGroundColorForSelectedLine.getRightWidth();
         }
         return 0;
     }
 
     @Override
     protected void initialize() {
-        if (!mBackIsInitial) {
-            backSelect = new NinePatch(Sprites.getSprite("listrec-selected"), 13, 13, 13, 13);
-            back1 = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
-            back2 = new NinePatch(Sprites.getSprite("listrec-secend"), 13, 13, 13, 13);
-
-            mBackIsInitial = true;
+        if (!backGroundIsInitialized) {
+            backGroundColorForSelectedLine = new NinePatch(Sprites.getSprite("listrec-selected"), 13, 13, 13, 13);
+            backGroundColorForEvenLine = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
+            backGroundColorForOddLine = new NinePatch(Sprites.getSprite("listrec-secend"), 13, 13, 13, 13);
+            backGroundIsInitialized = true;
         }
     }
 
@@ -67,16 +66,15 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
         super.render(batch);
 
         // Draw Background
-        if (!mBackIsInitial) {
+        if (!backGroundIsInitialized) {
             initialize();
         }
-        boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
         if (isSelected) {
-            backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-        } else if (BackGroundChanger) {
-            back1.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+            backGroundColorForSelectedLine.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+        } else if ((getIndex() % 2) == 1) {
+            backGroundColorForEvenLine.draw(batch, 0, 0, this.getWidth(), this.getHeight());
         } else {
-            back2.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+            backGroundColorForOddLine.draw(batch, 0, 0, this.getWidth(), this.getHeight());
         }
 
     }
@@ -99,53 +97,53 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 
     @Override
     public float getLeftWidth() {
-        if (!mBackIsInitial)
+        if (!backGroundIsInitialized)
             initialize();
         if (isSelected) {
-            return backSelect.getLeftWidth();
+            return backGroundColorForSelectedLine.getLeftWidth();
         } else if ((this.getIndex() % 2) == 1) {
-            return back1.getLeftWidth();
+            return backGroundColorForEvenLine.getLeftWidth();
         } else {
-            return back2.getLeftWidth();
+            return backGroundColorForOddLine.getLeftWidth();
         }
     }
 
     @Override
     public float getBottomHeight() {
-        if (!mBackIsInitial)
+        if (!backGroundIsInitialized)
             initialize();
         if (isSelected) {
-            return backSelect.getBottomHeight();
+            return backGroundColorForSelectedLine.getBottomHeight();
         } else if ((this.getIndex() % 2) == 1) {
-            return back1.getBottomHeight();
+            return backGroundColorForEvenLine.getBottomHeight();
         } else {
-            return back2.getBottomHeight();
+            return backGroundColorForOddLine.getBottomHeight();
         }
     }
 
     @Override
     public float getRightWidth() {
-        if (!mBackIsInitial)
+        if (!backGroundIsInitialized)
             initialize();
         if (isSelected) {
-            return backSelect.getRightWidth();
+            return backGroundColorForSelectedLine.getRightWidth();
         } else if ((this.getIndex() % 2) == 1) {
-            return back1.getRightWidth();
+            return backGroundColorForEvenLine.getRightWidth();
         } else {
-            return back2.getRightWidth();
+            return backGroundColorForOddLine.getRightWidth();
         }
     }
 
     @Override
     public float getTopHeight() {
-        if (!mBackIsInitial)
+        if (!backGroundIsInitialized)
             initialize();
         if (isSelected) {
-            return backSelect.getTopHeight();
+            return backGroundColorForSelectedLine.getTopHeight();
         } else if ((this.getIndex() % 2) == 1) {
-            return back1.getTopHeight();
+            return backGroundColorForEvenLine.getTopHeight();
         } else {
-            return back2.getTopHeight();
+            return backGroundColorForOddLine.getTopHeight();
         }
     }
 

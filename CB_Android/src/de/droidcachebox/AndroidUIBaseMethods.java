@@ -112,9 +112,11 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     public boolean isOnline() {
         // isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
         ConnectivityManager cm = (ConnectivityManager) mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        assert cm != null;
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
+        if (cm != null) {
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
+        }
+        return false;
     }
 
     @Override

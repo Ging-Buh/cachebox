@@ -91,7 +91,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniCoordButton() {
         CB_RectF rec = new CB_RectF(leftBorder, tvCacheName.getY() - UiSizes.getInstance().getButtonHeight(), innerWidth, UiSizes.getInstance().getButtonHeight());
-        Coordinate coordinate = waypoint.Pos;
+        Coordinate coordinate = waypoint.getCoordinate();
         if (!coordinate.isValid() || coordinate.isZero()) {
             // coordinate = get from gps
             coordinate = Locator.getInstance().getMyPosition();
@@ -129,23 +129,23 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             showCbStartPoint(false);
             switch (index) {
                 case 0:
-                    waypoint.Type = CacheTypes.ReferencePoint;
+                    waypoint.waypointType = CacheTypes.ReferencePoint;
                     break;
                 case 1:
-                    waypoint.Type = CacheTypes.MultiStage;
+                    waypoint.waypointType = CacheTypes.MultiStage;
                     showCbStartPoint(true);
                     break;
                 case 2:
-                    waypoint.Type = CacheTypes.MultiQuestion;
+                    waypoint.waypointType = CacheTypes.MultiQuestion;
                     break;
                 case 3:
-                    waypoint.Type = CacheTypes.Trailhead;
+                    waypoint.waypointType = CacheTypes.Trailhead;
                     break;
                 case 4:
-                    waypoint.Type = CacheTypes.ParkingArea;
+                    waypoint.waypointType = CacheTypes.ParkingArea;
                     break;
                 case 5:
-                    waypoint.Type = CacheTypes.Final;
+                    waypoint.waypointType = CacheTypes.Final;
                     break;
             }
 
@@ -157,14 +157,11 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         cbStartPoint.setVisible(false);
 
         // Spinner initialisieren
-        switch (waypoint.Type) {
-            case ReferencePoint:
-                sType.setSelection(0);
-                break;
+        switch (waypoint.waypointType) {
             case MultiStage:
                 sType.setSelection(1);
                 showCbStartPoint(true);
-                cbStartPoint.setChecked(waypoint.IsStart);
+                cbStartPoint.setChecked(waypoint.isStartWaypoint);
                 break;
             case MultiQuestion:
                 sType.setSelection(2);
@@ -324,11 +321,11 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
         bOK.setClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
-                waypoint.Pos = bCoord.getCoordinate();
+                waypoint.setCoordinate(bCoord.getCoordinate());
                 waypoint.setTitle(etTitle.getText());
                 waypoint.setDescription(etDescription.getText());
                 waypoint.setClue(etClue.getText());
-                waypoint.IsStart = cbStartPoint.isChecked();
+                waypoint.isStartWaypoint = cbStartPoint.isChecked();
                 mReturnListener.returnedWP(waypoint);
             }
 
@@ -357,16 +354,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private void showCbStartPoint(boolean visible) {
         tvStartPoint.setVisible(visible);
         cbStartPoint.setVisible(visible);
-    }
-
-    private void scrollToY(float y, float maxY) {
-        if (y < this.getHalfHeight())// wird von softKeyboard verdeckt
-        {
-            scrollBox.scrollTo(-(virtualHeight - maxY - MeasuredLabelHeight));
-        } else {
-            scrollBox.scrollTo(-(virtualHeight - maxY - MeasuredLabelHeight));
-            // scrollBox.scrollTo(0);
-        }
     }
 
     private void layoutTextFields() {
@@ -432,7 +419,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     @Override
     public void keyboardFocusChanged(EditTextField editTextField) {
         if (editTextField != null) {
-            scrollToY(editTextField.getY(), editTextField.getMaxY());
+            // scroll to top
+            scrollBox.scrollTo(-(virtualHeight - editTextField.getMaxY() - MeasuredLabelHeight));
         }
     }
 

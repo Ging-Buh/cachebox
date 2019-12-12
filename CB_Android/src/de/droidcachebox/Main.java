@@ -273,9 +273,10 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
             mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-            assert mSensorManager != null;
-            accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+            if (mSensorManager != null) {
+                accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+            }
 
             new AndroidTexturePacker();
 
@@ -426,8 +427,10 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         }
 
         if (mSensorManager != null) {
-            mSensorManager.registerListener(mSensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
-            mSensorManager.registerListener(mSensorEventListener, magnetometer, SensorManager.SENSOR_DELAY_UI);
+            if (accelerometer != null)
+                mSensorManager.registerListener(mSensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
+            if (magnetometer != null)
+                mSensorManager.registerListener(mSensorEventListener, magnetometer, SensorManager.SENSOR_DELAY_UI);
         }
 
         int lQuickButtonHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;

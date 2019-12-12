@@ -55,7 +55,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected final Vector2 loVector = new Vector2();
     protected final Vector2 ruVector = new Vector2();
     protected final PointL screenCenterT = new PointL(0, 0);
-    private final Point lastMovement = new Point(0, 0);
     private final HashMap<Integer, Point> fingerDown = new LinkedHashMap<>();
     public CoordinateGPS center = new CoordinateGPS(48.0, 12.0);
     public float ySpeedVersatz = 200;
@@ -92,7 +91,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected int maxNumTiles;
     Descriptor lastDescriptorOrdered;
     private AccuracyDrawable accuracyDrawable = null;
-    private boolean NightMode = false;
     private MapState mapState = MapState.FREE;
     // protected boolean alignToCompass = false;
     private float mapHeading = 0;
@@ -107,7 +105,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     protected void SetNightMode(boolean NightMode) {
-        this.NightMode = NightMode;
     }
 
     protected void SetNorthOriented(boolean NorthOriented) {
@@ -349,59 +346,51 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             ruVector.set(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight + ySpeedVersatz);
             Descriptor lowerTile = screenToDescriptor(loVector, aktZoom);
             Descriptor upperTile = screenToDescriptor(ruVector, aktZoom);
-            // int tilesWantedToDrawCount = (ru.getX() - lo.getX() + 1) * (ru.getY() - lo.getY() + 1);
-            // if (mapTileLoader.isLoadingChanged() || tilesWantedToDrawCount > mapTileLoader.getTilesToDrawCounter())
-            {
-                // determine again the tiles to draw from loaded tiles (mostly the same as in last render step)
-                // Log.info(log, "determine tiles to draw");
-                mapTileLoader.resetTilesToDrawCounter();
-                if (mapTileLoader.getCurrentOverlayLayer() != null) {
-                    mapTileLoader.resetOverlayTilesToDrawCounter();
-                }
-                boolean tileOrdered = false;
-                int midX = (lowerTile.getX() + upperTile.getX()) / 2;
-                int midY = (lowerTile.getY() + upperTile.getY()) / 2;
-                for (int i = lowerTile.getX(); i <= upperTile.getX(); i++) {
-                    for (int j = lowerTile.getY(); j <= upperTile.getY(); j++) {
-                        Descriptor desc = new Descriptor(i, j, aktZoom);
-                        boolean canDraw;
-                        canDraw = mapTileLoader.markTileToDraw(desc.getHashCode()) >= 0;
-                        boolean canDrawOverlay = false;
-                        if (mapTileLoader.getCurrentOverlayLayer() != null) {
-                            canDrawOverlay = mapTileLoader.markOverlayTileToDraw(desc.getHashCode()) >= 0;
+            mapTileLoader.resetTilesToDrawCounter();
+            if (mapTileLoader.getCurrentOverlayLayer() != null) {
+                mapTileLoader.resetOverlayTilesToDrawCounter();
+            }
+            boolean canOrder = true;
+            int midX = (lowerTile.getX() + upperTile.getX()) / 2;
+            int midY = (lowerTile.getY() + upperTile.getY()) / 2;
+            for (int i = lowerTile.getX(); i <= upperTile.getX(); i++) {
+                for (int j = lowerTile.getY(); j <= upperTile.getY(); j++) {
+                    Descriptor desc = new Descriptor(i, j, aktZoom);
+                    boolean canDraw;
+                    canDraw = mapTileLoader.markTileToDraw(desc.getHashCode()) >= 0;
+                    boolean canDrawOverlay = false;
+                    if (mapTileLoader.getCurrentOverlayLayer() != null) {
+                        canDrawOverlay = mapTileLoader.markOverlayTileToDraw(desc.getHashCode()) >= 0;
+                    }
+                    if (!canDraw) {
+                        if (canOrder && lastDescriptorOrdered.getHashCode() != lowerTile.getHashCode()) {
+                            Log.debug(log, "needed: " + i + "," + j + " around " + midX + "," + midY);
+                            directLoadTiles(lowerTile, upperTile, aktZoom);
+                            canOrder = false;
+                            lastDescriptorOrdered = lowerTile;
                         }
-
-                        if (!canDraw) {
-                            if (!tileOrdered && lastDescriptorOrdered.getHashCode() != desc.getHashCode()) {
-                                // Log.info(log, "order: " + desc + " Distance: " + Math.max(Math.abs(i - midX), Math.abs(j - midY)));
-                                lastDescriptorOrdered = desc;
-                                directLoadTiles(lowerTile, upperTile, aktZoom);
-                            }
-                            tileOrdered = true;
-                            desc.Data = this;
-                            // at moment there is no suitable tile for this zoom, first try a bigger one, else try from smaller ones
-                            if (!renderBiggerTiles(batch, i, j, aktZoom)) {
-                                renderSmallerTiles(batch, i, j, aktZoom);
-                            }
+                        desc.Data = this;
+                        // at moment there is no suitable tile for this zoom, first try a bigger one, else try from smaller ones
+                        if (!renderBiggerTiles(batch, i, j, aktZoom)) {
+                            renderSmallerTiles(batch, i, j, aktZoom);
                         }
+                    }
 
-                        if (mapTileLoader.getCurrentOverlayLayer() != null) {
-                            if (!canDrawOverlay) {
-                                if (!renderBiggerOverlayTiles(batch, i, j, aktZoom))
-                                    renderSmallerOverlayTiles(batch, i, j, aktZoom);
-                            }
+                    if (mapTileLoader.getCurrentOverlayLayer() != null) {
+                        if (!canDrawOverlay) {
+                            if (!renderBiggerOverlayTiles(batch, i, j, aktZoom))
+                                renderSmallerOverlayTiles(batch, i, j, aktZoom);
                         }
                     }
                 }
-
-                mapTileLoader.sortByAge();
             }
+
+            mapTileLoader.sortByAge();
         }
 
         CB_List<TileGL_RotateDrawables> rotateList = new CB_List<>();
 
         synchronized (screenCenterWorld) {
-            // Log.info(log, "Number of tiles to Draw: " + mapTileLoader.getTilesToDrawCounter());
             for (int i = mapTileLoader.getTilesToDrawCounter() - 1; i > -1; i--) {
                 TileGL tile = mapTileLoader.getDrawingTile(i);
                 if (tile != null) {
@@ -415,7 +404,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 }
             }
             batch.enableBlending();
-            // todo sort rotate List first the Symbols then the Text! sort Text with same Font!
             // Don't change the Texture (improve the Performance)
             for (int i = 0, n = rotateList.size(); i < n; i++) {
                 TileGL_RotateDrawables drw = rotateList.get(i);
@@ -450,40 +438,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         return (long) (Math.pow(2.0, MAX_MAP_ZOOM - tile.descriptor.getZoom()) / tile.getScaleFactor());
     }
 
-    /*
-    protected void renderDebugInfo(Batch batch) {
-
-        CB_RectF r = this.thisWorldRec;
-
-        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
-
-        BitmapFont font = Fonts.getNormal();
-
-        font.setColor(Color.BLACK);
-
-        Matrix4 def = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        def.translate(r.getX(), r.getY(), 1);
-        batch.setProjectionMatrix(def);
-
-        // str = debugString;
-        font.draw(batch, str, 20, 120);
-
-        str = "fps: " + Gdx.graphics.getFramesPerSecond();
-        font.draw(batch, str, 20, 100);
-
-        str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
-        font.draw(batch, str, 20, 80);
-
-        str = "lTiles: " + mapTileLoader.getNumberOfLoadedTiles() + " - qTiles: " + mapTileLoader.queuedTilesSize();
-        font.draw(batch, str, 20, 60);
-
-        str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-        font.draw(batch, str, 20, 20);
-        Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-    }
-     */
-
-    // FIXME make point and vPoint final and setValues!
     protected void renderPositionMarker(Batch batch) {
         PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MAX_MAP_ZOOM,
                 MAX_MAP_ZOOM);
@@ -614,8 +568,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         }
         return false;
     }
-
-    // private static String debugString = "";
 
     private void renderSmallerTiles(Batch batch, int i, int j, int zoom2) {
         // f�r den aktuellen Zoom ist kein Tile vorhanden -> gr��ere
@@ -1159,7 +1111,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     @Override
     public void invalidateTexture() {
-        // Log.info(log, "invalidateTexture");
         setNewSettings(INITIAL_THEME);
         mapScale.ZoomChanged();
 
@@ -1242,7 +1193,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             Descriptor midTile = screenToDescriptor(midVector2, aktZoom);
             if (lastDescriptorOrdered.getHashCode() != midTile.getHashCode()) {
                 lastDescriptorOrdered = midTile;
-                // Log.info(log, debugInfo + " order: " + midTile);
                 directLoadTiles(midTile, midTile, aktZoom);
                 updateCacheList(debugInfo.contains("oom"));
             }

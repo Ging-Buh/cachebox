@@ -37,9 +37,9 @@ public class FunctionIntersection extends Function {
                 return Translation.get("solverErrParamType", "$solverFuncIntersection", String.valueOf(i + 1), "$coordinate", "$coordinate", parameter[i]);
         }
         try {
-            return CoordinateGPS.Intersection(coord[0], coord[1], coord[2], coord[3]).FormatCoordinate();
+            return CoordinateGPS.Intersection(coord[0], coord[1], coord[2], coord[3]).formatCoordinate();
         } catch (Exception ex) {
-            String s = coord[0].FormatCoordinate() + " / " + coord[1].FormatCoordinate() + " -> " + coord[2].FormatCoordinate() + " / " + coord[3].FormatCoordinate();
+            String s = coord[0].formatCoordinate() + " / " + coord[1].formatCoordinate() + " -> " + coord[2].formatCoordinate() + " / " + coord[3].formatCoordinate();
             return Translation.get("StdError", "$solverFuncIntersection", ex.getMessage(), s);
         }
     }

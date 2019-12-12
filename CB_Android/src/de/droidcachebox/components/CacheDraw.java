@@ -188,7 +188,7 @@ public class CacheDraw {
                 drawName += "\n";
                 drawName += cache.getGcCode();
             } else if (drawStyle == DrawStyle.withOwner) {
-                drawName = drawName + "\n" + cache.coordinate.FormatCoordinate() + "\n" + cache.getGcCode();
+                drawName = drawName + "\n" + cache.coordinate.formatCoordinate() + "\n" + cache.getGcCode();
             }
 
             if (drawStyle == DrawStyle.withOwnerAndName || drawStyle == DrawStyle.withOwner) {
@@ -220,7 +220,7 @@ public class CacheDraw {
                     counter++;
                 } while (((int) namePaint.measureText(DrawText)) >= nameLayoutWidth);
 
-                DrawText = DrawText + "\n" + "\n" + cache.coordinate.FormatCoordinate() + "\n" + cache.getGcCode() + "\n";
+                DrawText = DrawText + "\n" + "\n" + cache.coordinate.formatCoordinate() + "\n" + cache.getGcCode() + "\n";
 
                 String LastFound = getLastFoundLogDate(cache);
                 if (!LastFound.equals("")) {

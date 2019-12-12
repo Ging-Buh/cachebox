@@ -197,10 +197,18 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
 
         GL.that.RunOnGL(() -> {
             if (cache != null) {
-                if (mLblCacheName != null) {
-                    mLblCacheName.setText(CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName());
-                }
                 fillCacheWpInfo();
+                String header = "";
+                if (mLblCacheName != null) {
+                    if (cacheDesc.getCacheInfo().needsMaintenance()) {
+                        header = header + "!!!M!";
+                    }
+                    if (cacheDesc.getCacheInfo().numberOfDNFsAfterLastFound() > 0) {
+                        header = header + "!"+ cacheDesc.getCacheInfo().numberOfDNFsAfterLastFound() + "!!!";
+                    }
+                    header = header + CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName();
+                }
+                mLblCacheName.setText(header);
             }
         });
     }

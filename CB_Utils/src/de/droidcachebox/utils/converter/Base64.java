@@ -1,5 +1,7 @@
 package de.droidcachebox.utils.converter;
 
+import de.droidcachebox.utils.log.Log;
+
 import java.io.BufferedOutputStream;
 
 /**
@@ -618,9 +620,9 @@ public class Base64 {
         try {
             encoded = encodeBytes(source, 0, source.length, NO_OPTIONS);
         } catch (java.io.IOException ex) {
-            assert false : ex.getMessage();
+            Log.err("Base64", "encodeBytes", ex);
         } // end catch
-        assert encoded != null;
+        if (encoded == null) return "";
         return encoded;
     } // end encodeBytes
 
@@ -679,9 +681,9 @@ public class Base64 {
         try {
             encoded = encodeBytes(source, off, len, NO_OPTIONS);
         } catch (java.io.IOException ex) {
-            assert false : ex.getMessage();
-        } // end catch
-        assert encoded != null;
+            Log.err("Base64", "encodeBytes", ex);
+        }
+        if (encoded == null) return "";
         return encoded;
     } // end encodeBytes
 
@@ -743,7 +745,7 @@ public class Base64 {
         try {
             encoded = encodeBytesToBytes(source, 0, source.length, Base64.NO_OPTIONS);
         } catch (java.io.IOException ex) {
-            assert false : "IOExceptions only come from GZipping, which is turned off: " + ex.getMessage();
+            Log.err("Base64", "IOExceptions only come from GZipping, which is turned off: ", ex);
         }
         return encoded;
     }
@@ -967,13 +969,7 @@ public class Base64 {
      * @since 2.3.1
      */
     public static byte[] decode(byte[] source) throws java.io.IOException {
-        byte[] decoded = null;
-        // try {
-        decoded = decode(source, 0, source.length, Base64.NO_OPTIONS);
-        // } catch( java.io.IOException ex ) {
-        // assert false : "IOExceptions only come from GZipping, which is turned off: " + ex.getMessage();
-        // }
-        return decoded;
+        return decode(source, 0, source.length, Base64.NO_OPTIONS);
     }
 
     /**

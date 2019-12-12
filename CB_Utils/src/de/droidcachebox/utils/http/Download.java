@@ -57,10 +57,10 @@ public class Download {
                 }
             } finally {
                 try {
-                    assert inStream != null;
-                    inStream.close();
-                    assert outStream != null;
-                    outStream.close();
+                    if (inStream != null)
+                        inStream.close();
+                    if (outStream != null)
+                        outStream.close();
                 } catch (Exception ignored) {
                 }
             }

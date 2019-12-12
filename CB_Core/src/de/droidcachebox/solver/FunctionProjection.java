@@ -51,7 +51,7 @@ public class FunctionProjection extends Function {
         Coordinate result = CoordinateGPS.Project(coord.getLatitude(), coord.getLongitude(), angle, distance);
         if (!result.isValid())
             return Translation.get("InvalidCoordinate", "$solverFuncProjection", "Lat: " + String.valueOf(coord.getLatitude()) + ", Lon: " + String.valueOf(coord.getLongitude()));
-        return result.FormatCoordinate();
+        return result.formatCoordinate();
     }
 
     @Override

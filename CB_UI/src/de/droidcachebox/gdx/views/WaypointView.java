@@ -161,7 +161,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         if (aktWaypoint != null)
             cm.addMenuItem("edit", null, () -> editWP(true));
         cm.addMenuItem("AddWaypoint", null, this::addWP);
-        if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint))
+        if ((aktWaypoint != null) && (aktWaypoint.isUserWaypoint))
             cm.addMenuItem("delete", null, this::deleteWP);
         if (aktWaypoint != null || aktCache != null)
             cm.addMenuItem("Projection", null, this::addProjection);
@@ -169,7 +169,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             if (aktCache.hasCorrectedCoordinates())
                 GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.coordinate);
             else if (aktWaypoint.isCorrectedFinal())
-                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
+                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.getCoordinate());
             if (GroundspeakAPI.APIError == 0) {
                 MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
             } else {
@@ -220,7 +220,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                     that.setAdapter(lvAdapter);
                     aktWaypoint = waypoint;
                     de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), waypoint);
-                    if (waypoint.IsStart) {
+                    if (waypoint.isStartWaypoint) {
                         // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                         // definiert
                         // ist!!!
@@ -237,16 +237,16 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
                 } else {
                     aktWaypoint.setTitle(waypoint.getTitle());
-                    aktWaypoint.Type = waypoint.Type;
-                    aktWaypoint.Pos = waypoint.Pos;
+                    aktWaypoint.waypointType = waypoint.waypointType;
+                    aktWaypoint.setCoordinate(waypoint.getCoordinate());
                     aktWaypoint.setDescription(waypoint.getDescription());
-                    aktWaypoint.IsStart = waypoint.IsStart;
+                    aktWaypoint.isStartWaypoint = waypoint.isStartWaypoint;
                     aktWaypoint.setClue(waypoint.getClue());
 
                     // set waypoint as UserWaypoint, because waypoint is changed by user
-                    aktWaypoint.IsUserWaypoint = true;
+                    aktWaypoint.isUserWaypoint = true;
 
-                    if (waypoint.IsStart) {
+                    if (waypoint.isStartWaypoint) {
                         // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                         // definiert
                         // ist!!!
@@ -300,7 +300,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     private void addProjection() {
         createNewWaypoint = true;
 
-        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.coordinate : Locator.getInstance().getMyPosition();
+        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.getCoordinate() : (aktCache != null) ? aktCache.coordinate : Locator.getInstance().getMyPosition();
         String ProjName;
 
         ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;
@@ -457,7 +457,6 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                         wayPoints.replace(waypointViewItem, position);
                     }
 
-                    return wayPoints.get(position);
                 } else {
                     if (wayPoints.get(position) == null || wayPoints.get(position).isDisposed()) {
                         Waypoint waypoint = cache.waypoints.get(position - 1);
@@ -504,8 +503,8 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                         });
                         wayPoints.replace(waypointViewItem, position);
                     }
-                    return wayPoints.get(position);
                 }
+                return wayPoints.get(position);
             } else
                 return null;
         }
