@@ -57,8 +57,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     private void initial(int Index, Cache cache, Waypoint waypoint) {
-        this.mCache = cache;
-        this.mWaypoint = waypoint;
+        mCache = cache;
+        mWaypoint = waypoint;
 
         distance = new BitmapFontCache(Fonts.getSmall());
         distance.setColor(COLOR.getFontColor());
@@ -73,7 +73,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             cacheInfo = new ExtendedCacheInfo(this, "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
             cacheInfo.setZeroPos();
             cacheInfo.setViewMode(viewMode);
-            this.addChild(cacheInfo);
+            addChild(cacheInfo);
         }
         requestLayout();
 
@@ -136,7 +136,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore
                 // alpha
                 {
-                    float size = this.getHeight() / 2.3f;
+                    float size = getHeight() / 2.3f;
                     arrow = new Sprite(Sprites.Arrows.get(0));
                     arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
                     arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
@@ -229,7 +229,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
         if (viewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
         {
             float size = UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight() / 2.3f;
-            ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
+            ArrowRec = new CB_RectF(getWidth() - (size * 1.2f), getHeight() - (size * 1.6f), size, size);
             arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
             arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
@@ -277,7 +277,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             mDescCache.setColor(COLOR.getFontColor());
             mCoordCache.setColor(COLOR.getFontColor());
 
-            float textYPos = this.getHeight() - mLeft;
+            float textYPos = getHeight() - mLeft;
 
             float allHeight = (mNameCache.setText(mWaypoint.getGcCode().substring(0, 2) + ": " + mWaypoint.getTitleForGui(), mSpriteCachePos.x + mIconSize + mLeft, textYPos)).height + mLeft + mLeft;
             textYPos -= allHeight;
@@ -285,13 +285,13 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             if (viewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
                 mDescCache = null;
             } else {
-                if (!mWaypoint.getDescription().equals("")) {
-
+                String wpDescription = mWaypoint.getDescription();
+                if (wpDescription.length() > 0) {
                     float textXPos = mSpriteCachePos.x + mIconSize + mLeft;
-                    float descHeight = (mDescCache.setText(mWaypoint.getDescription(), textXPos, textYPos, this.getWidth() - (textXPos + mIconSize + mLeft), Align.left, true)).height + mLeft + mLeft;
-                    allHeight += descHeight;
-
-                    textYPos -= descHeight;
+                    GlyphLayout gl = mDescCache.setText(wpDescription, textXPos, textYPos, getWidth() - (textXPos + mIconSize + mLeft), Align.left, true);
+                    float descHeight = gl.height + mLeft + mLeft;
+                    allHeight = allHeight + descHeight;
+                    textYPos = textYPos - descHeight;
                 }
             }
 
@@ -360,7 +360,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
      *
      * @author Longri
      */
-    public class ExtendedCacheInfo extends CacheInfo {
+    public static class ExtendedCacheInfo extends CacheInfo {
 
         public ExtendedCacheInfo(CB_RectF rec, String Name, Cache value) {
             super(rec, Name, value);
@@ -373,7 +373,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             batch.flush();
 
-            this.render(batch);
+            render(batch);
             batch.flush();
 
             Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);

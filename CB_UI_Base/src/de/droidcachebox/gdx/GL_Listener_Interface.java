@@ -5,7 +5,7 @@ public interface GL_Listener_Interface {
 
      void RenderDirty();
 
-     void RenderContinous();
+     void renderContinous();
 
      boolean isContinous();
 }

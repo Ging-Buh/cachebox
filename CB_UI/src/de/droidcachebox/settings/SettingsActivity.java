@@ -1021,45 +1021,41 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             items[index++] = tmp.Name;
         }
 
-        SpinnerAdapter adapter = new SpinnerAdapter() {
-
-            @Override
-            public String getText(int position) {
-                return items[position];
-            }
-
-            @Override
-            public Drawable getIcon(int Position) {
-                return null;
-            }
-
-            @Override
-            public int getCount() {
-                return items.length;
-            }
-        };
-
-        Spinner spinner = new Spinner(ButtonRec, "SelectLanguage", adapter, index1 -> {
-            String selected = items[index1];
-            for (Lang tmp : Sprachen) {
-                if (selected.equals(tmp.Name)) {
-                    Config.Sel_LanguagePath.setValue(tmp.Path);
-                    try {
-                        Translation.that.loadTranslation(tmp.Path);
-                    } catch (Exception e) {
-                        Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+        Spinner spinner = new Spinner(ButtonRec,
+                "SelectLanguage",
+                new SpinnerAdapter() {
+                    @Override
+                    public String getText(int position) {
+                        return items[position];
                     }
-                    break;
-                }
-            }
-        });
 
+                    @Override
+                    public Drawable getIcon(int Position) {
+                        return null;
+                    }
+
+                    @Override
+                    public int getCount() {
+                        return items.length;
+                    }
+                },
+                index1 -> {
+                    String selected = items[index1];
+                    for (Lang tmp : Sprachen) {
+                        if (selected.equals(tmp.Name)) {
+                            Config.Sel_LanguagePath.setValue(tmp.Path);
+                            try {
+                                Translation.that.loadTranslation(tmp.Path);
+                            } catch (Exception e) {
+                                Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                            }
+                            break;
+                        }
+                    }
+                });
         spinner.setSelection(selection);
-
         // spinner.setPrompt(Translation.get("SelectLanguage")); since 17.5.2019 within constructor
-
         spinner.setDraggable();
-
         return spinner;
     }
 

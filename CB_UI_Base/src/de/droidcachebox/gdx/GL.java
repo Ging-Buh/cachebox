@@ -365,7 +365,6 @@ public class GL implements ApplicationListener {
         mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
 
         if (AbstractGlobal.isTestVersion()) {
-            // TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
             float FpsInfoSize = 4 * UiSizes.getInstance().getScale();
             if (FpsInfoSprite != null) {
                 mPolygonSpriteBatch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
@@ -428,7 +427,7 @@ public class GL implements ApplicationListener {
         // Log.debug(log, "GL_Listener => onStop");
         stopTimer();
         if (mGL_Listener_Interface != null)
-            mGL_Listener_Interface.RenderContinous();
+            mGL_Listener_Interface.renderContinous();
         child.onStop();
         toast = null; // regenerate toast control
     }
@@ -1213,7 +1212,7 @@ public class GL implements ApplicationListener {
      */
     public void restartRendering() {
         if (mGL_Listener_Interface != null) {
-            mGL_Listener_Interface.RenderContinous();
+            mGL_Listener_Interface.renderContinous();
         }
         renderingIsStopped = false;
         renderOnce();

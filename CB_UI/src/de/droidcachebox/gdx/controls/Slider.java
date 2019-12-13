@@ -1,14 +1,12 @@
 package de.droidcachebox.gdx.controls;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.Config;
 import de.droidcachebox.SelectedCacheChangedEventListener;
 import de.droidcachebox.SelectedCacheChangedEventListeners;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.GeoCacheSize;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.graphics.ColorDrawable;
@@ -19,6 +17,7 @@ import de.droidcachebox.gdx.math.SizeChangedEvent;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.WaypointViewItem;
 import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.utils.CB_List;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,9 +26,10 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
     private static final int MAX_ANIMATION_COUNT = 1000;
     public static Slider that;
     private static Box mSlideBox, mSlideBoxContent;
-    private final int ANIMATION_TIME = 50;// 50;
+    private final int ANIMATION_TIME = 50;
     private final de.droidcachebox.gdx.controls.QuickButtonList quickButtonList;
     private final CB_Label mLblCacheName;
+    private final CB_Label[] last5Logs;
     private final int QuickButtonMaxHeight;
     private final Handler handler = new Handler();
     private final ArrayList<YPositionChanged> eventList = new ArrayList<>();
@@ -43,8 +43,8 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
     private Waypoint actWaypoint;
     private boolean swipeUp = false;
     private boolean swipeDown = false;
-    private boolean AnimationIsRunning = false;
-    private int AnimationDirection = -1;
+    private boolean animationIsRunning = false;
+    private int animationDirection = -1;
     private int AnimationTarget = 0;
     private boolean isKinetigPan = false;
     private float yPos = 0;
@@ -58,31 +58,31 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
 
             GL.that.renderOnce(true);
 
-            if (!AnimationIsRunning)
+            if (!animationIsRunning)
                 return; // Animation wurde abgebrochen
 
             if (animationCounter.incrementAndGet() > MAX_ANIMATION_COUNT) {
                 //break a never ending animation
                 setPos_onUI(AnimationTarget);
-                AnimationIsRunning = false;
+                animationIsRunning = false;
                 return;
             }
 
 
             int newValue;
             double animationMulti = 1.4;
-            if (AnimationDirection == -1) {
+            if (animationDirection == -1) {
                 float tmp = yPos - AnimationTarget;
                 if (tmp <= 0)// Div 0 vehindern
                 {
                     setPos_onUI(AnimationTarget);
-                    AnimationIsRunning = false;
+                    animationIsRunning = false;
                 }
 
                 newValue = (int) (yPos - (tmp / animationMulti));
                 if (newValue <= AnimationTarget) {
                     setPos_onUI(AnimationTarget);
-                    AnimationIsRunning = false;
+                    animationIsRunning = false;
                 } else {
                     setPos_onUI(newValue);
                     handler.postDelayed(AnimationTask, ANIMATION_TIME);
@@ -92,12 +92,12 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
                 if (tmp <= 0)// Div 0 vehindern
                 {
                     setPos_onUI(AnimationTarget);
-                    AnimationIsRunning = false;
+                    animationIsRunning = false;
                 } else {
                     newValue = (int) (yPos + (tmp / animationMulti));
                     if (newValue >= AnimationTarget) {
                         setPos_onUI(AnimationTarget);
-                        AnimationIsRunning = false;
+                        animationIsRunning = false;
                     } else {
                         setPos_onUI(newValue);
                         handler.postDelayed(AnimationTask, ANIMATION_TIME);
@@ -120,10 +120,19 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
 
         mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.getInstance().getInfoSliderHeight()), "SlideBox");
         mSlideBox.setBackground(Sprites.ProgressBack);
+        float w = Fonts.MeasureBig("G.").width;
+        last5Logs = new CB_Label[5];
+        for (int i = 0; i < 5; i++) {
+            last5Logs[i] = new CB_Label();
+            last5Logs[i].setSize(w, mSlideBox.getHeight());
+            last5Logs[i].setHAlignment(HAlignment.CENTER);
+            last5Logs[i].setFont(Fonts.getBig());
+            mSlideBox.addNext(last5Logs[i], FIXED);
+        }
         mLblCacheName = new CB_Label(new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
         mLblCacheName.setPos(30, 0);
         mLblCacheName.setHAlignment(HAlignment.SCROLL_CENTER);
-        mSlideBox.addChild(mLblCacheName);
+        mSlideBox.addLast(mLblCacheName);
 
         mSlideBoxContent = new Box(this, "SlideBoxContent");
 
@@ -198,13 +207,38 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         GL.that.RunOnGL(() -> {
             if (cache != null) {
                 fillCacheWpInfo();
-                String header = "";
+                String header = ",";
                 if (mLblCacheName != null) {
+                    /*
                     if (cacheDesc.getCacheInfo().needsMaintenance()) {
                         header = header + "!!!M!";
                     }
-                    if (cacheDesc.getCacheInfo().numberOfDNFsAfterLastFound() > 0) {
-                        header = header + "!"+ cacheDesc.getCacheInfo().numberOfDNFsAfterLastFound() + "!!!";
+                     */
+                    CB_List<LogEntry> logEntries = Database.getLogs(cache);
+                    for (int i = 0; i < 5; i++) {
+                        if (i < logEntries.size()) {
+                            switch (logEntries.get(i).geoCacheLogType) {
+                                case found:
+                                case owner_maintenance:
+                                    last5Logs[i].setText("G");
+                                    last5Logs[i].setTextColor(Color.GREEN);
+                                    break;
+                                case didnt_find:
+                                    last5Logs[i].setText("R");
+                                    last5Logs[i].setTextColor(Color.RED);
+                                    break;
+                                case needs_archived:
+                                case needs_maintenance:
+                                    last5Logs[i].setText("Y");
+                                    last5Logs[i].setTextColor(Color.YELLOW);
+                                    break;
+                                default:
+                                    last5Logs[i].setText(" ");
+                            }
+                        }
+                        else {
+                            last5Logs[i].setText(" ");
+                        }
                     }
                     header = header + GeoCacheType.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getName();
                 }
@@ -270,7 +304,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
     public boolean onTouchDown(int x, int y, int pointer, int button) {
         isKinetigPan = false;
         oneTouchUP = false;
-        AnimationIsRunning = false;
+        animationIsRunning = false;
         if (mSlideBox.contains(x, y)) {
             touchYoffset = y - mSlideBox.getMaxY();
             return true;
@@ -331,13 +365,13 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         if (yPos == newYPos)
             return; // wir brauchen nichts Animieren
 
-        AnimationIsRunning = true;
+        animationIsRunning = true;
         animationCounter.set(0);
         AnimationTarget = newYPos;
         if (yPos > newYPos)
-            AnimationDirection = -1;
+            animationDirection = -1;
         else
-            AnimationDirection = 1;
+            animationDirection = 1;
         handler.postDelayed(AnimationTask, ANIMATION_TIME);
     }
 

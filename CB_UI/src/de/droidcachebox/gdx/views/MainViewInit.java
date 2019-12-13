@@ -250,12 +250,11 @@ public class MainViewInit extends MainViewBase {
                 Config.AcceptChanges();
             }
 
-            FileType fileType = FileType.Internal;
-
+            Translation trans = new Translation(Config.mWorkPath, FileType.Internal);
             try {
-                new Translation(Config.mWorkPath, fileType).loadTranslation(Config.Sel_LanguagePath.getValue());
+                trans.loadTranslation(Config.Sel_LanguagePath.getValue());
             } catch (Exception e) {
-                Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                trans.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
             }
         }
     }

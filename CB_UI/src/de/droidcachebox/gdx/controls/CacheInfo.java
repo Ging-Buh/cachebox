@@ -120,6 +120,7 @@ public class CacheInfo extends CB_View_Base {
          */
     }
 
+    /*
     public int numberOfDNFsAfterLastFound() {
         int dnfCount = 0;
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
@@ -134,6 +135,7 @@ public class CacheInfo extends CB_View_Base {
         }
         return dnfCount;
     }
+     */
 
     private String getLastFoundLogDate() {
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);

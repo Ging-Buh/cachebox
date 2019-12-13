@@ -79,7 +79,6 @@ import de.droidcachebox.utils.log.LogLevel;
 import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.views.forms.PleaseWaitMessageBox;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Timer;
@@ -301,14 +300,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     @Override
                     public void run() {
                         runOnUiThread(() -> {
-                            String Welcome = "";
-                            String LangId = getString(R.string.langId);
-                            try {
-                                Welcome = Translation.GetTextFile("welcome", LangId);
-
-                                Welcome += Translation.GetTextFile("changelog", LangId);
-                            } catch (IOException ignored) {
-                            }
+                            String langId = getString(R.string.langId);
+                            String Welcome = Translation.that.getTextFile("welcome", langId) + Translation.that.getTextFile("changelog", langId);
                             MessageBox.show(me, Welcome, Translation.get("welcome"), MessageBoxIcon.None);
                         });
                     }
@@ -405,7 +398,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             }
         }
 
-        GL.that.restartRendering(); // does ViewGL.RenderContinous();
+        GL.that.restartRendering(); // does ViewGL.renderContinous();
 
         if (lastState == LastState.onStop) {
             Log.info(sKlasse, "=> Resume from Stop");
@@ -764,11 +757,11 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     private void checkTranslationIsLoaded() {
         if (!Translation.isInitialized()) {
-
+            Translation trans = new Translation(Config.mWorkPath, FileType.Internal);
             try {
-                new Translation(Config.mWorkPath, FileType.Internal).loadTranslation(Config.Sel_LanguagePath.getValue());
+                trans.loadTranslation(Config.Sel_LanguagePath.getValue());
             } catch (Exception e) {
-                Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                trans.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
             }
         }
     }

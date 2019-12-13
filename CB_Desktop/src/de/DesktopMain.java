@@ -142,7 +142,7 @@ public class DesktopMain {
                 }
 
                 @Override
-                public void RenderContinous() {
+                public void renderContinous() {
                     App.getGraphics().setContinuousRendering(true);
                     isContinousRenderMode.set(true);
                 }
