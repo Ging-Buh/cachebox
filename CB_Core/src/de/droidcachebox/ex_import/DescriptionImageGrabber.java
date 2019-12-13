@@ -430,7 +430,6 @@ public class DescriptionImageGrabber {
 
     /**
      * Neue Version, mit @ als Eingrenzung des Hashs, da die Klammern nicht als URL's verwendet werden dürfen
-     *
      */
     public static ImageEntry BuildAdditionalImageFilenameHashNew(ImageEntry imageEntry) {
         try {
@@ -448,8 +447,7 @@ public class DescriptionImageGrabber {
             // Create sdbm Hash from Path of URI, not from complete URI
             imageEntry.LocalPath = imagePath + "/" + imageEntry.GcCode + " - " + imageEntry.Name + " @" + SDBM_Hash.sdbm(uriPath) + "@" + extension;
             return imageEntry;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

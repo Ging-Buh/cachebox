@@ -31,7 +31,7 @@ public class LogDAO {
         Parameters args = new Parameters();
         args.put("Id", logEntry.logId);
         args.put("Finder", logEntry.finder);
-        args.put("Type", logEntry.logTypes.ordinal());
+        args.put("Type", logEntry.geoCacheLogType.ordinal());
         args.put("Comment", logEntry.logText);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String stimestamp = iso8601Format.format(logEntry.logDate);

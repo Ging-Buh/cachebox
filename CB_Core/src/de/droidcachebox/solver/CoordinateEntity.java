@@ -111,7 +111,7 @@ public class CoordinateEntity extends Entity {
                     // String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
                     // sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
                     // String s = String.format(sFmt, cache.Name, waypoint.Title, coord.formatCoordinate());
-                    // MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
+                    // MessageBox(s, "Solver", MessageBoxButton.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
                     return Translation.get("solverErrDiffCache", coord.formatCoordinate(), dbWaypoint.getTitle(), cache.getName());
                 }
             }

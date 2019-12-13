@@ -32,7 +32,7 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.SearchCoordinates;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.*;
 import de.droidcachebox.gdx.views.MapView;
@@ -192,7 +192,7 @@ public class ShowMap extends AbstractShowAction {
                 MessageBox msgBox = MessageBox.show(
                         Translation.get("AddOrChangeMap"),
                         Translation.get("Layer"),
-                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxButton.YesNoCancel,
                         MessageBoxIcon.Question,
                         (which, data) -> {
                             Layer layer1 = (Layer) data;
@@ -390,7 +390,7 @@ public class ShowMap extends AbstractShowAction {
                                     UnZip.extractFolder(target, false);
                                 } catch (Exception ex) {
                                     Log.err(log, "Unzip error: " + ex.toString());
-                                    MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                                    MessageBox.show(ex.toString(), "Unzip", MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
                                 }
                                 Gdx.files.absolute(target).delete();
                                 ((MenuItem) v).setDisabled(true);
@@ -405,7 +405,7 @@ public class ShowMap extends AbstractShowAction {
                 mapViewThemeMenu.addDivider();
                 mapViewThemeMenu.addMenuItem("Download", null, () -> {
                     // MakeRenderThemePathWritable
-                    MessageBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MessageBoxButtons.YesNo, MessageBoxIcon.Hand,
+                    MessageBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MessageBoxButton.YesNo, MessageBoxIcon.Hand,
                             (btnNumber, data) -> {
                                 if (btnNumber == 1) { // change path
                                     Config.RenderThemesFolder.setValue(Config.RenderThemesFolder.getDefaultValue());
@@ -457,7 +457,7 @@ public class ShowMap extends AbstractShowAction {
                                 UnZip.extractFolder(target);
                             } catch (Exception ex) {
                                 Log.err(log, "Unzip error: " + ex.toString());
-                                MessageBox.show(ex.toString(), "Unzip", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                                MessageBox.show(ex.toString(), "Unzip", MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
                             }
                             Gdx.files.absolute(target).delete();
                             ((MenuItem) v).setDisabled(true);

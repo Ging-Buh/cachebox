@@ -56,7 +56,7 @@ import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.Android_TextInput;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.DevicesSizes;
@@ -635,7 +635,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     private void askToGetApiKey() {
-        MessageBox.show(this, Translation.get("wantApi"), Translation.get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+        MessageBox.show(this, Translation.get("wantApi"), Translation.get("welcome"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live,
                 (dialog, button) -> {
                     switch (button) {
                         case -1:
@@ -682,7 +682,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (pWaitD == null) {
 
-            pWaitD = PleaseWaitMessageBox.Show(Translation.get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
+            pWaitD = PleaseWaitMessageBox.Show(Translation.get("waitForGL"), "", MessageBoxButton.NOTHING, MessageBoxIcon.None, null);
 
             waitForGL.set(true);
 
@@ -738,7 +738,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             if (Config.Ask_Switch_GPS_ON.getValue()) {
                 checkTranslationIsLoaded();
                 final Activity me = this;
-                runOnUiThread(() -> MessageBox.show(me, Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (dialog, button) -> {
+                runOnUiThread(() -> MessageBox.show(me, Translation.get("GPSon?"), Translation.get("GPSoff"), MessageBoxButton.YesNo, MessageBoxIcon.Question, (dialog, button) -> {
                     // Behandle das ergebniss
                     switch (button) {
                         case -1:

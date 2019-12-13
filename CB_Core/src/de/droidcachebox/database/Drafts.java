@@ -118,7 +118,7 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
         }
     }
 
-    public void DeleteDraftByCacheId(long cacheId, LogTypes type) {
+    public void DeleteDraftByCacheId(long cacheId, GeoCacheLogType type) {
         synchronized (this) {
             int foundNumber = 0;
             de.droidcachebox.database.Draft fne = null;
@@ -129,7 +129,7 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
                 }
             }
             if (fne != null) {
-                if (fne.type == LogTypes.found)
+                if (fne.type == GeoCacheLogType.found)
                     foundNumber = fne.foundNumber;
                 this.remove(fne);
                 fne.DeleteFromDatabase();
@@ -148,7 +148,7 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
                 }
             }
             if (fne != null) {
-                if (fne.type == LogTypes.found)
+                if (fne.type == GeoCacheLogType.found)
                     foundNumber = fne.foundNumber;
                 this.remove(fne);
                 fne.DeleteFromDatabase();
@@ -161,7 +161,7 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
         if (deletedFoundNumber > 0) {
             // alle FoundNumbers anpassen, die größer sind
             for (de.droidcachebox.database.Draft fn : this) {
-                if ((fn.type == LogTypes.found) && (fn.foundNumber > deletedFoundNumber)) {
+                if ((fn.type == GeoCacheLogType.found) && (fn.foundNumber > deletedFoundNumber)) {
                     int oldFoundNumber = fn.foundNumber;
                     fn.foundNumber--;
                     fn.comment = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.foundNumber);

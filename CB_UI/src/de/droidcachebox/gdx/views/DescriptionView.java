@@ -28,7 +28,7 @@ import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.PolygonDrawable;
@@ -204,9 +204,9 @@ public class DescriptionView extends CB_View_Base {
             fetchMyCacheLimits();
             if (fetchMyUserInfos().remaining <= 0) {
                 if (isPremiumMember()) {
-                    MessageBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                    MessageBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
                 } else {
-                    MessageBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+                    MessageBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
                 }
                 return;
             }

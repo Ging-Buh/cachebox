@@ -121,7 +121,7 @@ public class WaypointDAO {
         double latitude = reader.getDouble(2);
         double longitude = reader.getDouble(3);
         WP.setCoordinate(new Coordinate(latitude, longitude));
-        WP.waypointType = CacheTypes.values()[reader.getShort(4)];
+        WP.waypointType = GeoCacheType.values()[reader.getShort(4)];
         WP.isSyncExcluded = reader.getInt(5) == 1;
         WP.isUserWaypoint = reader.getInt(6) == 1;
         WP.setTitle(reader.getString(7).trim());

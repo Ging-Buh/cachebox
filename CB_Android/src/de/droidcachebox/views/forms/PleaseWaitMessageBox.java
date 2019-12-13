@@ -34,7 +34,7 @@ import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.Global;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
@@ -201,7 +201,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *
      * @param msg      Der im Meldungsfeld anzuzeigende Text.
      * @param title    Der in der Titelleiste des Meldungsfelds anzuzeigende Text.
-     * @param buttons  Ein MessageBoxButtons-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
+     * @param buttons  Ein MessageBoxButton-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
      * @param Listener Welcher die Events der Buttons behandelt
      *
      *                 <pre>
@@ -243,12 +243,12 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                            </pre>
      */
 
-    public static Dialog Show(String msg, String title, MessageBoxButtons buttons, DialogInterface.OnClickListener Listener) {
+    public static Dialog Show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener) {
         parent = null;
         return Show(msg, title, buttons, Listener, null);
     }
 
-    public static Dialog Show(String msg, String title, MessageBoxButtons buttons, DialogInterface.OnClickListener Listener, Activity act) {
+    public static Dialog Show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener, Activity act) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
@@ -266,7 +266,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *
      * @param msg      Der im Meldungsfeld anzuzeigende Text.
      * @param title    Der in der Titelleiste des Meldungsfelds anzuzeigende Text.
-     * @param buttons  Ein MessageBoxButtons-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
+     * @param buttons  Ein MessageBoxButton-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
      * @param Listener Welcher die Events der Buttons behandelt
      *
      *                 <pre>
@@ -308,12 +308,12 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                            </pre>
      */
 
-    public static Dialog Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
+    public static Dialog Show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
         parent = null;
         return Show(msg, title, buttons, icon, Listener, null);
     }
 
-    public static Dialog Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener, Activity act) {
+    public static Dialog Show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener, Activity act) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
@@ -326,7 +326,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
     }
 
     public static Dialog Show(String msg, String title, MessageBoxIcon icon) {
-        return Show(msg, title, MessageBoxButtons.OK, icon, null);
+        return Show(msg, title, MessageBoxButton.OK, icon, null);
 
     }
 

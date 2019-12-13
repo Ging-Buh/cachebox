@@ -30,7 +30,7 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.Slider;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
 import de.droidcachebox.gdx.main.*;
@@ -129,7 +129,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
@@ -149,7 +149,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
                             if (which == MessageBox.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
@@ -170,7 +170,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live,
                                 (which, data) -> {
                                     if (which == MessageBox.BTN_LEFT_POSITIVE)
                                         PlatformUIBase.getApiKey();

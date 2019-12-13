@@ -23,9 +23,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.CacheTypes;
 import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.LogTypes;
+import de.droidcachebox.database.GeoCacheLogType;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -92,23 +92,23 @@ public class DraftViewItem extends ListViewItemBackground {
     }
 
     public static Drawable getTypeIcon(Draft fne) {
-        LogTypes type = fne.type;
+        GeoCacheLogType type = fne.type;
 
         if (fne.isTbDraft) {
 
             Sprite spr = null;
 
-            if (type == LogTypes.discovered)
+            if (type == GeoCacheLogType.discovered)
                 spr = Sprites.getSprite(IconName.TBDISCOVER.name());
-            if (type == LogTypes.dropped_off)
+            if (type == GeoCacheLogType.dropped_off)
                 spr = Sprites.getSprite(IconName.TBDROP.name());
-            if (type == LogTypes.grab_it)
+            if (type == GeoCacheLogType.grab_it)
                 spr = Sprites.getSprite(IconName.TBGRAB.name());
-            if (type == LogTypes.retrieve)
+            if (type == GeoCacheLogType.retrieve)
                 spr = Sprites.getSprite(IconName.TBPICKED.name());
-            if (type == LogTypes.visited)
+            if (type == GeoCacheLogType.visited)
                 spr = Sprites.getSprite(IconName.TBVISIT.name());
-            if (type == LogTypes.note)
+            if (type == GeoCacheLogType.note)
                 spr = Sprites.getSprite(IconName.TBNOTE.name());
             if (spr == null)
                 return null;
@@ -161,7 +161,7 @@ public class DraftViewItem extends ListViewItemBackground {
         if (draft.isTbDraft) {
             ivCacheType.setImageURL(draft.TbIconUrl);
         } else {
-            ivCacheType.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.values()[draft.cacheType].name())));
+            ivCacheType.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + GeoCacheType.values()[draft.cacheType].name())));
         }
     }
 

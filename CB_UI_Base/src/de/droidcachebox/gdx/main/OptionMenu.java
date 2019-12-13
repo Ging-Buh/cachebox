@@ -2,14 +2,14 @@ package de.droidcachebox.gdx.main;
 
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 
 public class OptionMenu extends Menu {
     public OptionMenu(String Name) {
         super(Name);
         autoClose = false;
 
-        setButtonCaptions(MessageBoxButtons.OK);
+        setButtonCaptions(MessageBoxButton.OK);
 
         mMsgBoxClickListener = new MessageBox.OnMsgBoxClickListener() {
             @Override

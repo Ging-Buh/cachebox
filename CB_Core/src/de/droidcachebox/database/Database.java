@@ -30,10 +30,10 @@ public abstract class Database extends Database_Core {
     public static Database Data;
     public static Database Drafts;
     public static Database Settings;
-    public CacheList cacheList;
-    private DatabaseType databaseType;
     private static CB_List<LogEntry> cacheLogs;
     private static String lastGeoCache;
+    public CacheList cacheList;
+    private DatabaseType databaseType;
 
     public Database(DatabaseType databaseType) {
         super();
@@ -62,39 +62,6 @@ public abstract class Database extends Database_Core {
         } catch (Exception exc) {
             Log.err(log, "Waypoint.DeleteFromDataBase()", "", exc);
         }
-    }
-
-    private boolean waypointExists(String gcCode) {
-        CoreCursor c = Database.Data.sql.rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[]{gcCode});
-        {
-            c.moveToFirst();
-            if (!c.isAfterLast()) {
-                do {
-                    try {
-                        c.close();
-                        return true;
-                    } catch (Exception e) {
-                        return false;
-                    }
-                } while (!c.isAfterLast());
-            }
-            c.close();
-            return false;
-        }
-    }
-
-    public String createFreeGcCode(String cacheGcCode) throws Exception {
-        String suffix = cacheGcCode.substring(2);
-        String firstCharCandidates = "CBXADEFGHIJKLMNOPQRSTUVWYZ0123456789";
-        String secondCharCandidates = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        for (int i = 0; i < firstCharCandidates.length(); i++)
-            for (int j = 0; j < secondCharCandidates.length(); j++) {
-                String gcCode = firstCharCandidates.substring(i, i + 1) + secondCharCandidates.substring(j, j + 1) + suffix;
-                if (!Data.waypointExists(gcCode))
-                    return gcCode;
-            }
-        throw new Exception("Alle GcCodes sind bereits vergeben! Dies sollte eigentlich nie vorkommen!");
     }
 
     // Methodes für Cache
@@ -162,7 +129,6 @@ public abstract class Database extends Database_Core {
 
     /**
      * geänderten Solver nur in die DB schreiben
-     *
      */
     private static void setSolver(long cacheId, String value) {
         Parameters args = new Parameters();
@@ -203,8 +169,7 @@ public abstract class Database extends Database_Core {
                 reader.moveToNext();
             }
             reader.close();
-        }
-        else {
+        } else {
             lastGeoCache = "";
         }
         return cacheLogs;
@@ -226,7 +191,7 @@ public abstract class Database extends Database_Core {
         } catch (ParseException ignored) {
         }
         retLogEntry.finder = reader.getString(2);
-        retLogEntry.logTypes = LogTypes.values()[reader.getInt(3)];
+        retLogEntry.geoCacheLogType = GeoCacheLogType.values()[reader.getInt(3)];
         // retLogEntry.TypeIcon = reader.getInt(3);
         retLogEntry.logText = reader.getString(4);
         retLogEntry.logId = reader.getLong(5);
@@ -275,6 +240,39 @@ public abstract class Database extends Database_Core {
         reader.close();
 
         return description;
+    }
+
+    private boolean waypointExists(String gcCode) {
+        CoreCursor c = Database.Data.sql.rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[]{gcCode});
+        {
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                do {
+                    try {
+                        c.close();
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                } while (!c.isAfterLast());
+            }
+            c.close();
+            return false;
+        }
+    }
+
+    public String createFreeGcCode(String cacheGcCode) throws Exception {
+        String suffix = cacheGcCode.substring(2);
+        String firstCharCandidates = "CBXADEFGHIJKLMNOPQRSTUVWYZ0123456789";
+        String secondCharCandidates = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for (int i = 0; i < firstCharCandidates.length(); i++)
+            for (int j = 0; j < secondCharCandidates.length(); j++) {
+                String gcCode = firstCharCandidates.substring(i, i + 1) + secondCharCandidates.substring(j, j + 1) + suffix;
+                if (!Data.waypointExists(gcCode))
+                    return gcCode;
+            }
+        throw new Exception("Alle GcCodes sind bereits vergeben! Dies sollte eigentlich nie vorkommen!");
     }
 
     @Override
@@ -482,7 +480,7 @@ public abstract class Database extends Database_Core {
                     if (lastDatabaseSchemeVersion < 1027) {
                         // add one column for Favorite Points
                         // [FavPoints] SMALLINT 0
-                        Data.sql.execSQL( "ALTER TABLE [CACHES] ADD [FavPoints] smallint NULL default 0;");
+                        Data.sql.execSQL("ALTER TABLE [CACHES] ADD [FavPoints] smallint NULL default 0;");
 
                     }
 
@@ -598,6 +596,7 @@ public abstract class Database extends Database_Core {
     }
 
     /**
+     *
      */
     public void updateCacheCountForGPXFilenames() {
         // welche GPXFilenamen sind in der DB erfasst

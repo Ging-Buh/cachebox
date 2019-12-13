@@ -32,7 +32,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Cache implements Comparable<Cache>, Serializable {
-    private static final String EMPTY_STRING = "";
+    public final static byte IS_LITE = 1;
+    public final static byte IS_FULL = 2;
     // ########################################################
     // Boolean Handling
     // one Boolean use up to 4 Bytes
@@ -41,8 +42,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     // so we use one Short for Store all Boolean and Use a BitMask
     // ########################################################
     final static byte NOT_LIVE = 0;
-    public final static byte IS_LITE = 1;
-    public final static byte IS_FULL = 2;
+    private static final String EMPTY_STRING = "";
     private static final Charset US_ASCII = StandardCharsets.US_ASCII;
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final long serialVersionUID = 1015307624242318838L;
@@ -82,20 +82,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
      */
-    public CacheSizes Size;
-
-    public void setType(CacheTypes cacheType) {
-        this.Type = cacheType;
-    }
-
-    public CacheTypes getType() {
-        return Type;
-    }
-
-    /**
-     * Art des Caches
-     */
-    private CacheTypes Type = CacheTypes.Undefined;
+    public GeoCacheSize Size;
     /**
      * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
      */
@@ -108,6 +95,10 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Liste der zusaetzlichen Wegpunkte des Caches
      */
     public CB_List<Waypoint> waypoints;
+    /**
+     * Art des Caches
+     */
+    private GeoCacheType Type = GeoCacheType.Undefined;
     /**
      * Waypoint Code des Caches
      */
@@ -124,7 +115,6 @@ public class Cache implements Comparable<Cache>, Serializable {
      * 0 nein
      */
     private int myCache = -1;
-
     // /**
     // * Das Listing hat sich geaendert!
     // */
@@ -136,10 +126,6 @@ public class Cache implements Comparable<Cache>, Serializable {
      */
     private boolean solver1Changed = false;
     private short BitFlags = 0;
-
-    /*
-     * Constructors
-     */
     /**
      * Stored Difficulty and Terrain<br>
      * <br>
@@ -152,6 +138,9 @@ public class Cache implements Comparable<Cache>, Serializable {
      */
     private byte[] Owner;
 
+    /*
+     * Constructors
+     */
     /**
      * Constructor
      */
@@ -159,18 +148,17 @@ public class Cache implements Comparable<Cache>, Serializable {
         this.NumTravelbugs = 0;
         this.setDifficulty(0);
         this.setTerrain(0);
-        this.Size = CacheSizes.other;
+        this.Size = GeoCacheSize.other;
         this.setAvailable(true);
         waypoints = new CB_List<>();
         if (withDetails) {
             detail = new CacheDetail();
         }
     }
-
     /**
      * Constructor
      */
-    public Cache(double Latitude, double Longitude, String Name, CacheTypes cacheType, String GcCode) {
+    public Cache(double Latitude, double Longitude, String Name, GeoCacheType cacheType, String GcCode) {
         this.coordinate = new Coordinate(Latitude, Longitude);
         this.setName(Name);
         this.Type = cacheType;
@@ -178,7 +166,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         this.NumTravelbugs = 0;
         this.setDifficulty(0);
         this.setTerrain(0);
-        this.Size = CacheSizes.other;
+        this.Size = GeoCacheSize.other;
         this.setAvailable(true);
         waypoints = new CB_List<>();
     }
@@ -200,11 +188,19 @@ public class Cache implements Comparable<Cache>, Serializable {
         return result;
     }
 
+    public GeoCacheType getType() {
+        return Type;
+    }
+
+    public void setType(GeoCacheType cacheType) {
+        this.Type = cacheType;
+    }
+
     /**
      * Breitengrad
      */
     public double getLatitude() {
-        if (coordinate == null) coordinate = new Coordinate(0,0);
+        if (coordinate == null) coordinate = new Coordinate(0, 0);
         return coordinate.getLatitude();
     }
 
@@ -212,7 +208,7 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Längengrad
      */
     public double getLongitude() {
-        if (coordinate == null) coordinate = new Coordinate(0,0);
+        if (coordinate == null) coordinate = new Coordinate(0, 0);
         return coordinate.getLongitude();
     }
 
@@ -229,7 +225,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         if ((waypoints != null) && (!showAllWaypoints)) {
             for (int i = 0; i < waypoints.size(); i++) {
                 Waypoint wp = waypoints.get(i);
-                if (wp.isStartWaypoint || wp.waypointType == CacheTypes.Final) {
+                if (wp.isStartWaypoint || wp.waypointType == GeoCacheType.Final) {
 
                     if (wp.detail != null)
                         wp.detail.dispose();
@@ -313,7 +309,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
         for (int i = 0, n = waypoints.size(); i < n; i++) {
             Waypoint wp = waypoints.get(i);
-            if (wp.waypointType == CacheTypes.Final) {
+            if (wp.waypointType == GeoCacheType.Final) {
                 if (!wp.getCoordinate().isValid() || wp.getCoordinate().isZero())
                     continue;
                 if (wp.isUserWaypoint) return wp;
@@ -324,10 +320,9 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     /**
      * search the start Waypoint for a multi or mystery
-     *
      */
     public Waypoint getStartWaypoint() {
-        if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery))
+        if ((this.Type != GeoCacheType.Multi) && (this.Type != GeoCacheType.Mystery))
             return null;
 
         if (waypoints == null || waypoints.size() == 0)
@@ -335,7 +330,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
         for (int i = 0, n = waypoints.size(); i < n; i++) {
             Waypoint wp = waypoints.get(i);
-            if ((wp.waypointType == CacheTypes.MultiStage) && (wp.isStartWaypoint)) {
+            if ((wp.waypointType == GeoCacheType.MultiStage) && (wp.isStartWaypoint)) {
                 return wp;
             }
         }
@@ -919,7 +914,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public ArrayList<Attributes> getAttributes() {
+    public ArrayList<Attribute> getAttributes() {
         if (detail != null) {
             return detail.getAttributes(Id);
         } else {
@@ -927,13 +922,13 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public void addAttributeNegative(Attributes attribute) {
+    public void addAttributeNegative(Attribute attribute) {
         if (detail != null) {
             detail.addAttributeNegative(attribute);
         }
     }
 
-    public void addAttributePositive(Attributes attribute) {
+    public void addAttributePositive(Attribute attribute) {
         if (detail != null) {
             detail.addAttributePositive(attribute);
         }
@@ -1016,7 +1011,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public boolean isAttributePositiveSet(Attributes attribute) {
+    public boolean isAttributePositiveSet(Attribute attribute) {
         if (detail != null) {
             return detail.isAttributePositiveSet(attribute);
         } else {
@@ -1030,16 +1025,15 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     /**
      * Returns true if the Cache a event like Giga, Cito, Event or Mega
-     *
      */
     public boolean isEvent() {
-        if (this.Type == CacheTypes.Giga)
+        if (this.Type == GeoCacheType.Giga)
             return true;
-        if (this.Type == CacheTypes.CITO)
+        if (this.Type == GeoCacheType.CITO)
             return true;
-        if (this.Type == CacheTypes.Event)
+        if (this.Type == GeoCacheType.Event)
             return true;
-        return this.Type == CacheTypes.MegaEvent;
+        return this.Type == GeoCacheType.MegaEvent;
     }
 
 }

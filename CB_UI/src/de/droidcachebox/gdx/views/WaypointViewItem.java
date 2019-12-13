@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -256,8 +256,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             { // Icon Sprite erstellen
                 // MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
-                if ((mWaypoint.waypointType == CacheTypes.MultiStage) && mWaypoint.isStartWaypoint)
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.MultiStage.name() + "StartP"));
+                if ((mWaypoint.waypointType == GeoCacheType.MultiStage) && mWaypoint.isStartWaypoint)
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.MultiStage.name() + "StartP"));
                 else
                     mIconSprite = new Sprite(Sprites.getSprite("big" + mWaypoint.waypointType.name()));
 

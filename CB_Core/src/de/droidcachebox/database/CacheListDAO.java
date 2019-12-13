@@ -84,7 +84,7 @@ public class CacheListDAO {
         if (!((fullDetails || loadAllWaypoints))) {
             // when CacheList should be loaded without full details and without all Waypoints
             // do not load all waypoints from db!
-            sql += " where IsStart=\"true\" or Type=" + CacheTypes.Final.ordinal(); // StartWaypoint or CacheTypes.Final
+            sql += " where IsStart=\"true\" or Type=" + GeoCacheType.Final.ordinal(); // StartWaypoint or CacheTypes.Final
         }
         sql += " order by CacheId";
         CoreCursor reader = Database.Data.sql.rawQuery(sql, null);
@@ -97,7 +97,7 @@ public class CacheListDAO {
             Waypoint wp = waypointDAO.getWaypoint(reader, fullDetails);
             if (!(fullDetails || loadAllWaypoints)) {
                 // wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
-                if (!(wp.isStartWaypoint || wp.waypointType == CacheTypes.Final)) {
+                if (!(wp.isStartWaypoint || wp.waypointType == GeoCacheType.Final)) {
                     reader.moveToNext();
                     continue;
                 }

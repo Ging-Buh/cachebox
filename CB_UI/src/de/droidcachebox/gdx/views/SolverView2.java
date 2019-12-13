@@ -29,14 +29,14 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.main.menuBtn3.ShowMap;
-import de.droidcachebox.solver.DataTypes.DataType;
+import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.solver.SolverZeile;
 import de.droidcachebox.utils.log.Log;
@@ -222,7 +222,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     }
 
     private void DeleteLine() {
-        MessageBox.show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show("Zeile löschen?", "Solver", MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
             if (which == 1) {
                 solver.remove(mSelectedIndex);
                 solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
@@ -278,7 +278,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             Waypoint wp = new Waypoint(true);
             wp.geoCacheId = GlobalCore.getSelectedCache().Id;
             wp.setCoordinate(result);
-            wp.waypointType = CacheTypes.Final;
+            wp.waypointType = GeoCacheType.Final;
             wp.setTitle("Final");
             wp.isUserWaypoint = true;
             try {

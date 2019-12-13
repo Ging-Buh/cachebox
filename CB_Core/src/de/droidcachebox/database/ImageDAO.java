@@ -42,7 +42,7 @@ public class ImageDAO {
                 Database.Data.sql.insertWithConflictReplace("Images", args);
             }
         } catch (Exception exc) {
-            Log.err(log,"",exc);
+            Log.err(log, "", exc);
         }
     }
 

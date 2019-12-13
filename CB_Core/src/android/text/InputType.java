@@ -1,6 +1,7 @@
 package android.text;
+
 /**
- *  copy of original
+ * copy of original
  */
 public interface InputType {
     int TYPE_CLASS_DATETIME = 4;

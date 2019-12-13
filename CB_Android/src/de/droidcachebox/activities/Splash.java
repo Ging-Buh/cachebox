@@ -43,7 +43,7 @@ import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.Handler;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.GL_UISizes;
@@ -510,7 +510,7 @@ public class Splash extends Activity {
                     MessageBox.Builder.ButtonHeight = (int) (50 * scale);
 
                     // Ask before delete
-                    msg = MessageBox.show(this, Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                    msg = MessageBox.show(this, Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButton.YesNo, MessageBoxIcon.Question,
                             (dialog1, which) -> {
                                 if (which == Dialog.BUTTON_POSITIVE) {
                                     // Delete this Workpath only from Settings don't delete any File

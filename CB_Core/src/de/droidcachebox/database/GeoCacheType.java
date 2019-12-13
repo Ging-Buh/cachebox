@@ -25,7 +25,7 @@ from API https://api.groundspeak.com/documentation#type
 7005	Giga-Event
  */
 
-public enum CacheTypes {
+public enum GeoCacheType {
     Traditional(true), // = 0,
     Multi(true), // = 1,
     Mystery(true), // = 2,
@@ -60,21 +60,21 @@ public enum CacheTypes {
 
     public boolean isCache;
 
-    CacheTypes(boolean isCache) {
+    GeoCacheType(boolean isCache) {
         this.isCache = isCache;
     }
 
-    public static CacheTypes[] caches() {
-        ArrayList<CacheTypes> result = new ArrayList<>();
-        for (CacheTypes c : CacheTypes.values()) {
+    public static GeoCacheType[] caches() {
+        ArrayList<GeoCacheType> result = new ArrayList<>();
+        for (GeoCacheType c : GeoCacheType.values()) {
             if (c.isCache) {
                 result.add(c);
             }
         }
-        return result.toArray(new CacheTypes[0]);
+        return result.toArray(new GeoCacheType[0]);
     }
 
-    public static CacheTypes parseString(String string) {
+    public static GeoCacheType parseString(String string) {
         if (string.toLowerCase().contains("virtual cache")) {
             return Virtual;
         } else if (string.equalsIgnoreCase("Cache In Trash Out Event")) {
@@ -128,9 +128,9 @@ public enum CacheTypes {
         try {
             return valueOf(string);
         } catch (Exception ex) {
-            CacheTypes cacheType = Undefined;
+            GeoCacheType cacheType = Undefined;
             boolean blnCacheTypeFound = false;
-            for (CacheTypes ct : CacheTypes.values()) {
+            for (GeoCacheType ct : GeoCacheType.values()) {
                 if (ct.toString().toLowerCase().equals(string.toLowerCase())) {
                     cacheType = ct;
                     blnCacheTypeFound = true;

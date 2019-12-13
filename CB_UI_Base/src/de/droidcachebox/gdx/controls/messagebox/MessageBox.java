@@ -55,7 +55,7 @@ public class MessageBox extends Dialog {
 
     public static MessageBox show(String msg) {
         MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
-        msgBox.addButtons(MessageBoxButtons.OK);
+        msgBox.addButtons(MessageBoxButton.OK);
         msgBox.label = new CB_Label(msgBox.getContentSize().getBounds());
         msgBox.label.setZeroPos(); // .getTextHeight()
         msgBox.label.setWrappedText(msg);
@@ -69,18 +69,18 @@ public class MessageBox extends Dialog {
     }
 
     public static MessageBox show(String msg, String title, OnMsgBoxClickListener Listener) {
-        return show(msg, title, MessageBoxButtons.OK, Listener, null);
+        return show(msg, title, MessageBoxButton.OK, Listener, null);
     }
 
     public static MessageBox show(String msg, String title, MessageBoxIcon icon) {
-        return show(msg, title, MessageBoxButtons.OK, icon, null, null);
+        return show(msg, title, MessageBoxButton.OK, icon, null, null);
     }
 
-    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
+    public static MessageBox show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
         return show(msg, title, buttons, icon, Listener, null);
     }
 
-    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
+    public static MessageBox show(String msg, String title, MessageBoxButton buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
             // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
@@ -91,7 +91,7 @@ public class MessageBox extends Dialog {
             return null;
         }
 
-        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)), "MsgBox" + title);
+        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButton.NOTHING), false, (remember != null)), "MsgBox" + title);
         msgBox.rememberSetting = remember;
         msgBox.mMsgBoxClickListener = Listener;
         msgBox.addButtons(buttons);
@@ -114,7 +114,7 @@ public class MessageBox extends Dialog {
         return msgBox;
     }
 
-    public static MessageBox show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
+    public static MessageBox show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
             // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
@@ -128,7 +128,7 @@ public class MessageBox extends Dialog {
         // nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
         // !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
         Dialog.margin = 5;
-        final MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
+        final MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButton.NOTHING), true, (remember != null)), "MsgBox" + title);
 
         msgBox.rememberSetting = remember;
         msgBox.mMsgBoxClickListener = Listener;
@@ -196,7 +196,7 @@ public class MessageBox extends Dialog {
         return icon;
     }
 
-    protected void addButtons(MessageBoxButtons buttons) {
+    protected void addButtons(MessageBoxButton buttons) {
         switch (buttons) {
             case OK:
                 createButtons(1, "ok", null, null);

@@ -14,7 +14,7 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditCache;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.AbstractShowAction;
@@ -126,7 +126,7 @@ public class ShowCacheList extends AbstractShowAction {
                 msgText = "askResetFavorites";
             }
             final boolean finalchecked = checked;
-            gL_MsgBox = MessageBox.show(Translation.get(msgText), Translation.get("Favorites"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question, (which, data) -> {
+            gL_MsgBox = MessageBox.show(Translation.get(msgText), Translation.get("Favorites"), MessageBoxButton.OKCancel, MessageBoxIcon.Question, (which, data) -> {
                 gL_MsgBox_close();
                 if (which == MessageBox.BTN_LEFT_POSITIVE) {
                     Database.Data.sql.beginTransaction();

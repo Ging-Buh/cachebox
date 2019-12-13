@@ -2,7 +2,6 @@ package de.droidcachebox.solver;
 
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
-import de.droidcachebox.solver.DataTypes.DataType;
 import de.droidcachebox.translation.Translation;
 
 public class FunctionIntersection extends Function {

@@ -1,6 +1,5 @@
 package de.droidcachebox.solver;
 
-import de.droidcachebox.solver.DataTypes.DataType;
 import de.droidcachebox.translation.Translation;
 
 public class FunctionIQuerprodukt extends Function {

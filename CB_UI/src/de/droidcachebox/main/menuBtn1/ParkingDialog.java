@@ -1,7 +1,7 @@
 package de.droidcachebox.main.menuBtn1;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.main.AbstractAction;
 import de.droidcachebox.gdx.main.MenuID;
@@ -26,7 +26,7 @@ public class ParkingDialog extends AbstractAction {
 
     @Override
     public Sprite getIcon() {
-        return Sprites.getSprite("big" + CacheTypes.MyParking.name());
+        return Sprites.getSprite("big" + GeoCacheType.MyParking.name());
     }
 
     @Override

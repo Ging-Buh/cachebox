@@ -36,7 +36,7 @@ import android.widget.LinearLayout;
 import de.droidcachebox.*;
 import de.droidcachebox.components.CacheDraw;
 import de.droidcachebox.components.CacheDraw.DrawStyle;
-import de.droidcachebox.database.Attributes;
+import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.controls.QuickButtonList;
@@ -407,7 +407,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         if (mCache != null) {
             int lines = 0;
             if (mCache.getAttributes() != null) {
-                Iterator<Attributes> iterator = mCache.getAttributes().iterator();
+                Iterator<Attribute> iterator = mCache.getAttributes().iterator();
 
                 if (iterator != null && iterator.hasNext()) {
                     if (attHeight == -1)
@@ -437,11 +437,11 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
             int top = topCalc;
             if (mCache.getAttributes() != null) {
-                Iterator<Attributes> iterator = mCache.getAttributes().iterator();
+                Iterator<Attribute> iterator = mCache.getAttributes().iterator();
                 if (iterator != null && iterator.hasNext()) {
                     int i = 0;
                     do {
-                        Attributes att = iterator.next();
+                        Attribute att = iterator.next();
                         String uri = "drawable/" + att.getImageName();
 
                         int imageResource = getResources().getIdentifier(uri, null, mainActivity.getPackageName());

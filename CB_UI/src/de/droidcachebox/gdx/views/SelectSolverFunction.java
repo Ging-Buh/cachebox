@@ -7,11 +7,11 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CollapseBox.IAnimatedHeightChangedListener;
 import de.droidcachebox.gdx.controls.Linearlayout.LayoutChanged;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.solver.DataTypes.DataType;
+import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Function;
 import de.droidcachebox.solver.Functions;
 import de.droidcachebox.solver.Solver;
@@ -31,7 +31,7 @@ public class SelectSolverFunction extends ButtonDialog {
     private Function selectedFunction;
 
     public SelectSolverFunction(Solver solver, DataType dataType, IFunctionResult resultListener) {
-        super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
+        super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MessageBoxButton.OKCancel, MessageBoxIcon.None, null);
         this.solver = solver;
         mResultListener = resultListener;
         this.dataType = dataType;

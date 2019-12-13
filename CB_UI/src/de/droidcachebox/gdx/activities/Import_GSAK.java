@@ -360,7 +360,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 logEntry.Comment = LogsReader.getString("lText");
                 logEntry.Finder = LogsReader.getString("lBy");
                 logEntry.Timestamp = DateFromString(LogsReader.getString("lDate"));
-                logEntry.Type = LogTypes.parseString(LogsReader.getString("lType"));
+                logEntry.Type = GeoCacheLogType.parseString(LogsReader.getString("lType"));
                 logEntry.Id = LogsReader.getInt("lLogId");
                 logList.add(logEntry);
                 LogsReader.moveToNext();
@@ -390,7 +390,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             logEntry.logText = LogsReader.getString("lText");
             logEntry.finder = LogsReader.getString("lBy");
             logEntry.logDate = DateFromString(LogsReader.getString("lDate"));
-            logEntry.logTypes = LogTypes.parseString(LogsReader.getString("lType"));
+            logEntry.geoCacheLogType = GeoCacheLogType.parseString(LogsReader.getString("lType"));
             logEntry.logId = LogsReader.getInt("lLogId");
 
             WriteIntoDB.logDAO.WriteToDatabase(logEntry);
@@ -421,12 +421,12 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     private Cache addAttributes(Cache cache) {
-        CoreCursor GcAttributesReader = sql.rawQuery("select aId,aInc from Attributes where aCode = ?", new String[]{cache.getGcCode()});
+        CoreCursor GcAttributesReader = sql.rawQuery("select aId,aInc from Attribute where aCode = ?", new String[]{cache.getGcCode()});
         GcAttributesReader.moveToFirst();
         while (!GcAttributesReader.isAfterLast()) {
             int aId = GcAttributesReader.getInt(0); // aId;
             int aInc = GcAttributesReader.getInt(1); // aInc;
-            Attributes att = Attributes.getAttributeEnumByGcComId(aId);
+            Attribute att = Attribute.getAttributeEnumByGcComId(aId);
             if (aInc == 1) {
                 cache.addAttributePositive(att);
             } else {
@@ -510,7 +510,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                             cache.coordinate = new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal"));
                             cache.waypoints.add(new Waypoint(
                                     "!?" + cache.getGcCode().substring(2),
-                                    CacheTypes.Final,
+                                    GeoCacheType.Final,
                                     "",
                                     reader.getDouble("Latitude"),
                                     reader.getDouble("Longitude"),
@@ -572,96 +572,96 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         return cache;
     }
 
-    private CacheSizes CacheSizeFromString(String container) {
+    private GeoCacheSize CacheSizeFromString(String container) {
         // R=regular, L=large, M=micro, S=small, V=virtual, and U=unknown
         switch (container.toLowerCase()) {
             case "regular":
-                return CacheSizes.regular;
+                return GeoCacheSize.regular;
             case "large":
-                return CacheSizes.large;
+                return GeoCacheSize.large;
             case "micro":
-                return CacheSizes.micro;
+                return GeoCacheSize.micro;
             case "small":
-                return CacheSizes.small;
+                return GeoCacheSize.small;
             case "virtual":
-                return CacheSizes.other; // not in CB
+                return GeoCacheSize.other; // not in CB
             case "unknown":
-                return CacheSizes.other;
+                return GeoCacheSize.other;
         }
-        return CacheSizes.other;
+        return GeoCacheSize.other;
     }
 
-    private CacheTypes CacheTypeFromGSString(String cacheType) {
+    private GeoCacheType CacheTypeFromGSString(String cacheType) {
         switch (cacheType) {
             case "Parking Area":
-                return CacheTypes.ParkingArea;
+                return GeoCacheType.ParkingArea;
             case "Reference Point":
-                return CacheTypes.ReferencePoint;
+                return GeoCacheType.ReferencePoint;
             case "Final Location":
-                return CacheTypes.Final;
+                return GeoCacheType.Final;
             case "Physical Stage":
-                return CacheTypes.MultiStage;
+                return GeoCacheType.MultiStage;
             case "Virtual Stage":
-                return CacheTypes.MultiQuestion;
+                return GeoCacheType.MultiQuestion;
             case "Trailhead":
-                return CacheTypes.Trailhead;
+                return GeoCacheType.Trailhead;
         }
-        return CacheTypes.ReferencePoint;
+        return GeoCacheType.ReferencePoint;
     }
 
-    private CacheTypes CacheTypeFrom1CharAbbreviation(String abbreviation) {
+    private GeoCacheType CacheTypeFrom1CharAbbreviation(String abbreviation) {
         switch (abbreviation) {
             case "A":
-                return CacheTypes.APE;
+                return GeoCacheType.APE;
             case "B":
-                return CacheTypes.Letterbox;
+                return GeoCacheType.Letterbox;
             case "C":
-                return CacheTypes.CITO;
+                return GeoCacheType.CITO;
             case "D":
-                return CacheTypes.Event; // Groundspeak Lost and Found Celebration
+                return GeoCacheType.Event; // Groundspeak Lost and Found Celebration
             case "E":
-                return CacheTypes.Event;
+                return GeoCacheType.Event;
             case "F":
-                return CacheTypes.Event; // Lost and Found Event
+                return GeoCacheType.Event; // Lost and Found Event
             case "G":
-                return CacheTypes.Cache; // BenchMark
+                return GeoCacheType.Cache; // BenchMark
             case "H":
-                return CacheTypes.Cache; // Groundspeak HQ Cache
+                return GeoCacheType.Cache; // Groundspeak HQ Cache
             case "I":
-                return CacheTypes.Wherigo;
+                return GeoCacheType.Wherigo;
             case "J":
-                return CacheTypes.Giga;
+                return GeoCacheType.Giga;
             case "L":
-                return CacheTypes.Cache; // Locationless
+                return GeoCacheType.Cache; // Locationless
             case "M":
-                return CacheTypes.Multi;
+                return GeoCacheType.Multi;
             case "N":
-                return CacheTypes.Cache; // BenchMark
+                return GeoCacheType.Cache; // BenchMark
             case "O":
-                return CacheTypes.Cache; // Other
+                return GeoCacheType.Cache; // Other
             case "P":
-                return CacheTypes.Event; // Groundspeak Block Party
+                return GeoCacheType.Event; // Groundspeak Block Party
             case "Q":
-                return CacheTypes.Lab;
+                return GeoCacheType.Lab;
             case "R":
-                return CacheTypes.Earth;
+                return GeoCacheType.Earth;
             case "T":
-                return CacheTypes.Traditional;
+                return GeoCacheType.Traditional;
             case "U":
-                return CacheTypes.Mystery;
+                return GeoCacheType.Mystery;
             case "V":
-                return CacheTypes.Virtual;
+                return GeoCacheType.Virtual;
             case "W":
-                return CacheTypes.Camera;
+                return GeoCacheType.Camera;
             case "X":
-                return CacheTypes.Cache; // Maze
+                return GeoCacheType.Cache; // Maze
             case "Y":
-                return CacheTypes.Cache; // Waymark
+                return GeoCacheType.Cache; // Waymark
             case "Z":
-                return CacheTypes.MegaEvent;
+                return GeoCacheType.MegaEvent;
         }
         Log.err(sKlasse, "Undefined abbreviation:" + abbreviation);
-        return CacheTypes.Undefined;
+        return GeoCacheType.Undefined;
     }
 
     private Date DateFromString(String d) {

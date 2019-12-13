@@ -35,7 +35,6 @@ public class CacheDAO {
     static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
     static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates, FavPoints ";
     private static final String log = "CacheDAO";
-    public String[] SQL_ENUM = {"c.Id", "GcCode", "Latitude"};
 
     Cache ReadFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription) {
         try {
@@ -45,13 +44,13 @@ public class CacheDAO {
             cache.setGcCode(reader.getString(1).trim());
             cache.coordinate = new Coordinate(reader.getDouble(2), reader.getDouble(3));
             cache.setName(reader.getString(4).trim());
-            cache.Size = CacheSizes.CacheSizesFromInt(reader.getInt(5));
+            cache.Size = GeoCacheSize.CacheSizesFromInt(reader.getInt(5));
             cache.setDifficulty(((float) reader.getShort(6)) / 2);
             cache.setTerrain(((float) reader.getShort(7)) / 2);
             cache.setArchived(reader.getInt(8) != 0);
             cache.setAvailable(reader.getInt(9) != 0);
             cache.setFound(reader.getInt(10) != 0);
-            cache.setType(CacheTypes.values()[reader.getShort(11)]);
+            cache.setType(GeoCacheType.values()[reader.getShort(11)]);
             cache.setOwner(reader.getString(12).trim());
 
             cache.NumTravelbugs = reader.getInt(13);
@@ -117,7 +116,7 @@ public class CacheDAO {
         }
     }
 
-    private boolean readDetailFromCursor(CoreCursor reader, CacheDetail detail, boolean withReaderOffset, boolean withDescription) {
+    private void readDetailFromCursor(CoreCursor reader, CacheDetail detail, boolean withReaderOffset, boolean withDescription) {
         // Reader includes Compleate Cache or Details only
         int readerOffset = withReaderOffset ? 21 : 0;
 
@@ -161,7 +160,6 @@ public class CacheDAO {
             detail.tmpNote = reader.getString(readerOffset + 15);
             detail.shortDescription = reader.getString(readerOffset + 16);
         }
-        return true;
     }
 
     public void WriteToDatabase(Cache cache) {
@@ -424,7 +422,7 @@ public class CacheDAO {
         if (fromDB.favPoints != writeTmp.favPoints) {
             changed = true;
             Replication.NumFavPointsChanged(writeTmp.Id, writeTmp.favPoints);
-            args.put("FavPoints",writeTmp.favPoints);
+            args.put("FavPoints", writeTmp.favPoints);
         }
 
         if (fromDB.isFound() != writeTmp.isFound()) {

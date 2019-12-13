@@ -17,7 +17,10 @@ import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Locale;
 
 public class CacheInfo extends CB_View_Base {
     public static final Color gcVoteColor = new Color(0.5f, 0.5f, 1f, 1f);
@@ -100,18 +103,21 @@ public class CacheInfo extends CB_View_Base {
     }
 
     public boolean needsMaintenance() {
+        return mCache.getAttributes().contains(Attribute.Needs_maintenance);
+        /*
         Date lastNeedsMaintenance = null;
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
-            if (logEntry.logTypes == LogTypes.owner_maintenance) {
+            if (logEntry.geoCacheLogType == GeoCacheLogType.owner_maintenance) {
                 return false;
             }
-            if (logEntry.logTypes == LogTypes.needs_maintenance && lastNeedsMaintenance == null) {
+            if (logEntry.geoCacheLogType == GeoCacheLogType.needs_maintenance && lastNeedsMaintenance == null) {
                 return true;
             }
         }
         return false;
+         */
     }
 
     public int numberOfDNFsAfterLastFound() {
@@ -119,10 +125,10 @@ public class CacheInfo extends CB_View_Base {
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
-            if (logEntry.logTypes == LogTypes.found) {
+            if (logEntry.geoCacheLogType == GeoCacheLogType.found) {
                 return dnfCount;
             }
-            if (logEntry.logTypes == LogTypes.didnt_find) {
+            if (logEntry.geoCacheLogType == GeoCacheLogType.didnt_find) {
                 dnfCount++;
             }
         }
@@ -133,7 +139,7 @@ public class CacheInfo extends CB_View_Base {
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
-            if (logEntry.logTypes == LogTypes.found) {
+            if (logEntry.geoCacheLogType == GeoCacheLogType.found) {
                 return new SimpleDateFormat("dd.MM.yy", Locale.US).format(logEntry.logDate);
             }
         }
@@ -242,7 +248,7 @@ public class CacheInfo extends CB_View_Base {
             SizeF mStarSize = new SizeF(starHeight * 5, starHeight);
 
             if (ifModeFlag(SHOW_S_D_T)) {
-                String CacheSize = CacheSizes.toShortString(mCache);
+                String CacheSize = GeoCacheSize.toShortString(mCache);
                 mS_FontCache.setText(CacheSize, 0, 0);
                 mBottom += mS_FontCache.getLayouts().first().height;
                 float mSpriteBottom = mMargin;
@@ -351,12 +357,12 @@ public class CacheInfo extends CB_View_Base {
 
                 if (mCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
                     mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getType().name() + "Solved"));
-                } else if ((mCache.getType() == CacheTypes.Multi) && mCache.getStartWaypoint() != null) {
+                } else if ((mCache.getType() == GeoCacheType.Multi) && mCache.getStartWaypoint() != null) {
                     // Multi anders darstellen wenn dieser einen definierten Startpunkt hat
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Multi.name() + "StartP"));
-                } else if ((mCache.getType() == CacheTypes.Mystery) && mCache.getStartWaypoint() != null) {
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.Multi.name() + "StartP"));
+                } else if ((mCache.getType() == GeoCacheType.Mystery) && mCache.getStartWaypoint() != null) {
                     // Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Mystery.name() + "StartP"));
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.Mystery.name() + "StartP"));
                 } else {
                     mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getType().name()));
                 }
@@ -405,15 +411,15 @@ public class CacheInfo extends CB_View_Base {
                     attY += ((attSize + mMargin) * (lineCount - 1));
                 }
 
-                ArrayList<Attributes> attributes = mCache.getAttributes();
+                ArrayList<Attribute> attributes = mCache.getAttributes();
                 if (attributes != null) {
-                    Iterator<Attributes> attributesIterator = attributes.iterator();
+                    Iterator<Attribute> attributesIterator = attributes.iterator();
                     mAttrSprites = new Sprite[attCount];
                     int count = 0;
                     int actLineCount = 0;
                     if (attributesIterator.hasNext()) {
                         do {
-                            Attributes attribute = attributesIterator.next();
+                            Attribute attribute = attributesIterator.next();
                             mAttrSprites[count] = Sprites.getSprite(attribute.getImageName().replace("_", "-") + "Icon");
                             mAttrSprites[count].setSize(attSize, attSize);
                             mAttrSprites[count].setPosition(attX, attY);

@@ -20,7 +20,7 @@ public class Draft implements Serializable {
     public String GcId = ""; // (mis)used for LogId (or ReferenceCode)
     public Date timestamp;
     public String typeString = "";
-    public LogTypes type;
+    public GeoCacheLogType type;
     public int cacheType;
     public String comment = "";
     public int foundNumber;
@@ -60,7 +60,7 @@ public class Draft implements Serializable {
         this.isDirectLog = fne.isDirectLog;
     }
 
-    public Draft(LogTypes Type) {
+    public Draft(GeoCacheLogType Type) {
         Id = -1;
         this.type = Type;
         fillType();
@@ -79,7 +79,7 @@ public class Draft implements Serializable {
         }
         if (timestamp == null)
             timestamp = new Date();
-        type = LogTypes.GC2CB_LogType(reader.getInt(5));
+        type = GeoCacheLogType.GC2CB_LogType(reader.getInt(5));
         foundNumber = reader.getInt(6);
         comment = reader.getString(7);
         Id = reader.getLong(8);
@@ -100,26 +100,26 @@ public class Draft implements Serializable {
     public void fillType() {
         typeIcon = type.getIconID();
 
-        if (type == LogTypes.found || type == LogTypes.attended || type == LogTypes.webcam_photo_taken) {
+        if (type == GeoCacheLogType.found || type == GeoCacheLogType.attended || type == GeoCacheLogType.webcam_photo_taken) {
             typeString = "#" + foundNumber + " - Found it!";
-            if (cacheType == CacheTypes.Event.ordinal() //
-                    || cacheType == CacheTypes.MegaEvent.ordinal() //
-                    || cacheType == CacheTypes.Giga.ordinal() //
-                    || cacheType == CacheTypes.CITO.ordinal())
+            if (cacheType == GeoCacheType.Event.ordinal() //
+                    || cacheType == GeoCacheType.MegaEvent.ordinal() //
+                    || cacheType == GeoCacheType.Giga.ordinal() //
+                    || cacheType == GeoCacheType.CITO.ordinal())
                 typeString = "Attended";
-            if (cacheType == CacheTypes.Camera.ordinal())
+            if (cacheType == GeoCacheType.Camera.ordinal())
                 typeString = "Webcam Photo Taken";
         }
 
-        if (type == LogTypes.didnt_find) {
+        if (type == GeoCacheLogType.didnt_find) {
             typeString = "Did not find!";
         }
 
-        if (type == LogTypes.needs_maintenance) {
+        if (type == GeoCacheLogType.needs_maintenance) {
             typeString = "Needs Maintenance";
         }
 
-        if (type == LogTypes.note) {
+        if (type == GeoCacheLogType.note) {
             typeString = "Write Note";
         }
     }

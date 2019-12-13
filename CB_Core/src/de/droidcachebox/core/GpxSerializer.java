@@ -409,7 +409,7 @@ public final class GpxSerializer {
             gpx.startTag(PREFIX_GROUNDSPEAK, "log");
             gpx.attribute("", "id", Integer.toString((int) log.logId));
 
-            multipleTexts(gpx, PREFIX_GROUNDSPEAK, "date", dateFormatZ.format(log.logDate), "type", log.logTypes.toString());
+            multipleTexts(gpx, PREFIX_GROUNDSPEAK, "date", dateFormatZ.format(log.logDate), "type", log.geoCacheLogType.toString());
 
             gpx.startTag(PREFIX_GROUNDSPEAK, "finder");
             gpx.attribute("", "id", "");
@@ -438,11 +438,11 @@ public final class GpxSerializer {
 
         gpx.startTag(PREFIX_GROUNDSPEAK, "attributes");
 
-        for (final Attributes attribute : cache.getAttributes()) {
+        for (final Attribute attribute : cache.getAttributes()) {
             final boolean enabled = cache.isAttributePositiveSet(attribute);
 
             gpx.startTag(PREFIX_GROUNDSPEAK, "attribute");
-            gpx.attribute("", "id", Integer.toString(Attributes.GetAttributeID(attribute)));
+            gpx.attribute("", "id", Integer.toString(Attribute.GetAttributeID(attribute)));
             gpx.attribute("", "inc", enabled ? "1" : "0");
             gpx.text(validateChar(attribute.toString()));
             gpx.endTag(PREFIX_GROUNDSPEAK, "attribute");

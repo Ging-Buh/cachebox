@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.RouteOverlay;
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
@@ -69,7 +69,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
             return false;
         GL.that.RunOnGL(() -> {
             //Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
-            Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
+            Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), GeoCacheType.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
             addWP(newWP);
         });
         return true;

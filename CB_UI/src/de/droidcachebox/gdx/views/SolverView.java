@@ -26,11 +26,11 @@ import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextFieldBase;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.main.ViewManager;
-import de.droidcachebox.solver.DataTypes.DataType;
+import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.solver.SolverZeile;
 import de.droidcachebox.translation.Translation;
@@ -303,7 +303,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
                 message.append(s);
             }
 
-            MessageBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk,
+            MessageBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButton.YesNo, MessageBoxIcon.Asterisk,
                     (which, data) -> {
                         // Behandle das ergebniss
                         if (which == 1) {/* User clicked OK so do some stuff */

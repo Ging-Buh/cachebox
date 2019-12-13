@@ -20,7 +20,7 @@ import de.droidcachebox.gdx.views.SelectSolverFunction;
 import de.droidcachebox.gdx.views.SelectSolverFunction.IFunctionResult;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
-import de.droidcachebox.solver.DataTypes.DataType;
+import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Function;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.translation.Translation;

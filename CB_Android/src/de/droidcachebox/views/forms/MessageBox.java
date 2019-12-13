@@ -30,7 +30,7 @@ import android.widget.*;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
@@ -74,7 +74,7 @@ public class MessageBox {
      *
      * @param msg      Der im Meldungsfeld anzuzeigende Text.
      * @param title    Der in der Titelleiste des Meldungsfelds anzuzeigende Text.
-     * @param buttons  Ein MessageBoxButtons-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
+     * @param buttons  Ein MessageBoxButton-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
      * @param listener handling all button events
      *
      *                 <pre>
@@ -113,7 +113,7 @@ public class MessageBox {
      *                                                                     }
      *                                                                 </pre>
      */
-    public static Dialog show(Activity activity, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener listener) {
+    public static Dialog show(Activity activity, String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener listener) {
         Bundle b = new Bundle();
         b.putString("msg", msg);
         b.putString("title", title);
@@ -128,7 +128,7 @@ public class MessageBox {
     }
 
     public static void show(Activity activity, String msg, String title, MessageBoxIcon icon) {
-        show(activity, msg, title, MessageBoxButtons.OK, icon, null);
+        show(activity, msg, title, MessageBoxButton.OK, icon, null);
     }
 
     private static Dialog createDialog(Activity activity, int dialogId, Bundle b, DialogInterface.OnClickListener listener) {

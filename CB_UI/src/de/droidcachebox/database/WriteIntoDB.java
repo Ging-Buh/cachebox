@@ -165,8 +165,8 @@ public class WriteIntoDB {
                 if (oldCache.waypoints != null) {
                     for (int j = 0, m = oldCache.waypoints.size(); j < m; j++) {
                         Waypoint oldWaypoint = oldCache.waypoints.get(j);
-                        if (waypoint.isUserWaypoint && waypoint.waypointType == CacheTypes.Final)
-                            if (oldWaypoint.isUserWaypoint && oldWaypoint.waypointType == CacheTypes.Final) {
+                        if (waypoint.isUserWaypoint && waypoint.waypointType == GeoCacheType.Final)
+                            if (oldWaypoint.isUserWaypoint && oldWaypoint.waypointType == GeoCacheType.Final) {
                                 waypoint.setGcCode(oldWaypoint.getGcCode());
                                 break;
                             }

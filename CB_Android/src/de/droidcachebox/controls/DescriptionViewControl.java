@@ -20,7 +20,7 @@ import de.droidcachebox.ViewOptionsMenu;
 import de.droidcachebox.database.*;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.http.Download;
@@ -101,7 +101,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
                             s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-                            MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                            MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
                         }
                     }
 
@@ -122,12 +122,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 }
                 case 2: {
                     pd.dismiss();
-                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
                     break;
                 }
                 case 3: {
                     pd.dismiss();
-                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
+                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
                     break;
                 }
                 case 4: {
@@ -358,7 +358,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private static String getAttributesHtml(Cache cache) {
         StringBuilder sb = new StringBuilder();
         try {
-            Iterator<Attributes> attrs = cache.getAttributes().iterator();
+            Iterator<Attribute> attrs = cache.getAttributes().iterator();
 
             if (attrs == null || !attrs.hasNext())
                 return "";
@@ -369,8 +369,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             // syntx <form action="URL"> absolute or relative
             // In HTML5, the action attribute is no longer required.
             do {
-                Attributes attribute = attrs.next();
-                File result = new File(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+                Attribute attribute = attrs.next();
+                File result = new File(Config.mWorkPath + "/data/Attribute/" + attribute.getImageName() + ".png");
                 // the url is missing the value, so we give that appended in the name and the blank
                 sb.append("<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
             } while (attrs.hasNext());

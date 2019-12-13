@@ -71,7 +71,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     private void iniImage() {
         ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
         this.addChild(ivTyp);
-        ivTyp.setDrawable(new SpriteDrawable(Sprites.LogIcons.get(logEntry.logTypes.getIconID())));
+        ivTyp.setDrawable(new SpriteDrawable(Sprites.LogIcons.get(logEntry.geoCacheLogType.getIconID())));
         secondTab = ivTyp.getMaxX() + (UiSizes.getInstance().getMargin() * 2);
     }
 

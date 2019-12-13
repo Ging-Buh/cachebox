@@ -31,7 +31,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Track;
@@ -240,7 +240,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     }
 
     public static void MsgDownloadLimit() {
-        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null));
+        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
     }
 
     public static void chkAPiLogInWithWaitDialog(final iChkReadyHandler handler) {

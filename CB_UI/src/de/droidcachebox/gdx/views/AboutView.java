@@ -32,7 +32,7 @@ import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -138,7 +138,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
             MessageBox messageBox;
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                messageBox = MessageBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+                messageBox = MessageBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live,
                         (which, data) -> {
                             switch (which) {
                                 case 1:
@@ -150,7 +150,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
                                             pd.close();
                                             if (result > -1) {
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
-                                                MessageBox.show(Text, Translation.get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+                                                MessageBox.show(Text, Translation.get("LoadFinds!"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null);
                                                 Config.FoundOffset.setValue(result);
                                                 Config.AcceptChanges();
                                                 AboutView.this.refreshText();

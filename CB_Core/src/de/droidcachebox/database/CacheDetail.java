@@ -95,7 +95,7 @@ public class CacheDetail implements Serializable {
      * Liste der Spoiler Ressourcen
      */
     private CB_List<ImageEntry> spoilerRessources = null;
-    private ArrayList<Attributes> AttributeList = null;
+    private ArrayList<Attribute> AttributeList = null;
 
     /**
      * Constructor
@@ -148,28 +148,28 @@ public class CacheDetail implements Serializable {
 
     }
 
-    public boolean isAttributePositiveSet(Attributes attribute) {
-        return attributesPositive.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
+    public boolean isAttributePositiveSet(Attribute attribute) {
+        return attributesPositive.BitAndBiggerNull(Attribute.GetAttributeDlong(attribute));
         // return (attributesPositive & Attributes.GetAttributeDlong(attribute))
         // > 0;
     }
 
-    public boolean isAttributeNegativeSet(Attributes attribute) {
-        return attributesNegative.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
+    public boolean isAttributeNegativeSet(Attribute attribute) {
+        return attributesNegative.BitAndBiggerNull(Attribute.GetAttributeDlong(attribute));
         // return (attributesNegative & Attributes.GetAttributeDlong(attribute))
         // > 0;
     }
 
-    public void addAttributeNegative(Attributes attribute) {
+    public void addAttributeNegative(Attribute attribute) {
         if (attributesNegative == null)
             attributesNegative = new DLong(0, 0);
-        attributesNegative.BitOr(Attributes.GetAttributeDlong(attribute));
+        attributesNegative.BitOr(Attribute.GetAttributeDlong(attribute));
     }
 
-    public void addAttributePositive(Attributes attribute) {
+    public void addAttributePositive(Attribute attribute) {
         if (attributesPositive == null)
             attributesPositive = new DLong(0, 0);
-        attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
+        attributesPositive.BitOr(Attribute.GetAttributeDlong(attribute));
     }
 
     public void setAttributesPositive(DLong i) {
@@ -199,26 +199,42 @@ public class CacheDetail implements Serializable {
     public DLong getAttributesPositive(long Id) {
         if (this.attributesPositive == null) {
             CoreCursor c = Database.Data.sql.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
+            if (c != null) {
+                c.moveToFirst();
                 if (!c.isNull(0))
                     this.attributesPositive = new DLong(c.getLong(1), c.getLong(0));
                 else
                     this.attributesPositive = new DLong(0, 0);
-                break;
+                c.close();
             }
-            ;
-            c.close();
         }
         return this.attributesPositive;
     }
 
-    public ArrayList<Attributes> getAttributes(long Id) {
+    public ArrayList<Attribute> getAttributes(long Id) {
         if (AttributeList == null) {
-            AttributeList = Attributes.getAttributes(this.getAttributesPositive(Id), this.getAttributesNegative(Id));
+            AttributeList = getAttributes(this.getAttributesPositive(Id), this.getAttributesNegative(Id));
         }
-
         return AttributeList;
+    }
+
+    private ArrayList<Attribute> getAttributes(DLong attributesPositive, DLong attributesNegative) {
+        ArrayList<Attribute> ret = new ArrayList<>();
+        for (Attribute attribute : Attribute.getAttributeLookup().keySet()) {
+            DLong att = Attribute.GetAttributeDlong(attribute);
+            if ((att.BitAndBiggerNull(attributesPositive))) {
+                attribute.setNegative(false);
+                ret.add(attribute);
+            }
+        }
+        for (Attribute attribute : Attribute.getAttributeLookup().keySet()) {
+            DLong att = Attribute.GetAttributeDlong(attribute);
+            if ((att.BitAndBiggerNull(attributesNegative))) {
+                attribute.setNegative(true);
+                ret.add(attribute);
+            }
+        }
+        return ret;
     }
 
     public String getHint() {

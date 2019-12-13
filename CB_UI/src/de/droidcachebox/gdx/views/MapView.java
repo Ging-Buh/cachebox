@@ -821,7 +821,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if ((coord == null) || (!coord.isValid()))
             return;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
-        Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
+        Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
 
         EditWaypoint EdWp = new EditWaypoint(newWP, waypoint -> {
             if (waypoint != null) {

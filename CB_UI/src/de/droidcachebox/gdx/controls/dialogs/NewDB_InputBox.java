@@ -6,7 +6,7 @@ import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.translation.Translation;
@@ -71,7 +71,7 @@ public class NewDB_InputBox extends MessageBox {
         msgBox.addChild(chk);
         msgBox.addChild(lbl);
 
-        msgBox.addButtons(MessageBoxButtons.OKCancel);
+        msgBox.addButtons(MessageBoxButton.OKCancel);
 
         GL.that.showDialog(msgBox, true);
 

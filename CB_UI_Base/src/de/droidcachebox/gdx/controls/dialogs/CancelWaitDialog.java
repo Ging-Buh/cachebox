@@ -19,7 +19,7 @@ import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
@@ -64,7 +64,7 @@ public class CancelWaitDialog extends WaitDialog {
         CB_RectF animationRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
         Animation.setRec(animationRec);
         wd.animation = Animation;
-        wd.setButtonCaptions(MessageBoxButtons.Cancel);
+        wd.setButtonCaptions(MessageBoxButton.Cancel);
         wd.mMsgBoxClickListener = (which, data) -> {
             if (wd.mRunnThread != null)
                 wd.mRunnThread.Cancel();
@@ -91,7 +91,7 @@ public class CancelWaitDialog extends WaitDialog {
 
         CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listener, cancelRunnable);
         waitDialog.setTitle("");
-        waitDialog.setButtonCaptions(MessageBoxButtons.Cancel);
+        waitDialog.setButtonCaptions(MessageBoxButton.Cancel);
 
         SizeF contentSize = waitDialog.getContentSize();
 

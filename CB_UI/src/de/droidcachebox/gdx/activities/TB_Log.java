@@ -29,7 +29,7 @@ import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -51,7 +51,7 @@ public class TB_Log extends ActivityBase {
     private CB_Label lblPlaced;
     private EditTextField lblName;
     private Box contentBox;
-    private LogTypes LT;
+    private GeoCacheLogType LT;
     private EditTextField edit;
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyDraft;
@@ -67,7 +67,7 @@ public class TB_Log extends ActivityBase {
         return that;
     }
 
-    public void Show(Trackable TB, LogTypes Type) {
+    public void Show(Trackable TB, GeoCacheLogType Type) {
         this.TB = TB;
         this.LT = Type;
         layout();
@@ -135,8 +135,8 @@ public class TB_Log extends ActivityBase {
         contentBox.addLast(rbDirectLog);
         contentBox.addLast(rbOnlyDraft);
 
-        // Show Selected Cache for LogTypes discovered/visited/dropped_off/retrieve
-        if (LT == LogTypes.discovered || LT == LogTypes.visited || LT == LogTypes.dropped_off || LT == LogTypes.retrieve) {
+        // Show Selected Cache for GeoCacheLogType discovered/visited/dropped_off/retrieve
+        if (LT == GeoCacheLogType.discovered || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.retrieve) {
 
             Cache c = GlobalCore.getSelectedCache();
             if (c == null) {
@@ -149,16 +149,16 @@ public class TB_Log extends ActivityBase {
             }
 
             String msg = "";
-            if (LT == LogTypes.discovered) {
+            if (LT == GeoCacheLogType.discovered) {
                 msg = Translation.get("discoveredAt") + ": " + GlobalCore.br + c.getName();
             }
-            if (LT == LogTypes.visited) {
+            if (LT == GeoCacheLogType.visited) {
                 msg = Translation.get("visitedAt") + ": " + GlobalCore.br + c.getName();
             }
-            if (LT == LogTypes.dropped_off) {
+            if (LT == GeoCacheLogType.dropped_off) {
                 msg = Translation.get("dropped_offAt") + ": " + GlobalCore.br + c.getName();
             }
-            if (LT == LogTypes.retrieve) {
+            if (LT == GeoCacheLogType.retrieve) {
                 msg = Translation.get("retrieveAt") + ": " + GlobalCore.br + c.getName();
             }
 
@@ -233,13 +233,13 @@ public class TB_Log extends ActivityBase {
 
             @Override
             public void run() {
-                int result = uploadTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText());
+                int result = uploadTrackableLog(TB, getCache_GcCode(), GeoCacheLogType.CB_LogType2GC(LT), new Date(), edit.getText());
 
                 if (result == ERROR) {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                         switch (which) {
                             case MessageBox.BTN_RIGHT_NEGATIVE:
                                 logOnline();
@@ -260,7 +260,7 @@ public class TB_Log extends ActivityBase {
                     GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question,
+                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question,
                             (which, data) -> {
                                 switch (which) {
                                     case MessageBox.BTN_RIGHT_NEGATIVE:
@@ -288,7 +288,7 @@ public class TB_Log extends ActivityBase {
                 TB_Log.this.finish();
 
                 // Refresh TB List after Droped Off or Picked or Grabed
-                if (LT == LogTypes.dropped_off || LT == LogTypes.retrieve || LT == LogTypes.grab_it) {
+                if (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.retrieve || LT == GeoCacheLogType.grab_it) {
                     GL.that.RunOnGL(() -> TrackableListView.that.RefreshTbList());
                 }
 
@@ -330,13 +330,13 @@ public class TB_Log extends ActivityBase {
          */
         if (TB.CurrentGeocacheCode != null) {
             if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
-                if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache
                     return TB.CurrentGeocacheCode;
                 }
             }
         }
-        return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getGcCode() : "";
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getGcCode() : "";
     }
 
     private String getCache_Name() {
@@ -345,13 +345,13 @@ public class TB_Log extends ActivityBase {
          */
         if (TB.CurrentGeocacheCode != null) {
             if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
-                if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache, but don't want to change selected Cache
                     return TB.CurrentGeocacheCode;
                 }
             }
         }
-        return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
     }
 
     private long getCache_ID() {
@@ -360,13 +360,13 @@ public class TB_Log extends ActivityBase {
          */
         if (TB.CurrentGeocacheCode != null) {
             if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
-                if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache
                     return Cache.GenerateCacheId(TB.CurrentGeocacheCode);
                 }
             }
         }
-        return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Id : -1;
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().Id : -1;
     }
 
     private String getCache_URL() {
@@ -375,13 +375,13 @@ public class TB_Log extends ActivityBase {
          */
         if (TB.CurrentGeocacheCode != null) {
             if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
-                if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache, but don't want to change selected Cache
                     return "https://coord.info/" + TB.CurrentGeocacheCode;
                 }
             }
         }
-        return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl() : "";
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getUrl() : "";
     }
 
     private int getCache_Type() {
@@ -390,13 +390,13 @@ public class TB_Log extends ActivityBase {
          */
         if (TB.CurrentGeocacheCode != null) {
             if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
-                if (LT == LogTypes.retrieve) {
+                if (LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache
-                    return CacheTypes.Undefined.ordinal();
+                    return GeoCacheType.Undefined.ordinal();
                 }
             }
         }
-        return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getType().ordinal() : -1;
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getType().ordinal() : -1;
     }
 
     @Override

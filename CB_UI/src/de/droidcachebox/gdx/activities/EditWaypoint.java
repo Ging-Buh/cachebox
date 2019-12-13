@@ -6,7 +6,7 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEvent;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
@@ -129,23 +129,23 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             showCbStartPoint(false);
             switch (index) {
                 case 0:
-                    waypoint.waypointType = CacheTypes.ReferencePoint;
+                    waypoint.waypointType = GeoCacheType.ReferencePoint;
                     break;
                 case 1:
-                    waypoint.waypointType = CacheTypes.MultiStage;
+                    waypoint.waypointType = GeoCacheType.MultiStage;
                     showCbStartPoint(true);
                     break;
                 case 2:
-                    waypoint.waypointType = CacheTypes.MultiQuestion;
+                    waypoint.waypointType = GeoCacheType.MultiQuestion;
                     break;
                 case 3:
-                    waypoint.waypointType = CacheTypes.Trailhead;
+                    waypoint.waypointType = GeoCacheType.Trailhead;
                     break;
                 case 4:
-                    waypoint.waypointType = CacheTypes.ParkingArea;
+                    waypoint.waypointType = GeoCacheType.ParkingArea;
                     break;
                 case 5:
-                    waypoint.waypointType = CacheTypes.Final;
+                    waypoint.waypointType = GeoCacheType.Final;
                     break;
             }
 
@@ -198,17 +198,17 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             public Drawable getIcon(int Position) {
                 switch (Position) {
                     case 0:
-                        return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.ReferencePoint.name()));
+                        return new SpriteDrawable(Sprites.getSprite("big" + GeoCacheType.ReferencePoint.name()));
                     case 1:
-                        return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.MultiStage.name()));
+                        return new SpriteDrawable(Sprites.getSprite("big" + GeoCacheType.MultiStage.name()));
                     case 2:
-                        return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.MultiQuestion.name()));
+                        return new SpriteDrawable(Sprites.getSprite("big" + GeoCacheType.MultiQuestion.name()));
                     case 3:
-                        return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.Trailhead.name()));
+                        return new SpriteDrawable(Sprites.getSprite("big" + GeoCacheType.Trailhead.name()));
                     case 4:
-                        return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.ParkingArea.name()));
+                        return new SpriteDrawable(Sprites.getSprite("big" + GeoCacheType.ParkingArea.name()));
                     case 5:
-                        return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.Final.name()));
+                        return new SpriteDrawable(Sprites.getSprite("big" + GeoCacheType.Final.name()));
 
                 }
 

@@ -21,7 +21,7 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.LogTypes;
+import de.droidcachebox.database.GeoCacheLogType;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.popups.PopUp_Base;
@@ -64,24 +64,24 @@ public class QuickDraft extends AbstractAction {
             case Giga:
             case CITO:
                 cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> {
-                    DraftsView.getInstance().addNewDraft(LogTypes.attended, "", true);
+                    DraftsView.getInstance().addNewDraft(GeoCacheLogType.attended, "", true);
                     finalHandling(true);
                 });
                 break;
             case Camera:
                 cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> {
-                    DraftsView.getInstance().addNewDraft(LogTypes.webcam_photo_taken, "", true);
+                    DraftsView.getInstance().addNewDraft(GeoCacheLogType.webcam_photo_taken, "", true);
                     finalHandling(true);
                 });
                 cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> finalHandling(false));
                 break;
             default:
                 cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> {
-                    DraftsView.getInstance().addNewDraft(LogTypes.found, "", true);
+                    DraftsView.getInstance().addNewDraft(GeoCacheLogType.found, "", true);
                     finalHandling(true);
                 });
                 cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> {
-                    DraftsView.getInstance().addNewDraft(LogTypes.didnt_find, "", true);
+                    DraftsView.getInstance().addNewDraft(GeoCacheLogType.didnt_find, "", true);
                     finalHandling(false);
                 });
                 break;

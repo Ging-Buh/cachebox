@@ -19,7 +19,7 @@ import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.ImageButton;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -33,7 +33,7 @@ public class DeleteDialog extends ButtonDialog {
     private CancelWaitDialog wd;
 
     public DeleteDialog() {
-        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
+        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.get("DeleteCaches"), MessageBoxButton.Cancel, null, null);
 
         msgBoxContentSize = getContentSize();
 

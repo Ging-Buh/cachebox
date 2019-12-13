@@ -48,11 +48,11 @@ public class ButtonDialog extends Dialog {
     protected OnClickListener neutralButtonClickListener;
     protected OnClickListener negativeButtonClickListener;
 
-    public ButtonDialog(String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBox.OnMsgBoxClickListener Listener) {
-        this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
+    public ButtonDialog(String Name, String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, MessageBox.OnMsgBoxClickListener Listener) {
+        this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButton.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
     }
 
-    public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBox.OnMsgBoxClickListener Listener) {
+    public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, MessageBox.OnMsgBoxClickListener Listener) {
         super(rec, Name);
         setTitle(title);
         setButtonCaptions(buttons);
@@ -83,7 +83,7 @@ public class ButtonDialog extends Dialog {
     }
 
     public static ButtonDialog show(String msg) {
-        ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
+        ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MessageBoxButton.NOTHING, MessageBoxIcon.None, null);
         GL.that.showDialog(msgBox);
         return msgBox;
     }
@@ -107,23 +107,23 @@ public class ButtonDialog extends Dialog {
         GL.that.RunOnGL(() -> GL.that.closeDialog(this));
     }
 
-    public void setButtonCaptions(MessageBoxButtons buttons) {
+    public void setButtonCaptions(MessageBoxButton buttons) {
         if (buttons == null)
-            buttons = MessageBoxButtons.NOTHING;
+            buttons = MessageBoxButton.NOTHING;
 
-        if (buttons == MessageBoxButtons.AbortRetryIgnore) {
+        if (buttons == MessageBoxButton.AbortRetryIgnore) {
             createButtons(3, Translation.get("abort"), Translation.get("retry"), Translation.get("ignore"));
-        } else if (buttons == MessageBoxButtons.OK) {
+        } else if (buttons == MessageBoxButton.OK) {
             createButtons(1, Translation.get("ok"), "", "");
-        } else if (buttons == MessageBoxButtons.OKCancel) {
+        } else if (buttons == MessageBoxButton.OKCancel) {
             createButtons(2, Translation.get("ok"), "", Translation.get("cancel"));
-        } else if (buttons == MessageBoxButtons.RetryCancel) {
+        } else if (buttons == MessageBoxButton.RetryCancel) {
             createButtons(2, Translation.get("retry"), "", Translation.get("cancel"));
-        } else if (buttons == MessageBoxButtons.YesNo) {
+        } else if (buttons == MessageBoxButton.YesNo) {
             createButtons(2, Translation.get("yes"), "", Translation.get("no"));
-        } else if (buttons == MessageBoxButtons.YesNoCancel) {
+        } else if (buttons == MessageBoxButton.YesNoCancel) {
             createButtons(3, Translation.get("yes"), Translation.get("no"), Translation.get("cancel"));
-        } else if (buttons == MessageBoxButtons.Cancel) {
+        } else if (buttons == MessageBoxButton.Cancel) {
             createButtons(3, "", "", Translation.get("cancel"));
             button1.setInvisible();
             button2.setInvisible();

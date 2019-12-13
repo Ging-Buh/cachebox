@@ -8,7 +8,7 @@ import de.droidcachebox.gdx.controls.Linearlayout;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -29,7 +29,7 @@ public class PasswortDialog extends ButtonDialog {
     private IReturnListener mReturnListener;
 
     public PasswortDialog(IReturnListener listener) {
-        super(Menu.getMenuRec(), "PW-Dialog", "", Translation.get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live, null);
+        super(Menu.getMenuRec(), "PW-Dialog", "", Translation.get("enterPW"), MessageBoxButton.OKCancel, MessageBoxIcon.GC_Live, null);
         mReturnListener = listener;
 
         msgBoxContentSize = getContentSize();

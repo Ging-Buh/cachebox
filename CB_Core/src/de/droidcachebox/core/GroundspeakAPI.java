@@ -890,11 +890,11 @@ public class GroundspeakAPI {
     }
 
     public static boolean isAccessTokenInvalid() {
-        return (fetchMyUserInfos().memberShipType == MemberShipTypes.Unknown);
+        return (fetchMyUserInfos().memberShipType == MemberShipType.Unknown);
     }
 
     public static boolean isPremiumMember() {
-        return fetchMyUserInfos().memberShipType == MemberShipTypes.Premium;
+        return fetchMyUserInfos().memberShipType == MemberShipType.Premium;
     }
 
     public static boolean isDownloadLimitExceeded() {
@@ -904,7 +904,7 @@ public class GroundspeakAPI {
     }
 
     public static UserInfos fetchMyUserInfos() {
-        if (me == null || me.memberShipType == MemberShipTypes.Unknown) {
+        if (me == null || me.memberShipType == MemberShipType.Unknown) {
             Log.debug(log, "fetchMyUserInfos called. Must fetch. Active now: " + active);
             do {
                 if (active) {
@@ -925,7 +925,7 @@ public class GroundspeakAPI {
                 }
                 active = true;
                 me = fetchUserInfos("me");
-                if (me.memberShipType == MemberShipTypes.Unknown) {
+                if (me.memberShipType == MemberShipType.Unknown) {
                     me.findCount = -1;
                     // we need a new AccessToken
                     // API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
@@ -1021,16 +1021,16 @@ public class GroundspeakAPI {
         return url + command;
     }
 
-    private static MemberShipTypes memberShipTypesFromInt(int value) {
+    private static MemberShipType memberShipTypesFromInt(int value) {
         switch (value) {
             case 1:
-                return MemberShipTypes.Basic;
+                return MemberShipType.Basic;
             case 2:
-                return MemberShipTypes.Charter;
+                return MemberShipType.Charter;
             case 3:
-                return MemberShipTypes.Premium;
+                return MemberShipType.Premium;
             default:
-                return MemberShipTypes.Unknown;
+                return MemberShipType.Unknown;
         }
     }
 
@@ -1179,7 +1179,7 @@ public class GroundspeakAPI {
                                     cache.coordinate = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
                                     cache.waypoints.add(new Waypoint(
                                             "!?" + cache.getGcCode().substring(2),
-                                            CacheTypes.Final,
+                                            GeoCacheType.Final,
                                             "",
                                             correctedCoordinate.optDouble("latitude", 0),
                                             correctedCoordinate.optDouble("longitude", 0),
@@ -1221,7 +1221,7 @@ public class GroundspeakAPI {
                             for (int j = 0; j < attributes.length(); j++) {
                                 JSONObject attribute = attributes.optJSONObject(j);
                                 if (attribute != null) {
-                                    Attributes att = Attributes.getAttributeEnumByGcComId(attribute.optInt("id", 0));
+                                    Attribute att = Attribute.getAttributeEnumByGcComId(attribute.optInt("id", 0));
                                     if (attribute.optBoolean("isOn", false)) {
                                         cache.addAttributePositive(att);
                                     } else {
@@ -1310,7 +1310,7 @@ public class GroundspeakAPI {
                     }
                     waypoint.setTitle("Corrected Coordinates (API)");
                     waypoint.setDescription(wpt.optString("description", ""));
-                    waypoint.waypointType = CacheTypes.Final;
+                    waypoint.waypointType = GeoCacheType.Final;
                     waypoint.setGcCode("CO" + cache.getGcCode().substring(2));
                     cache.waypoints.add(waypoint);
                 }
@@ -1339,7 +1339,7 @@ public class GroundspeakAPI {
         } catch (Exception e) {
             logEntry.logDate = new Date();
         }
-        logEntry.logTypes = LogTypes.parseString(geocacheLog.optString("type", ""));
+        logEntry.geoCacheLogType = GeoCacheLogType.parseString(geocacheLog.optString("type", ""));
         String referenceCode = geocacheLog.optString("referenceCode", "");
         logEntry.logId = generateLogId(referenceCode);
         return logEntry;
@@ -1484,73 +1484,73 @@ public class GroundspeakAPI {
     }
 
 
-    private static CacheTypes CacheTypeFromID(int id) {
+    private static GeoCacheType CacheTypeFromID(int id) {
         switch (id) {
             case 2:
-                return CacheTypes.Traditional;
+                return GeoCacheType.Traditional;
             case 3:
-                return CacheTypes.Multi;
+                return GeoCacheType.Multi;
             case 4:
-                return CacheTypes.Virtual;
+                return GeoCacheType.Virtual;
             case 5:
-                return CacheTypes.Letterbox;
+                return GeoCacheType.Letterbox;
             case 6:
-                return CacheTypes.Event;
+                return GeoCacheType.Event;
             case 8:
-                return CacheTypes.Mystery;
+                return GeoCacheType.Mystery;
             case 9:
-                return CacheTypes.APE;
+                return GeoCacheType.APE;
             case 11:
-                return CacheTypes.Camera;
+                return GeoCacheType.Camera;
             case 13:
-                return CacheTypes.CITO;
+                return GeoCacheType.CITO;
             case 137:
-                return CacheTypes.Earth;
+                return GeoCacheType.Earth;
             case 453:
-                return CacheTypes.MegaEvent;
+                return GeoCacheType.MegaEvent;
             case 1304:
-                return CacheTypes.AdventuresExhibit;
+                return GeoCacheType.AdventuresExhibit;
             case 1858:
-                return CacheTypes.Wherigo;
+                return GeoCacheType.Wherigo;
             case 3653:
-                return CacheTypes.CelebrationEvent;
+                return GeoCacheType.CelebrationEvent;
             case 3773:
-                return CacheTypes.HQ;
+                return GeoCacheType.HQ;
             case 3774:
-                return CacheTypes.HQCelebration;
+                return GeoCacheType.HQCelebration;
             case 4738:
-                return CacheTypes.HQBlockParty;
+                return GeoCacheType.HQBlockParty;
             case 7005:
-                return CacheTypes.Giga;
+                return GeoCacheType.Giga;
             case 217:
-                return CacheTypes.ParkingArea;
+                return GeoCacheType.ParkingArea;
             case 218:
-                return CacheTypes.MultiQuestion;
+                return GeoCacheType.MultiQuestion;
             case 219:
-                return CacheTypes.MultiStage;
+                return GeoCacheType.MultiStage;
             case 220:
-                return CacheTypes.Final;
+                return GeoCacheType.Final;
             case 221:
-                return CacheTypes.Trailhead;
+                return GeoCacheType.Trailhead;
             case 452:
-                return CacheTypes.ReferencePoint;
+                return GeoCacheType.ReferencePoint;
             default:
-                return CacheTypes.Undefined;
+                return GeoCacheType.Undefined;
         }
     }
 
-    private static CacheSizes CacheSizeFromID(int id) {
+    private static GeoCacheSize CacheSizeFromID(int id) {
         switch (id) {
             case 2:
-                return CacheSizes.micro;
+                return GeoCacheSize.micro;
             case 8:
-                return CacheSizes.small;
+                return GeoCacheSize.small;
             case 3:
-                return CacheSizes.regular;
+                return GeoCacheSize.regular;
             case 4:
-                return CacheSizes.large;
+                return GeoCacheSize.large;
             default:
-                return CacheSizes.other;
+                return GeoCacheSize.other;
         }
     }
 
@@ -1593,7 +1593,7 @@ public class GroundspeakAPI {
         }
     }
 
-    private enum MemberShipTypes {Unknown, Basic, Charter, Premium}
+    private enum MemberShipType {Unknown, Basic, Charter, Premium}
 
     public static class PQ implements Serializable {
         private static final long serialVersionUID = 8308386638170255124L;
@@ -1607,7 +1607,7 @@ public class GroundspeakAPI {
 
     public static class UserInfos {
         public String username;
-        public MemberShipTypes memberShipType;
+        public MemberShipType memberShipType;
         public int findCount;
         // geocacheLimits
         public int remaining;
@@ -1617,7 +1617,7 @@ public class GroundspeakAPI {
 
         public UserInfos() {
             username = "";
-            memberShipType = MemberShipTypes.Unknown;
+            memberShipType = MemberShipType.Unknown;
             findCount = 0;
             remaining = -1;
             remainingLite = -1;

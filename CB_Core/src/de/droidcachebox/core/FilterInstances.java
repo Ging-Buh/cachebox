@@ -1,11 +1,11 @@
 package de.droidcachebox.core;
 
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheType;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static de.droidcachebox.database.CacheTypes.*;
+import static de.droidcachebox.database.GeoCacheType.*;
 
 public class FilterInstances {
 
@@ -55,9 +55,9 @@ public class FilterInstances {
     public static FilterProperties HISTORY = new FilterProperties(); // == ALL, isHistory wird vor Verwendung gesetzt daher nicht final
     private static FilterProperties mLastFilter = null;
 
-    private static String getCacheTypes(List<CacheTypes> cacheTypes) {
+    private static String getCacheTypes(List<GeoCacheType> geoCacheTypes) {
         String tmp = "";
-        for (CacheTypes ct : cacheTypes) {
+        for (GeoCacheType ct : geoCacheTypes) {
             tmp = tmp + "," + ct.ordinal();
         }
         return tmp.substring(1);

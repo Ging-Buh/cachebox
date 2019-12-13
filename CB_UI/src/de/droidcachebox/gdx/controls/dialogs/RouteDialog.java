@@ -7,7 +7,7 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
@@ -23,7 +23,7 @@ public class RouteDialog extends ButtonDialog {
     private IReturnListener mReturnListener;
 
     public RouteDialog(IReturnListener listener) {
-        super(Menu.getMenuRec(), "RouteDialog", "", Translation.get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
+        super(Menu.getMenuRec(), "RouteDialog", "", Translation.get("RouteToWaypoit"), MessageBoxButton.OKCancel, null, null);
         mReturnListener = listener;
 
         SizeF msgBoxContentSize = getContentSize();

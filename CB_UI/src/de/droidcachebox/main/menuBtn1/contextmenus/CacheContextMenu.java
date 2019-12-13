@@ -15,7 +15,7 @@ import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.main.menuBtn1.ShowTrackableList;
@@ -61,7 +61,7 @@ public class CacheContextMenu {
             cacheContextMenu.addDivider();
             cacheContextMenu.addMenuItem("Map", Sprites.getSprite(IconName.map.name()), () -> ShowMap.getInstance().execute());
             cacheContextMenu.addMenuItem("Description", Sprites.getSprite(IconName.docIcon.name()), () -> ShowDescription.getInstance().execute());
-            cacheContextMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + CacheTypes.Trailhead.name()), () -> ShowWaypoint.getInstance().execute());
+            cacheContextMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> ShowWaypoint.getInstance().execute());
             cacheContextMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> HintDialog.getInstance().showHint()).setEnabled(GlobalCore.getSelectedCache().hasHint());
             cacheContextMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().execute());
             cacheContextMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().execute());
@@ -82,7 +82,7 @@ public class CacheContextMenu {
 
     private static void rememberGeoCache() {
         if (GlobalCore.isSetSelectedCache()) {
-            MessageBox mb = MessageBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question, null);
+            MessageBox mb = MessageBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
                 Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGcCode());
                 Config.AcceptChanges();
@@ -167,7 +167,7 @@ public class CacheContextMenu {
     }
 
     private static void toggleShortClick() {
-        MessageBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+        MessageBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MessageBoxButton.YesNo, MessageBoxIcon.Question,
                 (btnNumber, data) -> {
                     if (btnNumber == BTN_LEFT_POSITIVE)
                         Config.CacheContextMenuShortClickToggle.setValue(false);
@@ -190,7 +190,7 @@ public class CacheContextMenu {
     }
 
     private static void watchList() {
-        MessageBox mb = MessageBox.show(Translation.get("WatchlistMessage"), Translation.get("Watchlist"), MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question,
+        MessageBox mb = MessageBox.show(Translation.get("WatchlistMessage"), Translation.get("Watchlist"), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question,
                 (btnNumber, data) -> {
                     if (btnNumber == BTN_LEFT_POSITIVE)
                         addToWatchList();
@@ -205,9 +205,9 @@ public class CacheContextMenu {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
                 if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 }
             });
         }
@@ -217,16 +217,16 @@ public class CacheContextMenu {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
                 if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 }
             });
         }
     }
 
     private static void deleteGeoCache() {
-        MessageBox.show(Translation.get("sure"), Translation.get("question"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question,
+        MessageBox.show(Translation.get("sure"), Translation.get("question"), MessageBoxButton.OKCancel, MessageBoxIcon.Question,
                 (which, data) -> {
                     if (which == MessageBox.BTN_LEFT_POSITIVE) {
                         deleteSelectedCache();

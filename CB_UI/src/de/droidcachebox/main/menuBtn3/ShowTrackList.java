@@ -27,7 +27,7 @@ import de.droidcachebox.gdx.activities.ProjectionCoordinate;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate.Type;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
@@ -133,9 +133,9 @@ public class ShowTrackList extends AbstractShowAction {
                 TrackListViewItem mTrackItem = TrackListView.getInstance().getSelectedItem();
 
                 if (mTrackItem == null) {
-                    MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                    MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
                 } else if (mTrackItem.getRoute().isActualTrack) {
-                    MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
+                    MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
                 } else {
                     RouteOverlay.remove(mTrackItem.getRoute());
                     TrackListView.getInstance().notifyDataSetChanged();

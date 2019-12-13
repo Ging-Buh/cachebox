@@ -42,8 +42,8 @@ public class Importer {
      * falls eine einzelne Datei übergeben wird.
      *
      * @param directoryPath ?
-     * @param ip ?
-     * Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
+     * @param ip            ?
+     *                      Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
      * @throws Exception ?
      */
     public void importGpx(String directoryPath, ImporterProgress ip) throws Exception {
@@ -171,7 +171,7 @@ public class Importer {
 
     /**
      * @param whereClause ?
-     * @param ip ?
+     * @param ip          ?
      */
     public void importGcVote(String whereClause, ImporterProgress ip) {
 
@@ -273,8 +273,8 @@ public class Importer {
     }
 
     /**
-     * @param ip ?
-     * @param importImages ?
+     * @param ip            ?
+     * @param importImages  ?
      * @param importSpoiler ?
      * @param where         [Last Filter]FilterInstances.LastFilter.getSqlWhere();
      * @return ErrorCode Use with<br>
@@ -320,26 +320,22 @@ public class Importer {
                         if (!importImages) {
                             // do not import Description Images
                             descriptionImagesUpdated = true;
-                        }
-                        else {
+                        } else {
                             if (!reader.isNull(6)) {
                                 descriptionImagesUpdated = reader.getInt(6) != 0;
-                            }
-                            else descriptionImagesUpdated = false;
+                            } else descriptionImagesUpdated = false;
                         }
                         boolean additionalImagesUpdated;
                         if (!importSpoiler) {
                             // do not import Spoiler Images
                             additionalImagesUpdated = true;
-                        }
-                        else {
+                        } else {
                             if (!reader.isNull(5)) {
                                 additionalImagesUpdated = reader.getInt(5) != 0;
-                            }
-                            else additionalImagesUpdated = false;
+                            } else additionalImagesUpdated = false;
                         }
                         ret = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false);
-                        if (ret < 0 ) break;
+                        if (ret < 0) break;
                     }
                 } catch (Exception e) {
                     Log.err(log, "importImages", e);

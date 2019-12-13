@@ -1,6 +1,6 @@
 package de.droidcachebox.database;
 
-public enum CacheSizes {
+public enum GeoCacheSize {
     other, // 0
     micro, // 1
     small, // 2
@@ -10,52 +10,52 @@ public enum CacheSizes {
     // other // 6 - Achtung, hier habe ich einen neuen Wert eingefügt
     ;
 
-    public static CacheSizes CacheSizesFromInt(int value) {
+    public static GeoCacheSize CacheSizesFromInt(int value) {
         switch (value) {
             case 1:
-                return CacheSizes.micro;
+                return GeoCacheSize.micro;
             case 2:
-                return CacheSizes.small;
+                return GeoCacheSize.small;
             case 3:
-                return CacheSizes.regular;
+                return GeoCacheSize.regular;
             case 4:
-                return CacheSizes.large;
+                return GeoCacheSize.large;
             default:
-                return CacheSizes.other;
+                return GeoCacheSize.other;
         }
     }
 
-    public static CacheSizes parseString(String text) {
+    public static GeoCacheSize parseString(String text) {
         // Groundspeak
         if (text.equalsIgnoreCase("micro")) {
-            return CacheSizes.micro;
+            return GeoCacheSize.micro;
         }
         if (text.equalsIgnoreCase("small")) {
-            return CacheSizes.small;
+            return GeoCacheSize.small;
         }
         if (text.equalsIgnoreCase("regular")) {
-            return CacheSizes.regular;
+            return GeoCacheSize.regular;
         }
         if (text.equalsIgnoreCase("large")) {
-            return CacheSizes.large;
+            return GeoCacheSize.large;
         }
         if (text.equalsIgnoreCase("not chosen")) {
-            return CacheSizes.other;
+            return GeoCacheSize.other;
         }
         if (text.equalsIgnoreCase("virtual")) {
-            return CacheSizes.other;
+            return GeoCacheSize.other;
         }
         if (text.equalsIgnoreCase("other")) {
-            return CacheSizes.other;
+            return GeoCacheSize.other;
         }
         // GCTour
         if (text.equalsIgnoreCase("none")) {
-            return CacheSizes.other;
+            return GeoCacheSize.other;
         }
         if (text.equalsIgnoreCase("very large")) {
-            return CacheSizes.large;
+            return GeoCacheSize.large;
         }
-        return CacheSizes.other;
+        return GeoCacheSize.other;
     }
 
     public static String toShortString(Cache cache) {

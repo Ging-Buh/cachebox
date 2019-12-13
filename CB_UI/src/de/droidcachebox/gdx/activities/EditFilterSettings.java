@@ -38,7 +38,7 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -363,7 +363,7 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         if (exist) {
-            MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning,
+            MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButton.OK, MessageBoxIcon.Warning,
                     (which, data) -> {
                         de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().execute();
                         return true;
@@ -479,7 +479,7 @@ public class EditFilterSettings extends ActivityBase {
                             GL.that.closeActivity();
                             PresetListViewItem clickedItem = (PresetListViewItem) v1;
                             tmpFilterProps = new FilterProperties(clickedItem.mPreset.filterProperties.toString());
-                            MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                            MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButton.YesNo, MessageBoxIcon.Question,
                                     (which, data) -> {
                                         // NO clicked
                                         if (which == MessageBox.BTN_LEFT_POSITIVE) { // YES Clicked
@@ -804,11 +804,11 @@ public class EditFilterSettings extends ActivityBase {
                 }
             });
             cacheTypes.addChild(setAllCacheTypes);
-            for (CacheTypes c : CacheTypes.caches()) {
+            for (GeoCacheType c : GeoCacheType.caches()) {
                 cacheTypes.addChild(addCacheTypeItem(c)).setChecked();
             }
-            attributes = addTitleItem("Attributes");
-            for (int i = 1; i < Attributes.values().length; i++) {
+            attributes = addTitleItem("Attribute");
+            for (int i = 1; i < Attribute.values().length; i++) {
                 attributes.addChild(addItem(Sprites.getSprite("att-" + i + "-1Icon"), Translation.get("att_" + i + "_1"), THREE_STATE_ITEM));
             }
         }
@@ -884,7 +884,7 @@ public class EditFilterSettings extends ActivityBase {
             return v;
         }
 
-        private FilterSetListViewItem addCacheTypeItem(CacheTypes cacheType) {
+        private FilterSetListViewItem addCacheTypeItem(GeoCacheType cacheType) {
             Sprite icon = Sprites.getSprite("big" + cacheType.name());
             String name = cacheType.name();
             if (filterSetEntries == null) {

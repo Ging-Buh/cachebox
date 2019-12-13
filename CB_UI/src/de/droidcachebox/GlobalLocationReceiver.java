@@ -17,9 +17,9 @@ package de.droidcachebox;
 
 import de.droidcachebox.SoundCache.Sounds;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheTypes;
 import de.droidcachebox.database.CacheWithWP;
 import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.locator.*;
@@ -165,7 +165,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                                 continue;
                                             if (cache.ImTheOwner())
                                                 continue;
-                                            if (cache.getType() == CacheTypes.Mystery && !cache.hasCorrectedCoordiantesOrHasCorrectedFinal())
+                                            if (cache.getType() == GeoCacheType.Mystery && !cache.hasCorrectedCoordiantesOrHasCorrectedFinal())
                                                 continue;
                                             if (cache.Distance(CalculationType.FAST, true) < nearestDistance) {
                                                 resort = true;

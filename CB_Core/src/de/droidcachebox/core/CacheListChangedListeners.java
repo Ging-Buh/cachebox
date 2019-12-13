@@ -17,8 +17,8 @@ package de.droidcachebox.core;
 
 import de.droidcachebox.Energy;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheTypes;
 import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheType;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -55,7 +55,7 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
                 Database.Data.cacheList.remove(cache);
             // add Parking Cache from saved Config (ParkingLatitude, ParkingLongitude)
             if (CB_Core_Settings.ParkingLatitude.getValue() != 0) {
-                cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", CacheTypes.MyParking, "CBPark");
+                cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", GeoCacheType.MyParking, "CBPark");
                 Database.Data.cacheList.add(0, cache);
             }
 

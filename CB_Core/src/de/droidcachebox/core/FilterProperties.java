@@ -15,9 +15,9 @@
  */
 package de.droidcachebox.core;
 
-import de.droidcachebox.database.Attributes;
+import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.utils.DLong;
 import de.droidcachebox.utils.log.Log;
 import org.json.JSONException;
@@ -189,7 +189,7 @@ public class FilterProperties {
                         String jsonString = json.optString("attributes", "");
                         if (jsonString.length() > 0) {
                             parts = jsonString.split(SEPARATOR);
-                            attributes = new int[Attributes.values().length];
+                            attributes = new int[Attribute.values().length];
                             attributes[0] = 0; // gibts nicht
                             int og = parts.length;
                             if (parts.length == attributes.length) {
@@ -283,7 +283,7 @@ public class FilterProperties {
 
         cacheTypes = "";
 
-        attributes = new int[Attributes.values().length]; // !!! attention: Attributes 0 not used
+        attributes = new int[Attribute.values().length]; // !!! attention: Attributes 0 not used
         Arrays.fill(attributes, 0);
 
         gpxFilenameIds = new ArrayList<>();
@@ -492,7 +492,7 @@ public class FilterProperties {
                         + maxFavPoints);
 
                 // add Cache Types
-                if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length)
+                if (cacheTypes.length() > 0 && cacheTypes.split(",").length != GeoCacheType.caches().length)
                     json.put("CacheTypes", cacheTypes);
 
                 // add Cache Attributes
@@ -651,7 +651,7 @@ public class FilterProperties {
             if (hasCorrectedCoordinates == -1)
                 andParts.add("CorrectedCoordinates=0 OR Name like '%hallenge%' OR NOT ID in (select CacheId FROM Waypoint Where Type = 18 and Latitude > 0 and Longitude > 0)");
 
-            if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length)
+            if (cacheTypes.length() > 0 && cacheTypes.split(",").length != GeoCacheType.caches().length)
                 andParts.add("Type in (" + cacheTypes + ")");
 
             for (int i = 1; i < attributes.length; i++) {
@@ -725,7 +725,7 @@ public class FilterProperties {
 
         if (hasCorrectedCoordinates != filter.hasCorrectedCoordinates) return false;
 
-        if (cacheTypes.length() > 0 && cacheTypes.split(",").length != CacheTypes.caches().length) {
+        if (cacheTypes.length() > 0 && cacheTypes.split(",").length != GeoCacheType.caches().length) {
             // this != all CacheTypes
             String[] thisCacheTypes = cacheTypes.split(",");
             String[] filterCacheTypes = filter.cacheTypes.split(",");
@@ -734,7 +734,7 @@ public class FilterProperties {
             if (!Arrays.equals(thisCacheTypes, filterCacheTypes)) return false;
         } else {
             // this == all CacheTypes
-            if (filter.cacheTypes.length() > 0 && filter.cacheTypes.split(",").length != CacheTypes.caches().length) {
+            if (filter.cacheTypes.length() > 0 && filter.cacheTypes.split(",").length != GeoCacheType.caches().length) {
                 // filter != all CacheTypes
                 return false;
             }

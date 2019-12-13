@@ -27,7 +27,6 @@ public class Trackable implements Comparable<Trackable> {
     final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
     public boolean Archived;
     public String TBCode;
-    private String mTrackingCode;
     public String CurrentGeocacheCode;
     public String CurrentGoal;
     public String CurrentOwnerName;
@@ -38,6 +37,7 @@ public class Trackable implements Comparable<Trackable> {
     public String Name;
     public String OwnerName;
     public String TypeName;
+    private String mTrackingCode;
     private int Id = -1;
     private long CacheId;
     private String Url = "";
@@ -186,7 +186,7 @@ public class Trackable implements Comparable<Trackable> {
      */
 
     public void create(JSONObject JObj) {
-        }
+    }
 
     public String getTravelDistance() {
         return UnitFormatter.DistanceString(TravelDistance);
@@ -287,14 +287,14 @@ public class Trackable implements Comparable<Trackable> {
     /**
      * Returns True if a LogType possible <br>
      * <br>
-     * Possible LogTypes for TB in Cache: <br>
+     * Possible GeoCacheLogType for TB in Cache: <br>
      * 4 - Post Note <br>
      * 13 - Retrieve It from a Cache <br>
      * 14 - Place in a cache <br>
      * 16 - Mark as missing <br>
      * 48 - Discover <br>
      * <br>
-     * Possible LogTypes for TB at other Person: <br>
+     * Possible GeoCacheLogType for TB at other Person: <br>
      * 4 - Post Note <br>
      * 16 - Mark as missing <br>
      * 19 - Grab <br>
@@ -302,7 +302,7 @@ public class Trackable implements Comparable<Trackable> {
      * 69 - Move to collection <br>
      * 70 - Move to inventory <br>
      * <br>
-     * Possible LogTypes for TB at my inventory: <br>
+     * Possible GeoCacheLogType for TB at my inventory: <br>
      * 4 - Post Note <br>
      * 14 - Place in a cache <br>
      * 16 - Mark as missing<br>
@@ -314,7 +314,7 @@ public class Trackable implements Comparable<Trackable> {
      * @param userName Config.settings.GcLogin.getValue()
      * @return
      */
-    public boolean isLogTypePossible(LogTypes type, String userName) {
+    public boolean isLogTypePossible(GeoCacheLogType type, String userName) {
         int ID = type.getGcLogTypeId();
 
         if (ID == 4)
@@ -325,7 +325,7 @@ public class Trackable implements Comparable<Trackable> {
             if (ID == 16)
                 return true;
 
-            // the next LogTypes only possible if User has entered the TrackingCode
+            // the next GeoCacheLogType only possible if User has entered the TrackingCode
             if (!(mTrackingCode != null && mTrackingCode.length() > 0))
                 return false;
             if (ID == 13 || /* ID == 14 || */ID == 48)

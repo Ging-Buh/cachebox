@@ -15,7 +15,7 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
@@ -188,9 +188,9 @@ public class ShowLogs extends AbstractShowAction {
             if (GroundspeakAPI.APIError == 0) {
                 Config.Friends.setValue(friends);
                 Config.AcceptChanges();
-                MessageBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
             } else {
-                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
             }
         });
     }

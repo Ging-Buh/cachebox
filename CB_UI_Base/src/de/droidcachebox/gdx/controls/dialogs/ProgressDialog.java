@@ -7,7 +7,7 @@ import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.ProgressBar;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -36,7 +36,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         that = this;
         isCanceld = false;
 
-        addButtons(MessageBoxButtons.Cancel);
+        addButtons(MessageBoxButton.Cancel);
         btnRightNegative.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {

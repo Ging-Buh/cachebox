@@ -2,7 +2,7 @@ package de.droidcachebox;
 
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Plattform;
@@ -63,7 +63,7 @@ public class AppRater {
         String later = Translation.get("Rate_later");
         String never = Translation.get("Rate_never");
 
-        msgBox = MessageBox.show(message, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+        msgBox = MessageBox.show(message, title, MessageBoxButton.YesNoCancel, MessageBoxIcon.Question,
                 (which, data) -> {
                     switch (which) {
                         case 1:

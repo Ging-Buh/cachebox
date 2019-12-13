@@ -29,7 +29,7 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
@@ -171,9 +171,9 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             else if (aktWaypoint.isCorrectedFinal())
                 GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.getCoordinate());
             if (GroundspeakAPI.APIError == 0) {
-                MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
             } else {
-                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
             }
         }));
         mi.setEnabled(aktCache.hasCorrectedCoordinates() || (aktWaypoint != null && aktWaypoint.isCorrectedFinal()));
@@ -196,7 +196,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         if ((coord == null) || (!coord.isValid()))
             coord = de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
-        Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
+        Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
 
         editWP(newWP, true);
 
@@ -266,7 +266,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     }
 
     private void deleteWP() {
-        MessageBox.show(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
                 case MessageBox.BTN_LEFT_POSITIVE:
                     // Yes button clicked
@@ -322,7 +322,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                 return;
             }
             //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
-            Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
+            Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
             de.droidcachebox.GlobalCore.getSelectedCache().waypoints.add(newWP);
             lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
             that.setAdapter(lvAdapter);
@@ -352,7 +352,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                 return;
             }
             //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
-            Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
+            Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
             de.droidcachebox.GlobalCore.getSelectedCache().waypoints.add(newWP);
 
             lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());

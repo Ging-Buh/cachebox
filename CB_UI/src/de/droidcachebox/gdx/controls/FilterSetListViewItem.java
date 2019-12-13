@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
@@ -607,7 +607,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         private double mNumericMin;
         private double mNumericStep;
         private double mNumericState;
-        private CacheTypes cacheType;
+        private GeoCacheType cacheType;
 
         public FilterSetEntry(String name, Sprite icon, int itemType) {
             mName = name;
@@ -635,7 +635,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             mNumericStep = Step;
         }
 
-        public FilterSetEntry(CacheTypes cacheType, String name, Sprite icon, int itemType) {
+        public FilterSetEntry(GeoCacheType cacheType, String name, Sprite icon, int itemType) {
             mName = name;
             mIcon = icon;
             mItemType = itemType;
@@ -677,7 +677,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             return mNumericState;
         }
 
-        public CacheTypes getCacheType() {
+        public GeoCacheType getCacheType() {
             return cacheType;
         }
 

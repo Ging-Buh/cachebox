@@ -14,7 +14,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -105,7 +105,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             }
 
             if (importStarted) {
-                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop,
+                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButton.YesNo, MessageBoxIcon.Stop,
                         (which, data) -> {
                             if (which == MessageBox.BTN_LEFT_POSITIVE) {
                                 finishImport();

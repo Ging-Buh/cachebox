@@ -4,7 +4,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.LogTypes;
+import de.droidcachebox.database.GeoCacheLogType;
 import de.droidcachebox.database.TBList;
 import de.droidcachebox.database.Trackable;
 import de.droidcachebox.database.TrackableListDAO;
@@ -200,17 +200,17 @@ public class TrackableListView extends CB_View_Base {
         cm.addMenuItem("RefreshInventory", null, this::RefreshTbList);
         cm.addMenuItem("all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
+            LogTBs(((MenuItem) v).getTitle(), GeoCacheLogType.CB_LogType2GC(GeoCacheLogType.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_visit", "", Sprites.getSprite(IconName.TBVISIT.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
+            LogTBs(((MenuItem) v).getTitle(), GeoCacheLogType.CB_LogType2GC(GeoCacheLogType.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_dropped", "", Sprites.getSprite(IconName.TBDROP.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
+            LogTBs(((MenuItem) v).getTitle(), GeoCacheLogType.CB_LogType2GC(GeoCacheLogType.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
             RefreshTbList();
             return true;
         });

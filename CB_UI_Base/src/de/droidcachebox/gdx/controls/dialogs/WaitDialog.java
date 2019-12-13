@@ -7,7 +7,7 @@ import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
@@ -71,7 +71,7 @@ public class WaitDialog extends ButtonDialog {
         waitDialog.animation.setY(imageYPos);
 
         waitDialog.addChild(waitDialog.label);
-        waitDialog.setButtonCaptions(MessageBoxButtons.NOTHING);
+        waitDialog.setButtonCaptions(MessageBoxButton.NOTHING);
 
         return waitDialog;
 

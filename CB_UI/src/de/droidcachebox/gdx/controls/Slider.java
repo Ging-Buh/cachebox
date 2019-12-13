@@ -6,8 +6,8 @@ import de.droidcachebox.Config;
 import de.droidcachebox.SelectedCacheChangedEventListener;
 import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheSizes;
-import de.droidcachebox.database.CacheTypes;
+import de.droidcachebox.database.GeoCacheSize;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
@@ -206,7 +206,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
                     if (cacheDesc.getCacheInfo().numberOfDNFsAfterLastFound() > 0) {
                         header = header + "!"+ cacheDesc.getCacheInfo().numberOfDNFsAfterLastFound() + "!!!";
                     }
-                    header = header + CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName();
+                    header = header + GeoCacheType.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getName();
                 }
                 mLblCacheName.setText(header);
             }

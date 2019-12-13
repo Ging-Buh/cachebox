@@ -24,12 +24,12 @@ import java.util.Locale;
 
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent {
     // Allgemein
-    private final CacheTypes[] CacheTypNumbers = CacheTypes.caches();
-    private final CacheSizes[] CacheSizeNumbers = new CacheSizes[]{CacheSizes.other, // 0
-            CacheSizes.micro, // 1
-            CacheSizes.small, // 2
-            CacheSizes.regular, // 3
-            CacheSizes.large // 4
+    private final GeoCacheType[] CacheTypNumbers = GeoCacheType.caches();
+    private final GeoCacheSize[] CacheSizeNumbers = new GeoCacheSize[]{GeoCacheSize.other, // 0
+            GeoCacheSize.micro, // 1
+            GeoCacheSize.small, // 2
+            GeoCacheSize.regular, // 3
+            GeoCacheSize.large // 4
     };
     private Cache cache;
     private Cache newValues;
@@ -121,8 +121,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     public void create() {
         newValues = new Cache(true);
-        newValues.setType(CacheTypes.Traditional);
-        newValues.Size = CacheSizes.micro;
+        newValues.setType(GeoCacheType.Traditional);
+        newValues.Size = GeoCacheSize.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
         newValues.coordinate = ShowMap.getInstance().normalMapView.center;
@@ -189,7 +189,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
             if (cl != null) {
                 update = true;
-                if (newValues.getType() == CacheTypes.Mystery) {
+                if (newValues.getType() == GeoCacheType.Mystery) {
                     if (!(cache.coordinate.equals(newValues.coordinate))) {
                         cache.setHasCorrectedCoordinates(true);
                     }

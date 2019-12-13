@@ -6,11 +6,11 @@ import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.database.Drafts;
-import de.droidcachebox.database.LogTypes;
+import de.droidcachebox.database.GeoCacheLogType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.views.DraftsView;
 import de.droidcachebox.gdx.views.LogView;
@@ -69,7 +69,7 @@ public class UploadDraftsOrLogs {
 
                         if (draft.isTbDraft) {
                             // there is no TB draft. we have to log direct
-                            result = GroundspeakAPI.uploadTrackableLog(draft.TravelBugCode, draft.TrackingNumber, draft.gcCode, LogTypes.CB_LogType2GC(draft.type), draft.timestamp, draft.comment);
+                            result = GroundspeakAPI.uploadTrackableLog(draft.TravelBugCode, draft.TrackingNumber, draft.gcCode, GeoCacheLogType.CB_LogType2GC(draft.type), draft.timestamp, draft.comment);
                         } else {
                             if (sendGCVote) {
                                 if (draft.gc_Vote > 0) {
@@ -111,7 +111,7 @@ public class UploadDraftsOrLogs {
 
                     if (!UploadMeldung.equals("")) {
                         if (!API_Key_error)
-                            MessageBox.show(UploadMeldung, Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                            MessageBox.show(UploadMeldung, Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
                     } else {
                         MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live);
                     }

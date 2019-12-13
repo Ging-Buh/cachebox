@@ -42,7 +42,7 @@ public class FunctionBQuersumme extends Function {
 
     private int qs(int zahl) {
         if (zahl <= 9) return zahl;
-        return zahl%10 + qs(zahl/10);
+        return zahl % 10 + qs(zahl / 10);
     }
 
     @Override
@@ -56,18 +56,18 @@ public class FunctionBQuersumme extends Function {
     }
 
     @Override
-    public DataTypes.DataType getParamType(int i) {
+    public DataType getParamType(int i) {
         switch (i) {
             case 0:
-                return DataTypes.DataType.String;
+                return DataType.String;
             default:
-                return DataTypes.DataType.None;
+                return DataType.None;
         }
     }
 
     @Override
-    public DataTypes.DataType getReturnType() {
-        return DataTypes.DataType.Integer;
+    public DataType getReturnType() {
+        return DataType.Integer;
     }
 
     @Override

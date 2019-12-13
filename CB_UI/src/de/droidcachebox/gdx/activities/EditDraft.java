@@ -24,7 +24,7 @@ import de.droidcachebox.database.Draft;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -175,7 +175,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
                     draft.timestamp = timestamp;
                 } catch (ParseException e) {
-                    final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error,
+                    final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error,
                             (which, data) -> {
                                 Timer runTimer = new Timer();
                                 TimerTask task = new TimerTask() {

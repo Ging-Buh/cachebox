@@ -10,8 +10,8 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.R;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheLogType;
 import de.droidcachebox.database.LogEntry;
-import de.droidcachebox.database.LogTypes;
 import de.droidcachebox.gdx.math.CB_Rect;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
@@ -343,7 +343,7 @@ public class CacheDraw {
         int n = logs.size();
         for (int i = 0; i < n; i++) {
             LogEntry l = logs.get(i);
-            if (l.logTypes == LogTypes.found) {
+            if (l.geoCacheLogType == GeoCacheLogType.found) {
                 try {
                     SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
                     FoundDate = postFormater.format(l.logDate);

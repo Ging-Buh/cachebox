@@ -1130,17 +1130,17 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("cache_type")) {
-            cache.setType(CacheTypes.parseString(values.get("cache_type")));
+            cache.setType(GeoCacheType.parseString(values.get("cache_type")));
             if (cache.getGcCode().indexOf("MZ") == 0)
-                cache.setType(CacheTypes.Munzee);
+                cache.setType(GeoCacheType.Munzee);
         } else {
-            cache.setType(CacheTypes.Undefined);
+            cache.setType(GeoCacheType.Undefined);
         }
 
         if (values.containsKey("cache_container")) {
-            cache.Size = CacheSizes.parseString(values.get("cache_container"));
+            cache.Size = GeoCacheSize.parseString(values.get("cache_container"));
         } else {
-            cache.Size = CacheSizes.other;
+            cache.Size = GeoCacheSize.other;
         }
 
         if (values.containsKey("cache_difficulty")) {
@@ -1196,9 +1196,9 @@ public class GPXFileImporter {
 
                     if (attrGcComId > 0 && attrGcComVal != -1) {
                         if (attrGcComVal > 0) {
-                            cache.addAttributePositive(Attributes.getAttributeEnumByGcComId(attrGcComId));
+                            cache.addAttributePositive(Attribute.getAttributeEnumByGcComId(attrGcComId));
                         } else {
-                            cache.addAttributeNegative(Attributes.getAttributeEnumByGcComId(attrGcComId));
+                            cache.addAttributeNegative(Attribute.getAttributeEnumByGcComId(attrGcComId));
                         }
                     }
                 }
@@ -1260,7 +1260,7 @@ public class GPXFileImporter {
                     }
 
                     if (values.containsKey("cache_log_" + String.valueOf(i) + "_type")) {
-                        log.logTypes = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
+                        log.geoCacheLogType = GeoCacheLogType.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
                     }
 
                     if (log != null) {
@@ -1302,7 +1302,7 @@ public class GPXFileImporter {
                         }
                     }
 
-                    Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
+                    Waypoint FinalWp = new Waypoint(newGcCode, GeoCacheType.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
 
                     cache.waypoints.add(FinalWp);
 

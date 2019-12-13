@@ -2,7 +2,7 @@ package de.droidcachebox.database;
 
 import de.droidcachebox.core.CB_Core_Settings;
 
-public enum LogTypes {
+public enum GeoCacheLogType {
     found, // 0
     didnt_find, // 1
     note, // 2
@@ -88,7 +88,7 @@ public enum LogTypes {
     'Event Announcement',
     'Submit for Review']
      */
-    public static LogTypes parseString(String text) {
+    public static GeoCacheLogType parseString(String text) {
 
         if (text.equalsIgnoreCase("Found It")) {
             return found;
@@ -174,7 +174,7 @@ public enum LogTypes {
         return note;
     }
 
-    public static LogTypes GC2CB_LogType(int value) {
+    public static GeoCacheLogType GC2CB_LogType(int value) {
         switch (value) {
             case 1:
                 return unarchive;
@@ -242,7 +242,7 @@ public enum LogTypes {
      * @param value
      * @return
      */
-    public static int CB_LogType2GC(LogTypes value) {
+    public static int CB_LogType2GC(GeoCacheLogType value) {
         switch (value) {
             case unarchive:
                 return 1;

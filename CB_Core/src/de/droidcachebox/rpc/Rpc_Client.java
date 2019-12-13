@@ -70,7 +70,7 @@ public class Rpc_Client {
                 return (RpcAnswer) obj;
             }
         } catch (Exception ex) {
-            Log.err("Rpc_Client","",ex);
+            Log.err("Rpc_Client", "", ex);
             return null;
         }
 

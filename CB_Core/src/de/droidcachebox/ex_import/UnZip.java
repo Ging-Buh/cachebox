@@ -14,6 +14,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
 /**
  * @author Longri from => http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  */
@@ -40,8 +41,7 @@ public class UnZip {
         if (PlatformUIBase.AndroidVersion >= 24) {
             // todo Android has nothing to do in Core
             zip = new ZipFile(file.getAbsolutePath(), Charset.forName("ISO-8859-1"));
-        }
-        else {
+        } else {
             zip = new ZipFile(file.getAbsolutePath());
         }
 

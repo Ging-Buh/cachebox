@@ -32,7 +32,7 @@ import de.droidcachebox.gdx.controls.Slider.YPositionChanged;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButtons;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -374,7 +374,7 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchAktive = false;
-                    MessageBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
+                    MessageBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButton.OK, MessageBoxIcon.Asterisk, null);
                 } else {
                     Waypoint finalWp = tmp.getCorrectedFinal();
                     if (finalWp == null)
@@ -402,7 +402,7 @@ public class SearchDialog extends PopUp_Base {
         GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
 
             if (invalidAccessToken) {
-                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null));
             } else {
 
                 wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new ICancelRunnable() {
@@ -412,7 +412,7 @@ public class SearchDialog extends PopUp_Base {
                         if (isPremiumMember()) {
                             searchOnlineNow();
                         } else {
-                            MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                            MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
                                     (which, data) -> {
                                         if (which == MessageBox.BTN_LEFT_POSITIVE) {
                                             searchOnlineNow();
@@ -628,14 +628,14 @@ public class SearchDialog extends PopUp_Base {
         // First check API-Key with visual Feedback
         GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
             if (invalidAccessToken) {
-                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null));
+                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null));
             } else {
                 closeWD();
                 GL.that.RunOnGL(() -> {
                     if (isPremiumMember()) {
                         showTargetApiDialog();
                     } else {
-                        messageBox = MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                        messageBox = MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
                                 (which, data) -> {
                                     closeMsgBox();
                                     if (which == MessageBox.BTN_LEFT_POSITIVE) {
