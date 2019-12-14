@@ -370,7 +370,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             // In HTML5, the action attribute is no longer required.
             do {
                 Attribute attribute = attrs.next();
-                File result = new File(Config.mWorkPath + "/data/Attribute/" + attribute.getImageName() + ".png");
+                File result = new File(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
                 // the url is missing the value, so we give that appended in the name and the blank
                 sb.append("<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
             } while (attrs.hasNext());

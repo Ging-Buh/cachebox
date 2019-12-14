@@ -102,9 +102,10 @@ public class CacheInfo extends CB_View_Base {
         initialMesure();
     }
 
+    /*
     public boolean needsMaintenance() {
         return mCache.getAttributes().contains(Attribute.Needs_maintenance);
-        /*
+        / *
         Date lastNeedsMaintenance = null;
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
@@ -117,8 +118,9 @@ public class CacheInfo extends CB_View_Base {
             }
         }
         return false;
-         */
+         * /
     }
+     */
 
     /*
     public int numberOfDNFsAfterLastFound() {

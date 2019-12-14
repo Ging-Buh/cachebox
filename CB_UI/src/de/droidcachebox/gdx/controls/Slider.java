@@ -1,7 +1,7 @@
 package de.droidcachebox.gdx.controls;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.Config;
 import de.droidcachebox.SelectedCacheChangedEventListener;
@@ -9,8 +9,6 @@ import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
-import de.droidcachebox.gdx.graphics.ColorDrawable;
-import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeChangedEvent;
@@ -24,11 +22,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Slider extends CB_View_Base implements SelectedCacheChangedEventListener {
     private static final int MAX_ANIMATION_COUNT = 1000;
+    // private static final ColorDrawable transparent = new ColorDrawable(new HSV_Color(0, 0.1f, 0, 0.8f));
+    private static final SpriteDrawable red = new SpriteDrawable(Sprites.getSprite("red"));
+    private static final SpriteDrawable yellow = new SpriteDrawable(Sprites.getSprite("yellow"));
+    private static final SpriteDrawable green = new SpriteDrawable(Sprites.getSprite("green"));
+    private static final SpriteDrawable transparent = new SpriteDrawable(Sprites.getSprite("transparent"));
     public static Slider that;
     private static Box mSlideBox, mSlideBoxContent;
     private final int ANIMATION_TIME = 50;
     private final de.droidcachebox.gdx.controls.QuickButtonList quickButtonList;
-    private final CB_Label mLblCacheName;
+    private final CB_Label mLblCacheName, geoCacheType;
     private final CB_Label[] last5Logs;
     private final int QuickButtonMaxHeight;
     private final Handler handler = new Handler();
@@ -129,6 +132,11 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
             last5Logs[i].setFont(Fonts.getBig());
             mSlideBox.addNext(last5Logs[i], FIXED);
         }
+        geoCacheType = new CB_Label();
+        geoCacheType.setSize(mSlideBox.getHeight(), mSlideBox.getHeight());
+        geoCacheType.setHAlignment(HAlignment.CENTER);
+        mSlideBox.addNext(geoCacheType, FIXED);
+
         mLblCacheName = new CB_Label(new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
         mLblCacheName.setPos(30, 0);
         mLblCacheName.setHAlignment(HAlignment.SCROLL_CENTER);
@@ -136,9 +144,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
 
         mSlideBoxContent = new Box(this, "SlideBoxContent");
 
-        HSV_Color transBackColor = new HSV_Color(0, 0.1f, 0, 0.8f);
-
-        mSlideBoxContent.setBackground(new ColorDrawable(transBackColor));
+        mSlideBoxContent.setBackground(transparent);
         this.addChild(mSlideBoxContent);
         this.addChild(quickButtonList);
         this.addChild(mSlideBox);
@@ -207,7 +213,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         GL.that.RunOnGL(() -> {
             if (cache != null) {
                 fillCacheWpInfo();
-                String header = ",";
+                String header = "";
                 if (mLblCacheName != null) {
                     /*
                     if (cacheDesc.getCacheInfo().needsMaintenance()) {
@@ -216,31 +222,29 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
                      */
                     CB_List<LogEntry> logEntries = Database.getLogs(cache);
                     for (int i = 0; i < 5; i++) {
+                        last5Logs[i].setText(" ");
                         if (i < logEntries.size()) {
                             switch (logEntries.get(i).geoCacheLogType) {
                                 case found:
                                 case owner_maintenance:
-                                    last5Logs[i].setText("G");
-                                    last5Logs[i].setTextColor(Color.GREEN);
+                                    last5Logs[i].setBackground(green);
                                     break;
                                 case didnt_find:
-                                    last5Logs[i].setText("R");
-                                    last5Logs[i].setTextColor(Color.RED);
+                                    last5Logs[i].setBackground(red);
                                     break;
                                 case needs_archived:
                                 case needs_maintenance:
-                                    last5Logs[i].setText("Y");
-                                    last5Logs[i].setTextColor(Color.YELLOW);
+                                    last5Logs[i].setBackground(yellow);
                                     break;
                                 default:
-                                    last5Logs[i].setText(" ");
+                                    last5Logs[i].setBackground(transparent);
                             }
-                        }
-                        else {
-                            last5Logs[i].setText(" ");
+                        } else {
+                            last5Logs[i].setBackground(Sprites.ProgressBack);
                         }
                     }
-                    header = header + GeoCacheType.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getName();
+                    geoCacheType.setBackground(new SpriteDrawable(Sprites.getSprite("map" + cache.getType().name()))); // GeoCacheType.toShortString(cache) +
+                    header = header + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getName();
                 }
                 mLblCacheName.setText(header);
             }
