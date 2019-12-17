@@ -507,7 +507,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     // switch subValue
                     if (hasCorrected) {
                         if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
-                            cache.coordinate = new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal"));
+                            cache.setCoordinate(new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal")));
                             cache.waypoints.add(new Waypoint(
                                     "!?" + cache.getGcCode().substring(2),
                                     GeoCacheType.Final,
@@ -518,11 +518,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                                     "",
                                     "Final GSAK Corrected"));
                         } else {
-                            cache.coordinate = new Coordinate(reader.getDouble("Latitude"), reader.getDouble("Longitude"));
+                            cache.setCoordinate(new Coordinate(reader.getDouble("Latitude"), reader.getDouble("Longitude")));
                             cache.setHasCorrectedCoordinates(true);
                         }
                     } else {
-                        cache.coordinate = new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal"));
+                        cache.setCoordinate(new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal")));
                     }
                     break;
                 case "ShortDescription":

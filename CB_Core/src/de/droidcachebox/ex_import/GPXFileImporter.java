@@ -1052,7 +1052,7 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon")) {
-            cache.coordinate = new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(values.get("wpt_attribute_lon")).doubleValue());
+            cache.setCoordinate(new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(values.get("wpt_attribute_lon")).doubleValue()));
         }
 
         if (values.containsKey("wpt_name")) {
@@ -1282,10 +1282,10 @@ public class GPXFileImporter {
                     double lat = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lat"));
                     double lon = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lon"));
 
-                    Coordinate coorectedCoord = cache.coordinate;
+                    Coordinate coorectedCoord = cache.getCoordinate();
 
                     // set Original Coords
-                    cache.coordinate = new Coordinate(lat, lon);
+                    cache.setCoordinate(new Coordinate(lat, lon));
 
                     // create final WP with Corrected Coords
                     String newGcCode = Database.Data.createFreeGcCode(cache.getGcCode());

@@ -33,7 +33,7 @@ public class MenuItem extends ListViewItemBackground {
     protected boolean isPressed = false;
     private CB_Label mLabel;
     private Image checkImage;
-    private Drawable mIcon;
+    private Drawable iconDrawable;
     private String mTitle;
     private boolean mIsEnabled = true;
     private Image iconImage;
@@ -65,7 +65,14 @@ public class MenuItem extends ListViewItemBackground {
         // true, if clicked right of the beginning of the image
         if (checkImage == null)
             return false;
-        else return x > checkImage.getX();
+        else return x > checkImage.getX() && x < iconImage.getX();
+    }
+
+    public boolean isIconClicked(float x) {
+        // true, if clicked right of the beginning of the image
+        if (iconImage == null)
+            return false;
+        else return x > iconImage.getX();
     }
 
     @Override
@@ -75,11 +82,11 @@ public class MenuItem extends ListViewItemBackground {
 
         mLabel = new CB_Label(this);
 
-        boolean hasIcon = (mIcon != null);
+        boolean hasIcon = (iconDrawable != null);
         if (hasIcon) {
             CB_RectF rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()).scaleCenter(0.75f);
             iconImage = new Image(rec, "MenuItemImage", false);
-            iconImage.setDrawable(mIcon);
+            iconImage.setDrawable(iconDrawable);
             if (!mIsEnabled) {
                 iconImage.setColor(COLOR.getDisableFontColor());
             }
@@ -125,7 +132,7 @@ public class MenuItem extends ListViewItemBackground {
     }
 
     private void setContentSize() {
-        boolean hasIcon = (mIcon != null);
+        boolean hasIcon = (iconDrawable != null);
 
         float left = getHeight() * 0.2f;
         float right = hasIcon ? getHeight() : 0;
@@ -182,7 +189,7 @@ public class MenuItem extends ListViewItemBackground {
      * @return This Item so additional setters can be called.
      */
     public MenuItem setIcon(Drawable icon) {
-        mIcon = icon;
+        iconDrawable = icon;
         resetInitial();
         return this;
     }

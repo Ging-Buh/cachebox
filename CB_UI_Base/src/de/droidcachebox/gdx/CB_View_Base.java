@@ -328,7 +328,14 @@ public class CB_View_Base extends GL_View_Base {
     }
 
     /**
-     * * get innerHeight - Height of all placed objects
+     * getInnerHeight - Height for objects to be placed
+     **/
+    public float getInnerHeight() {
+        return getHeight() - topBorder - bottomBorder;
+    }
+
+    /**
+     * getAvailableHeight - Height of all placed objects
      **/
     public float getAvailableHeight() {
         if (row == null)

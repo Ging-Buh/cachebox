@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class TrackRecorder {
@@ -64,7 +65,7 @@ public class TrackRecorder {
         distanceForNextTrackpoint = Config.TrackDistance.getValue();
 
         GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
-        GlobalCore.AktuelleRoute.showRoute = true;
+        GlobalCore.AktuelleRoute.isVisible = true;
         GlobalCore.AktuelleRoute.isActualTrack = true;
         GlobalCore.aktuelleRouteCount = 0;
         GlobalCore.AktuelleRoute.trackLength = 0;
@@ -115,10 +116,10 @@ public class TrackRecorder {
 
     private static String GetDateTimeString() {
         Date timestamp = new Date();
-        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         String sDate = datFormat.format(timestamp);
-        datFormat = new SimpleDateFormat("HH:mm:ss");
+        datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
         datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         sDate += "T" + datFormat.format(timestamp) + "Z";
         return sDate;
@@ -280,7 +281,7 @@ public class TrackRecorder {
     public static void stopRecording() {
         if (GlobalCore.AktuelleRoute != null) {
             GlobalCore.AktuelleRoute.isActualTrack = false;
-            GlobalCore.AktuelleRoute.name = Translation.get("recordetTrack");
+            GlobalCore.AktuelleRoute.setName(Translation.get("recordetTrack"));
         }
         pauseRecording = false;
         recording = false;
@@ -288,7 +289,7 @@ public class TrackRecorder {
     }
 
     private static String generateTrackFileName() {
-        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
         String sDate = datFormat.format(new Date());
         return "Track_" + sDate + ".gpx";
     }

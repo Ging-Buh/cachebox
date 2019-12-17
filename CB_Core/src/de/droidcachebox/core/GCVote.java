@@ -30,14 +30,14 @@ import java.util.ArrayList;
 public class GCVote {
     private static final String log = "GCVote";
 
-    public static ArrayList<RatingData> GetRating(String User, String password, ArrayList<String> Waypoints) {
-        ArrayList<RatingData> result = new ArrayList<RatingData>();
+    public static ArrayList<RatingData> getRating(String user, String password, ArrayList<String> wayPoints) {
+        ArrayList<RatingData> result = new ArrayList<>();
 
-        String data = "userName=" + User + "&password=" + password + "&waypoints=";
-        for (int i = 0; i < Waypoints.size(); i++) {
-            data += Waypoints.get(i);
-            if (i < (Waypoints.size() - 1))
-                data += ",";
+        StringBuilder data = new StringBuilder("userName=" + user + "&password=" + password + "&waypoints=");
+        for (int i = 0; i < wayPoints.size(); i++) {
+            data.append(wayPoints.get(i));
+            if (i < (wayPoints.size() - 1))
+                data.append(",");
         }
 
         try {
@@ -54,20 +54,18 @@ public class GCVote {
             is.close();
             NodeList nodelist = doc.getElementsByTagName("vote");
 
-            for (Integer i = 0; i < nodelist.getLength(); i++) {
+            for (int i = 0; i < nodelist.getLength(); i++) {
                 Node node = nodelist.item(i);
-
                 RatingData ratingData = new RatingData();
-                ratingData.Rating = Float.valueOf(node.getAttributes().getNamedItem("voteAvg").getNodeValue());
+                ratingData.rating = Float.valueOf(node.getAttributes().getNamedItem("voteAvg").getNodeValue());
                 String userVote = node.getAttributes().getNamedItem("voteUser").getNodeValue();
-                ratingData.Vote = (userVote == "") ? 0 : Float.valueOf(userVote);
-                ratingData.Waypoint = node.getAttributes().getNamedItem("waypoint").getNodeValue();
+                ratingData.vote = (userVote.length() == 0) ? 0 : Float.parseFloat(userVote);
+                ratingData.wayPoint = node.getAttributes().getNamedItem("waypoint").getNodeValue();
                 result.add(ratingData);
-
             }
 
         } catch (Exception e) {
-            Log.err(log, "GetRating", e);
+            Log.err(log, "getRating", e);
             return null;
         }
         return result;
@@ -101,7 +99,7 @@ public class GCVote {
         }
         if (guid.length() == 0) return false;
 
-        String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid + "&waypoint=" + waypoint;
+        String data = "userName=" + User + "&password=" + password + "&voteUser=" + vote / 100.0 + "&cacheId=" + guid + "&waypoint=" + waypoint;
 
         try {
             String responseString = Webb.create()

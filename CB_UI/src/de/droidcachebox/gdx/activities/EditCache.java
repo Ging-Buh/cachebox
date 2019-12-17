@@ -125,9 +125,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.Size = GeoCacheSize.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
-        newValues.coordinate = ShowMap.getInstance().normalMapView.center;
-        if (!newValues.coordinate.isValid())
-            newValues.coordinate = GlobalCore.getSelectedCoord();
+        newValues.setCoordinate(ShowMap.getInstance().normalMapView.center);
+        if (!newValues.getCoordinate().isValid())
+            newValues.setCoordinate(GlobalCore.getSelectedCoordinate());
         // GC - Code bestimmen für freies CWxxxx = CustomWaypint
         String prefix = "CW";
         int count = 0;
@@ -166,7 +166,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         }
         cacheDifficulty.setSelection((int) (cache.getDifficulty() * 2 - 2));
         cacheTerrain.setSelection((int) (cache.getTerrain() * 2 - 2));
-        cacheCoords.setCoordinate(cache.coordinate);
+        cacheCoords.setCoordinate(cache.getCoordinate());
         cacheTitle.setText(cache.getName());
         cacheOwner.setText(cache.getOwner());
         cacheState.setText(cache.getState());
@@ -190,7 +190,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             if (cl != null) {
                 update = true;
                 if (newValues.getType() == GeoCacheType.Mystery) {
-                    if (!(cache.coordinate.equals(newValues.coordinate))) {
+                    if (!(cache.getCoordinate().equals(newValues.getCoordinate()))) {
                         cache.setHasCorrectedCoordinates(true);
                     }
                 }
@@ -201,7 +201,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.Size = newValues.Size;
             cache.setDifficulty(newValues.getDifficulty());
             cache.setTerrain(newValues.getTerrain());
-            cache.coordinate = newValues.coordinate;
+            cache.setCoordinate(newValues.getCoordinate());
             cache.setName(cacheTitle.getText());
             cache.setOwner(cacheOwner.getText());
             cache.setState(cacheState.getText());
@@ -290,7 +290,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private void setCacheCoordsChangeListener() {
         cacheCoords.setCoordinateChangedListener(coord -> {
             EditCache.this.show();
-            newValues.coordinate = coord; // oder = cacheCoords.getMyPosition()
+            newValues.setCoordinate(coord); // oder = cacheCoords.getMyPosition()
         });
     }
 

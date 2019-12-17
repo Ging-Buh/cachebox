@@ -83,7 +83,7 @@ public class CacheList extends MoveableList<Cache> {
             Coordinate fromPos = selectedCoord;
             // avoid "illegal waypoint"
             if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)) {
-                fromPos = selected.getCache().coordinate;
+                fromPos = selected.getCache().getCoordinate();
             }
             if (fromPos == null) {
                 this.ResortAtWork = false;

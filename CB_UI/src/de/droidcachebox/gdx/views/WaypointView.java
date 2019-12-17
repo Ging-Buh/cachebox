@@ -167,7 +167,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             cm.addMenuItem("Projection", null, this::addProjection);
         MenuItem mi = cm.addMenuItem("UploadCorrectedCoordinates", null, () -> GL.that.postAsync(() -> {
             if (aktCache.hasCorrectedCoordinates())
-                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.coordinate);
+                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.getCoordinate());
             else if (aktWaypoint.isCorrectedFinal())
                 GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.getCoordinate());
             if (GroundspeakAPI.APIError == 0) {
@@ -190,11 +190,11 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         } catch (Exception e) {
             return;
         }
-        Coordinate coord = de.droidcachebox.GlobalCore.getSelectedCoord();
+        Coordinate coord = de.droidcachebox.GlobalCore.getSelectedCoordinate();
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
         if ((coord == null) || (!coord.isValid()))
-            coord = de.droidcachebox.GlobalCore.getSelectedCache().coordinate;
+            coord = de.droidcachebox.GlobalCore.getSelectedCache().getCoordinate();
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
         Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().Id, "", newGcCode);
 
@@ -300,7 +300,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     private void addProjection() {
         createNewWaypoint = true;
 
-        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.getCoordinate() : (aktCache != null) ? aktCache.coordinate : Locator.getInstance().getMyPosition();
+        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.getCoordinate() : (aktCache != null) ? aktCache.getCoordinate() : Locator.getInstance().getMyPosition();
         String ProjName;
 
         ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;

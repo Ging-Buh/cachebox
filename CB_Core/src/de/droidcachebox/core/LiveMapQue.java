@@ -220,7 +220,7 @@ public class LiveMapQue {
             return;
 
         // no request if disabled
-        if (CB_Core_Settings.DisableLiveMap.getValue())
+        if (CB_Core_Settings.disableLiveMap.getValue())
             return;
 
         final Descriptor desc = new Descriptor(coord, Used_Zoom);

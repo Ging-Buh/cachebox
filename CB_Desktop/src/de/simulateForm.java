@@ -122,7 +122,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
         NetworkSend = false;
 
         trackPointIndexEnd = simulationRoute.trackPoints.size() - 1;
-        long nextTimeStamp = (simulationRoute.trackPoints.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.trackPoints.get(trackPointIndex).TimeStamp.getTime());
+        long nextTimeStamp = (simulationRoute.trackPoints.get(trackPointIndex + 1).date.getTime() - simulationRoute.trackPoints.get(trackPointIndex).date.getTime());
 
         if (!chekRealSpeed.getState())
             nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
@@ -135,10 +135,10 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
             @Override
             public void run() {
                 TrackPoint trk = simulationRoute.trackPoints.get(trackPointIndex);
-                Coordinate pos = new CoordinateGPS(trk.Y, trk.X);
-                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, ProviderType.GPS));
+                Coordinate pos = new CoordinateGPS(trk.y, trk.x);
+                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.direction, 95, ProviderType.GPS));
 
-                DesktopMain.compassheading = (float) trk.Direction;
+                DesktopMain.compassheading = (float) trk.direction;
 
                 if (trackPointIndex < trackPointIndexEnd - 2) {
                     trackPointIndex++;
@@ -241,11 +241,11 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
         simulationRoute = RouteOverlay.multiLoadRoute(Path, Color.BLACK);
 
-        // Dont display loadet simulat route
+        // Don't display loaded simulate route
         RouteOverlay.remove(simulationRoute);
 
         // TODO set GPX File Name to lblGPX
-        if (simulationRoute != null && simulationRoute.name != null) {
+        if (simulationRoute != null && simulationRoute.getName() != null) {
             trackPointIndex = 0;
             int idx = simulationRoute.fileName.lastIndexOf("\\");
 

@@ -315,7 +315,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
                         CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.getLongitude()));
                     } else {
                         WaypointLabel.setText(selectedCache.getGcCode());
-                        CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.coordinate.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.coordinate.getLongitude()));
+                        CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.getCoordinate().getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.getCoordinate().getLongitude()));
                     }
                 } catch (Exception e) {
                     CoordLabel.setText(" - - - ");

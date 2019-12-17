@@ -173,7 +173,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
     private void createNewTrack() {
         GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
-        GlobalCore.AktuelleRoute.showRoute = true;
+        GlobalCore.AktuelleRoute.isVisible = true;
         GlobalCore.AktuelleRoute.isActualTrack = true;
         GlobalCore.aktuelleRouteCount = 0;
         GlobalCore.AktuelleRoute.trackLength = 0;
@@ -181,10 +181,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     }
 
     private TrackPoint convertToTrackPoint(Waypoint wp) {
-
-        TrackPoint trp = new TrackPoint(wp.getLongitude(), wp.getLatitude(), 0, 0, new Date());
-        return trp;
-
+        return new TrackPoint(wp.getLongitude(), wp.getLatitude(), 0, 0, new Date());
     }
 
     @Override

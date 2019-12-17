@@ -107,7 +107,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
         if (Locator.getInstance().isValid()) {
 
-            if (mCache.coordinate == null) {
+            if (mCache.getCoordinate() == null) {
                 // mCache was disposed
                 Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.Id);
                 if (c == null) {
@@ -120,7 +120,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
             Waypoint FinalWp = mCache.getCorrectedFinal();
 
-            Coordinate Final = FinalWp != null ? FinalWp.getCoordinate() : mCache.coordinate;
+            Coordinate Final = FinalWp != null ? FinalWp.getCoordinate() : mCache.getCoordinate();
             CalculationType calcType = CalculationType.FAST;
             Cache c = GlobalCore.getSelectedCache();
             if (c != null) {

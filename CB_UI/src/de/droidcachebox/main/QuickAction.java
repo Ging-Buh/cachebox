@@ -69,6 +69,7 @@ public enum QuickAction {
     Notesview, // 23
     uploadDrafts, // 24
     torch, // 25
+    // createRoute,
 
     // ScreenLock, // 21
 
@@ -129,6 +130,7 @@ public enum QuickAction {
                 return UploadDrafts.getInstance();
             case torch:
                 return SwitchTorch.getInstance();
+            // case createRoute:
 
         }
         return null;
@@ -188,6 +190,8 @@ public enum QuickAction {
                 return Translation.get("uploadDrafts");
             case torch:
                 return Translation.get("torch");
+            // case createRoute:
+               // return Translation.get("generateRoute");
         }
         return "empty";
     }

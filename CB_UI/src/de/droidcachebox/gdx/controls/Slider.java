@@ -122,14 +122,13 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         quickButtonList = new QuickButtonList(new CB_RectF(0, this.getHeight() - QuickButtonMaxHeight, this.getWidth(), QuickButtonMaxHeight), "QuickButtonList");
 
         mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.getInstance().getInfoSliderHeight()), "SlideBox");
-        mSlideBox.setBackground(Sprites.ProgressBack);
+        mSlideBox.setBackground(Sprites.ProgressBack); // topBorder + bottomBorder are ignored, so initRow
+        mSlideBox.initRow(TOPDOWN, mSlideBox.getHeight());
         float w = Fonts.MeasureBig("G.").width;
         last5Logs = new CB_Label[5];
         for (int i = 0; i < 5; i++) {
             last5Logs[i] = new CB_Label();
             last5Logs[i].setSize(w, mSlideBox.getHeight());
-            last5Logs[i].setHAlignment(HAlignment.CENTER);
-            last5Logs[i].setFont(Fonts.getBig());
             mSlideBox.addNext(last5Logs[i], FIXED);
         }
         geoCacheType = new CB_Label();

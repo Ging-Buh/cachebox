@@ -473,15 +473,15 @@ public class CacheInfo extends CB_View_Base {
         }
 
         if (ifModeFlag(SHOW_COORDS)) {
-            if (mCache.coordinate == null) {
+            if (mCache.getCoordinate() == null) {
                 text.append("????");
                 text.append(br);
             } else {
                 if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)) {
-                    text.append(mCache.coordinate.formatCoordinateLineBreak());
+                    text.append(mCache.getCoordinate().formatCoordinateLineBreak());
                     text.append(br);
                 } else {
-                    text.append(mCache.coordinate.formatCoordinate());
+                    text.append(mCache.getCoordinate().formatCoordinate());
                     text.append(br);
                 }
             }

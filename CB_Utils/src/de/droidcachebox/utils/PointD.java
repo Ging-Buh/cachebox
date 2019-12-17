@@ -1,17 +1,17 @@
 package de.droidcachebox.utils;
 
 public class PointD {
-    public double X;
-    public double Y;
+    public double x;
+    public double y;
 
     public PointD(double x, double y) {
-        this.X = x;
-        this.Y = y;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
     public String toString() {
-        return this.X + " / " + this.Y;
+        return this.x + " / " + this.y;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class PointD {
             return false;
         }
         PointD other = (PointD) obj;
-        return X == other.X && Y == other.Y;
+        return x == other.x && y == other.y;
     }
 }

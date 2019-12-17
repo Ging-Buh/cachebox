@@ -50,7 +50,7 @@ public class RouteOverlay {
     private static final String log = "RouteOverlay";
     public static boolean mRoutesChanged = false;
     public static int aktCalcedZoomLevel = -1;
-    private static Track internalRoutingTrack; // for identifying the track! has been originally from openRouteService implementation. now from BRouter
+    private static Track routingTrack; // for identifying the track! has been originally from openRouteService implementation. now from BRouter
     private static ArrayList<Track> tracks = new ArrayList<>();
     private static Color[] colors = new Color[13];
     private static ArrayList<Route> routes;
@@ -91,10 +91,10 @@ public class RouteOverlay {
     // Read track from gpx file. !!! it is possible that a gpx file contains more than 1 <trk> segments
     public static Track multiLoadRoute(String file, Color color) {
         float[] dist = new float[4];
-        double Distance = 0;
-        double AltitudeDifference = 0;
-        double DeltaAltitude;
-        CoordinateGPS FromPosition = new CoordinateGPS(0, 0);
+        double distance = 0;
+        double altitudeDifference = 0;
+        double deltaAltitude;
+        CoordinateGPS fromPosition = new CoordinateGPS(0, 0);
         BufferedReader reader;
 
         try {
@@ -142,16 +142,16 @@ public class RouteOverlay {
                                 isSeg = true;
                                 track = new Track(null, color);
                                 track.fileName = file;
-                                Distance = 0;
-                                AltitudeDifference = 0;
+                                distance = 0;
+                                altitudeDifference = 0;
                                 AnzTracks++;
                                 if (GPXName == null)
-                                    track.name = FileIO.getFileName(file);
+                                    track.setName(FileIO.getFileName(file));
                                 else {
                                     if (AnzTracks <= 1)
-                                        track.name = GPXName;
+                                        track.setName(GPXName);
                                     else
-                                        track.name = GPXName + AnzTracks;
+                                        track.setName(GPXName + AnzTracks);
                                 }
                                 continue;
                             }
@@ -163,16 +163,16 @@ public class RouteOverlay {
                                 isRte = true;
                                 track = new Track(null, color);
                                 track.fileName = file;
-                                Distance = 0;
-                                AltitudeDifference = 0;
+                                distance = 0;
+                                altitudeDifference = 0;
                                 AnzTracks++;
                                 if (GPXName == null)
-                                    track.name = FileIO.getFileName(file);
+                                    track.setName(FileIO.getFileName(file));
                                 else {
                                     if (AnzTracks <= 1)
-                                        track.name = GPXName;
+                                        track.setName(GPXName);
                                     else
-                                        track.name = GPXName + AnzTracks;
+                                        track.setName(GPXName + AnzTracks);
                                 }
                                 continue;
                             }
@@ -201,7 +201,7 @@ public class RouteOverlay {
                             if (name_end > name_start) {
                                 // tmpLine, damit Groß-/Kleinschreibung beachtet wird
                                 if (isSeg | isRte)
-                                    track.name = tmpLine.substring(name_start, name_end);
+                                    track.setName(tmpLine.substring(name_start, name_end));
                                 else
                                     GPXName = tmpLine.substring(name_start, name_end);
                             }
@@ -213,10 +213,10 @@ public class RouteOverlay {
                         if (line.contains("</trkseg>")) // End of the Track Segment detected?
                         {
                             if (track.trackPoints.size() < 2)
-                                track.name = "no Route segment found";
-                            track.showRoute = true;
-                            track.trackLength = Distance;
-                            track.altitudeDifference = AltitudeDifference;
+                                track.setName("no Route segment found");
+                            track.isVisible = true;
+                            track.trackLength = distance;
+                            track.altitudeDifference = altitudeDifference;
                             add(track);
                             isSeg = false;
                             break;
@@ -225,10 +225,10 @@ public class RouteOverlay {
                         if (line.contains("</rte>")) // End of the Route detected?
                         {
                             if (track.trackPoints.size() < 2)
-                                track.name = "no Route segment found";
-                            track.showRoute = true;
-                            track.trackLength = Distance;
-                            track.altitudeDifference = AltitudeDifference;
+                                track.setName("no Route segment found");
+                            track.isVisible = true;
+                            track.trackLength = distance;
+                            track.altitudeDifference = altitudeDifference;
                             add(track);
                             isRte = false;
                             break;
@@ -309,20 +309,20 @@ public class RouteOverlay {
                                 track.trackPoints.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getElevation(), lastAcceptedDirection, lastAcceptedTime));
 
                                 // Calculate the length of a Track
-                                if (!FromPosition.isValid()) {
-                                    FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
-                                    FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
-                                    FromPosition.setValid(true);
+                                if (!fromPosition.isValid()) {
+                                    fromPosition = new CoordinateGPS(lastAcceptedCoordinate);
+                                    fromPosition.setElevation(lastAcceptedCoordinate.getElevation());
+                                    fromPosition.setValid(true);
                                 } else {
-                                    MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
-                                    Distance += dist[0];
-                                    DeltaAltitude = Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
-                                    FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
+                                    MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, fromPosition.getLatitude(), fromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
+                                    distance = distance + dist[0];
+                                    deltaAltitude = Math.abs(fromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
+                                    fromPosition = new CoordinateGPS(lastAcceptedCoordinate);
 
-                                    if (DeltaAltitude >= 25.0) // nur aufaddieren wenn Höhenunterschied größer 10 Meter
+                                    if (deltaAltitude >= 25.0) // nur aufaddieren wenn Höhenunterschied größer 10 Meter
                                     {
-                                        FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
-                                        AltitudeDifference = AltitudeDifference + DeltaAltitude;
+                                        fromPosition.setElevation(lastAcceptedCoordinate.getElevation());
+                                        altitudeDifference = altitudeDifference + deltaAltitude;
                                     }
                                 }
                             }
@@ -394,12 +394,12 @@ public class RouteOverlay {
 
             // Log.info(log, "Number of Routes to show: " + Routes.size());
             for (Track track : tracks) {
-                if (track != null && track.showRoute) {
+                if (track != null && track.isVisible) {
                     addToDrawRoutes(tolerance, track, Zoom);
                 }
             }
 
-            if (GlobalCore.AktuelleRoute != null && GlobalCore.AktuelleRoute.showRoute) {
+            if (GlobalCore.AktuelleRoute != null && GlobalCore.AktuelleRoute.isVisible) {
                 addToDrawRoutes(tolerance, GlobalCore.AktuelleRoute, Zoom);
             }
 
@@ -419,17 +419,17 @@ public class RouteOverlay {
 
                 for (int ii = 0; ii < route.trackPoints.size() - 1; ii++) {
 
-                    double MapX1 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii).X);
-                    double MapY1 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii).Y);
+                    double mapX1 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii).x);
+                    double mapY1 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii).y);
 
-                    double MapX2 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii + 1).X);
-                    double MapY2 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii + 1).Y);
+                    double mapX2 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii + 1).x);
+                    double mapY2 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, route.trackPoints.get(ii + 1).y);
 
-                    Vector2 screen1 = mapView.worldToScreen(new Vector2((float) MapX1, (float) MapY1));
-                    Vector2 screen2 = mapView.worldToScreen(new Vector2((float) MapX2, (float) MapY2));
+                    Vector2 screen1 = mapView.worldToScreen(new Vector2((float) mapX1, (float) mapY1));
+                    Vector2 screen2 = mapView.worldToScreen(new Vector2((float) mapX2, (float) mapY2));
 
-                    screen1.y -= yVersatz;
-                    screen2.y -= yVersatz;
+                    screen1.y = screen1.y - yVersatz;
+                    screen2.y = screen2.y - yVersatz;
 
                     CB_RectF chkRec = new CB_RectF(mapView);
                     chkRec.setPos(0, 0);
@@ -473,7 +473,7 @@ public class RouteOverlay {
             // AllTrackPoints = track.Points.size();
             // ReduceTrackPoints = reducedPoints.size();
 
-            Route route = new Route(track.color, track == internalRoutingTrack);
+            Route route = new Route(track.getColor(), track == routingTrack);
             route.trackPoints = reducedPoints;
 
             routes.add(route);
@@ -502,9 +502,9 @@ public class RouteOverlay {
                 writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
 
                 writer.append("<trk>\n");
-                writer.append("<name>").append(track.name).append("</name>\n");
+                writer.append("<name>").append(track.getName()).append("</name>\n");
                 writer.append("<extensions>\n<gpxx:TrackExtension>\n");
-                writer.append("<gpxx:ColorRGB>").append(track.color.toString()).append("</gpxx:ColorRGB>\n");
+                writer.append("<gpxx:ColorRGB>").append(track.getColor().toString()).append("</gpxx:ColorRGB>\n");
                 writer.append("</gpxx:TrackExtension>\n</extensions>\n");
                 writer.append("<trkseg>\n");
                 writer.flush();
@@ -518,13 +518,13 @@ public class RouteOverlay {
         if (writer != null) {
             try {
                 for (int i = 0; i < track.trackPoints.size(); i++) {
-                    writer.append("<trkpt lat=\"").append(String.valueOf(track.trackPoints.get(i).Y)).append("\" lon=\"").append(String.valueOf(track.trackPoints.get(i).X)).append("\">\n");
+                    writer.append("<trkpt lat=\"").append(String.valueOf(track.trackPoints.get(i).y)).append("\" lon=\"").append(String.valueOf(track.trackPoints.get(i).x)).append("\">\n");
 
-                    writer.append("   <ele>").append(String.valueOf(track.trackPoints.get(i).Elevation)).append("</ele>\n");
+                    writer.append("   <ele>").append(String.valueOf(track.trackPoints.get(i).elevation)).append("</ele>\n");
                     SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                    String sDate = datFormat.format(track.trackPoints.get(i).TimeStamp);
+                    String sDate = datFormat.format(track.trackPoints.get(i).date);
                     datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                    sDate += "T" + datFormat.format(track.trackPoints.get(i).TimeStamp) + "Z";
+                    sDate += "T" + datFormat.format(track.trackPoints.get(i).date) + "Z";
                     writer.append("   <time>").append(sDate).append("</time>\n");
                     writer.append("</trkpt>\n");
                 }
@@ -551,15 +551,15 @@ public class RouteOverlay {
     }
 
     public static void remove(Track track) {
-        if (track == internalRoutingTrack) {
-            internalRoutingTrack = null;
+        if (track == routingTrack) {
+            routingTrack = null;
         }
         tracks.remove(track);
         routesChanged();
     }
 
     /**
-     * Dont use this for InternalRoutingTrack!! Use addInternalRoutingTrack(Track route)
+     * Dont use this for internal RoutingTrack!! Use setRoutingTrack(Track route)
      *
      * @param track ?
      */
@@ -568,17 +568,27 @@ public class RouteOverlay {
         routesChanged();
     }
 
-    public static void addInternalRoutingTrack(Track track) {
-        if (internalRoutingTrack == null) {
+    public static void setRoutingTrack(Track track) {
+        if (routingTrack == null) {
             track.setColor(new Color(0.85f, 0.1f, 0.2f, 1f));
         } else {
             // erst die alte route löschen
-            tracks.remove(internalRoutingTrack);
-            track.setColor(internalRoutingTrack.getColor());
+            tracks.remove(routingTrack);
+            track.setColor(routingTrack.getColor());
         }
         tracks.add(0, track);
-        internalRoutingTrack = track;
+        routingTrack = track;
 
+        routesChanged();
+    }
+
+    public static boolean existsRoutingTrack() {
+        return routingTrack != null;
+    }
+
+    public static void removeRoutingTrack() {
+        tracks.remove(routingTrack);
+        routingTrack = null;
         routesChanged();
     }
 

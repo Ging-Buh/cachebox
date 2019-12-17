@@ -61,7 +61,7 @@ public class WriteIntoDB {
                     if (cache.hasCorrectedCoordinates()) {
                         // changed coords from GS stay preserved
                     } else {
-                        cache.coordinate = oldCache.coordinate;
+                        cache.setCoordinate(oldCache.getCoordinate());
                         cache.setHasCorrectedCoordinates(true);
                     }
                 }

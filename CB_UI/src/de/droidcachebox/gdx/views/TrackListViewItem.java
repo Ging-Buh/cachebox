@@ -25,16 +25,16 @@ public class TrackListViewItem extends ListViewItemBackground {
     private static CB_RectF rChkBounds;
     private final IRouteChangedListener mRouteChangedListener;
     public Vector2 lastItemTouchPos;
-    private Track mRoute;
+    private Track track;
     private float left;
-    private CB_Label EntryName;
+    private CB_Label trackName;
     private CB_Label EntryLength;
     private Sprite colorReck;
     private boolean Clicked = false;
 
     public TrackListViewItem(CB_RectF rec, int Index, Track route, IRouteChangedListener listener) {
-        super(rec, Index, route.name);
-        mRoute = route;
+        super(rec, Index, route.getName());
+        track = route;
         mRouteChangedListener = listener;
     }
 
@@ -80,7 +80,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         drawColorRec(batch);
 
         // draw Name
-        if (EntryName == null || EntryLength == null) {
+        if (trackName == null || EntryLength == null) {
             createLabel();
         }
 
@@ -89,22 +89,22 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void createLabel() {
-        if (EntryName == null) {
+        if (trackName == null) {
 
             CB_RectF rec = new CB_RectF(left, this.getHeight() / 2, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
-            EntryName = new CB_Label(rec);
+            trackName = new CB_Label(rec);
 
-            EntryName.setText(mRoute.name);
+            trackName.setText(track.getName());
 
-            this.addChild(EntryName);
+            this.addChild(trackName);
         }
 
-        // draw Lenght
+        // draw Length
         if (EntryLength == null) {
 
             CB_RectF rec = new CB_RectF(left, 0, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
             EntryLength = new CB_Label(this.name + " EntryLength", rec, "");
-            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.trackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.altitudeDifference));
+            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) track.trackLength) + " / " + UnitFormatter.DistanceString((float) track.altitudeDifference));
 
             this.addChild(EntryLength);
         }
@@ -113,7 +113,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void drawColorRec(Batch batch) {
-        if (mRoute == null)
+        if (track == null)
             return;
         if (lBounds == null) {
             lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
@@ -123,7 +123,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (colorReck == null) {
             colorReck = Sprites.getSprite("text-field-back");
             colorReck.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
-            colorReck.setColor(mRoute.getColor());
+            colorReck.setColor(track.getColor());
         }
 
         colorReck.draw(batch);
@@ -149,7 +149,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
         }
 
-        if (mRoute.showRoute) {
+        if (track.isVisible) {
             chkOn.draw(batch);
         } else {
             chkOff.draw(batch);
@@ -161,23 +161,18 @@ public class TrackListViewItem extends ListViewItemBackground {
         // Log.debug(log, "TrackListViewItem => Chk Clicked");
 
         GL.that.RunOnGL(() -> {
-            mRoute.showRoute = !mRoute.showRoute;
+            track.isVisible = !track.isVisible;
             if (mRouteChangedListener != null)
-                mRouteChangedListener.routeChanged(mRoute);
+                mRouteChangedListener.routeChanged(track);
         });
         GL.that.renderOnce();
     }
 
     private void colorClick() {
-        // Log.debug(log, "TrackListViewItem => Color Clicked");
-
         GL.that.RunOnGL(() -> {
-            ColorPicker clrPick = new ColorPicker(ActivityBase.activityRec(), mRoute.getColor(), color -> {
-                if (color == null)// no changes
-                {
-                    return;
-                }
-                mRoute.setColor(color);
+            ColorPicker clrPick = new ColorPicker(ActivityBase.activityRec(), track.getColor(), color -> {
+                if (color == null) return;
+                track.setColor(color);
                 colorReck = null;
             });
             clrPick.show();
@@ -185,19 +180,18 @@ public class TrackListViewItem extends ListViewItemBackground {
         GL.that.renderOnce();
     }
 
-    public void notifyTrackChanged(Track route) {
-        mRoute = route;
+    public void notifyTrackChanged(Track track) {
+        this.track = track;
         if (EntryLength != null)
-            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.trackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.altitudeDifference));
-
+            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) this.track.trackLength) + " / " + UnitFormatter.DistanceString((float) this.track.altitudeDifference));
     }
 
-    public Track getRoute() {
-        return mRoute;
+    public Track getTrack() {
+        return track;
     }
 
     public interface IRouteChangedListener {
-        void routeChanged(Track route);
+        void routeChanged(Track track);
     }
 
 }

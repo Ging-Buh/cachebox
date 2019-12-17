@@ -114,7 +114,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                         if (!initialResortAfterFirstFixCompleted && Locator.getInstance().getProvider() != ProviderType.NULL) {
                             if (GlobalCore.getSelectedCache() == null) {
                                 synchronized (Database.Data.cacheList) {
-                                    CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                                    CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
                                     if (ret != null && ret.getCache() != null) {
                                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
@@ -174,7 +174,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                         }
                                     }
                                     if (resort || z == 0) {
-                                        CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                                        CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
                                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                         GlobalCore.setNearestCache(ret.getCache());

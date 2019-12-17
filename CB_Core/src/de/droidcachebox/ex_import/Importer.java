@@ -240,18 +240,18 @@ public class Importer {
                 idLookup.put(gcVoteCacheInfo.getGcCode(), gcVoteCacheInfo.getId());
             }
 
-            ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
+            ArrayList<RatingData> ratingData = GCVote.getRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
 
             if (ratingData == null || ratingData.isEmpty()) {
                 failCount += packageSize;
                 ip.ProgressInkrement("importGcVote", "Query failed...", false);
             } else {
                 for (RatingData data : ratingData) {
-                    if (idLookup.containsKey(data.Waypoint)) {
-                        if (resetVote.containsKey(data.Waypoint)) {
-                            gcVoteDAO.updateRatingAndVote(idLookup.get(data.Waypoint), data.Rating, data.Vote);
+                    if (idLookup.containsKey(data.wayPoint)) {
+                        if (resetVote.containsKey(data.wayPoint)) {
+                            gcVoteDAO.updateRatingAndVote(idLookup.get(data.wayPoint), data.rating, data.vote);
                         } else {
-                            gcVoteDAO.updateRating(idLookup.get(data.Waypoint), data.Rating);
+                            gcVoteDAO.updateRating(idLookup.get(data.wayPoint), data.rating);
                         }
                     }
 

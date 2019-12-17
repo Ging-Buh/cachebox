@@ -70,7 +70,7 @@ public class CB_RectF {
 
     public CB_RectF(CB_RectF rec) {
         if (rec != null && rec.member != null) {
-            System.arraycopy(rec.member, 0, this.member, 0, 10);
+            System.arraycopy(rec.member, 0, member, 0, 10);
         }
     }
 
@@ -88,13 +88,13 @@ public class CB_RectF {
     private void calcCrossCorner() {
         if (member == null)
             throw new IllegalStateException("Is Disposed");
-        this.member[4] = this.member[2] / 2;
-        this.member[5] = this.member[3] / 2;
+        member[4] = member[2] / 2;
+        member[5] = member[3] / 2;
 
-        this.member[6] = this.member[0] + this.member[2];
-        this.member[7] = this.member[1] + this.member[3];
-        this.member[8] = this.member[0] + this.member[4];
-        this.member[9] = this.member[1] + this.member[5];
+        member[6] = member[0] + member[2];
+        member[7] = member[1] + member[3];
+        member[8] = member[0] + member[4];
+        member[9] = member[1] + member[5];
     }
 
     public float getHalfWidth() {
@@ -165,9 +165,9 @@ public class CB_RectF {
     public void setX(float i) {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
-        if (this.member[0] == i)
+        if (member[0] == i)
             return;
-        this.member[0] = i;
+        member[0] = i;
         calcCrossCorner();
         sizeChanged();
     }
@@ -181,9 +181,9 @@ public class CB_RectF {
     public void setY(float i) {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
-        if (this.member[1] == i)
+        if (member[1] == i)
             return;
-        this.member[1] = i;
+        member[1] = i;
         calcCrossCorner();
         sizeChanged();
     }
@@ -225,19 +225,19 @@ public class CB_RectF {
     }
 
     public boolean contains(float x, float y) {
-        if (this.member == null)
+        if (member == null)
             return false;
 
         try {
             // runde
             float rX = Math.round(x);
             float rY = Math.round(y);
-            float rTX = Math.round(this.member[0]);
-            float rTY = Math.round(this.member[1]);
-            float rTCX = Math.round(this.member[6]);
-            float rTCY = Math.round(this.member[7]);
+            float rTX = Math.round(member[0]);
+            float rTY = Math.round(member[1]);
+            float rTCX = Math.round(member[6]);
+            float rTCY = Math.round(member[7]);
 
-            return this.member[2] > 0 && this.member[3] > 0 // check for empty first
+            return member[2] > 0 && member[3] > 0 // check for empty first
                     && rX >= rTX && rX <= rTCX && rY >= rTY && rY <= rTCY;
         } catch (Exception e) {
             return false;
@@ -252,8 +252,8 @@ public class CB_RectF {
             throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
         if (rec == null)
             return false;
-        boolean ret = this.contains(rec.member[0], rec.member[1]);
-        ret &= this.contains(rec.member[6], rec.member[7]);
+        boolean ret = contains(rec.member[0], rec.member[1]);
+        ret &= contains(rec.member[6], rec.member[7]);
 
         return ret;
     }
@@ -279,8 +279,8 @@ public class CB_RectF {
     // */
     // public void setPO2()
     // {
-    // int PO2width = getNextHighestPO2((int) this.member[2]);
-    // int PO2height = getNextHighestPO2((int) this.member[3]);
+    // int PO2width = getNextHighestPO2((int) member[2]);
+    // int PO2height = getNextHighestPO2((int) member[3]);
     //
     // setSize(PO2width, PO2height);
     // }
@@ -309,13 +309,13 @@ public class CB_RectF {
             return false; // any is disposed!
 
         // Compare only x,y,width and height
-        if (this.member[0] != rec.member[0])
+        if (member[0] != rec.member[0])
             return false;
-        if (this.member[1] != rec.member[1])
+        if (member[1] != rec.member[1])
             return false;
-        if (this.member[2] != rec.member[2])
+        if (member[2] != rec.member[2])
             return false;
-        return this.member[3] == rec.member[3];
+        return member[3] == rec.member[3];
     }
 
     public CB_RectF copy() {
@@ -353,25 +353,25 @@ public class CB_RectF {
         for (int j = 1; j <= 4; j++) {
             switch (i) {
                 case 1:
-                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[6], this.member[1]), ret)) {
+                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(member[0], member[1]), new Vector2(member[6], member[1]), ret)) {
                         if (contains(ret))
                             return ret; // 1 unten
                     }
                     break;
                 case 2:
-                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[0], this.member[7]), ret)) {
+                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(member[0], member[1]), new Vector2(member[0], member[7]), ret)) {
                         if (contains(ret))
                             return ret; // 2 links
                     }
                     break;
                 case 3:
-                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[6], this.member[1]), ret)) {
+                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(member[6], member[7]), new Vector2(member[6], member[1]), ret)) {
                         if (contains(ret))
                             return ret; // 3 rechts
                     }
                     break;
                 case 4:
-                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[0], this.member[7]), ret)) {
+                    if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(member[6], member[7]), new Vector2(member[0], member[7]), ret)) {
                         if (contains(ret))
                             return ret; // 4 oben
                     }
@@ -420,17 +420,17 @@ public class CB_RectF {
     }
 
     public CB_RectF createIntersection(CB_RectF rec) {
-        float x1 = Math.max(this.getMinX(), rec.getMinX());
-        float y1 = Math.max(this.getMinY(), rec.getMinY());
-        float x2 = Math.min(this.getMaxX(), rec.getMaxX());
-        float y2 = Math.min(this.getMaxY(), rec.getMaxY());
+        float x1 = Math.max(getMinX(), rec.getMinX());
+        float y1 = Math.max(getMinY(), rec.getMinY());
+        float x2 = Math.min(getMaxX(), rec.getMaxX());
+        float y2 = Math.min(getMaxY(), rec.getMaxY());
         return new CB_RectF(x1, y1, x2 - x1, y2 - y1);
     }
 
     public SizeF getSize() {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed! new SizeF(); // isDisposed!
-        return new SizeF(this.member[2], this.member[3]);
+        return new SizeF(member[2], member[3]);
     }
 
     public void setRec(CB_RectF rec) {
@@ -439,9 +439,9 @@ public class CB_RectF {
         if (rec == null)
             return;
         // chk of changes
-        if (this.equals(rec))
+        if (equals(rec))
             return;
-        System.arraycopy(rec.member, 0, this.member, 0, 10);
+        System.arraycopy(rec.member, 0, member, 0, 10);
         sizeChanged();
     }
 
@@ -449,18 +449,18 @@ public class CB_RectF {
     public String toString() {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed! "disposed Rec"; // isDisposed!
-        return "rec X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.member[2] + "," + this.member[3];
+        return "rec X,Y/Width,Height = " + getX() + "," + getY() + "/" + member[2] + "," + member[3];
     }
 
     public void setPos(float x, float y) {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
         // chk of changes
-        if (this.member[0] == x && this.member[1] == y)
+        if (member[0] == x && member[1] == y)
             return;
 
-        this.member[0] = x;
-        this.member[1] = y;
+        member[0] = x;
+        member[1] = y;
         calcCrossCorner();
         sizeChanged();
     }
@@ -468,25 +468,25 @@ public class CB_RectF {
     public float getCenterPosX() {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
-        return this.member[8];
+        return member[8];
     }
 
     public float getCenterPosY() {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
-        return this.member[9];
+        return member[9];
     }
 
     public void set(float x, float y, float width, float height) {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed!
         // chk of changes
-        if (this.member[0] == x && this.member[1] == y && this.member[2] == width && this.member[3] == height)
+        if (member[0] == x && member[1] == y && member[2] == width && member[3] == height)
             return;
-        this.member[0] = x;
-        this.member[1] = y;
-        this.member[2] = width;
-        this.member[3] = height;
+        member[0] = x;
+        member[1] = y;
+        member[2] = width;
+        member[3] = height;
         calcCrossCorner();
         sizeChanged();
     }

@@ -54,7 +54,7 @@ public class CoordinateEntity extends Entity {
         // In 99,9% der Fälle dürfte der Wegpunkt zum aktuellen Cache gehören
         {
             if (selCache.getGcCode().equalsIgnoreCase(gcCode)) {
-                coord = selCache.coordinate;
+                coord = selCache.getCoordinate();
             } else {
                 for (int i = 0, n = selCache.waypoints.size(); i < n; i++) {
                     Waypoint wp = selCache.waypoints.get(i);

@@ -442,7 +442,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MAX_MAP_ZOOM,
                 MAX_MAP_ZOOM);
 
-        Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
+        Vector2 vPoint = new Vector2((float) point.x, -(float) point.y);
 
         myPointOnScreen = worldToScreen(vPoint);
 
@@ -680,7 +680,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             center = value;
             PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, center.getLongitude()), Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, center.getLatitude()), MAX_MAP_ZOOM,
                     MAX_MAP_ZOOM);
-            setScreenCenter(new Vector2((float) point.X, (float) point.Y));
+            setScreenCenter(new Vector2((float) point.x, (float) point.y));
         }
     }
 
@@ -1069,7 +1069,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         // berechnet anhand des ScreenCenterW die Center-Coordinaten
         PointD point = Descriptor.FromWorld(screenCenterWorld.getX(), screenCenterWorld.getY(), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
 
-        center = new CoordinateGPS(Descriptor.TileYToLatitude(MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MAX_MAP_ZOOM, point.X));
+        center = new CoordinateGPS(Descriptor.TileYToLatitude(MAX_MAP_ZOOM, -point.y), Descriptor.TileXToLongitude(MAX_MAP_ZOOM, point.x));
     }
 
     protected void calcPixelsPerMeter() {

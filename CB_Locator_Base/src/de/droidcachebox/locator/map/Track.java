@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 public class Track {
     public final ArrayList<TrackPoint> trackPoints;
-    public String name;
+    private String name;
+    private Color color;
     public String fileName;
-    public boolean showRoute = false;
+    public boolean isVisible = false;
     public boolean isActualTrack = false;
-    public Color color;
     public double trackLength;
     public double altitudeDifference;
 
@@ -18,6 +18,14 @@ public class Track {
         trackPoints = new ArrayList<>();
         this.name = name;
         this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Color getColor() {

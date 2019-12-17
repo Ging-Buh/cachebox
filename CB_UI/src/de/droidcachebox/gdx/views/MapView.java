@@ -193,7 +193,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                         Coordinate tmp = GlobalCore.getSelectedWaypoint().getCoordinate();
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     } else {
-                        Coordinate tmp = GlobalCore.getSelectedCache().coordinate;
+                        Coordinate tmp = GlobalCore.getSelectedCache().getCoordinate();
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     }
 
@@ -293,7 +293,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         liveButton = new LiveButton();
         liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
-        Config.DisableLiveMap.addSettingChangedListener(this::requestLayout);
+        Config.disableLiveMap.addSettingChangedListener(this::requestLayout);
 
         togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
@@ -340,7 +340,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         if (mapMode == MapMode.Normal) {
             addChild(togBtn);
-            if (Config.DisableLiveMap.getValue()) {
+            if (Config.disableLiveMap.getValue()) {
                 liveButton.setState(false);
             }
             addChild(liveButton);
@@ -514,7 +514,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().coordinate;
+        Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
 
         if (coord == null) {
             return;
@@ -753,7 +753,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             setMapState(MapState.FREE);
 
         try {
-            CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.getLatitude(), waypoint.getLongitude()) : new CoordinateGPS(cache.coordinate.getLatitude(), cache.coordinate.getLongitude());
+            CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.getLatitude(), waypoint.getLongitude()) : new CoordinateGPS(cache.getCoordinate().getLatitude(), cache.getCoordinate().getLongitude());
             setCenter(target);
         } catch (Exception ignored) {
         }
@@ -927,7 +927,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 Coordinate position = Locator.getInstance().getMyPosition();
 
                 if (GlobalCore.isSetSelectedCache()) {
-                    Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().coordinate;
+                    Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
 
                     if (dest == null)
                         return;
@@ -986,7 +986,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         }
         togBtn.setPos(new Vector2(mapIntWidth - margin - togBtn.getWidth(), mapIntHeight - margin - togBtn.getHeight()));
 
-        if (Config.DisableLiveMap.getValue()) {
+        if (Config.disableLiveMap.getValue()) {
             liveButton.setInvisible();
         } else {
             liveButton.setVisible();
@@ -1051,8 +1051,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 info.setCoord(center);
             }
 
-            if (GlobalCore.getSelectedCoord() != null) {
-                info.setDistance(GlobalCore.getSelectedCoord().Distance(CalculationType.ACCURATE));
+            if (GlobalCore.getSelectedCoordinate() != null) {
+                info.setDistance(GlobalCore.getSelectedCoordinate().Distance(CalculationType.ACCURATE));
             }
             orientationChanged();
         }
@@ -1066,7 +1066,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (GlobalCore.isSetSelectedCache() && position.isValid()) {
                 try {
                     if (GlobalCore.getSelectedWaypoint() == null)
-                        distance = position.Distance(GlobalCore.getSelectedCache().coordinate, CalculationType.ACCURATE);
+                        distance = position.Distance(GlobalCore.getSelectedCache().getCoordinate(), CalculationType.ACCURATE);
                     else
                         distance = position.Distance(GlobalCore.getSelectedWaypoint().getCoordinate(), CalculationType.ACCURATE);
                 } catch (Exception e) {
@@ -1227,7 +1227,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                         if (Database.Data.cacheList.size() > 0) {
                             // Koordinaten des ersten Caches der Datenbank
                             // nehmen
-                            setCenter(new CoordinateGPS(Database.Data.cacheList.get(0).coordinate.getLatitude(), Database.Data.cacheList.get(0).coordinate.getLongitude()));
+                            setCenter(new CoordinateGPS(Database.Data.cacheList.get(0).getCoordinate().getLatitude(), Database.Data.cacheList.get(0).getCoordinate().getLongitude()));
                             positionInitialized = true;
                             // setLockPosition(0);
                         } else {
@@ -1255,7 +1255,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 Coordinate tmp = GlobalCore.getSelectedWaypoint().getCoordinate();
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             } else {
-                Coordinate tmp = GlobalCore.getSelectedCache().coordinate;
+                Coordinate tmp = GlobalCore.getSelectedCache().getCoordinate();
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             }
         }

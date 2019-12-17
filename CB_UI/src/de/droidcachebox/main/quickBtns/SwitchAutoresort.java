@@ -38,7 +38,7 @@ public class SwitchAutoresort extends AbstractAction {
         if (GlobalCore.getAutoResort()) {
             synchronized (Database.Data.cacheList) {
                 if (GlobalCore.isSetSelectedCache()) {
-                    CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                    CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
                     GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                     GlobalCore.setNearestCache(ret.getCache());
                     ret.dispose();

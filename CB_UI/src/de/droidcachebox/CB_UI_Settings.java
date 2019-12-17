@@ -55,6 +55,7 @@ public interface CB_UI_Settings {
     SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", QuickList, NEVER, false, Global, ACB);
 
     SettingBool LiveMapEnabeld = new SettingBool("LiveMapEnabeld", LiveMap, NEVER, false, Global, ACB);
+    SettingInt routeProfile = new SettingInt("routeProfile", Map, NEVER, 0, Global, ACB);
 
     SettingInt HardwareCompassLevel = new SettingInt("HardwareCompassLevel", Gps, NORMAL, 5, Global, ACB);
     SettingBool HardwareCompass = new SettingBool("HardwareCompass", Gps, NORMAL, true, Global, ACB);

@@ -70,6 +70,8 @@ import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.Location.ProviderType;
 import de.droidcachebox.locator.Locator.CompassType;
 import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.maps.BRouter;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.*;
 import de.droidcachebox.utils.MathUtils.CalculationType;
@@ -171,6 +173,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             }
         };
         handleSuppressPowerSavingConfigChanged = () -> setWakeLock(Config.SuppressPowerSaving.getValue());
+
+        ShowMap.setRouter(new BRouter(this));
 
     }
 

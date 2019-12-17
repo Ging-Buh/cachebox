@@ -41,7 +41,7 @@ public class OpenRouteService {
         if (GlobalCore.getSelectedWaypoint() != null) {
             target = GlobalCore.getSelectedWaypoint().getCoordinate();
         } else if (GlobalCore.isSetSelectedCache()) {
-            target = GlobalCore.getSelectedCache().coordinate;
+            target = GlobalCore.getSelectedCache().getCoordinate();
         } else {
             MessageBox.show("Cache / WP ungültig", "Error", MessageBoxButton.OK, MessageBoxIcon.Error, null);
             return;
@@ -90,8 +90,8 @@ public class OpenRouteService {
                                         String line = "";
                                         Color TrackColor = RouteOverlay.getNextColor();
                                         Track route = new Track(null, TrackColor);
-                                        route.name = "OpenRouteService";
-                                        route.showRoute = true;
+                                        route.setName("OpenRouteService");
+                                        route.isVisible = true;
                                         boolean RouteGeometryBlockFound = false;
                                         boolean IsRoute = false;
 
@@ -156,7 +156,7 @@ public class OpenRouteService {
                                             if (IsRoute) {
                                                 final String sDistance = UnitFormatter.DistanceString((float) Distance);
                                                 route.trackLength = Distance;
-                                                RouteOverlay.addInternalRoutingTrack(route);
+                                                RouteOverlay.setRoutingTrack(route);
                                                 TrackListView.getInstance().notifyDataSetChanged();
 
                                                 wd.close();
@@ -227,6 +227,7 @@ public class OpenRouteService {
 
         });
 
+        // routeDia.show();
         GL.that.showDialog(routeDia, true);
 
     }

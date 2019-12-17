@@ -235,7 +235,7 @@ public final class GpxSerializer {
             if (cache == null) {
                 continue;
             }
-            final Coordinate coords = cache.coordinate;
+            final Coordinate coords = cache.getCoordinate();
             if (coords == null) {
                 // Export would be invalid without coordinates.
                 continue;

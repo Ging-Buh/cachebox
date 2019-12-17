@@ -78,7 +78,7 @@ android {
         // versionCode = Integer.decode(buildTime())
         // versionName = buildTime()
         setVersionCode(20191208)
-        setVersionName("20191208RC2")
+        setVersionName("20191208RC3")
         multiDexEnabled true
     }
 

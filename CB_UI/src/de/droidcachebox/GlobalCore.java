@@ -176,15 +176,13 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         return selectedWaypoint;
     }
 
-    public static Coordinate getSelectedCoord() {
+    public static Coordinate getSelectedCoordinate() {
         Coordinate ret = null;
-
         if (selectedWaypoint != null) {
             ret = selectedWaypoint.getCoordinate();
         } else if (selectedCache != null) {
-            ret = selectedCache.coordinate;
+            ret = selectedCache.getCoordinate();
         }
-
         return ret;
     }
 

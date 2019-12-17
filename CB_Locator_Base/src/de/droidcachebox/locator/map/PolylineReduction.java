@@ -99,16 +99,16 @@ public class PolylineReduction {
             // double area = Math.abs(0.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
             // * Point2.Y - Point1.X * Point.Y));
 
-            double pr1 = Point1.X * Point2.Y;
-            double pr2 = Point2.X * Point.Y;
-            double pr3 = Point.X * Point1.Y;
-            double pr4 = Point2.X * Point1.Y;
-            double pr5 = Point.X * Point2.Y;
-            double pr6 = Point1.X * Point.Y;
+            double pr1 = Point1.x * Point2.y;
+            double pr2 = Point2.x * Point.y;
+            double pr3 = Point.x * Point1.y;
+            double pr4 = Point2.x * Point1.y;
+            double pr5 = Point.x * Point2.y;
+            double pr6 = Point1.x * Point.y;
 
             double area = Math.abs((pr1 + pr2 + pr3 - pr4 - pr5 - pr6) / 2);
 
-            double bottom = Math.sqrt(Math.pow(Point1.X - Point2.X, 2) + Math.pow(Point1.Y - Point2.Y, 2));
+            double bottom = Math.sqrt(Math.pow(Point1.x - Point2.x, 2) + Math.pow(Point1.y - Point2.y, 2));
 
             if (bottom == 0.0)
                 return 0.0;

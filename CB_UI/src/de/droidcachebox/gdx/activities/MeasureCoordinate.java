@@ -249,13 +249,13 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
                         PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1).getLongitude(), projectionZoom);
 
-                        int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
-                        int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
+                        int lastX = (int) (centerX + (lastDrawEntry.x - medianX) * factor);
+                        int lastY = (int) (centerY - (lastDrawEntry.y - medianY) * factor);
 
                         PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(), projectionZoom);
 
-                        x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
-                        y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
+                        x = (int) (centerX + (thisDrawEntry.x - medianX) * factor);
+                        y = (int) (centerY - (thisDrawEntry.y - medianY) * factor);
 
                         drawingPixmap.setColor(Color.RED);
                         drawingPixmap.drawLine(lastX, lastY, x, y);

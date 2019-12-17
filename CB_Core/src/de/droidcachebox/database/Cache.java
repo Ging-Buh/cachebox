@@ -67,10 +67,7 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Id des Caches in der Datenbank von geocaching.com
      */
     public long Id;
-    /**
-     * Die Coordinate, an der der Cache liegt.
-     */
-    public Coordinate coordinate = new Coordinate(0, 0);
+    private Coordinate coordinate = new Coordinate(0, 0);
     /**
      * Durchschnittliche Bewertung des Caches von GcVote
      */
@@ -1036,4 +1033,14 @@ public class Cache implements Comparable<Cache>, Serializable {
         return this.Type == GeoCacheType.MegaEvent;
     }
 
+    /**
+     * Die Coordinate, an der der Cache liegt.
+     */
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 }

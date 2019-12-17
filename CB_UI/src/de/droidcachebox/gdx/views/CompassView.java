@@ -225,7 +225,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
                 if (showCoords && lblCoords != null) {
                     if (aktWaypoint == null) {
-                        lblCoords.setText(aktCache.coordinate.formatCoordinate());
+                        lblCoords.setText(aktCache.getCoordinate().formatCoordinate());
                     } else {
                         lblCoords.setText(aktWaypoint.getCoordinate().formatCoordinate());
                     }
@@ -636,7 +636,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (lblOwnCoords != null)
             lblOwnCoords.setText(position.formatCoordinate());
 
-        Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.coordinate;
+        Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.getCoordinate();
 
         float[] result = new float[4];
 
@@ -710,7 +710,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             Coordinate position = Locator.getInstance().getMyPosition();
             double heading = Locator.getInstance().getHeading();
 
-            Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.coordinate;
+            Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.getCoordinate();
 
             float[] result = new float[2];
 

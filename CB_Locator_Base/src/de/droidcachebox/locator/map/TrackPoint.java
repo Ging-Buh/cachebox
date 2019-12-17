@@ -5,14 +5,14 @@ import de.droidcachebox.utils.PointD;
 import java.util.Date;
 
 public class TrackPoint extends PointD {
-    public double Elevation;
-    public double Direction;
-    public Date TimeStamp;
+    public double elevation;
+    public double direction;
+    public Date date;
 
-    public TrackPoint(double x, double y, double elevation, double direction, Date time) {
-        super(x, y);
-        this.Elevation = elevation;
-        this.Direction = direction;
-        this.TimeStamp = time;
+    public TrackPoint(double lon, double lat, double elevation, double direction, Date date) {
+        super(lon, lat);
+        this.elevation = elevation;
+        this.direction = direction;
+        this.date = date;
     }
 }

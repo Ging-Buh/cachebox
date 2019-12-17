@@ -23,8 +23,7 @@ import com.badlogic.gdx.utils.Array;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
-import de.droidcachebox.Config;
-import de.droidcachebox.TrackRecorder;
+import de.droidcachebox.*;
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
@@ -37,11 +36,10 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.*;
 import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.gdx.views.MapView.MapMode;
-import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.locator.CoordinateGPS;
-import de.droidcachebox.locator.LocatorSettings;
+import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.map.*;
 import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.maps.Router;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.File;
@@ -66,6 +64,7 @@ import static de.droidcachebox.locator.map.MapsForgeLayer.*;
 public class ShowMap extends AbstractShowAction {
     private static final String log = "ShowMap";
     private static ShowMap that;
+    private static Router router;
     public MapView normalMapView;
     private HashMap<String, String> RenderThemes;
     private String themesPath;
@@ -74,6 +73,7 @@ public class ShowMap extends AbstractShowAction {
     private ThemeIsFor whichCase;
     private Menu availableFZKThemesMenu;
     private SearchCoordinates searchCoordinates;
+    private SpriteDrawable[] routeProfileIcons;
 
     private ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -84,6 +84,10 @@ public class ShowMap extends AbstractShowAction {
     public static ShowMap getInstance() {
         if (that == null) that = new ShowMap();
         return that;
+    }
+
+    public static void setRouter(Router router) {
+        ShowMap.router = router;
     }
 
     @Override
@@ -136,7 +140,7 @@ public class ShowMap extends AbstractShowAction {
             };
             searchCoordinates.doShow();
         });
-        icm.addMenuItem("RecTrack", null, this::showMenuTrackRecording);
+        icm.addMenuItem("TrackRecordMenuTitle", null, this::showMenuTrackRecording);
         return icm;
     }
 
@@ -266,6 +270,7 @@ public class ShowMap extends AbstractShowAction {
 
     private void showMapViewLayerMenu() {
         OptionMenu menuMapElements = new OptionMenu("MapViewLayerMenuTitle");
+        menuMapElements.addCheckableMenuItem("ShowLiveMap", !Config.disableLiveMap.getValue(), () -> toggleSetting(Config.disableLiveMap));
         menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Config.showAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Config.showAtOriginalPosition));
         menuMapElements.addCheckableMenuItem("HideFinds", Config.hideMyFinds.getValue(), () -> toggleSettingWithReload(Config.hideMyFinds));
         menuMapElements.addCheckableMenuItem("MapShowInfoBar", Config.showInfo.getValue(), () -> toggleSetting(Config.showInfo));
@@ -294,23 +299,42 @@ public class ShowMap extends AbstractShowAction {
 
     private void showMenuTrackRecording() {
         Menu cm2 = new Menu("TrackRecordMenuTitle");
-        /*
-        cm2.addMenuItem("generateRoute", null, () -> {
-            new RouteDialog(new RouteDialog.IReturnListener() {
-                @Override
-                public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc) {
-                    // OpenRouteService generateOpenRoute
-                    // BRouterServiceConnection getTrackFromParams
+        if (router != null) {
+            if (router.open()) {
+                if (routeProfileIcons == null) {
+                    routeProfileIcons = new SpriteDrawable[3];
+                    routeProfileIcons[0] = new SpriteDrawable(Sprites.getSprite("pedestrian"));
+                    routeProfileIcons[1] = new SpriteDrawable(Sprites.getSprite("bicycle"));
+                    routeProfileIcons[2] = new SpriteDrawable(Sprites.getSprite("car"));
                 }
-            }).show();
-        });
-         */
-        cm2.addMenuItem("start", null, TrackRecorder::startRecording).setEnabled(!TrackRecorder.recording);
-        if (TrackRecorder.pauseRecording)
-            cm2.addMenuItem("continue", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
-        else
-            cm2.addMenuItem("pause", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
-        cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
+                MenuItem mi = cm2.addMenuItem("generateRoute", "", routeProfileIcons[Config.routeProfile.getValue()], (v, x, y, pointer, button) -> {
+                    if (((MenuItem) v).isIconClicked(x)) {
+                        Config.routeProfile.setValue(((Config.routeProfile.getValue() + 1) % 3));
+                        ((MenuItem) v).setIcon(routeProfileIcons[Config.routeProfile.getValue()]);
+                    }
+                    else {
+                        cm2.close();
+                        boolean checked = ((MenuItem) v).isChecked();
+                        if (((MenuItem) v).isCheckboxClicked(x))
+                            checked = !checked;
+                        if (checked) {
+                            setRoutingTrack();
+                        } else {
+                            RouteOverlay.removeRoutingTrack();
+                        }
+                    }
+                    return true;
+                });
+                if (RouteOverlay.existsRoutingTrack()) mi.setCheckable(true);
+                else mi.setCheckable(false);
+                mi.setChecked(true);
+            } else {
+                cm2.addMenuItem("InstallRoutingApp", Sprites.getSprite("openrouteservice_logo"), () -> {
+                    PlatformUIBase.callUrl("https://play.google.com/store/apps/details?id=btools.routingapp&hl=de");
+                });
+            }
+        }
+        cm2.addDivider();
         cm2.addMenuItem("TrackDistance", null, () -> {
             OptionMenu tdMenu = new OptionMenu("TrackDistance");
             tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {
@@ -331,7 +355,29 @@ public class ShowMap extends AbstractShowAction {
             }
             tdMenu.show();
         });
+        cm2.addMenuItem("start", null, TrackRecorder::startRecording).setEnabled(!TrackRecorder.recording);
+        if (TrackRecorder.pauseRecording)
+            cm2.addMenuItem("continue", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
+        else
+            cm2.addMenuItem("pause", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
+        cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
         cm2.show();
+    }
+
+    public void setRoutingTrack() {
+        Coordinate start = Locator.getInstance().getMyPosition(Location.ProviderType.GPS);
+        Coordinate destination = GlobalCore.getSelectedCoordinate();
+        if (destination != null) {
+            if (start.isValid()) {
+                Track track = router.getTrack(start, destination);
+                if (track != null && track.trackPoints.size() > 0) {
+                    track.isVisible = true;
+                    RouteOverlay.setRoutingTrack(track);
+                } else {
+                    Log.err(log, "no route generated");
+                }
+            }
+        }
     }
 
     private HashMap<String, String> getRenderThemes() {
