@@ -7,17 +7,17 @@ import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.WaypointView;
 import de.droidcachebox.main.menuBtn3.ShowMap;
 
-public class Add_WP extends AbstractAction {
+public class AddWayPoint extends AbstractAction {
 
-    private static Add_WP that;
+    private static AddWayPoint addWayPoint;
 
-    private Add_WP() {
+    private AddWayPoint() {
         super("addWP", MenuID.AID_ADD_WP);
     }
 
-    public static Add_WP getInstance() {
-        if (that == null) that = new Add_WP();
-        return that;
+    public static AddWayPoint getInstance() {
+        if (addWayPoint == null) addWayPoint = new AddWayPoint();
+        return addWayPoint;
     }
 
     @Override

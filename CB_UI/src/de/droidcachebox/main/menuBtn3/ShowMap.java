@@ -311,8 +311,7 @@ public class ShowMap extends AbstractShowAction {
                     if (((MenuItem) v).isIconClicked(x)) {
                         Config.routeProfile.setValue(((Config.routeProfile.getValue() + 1) % 3));
                         ((MenuItem) v).setIcon(routeProfileIcons[Config.routeProfile.getValue()]);
-                    }
-                    else {
+                    } else {
                         cm2.close();
                         boolean checked = ((MenuItem) v).isChecked();
                         if (((MenuItem) v).isCheckboxClicked(x))
@@ -334,6 +333,11 @@ public class ShowMap extends AbstractShowAction {
                 });
             }
         }
+        /*
+        else {
+            // router not implemented / created
+        }
+         */
         cm2.addDivider();
         cm2.addMenuItem("TrackDistance", null, () -> {
             OptionMenu tdMenu = new OptionMenu("TrackDistance");
@@ -362,6 +366,20 @@ public class ShowMap extends AbstractShowAction {
             cm2.addMenuItem("pause", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
         cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
         cm2.show();
+    }
+
+    public Sprite getRouterIcon() {
+        switch (Config.routeProfile.getValue()) {
+            case 0: return Sprites.getSprite("pedestrian");
+            case 1: return Sprites.getSprite("bicycle");
+            default: return Sprites.getSprite("car");
+        }
+    }
+
+    public boolean openRouter() {
+        if (router != null)
+            return router.open();
+        return false;
     }
 
     public void setRoutingTrack() {

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Xml;
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import de.droidcachebox.Config;
 import de.droidcachebox.Main;
 import de.droidcachebox.locator.Coordinate;
@@ -20,33 +19,28 @@ import java.util.Date;
 
 public class BRouter implements Router {
     private final static String sKlasse = "BRouter";
-    private AndroidApplication androidApplication;
     private Activity mainActivity;
-    private Main mainMain;
+    private final Intent intent;
 
     private BRouterServiceConnection brouter;
 
     public BRouter(Main main) {
-        androidApplication = main;
         mainActivity = main;
-        mainMain = main;
         brouter = null;
+        intent = new Intent();
+        intent.setClassName("btools.routingapp", "btools.routingapp.BRouterService");
     }
 
     public boolean open() {
-        if (brouter == null) {
-            brouter = new BRouterServiceConnection();
-            final Intent intent = new Intent();
-            intent.setClassName("btools.routingapp", "btools.routingapp.BRouterService");
-            if (!mainActivity.bindService(intent, brouter, Context.BIND_AUTO_CREATE)) {
-                Log.err(sKlasse, "Connecting brouter failed");
-                return false;
-            } else {
-                // Log.info(sKlasse,"brouter connected");
-                return true;
-            }
+        if (brouter == null) brouter = new BRouterServiceConnection();
+        if (brouter.isConnected()) return true;
+        if (mainActivity.bindService(intent, brouter, Context.BIND_AUTO_CREATE)) {
+            Log.info(sKlasse, "Bind service successful!");
+            return true;
         } else {
-            return brouter.isConnected();
+            Log.err(sKlasse, "Connect BRouter failed");
+            brouter = null;
+            return false;
         }
     }
 
@@ -68,7 +62,7 @@ public class BRouter implements Router {
             case 1: routeProfile = "bicycle"; break;
             default: routeProfile = "motorcar";
         }
-        params.putString("v", routeProfile); // foot, bicycle, motorcar
+        params.putString("v", routeProfile);
         Track track = new Track("", null);
         try {
             Xml.parse(brouter.getTrackFromParams(params), new DefaultHandler() {

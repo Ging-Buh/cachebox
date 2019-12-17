@@ -29,6 +29,7 @@ import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.main.AbstractAction;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.main.quickBtns.CreateRoute;
 
 /**
  * Stellt ein Item der Quick Button List dar
@@ -127,6 +128,8 @@ public class QuickButtonItem extends ListViewItemBase {
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));
                 state = 0;
             }
+        } else if (quickAction == QuickAction.createRoute) {
+            mButtonIcon.setDrawable(new SpriteDrawable(CreateRoute.getInstance().getIcon()));
         }
     }
 

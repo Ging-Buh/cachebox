@@ -29,10 +29,7 @@ import de.droidcachebox.main.menuBtn4.ShowSolver2;
 import de.droidcachebox.main.menuBtn4.UploadDrafts;
 import de.droidcachebox.main.menuBtn5.SwitchDayNight;
 import de.droidcachebox.main.menuBtn5.SwitchTorch;
-import de.droidcachebox.main.quickBtns.Add_WP;
-import de.droidcachebox.main.quickBtns.EditFilterSettings;
-import de.droidcachebox.main.quickBtns.SearchDialog;
-import de.droidcachebox.main.quickBtns.SwitchAutoresort;
+import de.droidcachebox.main.quickBtns.*;
 import de.droidcachebox.translation.Translation;
 
 import static de.droidcachebox.main.ViewManager.*;
@@ -69,7 +66,7 @@ public enum QuickAction {
     Notesview, // 23
     uploadDrafts, // 24
     torch, // 25
-    // createRoute,
+    createRoute,
 
     // ScreenLock, // 21
 
@@ -121,7 +118,7 @@ public enum QuickAction {
             case TrackableListView:
                 return ShowTrackableList.getInstance();
             case addWP:
-                return Add_WP.getInstance();
+                return AddWayPoint.getInstance();
             case Solver2:
                 return ShowSolver2.getInstance();
             case Notesview:
@@ -130,8 +127,8 @@ public enum QuickAction {
                 return UploadDrafts.getInstance();
             case torch:
                 return SwitchTorch.getInstance();
-            // case createRoute:
-
+            case createRoute:
+                return CreateRoute.getInstance();
         }
         return null;
     }
@@ -190,8 +187,8 @@ public enum QuickAction {
                 return Translation.get("uploadDrafts");
             case torch:
                 return Translation.get("torch");
-            // case createRoute:
-               // return Translation.get("generateRoute");
+            case createRoute:
+                return Translation.get("generateRoute");
         }
         return "empty";
     }
