@@ -46,7 +46,7 @@ public class GalleryBigItem extends ListViewItemBackground {
         lbl.setHeight(lbl.getTextHeight());
         this.addLast(lbl);
         float h = getAvailableHeight();
-        CB_RectF imgRec = rec.copy();
+        CB_RectF imgRec = new CB_RectF(rec);
         imgRec.setPos(0, 0);
         imgRec.setHeight(h);
         imgRec.setWidth(0.95f * this.getWidth());

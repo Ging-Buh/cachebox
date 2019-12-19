@@ -50,21 +50,19 @@ public interface CB_UI_Base_Settings {
     SettingInt FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", Skin, EXPERT, 12, Global, ACB);
     SettingInt FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", Skin, EXPERT, 10, Global, ACB);
 
-    SettingDouble MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", Map, NEVER, 1.0, Global, ACB);
-
     SettingInt LongClickTime = new SettingInt("LongClicktime", Misc, EXPERT, 600, Global, ACB);
     SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), Global, ACB);
 
-    SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, displayDensity, Global, ACB);
-    SettingFloat MapViewTextFaktor = new SettingFloat("MapViewTextFaktor", Map, EXPERT, 2f, Global, ACB);
+    SettingFloat mapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, displayDensity, Global, ACB);
+    SettingFloat mapViewTextFaktor = new SettingFloat("MapViewTextFaktor", Map, EXPERT, 2f, Global, ACB);
 
-    SettingFolder ImageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
+    SettingFolder imageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
 
 
     SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), Global, ACB);
 
-    SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", Internal, NEVER, false, Global, ACB);
-    SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", Internal, NEVER, false, Global, ACB);
+    SettingBool isExpert = new SettingBool("SettingsShowExpert", Internal, NEVER, false, Global, ACB);
+    SettingBool isDeveloper = new SettingBool("SettingsShowAll", Internal, NEVER, false, Global, ACB);
 
     SettingFolder LanguagePath = new SettingFolder("LanguagePath", Folder, NEVER, "data/lang", Global, ALL, true);
 

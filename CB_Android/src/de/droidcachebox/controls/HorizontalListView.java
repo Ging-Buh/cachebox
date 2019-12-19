@@ -33,7 +33,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import de.droidcachebox.controls.DownSlider;
 
 /**
  * nur noch ein Dummy um die Größe und damit das Layout zu erhalten

@@ -1,7 +1,7 @@
 package de.droidcachebox.main.quickBtns;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import de.droidcachebox.gdx.main.AbstractAction;
+import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.main.menuBtn3.ShowMap;
 
 import static de.droidcachebox.gdx.main.MenuID.AID_CreateRoute;

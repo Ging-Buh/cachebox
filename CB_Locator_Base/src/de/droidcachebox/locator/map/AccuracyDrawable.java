@@ -35,9 +35,9 @@ public class AccuracyDrawable {
     CircleDrawable[] strokes = new CircleDrawable[CIRCLE_COUNT];
     float[] radien = new float[CIRCLE_COUNT];
 
-    AccuracyDrawable(float maxWidth, float maxHeight) {
+    AccuracyDrawable(float sideLength) {
 
-        size = Math.max(maxWidth, maxHeight);
+        size = sideLength;
         // create CIRCLE_COUNT circle with different radius
         step = size / CIRCLE_COUNT;
 

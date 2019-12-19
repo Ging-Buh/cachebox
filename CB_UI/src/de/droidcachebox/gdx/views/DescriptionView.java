@@ -41,7 +41,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.gdx.math.GL_UISizes.MainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
 
 public class DescriptionView extends CB_View_Base {
     private final static String BASIC = "Basic";
@@ -131,7 +131,7 @@ public class DescriptionView extends CB_View_Base {
         infoHeight += margin * 2;
         CB_RectF world = this.getWorldRec();
 
-        PlatformUIBase.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+        PlatformUIBase.setContentSize((int) world.getX(), (int) ((GL_UISizes.surfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.surfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 
     }
 
@@ -214,7 +214,7 @@ public class DescriptionView extends CB_View_Base {
 
         float contentWidth = this.getWidth() * 0.95f;
 
-        LiveIcon = new Image(MainBtnSize, "LIVE-ICON", false);
+        LiveIcon = new Image(mainBtnSize, "LIVE-ICON", false);
         LiveIcon.setSprite(Sprites.LiveBtn.get(0));
 
         this.addChild(LiveIcon);

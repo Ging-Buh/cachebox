@@ -76,7 +76,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         for (QuickAction quickAction : quickActions) {
             if (quickAction == QuickAction.empty || quickAction.getAction() == null)
                 continue;
-            icm.addMenuItem("", quickAction.getName(),
+            icm.addMenuItem(quickAction.getName(), "",
                     new SpriteDrawable(quickAction.getAction().getIcon()),
                     (v, x, y, pointer, button) -> {
                         icm.close();
@@ -180,7 +180,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         boxForListView = new Box(rec, "");
         boxForListView.setBackground(Sprites.activityBackground);
 
-        listView = new V_ListView(rec.copy(), "");
+        listView = new V_ListView(new CB_RectF(rec), "");
         listView.setDisposeFlag(false);
         boxForListView.addChildDirekt(listView);
 
@@ -240,7 +240,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             Menu icm = new Menu("virtuell");
             QuickButtonItem item = tmpQuickList.get(position);
             QuickAction quickAction = item.getQuickAction();
-            MenuItem mi = icm.addMenuItem("", quickAction.getName(),
+            MenuItem mi = icm.addMenuItem(quickAction.getName(),"",
                     new SpriteDrawable(quickAction.getAction() == null ? null : quickAction.getAction().getIcon()),
                     (v, x, y, pointer, button) -> {
                         listView.setSelection(((ListViewItemBase) v).getIndex());

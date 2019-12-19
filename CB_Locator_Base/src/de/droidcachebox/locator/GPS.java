@@ -17,7 +17,6 @@
 package de.droidcachebox.locator;
 
 import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.Iterator;
 

@@ -17,11 +17,11 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.views.CacheListView;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.main.menuBtn1.contextmenus.DeleteDialog;
 import de.droidcachebox.main.menuBtn1.contextmenus.SelectDBDialog;
@@ -46,7 +46,7 @@ public class ShowCacheList extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.ShowView(CacheListView.getInstance());
+        ViewManager.leftTab.showView(CacheListView.getInstance());
     }
 
     @Override

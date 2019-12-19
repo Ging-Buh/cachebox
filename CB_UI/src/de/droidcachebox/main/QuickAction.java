@@ -15,7 +15,6 @@
  */
 package de.droidcachebox.main;
 
-import de.droidcachebox.gdx.main.AbstractAction;
 import de.droidcachebox.main.menuBtn1.ParkingDialog;
 import de.droidcachebox.main.menuBtn1.ShowCacheList;
 import de.droidcachebox.main.menuBtn1.ShowTrackableList;
@@ -30,7 +29,6 @@ import de.droidcachebox.main.menuBtn4.UploadDrafts;
 import de.droidcachebox.main.menuBtn5.SwitchDayNight;
 import de.droidcachebox.main.menuBtn5.SwitchTorch;
 import de.droidcachebox.main.quickBtns.*;
-import de.droidcachebox.translation.Translation;
 
 import static de.droidcachebox.main.ViewManager.*;
 
@@ -136,59 +134,59 @@ public enum QuickAction {
     public String getName() {
         switch (this) {
             case DescriptionView:
-                return Translation.get("Description");
+                return "Description";
             case WaypointView:
-                return Translation.get("Waypoints");
+                return "Waypoints";
             case LogView:
-                return Translation.get("ShowLogs");
+                return "ShowLogs";
             case MapView:
-                return Translation.get("Map");
+                return "Map";
             case CompassView:
-                return Translation.get("Compass");
+                return "Compass";
             case CacheListView:
-                return Translation.get("cacheList");
+                return "cacheList";
             case TrackListView:
-                return Translation.get("Tracks");
+                return "Tracks";
             case TakePhoto:
-                return Translation.get("TakePhoto");
+                return "TakePhoto";
             case TakeVideo:
-                return Translation.get("RecVideo");
+                return "RecVideo";
             case VoiceRecord:
-                return Translation.get("VoiceRec");
+                return "VoiceRec";
             case Search:
-                return Translation.get("Search");
+                return "Search";
             case Filter:
-                return Translation.get("Filter");
+                return "Filter";
             case AutoResort:
-                return Translation.get("AutoResort");
+                return "AutoResort";
             case Solver:
-                return Translation.get("Solver");
+                return "Solver";
             case Spoiler:
-                return Translation.get("spoiler");
+                return "spoiler";
             case Hint:
-                return Translation.get("hint");
+                return "hint";
             case Parking:
-                return Translation.get("MyParking");
+                return "MyParking";
             case Day_Night:
-                return Translation.get("DayNight");
+                return "DayNight";
             case Drafts:
-                return Translation.get("Drafts");
+                return "Drafts";
             case QuickDraft:
-                return Translation.get("QuickDraft");
+                return "QuickDraft";
             case TrackableListView:
-                return Translation.get("TBList");
+                return "TBList";
             case addWP:
-                return Translation.get("AddWaypoint");
+                return "AddWaypoint";
             case Solver2:
-                return Translation.get("Solver") + " 2";
+                return "Solver v2";
             case Notesview:
-                return Translation.get("Notes");
+                return "Notes";
             case uploadDrafts:
-                return Translation.get("uploadDrafts");
+                return "uploadDrafts";
             case torch:
-                return Translation.get("torch");
+                return "torch";
             case createRoute:
-                return Translation.get("generateRoute");
+                return "generateRoute";
         }
         return "empty";
     }

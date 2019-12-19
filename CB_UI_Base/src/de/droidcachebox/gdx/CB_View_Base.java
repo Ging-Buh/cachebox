@@ -372,7 +372,7 @@ public class CB_View_Base extends GL_View_Base {
      * ended after the object is added.
      **/
     public void addLast(GL_View_Base c) {
-        c.Weight = 1f;
+        c.weight = 1f;
         addMe(c, true);
     }
 
@@ -380,7 +380,7 @@ public class CB_View_Base extends GL_View_Base {
      * Add the object at the end of the current row.
      **/
     public void addNext(GL_View_Base c) {
-        c.Weight = 1f;
+        c.weight = 1f;
         addMe(c, false);
     }
 
@@ -389,7 +389,7 @@ public class CB_View_Base extends GL_View_Base {
      * ended after the object is added.
      **/
     public void addLast(GL_View_Base c, float Weight) {
-        c.Weight = Weight;
+        c.weight = Weight;
         addMe(c, true);
     }
 
@@ -397,7 +397,7 @@ public class CB_View_Base extends GL_View_Base {
      * Add the object at the end of the current row.
      **/
     public void addNext(GL_View_Base c, float Weight) {
-        c.Weight = Weight;
+        c.weight = Weight;
         addMe(c, false);
     }
 
@@ -436,14 +436,14 @@ public class CB_View_Base extends GL_View_Base {
             float widthToFill = getWidth() - leftBorder - rightBorder;
             for (int i = 0, n = row.size(); i < n; i++) {
                 GL_View_Base view = row.get(i);
-                if (view.Weight > 0) {
-                    weightedAnz += view.Weight;
+                if (view.weight > 0) {
+                    weightedAnz += view.weight;
                 } else {
-                    if (view.Weight == FIXED) {
+                    if (view.weight == FIXED) {
                         fixedWidthSum += view.getWidth() + xMargin; // xMargin is added to each object
                     } else {
                         // Prozentuale Breite des Objekts bzgl widthToFill
-                        percentWidthSum += Math.abs(view.Weight) * widthToFill;
+                        percentWidthSum += Math.abs(view.weight) * widthToFill;
                     }
                 }
 
@@ -454,11 +454,11 @@ public class CB_View_Base extends GL_View_Base {
             }
             for (int i = 0, n = row.size(); i < n; i++) {
                 GL_View_Base view = row.get(i);
-                if (view.Weight > 0) {
-                    view.setWidth(objectWidth * view.Weight);
+                if (view.weight > 0) {
+                    view.setWidth(objectWidth * view.weight);
                 } else {
-                    if (view.Weight > FIXED) {
-                        view.setWidth(Math.abs(view.Weight) * widthToFill - xMargin);
+                    if (view.weight > FIXED) {
+                        view.setWidth(Math.abs(view.weight) * widthToFill - xMargin);
                     }
                 }
                 view.setPos(rowXPos, rowYPos);

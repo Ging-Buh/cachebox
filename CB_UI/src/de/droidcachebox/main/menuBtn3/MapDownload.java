@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.FZKDownload;
-import de.droidcachebox.gdx.main.AbstractAction;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.main.AbstractAction;
 
 import static de.droidcachebox.gdx.main.MenuID.AID_MAP_DOWNOAD;
 

@@ -41,34 +41,41 @@ public class CB_RectF {
      * [8] = centerPos.x <br>
      * [9] = centerPos.x <br>
      */
-    private float[] member = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    private float[] member;
 
     public CB_RectF() {
+        member = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
     }
 
     public CB_RectF(SizeF size) {
-        member[3] = size.getHeight();
+        member = new float[10];
+        member[0] = 0f;
+        member[1] = 0f;
         member[2] = size.getWidth();
+        member[3] = size.getHeight();
         calcCrossCorner();
     }
 
     public CB_RectF(float x, float y, float width, float height) {
+        member = new float[10];
         member[0] = x;
         member[1] = y;
-        member[3] = height;
         member[2] = width;
+        member[3] = height;
         calcCrossCorner();
     }
 
     public CB_RectF(float x, float y, float sideLength) {
+        member = new float[10];
         member[0] = x;
         member[1] = y;
-        member[3] = sideLength;
         member[2] = sideLength;
+        member[3] = sideLength;
         calcCrossCorner();
     }
 
     public CB_RectF(CB_RectF rec) {
+        member = new float[10];
         if (rec != null && rec.member != null) {
             System.arraycopy(rec.member, 0, member, 0, 10);
         }
@@ -316,10 +323,6 @@ public class CB_RectF {
         if (member[2] != rec.member[2])
             return false;
         return member[3] == rec.member[3];
-    }
-
-    public CB_RectF copy() {
-        return new CB_RectF(this);
     }
 
     public CB_RectF scaleCenter(float ScaleFactor) {

@@ -1,7 +1,5 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.database.CoreCursor;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -95,7 +95,7 @@ public class ImageActivity extends ActivityBase {
         screenCenterT.set(0, 0);
 
         // initial Zoom Buttons
-        zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
+        zoomBtn = new ZoomButtons(GL_UISizes.zoomBtn, this, "ZoomButtons");
         zoomBtn.setX(this.getWidth() - (zoomBtn.getWidth() + UiSizes.getInstance().getMargin()));
         zoomBtn.setMinimumFadeValue(0.3f);
         zoomBtn.setMaxZoom(MAX_MAP_ZOOM);

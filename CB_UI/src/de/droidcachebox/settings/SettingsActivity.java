@@ -109,18 +109,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btnMenu.setClickHandler((v, x, y, pointer, button) -> {
             Menu icm = new Menu("SettingsLevelTitle");
 
-            if (Config.SettingsShowAll.getValue())
-                Config.SettingsShowExpert.setValue(false);
+            if (Config.isDeveloper.getValue())
+                Config.isExpert.setValue(false);
 
-            icm.addCheckableMenuItem("Settings_Expert", Config.SettingsShowExpert.getValue(), () -> {
-                Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
-                Config.SettingsShowAll.setValue(false);
+            icm.addCheckableMenuItem("Settings_Expert", Config.isExpert.getValue(), () -> {
+                Config.isExpert.setValue(!Config.isExpert.getValue());
+                Config.isDeveloper.setValue(false);
                 resortList();
             });
 
-            icm.addCheckableMenuItem("Settings_All", Config.SettingsShowAll.getValue(), () -> {
-                Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
-                Config.SettingsShowExpert.setValue(false);
+            icm.addCheckableMenuItem("Settings_All", Config.isDeveloper.getValue(), () -> {
+                Config.isDeveloper.setValue(!Config.isDeveloper.getValue());
+                Config.isExpert.setValue(false);
                 resortList();
             });
 
@@ -189,7 +189,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         for (SettingBase<?> settingItem : Config.settings) {
             if (settingItem.getUsage() == SettingUsage.ACB || settingItem.getUsage() == SettingUsage.ALL)
                 // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
-                if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
+                if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Config.isExpert.getValue()) || Config.isDeveloper.getValue())
                         && (settingItem.getModus() != SettingModus.NEVER)) {
                     AllSettingList.add(settingItem);
                 }
@@ -249,10 +249,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     entryCount++;
                     break;
                 case Sounds:
-                    CB_RectF rec = itemRec.copy();
+                    CB_RectF rec = new CB_RectF(itemRec);
                     Box lblBox = new Box(rec, "LabelBox");
 
-                    CB_RectF rec2 = rec.copy();
+                    CB_RectF rec2 = new CB_RectF(rec);
                     rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
                     rec2.setHeight(rec.getHalfHeight());
 
@@ -836,7 +836,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 if (SB.getName().equals("DebugDisplayInfo")) {
                     String info = "";
 
-                    info += "Density= " + GL_UISizes.DPI + GlobalCore.br;
+                    info += "Density= " + GL_UISizes.dpi + GlobalCore.br;
                     info += "Height= " + UiSizes.getInstance().getWindowHeight() + GlobalCore.br;
                     info += "Width= " + UiSizes.getInstance().getWindowWidth() + GlobalCore.br;
                     info += "Scale= " + UiSizes.getInstance().getScale() + GlobalCore.br;
@@ -872,7 +872,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private CB_View_Base getAudioView(final SettingsAudio SB, int backgroundChanger) {
 
-        boolean full = Config.SettingsShowExpert.getValue() || Config.SettingsShowAll.getValue();
+        boolean full = Config.isExpert.getValue() || Config.isDeveloper.getValue();
         final String AudioName = SB.getName();
         final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, value -> {
             Audio aud = new Audio(SB.getValue());

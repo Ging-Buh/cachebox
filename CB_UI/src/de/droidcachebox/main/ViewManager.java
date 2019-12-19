@@ -63,7 +63,7 @@ import de.droidcachebox.utils.log.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static de.droidcachebox.gdx.math.GL_UISizes.MainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
 /**
@@ -77,9 +77,9 @@ import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 public class ViewManager extends MainViewBase implements PositionChangedEvent {
     private static final String log = "ViewManager";
     public static ViewManager that;
-    public static CB_TabView leftTab; // the only one (has been left aand right for Tablet)
+    public static CB_TabView leftTab; // the only one (has been left and right for Tablet)
 
-    static PlatformActivity actionTakePicture, actionRecordVideo, actionRecordVoice, actionShare;
+    static PlatformAction actionTakePicture, actionRecordVideo, actionRecordVoice, actionShare;
 
     private GestureButton mainBtn1; // default: show CacheList
     private GestureButton mainBtn2; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
@@ -96,13 +96,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     public static void reloadCacheList() {
-        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
         synchronized (Database.Data.cacheList) {
-            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), false, false, Config.showAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
-
 
     @Override
     protected void initialize() {
@@ -230,21 +228,21 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     private void addPhoneTab() {
         // nur ein Tab  mit fünf Buttons
 
-        CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.UI_Left.getWidth(), getHeight() - UiSizes.getInstance().getInfoSliderHeight());
+        CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.uiLeft.getWidth(), getHeight() - UiSizes.getInstance().getInfoSliderHeight());
         leftTab = new CB_TabView(rec, "leftTab");
 
         if (Config.useDescriptiveCB_Buttons.getValue()) {
-            mainBtn1 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
-            mainBtn2 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache");
-            mainBtn3 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav");
-            mainBtn4 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool");
-            mainBtn5 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc");
+            mainBtn1 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
+            mainBtn2 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Cache");
+            mainBtn3 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Nav");
+            mainBtn4 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Tool");
+            mainBtn5 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Misc");
         } else {
-            mainBtn1 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mainBtn2 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mainBtn3 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mainBtn4 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mainBtn5 = new GestureButton(MainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            mainBtn1 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            mainBtn2 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            mainBtn3 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            mainBtn4 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            mainBtn5 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
         CB_ButtonBar mainButtonBar = new CB_ButtonBar();
@@ -260,7 +258,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn1.addAction(ShowCacheList.getInstance(), true, GestureDirection.Up);
         mainBtn1.addAction(ParkingDialog.getInstance(), false, GestureDirection.Down);
         mainBtn1.addAction(ShowTrackableList.getInstance(), false, GestureDirection.Right);
-        actionShare = new PlatformActivity("Share", MenuID.AID_Share, ViewConst.Share, Sprites.getSprite(IconName.share.name()));
+        actionShare = new PlatformAction("Share", MenuID.AID_Share, ViewConst.Share, Sprites.getSprite(IconName.share.name()));
         mainBtn1.addAction(actionShare, false, GestureDirection.Left);
 
         mainBtn2.addAction(ShowDescription.getInstance(), true, GestureDirection.Up);
@@ -276,7 +274,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         mainBtn3.addAction(ShowMap.getInstance(), true, GestureDirection.Up);
         mainBtn3.addAction(ShowCompass.getInstance(), false, GestureDirection.Right);
-        PlatformActivity actionNavigateTo = new PlatformActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
+        PlatformAction actionNavigateTo = new PlatformAction("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
         mainBtn3.addAction(actionNavigateTo, false, GestureDirection.Down);
         mainBtn3.addAction(ShowTrackList.getInstance(), false, GestureDirection.Left);
         mainBtn3.addAction(MapDownload.getInstance(), false);
@@ -284,11 +282,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn4.addAction(ShowDrafts.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         mainBtn4.addAction(ShowSolver1.getInstance(), false, GestureDirection.Left);
         mainBtn4.addAction(ShowSolver2.getInstance(), false, GestureDirection.Right);
-        actionTakePicture = new PlatformActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
+        actionTakePicture = new PlatformAction("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
         mainBtn4.addAction(actionTakePicture, false, GestureDirection.Down);
-        actionRecordVideo = new PlatformActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
+        actionRecordVideo = new PlatformAction("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
         mainBtn4.addAction(actionRecordVideo, false);
-        actionRecordVoice = new PlatformActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
+        actionRecordVoice = new PlatformAction("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
         mainBtn4.addAction(actionRecordVoice, false);
         mainBtn4.addAction(ParkingDialog.getInstance(), false);
 

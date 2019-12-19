@@ -111,7 +111,7 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
                     continue;
                 }
             }
-            CB_RectF rec = itemRec.copy();
+            CB_RectF rec = new CB_RectF(itemRec);
             rec.setHeight(measureItemHeight(logEntry));
             final LogViewItem v = new LogViewItem(rec, index++, logEntry);
 

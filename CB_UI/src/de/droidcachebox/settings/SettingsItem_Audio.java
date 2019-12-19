@@ -37,7 +37,7 @@ public class SettingsItem_Audio extends SettingsItemBase {
         // add volume control
         float ProgressHeight = (Sprites.ProgressBack.getBottomHeight() + Sprites.ProgressBack.getTopHeight()) * 1.35f;
 
-        CB_RectF rec2 = rec.copy();
+        CB_RectF rec2 = new CB_RectF(rec);
 
         float margin = UiSizes.getInstance().getMargin();
 

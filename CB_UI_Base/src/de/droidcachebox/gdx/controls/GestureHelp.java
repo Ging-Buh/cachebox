@@ -25,7 +25,7 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 
-import static de.droidcachebox.gdx.math.GL_UISizes.MainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
 
 public class GestureHelp extends CB_View_Base {
 
@@ -80,7 +80,7 @@ public class GestureHelp extends CB_View_Base {
     }
 
     public void addBtnIcon(NinePatch icon) {
-        h = MainBtnSize.getHeight() / 2.4f;
+        h = mainBtnSize.getHeight() / 2.4f;
         d = h / 8;
         cX = (this.getHeight() / 2) - (h / 2);
         cY = cX + d + d;

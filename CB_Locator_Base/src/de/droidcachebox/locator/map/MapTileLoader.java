@@ -35,7 +35,7 @@ public class MapTileLoader {
     private Comparator<Descriptor> byDistanceFromCenter;
     private Thread queueProcessorAliveCheck;
     private Array<Long> alreadyOrdered, alreadyOrderedOverlays;
-    private boolean queueProcessorsIsStarted;
+    private boolean queueProcessorsAreStarted;
 
     public MapTileLoader(int capacity) {
         mapTiles = new MapTiles(capacity);
@@ -48,7 +48,7 @@ public class MapTileLoader {
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
         Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
-        queueProcessorsIsStarted = false;
+        queueProcessorsAreStarted = false;
         nextQueueProcessor = 0;
         byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.Data, (Integer) o2.Data);
 
@@ -94,7 +94,7 @@ public class MapTileLoader {
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();
         }
-        queueProcessorsIsStarted = true;
+        queueProcessorsAreStarted = true;
         queueProcessorAliveCheck.start();
     }
 
@@ -113,7 +113,7 @@ public class MapTileLoader {
     }
 
     public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
-        if (!queueProcessorsIsStarted) startQueueProzessors();
+        if (!queueProcessorsAreStarted) startQueueProzessors();
         // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
         // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
 
@@ -160,8 +160,13 @@ public class MapTileLoader {
                 MultiThreadQueueProcessor thread;
                 int previousQueueProcessor = nextQueueProcessor;
                 do {
-                    thread = queueProcessors.get(nextQueueProcessor);
-                    nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
+                    try {
+                        thread = queueProcessors.get(nextQueueProcessor);
+                        nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
+                    }
+                    catch (Exception ex) {
+                        return;
+                    }
                     if (nextQueueProcessor == previousQueueProcessor) {
                         try {
                             Thread.sleep(1000);

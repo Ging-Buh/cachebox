@@ -6,8 +6,8 @@ import de.droidcachebox.database.CacheWithWP;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.AbstractAction;
 import de.droidcachebox.gdx.main.MenuID;
+import de.droidcachebox.main.AbstractAction;
 
 public class SwitchAutoresort extends AbstractAction {
 

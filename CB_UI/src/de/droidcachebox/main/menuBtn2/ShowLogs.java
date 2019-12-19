@@ -17,11 +17,11 @@ import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.LogView;
 import de.droidcachebox.gdx.views.SpoilerView;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.RunnableReadyHandler;
@@ -54,7 +54,7 @@ public class ShowLogs extends AbstractShowAction {
     @Override
     public void execute() {
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
-        ViewManager.leftTab.ShowView(LogView.getInstance());
+        ViewManager.leftTab.showView(LogView.getInstance());
     }
 
     @Override

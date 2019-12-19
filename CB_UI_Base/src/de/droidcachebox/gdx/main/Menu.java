@@ -82,7 +82,7 @@ public class Menu extends ButtonDialog {
 
     public static CB_RectF getMenuRec() {
         if (!MENU_REC_IsInitial) {
-            float sollWidth = GL_UISizes.UI_Left.getWidth();
+            float sollWidth = GL_UISizes.uiLeft.getWidth();
 
             sollWidth *= 0.83;
             sMenuRec = new CB_RectF(new SizeF(sollWidth, 50));
@@ -191,7 +191,7 @@ public class Menu extends ButtonDialog {
                 if (higherValue > UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten) {
                     higherValue = UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten;
                 }
-                float MenuWidth = GL_UISizes.UI_Left.getWidth();
+                float MenuWidth = GL_UISizes.uiLeft.getWidth();
                 this.setSize(MenuWidth, higherValue);
 
                 // initial more menus
@@ -335,10 +335,9 @@ public class Menu extends ButtonDialog {
                 boolean newCheck = !clickedItem.isChecked();
                 // only one item can be checked : remove all checks
                 for (MenuItem smi : this.mItems) {
-                    if (smi instanceof MenuItem) {
-                        MenuItem tmi = smi;
-                        if (tmi.isChecked()) {
-                            tmi.setChecked(false);
+                    if (smi != null) {
+                        if (smi.isChecked()) {
+                            smi.setChecked(false);
                         }
                     }
                 }

@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.TrackableListView;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 
 public class ShowTrackableList extends AbstractShowAction {
@@ -24,7 +24,7 @@ public class ShowTrackableList extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.ShowView(TrackableListView.getInstance());
+        ViewManager.leftTab.showView(TrackableListView.getInstance());
     }
 
     @Override

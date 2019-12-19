@@ -283,7 +283,7 @@ public class MapsForgeLayer extends Layer {
                 path = LocatorSettings.MapsforgeCarDayTheme.getValue();
             }
         } else {
-            textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.MapViewTextFaktor.getValue();
+            textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.mapViewTextFaktor.getValue();
             if (CB_UI_Base_Settings.nightMode.getValue()) {
                 themeStyle = LocatorSettings.MapsforgeNightStyle.getValue();
                 path = LocatorSettings.MapsforgeNightTheme.getValue();

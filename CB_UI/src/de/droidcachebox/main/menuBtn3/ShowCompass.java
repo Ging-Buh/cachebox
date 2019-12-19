@@ -6,11 +6,11 @@ import de.droidcachebox.Config;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.main.OptionMenu;
 import de.droidcachebox.gdx.views.CompassView;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.settings.SettingBool;
 
@@ -28,7 +28,7 @@ public class ShowCompass extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.ShowView(CompassView.getInstance());
+        ViewManager.leftTab.showView(CompassView.getInstance());
     }
 
     @Override

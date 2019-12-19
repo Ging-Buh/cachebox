@@ -3,10 +3,10 @@ package de.droidcachebox.main.menuBtn4;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.SolverView2;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 
 public class ShowSolver2 extends AbstractShowAction {
@@ -24,7 +24,7 @@ public class ShowSolver2 extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.ShowView(SolverView2.getInstance());
+        ViewManager.leftTab.showView(SolverView2.getInstance());
     }
 
     @Override

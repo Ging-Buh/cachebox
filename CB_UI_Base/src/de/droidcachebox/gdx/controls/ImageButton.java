@@ -66,7 +66,7 @@ public class ImageButton extends CB_Button {
     }
 
     private void chkImagePos() {
-        CB_RectF thisRectF = this.copy();
+        CB_RectF thisRectF = new CB_RectF(this);
         thisRectF.setPos(0, 0);
         image.setRec(thisRectF.scaleCenter(0.8f * mScale));
     }

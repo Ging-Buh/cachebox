@@ -8,8 +8,8 @@ import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.core.LiveMapQue.QueStateChanged;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.main.menuBtn3.ShowMap;
 import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.main.menuBtn3.ShowMap;
 
 public class LiveButton extends ImageButton implements QueStateChanged {
 

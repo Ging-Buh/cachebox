@@ -763,7 +763,7 @@ public class EditTextField extends EditTextFieldBase {
                         pasteFromClipboard();
                     // copy
                     if (keycode == Keys.C || keycode == Keys.INSERT)
-                        copy();
+                        copyToClipboard();
                 } else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
                     // paste
                     if (keycode == Keys.INSERT)

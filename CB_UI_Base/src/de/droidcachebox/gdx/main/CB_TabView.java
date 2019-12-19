@@ -10,7 +10,7 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.log.Log;
 
-import static de.droidcachebox.gdx.math.GL_UISizes.MainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
 
 /**
  * the CB_TabView shows the aktView<br>
@@ -26,7 +26,7 @@ public class CB_TabView extends CB_View_Base {
 
     public CB_TabView(CB_RectF rec, String Name) {
         super(rec, Name);
-        mContentRec = rec.copy();
+        mContentRec = new CB_RectF(rec);
         layout();
     }
 
@@ -34,7 +34,7 @@ public class CB_TabView extends CB_View_Base {
         mButtonList = buttonList;
         if (mButtonList == null)
             return;
-        buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), MainBtnSize.getHeight()), "ButtonList von " + this.getName());
+        buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), mainBtnSize.getHeight()), "ButtonList von " + this.getName());
         buttonListView.setAdapter(new CustomAdapter());
         buttonListView.setUnDraggable();
         buttonListView.setBackground(Sprites.ButtonBack);
@@ -48,8 +48,8 @@ public class CB_TabView extends CB_View_Base {
     }
 
     private void layout() {
-        mContentRec.setHeight(this.getHeight() - MainBtnSize.getHeight());
-        mContentRec.setPos(0, MainBtnSize.getHeight());
+        mContentRec.setHeight(this.getHeight() - mainBtnSize.getHeight());
+        mContentRec.setPos(0, mainBtnSize.getHeight());
 
         if (aktView != null) {
             // set View size and pos
@@ -63,20 +63,20 @@ public class CB_TabView extends CB_View_Base {
     protected void initialize() {
         // Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
         if (mButtonList.Buttons.size() <= buttonListView.getMaxItemCount()) {
-            float sollDivider = (buttonListView.getWidth() - (MainBtnSize.getHeight() * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
+            float sollDivider = (buttonListView.getWidth() - (mainBtnSize.getHeight() * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
             buttonListView.setDividerSize(sollDivider);
         }
 
         // Das Button Seitenverh�ltniss ist 88x76!
         // H�he der Buttons einstellen und diese Zentrieren!
-        float buttonHeight = MainBtnSize.getHeight() * 0.863f;
+        float buttonHeight = mainBtnSize.getHeight() * 0.863f;
         for (GestureButton btn : mButtonList.Buttons) {
             btn.setHeight(buttonHeight);
         }
 
     }
 
-    public void ShowView(final CB_View_Base view) {
+    public void showView(final CB_View_Base view) {
 
         Thread th = new Thread(() -> {
             try {
@@ -138,7 +138,7 @@ public class CB_TabView extends CB_View_Base {
 
     @Override
     public void skinIsChanged() {
-        ShowView(aktView);
+        showView(aktView);
     }
 
     public class CustomAdapter implements Adapter {
@@ -148,16 +148,11 @@ public class CB_TabView extends CB_View_Base {
 
         @Override
         public ListViewItemBase getView(int position) {
-
             if (mButtonList == null || mButtonList.Buttons == null)
                 return null;
-
             GestureButton btn = mButtonList.Buttons.get(position);
-
             btn.setActView(aktView);
-
-            CB_ButtonListItem v = new CB_ButtonListItem(position, btn, "Item " + position);
-            return v;
+            return new CB_ButtonListItem(position, btn, "Item " + position);
         }
 
         @Override
@@ -167,7 +162,7 @@ public class CB_TabView extends CB_View_Base {
 
         @Override
         public float getItemSize(int position) {
-            return MainBtnSize.getHeight();
+            return mainBtnSize.getHeight();
         }
     }
 

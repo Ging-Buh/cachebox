@@ -149,7 +149,7 @@ public class PopUpMenu extends PopUp_Base {
 
     @Override
     protected void writeDebug() {
-        if (DebugSprite == null) {
+        if (debugSprite == null) {
             try {
                 GL.that.RunOnGLWithThreadCheck(() -> {
                     // int w = getNextHighestPO2((int) getWidth());
@@ -165,7 +165,7 @@ public class PopUpMenu extends PopUp_Base {
                     debugRegPixmap.drawLine(1, (int) getHeight() - 1, (int) getWidth() - 1, 1);
                     debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
 
-                    DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
+                    debugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
                 });
 
             } catch (Exception e) {

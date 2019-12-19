@@ -1058,11 +1058,11 @@ public class EditFilterSettings extends ActivityBase {
             categoryListViewItems.add(v);
 
             v.setClickHandler((v1, X, Y, pointer, button) -> {
-                CB_RectF HitRec = v1.copy();
-                HitRec.setY(0);
+                CB_RectF hitRec =  new CB_RectF(v1);
+                hitRec.setY(0);
 
-                CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
-                CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
+                CB_RectF plusBtnHitRec = new CB_RectF(hitRec.getWidth() - hitRec.getHeight(), 0, hitRec.getHeight(), hitRec.getMaxY());
+                CB_RectF minusBtnHitRec = new CB_RectF(hitRec.getX(), 0, hitRec.getHeight(), hitRec.getMaxY());
 
                 float lastTouchX = ((CategoryListViewItem) v1).lastItemTouchPos.x;
                 float lastTouchY = ((CategoryListViewItem) v1).lastItemTouchPos.y;
@@ -1130,11 +1130,11 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         private boolean onCategoryListViewItemClicked(GL_View_Base v1, int lastTouchX, int lastTouchY, int pointer, int button) {
-            CB_RectF HitRec = v1.copy();
-            HitRec.setY(0);
+            CB_RectF hitRec = new CB_RectF(v1);
+            hitRec.setY(0);
 
-            CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
-            CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
+            CB_RectF plusBtnHitRec = new CB_RectF(hitRec.getWidth() - hitRec.getHeight(), 0, hitRec.getHeight(), hitRec.getMaxY());
+            CB_RectF minusBtnHitRec = new CB_RectF(hitRec.getX(), 0, hitRec.getHeight(), hitRec.getMaxY());
 
             float lastItemTouchX = ((CategoryListViewItem) v1).lastItemTouchPos.x;
             float lastItemTouchY = ((CategoryListViewItem) v1).lastItemTouchPos.y;

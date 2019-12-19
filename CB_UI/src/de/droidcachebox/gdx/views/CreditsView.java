@@ -22,10 +22,10 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
-import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.translation.Translation;
 
 import java.util.ArrayList;
@@ -172,7 +172,7 @@ public class CreditsView extends CB_View_Base {
         for (Person item : getPersons()) {
             if (item.job == job) {
                 String entry = item.name;
-                float itemHeight = (item.image != null) ? GL_UISizes.Info.getHeight() : lineHeight;
+                float itemHeight = (item.image != null) ? GL_UISizes.info.getHeight() : lineHeight;
                 if (item.desc != null)
                     entry += "  (" + item.desc + ")";
 

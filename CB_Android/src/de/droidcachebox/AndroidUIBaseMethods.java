@@ -345,7 +345,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                         if (mustShowCacheList) {
                             // show cachelist first then search dialog
                             mustShowCacheList = false;
-                            ViewManager.leftTab.ShowView(CacheListView.getInstance());
+                            ViewManager.leftTab.showView(CacheListView.getInstance());
                             importCacheByGCCode(externalRequestGCCode); // now the search can start (doSearchOnline)
                         } else {
                             mustShowCacheList = true;

@@ -30,30 +30,28 @@ public class GalleryItem extends ListViewItemBackground {
 
     protected static boolean mBackIsInitial = false;
     private static NinePatch backSelect;
-    private final ImageLoader iloader;
     private final Image img;
     protected boolean isPressed = false;
 
     public GalleryItem(CB_RectF rec, int Index, ImageLoader loader) {
         super(rec, Index, "");
-        iloader = loader;
-
-        CB_RectF imgRec = rec.copy();
+        CB_RectF imgRec = new CB_RectF(rec);
         imgRec.setPos(0, 0);
-
-        img = new Image(iloader, imgRec.scaleCenter(0.95f), "", false);
+        img = new Image(loader, imgRec.scaleCenter(0.95f), "", false);
         img.setHAlignment(HAlignment.CENTER);
         this.addChild(img);
     }
 
-    public static void ResetBackground() {
+    /*
+    public static void resetBackground() {
         mBackIsInitial = false;
     }
+     */
 
     @Override
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
-        CB_RectF imgRec = rec.copy();
+        CB_RectF imgRec = new CB_RectF(rec);
         imgRec.setPos(0, 0);
         img.setRec(imgRec.scaleCenter(0.95f));
     }

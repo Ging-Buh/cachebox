@@ -136,7 +136,7 @@ public class ImageLoader {
         textureSettings.debug = false;
 
         String inputFolder = FileIO.getDirectoryName(imagePath);
-        String outputFolder = CB_UI_Base_Settings.ImageCacheFolder.getValue();
+        String outputFolder = CB_UI_Base_Settings.imageCacheFolder.getValue();
         String Name = getCachedAtlasName(inputFolder);
 
         try {
@@ -171,7 +171,7 @@ public class ImageLoader {
         String ImageName = FileIO.getFileNameWithoutExtension(ImagePath);
         String Name = getCachedAtlasName(inputFolder);
 
-        final String AtlasPath = CB_UI_Base_Settings.ImageCacheFolder.getValue() + "/" + Name;
+        final String AtlasPath = CB_UI_Base_Settings.imageCacheFolder.getValue() + "/" + Name;
         if (!FileIO.fileExistsNotEmpty(AtlasPath))
             return null;
         TextureAtlas atlas = null;
@@ -253,7 +253,7 @@ public class ImageLoader {
         }
 
         ImageDownloadThread = new Thread(() -> {
-            final String CachePath = FileFactory.createFile(CB_UI_Base_Settings.ImageCacheFolder.getValue()).getAbsolutePath();
+            final String CachePath = FileFactory.createFile(CB_UI_Base_Settings.imageCacheFolder.getValue()).getAbsolutePath();
 
             // Search first slash after Http or www
             int slashPos;

@@ -26,7 +26,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Config_Core;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings {
-    public static de.droidcachebox.settings.SettingsClass settings;
+    public static SettingsClass settings;
     private static Config that;
 
     public Config(String workPath) {

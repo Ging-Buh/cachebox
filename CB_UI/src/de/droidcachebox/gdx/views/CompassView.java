@@ -437,7 +437,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
         if (showSunMoon) {
 
-            CB_RectF rec = showMap ? attRec.scaleCenter(0.7f) : attRec.copy();
+            CB_RectF rec = showMap ? attRec.scaleCenter(0.7f) : new CB_RectF(attRec);
 
             Sun = new Image(rec, "sun", false);
             Sun.setDrawable(Sprites.Compass.get(5));

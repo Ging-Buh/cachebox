@@ -1473,10 +1473,8 @@ public class GroundspeakAPI {
                 String src = img.text.substring(srcStart + 1, srcEnd);
                 try {
                     URI imgUri = URI.create(src);
-
                     images.add(imgUri.toString());
-
-                } catch (Exception exc) {
+                } catch (Exception ignored) {
                 }
             }
         }

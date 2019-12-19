@@ -153,7 +153,7 @@ public class Splash extends Activity {
             // could bundle utils too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
             if (Database.Settings.isDbNew()) {
-                Config.MapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+                Config.mapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
             }
             Global.Paints.init(this);
             mainIntent.putExtras(bundeledData); // the prepared Data

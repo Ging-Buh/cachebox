@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.main;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import de.droidcachebox.main.AbstractAction;
 
 public class CB_ActionButton {
     private final AbstractAction action;

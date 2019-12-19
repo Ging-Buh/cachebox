@@ -128,15 +128,15 @@ public class EditCoord extends ActivityBase {
         createD(pnlD);
         addLast(pnlD);
 
-        pnlDM = new Box(pnlD.copy(), "pnlDM");
+        pnlDM = new Box(pnlD, "pnlDM");
         createDM(pnlDM);
         addChild(pnlDM);
 
-        pnlDMS = new Box(pnlD.copy(), "pnlDMS");
+        pnlDMS = new Box(pnlD, "pnlDMS");
         createDMS(pnlDMS);
         addChild(pnlDMS);
 
-        pnlUTM = new Box(pnlD.copy(), "pnlUTM");
+        pnlUTM = new Box(pnlD, "pnlUTM");
         createUTM(pnlUTM);
         addChild(pnlUTM);
 

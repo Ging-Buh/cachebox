@@ -17,6 +17,7 @@ package de.droidcachebox.gdx;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -55,7 +56,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static de.droidcachebox.gdx.math.GL_UISizes.MainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
 
 public class GL implements ApplicationListener {
 
@@ -147,7 +148,8 @@ public class GL implements ApplicationListener {
 
         if (Gdx.input != null) {
             Gdx.input.setInputProcessor(new GL_Input());
-            Gdx.input.setCatchBackKey(true);
+            // deprecated Gdx.input.setCatchBackKey(true);
+            Gdx.input.setCatchKey(Input.Keys.BACK, true);
         }
     }
 
@@ -1181,7 +1183,7 @@ public class GL implements ApplicationListener {
 
     public void Toast(String string, int length) {
         if (toast == null) {
-            toast = new Toast(new CB_RectF(0, 0, 100, MainBtnSize.getHeight() / 1.5f), "StringToast");
+            toast = new Toast(new CB_RectF(0, 0, 100, mainBtnSize.getHeight() / 1.5f), "StringToast");
         }
         toast.setWrappedText(string);
 
@@ -1192,7 +1194,7 @@ public class GL implements ApplicationListener {
         toast.setWidth(bounds.width + border);
         toast.setHeight(bounds.height + border);
 
-        toast.setPos((width >> 1) - (bounds.width / 2), MainBtnSize.getHeight() * 1.3f);
+        toast.setPos((width >> 1) - (bounds.width / 2), mainBtnSize.getHeight() * 1.3f);
 
         Toast(toast, length);
     }

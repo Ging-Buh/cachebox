@@ -47,7 +47,7 @@ public class SpoilerView extends CB_View_Base {
     private SpoilerView() {
         super(ViewManager.leftTab.getContentRec(), "SpoilerView");
 
-        CB_RectF gr = this.copy();
+        CB_RectF gr = new CB_RectF(this);
         gr.setHeight(this.getHeight() * 0.85f);
 
         gallery = new GalleryView(gr, "gallery") {
@@ -60,7 +60,7 @@ public class SpoilerView extends CB_View_Base {
         gallery.setZeroPos();
         this.addChild(gallery);
 
-        CB_RectF or = gr.copy();
+        CB_RectF or = new CB_RectF(gr);
         or.setHeight(this.getHeight() - gr.getHeight());
         galleryOverwiew = new GalleryView(or, "overview");
         galleryOverwiew.setPos(0, this.getHeight() - or.getHeight());
@@ -100,7 +100,7 @@ public class SpoilerView extends CB_View_Base {
                     bigItems.clear();
                     overviewItems.clear();
 
-                    CB_RectF orItemRec = galleryOverwiew.copy();
+                    CB_RectF orItemRec = new CB_RectF(galleryOverwiew);
                     orItemRec.setWidth(galleryOverwiew.getHeight());
 
                     ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGcCode());
@@ -142,7 +142,7 @@ public class SpoilerView extends CB_View_Base {
                             label = removeHashFromLabel(FileIO.getFileNameWithoutExtension(imageEntry.Name));
                         }
 
-                        GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
+                        GalleryBigItem item = new GalleryBigItem(new CB_RectF(gallery), i, loader, label);
                         item.setOnDoubleClickListener((v, x, y, pointer, button) -> {
                             Image selectionImage = ((GalleryBigItem) v).getImage();
 
@@ -212,7 +212,7 @@ public class SpoilerView extends CB_View_Base {
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
 
-        CB_RectF gr = rec.copy();
+        CB_RectF gr = new CB_RectF(rec);
         gr.setHeight(rec.getHeight() - galleryOverwiew.getHeight());
         gallery.setRec(gr);
         gallery.setZeroPos();

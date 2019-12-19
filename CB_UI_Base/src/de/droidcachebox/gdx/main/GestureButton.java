@@ -15,13 +15,15 @@ import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
+import de.droidcachebox.main.AbstractAction;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 
 import java.util.ArrayList;
 
 import static de.droidcachebox.gdx.Sprites.getSprite;
-import static de.droidcachebox.gdx.math.GL_UISizes.MainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
 
 /**
  * this is the class for the lower 5 buttons, the main buttons
@@ -257,7 +259,7 @@ public class GestureButton extends CB_Button {
         GestureDirection gestureDirection = Action.getGestureDirection();
         if (gestureDirection != GestureDirection.None) {
             if (help == null) {
-                float h = MainBtnSize.getHeight() * 2;
+                float h = mainBtnSize.getHeight() * 2;
                 help = new GestureHelp(new SizeF(h, h), "help");
             }
 

@@ -38,7 +38,7 @@ public class ImageMultiToggleButton extends MultiToggleButton {
 
     public void setImageRotation(Float angle) {
         mAngle = angle;
-        CB_RectF imgRec = this.copy();
+        CB_RectF imgRec = new CB_RectF(this);
         imgRec.setPos(0, 0);
         image.setRec(imgRec.scaleCenter(0.4f * mScale));
         image.setY(this.getHeight() - image.getHeight() - image.getHalfHeight());
@@ -48,7 +48,7 @@ public class ImageMultiToggleButton extends MultiToggleButton {
 
     public void setImageScale(float scale) {
         mScale = scale;
-        CB_RectF imgRec = this.copy();
+        CB_RectF imgRec = new CB_RectF(this);
         imgRec.setPos(0, 0);
         image.setRec(imgRec.scaleCenter(0.4f * mScale));
         image.setY(this.getHeight() - image.getHeight() - image.getHalfHeight());
@@ -60,7 +60,7 @@ public class ImageMultiToggleButton extends MultiToggleButton {
     public void resize(float width, float height) {
         super.resize(width, height);
 
-        CB_RectF imgRec = this.copy();
+        CB_RectF imgRec = new CB_RectF(this);
         imgRec.setPos(0, 0);
         image.setRec(imgRec.scaleCenter(0.4f * mScale));
         image.setY(this.getHeight() - image.getHeight() - image.getHalfHeight());

@@ -3,9 +3,9 @@ package de.droidcachebox.main.quickBtns;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.AbstractAction;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.CacheListView;
+import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.main.menuBtn1.ShowCacheList;
 
 public class SearchDialog extends AbstractAction {

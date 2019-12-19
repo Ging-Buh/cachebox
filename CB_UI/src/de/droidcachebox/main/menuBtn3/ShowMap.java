@@ -33,11 +33,15 @@ import de.droidcachebox.gdx.activities.SearchCoordinates;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.main.*;
+import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.gdx.main.MenuID;
+import de.droidcachebox.gdx.main.MenuItem;
+import de.droidcachebox.gdx.main.OptionMenu;
 import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.gdx.views.MapView.MapMode;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.map.*;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 import de.droidcachebox.maps.Router;
 import de.droidcachebox.settings.SettingBool;
@@ -92,7 +96,7 @@ public class ShowMap extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.ShowView(normalMapView);
+        ViewManager.leftTab.showView(normalMapView);
     }
 
     @Override

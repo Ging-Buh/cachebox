@@ -32,7 +32,6 @@ import java.util.TimerTask;
 public class ZoomButtons extends CB_View_Base {
 
     private final int timeToFadeOut = 13000; // 7Sec
-    private final int fadeStep = 50; // 100 mSec
     boolean virtualVisible = false;
     Timer timer;
     private int minzoom = 6;
@@ -50,24 +49,17 @@ public class ZoomButtons extends CB_View_Base {
 
     // # Constructors
     private boolean portrait = false;
-    private boolean withoutDrawing = false;
     private OnClickListener mOnClickListenerUp;
     private OnClickListener mOnClickListenerDown;
     private boolean firstDraw = true;
 
-    /**
-     * Constructor f�r ein neues TestView mit Angabe der linken unteren Ecke und der H�he und Breite
-     *
-     * @param X
-     * @param Y
-     * @param Width
-     * @param Height
-     */
+    /*
     public ZoomButtons(float X, float Y, float Width, float Height, String Name) {
         super(X, Y, Width, Height, Name);
         onResized(this);
         resetFadeOut();
     }
+     */
 
     public ZoomButtons(CB_RectF rec, GL_View_Base view, String name) {
         super(rec, view, name);
@@ -75,11 +67,13 @@ public class ZoomButtons extends CB_View_Base {
         resetFadeOut();
     }
 
+    /*
     public ZoomButtons() {
         // Initial ZoomButtons without any Drawables
         super("");
         withoutDrawing = true;
     }
+     */
 
     public void setOnClickListenerUp(OnClickListener l) {
         this.setClickable(true);
@@ -91,6 +85,7 @@ public class ZoomButtons extends CB_View_Base {
         mOnClickListenerDown = l;
     }
 
+    /*
     public void disableFadeOut() {
         dontFadeOut = true;
     }
@@ -98,11 +93,13 @@ public class ZoomButtons extends CB_View_Base {
     public void enableFadeOut() {
         dontFadeOut = false;
     }
+     */
 
     public void setMinimumFadeValue(float value) {
         minimummFadeValue = value;
     }
 
+    /*
     public boolean FadeOutIsEnabled() {
         return !dontFadeOut;
     }
@@ -116,6 +113,8 @@ public class ZoomButtons extends CB_View_Base {
         portrait = value;
         onResized(this);
     }
+
+     */
 
     @Override
     public boolean click(int x, int y, int pointer, int button) {
@@ -150,11 +149,12 @@ public class ZoomButtons extends CB_View_Base {
         return behandelt;
     }
 
+    /*
     public boolean hitTest(Vector2 pos) {
         if (zoom != maxzoom) {
             if (HitRecUp != null) {
                 if (HitRecUp.contains(pos.x, pos.y)) {
-                    /* if (FadeValue > 0.4f) */
+                    // if (FadeValue > 0.4f)
                     ZoomAdd(1);
                     resetFadeOut();
                     return true;
@@ -165,7 +165,7 @@ public class ZoomButtons extends CB_View_Base {
         if (zoom != minzoom) {
             if (HitRecDown != null) {
                 if (HitRecDown.contains(pos.x, pos.y)) {
-                    /* if (FadeValue > 0.4f) */
+                    // if (FadeValue > 0.4f)
                     ZoomAdd(-1);
                     resetFadeOut();
                     return true;
@@ -174,6 +174,7 @@ public class ZoomButtons extends CB_View_Base {
         }
         return false;
     }
+     */
 
     public boolean touchDownTest(Vector2 pos) {
         if (HitRecUp != null) {
@@ -195,8 +196,11 @@ public class ZoomButtons extends CB_View_Base {
 
     @Override
     public void render(Batch batch) {
+        /*
+        boolean withoutDrawing = false;
         if (withoutDrawing)
             return;
+         */
         super.render(batch);
 
         if (firstDraw) {
@@ -273,6 +277,7 @@ public class ZoomButtons extends CB_View_Base {
         btnUp.draw(batch, FadeValue);
     }
 
+    /*
     public void ZoomAdd(int value) {
 
         zoom += value;
@@ -283,6 +288,7 @@ public class ZoomButtons extends CB_View_Base {
 
         // //Log.d("CACHEBOX", "ZoomAdd" + zoom);
     }
+     */
 
     public int getZoom() {
         return zoom;
@@ -387,6 +393,8 @@ public class ZoomButtons extends CB_View_Base {
             return;
         }
 
+        // 100 mSec
+        int fadeStep = 50;
         if (!fadeOut && !fadeIn && !this.isVisible()) {
             GL.that.removeRenderView(this);
         } else if (!fadeOut && !fadeIn && this.isVisible()) {
@@ -429,9 +437,9 @@ public class ZoomButtons extends CB_View_Base {
     @Override
     public void onResized(CB_RectF rec) {
         // rect auf Teilen in zwei gleich gro�e
-        HitRecUp = rec.copy();
+        HitRecUp = new CB_RectF(rec);
         HitRecUp.setPos(new Vector2()); // setze auf 0,0
-        HitRecDown = rec.copy();
+        HitRecDown = new CB_RectF(rec);
         HitRecDown.setPos(new Vector2()); // setze auf 0,0
 
         if (portrait) {

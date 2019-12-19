@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
@@ -75,7 +74,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
         int valueRecHeight = (int) (this.getWidth() / 2);
 
         if (ScaleDrawRec == null) {
-            ScaleDrawRec = this.copy();
+            ScaleDrawRec = new CB_RectF(this);
             ScaleDrawRec.setHeight(this.getHeight() - valueRecHeight);
             ScaleDrawRec.setPos(new Vector2(0, valueRecHeight / 2));
         }
@@ -141,7 +140,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
             return null;
 
         if (storedRec == null || !(storedRec.equals(rect))) {
-            storedRec = rect.copy();
+            storedRec = new CB_RectF(rect);
             ValueRec = null;
         }
 

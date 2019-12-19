@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.AbstractAction;
 import de.droidcachebox.gdx.main.MenuID;
+import de.droidcachebox.main.AbstractAction;
 
 public class EditFilterSettings extends AbstractAction {
 

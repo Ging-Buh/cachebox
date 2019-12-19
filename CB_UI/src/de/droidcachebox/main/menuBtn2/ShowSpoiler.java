@@ -7,10 +7,10 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.AbstractShowAction;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.SpoilerView;
+import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 
 public class ShowSpoiler extends AbstractShowAction {
@@ -36,7 +36,7 @@ public class ShowSpoiler extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.ShowView(SpoilerView.getInstance());
+        ViewManager.leftTab.showView(SpoilerView.getInstance());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ShowSpoiler extends AbstractShowAction {
                 if (GlobalCore.isSetSelectedCache()) {
                     GlobalCore.getSelectedCache().loadSpoilerRessources();
                     SpoilerView.getInstance().ForceReload();
-                    ViewManager.leftTab.ShowView(SpoilerView.getInstance());
+                    ViewManager.leftTab.showView(SpoilerView.getInstance());
                     SpoilerView.getInstance().onShow();
                 }
             });
@@ -94,7 +94,7 @@ public class ShowSpoiler extends AbstractShowAction {
                 if (GlobalCore.isSetSelectedCache()) {
                     GlobalCore.getSelectedCache().loadSpoilerRessources();
                     SpoilerView.getInstance().ForceReload();
-                    ViewManager.leftTab.ShowView(SpoilerView.getInstance());
+                    ViewManager.leftTab.showView(SpoilerView.getInstance());
                     SpoilerView.getInstance().onShow();
                 }
             });
