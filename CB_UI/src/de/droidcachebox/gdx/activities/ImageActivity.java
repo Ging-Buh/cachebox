@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.Image;
@@ -43,7 +42,6 @@ import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.PointL;
 import de.droidcachebox.utils.log.Log;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -56,15 +54,7 @@ public class ImageActivity extends ActivityBase {
     private static final int MAX_MAP_ZOOM = 22;
     private final PointL screenCenterW = new PointL(0, 0);
     private final PointL screenCenterT = new PointL(0, 0);
-    private final HashMap<Integer, Point> fingerDown = new LinkedHashMap<Integer, Point>();
-    private final OnClickListener deleteClick = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-            ImageActivity.this.finish();
-            return true;
-        }
-    };
+    private final LinkedHashMap<Integer, Point> fingerDown = new LinkedHashMap<>();
     protected InputState inputState = InputState.Idle;
     private Image img;
     private ZoomButtons zoomBtn;
@@ -81,51 +71,44 @@ public class ImageActivity extends ActivityBase {
         super("ImageActivity");
 
         float wh = 30 * UiSizes.getInstance().getScale();
-        deleteImage = new Image(this.getWidth() - wh, this.getHeight() - wh, wh, wh, "", false);
+        deleteImage = new Image(getWidth() - wh, getHeight() - wh, wh, wh, "", false);
         deleteImage.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.closeIcon.name())));
-        this.addChild(deleteImage);
-        deleteImage.setClickHandler(deleteClick);
-        this.setClickable(true);
+        addChild(deleteImage);
+        deleteImage.setClickHandler((view, x, y, pointer, button) -> {
+            ImageActivity.this.finish();
+            return true;
+        });
+        setClickable(true);
 
-        this.setBackground(new ColorDrawable(new HSV_Color(Color.BLACK)));
+        setBackground(new ColorDrawable(new HSV_Color(Color.BLACK)));
         img = selectionImage;
-        mapIntHeight = (int) this.getHeight();
-        screenCenterW.set((long) (this.getHalfWidth()), (long) -(this.getHalfHeight())); //-(img.getImageLoader().getSpriteHeight() / 2);
+        mapIntHeight = (int) getHeight();
+        screenCenterW.set((long) (getHalfWidth()), (long) -(getHalfHeight())); //-(img.getImageLoader().getSpriteHeight() / 2);
 
         screenCenterT.set(0, 0);
 
         // initial Zoom Buttons
         zoomBtn = new ZoomButtons(GL_UISizes.zoomBtn, this, "ZoomButtons");
-        zoomBtn.setX(this.getWidth() - (zoomBtn.getWidth() + UiSizes.getInstance().getMargin()));
+        zoomBtn.setX(getWidth() - (zoomBtn.getWidth() + UiSizes.getInstance().getMargin()));
         zoomBtn.setMinimumFadeValue(0.3f);
         zoomBtn.setMaxZoom(MAX_MAP_ZOOM);
         zoomBtn.setMinZoom(0);
         zoomBtn.setZoom(0);
-
-        zoomBtn.setOnClickListenerDown(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                kineticZoom = new KineticZoom(camera.zoom, getPosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZOOM_TIME);
-                GL.that.addRenderView(ImageActivity.this, GL.FRAME_RATE_ACTION);
-                GL.that.renderOnce();
-                GL.that.renderOnce();
-
-                return true;
-            }
+        zoomBtn.setOnClickListenerDown((view, x, y, pointer, button) -> {
+            kineticZoom = new KineticZoom(camera.zoom, getPosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZOOM_TIME);
+            GL.that.addRenderView(ImageActivity.this, GL.FRAME_RATE_ACTION);
+            GL.that.renderOnce();
+            GL.that.renderOnce();
+            return true;
         });
-        zoomBtn.setOnClickListenerUp(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                kineticZoom = new KineticZoom(camera.zoom, getPosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZOOM_TIME);
-                GL.that.addRenderView(ImageActivity.this, GL.FRAME_RATE_ACTION);
-                GL.that.renderOnce();
-                GL.that.renderOnce();
-
-                return true;
-            }
+        zoomBtn.setOnClickListenerUp((view, x, y, pointer, button) -> {
+            kineticZoom = new KineticZoom(camera.zoom, getPosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZOOM_TIME);
+            GL.that.addRenderView(ImageActivity.this, GL.FRAME_RATE_ACTION);
+            GL.that.renderOnce();
+            GL.that.renderOnce();
+            return true;
         });
-        this.addChild(zoomBtn);
+        addChild(zoomBtn);
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         aktZoom = zoomBtn.getZoom();
@@ -135,9 +118,7 @@ public class ImageActivity extends ActivityBase {
     }
 
     private static long getPosFactor(float zoom) {
-        long result = 1;
-        result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
-        return result;
+        return (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
     }
 
     @Override
@@ -158,10 +139,10 @@ public class ImageActivity extends ActivityBase {
         float y = Gdx.input.getAccelerometerY();
         float z = Gdx.input.getAccelerometerZ();
 
-        // � (|Gpz| < 0.5g) AND (Gpx > 0.5g) AND (|Gpy| < 0.4g): Change orientation to Left
-        // � (|Gpz| < 0.5g) AND (Gpx < -0.5g) AND (|Gpy| < 0.4g): Change orientation to Right
-        // � (|Gpz| < 0.5g) AND (Gpy > 0.5g) AND (|Gpx| < 0.4g): Change orientation to Bottom
-        // � (|Gpz| < 0.5g) AND (Gpy < -0.5g) AND (|Gpx| < 0.4g): Change orientation to Top.
+        //  (|Gpz| < 0.5g) AND (Gpx > 0.5g) AND (|Gpy| < 0.4g): Change orientation to Left
+        //  (|Gpz| < 0.5g) AND (Gpx < -0.5g) AND (|Gpy| < 0.4g): Change orientation to Right
+        //  (|Gpz| < 0.5g) AND (Gpy > 0.5g) AND (|Gpx| < 0.4g): Change orientation to Bottom
+        //  (|Gpz| < 0.5g) AND (Gpy < -0.5g) AND (|Gpx| < 0.4g): Change orientation to Top.
 
         if (z < 5 && x > 5 && y < 4) {
             imageHeading = -90;
@@ -169,7 +150,7 @@ public class ImageActivity extends ActivityBase {
         } else if (z < 5 && x < -5 && y < 4) {
             imageHeading = 90;
             //	    Log.debug(log, "RIGHT");
-        } else if (z < 5 && y > 5 && x < 4) {
+            //} else if (z < 5 && y > 5 && x < 4) {
             //	    Log.debug(log, "BOTTOM");
         } else {
             imageHeading = 0;
@@ -223,11 +204,11 @@ public class ImageActivity extends ActivityBase {
         //	batch.disableBlending();
 
         float faktor = camera.zoom;
-        float dx = this.thisWorldRec.getCenterPosX() - MainViewBase.mainView.getCenterPosX();
-        float dy = this.thisWorldRec.getCenterPosY() - MainViewBase.mainView.getCenterPosY();
+        float dx = thisWorldRec.getCenterPosX() - MainViewBase.mainView.getCenterPosX();
+        float dy = thisWorldRec.getCenterPosY() - MainViewBase.mainView.getCenterPosY();
         camera.position.set(0, 0, 0);
-        float dxr = dx;
-        float dyr = dy;
+        float dxr;
+        float dyr;
 
         camera.up.x = 0;
         camera.up.y = 1;
@@ -440,10 +421,8 @@ public class ImageActivity extends ActivityBase {
             return true;
         }
 
-        y = mapIntHeight - y;
-
         if (inputState == InputState.IdleDown) {
-            // es wurde gedr�ckt, aber nich verschoben
+            // pressed but not moved
             fingerDown.remove(pointer);
             inputState = InputState.Idle;
             // -> Buttons testen
@@ -453,7 +432,6 @@ public class ImageActivity extends ActivityBase {
                 // bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
                 kineticPan = null;
 
-            inputState = InputState.Idle;
             return false;
         }
 
@@ -462,7 +440,6 @@ public class ImageActivity extends ActivityBase {
             inputState = InputState.Pan;
         else if (fingerDown.size() == 0) {
             inputState = InputState.Idle;
-            // wieder langsam rendern
             GL.that.renderOnce();
 
             if ((kineticZoom == null) && (kineticPan == null))
