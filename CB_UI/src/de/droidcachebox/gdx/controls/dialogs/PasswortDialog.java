@@ -37,7 +37,7 @@ public class PasswortDialog extends ButtonDialog {
         TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
         LabelHeight = Fonts.getNormal().getLineHeight();
 
-        layout = new Linearlayout(msgBoxContentSize.getWidth(), "Layout");
+        layout = new Linearlayout(msgBoxContentSize.getWidth(), "layout");
 
         CB_Label lblName = new CB_Label(this.name + " lblName", 0, 0, msgBoxContentSize.getWidth(), LabelHeight);
         lblName.setText(Translation.get("LogIn"));

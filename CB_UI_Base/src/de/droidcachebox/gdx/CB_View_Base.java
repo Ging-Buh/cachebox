@@ -177,7 +177,6 @@ public class CB_View_Base extends GL_View_Base {
             if (!childs.contains(view))
                 childs.add(0, view);
         }
-
         return view;
     }
 

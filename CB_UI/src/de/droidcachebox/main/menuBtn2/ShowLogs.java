@@ -96,6 +96,7 @@ public class ShowLogs extends AbstractShowAction {
             });
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
+
         contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {

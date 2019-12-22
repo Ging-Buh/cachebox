@@ -701,7 +701,13 @@ public abstract class GL_View_Base extends CB_RectF {
                 // find the clicked view
                 while (iterator.hasNext()) {
                     GL_View_Base view = iterator.next();
-                    if (view != null && view.isDoubleClickable() && view.isVisible() && view.contains(x, y)) {
+                    if (view == null || !view.isClickable())
+                        continue;
+                    // Invisible Views can not be clicked!
+                    if (!view.isVisible())
+                        continue;
+
+                    if (view.contains(x, y)) {//                    if (view != null && view.isDoubleClickable() && view.isVisible() && view.contains(x, y)) {
                         // this view has been clicked (view.contains(x, y))
                         handled = view.doubleClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
                         // if view returns true (handled), we can break and don't test the rest
@@ -731,7 +737,10 @@ public abstract class GL_View_Base extends CB_RectF {
                 // find the clicked view
                 while (iterator.hasNext()) {
                     GL_View_Base view = iterator.next();
-                    if (view != null && view.isLongClickable() && view.isVisible() && view.contains(x, y)) {
+                    if (view == null || !view.isClickable())
+                        continue;
+
+                    if (view.contains(x, y)) { // if (view != null && view.isLongClickable() && view.isVisible() && view.contains(x, y)) {
                         // this view has been clicked (view.contains(x, y))
                         handled = view.longClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
                         // if view returns true (handled), we can break and don't test the rest
@@ -761,17 +770,28 @@ public abstract class GL_View_Base extends CB_RectF {
                 // find the touched view
                 while (iterator.hasNext()) {
                     GL_View_Base view = iterator.next();
-                    if (view != null && view.isVisible() && view.isEnabled() && view.contains(x, y)) {
+                    // Invisible Views can not be clicked!
+                    if (view == null || !view.isVisible())
+                        continue;
+                    if (!view.isEnabled())
+                        continue;
+                    if (view.contains(x, y)) {//                    if (view != null && view.isVisible() && view.isEnabled() && view.contains(x, y)) {
                         // this view has been touched (view.contains(x, y))
                         lastTouchPos = new Vector2(x - view.getX(), y - view.getY());
                         resultView = view.touchDown(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
+                        if (forceHandleTouchEvents || resultView == null) {
+                            if (view.onTouchDown(x, y, pointer, button)) resultView = view;
+                            // break; // may be there is more than one child cllicked p.e. slider goes over the whole screen
+                        }
+                        /*
+                        if (resultView == null) {
+                            resultView = view;
+                            // if view returns a resultView (!= null means handled), we can break and don't test the rest
+                            Log.info(log, "clicked " + view.toString());
+                            break;
+                        }
+                         */
                     }
-                    // if view returns a resultView (!= null means handled), we can break and don't test the rest
-                    if (resultView != null) break;
-                }
-                if (forceHandleTouchEvents || resultView == null) {
-                    // this view has been touched, so call the onTouchDown of of this view
-                    if (onTouchDown(x, y, pointer, button)) resultView = this;
                 }
                 GL.that.renderOnce();
             } catch (Exception e) {

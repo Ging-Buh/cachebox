@@ -254,7 +254,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     }
 
     private void Layout() {
-        Log.debug(log, "Layout");
+        Log.debug(log, "layout");
 
         // Die Größe des Kompasses nach rest Platz berechnen
 
@@ -344,9 +344,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (showTargetDirection)
             contentHeight += lblHeight + margin;
         if (showSDT)
-            contentHeight += Fonts.MeasureSmall("Tg").height * 1.3f;
+            contentHeight += Fonts.measureForSmallFont("Tg").height * 1.3f;
         if (showLastFound)
-            contentHeight += Fonts.MeasureSmall("Tg").height * 1.3f;
+            contentHeight += Fonts.measureForSmallFont("Tg").height * 1.3f;
 
         float topH = Math.max((this.getWidth() * 0.7f), this.getHeight() - contentHeight - Sprites.activityBackground.getTopHeight() - Sprites.activityBackground.getBottomHeight());
 
@@ -381,7 +381,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             mCompassMapView.setZeroPos();
             rightBox.addChild(mCompassMapView);
 
-            lblDistance = new CB_Label("Distance", margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f));
+            lblDistance = new CB_Label("Distance", margin, margin, rightBox.getWidth(), (Fonts.measureForBigFont("T").height * 2.5f));
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.CENTER);
@@ -391,7 +391,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             rightBox.addChild(distanceBack);
             rightBox.addChild(lblDistance);
         } else {
-            float h = Fonts.MeasureBig("T").height * 2.5f;
+            float h = Fonts.measureForBigFont("T").height * 2.5f;
             lblDistance = new CB_Label("Distance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
@@ -544,7 +544,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             if (showLastFound)
                 viewMode += CacheInfo.SHOW_LAST_FOUND;
 
-            float infoHeight = Fonts.MeasureSmall("Tg").height * 1.3f;
+            float infoHeight = Fonts.measureForSmallFont("Tg").height * 1.3f;
             if (showSDT && showLastFound) {
                 infoHeight *= 2.5f;
             }

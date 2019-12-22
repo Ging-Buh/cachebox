@@ -74,7 +74,7 @@ public class DraftsView extends V_ListView {
     private static Draft aktDraft;
     private static boolean firstShow = true;
     private static CB_RectF ItemRec;
-    private static Drafts lDrafts;
+    private static Drafts drafts;
     private static WaitDialog wd;
     private static EditDraft.IReturnListener returnListener = DraftsView::addOrChangeDraft;
     private static EditDraft editDraft;
@@ -85,16 +85,13 @@ public class DraftsView extends V_ListView {
         mCanDispose = false;
         setForceHandleTouchEvents();
         ItemRec = new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
-
         setBackground(Sprites.ListBack);
-
-        if (lDrafts == null)
-            lDrafts = new Drafts();
+        if (drafts == null)
+            drafts = new Drafts();
         setHasInvisibleItems();
         setAdapter(null);
-        lvAdapter = new CustomAdapter(lDrafts);
+        lvAdapter = new CustomAdapter(drafts);
         setAdapter(lvAdapter);
-
         setEmptyMsg(Translation.get("EmptyDrafts"));
         firstShow = true;
     }
@@ -143,15 +140,15 @@ public class DraftsView extends V_ListView {
 
             if (isNewDraft) {
 
-                lDrafts.add(0, draft);
+                drafts.add(0, draft);
 
                 // eine evtl. vorhandene Draft /DNF löschen
                 if (draft.type == GeoCacheLogType.attended //
                         || draft.type == GeoCacheLogType.found //
                         || draft.type == GeoCacheLogType.webcam_photo_taken //
                         || draft.type == GeoCacheLogType.didnt_find) {
-                    lDrafts.DeleteDraftByCacheId(draft.CacheId, GeoCacheLogType.found);
-                    lDrafts.DeleteDraftByCacheId(draft.CacheId, GeoCacheLogType.didnt_find);
+                    drafts.DeleteDraftByCacheId(draft.CacheId, GeoCacheLogType.found);
+                    drafts.DeleteDraftByCacheId(draft.CacheId, GeoCacheLogType.didnt_find);
                 }
             }
 
@@ -182,16 +179,16 @@ public class DraftsView extends V_ListView {
                         Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
                         Config.AcceptChanges();
                     } // und eine evtl. vorhandene Draft FoundIt löschen
-                    lDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, GeoCacheLogType.found);
+                    drafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, GeoCacheLogType.found);
                 }
             }
             createGeoCacheVisits();
 
             // Reload List
             if (isNewDraft) {
-                lDrafts.loadDrafts("", LoadingType.LoadNew);
+                drafts.loadDrafts("", LoadingType.LoadNew);
             } else {
-                lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
+                drafts.loadDrafts("", LoadingType.loadNewLastLength);
             }
         }
         that.notifyDataSetChanged();
@@ -395,12 +392,12 @@ public class DraftsView extends V_ListView {
     }
 
     private void reloadDrafts() {
-        if (lDrafts == null)
-            lDrafts = new Drafts();
-        lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
+        if (drafts == null)
+            drafts = new Drafts();
+        drafts.loadDrafts("", LoadingType.loadNewLastLength);
 
         setAdapter(null);
-        lvAdapter = new CustomAdapter(lDrafts);
+        lvAdapter = new CustomAdapter(drafts);
         setAdapter(lvAdapter);
     }
 
@@ -479,18 +476,18 @@ public class DraftsView extends V_ListView {
                     // Yes button clicked
                     // delete all Drafts
                     // reload all Drafts!
-                    lDrafts.loadDrafts("", LoadingType.Loadall);
+                    drafts.loadDrafts("", LoadingType.Loadall);
 
-                    for (Draft entry : lDrafts) {
+                    for (Draft entry : drafts) {
                         entry.DeleteFromDatabase();
 
                     }
 
-                    lDrafts.clear();
+                    drafts.clear();
                     aktDraft = null;
 
                     that.setAdapter(null);
-                    lvAdapter = new CustomAdapter(lDrafts);
+                    lvAdapter = new CustomAdapter(drafts);
                     that.setAdapter(lvAdapter);
 
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
@@ -547,7 +544,7 @@ public class DraftsView extends V_ListView {
         @Override
         public ListViewItemBase getView(int position) {
 
-            // check if the DraftViewItem in the buffer list
+            // check if the DraftViewItem is in the buffer list
             for (DraftViewItem item : fixViewList) {
                 if (item.getIndex() == position)
                     return item;
@@ -558,7 +555,6 @@ public class DraftsView extends V_ListView {
             if (position < drafts.size()) {
                 fne = drafts.get(position);
             }
-
             CB_RectF rec = new CB_RectF(ItemRec);
             rec.scaleCenter(0.97f);
             rec.setHeight(MeasureItemHeight(fne));
@@ -567,7 +563,7 @@ public class DraftsView extends V_ListView {
             if (fne == null) {
                 v.setClickHandler((v14, x, y, pointer, button) -> {
                     // Load More
-                    lDrafts.loadDrafts("", LoadingType.loadMore);
+                    DraftsView.drafts.loadDrafts("", LoadingType.loadMore);
                     DraftsView.this.notifyDataSetChanged();
                     return true;
                 });
@@ -583,7 +579,7 @@ public class DraftsView extends V_ListView {
 
         private boolean onItemClicked(DraftViewItem draftViewItem) {
             int index = draftViewItem.getIndex();
-            aktDraft = lDrafts.get(index);
+            aktDraft = DraftsView.drafts.get(index);
             draftViewItem.headerClicked = false;
             Menu cm = new Menu("DraftItemMenuTitle");
             cm.addMenuItem("edit", null, this::editDraft);
@@ -808,13 +804,13 @@ public class DraftsView extends V_ListView {
                                 }
                             }
                         }
-                        lDrafts.deleteDraft(aktDraft);
+                        DraftsView.drafts.deleteDraft(aktDraft);
                         aktDraft = null;
 
-                        lDrafts.loadDrafts("", LoadingType.loadNewLastLength);
+                        DraftsView.drafts.loadDrafts("", LoadingType.loadNewLastLength);
 
                         that.setAdapter(null);
-                        lvAdapter = new CustomAdapter(lDrafts);
+                        lvAdapter = new CustomAdapter(DraftsView.drafts);
                         that.setAdapter(lvAdapter);
 
                         createGeoCacheVisits();

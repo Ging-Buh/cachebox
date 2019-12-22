@@ -168,7 +168,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         waypoints = new CB_List<>();
     }
 
-    public static long GenerateCacheId(String GcCode) {
+    public static long generateCacheId(String GcCode) {
         long result = 0;
         char[] dummy = GcCode.toCharArray();
         byte[] byteDummy = new byte[8];

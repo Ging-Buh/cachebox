@@ -148,7 +148,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         pgBar = new ProgressBar(rec, "ProgressBar");
         pgBar.setProgress(0, "");
 
-        float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
+        float SmallLineHeight = Fonts.measureForSmallFont("Tg").height;
         lblProgressMsg = new CB_Label("", Fonts.getSmall(), null, null);
         lblProgressMsg.setHeight(SmallLineHeight);
 

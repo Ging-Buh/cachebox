@@ -41,7 +41,7 @@ public class ParkingDialog extends ButtonDialog {
 
         float innerWidth = msgBoxContentSize.getWidth();
 
-        layout = new Linearlayout(innerWidth, "Layout");
+        layout = new Linearlayout(innerWidth, "layout");
         layout.setX(0);
         // layout.setBackground(new ColorDrawable(Color.GREEN));
 

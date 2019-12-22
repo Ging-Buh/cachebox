@@ -16,7 +16,7 @@ public class SettingsItemBase extends ListViewItemBackground {
         initialize();
 
         if (MeasuredLabelHeight == -1)
-            MeasuredLabelHeight = Fonts.MeasureSmall("Tg").height;
+            MeasuredLabelHeight = Fonts.measureForSmallFont("Tg").height;
 
         CB_RectF LblRec = new CB_RectF(leftBorder, 0, innerWidth, this.getHalfHeight());
 

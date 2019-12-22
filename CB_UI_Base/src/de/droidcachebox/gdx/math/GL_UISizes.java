@@ -32,12 +32,12 @@ public class GL_UISizes implements SizeChangedEvent {
     private static final String log = "GL_UISizes";
     /**
      * das Rechteck, welches die Größe und Position aller GL_View's auf der linken Seite darstellt. Dieses Rechteck ist immer Gültig! Das
-     * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
+     * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet layout handelt.
      */
     public static CB_RectF uiLeft;
     /**
-     * Das Rechteck, welches die Größe und Position aller GL_View's auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
-     * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Größe und Position wie UI_Left.
+     * Das Rechteck, welches die Größe und Position aller GL_View's auf der rechten Seite darstellt, wenn es sich um ein Tablet layout
+     * handelt. Wenn es sich nicht um ein Tablet layout handelt, hat dieses Rechteck die selbe Größe und Position wie UI_Left.
      */
     public static CB_RectF uiRight;
     /**

@@ -41,8 +41,8 @@ public class ViewID {
     /**
      * @param ID     = Int
      * @param Type   = Android or OpenGL
-     * @param Pos    = Left or Right for Phone Layout
-     * @param PosTab = Left or Right for Tab Layout
+     * @param Pos    = Left or Right for Phone layout
+     * @param PosTab = Left or Right for Tab layout
      */
     public ViewID(int ID, UI_Type Type, UI_Pos Pos, UI_Pos PosTab) {
         Id = ID;

@@ -326,7 +326,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
                 // layout missing Variables
                 // if (buildFormula != null)
                 // {
-                // y = buildFormula.Layout(y, innerLeft, innerWidth, margin);
+                // y = buildFormula.layout(y, innerLeft, innerWidth, margin);
                 // }
                 cbFormulaAsText.setY(y);
                 lFormulaAsText.setY(y);

@@ -51,11 +51,11 @@ public class ScrollBox extends CB_View_Base {
         thisAdapter = new CustomAdapter();
         lv.setDisposeFlag(false);
         lv.setAdapter(thisAdapter);
-        Layout();
+        layout();
         this.childs.add(lv);
     }
 
-    protected void Layout() {
+    protected void layout() {
         if (this.isDisposed())
             return;
         if (lv == null) {
@@ -80,7 +80,7 @@ public class ScrollBox extends CB_View_Base {
      **/
     public void setVirtualHeight(float virtualHeight) {
         this.virtualHeight = virtualHeight;
-        Layout();
+        layout();
     }
 
     // ################ overrides of CB_View_Base ############################################
@@ -181,13 +181,13 @@ public class ScrollBox extends CB_View_Base {
     @Override
     public void setBorders(float l, float r) {
         super.setBorders(l, r);
-        Layout();
+        layout();
     }
 
     @Override
     public void setBackground(Drawable background) {
         super.setBackground(background);
-        Layout();
+        layout();
     }
 
     @Override

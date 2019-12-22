@@ -124,7 +124,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.getInstance().getInfoSliderHeight()), "SlideBox");
         mSlideBox.setBackground(Sprites.ProgressBack); // topBorder + bottomBorder are ignored, so initRow
         mSlideBox.initRow(TOPDOWN, mSlideBox.getHeight());
-        float w = Fonts.MeasureBig("G.").width;
+        float w = Fonts.measureForBigFont("G.").width;
         last5Logs = new CB_Label[5];
         for (int i = 0; i < 5; i++) {
             last5Logs[i] = new CB_Label();

@@ -162,7 +162,7 @@ public class SearchDialog extends PopUp_Base {
 
         mEingabe.setText("");
 
-        // Layout! da es sich nicht ändert, brauchen wir es nicht in eine Methode packen
+        // layout! da es sich nicht ändert, brauchen wir es nicht in eine Methode packen
         float y = margin;
 
         mBtnFilter.setPos(margin, y);

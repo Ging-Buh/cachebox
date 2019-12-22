@@ -151,19 +151,22 @@ public class Fonts {
         return bounds;
     }
 
-    public static GlyphLayout MeasureSmall(String txt) {
+    public static GlyphLayout measureForSmallFont(String txt) {
 
         if (txt == null || txt.equals(""))
             txt = "text";
-
-        if (measureSmallCache == null)
-            measureSmallCache = new BitmapFontCache(Fonts.getSmall());
-        GlyphLayout bounds = measureSmallCache.setText(txt, 0, 0);
-        bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
-        return bounds;
+        try {
+            if (measureSmallCache == null)
+                measureSmallCache = new BitmapFontCache(Fonts.getSmall());
+            GlyphLayout bounds = measureSmallCache.setText(txt, 0, 0);
+            bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
+            return bounds;
+        } catch (Exception ex) {
+            return new GlyphLayout();
+        }
     }
 
-    public static GlyphLayout MeasureBig(String txt) {
+    public static GlyphLayout measureForBigFont(String txt) {
         if (txt == null || txt.equals(""))
             txt = "text";
         if (measureBigCache == null)

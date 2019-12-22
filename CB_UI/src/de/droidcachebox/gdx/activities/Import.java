@@ -293,7 +293,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         pgBar.setProgress(0, "");
 
-        float progressLineHeight = Fonts.MeasureSmall("Tg").height * 3;
+        float progressLineHeight = Fonts.measureForSmallFont("Tg").height * 3;
 
         lblProgressMsg = new CB_Label(this.name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - progressLineHeight, innerWidth - margin - margin, progressLineHeight);
         lblProgressMsg.setFont(Fonts.getBubbleSmall());
@@ -524,7 +524,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createLogCollapseBox() {
-        float SmallLineHeight = Fonts.MeasureSmall("Tg").height * 1.5f;
+        float SmallLineHeight = Fonts.measureForSmallFont("Tg").height * 1.5f;
         CollapseBoxLogsMaxHeight = checkBoxCleanLogs.getHeight() + (SmallLineHeight * 3.5f) + (margin * 4);
 
         CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollapseBoxLogsMaxHeight - margin, lblLogs.getWidth(), CollapseBoxLogsMaxHeight);

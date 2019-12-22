@@ -504,7 +504,7 @@ public class GroundspeakAPI {
                         .ensureSuccess()
                         .asJsonObject()
                         .getBody();
-                long cacheId = Cache.GenerateCacheId(gcCode);
+                long cacheId = Cache.generateCacheId(gcCode);
                 // Cache cache = new CacheDAO().getFromDbByCacheId(cacheId);
                 LogEntry logEntry = createLog(geocacheLog, cacheId);
                 new LogDAO().WriteToDatabase(logEntry);
@@ -1101,7 +1101,7 @@ public class GroundspeakAPI {
                             return null;
                         }
                         cache.setUrl("https://coord.info/" + cache.getGcCode());
-                        cache.Id = Cache.GenerateCacheId(cache.getGcCode());
+                        cache.Id = Cache.generateCacheId(cache.getGcCode());
                         break;
                     case "name":
                         cache.setName(API1Cache.optString(switchValue, ""));
@@ -1391,7 +1391,7 @@ public class GroundspeakAPI {
                 if (uri.length() > 0) {
                     if (isCacheImage || withLogImages) {
                         ImageEntry imageEntry = new ImageEntry();
-                        imageEntry.CacheId = Cache.GenerateCacheId(GcCode);
+                        imageEntry.CacheId = Cache.generateCacheId(GcCode);
                         imageEntry.Description = Description;
                         imageEntry.GcCode = GcCode;
                         imageEntry.ImageUrl = uri.replace("img.geocaching.com/gc/cache", "img.geocaching.com/cache");

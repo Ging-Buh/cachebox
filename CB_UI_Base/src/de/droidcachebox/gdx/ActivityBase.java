@@ -34,7 +34,7 @@ public class ActivityBase extends CB_View_Base {
         this.setBackground(Sprites.activityBackground);
 
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
-        MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
+        MeasuredLabelHeightBig = Fonts.measureForBigFont("T").height * 1.5f;
         ButtonHeight = UiSizes.getInstance().getButtonHeight();
         this.registerSkinChangedEvent();
     }

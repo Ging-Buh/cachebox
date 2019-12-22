@@ -1057,7 +1057,7 @@ public class GPXFileImporter {
 
         if (values.containsKey("wpt_name")) {
             cache.setGcCode(values.get("wpt_name"));
-            cache.Id = Cache.GenerateCacheId(cache.getGcCode());
+            cache.Id = Cache.generateCacheId(cache.getGcCode());
         }
 
         if (values.containsKey("wpt_time")) {
@@ -1243,7 +1243,7 @@ public class GPXFileImporter {
                                 log.logId = log.cacheId + log.logId;
                         } catch (Exception ex) {
                             // Cache ID konnte nicht als Zahl interpretiert werden -> in eine eindeutige Zahl wandeln
-                            log.logId = Cache.GenerateCacheId(attrValue);
+                            log.logId = Cache.generateCacheId(attrValue);
                         }
                     }
 
@@ -1372,9 +1372,9 @@ public class GPXFileImporter {
 
             if (values.containsKey("cache_gsak_Parent")) {
                 String parent = values.get("cache_gsak_Parent");
-                waypoint.geoCacheId = Cache.GenerateCacheId(parent);
+                waypoint.geoCacheId = Cache.generateCacheId(parent);
             } else {
-                waypoint.geoCacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
+                waypoint.geoCacheId = Cache.generateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
             }
 
         }

@@ -35,7 +35,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 
 /**
- * nur noch ein Dummy um die Größe und damit das Layout zu erhalten
+ * nur noch ein Dummy um die Größe und damit das layout zu erhalten
  *
  * @author Longri
  */

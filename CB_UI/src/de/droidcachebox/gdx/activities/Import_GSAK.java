@@ -386,7 +386,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             // ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
             progressBar.setProgress(count * 100 / anz, "" + count + "/" + anz);
             LogEntry logEntry = new LogEntry();
-            logEntry.cacheId = Cache.GenerateCacheId(LogsReader.getString("lParent"));
+            logEntry.cacheId = Cache.generateCacheId(LogsReader.getString("lParent"));
             logEntry.logText = LogsReader.getString("lText");
             logEntry.finder = LogsReader.getString("lBy");
             logEntry.logDate = DateFromString(LogsReader.getString("lDate"));
@@ -451,7 +451,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                         return null;
                     }
                     cache.setUrl("https://coord.info/" + cache.getGcCode());
-                    cache.Id = Cache.GenerateCacheId(cache.getGcCode());
+                    cache.Id = Cache.generateCacheId(cache.getGcCode());
                     cache.NumTravelbugs = 0;
                     break;
                 case "Name":

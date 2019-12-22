@@ -384,13 +384,13 @@ public class GL_Input implements InputProcessor {
                                 view.touchUp(x - pan.x, y - pan.y, pointer, 0);
                                 touchDownPos.remove(pointer);
                                 kineticPan = null;
-                                cancel();
+                                timer.cancel();
                                 timer = null;
                             }
                         } catch (Exception e) {
                             touchDownPos.remove(pointer);
                             kineticPan = null;
-                            cancel();
+                            timer.cancel();
                             timer = null;
                         }
                         view.touchDragged(x - pan.x, y - pan.y, pointer, true);

@@ -362,7 +362,7 @@ public class TB_Log extends ActivityBase {
             if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
                 if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache
-                    return Cache.GenerateCacheId(TB.CurrentGeocacheCode);
+                    return Cache.generateCacheId(TB.CurrentGeocacheCode);
                 }
             }
         }

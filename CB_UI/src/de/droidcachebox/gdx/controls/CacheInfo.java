@@ -152,7 +152,7 @@ public class CacheInfo extends CB_View_Base {
 
     void initialMesure() {
         mScaleFactor = getWidth() / UiSizes.getInstance().getCacheListItemRec().getWidth();
-        mIconSize = Fonts.MeasureSmall("T").height * 3.5f * mScaleFactor;
+        mIconSize = Fonts.measureForSmallFont("T").height * 3.5f * mScaleFactor;
         mMargin = 3 * mScaleFactor;
     }
 

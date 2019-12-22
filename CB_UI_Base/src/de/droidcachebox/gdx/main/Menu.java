@@ -204,7 +204,7 @@ public class Menu extends ButtonDialog {
         }
 
         if (mMoreMenuToggleButtonWidth == -1) {
-            float mesuredLblHeigt = Fonts.MeasureSmall("T").height;
+            float mesuredLblHeigt = Fonts.measureForSmallFont("T").height;
             mMoreMenuToggleButtonWidth = Sprites.btn.getLeftWidth() + Sprites.btn.getRightWidth() + (mesuredLblHeigt * 1.5f);
         }
 

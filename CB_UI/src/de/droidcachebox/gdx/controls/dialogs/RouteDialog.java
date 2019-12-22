@@ -33,7 +33,7 @@ public class RouteDialog extends ButtonDialog {
         float innerWidth = msgBoxContentSize.getWidth() + leftBorder + rightBorder;
         innerWidth = Menu.getMenuRec().getWidth();
 
-        Linearlayout layout = new Linearlayout(innerWidth, "Layout");
+        Linearlayout layout = new Linearlayout(innerWidth, "layout");
         layout.setX(0);
         // layout.setBackground(new ColorDrawable(Color.GREEN));
 

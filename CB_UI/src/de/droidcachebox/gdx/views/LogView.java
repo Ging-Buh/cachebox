@@ -24,7 +24,6 @@ import de.droidcachebox.database.Database;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
@@ -42,19 +41,20 @@ import java.util.Collections;
 public class LogView extends V_ListView implements SelectedCacheChangedEventListener {
     private static CB_RectF itemRec;
     private static LogView logView;
+    CB_List<LogItem> allLogs;
     private Cache aktCache;
     private LogListAdapter logListAdapter;
-    private CB_List<LogViewItem> logViewItems;
+    private ArrayList<String> friendList;
 
     private LogView() {
         super(ViewManager.leftTab.getContentRec(), "LogView");
         setForceHandleTouchEvents();
-        itemRec = (new CB_RectF(0, 0, this.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).scaleCenter(0.97f);
+        itemRec = (new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).scaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
-        this.setAdapter(null);
+        setAdapter(null);
         setCache(GlobalCore.getSelectedCache());
-        this.setDisposeFlag(false);
+        setDisposeFlag(false);
     }
 
     public static LogView getInstance() {
@@ -77,71 +77,46 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
     public void initialize() {
         // super.Initial(); does nothing at the moment
 
+        String friends = Config.Friends.getValue().replace(", ", "|").replace(",", "|");
+        String[] finder = friends.split("\\|");
+        friendList = new ArrayList<>();
+        Collections.addAll(friendList, finder);
+
         createItemList();
 
         logListAdapter = new LogListAdapter();
-        this.setAdapter(logListAdapter);
+        setAdapter(logListAdapter);
 
-        this.setEmptyMsg(Translation.get("EmptyLogList"));
+        setEmptyMsg(Translation.get("EmptyLogList"));
 
-        this.scrollTo(0);
+        scrollTo(0);
     }
 
     private void createItemList() {
-        if (logViewItems == null)
-            logViewItems = new CB_List<>();
-        logViewItems.clear();
 
         if (aktCache == null)
             return;
 
-        CB_List<LogEntry> cleanLogs = Database.getLogs(aktCache);
-
-        String finders = Config.Friends.getValue().replace(", ", "|").replace(",", "|");
-        String[] finder = finders.split("\\|");
-        ArrayList<String> friendList = new ArrayList<>();
-        Collections.addAll(friendList, finder);
-
-        int index = 0;
-        for (int i = 0, n = cleanLogs.size(); i < n; i++) {
-            LogEntry logEntry = cleanLogs.get(i);
+        allLogs = new CB_List<>();
+        for (LogEntry logEntry : Database.getLogs(aktCache)) {
             if (GlobalCore.filterLogsOfFriends) {
-                // nur die Logs der eingetragenen Freunde anzeigen
                 if (!friendList.contains(logEntry.finder)) {
                     continue;
                 }
             }
-            CB_RectF rec = new CB_RectF(itemRec);
-            rec.setHeight(measureItemHeight(logEntry));
-            final LogViewItem v = new LogViewItem(rec, index++, logEntry);
-
-            v.setOnLongClickListener((view, x, y, pointer, button) -> {
-                v.copyToClipboard();
-                GL.that.Toast(Translation.get("CopyToClipboard"));
-                return true;
-            });
-
-            logViewItems.add(v);
+            allLogs.add(new LogItem(logEntry));
         }
-
-        this.notifyDataSetChanged();
-
+        // notifyDataSetChanged();
     }
 
-    private float measureItemHeight(LogEntry logEntry) {
-        // object ist nicht von Dialog abgeleitet, daher
+    private CB_RectF getItemRect_F(LogEntry logEntry) {
+        CB_RectF cbRectF = new CB_RectF(itemRec);
         float margin = UiSizes.getInstance().getMargin();
         float headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + margin;
-
-        float mesurdWidth = itemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (margin * 2);
-
-        float commentHeight = (margin * 4) + Fonts.MeasureWrapped(logEntry.logText, mesurdWidth).height;
-
-        return headHeight + commentHeight;
-    }
-
-    public Cache getCache() {
-        return aktCache;
+        float measuredWidth = itemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (margin * 2);
+        float commentHeight = (margin * 4) + Fonts.MeasureWrapped(logEntry.logText, measuredWidth).height;
+        cbRectF.setHeight(headHeight + commentHeight);
+        return cbRectF;
     }
 
     public void setCache(Cache cache) {
@@ -158,24 +133,32 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
     @Override
     public void dispose() {
-        this.setAdapter(null);
+        setAdapter(null);
         aktCache = null;
         logListAdapter = null;
-        if (logViewItems != null)
-            logViewItems.clear();
-        logViewItems = null;
         super.dispose();
-        //Log.debug(log, "LogView disposed");
+    }
+
+    private static class LogItem {
+        LogEntry logEntry;
+        LogViewItem logViewItem;
+
+        public LogItem(LogEntry logEntry) {
+            this.logEntry = logEntry;
+            logViewItem = null;
+        }
     }
 
     public class LogListAdapter implements Adapter {
+        int index = 0;
+
         LogListAdapter() {
         }
 
         @Override
         public int getCount() {
-            if (logViewItems != null) {
-                return logViewItems.size();
+            if (allLogs != null) {
+                return allLogs.size();
             } else {
                 return 0;
             }
@@ -183,18 +166,27 @@ public class LogView extends V_ListView implements SelectedCacheChangedEventList
 
         @Override
         public ListViewItemBase getView(int position) {
-            if (logViewItems != null) {
-                return logViewItems.get(position);
-            } else
-                return null;
+            if (allLogs != null) {
+                if (allLogs.size() > 0) {
+                    LogItem logItem = allLogs.get(position);
+                    if (logItem.logViewItem == null) {
+                        logItem.logViewItem = new LogViewItem(getItemRect_F(logItem.logEntry), index++, logItem.logEntry);
+                    }
+                    return logItem.logViewItem;
+                }
+            }
+            return null;
         }
 
         @Override
         public float getItemSize(int position) {
-            if (logViewItems.size() == 0)
-                return 0;
-            return logViewItems.get(position).getHeight();
+            if (allLogs != null) {
+                if (allLogs.size() > 0) {
+                    LogItem logItem = allLogs.get(position);
+                    return getItemRect_F(logItem.logEntry).getHeight();
+                }
+            }
+            return 0;
         }
-
     }
 }

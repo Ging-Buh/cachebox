@@ -135,7 +135,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
 
         progressBar.setProgress(0, "");
 
-        float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
+        float SmallLineHeight = Fonts.measureForSmallFont("Tg").height;
 
         lblProgressMsg = new CB_Label(this.name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight);
 

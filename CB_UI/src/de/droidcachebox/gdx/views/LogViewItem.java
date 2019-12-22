@@ -16,85 +16,137 @@
 package de.droidcachebox.gdx.views;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Clipboard;
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.popups.ICopyPaste;
+import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.utils.http.Webb;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
-    public static BitmapFontCache cacheNamePaint;
-    private static NinePatch backheader;
-    private static float MeasuredLabelHeight = 0;
+    private static NinePatch headerBackground;
+    private static float measuredLabelHeight = 0;
     private static float headHeight;
     private LogEntry logEntry;
-    private Image ivTyp;
-    private CB_Label lblFinder;
-    private CB_Label lblDate;
-    private EditTextField mComment;
     private float secondTab = 0;
     private Clipboard clipboard = PlatformUIBase.getClipboard();
 
     public LogViewItem(CB_RectF rec, int Index, LogEntry logEntry) {
         super(rec, Index, "");
-        this.setLongClickable(true);
+        setLongClickable(false);
         this.logEntry = logEntry;
         backGroundIsInitialized = false;
-        MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+        measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
         headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 
         iniImage();
         iniFoundLabel();
         iniDateLabel();
         iniCommentLabel();
+
         setClickHandler((v1, x, y, pointer, button) -> {
-            // ShowLogs.getInstance().getContextMenu().show();
+            Menu menu = new Menu("LogEntryContextMenuTitle");
+            menu.addMenuItem("CopyToClipboard", null, this::copyToClipboard);
+            menu.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + getGcIdFromLogId(logEntry.logId)));
+            menu.addMenuItem("MailToFinder", Sprites.getSprite("bigLetterbox"), () -> {
+                try {
+                    String finder = URLEncoder.encode(logEntry.finder, "UTF-8");
+                    PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + finder);
+                } catch (Exception ignored) {
+                }
+            });
+            menu.addMenuItem("MessageToFinder", Sprites.getSprite("bigLetterbox"), () -> GL.that.postAsync(() -> {
+                try {
+                    String mGCCode = GlobalCore.getSelectedCache().getGcCode();
+                    try {
+                        String page = Webb.create()
+                                .get("https://coord.info/" + mGCCode)
+                                .ensureSuccess()
+                                .asString()
+                                .getBody();
+                        String toSearch = "recipientId=";
+                        int pos = page.indexOf(toSearch);
+                        if (pos > -1) {
+                            int start = pos + toSearch.length();
+                            int stop = page.indexOf("&amp;", start);
+                            String guid = page.substring(start, stop);
+                            PlatformUIBase.callUrl("https://www.geocaching.com/account/messagecenter?recipientId=" + guid + "&gcCode=" + mGCCode);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                } catch (Exception ignored) {
+                }
+            }));
+            menu.show();
             return true;
         });
     }
 
+    private String getGcIdFromLogId(long logId) {
+        String referenceCode;
+        if (logId < 65536)
+            referenceCode = Long.toHexString(logId); // Decimal to Hex
+        else
+            referenceCode = base31(logId + 411120);
+        return "GL" + referenceCode;
+    }
+
+    private String base31(long modLogId) {
+        final String base31chars = "0123456789ABCDEFGHJKMNPQRTVWXYZ";
+        StringBuilder referenceCode = new StringBuilder();
+        while (modLogId > 0) {
+            int r = (int) (modLogId % 31);
+            modLogId = modLogId / 31;
+            referenceCode.append(base31chars.charAt(r));
+        }
+        return referenceCode.toString();
+    }
 
 
     private void iniImage() {
-        ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
-        this.addChild(ivTyp);
+        Image ivTyp = new Image(getLeftWidth(), getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
+        addChild(ivTyp);
         ivTyp.setDrawable(new SpriteDrawable(Sprites.LogIcons.get(logEntry.geoCacheLogType.getIconID())));
         secondTab = ivTyp.getMaxX() + (UiSizes.getInstance().getMargin() * 2);
     }
 
     private void iniFoundLabel() {
-        lblFinder = new CB_Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UiSizes.getInstance().getMargin(), MeasuredLabelHeight, logEntry.finder);
-        this.addChild(lblFinder);
+        CB_Label lblFinder = new CB_Label(name + " lblFinder", secondTab, getHeight() - (headHeight / 2) - (measuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UiSizes.getInstance().getMargin(), measuredLabelHeight, logEntry.finder);
+        addChild(lblFinder);
     }
 
     private void iniDateLabel() {
         // SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
-        SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
         String dateString = postFormater.format(logEntry.logDate);
         float DateLength = Fonts.Measure(dateString).width;
 
-        lblDate = new CB_Label(this.name + " lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, dateString);
-        this.addChild(lblDate);
+        CB_Label lblDate = new CB_Label(name + " lblDate", getWidth() - getRightWidth() - DateLength, getHeight() - (headHeight / 2) - (measuredLabelHeight / 2), DateLength, measuredLabelHeight, dateString);
+        addChild(lblDate);
     }
 
     // static Member
 
     private void iniCommentLabel() {
-        CB_RectF rectF = new CB_RectF(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2), this.getHeight() - headHeight - UiSizes.getInstance().getMargin());
-        mComment = new EditTextField(rectF, this, "mComment");
+        CB_RectF rectF = new CB_RectF(getLeftWidth(), 0, getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2), getHeight() - headHeight - UiSizes.getInstance().getMargin());
+        EditTextField mComment = new EditTextField(rectF, this, "mComment");
         mComment.setWrapType(WrapType.WRAPPED);
         mComment.setText(logEntry.logText);
         mComment.setEditable(false);
@@ -102,20 +154,20 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         mComment.setBackground(null, null);
         mComment.showFromLineNo(0);
         mComment.setCursorPosition(0);
-        this.addChild(mComment);
+        addChild(mComment);
     }
 
     @Override
     protected void initialize() {
-        backheader = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
+        headerBackground = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
         super.initialize();
     }
 
     @Override
     public void render(Batch batch) {
         super.render(batch);
-        if (backheader != null) {
-            backheader.draw(batch, 0, this.getHeight() - headHeight, this.getWidth(), headHeight);
+        if (headerBackground != null) {
+            headerBackground.draw(batch, 0, getHeight() - headHeight, getWidth(), headHeight);
         } else {
             resetInitial();
         }
@@ -150,8 +202,9 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
     @Override
     public String copyToClipboard() {
-        clipboard.setContents(this.logEntry.logText);
-        return this.logEntry.logText;
+        clipboard.setContents(logEntry.logText);
+        // GL.that.Toast(Translation.get("CopyToClipboard"));
+        return logEntry.logText;
     }
 
     @Override

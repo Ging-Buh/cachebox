@@ -1414,7 +1414,7 @@ public class EditFilterSettings extends ActivityBase {
                     EntryName.setColor(COLOR.getFontColor());
                     EntryName.setText(Name, left + UiSizes.getInstance().getMargin(), top);
 
-                    top = margin + margin + Fonts.MeasureSmall(Count).height;
+                    top = margin + margin + Fonts.measureForSmallFont(Count).height;
 
                     EntryDate = new BitmapFontCache(Fonts.getSmall());
                     EntryDate.setColor(COLOR.getFontColor());
