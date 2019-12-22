@@ -78,7 +78,7 @@ public class DraftsView extends V_ListView {
     private static WaitDialog wd;
     private static EditDraft.IReturnListener returnListener = DraftsView::addOrChangeDraft;
     private static EditDraft editDraft;
-    private CustomAdapter lvAdapter;
+    private DraftsViewAdapter lvAdapter;
 
     private DraftsView() {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
@@ -90,7 +90,7 @@ public class DraftsView extends V_ListView {
             drafts = new Drafts();
         setHasInvisibleItems();
         setAdapter(null);
-        lvAdapter = new CustomAdapter(drafts);
+        lvAdapter = new DraftsViewAdapter(drafts);
         setAdapter(lvAdapter);
         setEmptyMsg(Translation.get("EmptyDrafts"));
         firstShow = true;
@@ -397,7 +397,7 @@ public class DraftsView extends V_ListView {
         drafts.loadDrafts("", LoadingType.loadNewLastLength);
 
         setAdapter(null);
-        lvAdapter = new CustomAdapter(drafts);
+        lvAdapter = new DraftsViewAdapter(drafts);
         setAdapter(lvAdapter);
     }
 
@@ -487,7 +487,7 @@ public class DraftsView extends V_ListView {
                     aktDraft = null;
 
                     that.setAdapter(null);
-                    lvAdapter = new CustomAdapter(drafts);
+                    lvAdapter = new DraftsViewAdapter(drafts);
                     that.setAdapter(lvAdapter);
 
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
@@ -524,12 +524,12 @@ public class DraftsView extends V_ListView {
         Log.debug(log, "DraftsView disposed");
     }
 
-    public class CustomAdapter implements Adapter {
+    private class DraftsViewAdapter implements Adapter {
 
         private final CB_FixSizeList<DraftViewItem> fixViewList = new CB_FixSizeList<>(20);
         private Drafts drafts;
 
-        CustomAdapter(Drafts drafts) {
+        DraftsViewAdapter(Drafts drafts) {
             this.drafts = drafts;
         }
 
@@ -563,8 +563,8 @@ public class DraftsView extends V_ListView {
             if (fne == null) {
                 v.setClickHandler((v14, x, y, pointer, button) -> {
                     // Load More
-                    DraftsView.drafts.loadDrafts("", LoadingType.loadMore);
-                    DraftsView.this.notifyDataSetChanged();
+                    drafts.loadDrafts("", LoadingType.loadMore);
+                    notifyDataSetChanged();
                     return true;
                 });
             } else {
@@ -676,7 +676,7 @@ public class DraftsView extends V_ListView {
                         draft.uploaded = true;
                         if (directLog && !draft.isTbDraft) {
                             draft.GcId = GroundspeakAPI.logReferenceCode;
-                            LogView.getInstance().resetInitial(); // if own log is written !
+                            LogListView.getInstance().resetInitial(); // if own log is written !
                         }
                         addOrChangeDraft(draft, false, false);
                     } else {
@@ -810,7 +810,7 @@ public class DraftsView extends V_ListView {
                         DraftsView.drafts.loadDrafts("", LoadingType.loadNewLastLength);
 
                         that.setAdapter(null);
-                        lvAdapter = new CustomAdapter(DraftsView.drafts);
+                        lvAdapter = new DraftsViewAdapter(DraftsView.drafts);
                         that.setAdapter(lvAdapter);
 
                         createGeoCacheVisits();

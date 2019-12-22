@@ -21,7 +21,7 @@ import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 
-public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
+public class Drafts extends ArrayList<Draft> {
     private static final String log = "Drafts";
     private static final long serialVersionUID = 1L;
     private boolean croppedList = false;
@@ -93,7 +93,7 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
                 if (reader != null) {
                     reader.moveToFirst();
                     while (!reader.isAfterLast()) {
-                        de.droidcachebox.database.Draft fne = new de.droidcachebox.database.Draft(reader);
+                        Draft fne = new Draft(reader);
                         if (!this.contains(fne)) {
                             this.add(fne);
                         }
@@ -121,9 +121,9 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
     public void DeleteDraftByCacheId(long cacheId, GeoCacheLogType type) {
         synchronized (this) {
             int foundNumber = 0;
-            de.droidcachebox.database.Draft fne = null;
+            Draft fne = null;
             // löscht eine evtl. vorhandene draft vom type für den Cache cacheId
-            for (de.droidcachebox.database.Draft fn : this) {
+            for (Draft fn : this) {
                 if ((fn.CacheId == cacheId) && (fn.type == type)) {
                     fne = fn;
                 }
@@ -138,11 +138,11 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
         }
     }
 
-    public void deleteDraft(de.droidcachebox.database.Draft fnToDelete) {
+    public void deleteDraft(Draft fnToDelete) {
         synchronized (this) {
             int foundNumber = 0;
-            de.droidcachebox.database.Draft fne = null;
-            for (de.droidcachebox.database.Draft fn : this) {
+            Draft fne = null;
+            for (Draft fn : this) {
                 if (fn.Id == fnToDelete.Id) {
                     fne = fn;
                 }
@@ -160,7 +160,7 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
     private void decreaseFoundNumber(int deletedFoundNumber) {
         if (deletedFoundNumber > 0) {
             // alle FoundNumbers anpassen, die größer sind
-            for (de.droidcachebox.database.Draft fn : this) {
+            for (Draft fn : this) {
                 if ((fn.type == GeoCacheLogType.found) && (fn.foundNumber > deletedFoundNumber)) {
                     int oldFoundNumber = fn.foundNumber;
                     fn.foundNumber--;
@@ -172,7 +172,7 @@ public class Drafts extends ArrayList<de.droidcachebox.database.Draft> {
         }
     }
 
-    public boolean contains(de.droidcachebox.database.Draft fne) {
+    public boolean contains(Draft fne) {
         synchronized (this) {
             for (Draft item : this) {
                 if (fne.equals(item))

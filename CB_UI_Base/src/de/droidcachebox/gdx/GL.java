@@ -148,7 +148,7 @@ public class GL implements ApplicationListener {
 
         if (Gdx.input != null) {
             Gdx.input.setInputProcessor(new GL_Input());
-            Gdx.input.setCatchBackKey(true); // deprecated
+            // Gdx.input.setCatchBackKey(true);
             Gdx.input.setCatchKey(Input.Keys.BACK, true);
         }
     }

@@ -932,7 +932,7 @@ public class EditFilterSettings extends ActivityBase {
             return false;
         }
 
-        private static class FilterSetAdapter implements Adapter {
+        private class FilterSetAdapter implements Adapter {
 
             private final ArrayList<FilterSetEntry> filterSetList;
             private final ArrayList<FilterSetListViewItem> filterSetViewList;

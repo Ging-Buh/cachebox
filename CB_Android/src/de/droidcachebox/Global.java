@@ -316,7 +316,7 @@ public class Global {
                 getDrawable(R.drawable.button, R.drawable.night_button, res), // 1
                 getDrawable(R.drawable.doc_icon, res), // 2
                 getDrawable(R.drawable.big_16, res), // 3
-                getDrawable(R.drawable.list_icon, res), // 4 LogView braucht
+                getDrawable(R.drawable.list_icon, res), // 4 LogListView braucht
                 // noch ein Icon
                 getDrawable(R.drawable.map, res), // 5
                 getDrawable(R.drawable.compass, res), // 6

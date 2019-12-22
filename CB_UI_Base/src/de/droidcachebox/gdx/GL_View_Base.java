@@ -84,9 +84,9 @@ public abstract class GL_View_Base extends CB_RectF {
     private boolean isClickable;
     private boolean isLongClickable;
     private boolean isDoubleClickable;
-    private boolean childIsClickable;
-    private boolean childIsLongClickable;
-    private boolean childIsDoubleClickable;
+    private boolean ChildIsClickable;
+    private boolean ChildIsLongClickable;
+    private boolean ChildIsDoubleClickable;
     private boolean mVisible;
     private boolean enabled;
     private boolean isDisposed;
@@ -124,9 +124,9 @@ public abstract class GL_View_Base extends CB_RectF {
         isClickable = false;
         isLongClickable = false;
         isDoubleClickable = false;
-        childIsClickable = false;
-        childIsLongClickable = false;
-        childIsDoubleClickable = false;
+        ChildIsClickable = false;
+        ChildIsLongClickable = false;
+        ChildIsDoubleClickable = false;
         mVisible = true;
         enabled = true;
         isDisposed = false;
@@ -194,6 +194,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
     /**
      * Returns TRUE if with and height >0, is not disposed and is not set to invisible
+     *
      */
     public boolean isVisible() {
         if (this.isDisposed)
@@ -203,8 +204,8 @@ public abstract class GL_View_Base extends CB_RectF {
         return mVisible;
     }
 
-    public void setVisible(boolean visible) {
-        if (visible) {
+    public void setVisible(boolean On) {
+        if (On) {
             setVisible();
         } else {
             setInvisible();
@@ -290,9 +291,9 @@ public abstract class GL_View_Base extends CB_RectF {
             }
         }
 
-        childIsClickable = tmpClickable;
-        childIsDoubleClickable = tmpDoubleClickable;
-        childIsLongClickable = tmpLongClickable;
+        ChildIsClickable = tmpClickable;
+        ChildIsDoubleClickable = tmpDoubleClickable;
+        ChildIsLongClickable = tmpLongClickable;
     }
 
     /**
@@ -366,6 +367,7 @@ public abstract class GL_View_Base extends CB_RectF {
      * Die renderChilds() Methode wird vom GL_Listener bei jedem Render-Vorgang aufgerufen.
      * Hier wird dann zuerst die render() Methode dieser View aufgerufen.
      * Danach werden alle Childs iteriert und deren renderChilds() Methode aufgerufen, wenn die View sichtbar ist (Visibility).
+     *
      */
     public void renderChilds(final Batch batch, ParentInfo parentInfo) {
         if (myParentInfo == null)
@@ -389,13 +391,13 @@ public abstract class GL_View_Base extends CB_RectF {
 
         float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
 
-        boolean isColorFilterSet = false; // Wir benutzen hier dieses Boolean um am ende dieser Methode zu entscheiden, ob wir die alte
+        boolean ColorFilterSeted = false; // Wir benutzen hier dieses Boolean um am ende dieser Methode zu entscheiden, ob wir die alte
         // Farbe des Batches wieder herstellen müssen. Wir verlassen uns hier nicht darauf, das
         // mColorFilter!= null ist, da dies in der zwichenzeit passiert sein kann.
 
         // Set Colorfilter ?
         if (mColorFilter != null) {
-            isColorFilterSet = true;
+            ColorFilterSeted = true;
             // zuerst alte Farbe abspeichern, um sie Wieder Herstellen zu können
             // hier muss jeder Wert einzeln abgespeichert werden, da bei getColor()
             // nur eine Referenz zurück gegeben wird
@@ -434,7 +436,7 @@ public abstract class GL_View_Base extends CB_RectF {
         } catch (IllegalStateException e) {
             Log.err(log, "renderChilds", e);
             // reset Colorfilter ?
-            if (isColorFilterSet) {
+            if (ColorFilterSeted) {
                 // alte abgespeicherte Farbe des Batches wieder herstellen!
                 batch.setColor(R, G, B, A);
             }
@@ -513,7 +515,7 @@ public abstract class GL_View_Base extends CB_RectF {
         }
 
         // reset Colorfilter ?
-        if (isColorFilterSet) {
+        if (ColorFilterSeted) {
             // alte abgespeicherte Farbe des Batches wieder herstellen!
             batch.setColor(R, G, B, A);
         }
@@ -604,6 +606,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
     /**
      * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
+     *
      */
     public void setScale(float value) {
         mScale = value;
@@ -617,7 +620,7 @@ public abstract class GL_View_Base extends CB_RectF {
             innerHeight = height - topBorder - bottomBorder;
             onResized(this);
         } catch (Exception ex) {
-            Log.err(log, "resize", ex);
+            Log.err(log,"resize", ex);
         }
         debugSprite = null;
 
@@ -662,25 +665,26 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean click(int x, int y, int pointer, int button) {
-        // !!! attention: normally do not overwrite this. exceptions see there
-        // get the clicked View and call its handler
+        // Achtung: dieser click ist nicht virtual und darf nicht überschrieben werden!!!
+        // das Ereignis wird dann in der richtigen View an click übergeben!!!
+        // todo Überschreibung in EditTextField, ColorPicker, Button, .... Erklärung (final)
         boolean handled = false;
         try {
             if (childs.size() > 0) {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
-                // find the clicked view
                 while (iterator.hasNext()) {
+                    // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
                     if (view != null && view.isClickable() && view.isVisible() && view.contains(x, y)) {
-                        // this view has been clicked (view.contains(x, y))
+                        // view gefunden auf das geklickt wurde
                         handled = view.click(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
-                        // if view returns true (handled), we can break and don't test the rest
+                        // if handled, we can break and don't test the rest
                         if (handled) break;
                     }
                 }
             }
             if (!handled) {
-                // this view has been clicked, so call the onClick of the onClickListener (if one exists)
+                // Es ist kein Klick in einem untergeordnetem View -> es muß in diesem view behandelt werden
                 if (mOnClickListener != null) {
                     handled = mOnClickListener.onClick(this, x, y, pointer, button);
                 }
@@ -692,161 +696,190 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean doubleClick(int x, int y, int pointer, int button) {
-        // !!! attention: normally do not overwrite this. exceptions see there
-        // get the doubleClicked View and call its handler
-        boolean handled = false;
+        // Achtung: dieser doubleClick ist nicht virtual und darf nicht überschrieben werden!!!
+        // das Ereignis wird dann in der richtigen View an doubleClick übergeben!!!
+        // todo Überschreibung in EditTextField, MapView Erklärung (final)
+        boolean behandelt = false;
         try {
             if (childs != null && childs.size() > 0) {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
-                // find the clicked view
                 while (iterator.hasNext()) {
+                    // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
+
                     if (view == null || !view.isClickable())
                         continue;
                     // Invisible Views can not be clicked!
                     if (!view.isVisible())
                         continue;
 
-                    if (view.contains(x, y)) {//                    if (view != null && view.isDoubleClickable() && view.isVisible() && view.contains(x, y)) {
-                        // this view has been clicked (view.contains(x, y))
-                        handled = view.doubleClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
-                        // if view returns true (handled), we can break and don't test the rest
-                        if (handled) break;
+                    if (view.contains(x, y)) {
+                        // touch innerhalb des Views
+                        // -> Klick an das View weitergeben
+                        behandelt = view.doubleClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
+                        if (behandelt)
+                            break;
                     }
                 }
             }
-            if (!handled) {
-                // this view has been clicked, so call the onClick of the onDoubleClickListener (if one exists)
+            if (!behandelt) {
+                // kein Klick in einem untergeordnetem View
+                // -> hier behandeln
                 if (mOnDoubleClickListener != null) {
-                    handled = mOnDoubleClickListener.onClick(this, x, y, pointer, button);
+                    behandelt = mOnDoubleClickListener.onClick(this, x, y, pointer, button);
                 }
+
             }
         } catch (Exception e) {
             Log.err(log, "doubleClick", e);
         }
-        return handled;
+        return behandelt;
     }
 
     public boolean longClick(int x, int y, int pointer, int button) {
-        // !!! attention: normally do not overwrite this. exceptions see there
-        // get the longClicked View and call its handler
-        boolean handled = false;
+        // Achtung: dieser longClick ist nicht virtual und darf nicht überschrieben werden!!!
+        // das Ereignis wird dann in der richtigen View an longClick übergeben!!!
+        // todo Überschreibung in MultiToggleButton Erklärung (final)
+        boolean behandelt = false;
+
         try {
             if (childs != null && childs.size() > 0) {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
-                // find the clicked view
                 while (iterator.hasNext()) {
+                    // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
+
                     if (view == null || !view.isClickable())
                         continue;
 
-                    if (view.contains(x, y)) { // if (view != null && view.isLongClickable() && view.isVisible() && view.contains(x, y)) {
-                        // this view has been clicked (view.contains(x, y))
-                        handled = view.longClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
-                        // if view returns true (handled), we can break and don't test the rest
-                        if (handled) break;
+                    if (view.contains(x, y)) {
+                        // touch innerhalb des Views
+                        // -> Klick an das View weitergeben
+                        behandelt = view.longClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
                     }
                 }
             }
-            if (!handled) {
-                // this view has been clicked, so call the onClick of the onLongClickListener (if one exists)
+            if (!behandelt) {
+                // kein Klick in einem untergeordnetem View
+                // -> hier behandeln
                 if (mOnLongClickListener != null) {
-                    handled = mOnLongClickListener.onClick(this, x, y, pointer, button);
+                    behandelt = mOnLongClickListener.onClick(this, x, y, pointer, button);
                 }
+
             }
         } catch (Exception e) {
             Log.err(log, "longClick", e);
         }
-        return handled;
+        return behandelt;
     }
 
     public GL_View_Base touchDown(int x, int y, int pointer, int button) {
-        // !!! attention: normally do not overwrite this. exceptions see there
-        // get the touched View and call its onTouchDown method
+        // Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+        // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+        // touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
+        // todo Überschreibung in EditFieldNotes Erklärung (final)
         GL_View_Base resultView = null;
+
         if (childs != null && childs.size() > 0) {
             try {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
-                // find the touched view
                 while (iterator.hasNext()) {
+                    // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
+
                     // Invisible Views can not be clicked!
                     if (view == null || !view.isVisible())
                         continue;
                     if (!view.isEnabled())
                         continue;
-                    if (view.contains(x, y)) {//                    if (view != null && view.isVisible() && view.isEnabled() && view.contains(x, y)) {
-                        // this view has been touched (view.contains(x, y))
+                    if (view.contains(x, y)) {
+                        // touch innerhalb des Views
+                        // -> Klick an das View weitergeben
                         lastTouchPos = new Vector2(x - view.getX(), y - view.getY());
                         resultView = view.touchDown(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
-                        if (forceHandleTouchEvents || resultView == null) {
-                            if (view.onTouchDown(x, y, pointer, button)) resultView = view;
-                            // break; // may be there is more than one child cllicked p.e. slider goes over the whole screen
-                        }
-                        /*
-                        if (resultView == null) {
-                            resultView = view;
-                            // if view returns a resultView (!= null means handled), we can break and don't test the rest
-                            Log.info(log, "clicked " + view.toString());
-                            break;
-                        }
-                         */
                     }
+
+                    if (resultView != null)
+                        break;
                 }
-                GL.that.renderOnce();
             } catch (Exception e) {
-                Log.err(log, "touchDown", e);
+                return null;
             }
         }
+
+        if (forceHandleTouchEvents || resultView == null) {
+
+            // kein Klick in einem untergeordnetem View
+            // -> hier behandeln
+            boolean behandelt = onTouchDown(x, y, pointer, button);
+            if (behandelt)
+                resultView = this;
+        }
+
+        GL.that.renderOnce();
         return resultView;
     }
 
     final boolean touchDragged(int x, int y, int pointer, boolean KineticPan) {
-        // !!! attention: normally do not overwrite this. exceptions see there
-        // get the touched View and call its touchDragged method
-        boolean handled = false;
+        // Achtung: dieser touchDragged ist nicht virtual und darf nicht überschrieben werden!!!
+        // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+        boolean behandelt = false;
+
         if (childs != null && childs.size() > 0) {
             try {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
                 while (iterator.hasNext()) {
                     GL_View_Base view = iterator.next();
+
                     if (view != null && view.contains(x, y)) {
-                        handled = view.touchDragged(x - (int) view.getX(), y - (int) view.getY(), pointer, KineticPan);
+                        behandelt = view.touchDragged(x - (int) view.getX(), y - (int) view.getY(), pointer, KineticPan);
                     }
-                    if (handled) break;
-                }
-                if (forceHandleTouchEvents || !handled) {
-                    handled = onTouchDragged(x, y, pointer, KineticPan);
+                    if (behandelt)
+                        break;
                 }
             } catch (Exception e) {
-                Log.err(log, "touchDragged", e);
+                return false;
             }
         }
-        return handled;
+
+        if (forceHandleTouchEvents || !behandelt) {
+            // kein Klick in einem untergeordnetem View -> hier behandeln
+            behandelt = onTouchDragged(x, y, pointer, KineticPan);
+        }
+        return behandelt;
     }
 
     final boolean touchUp(int x, int y, int pointer, int button) {
-        // !!! attention: normally do not overwrite this. exceptions see there
-        // get the touched View and call its touchDragged method
-        boolean handled = false;
+        // Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+        // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+        boolean behandelt = false;
+
         if (childs != null && childs.size() > 0) {
             try {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
                 while (iterator.hasNext()) {
                     GL_View_Base view = iterator.next();
                     if (view != null && view.contains(x, y)) {
-                        handled = view.touchUp(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
+                        // touch innerhalb des Views
+                        // -> Klick an das View weitergeben
+                        behandelt = view.touchUp(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
                     }
-                    if (handled)                        break;
-                }
-                if (forceHandleTouchEvents || !handled) {
-                    handled = onTouchUp(x, y, pointer, button);
+
+                    if (behandelt)
+                        break;
                 }
             } catch (Exception e) {
-                Log.err(log, "touchUp", e);
+                return false;
             }
         }
-        return handled;
+
+        if (forceHandleTouchEvents || !behandelt) {
+            // kein Klick in einem untergeordnetem View
+            // -> hier behandeln
+            behandelt = onTouchUp(x, y, pointer, button);
+        }
+
+        return behandelt;
     }
 
     public abstract void onLongClick(int x, int y, int pointer, int button);
@@ -946,7 +979,7 @@ public abstract class GL_View_Base extends CB_RectF {
     boolean isDoubleClickable() {
         if (!this.isVisible())
             return false;
-        return isDoubleClickable | childIsDoubleClickable;
+        return isDoubleClickable | ChildIsDoubleClickable;
     }
 
     protected void setDoubleClickable() {
@@ -956,7 +989,7 @@ public abstract class GL_View_Base extends CB_RectF {
     boolean isLongClickable() {
         if (!this.isVisible())
             return false;
-        return isLongClickable | childIsLongClickable;
+        return isLongClickable | ChildIsLongClickable;
     }
 
     public void setLongClickable(boolean value) {
@@ -966,7 +999,7 @@ public abstract class GL_View_Base extends CB_RectF {
     protected boolean isClickable() {
         if (!this.isVisible())
             return false;
-        return isClickable | childIsClickable;
+        return isClickable | ChildIsClickable;
     }
 
     /**

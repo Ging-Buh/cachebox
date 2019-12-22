@@ -1345,9 +1345,9 @@ public class GroundspeakAPI {
         return logEntry;
     }
 
-    private static long generateLogId(String referenceCode) {
+    public static long generateLogId(String referenceCode) {
         referenceCode = referenceCode.substring(2); // ohne "GL"
-        if (referenceCode.charAt(0) > 'F' || referenceCode.length() > 6) {
+        if (referenceCode.length() >= 5 || referenceCode.charAt(0) >= 'G') {
             return Base31(referenceCode);
         } else {
             return Base16(referenceCode);

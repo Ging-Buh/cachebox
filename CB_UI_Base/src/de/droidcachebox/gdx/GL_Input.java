@@ -368,7 +368,7 @@ public class GL_Input implements InputProcessor {
             this.pointer = pointer;
             this.point = point;
             this.view = view;
-            kineticPan = null;
+            this.kineticPan = null;
         }
 
         void startKinetic(final int x, final int y) {
@@ -384,13 +384,13 @@ public class GL_Input implements InputProcessor {
                                 view.touchUp(x - pan.x, y - pan.y, pointer, 0);
                                 touchDownPos.remove(pointer);
                                 kineticPan = null;
-                                timer.cancel();
+                                this.cancel();
                                 timer = null;
                             }
                         } catch (Exception e) {
                             touchDownPos.remove(pointer);
                             kineticPan = null;
-                            timer.cancel();
+                            this.cancel();
                             timer = null;
                         }
                         view.touchDragged(x - pan.x, y - pan.y, pointer, true);
@@ -419,6 +419,7 @@ public class GL_Input implements InputProcessor {
         private boolean fertig;
         private int diffX;
         private int diffY;
+        private long diffTs;
         private long startTs;
         private long endTs;
         private int lastX = 0;
@@ -469,7 +470,7 @@ public class GL_Input implements InputProcessor {
             }
             diffX = x[anzPointsUsed - 1] - aktX;
             diffY = aktY - y[anzPointsUsed - 1];
-            long diffTs = aktTs - ts[anzPointsUsed - 1];
+            diffTs = aktTs - ts[anzPointsUsed - 1];
 
             if (diffTs > 0) {
                 diffX = (int) ((float) diffX / FRAME_RATE_ACTION * diffTs);

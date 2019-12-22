@@ -19,7 +19,7 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
-import de.droidcachebox.gdx.views.LogView;
+import de.droidcachebox.gdx.views.LogListView;
 import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
@@ -53,8 +53,8 @@ public class ShowLogs extends AbstractShowAction {
 
     @Override
     public void execute() {
-        GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
-        ViewManager.leftTab.showView(LogView.getInstance());
+        GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogListView
+        ViewManager.leftTab.showView(LogListView.getInstance());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ShowLogs extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return LogView.getInstance();
+        return LogListView.getInstance();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ShowLogs extends AbstractShowAction {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
-                LogView.getInstance().resetInitial();
+                LogListView.getInstance().resetInitial();
             });
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
@@ -154,7 +154,7 @@ public class ShowLogs extends AbstractShowAction {
                                             Database.Data.sql.setTransactionSuccessful();
                                             Database.Data.sql.endTransaction();
 
-                                            LogView.getInstance().resetInitial();
+                                            LogListView.getInstance().resetInitial();
 
                                         }
 

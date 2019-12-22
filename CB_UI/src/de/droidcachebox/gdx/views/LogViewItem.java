@@ -18,13 +18,11 @@ package de.droidcachebox.gdx.views;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.utils.Clipboard;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
@@ -34,7 +32,6 @@ import de.droidcachebox.gdx.controls.popups.ICopyPaste;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.utils.http.Webb;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -46,7 +43,6 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     private static float headHeight;
     private LogEntry logEntry;
     private float secondTab = 0;
-    private Clipboard clipboard = PlatformUIBase.getClipboard();
 
     public LogViewItem(CB_RectF rec, int Index, LogEntry logEntry) {
         super(rec, Index, "");
@@ -63,29 +59,35 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
         setClickHandler((v1, x, y, pointer, button) -> {
             Menu menu = new Menu("LogEntryContextMenuTitle");
-            menu.addMenuItem("CopyToClipboard", null, this::copyToClipboard);
-            menu.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + getGcIdFromLogId(logEntry.logId)));
+            menu.addMenuItem("LogtextToClipboard", null, this::copyToClipboard);
+            menu.addMenuItem("ShowLogInBrowser", null, () -> {
+                PlatformUIBase.callUrl("https://www.geocaching.com/seek/log.aspx?LID=" + logEntry.logId);
+                // PlatformUIBase.callUrl("https://coord.info/" + getGcIdFromLogId(logEntry.logId));
+            });
             menu.addMenuItem("MailToFinder", Sprites.getSprite("bigLetterbox"), () -> {
                 try {
+                    PlatformUIBase.getClipboard().setContents("Concerning https://coord.info/" + GlobalCore.getSelectedCache().getGcCode() + " " + GlobalCore.getSelectedCache().getName() + "\r");
                     String finder = URLEncoder.encode(logEntry.finder, "UTF-8");
                     PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + finder);
                 } catch (Exception ignored) {
                 }
             });
+            /*
+            // we can't get the Log, cause we are not logged in
             menu.addMenuItem("MessageToFinder", Sprites.getSprite("bigLetterbox"), () -> GL.that.postAsync(() -> {
                 try {
                     String mGCCode = GlobalCore.getSelectedCache().getGcCode();
                     try {
                         String page = Webb.create()
-                                .get("https://coord.info/" + mGCCode)
+                                .get("https://www.geocaching.com/seek/log.aspx?LID=" + logEntry.logId)
                                 .ensureSuccess()
                                 .asString()
                                 .getBody();
-                        String toSearch = "recipientId=";
+                        String toSearch = "guid=";
                         int pos = page.indexOf(toSearch);
                         if (pos > -1) {
                             int start = pos + toSearch.length();
-                            int stop = page.indexOf("&amp;", start);
+                            int stop = page.indexOf("\"", start);
                             String guid = page.substring(start, stop);
                             PlatformUIBase.callUrl("https://www.geocaching.com/account/messagecenter?recipientId=" + guid + "&gcCode=" + mGCCode);
                         }
@@ -94,6 +96,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
                 } catch (Exception ignored) {
                 }
             }));
+             */
             menu.show();
             return true;
         });
@@ -112,11 +115,11 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         final String base31chars = "0123456789ABCDEFGHJKMNPQRTVWXYZ";
         StringBuilder referenceCode = new StringBuilder();
         while (modLogId > 0) {
-            int r = (int) (modLogId % 31);
+            long r = modLogId % 31;
             modLogId = modLogId / 31;
-            referenceCode.append(base31chars.charAt(r));
+            referenceCode.append(base31chars.charAt((int) r));
         }
-        return referenceCode.toString();
+        return referenceCode.reverse().toString();
     }
 
 
@@ -202,7 +205,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
     @Override
     public String copyToClipboard() {
-        clipboard.setContents(logEntry.logText);
+        PlatformUIBase.getClipboard().setContents(logEntry.logText);
         // GL.that.Toast(Translation.get("CopyToClipboard"));
         return logEntry.logText;
     }

@@ -343,7 +343,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         super.dispose();
     }
 
-    public class GeoCacheListViewAdapter implements Adapter {
+    private class GeoCacheListViewAdapter implements Adapter {
         private CacheList cacheList;
         private int Count;
 

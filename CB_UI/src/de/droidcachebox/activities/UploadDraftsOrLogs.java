@@ -13,7 +13,7 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.views.DraftsView;
-import de.droidcachebox.gdx.views.LogView;
+import de.droidcachebox.gdx.views.LogListView;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.RunnableReadyHandler;
@@ -90,7 +90,7 @@ public class UploadDraftsOrLogs {
                             draft.uploaded = true;
                             if (direct && !draft.isTbDraft) {
                                 draft.GcId = GroundspeakAPI.logReferenceCode;
-                                LogView.getInstance().resetInitial(); // if own log is written !
+                                LogListView.getInstance().resetInitial(); // if own log is written !
                             }
                             draft.UpdateDatabase();
                         }
