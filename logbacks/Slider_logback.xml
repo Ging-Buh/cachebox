@@ -102,8 +102,8 @@
 		<appender-ref ref="SliderLog" />
 	</logger>
 	
-<!-- Write messages from class de.droidcachebox.gdx.controls.Slider to SliderLog -->
-	<logger name="de.droidcachebox.gdx.controls.Slider" level="ALL">
+<!-- Write messages from class de.droidcachebox.gdx.Slider to SliderLog -->
+	<logger name="de.droidcachebox.gdx.Slider" level="ALL">
 		<appender-ref ref="SliderLog" />
 	</logger>
 

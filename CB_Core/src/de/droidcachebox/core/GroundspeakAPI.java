@@ -1053,7 +1053,7 @@ public class GroundspeakAPI {
             tb.setCurrentOwnerName(getStringValue(API1Trackable, "holder", "username"));
             String releasedDate = API1Trackable.optString("releasedDate", "");
             try {
-                tb.setDateCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.US).parse(releasedDate));
+                tb.setDateCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(releasedDate));
             } catch (Exception e) {
                 tb.setDateCreated(new Date());
             }
@@ -1249,12 +1249,14 @@ public class GroundspeakAPI {
                     case "shortDescription":
                         tmp = API1Cache.optString(switchValue, "");
                         if (tmp.length() > 0) {
-                            // containsHtml liefert immer false
-                            if (!tmp.contains("<")) {
-                                tmp = tmp.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+                            if (!tmp.substring(0, Math.min(10, tmp.length())).contains("null")) {
+                                // containsHtml liefert immer false
+                                if (!tmp.contains("<")) {
+                                    tmp = tmp.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+                                }
+                                cache.setShortDescription(tmp);
+                                cache.setApiStatus(IS_FULL); // got a cache without LongDescription
                             }
-                            cache.setShortDescription(tmp);
-                            cache.setApiStatus(IS_FULL); // got a cache without LongDescription
                         }
                         break;
                     case "additionalWaypoints":

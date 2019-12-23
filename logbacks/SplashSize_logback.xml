@@ -86,7 +86,7 @@
 		<appender-ref ref="SplashLog" />
 	</logger>
 
-<!-- Write messages from class de.droidcachebox.gdx.controls.Slider to SliderLog -->
+<!-- Write messages from class de.droidcachebox.gdx.Slider to SliderLog -->
 	<logger name="de.droidcachebox.gdx.math.GL_UISizes" level="ALL">
 		<appender-ref ref="SplashLog" />
 	</logger>

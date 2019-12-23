@@ -39,8 +39,8 @@ import de.droidcachebox.components.CacheDraw.DrawStyle;
 import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
-import de.droidcachebox.gdx.controls.QuickButtonList;
-import de.droidcachebox.gdx.controls.Slider;
+import de.droidcachebox.gdx.QuickButtonList;
+import de.droidcachebox.gdx.Slider;
 import de.droidcachebox.gdx.math.CB_Rect;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.*;
@@ -573,7 +573,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         this.invalidate();
 
-        // de.droidcachebox.gdx.controls.Slider.setAndroidSliderPos(yPos);
+        // de.droidcachebox.gdx.Slider.setAndroidSliderPos(yPos);
 
     }
 

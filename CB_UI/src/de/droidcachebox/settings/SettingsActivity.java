@@ -6,6 +6,7 @@ import de.droidcachebox.SoundCache.Sounds;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.QuickButtonList;
 import de.droidcachebox.gdx.activities.ColorPicker;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;

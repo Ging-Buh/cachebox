@@ -3,6 +3,7 @@ package de.droidcachebox.main.menuBtn2;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Database;
@@ -153,8 +154,10 @@ public class ShowLogs extends AbstractShowAction {
 
                                             Database.Data.sql.setTransactionSuccessful();
                                             Database.Data.sql.endTransaction();
-
+                                            // update LogListView
                                             LogListView.getInstance().resetIsInitialized();
+                                            // for update slider, ?, ?, ? with latest logs
+                                            SelectedCacheChangedEventListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
                                         }
 

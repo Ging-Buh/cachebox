@@ -1,4 +1,4 @@
-package de.droidcachebox.gdx.controls;
+package de.droidcachebox.gdx;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -7,8 +7,10 @@ import de.droidcachebox.Config;
 import de.droidcachebox.SelectedCacheChangedEventListener;
 import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.database.*;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
+import de.droidcachebox.gdx.controls.CacheInfo;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeChangedEvent;
@@ -30,7 +32,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
     public static Slider that;
     private static Box mSlideBox, mSlideBoxContent;
     private final int ANIMATION_TIME = 50;
-    private final de.droidcachebox.gdx.controls.QuickButtonList quickButtonList;
+    private final QuickButtonList quickButtonList;
     private final CB_Label mLblCacheName, geoCacheType;
     private final CB_Label[] last5Logs;
     private final int QuickButtonMaxHeight;

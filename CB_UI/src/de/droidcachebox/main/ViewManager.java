@@ -27,7 +27,6 @@ import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.Slider;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;

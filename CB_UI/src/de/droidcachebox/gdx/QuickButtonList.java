@@ -1,8 +1,6 @@
-package de.droidcachebox.gdx.controls;
+package de.droidcachebox.gdx;
 
 import de.droidcachebox.Config;
-import de.droidcachebox.gdx.GL_View_Base;
-import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.H_ListView;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
