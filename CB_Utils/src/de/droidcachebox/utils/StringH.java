@@ -2,8 +2,6 @@ package de.droidcachebox.utils;
 
 // import org.jsoup.*;
 
-import org.jsoup.Jsoup;
-
 /**
  * String Helper class
  *
@@ -24,12 +22,12 @@ public class StringH {
         return false;
     }
 
-    public static String JsoupParse(String s) {
+    public static String removeHtmlEntyties(String s) {
         String ret = "";
         if (s != null)
             if (!("null".equals(s)))
-                // ret = s; // Ohne Konvertierung
-                ret = Jsoup.parse(s).text();
+                ret = s; // Ohne Konvertierung
+                //ret = Jsoup.parse(s).text();
         return ret;
     }
 }

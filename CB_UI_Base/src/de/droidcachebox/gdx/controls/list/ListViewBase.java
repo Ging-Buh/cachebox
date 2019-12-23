@@ -343,8 +343,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     @Override
     protected void render(Batch batch) {
 
-        if (!isInitial) {
-            isInitial = true;
+        if (!isInitialized) {
+            isInitialized = true;
             initialize();
             // return; why? after initializing it should be possible to render
         }

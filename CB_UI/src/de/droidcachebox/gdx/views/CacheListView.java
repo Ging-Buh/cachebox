@@ -157,7 +157,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                 } else
                     geoCacheListView.setSelection(0);
 
-                resetInitial();
+                resetIsInitialized();
                 geoCacheListView.chkSlideBack();
             }
         }, 150);

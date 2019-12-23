@@ -125,7 +125,7 @@ public class MainViewInit extends MainViewBase {
         }
 
         if (step <= 100)
-            resetInitial();
+            resetIsInitialized();
     }
 
     /**

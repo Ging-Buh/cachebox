@@ -92,7 +92,7 @@ public class ShowLogs extends AbstractShowAction {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
-                LogListView.getInstance().resetInitial();
+                LogListView.getInstance().resetIsInitialized();
             });
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
@@ -154,7 +154,7 @@ public class ShowLogs extends AbstractShowAction {
                                             Database.Data.sql.setTransactionSuccessful();
                                             Database.Data.sql.endTransaction();
 
-                                            LogListView.getInstance().resetInitial();
+                                            LogListView.getInstance().resetIsInitialized();
 
                                         }
 

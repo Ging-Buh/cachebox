@@ -190,13 +190,13 @@ public class WriteIntoDB {
 
         if (oldCache == null) {
             Database.Data.cacheList.add(cache);
-            // cacheDAO.WriteToDatabase(cache);
+            // cacheDAO.writeToDatabase(cache);
         } else {
             // 2012-11-17: do not remove old instance from cacheList because of problems with cacheList and MapView
             // Database.Data.cacheList.remove(Database.Data.cacheList.GetCacheById(cache.Id));
             // Database.Data.cacheList.add(cache);
             oldCache.copyFrom(cache); // todo Problem Waypoints of user are no longer seen ? Solution Add to cache.waypoints
-            // cacheDAO.UpdateDatabase(cache);
+            // cacheDAO.updateDatabase(cache);
         }
 
     }

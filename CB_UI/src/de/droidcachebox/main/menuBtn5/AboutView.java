@@ -76,7 +76,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
 
         positionChanged();
 
-        if (!this.isInitial)
+        if (!this.isInitialized)
             initialize();
 
         if (chart != null)

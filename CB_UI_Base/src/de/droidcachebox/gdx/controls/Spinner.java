@@ -98,7 +98,7 @@ public class Spinner extends CB_Button {
     @Override
     protected void skinIsChanged() {
         triangle = null;
-        resetInitial();
+        resetIsInitialized();
     }
 
     public void setSelection(int i) {

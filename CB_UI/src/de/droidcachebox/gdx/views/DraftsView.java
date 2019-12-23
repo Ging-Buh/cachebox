@@ -676,7 +676,7 @@ public class DraftsView extends V_ListView {
                         draft.uploaded = true;
                         if (directLog && !draft.isTbDraft) {
                             draft.GcId = GroundspeakAPI.logReferenceCode;
-                            LogListView.getInstance().resetInitial(); // if own log is written !
+                            LogListView.getInstance().resetIsInitialized(); // if own log is written !
                         }
                         addOrChangeDraft(draft, false, false);
                     } else {

@@ -16,150 +16,74 @@
 package de.droidcachebox.database;
 
 import de.droidcachebox.utils.UnitFormatter;
-import org.json.JSONObject;
+import de.droidcachebox.utils.log.Log;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Trackable implements Comparable<Trackable> {
     private static final String log = "Trackable";
-    final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
-    public boolean Archived;
-    public String TBCode;
-    public String CurrentGeocacheCode;
-    public String CurrentGoal;
-    public String CurrentOwnerName;
-    public Date DateCreated;
-    public String Description;
-    public String IconUrl;
-    public String ImageUrl = ""; // not in API 1.0
-    public String Name;
-    public String OwnerName;
-    public String TypeName;
-    private String mTrackingCode;
-    private int Id = -1;
-    private long CacheId;
-    private String Url = "";
-    // TODO must load info (the GS_API gives no info about this)
+    private final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+    private boolean archived;
+    private String tbCode;
+    private String currentGoal;
+    private String currentOwnerName;
+    private Date dateCreated;
+    private String description;
+    private String iconUrl;
+    private String imageUrl; // not in API 1.0
+    private String name;
+    private String ownerName;
+    private String typeName;
+    private String trackingCode;
+    private int id;
+    private long cacheId;
+    private String url;
+    private float travelDistance;
     private Date lastVisit;
-    private String Home = "";
-    private int TravelDistance;
-
-    /*
-            cid      name                 type               notnull      dflt_value      pk
-            -------  -------------------  -----------------  -----------  --------------  ---
-            0        Id                   integer            1                            1
-            1        Archived             bit                0                            0
-            2        GcCode               nvarchar (15)      0                            0
-            3        CacheId              bigint             0                            0
-            4        CurrentGoal          ntext              0                            0
-            5        CurrentOwnerName     nvarchar (255)     0                            0
-            6        DateCreated          datetime           0                            0
-            7        Description          ntext              0                            0
-            8        IconUrl              nvarchar (255)     0                            0
-            9        ImageUrl             nvarchar (255)     0                            0
-            10       name                 nvarchar (255)     0                            0
-            11       OwnerName            nvarchar (255)     0                            0
-            12       Url                  nvarchar (255)     0                            0
-            13       TypeName             ntext              0                            0
-            14       LastVisit            datetime           0                            0
-            15       Home                 ntext              0                            0
-            16       TravelDistance       integer            0            0               0
-    */
+    private String currentGeoCacheCode;
 
     /**
      * <img src="doc-files/1.png"/>
      */
     public Trackable() {
+        imageUrl = "";
+        id = -1;
+        url = "";
+        lastVisit = null;
+        currentGeoCacheCode = "";
     }
 
     /**
      * DAO Constructor <br>
      * Der Constructor, der ein Trackable über eine DB Abfrage erstellt! <img src="doc-files/1.png"/>
      *
-     * @param reader
+     * @param reader ?
      */
     public Trackable(CoreCursor reader) {
         try {
-            Id = reader.getInt(0);
-            Archived = reader.getInt(1) != 0;
-            TBCode = reader.getString(2).trim();
-            try {
-                CacheId = reader.getLong(3);
-            } catch (Exception e1) {
-
-                e1.printStackTrace();
-            }
-            try {
-                CurrentGoal = reader.getString(4).trim();
-            } catch (Exception e1) {
-
-                e1.printStackTrace();
-            }
-            try {
-                CurrentOwnerName = reader.getString(5).trim();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            id = reader.getInt(0);
+            archived = reader.getInt(1) != 0;
+            tbCode = reader.getString(2).trim();
+            cacheId = reader.getLong(3);
+            currentGoal = reader.getString(4).trim();
+            currentOwnerName = reader.getString(5).trim();
             String sDate = reader.getString(6);
-            try {
-                DateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                Description = reader.getString(7).trim();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-            try {
-                IconUrl = reader.getString(8).trim();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-            try {
-                ImageUrl = reader.getString(9).trim();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-            try {
-                Name = reader.getString(10).trim();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-            try {
-                OwnerName = reader.getString(11).trim();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-            try {
-                Url = reader.getString(12).trim();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-            try {
-                TypeName = reader.getString(13).trim();
-            } catch (Exception e1) {
-
-                e1.printStackTrace();
-            }
-
-        } catch (Exception e) {
-
+            dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).parse(sDate);
+            description = reader.getString(7).trim();
+            iconUrl = reader.getString(8).trim();
+            imageUrl = reader.getString(9).trim();
+            name = reader.getString(10).trim();
+            ownerName = reader.getString(11).trim();
+            url = reader.getString(12).trim();
+            typeName = reader.getString(13).trim();
+            travelDistance = 0;
+            lastVisit = null;
+            currentGeoCacheCode = "";
+        } catch (Exception ex) {
+            Log.err(log, "Read Trackable from DB", ex);
         }
-
-    }
-
-    public Trackable(JSONObject JObj) {
-        create(JObj);
     }
 
     /*
@@ -185,103 +109,132 @@ public class Trackable implements Comparable<Trackable> {
     }
      */
 
-    public void create(JSONObject JObj) {
-    }
-
-    public String getTravelDistance() {
-        return UnitFormatter.DistanceString(TravelDistance);
+    public String formatTravelDistance() {
+        return UnitFormatter.DistanceString(travelDistance);
     }
 
     public String getBirth() {
-        if (DateCreated == null)
+        if (dateCreated == null)
             return "";
-        return postFormater.format(DateCreated);
+        return postFormater.format(dateCreated);
     }
 
-    public String getCurrentGeocacheCode() {
-        return CurrentGeocacheCode;
+    public String getCurrentGeoCacheCode() {
+        return currentGeoCacheCode;
+    }
+
+    public void setCurrentGeoCacheCode(String currentGeoCacheCode) {
+        this.currentGeoCacheCode = currentGeoCacheCode;
     }
 
     public String getHome() {
-        return Home;
+        return "";
     }
 
-    public String getLastVisit() {
+    public String formatLastVisit() {
         if (lastVisit == null)
             return "";
         return postFormater.format(lastVisit);
     }
 
     public String getTypeName() {
-        return TypeName;
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getOwner() {
-        return OwnerName;
+        return ownerName;
     }
 
     public String getIconUrl() {
-        return IconUrl;
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public String getImageUrl() {
-        return ImageUrl;
+        return imageUrl;
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public boolean getArchived() {
-        return Archived;
+        return archived;
     }
 
-    public String getTBCode() {
-        return TBCode;
+    public String getTbCode() {
+        return tbCode;
+    }
+
+    public void setTbCode(String tbCode) {
+        this.tbCode = tbCode;
     }
 
     public long CacheId() {
-        return CacheId;
+        return cacheId;
     }
 
     public String getCurrentGoal() {
-        return CurrentGoal;
+        return currentGoal;
+    }
+
+    public void setCurrentGoal(String currentGoal) {
+        this.currentGoal = currentGoal;
     }
 
     public String getCurrentOwner() {
-        return CurrentOwnerName;
+        return currentOwnerName;
     }
 
     public Date getDateCreated() {
-        return DateCreated;
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getName() {
-        return Name;
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUrl() {
-        return Url;
+        return url;
     }
 
     public String getTrackingCode() {
-        if (mTrackingCode == null)
+        if (trackingCode == null)
             return "";
         else
-            return mTrackingCode;
+            return trackingCode;
     }
 
     public void setTrackingCode(String trackingCode) {
-        mTrackingCode = trackingCode;
+        this.trackingCode = trackingCode;
     }
 
     @Override
-    public int compareTo(Trackable T2) {
-        return Name.compareToIgnoreCase(T2.Name);
+    public int compareTo(Trackable trackable) {
+        return name.compareToIgnoreCase(trackable.name);
     }
 
     /**
@@ -310,9 +263,9 @@ public class Trackable implements Comparable<Trackable> {
      * 70 - Move to inventory <br>
      * 75 - Visit<br>
      *
-     * @param type
+     * @param type     ?
      * @param userName Config.settings.GcLogin.getValue()
-     * @return
+     * @return ?
      */
     public boolean isLogTypePossible(GeoCacheLogType type, String userName) {
         int ID = type.getGcLogTypeId();
@@ -320,36 +273,46 @@ public class Trackable implements Comparable<Trackable> {
         if (ID == 4)
             return true; // Note
 
-        if (CurrentGeocacheCode != null && CurrentGeocacheCode.length() > 0 && !CurrentGeocacheCode.equalsIgnoreCase("null")) {
+        if (currentGeoCacheCode != null && currentGeoCacheCode.length() > 0 && !currentGeoCacheCode.equalsIgnoreCase("null")) {
             // TB in Cache
             if (ID == 16)
                 return true;
 
             // the next GeoCacheLogType only possible if User has entered the TrackingCode
-            if (!(mTrackingCode != null && mTrackingCode.length() > 0))
+            if (!(trackingCode != null && trackingCode.length() > 0))
                 return false;
-            if (ID == 13 || /* ID == 14 || */ID == 48)
-                return true; // TODO ist es Sinnvoll einen TB aus einem Cache in einen Cache zu packen?? ID 14 ist Laut GS erlaubt!
-            return false;
+            // ist es Sinnvoll einen TB aus einem Cache in einen Cache zu packen?? ID 14 ist Laut GS erlaubt!
+            return ID == 13 || /* ID == 14 || */ID == 48;
         }
 
-        if (CurrentOwnerName.equalsIgnoreCase(userName)) {
+        if (currentOwnerName.equalsIgnoreCase(userName)) {
             // TB in Inventory
-            if (ID == 14 || ID == 16 || ID == 69 || ID == 70 || ID == 75)
-                return true;
-            return false;
+            return ID == 14 || ID == 16 || ID == 69 || ID == 70 || ID == 75;
         }
 
         // TB at other Person
 
         // User entered TB-Code and not TrackingCode: he can not Grab or Discover
-        if (mTrackingCode != null && mTrackingCode.length() > 0) {
+        if (trackingCode != null && trackingCode.length() > 0) {
             if (ID == 19 || ID == 48)
                 return true;
         }
-        if (ID == 16 || ID == 69 || ID == 70)
-            return true;
+        return ID == 16 || ID == 69 || ID == 70;
+    }
 
-        return false;
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
+    public void setCurrentOwnerName(String currentOwnerName) {
+        this.currentOwnerName = currentOwnerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }

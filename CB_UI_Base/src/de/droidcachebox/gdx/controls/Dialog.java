@@ -208,7 +208,7 @@ public abstract class Dialog extends CB_View_Base {
     @Override
     protected void initialize() {
         initialDialog();
-        isInitial = true;
+        isInitialized = true;
     }
 
     protected void initialDialog() {

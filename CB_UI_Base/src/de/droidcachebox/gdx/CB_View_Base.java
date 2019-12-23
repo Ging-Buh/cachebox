@@ -10,7 +10,7 @@ public class CB_View_Base extends GL_View_Base {
     public static final int FIXED = -1;
     public static final boolean BOTTOMUP = false;
     protected static final boolean TOPDOWN = true;
-    protected boolean isInitial = false;
+    protected boolean isInitialized = false;
     // row handling by arbor95: makes live much easier
     // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
     // the position and width (stretched equally, weighted, fixed or percentual) of the objects is calculated automatically
@@ -62,13 +62,14 @@ public class CB_View_Base extends GL_View_Base {
         return isDisposed;
     }
 
-    public void resetInitial() {
-        isInitial = false;
+    public void resetIsInitialized() {
+        // for not to directly call initialize() in overwitten
+        isInitialized = false;
     }
 
     protected void render(Batch batch) {
-        if (!isInitial) {
-            isInitial = true;
+        if (!isInitialized) {
+            isInitialized = true;
             initialize();
         }
     }
@@ -254,7 +255,7 @@ public class CB_View_Base extends GL_View_Base {
         float lastPos = controlWithNewHeight.getY();
         // all elements of Last Row must be corrected
         float lastRowHeight = 0;
-        for (GL_View_Base c : this.childs) {
+        for (GL_View_Base c : childs) {
             // get controls of the row
             if (c.getY() == lastPos)
                 if (c.getHeight() > lastRowHeight)
@@ -264,7 +265,7 @@ public class CB_View_Base extends GL_View_Base {
             if (topdown) {
                 rowYPos = rowYPos - diffHeight;
                 topYAdd = topYAdd - diffHeight;
-                for (GL_View_Base c : this.childs) {
+                for (GL_View_Base c : childs) {
                     // get controls of the row
                     if (c.getY() == lastPos)
                         c.setY(lastPos - diffHeight);

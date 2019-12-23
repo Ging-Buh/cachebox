@@ -153,7 +153,7 @@ public class V_ListView extends ListViewBase {
                                 tmp.setY(itemPos);
                                 if (i == mSelectedIndex) {
                                     tmp.isSelected = true;
-                                    tmp.resetInitial();
+                                    tmp.resetIsInitialized();
                                 }
                                 this.addChild(tmp);
                             }

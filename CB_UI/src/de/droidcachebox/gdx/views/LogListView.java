@@ -106,7 +106,6 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
             }
             logs.add(new LogItem(logEntry));
         }
-        // notifyDataSetChanged();
     }
 
     private CB_RectF getItemRect_F(LogEntry logEntry) {
@@ -122,7 +121,7 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
     public void setCache(Cache cache) {
         if (aktCache != cache) {
             aktCache = cache;
-            resetInitial();
+            resetIsInitialized();
         }
     }
 

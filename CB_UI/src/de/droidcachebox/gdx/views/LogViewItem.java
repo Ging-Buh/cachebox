@@ -172,7 +172,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         if (headerBackground != null) {
             headerBackground.draw(batch, 0, getHeight() - headHeight, getWidth(), headHeight);
         } else {
-            resetInitial();
+            resetIsInitialized();
         }
 
     }

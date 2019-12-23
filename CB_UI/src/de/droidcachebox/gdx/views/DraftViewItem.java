@@ -242,7 +242,7 @@ public class DraftViewItem extends ListViewItemBackground {
         if (backheader != null) {
             backheader.draw(batch, 0, this.getHeight() - headHeight, this.getWidth(), headHeight);
         } else {
-            resetInitial();
+            resetIsInitialized();
         }
 
         if (uploaded) {

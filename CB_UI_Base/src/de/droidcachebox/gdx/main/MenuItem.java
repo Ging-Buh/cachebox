@@ -190,7 +190,7 @@ public class MenuItem extends ListViewItemBackground {
      */
     public MenuItem setIcon(Drawable icon) {
         iconDrawable = icon;
-        resetInitial();
+        resetIsInitialized();
         return this;
     }
 
@@ -236,13 +236,13 @@ public class MenuItem extends ListViewItemBackground {
             setOnLongClickListener(null);
         }
 
-        resetInitial();
+        resetIsInitialized();
     }
 
     public void setDisabled(boolean enabled) {
         // same as enabled but without deleting the click listeners
         mIsEnabled = enabled;
-        resetInitial();
+        resetIsInitialized();
     }
 
     public boolean isChecked() {
@@ -251,12 +251,12 @@ public class MenuItem extends ListViewItemBackground {
 
     public void setChecked(boolean checked) {
         mIsChecked = checked;
-        resetInitial();
+        resetIsInitialized();
     }
 
     public void setCheckable(boolean isCheckable) {
         mIsCheckable = isCheckable;
-        resetInitial();
+        resetIsInitialized();
     }
 
     @Override

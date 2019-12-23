@@ -15,12 +15,16 @@
  */
 package de.droidcachebox.core;
 
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.*;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.DLong;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.http.*;
 import de.droidcachebox.utils.log.Log;
 import org.json.JSONArray;
@@ -647,7 +651,7 @@ public class GroundspeakAPI {
         int take = 50;
 
         try {
-            boolean ready = false;
+            boolean ready;
             do {
                 JSONArray jTrackables = getNetz()
                         .get(getUrl(1, "trackables"))
@@ -694,7 +698,7 @@ public class GroundspeakAPI {
                     .getBody()
             );
 
-            if (!tb.TBCode.toLowerCase().equals(TBCode.toLowerCase())) {
+            if (!tb.getTbCode().toLowerCase().equals(TBCode.toLowerCase())) {
                 // fetched by TrackingCode, the result for trackingcode is always empty, except for owner
                 tb.setTrackingCode(TBCode);
             }
@@ -717,7 +721,7 @@ public class GroundspeakAPI {
     }
 
     public static int uploadTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note) {
-        return uploadTrackableLog(TB.getTBCode(), TB.getTrackingCode(), cacheCode, LogTypeId, dateLogged, note);
+        return uploadTrackableLog(TB.getTbCode(), TB.getTrackingCode(), cacheCode, LogTypeId, dateLogged, note);
     }
 
     public static int uploadTrackableLog(String TBCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note) {
@@ -1038,29 +1042,29 @@ public class GroundspeakAPI {
         try {
             Trackable tb = new Trackable();
             Log.debug(log, API1Trackable.toString());
-            tb.Archived = false;
-            tb.TBCode = API1Trackable.optString("referenceCode", "");
+            tb.setArchived(false);
+            tb.setTbCode(API1Trackable.optString("referenceCode", ""));
             // trackingNumber	string	unique number used to prove discovery of trackable. only returned if user matches the holderCode
             // will not be stored (Why)
             tb.setTrackingCode(API1Trackable.optString("trackingNumber", ""));
-            tb.CurrentGeocacheCode = API1Trackable.optString("currentGeocacheCode", "");
-            if (tb.CurrentGeocacheCode.equals("null")) tb.CurrentGeocacheCode = "";
-            tb.CurrentGoal = StringH.JsoupParse(API1Trackable.optString("goal"));
-            tb.CurrentOwnerName = getStringValue(API1Trackable, "holder", "username");
+            tb.setCurrentGeoCacheCode(API1Trackable.optString("currentGeocacheCode", ""));
+            if (tb.getCurrentGeoCacheCode().contains("null")) tb.setCurrentGeoCacheCode("");
+            tb.setCurrentGoal(PlatformUIBase.removeHtmlEntyties(API1Trackable.optString("goal")));
+            tb.setCurrentOwnerName(getStringValue(API1Trackable, "holder", "username"));
             String releasedDate = API1Trackable.optString("releasedDate", "");
             try {
-                tb.DateCreated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(releasedDate);
+                tb.setDateCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.US).parse(releasedDate));
             } catch (Exception e) {
-                tb.DateCreated = new Date();
+                tb.setDateCreated(new Date());
             }
-            tb.Description = StringH.JsoupParse(API1Trackable.optString("description", ""));
-            tb.IconUrl = API1Trackable.optString("iconUrl", "");
-            if (tb.IconUrl.startsWith("http:")) {
-                tb.IconUrl = "https:" + tb.getIconUrl().substring(5);
+            tb.setDescription(PlatformUIBase.removeHtmlEntyties(API1Trackable.optString("description", "")));
+            tb.setIconUrl(API1Trackable.optString("iconUrl", ""));
+            if (tb.getIconUrl().startsWith("http:")) {
+                tb.setIconUrl("https:" + tb.getIconUrl().substring(5));
             }
-            tb.Name = API1Trackable.optString("name", "");
-            tb.OwnerName = getStringValue(API1Trackable, "owner", "username");
-            tb.TypeName = API1Trackable.optString("type", "");
+            tb.setName(API1Trackable.optString("name", ""));
+            tb.setOwnerName(getStringValue(API1Trackable, "owner", "username"));
+            tb.setTypeName(API1Trackable.optString("type", ""));
             return tb;
         } catch (Exception e) {
             Log.err(log, "createTrackable(JSONObject API1Trackable)", e);

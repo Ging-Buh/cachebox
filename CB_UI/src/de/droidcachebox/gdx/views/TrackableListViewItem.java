@@ -15,8 +15,8 @@
  */
 package de.droidcachebox.gdx.views;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import de.droidcachebox.database.Trackable;
+import de.droidcachebox.gdx.activities.TB_Details;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
@@ -24,30 +24,30 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 
 public class TrackableListViewItem extends ListViewItemBackground {
-    private Image img;
-    private CB_Label lblName;
 
-    public TrackableListViewItem(CB_RectF rec, int Index, Trackable TB) {
-        super(rec, Index, TB.getName());
+    public TrackableListViewItem(CB_RectF rec, int Index, Trackable trackable) {
+        super(rec, Index, trackable.getName());
 
-        float hw = this.getHeight() - this.getTopHeight() - this.getBottomHeight();
-        this.topBorder = this.getTopHeight();
-        this.bottomBorder = this.getBottomHeight();
-        this.leftBorder = this.getLeftWidth();
-        this.rightBorder = this.getRightWidth();
+        float hw = getHeight() - getTopHeight() - getBottomHeight();
+        topBorder = getTopHeight();
+        bottomBorder = getBottomHeight();
+        leftBorder = getLeftWidth();
+        rightBorder = getRightWidth();
 
-        img = new Image(0, 0, hw, hw, "img", false);
-        img.setImageURL(TB.getIconUrl());
+        Image img = new Image(0, 0, hw, hw, "img", false);
+        img.setImageURL(trackable.getIconUrl());
         addNext(img, FIXED);
 
-        lblName = new CB_Label("lblName", 0, 0, this.getWidth() - img.getMaxX() - UiSizes.getInstance().getMargin(), img.getHeight());
-        lblName.setWrappedText(TB.getName());
+        CB_Label lblName = new CB_Label("lblName", 0, 0, getWidth() - img.getMaxX() - UiSizes.getInstance().getMargin(), img.getHeight());
+        lblName.setWrappedText(trackable.getName());
         addLast(lblName);
-    }
+        setClickHandler((v1, x, y, pointer, button) -> {
+            if (TB_Details.that == null)
+                new TB_Details();
+            TB_Details.that.show(trackable);
+            return true;
+        });
 
-    @Override
-    protected void render(Batch batch) {
-        super.render(batch);
     }
 
 }

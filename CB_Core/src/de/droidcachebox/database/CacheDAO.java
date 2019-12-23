@@ -470,12 +470,12 @@ public class CacheDAO {
     // if (index.contains(cache.getGcCode()))
     // {
     // ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.getGcCode(), false);
-    // UpdateDatabase(cache);
+    // updateDatabase(cache);
     // }
     // else
     // {
     // ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.getGcCode(), false);
-    // WriteToDatabase(cache);
+    // writeToDatabase(cache);
     // }
     //
     // // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB

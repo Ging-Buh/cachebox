@@ -12,43 +12,25 @@ public class TrackableListDAO {
         TrackableDAO tDAO = new TrackableDAO();
 
         Iterator<Trackable> iterator = trackableList.iterator();
-        Log.info(log, "TrackableListDAO WriteToDatabase Size:" + trackableList.size());
-
-        if (iterator != null && iterator.hasNext()) {
+        Log.info(log, "TrackableListDAO writeToDatabase Size:" + trackableList.size());
+        if (iterator.hasNext()) {
             do {
                 try {
-                    Trackable tb = iterator.next();
-
-                    Trackable tbDB = tDAO.getFromDbByGcCode(tb.getTBCode());
-
+                    Trackable trackable = iterator.next();
+                    Trackable tbDB = tDAO.getFromDbByGcCode(trackable.getTbCode());
                     if (tbDB == null) {
-                        Log.info(log, "TrackableListDAO WriteToDatabase :" + tb.getName());
-                        tDAO.WriteToDatabase(tb);
+                        Log.info(log, "TrackableListDAO writeToDatabase :" + trackable.getName());
+                        tDAO.writeToDatabase(trackable);
                     } else {
-                        Log.info(log, "TrackableListDAO UpdateDatabase :" + tb.getName());
-                        tDAO.UpdateDatabase(tb);
+                        Log.info(log, "TrackableListDAO updateDatabase :" + trackable.getName());
+                        tDAO.updateDatabase(trackable);
                     }
                 } catch (Exception exc) {
-                    Log.err(log, "TrackableListDAO WriteToDatabase", exc);
+                    Log.err(log, "TrackableListDAO writeToDatabase", exc);
                 }
-
             } while (iterator.hasNext());
         }
-
-        Log.info(log, "TrackableListDAO WriteToDatabase done.");
-    }
-
-    public static TBList ReadTbList(String where) {
-        TBList trackableList = new TBList();
-        CoreCursor reader = Database.Drafts.sql.rawQuery("select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable", null);
-        reader.moveToFirst();
-
-        while (!reader.isAfterLast()) {
-            trackableList.add(new Trackable(reader));
-            reader.moveToNext();
-        }
-        reader.close();
-        return trackableList;
+        Log.info(log, "TrackableListDAO writeToDatabase done.");
     }
 
     /**

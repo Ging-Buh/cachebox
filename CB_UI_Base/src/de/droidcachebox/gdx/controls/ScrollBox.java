@@ -43,7 +43,7 @@ public class ScrollBox extends CB_View_Base {
         item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
             @Override
             protected void initialize() {
-                isInitial = true;
+                isInitialized = true;
             }
         };
         item.setHeight(virtualHeight);
@@ -138,7 +138,7 @@ public class ScrollBox extends CB_View_Base {
 
     @Override
     protected void initialize() {
-        isInitial = true;
+        isInitialized = true;
     }
 
     // ################ overrides of GL_View_Base ############################################

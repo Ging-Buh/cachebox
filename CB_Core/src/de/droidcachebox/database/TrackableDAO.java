@@ -20,22 +20,21 @@ import de.droidcachebox.utils.log.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class TrackableDAO {
     private static final String log = "TrackableDAO";
 
-    private Trackable ReadFromCursor(CoreCursor reader) {
+    private Trackable readFromCursor(CoreCursor reader) {
         try {
-            Trackable trackable = new Trackable(reader);
-
-            return trackable;
+            return new Trackable(reader);
         } catch (Exception exc) {
             Log.err(log, "Read Trackable", "", exc);
             return null;
         }
     }
 
-    public void WriteToDatabase(Trackable trackable) {
+    public void writeToDatabase(Trackable trackable) {
         try {
             Log.info(log, "Write Trackable insert");
             Database.Drafts.sql.insert("Trackable", createArgs(trackable));
@@ -45,12 +44,12 @@ public class TrackableDAO {
         }
     }
 
-    public void UpdateDatabase(Trackable trackable) {
+    public void updateDatabase(Trackable trackable) {
         try {
             Log.info(log, "Write Trackable createArgs");
             Parameters args = createArgs(trackable);
             Log.info(log, "Write Trackable update");
-            Database.Drafts.sql.update("Trackable", args, "GcCode='" + trackable.getTBCode() + "'", null);
+            Database.Drafts.sql.update("Trackable", args, "GcCode='" + trackable.getTbCode() + "'", null);
         } catch (Exception exc) {
             Log.err(log, "Update Trackable error", exc);
         }
@@ -61,7 +60,7 @@ public class TrackableDAO {
         String stimestampCreated = "";
         String stimestampLastVisit = "";
 
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
             stimestampCreated = iso8601Format.format(trackable.getDateCreated());
         } catch (Exception e) {
@@ -69,7 +68,7 @@ public class TrackableDAO {
         }
 
         try {
-            String lastVisit = trackable.getLastVisit();
+            String lastVisit = trackable.formatLastVisit();
             if (lastVisit.length() > 0)
                 stimestampLastVisit = iso8601Format.format(lastVisit);
             else
@@ -104,7 +103,7 @@ public class TrackableDAO {
         Parameters args = new Parameters();
         try {
             args.put("Archived", trackable.getArchived() ? 1 : 0);
-            putArgs(args, "GcCode", trackable.getTBCode());
+            putArgs(args, "GcCode", trackable.getTbCode());
             putArgs(args, "CurrentGoal", trackable.getCurrentGoal());
             putArgs(args, "CurrentOwnerName", trackable.getCurrentOwner());
             putArgs(args, "DateCreated", stimestampCreated);
@@ -117,8 +116,8 @@ public class TrackableDAO {
             putArgs(args, "TypeName", trackable.getTypeName());
             putArgs(args, "LastVisit", stimestampLastVisit);
             putArgs(args, "Home", trackable.getHome());
-            putArgs(args, "TravelDistance", trackable.getTravelDistance());
-            putArgs(args, "CacheId", trackable.getCurrentGeocacheCode());
+            putArgs(args, "TravelDistance", trackable.formatTravelDistance());
+            putArgs(args, "CacheId", trackable.getCurrentGeoCacheCode());
         } catch (Exception e) {
             Log.err(log, "args", e);
         }
@@ -130,15 +129,15 @@ public class TrackableDAO {
         args.put(Name, value);
     }
 
-    public Trackable getFromDbByGcCode(String GcCode) {
-        String where = "GcCode = \"" + GcCode + "\"";
+    public Trackable getFromDbByGcCode(String gcCode) {
+        String where = "GcCode = \"" + gcCode + "\"";
         String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE " + where;
         CoreCursor reader = Database.Drafts.sql.rawQuery(query, null);
 
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();
-                Trackable ret = ReadFromCursor(reader);
+                Trackable ret = readFromCursor(reader);
 
                 reader.close();
                 return ret;
@@ -147,10 +146,9 @@ public class TrackableDAO {
                     reader.close();
                 return null;
             }
-        } catch (Exception e) {
-            if (reader != null)
-                reader.close();
-            e.printStackTrace();
+        } catch (Exception ex) {
+            reader.close();
+            Log.err(log, "getFromDbByGcCode", ex);
             return null;
         }
 

@@ -288,7 +288,7 @@ public class SelectDB extends ActivityBase {
 
                 GL.that.RunOnGL(() -> setSelectedItemVisible());
 
-                resetInitial();
+                resetIsInitialized();
                 lvDBSelection.chkSlideBack();
             }
         };

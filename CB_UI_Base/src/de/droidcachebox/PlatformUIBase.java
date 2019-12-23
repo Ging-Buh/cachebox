@@ -69,8 +69,7 @@ public class PlatformUIBase {
             try {
                 GL.that.clearRenderViews();
                 showViewListener.showForDialog();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.err("PlatformUIBase", "showForDialog", ex);
             }
         }
@@ -234,6 +233,10 @@ public class PlatformUIBase {
         methods.handleExternalRequest();
     }
 
+    public static String removeHtmlEntyties(String text) {
+        return methods.removeHtmlEntyties(text);
+    }
+
     public interface IShowViewListener {
         void showView(ViewID viewID, int left, int top, int right, int bottom);
 
@@ -290,6 +293,8 @@ public class PlatformUIBase {
         void quit();
 
         void handleExternalRequest();
+
+        String removeHtmlEntyties(String text);
     }
 
     public interface IgetFileReturnListener {

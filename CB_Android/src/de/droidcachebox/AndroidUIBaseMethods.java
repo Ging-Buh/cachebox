@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.text.HtmlCompat;
 import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
@@ -51,6 +52,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.content.Intent.ACTION_VIEW;
+import static android.support.v4.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 
 public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private static final String sKlasse = "PlatformListener";
@@ -319,6 +321,16 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                 }
             }
         }
+    }
+
+    @Override
+    public String removeHtmlEntyties(String text) {
+        /*
+        if (android.os.Build.VERSION.SDK_INT >= N)
+            return android.text.Html.fromHtml(text, FROM_HTML_MODE_LEGACY).toString();
+        else return text.replaceAll("\\<[^>]*>","");
+         */
+        return HtmlCompat.fromHtml(text, FROM_HTML_MODE_LEGACY).toString();
     }
 
     private void positionLatLon(String externalRequestLatLon) {

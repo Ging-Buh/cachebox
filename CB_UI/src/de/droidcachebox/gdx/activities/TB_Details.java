@@ -35,7 +35,7 @@ public class TB_Details extends ActivityBase {
     private ScrollBox scrollBox;
     private Box scrollBoxContent;
     private CB_Button btnClose, btnAction;
-    private Trackable TB;
+    private Trackable trackable;
     private Image icon, image;
     private CB_Label lblDescription, lblGoal;
     private EditTextField title, description, currentGoal;
@@ -48,14 +48,13 @@ public class TB_Details extends ActivityBase {
         that = this;
     }
 
-    public void Show(Trackable TB) {
-        this.TB = TB;
+    public void show(Trackable trackable) {
+        this.trackable = trackable;
         layout();
         GL.that.showActivity(this);
     }
 
     private void createControls() {
-        float innerHeight = 1000;
 
         btnClose = new CB_Button(Translation.get("close"));
         btnClose.setClickHandler((v, x, y, pointer, button) -> {
@@ -95,7 +94,7 @@ public class TB_Details extends ActivityBase {
         Birth = new EditTextField(this, "Birth");
 
         scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
-        scrollBox.setBackground(this.getBackground());
+        scrollBox.setBackground(getBackground());
 
         scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
 
@@ -109,30 +108,30 @@ public class TB_Details extends ActivityBase {
 
         initRow(TOPDOWN);
         addNext(icon, FIXED);
-        icon.setImageURL(TB.getIconUrl());
+        icon.setImageURL(trackable.getIconUrl());
         title.setWrapType(WrapType.WRAPPED);
-        this.addLast(title);
-        title.setText(TB.getName());
+        addLast(title);
+        title.setText(trackable.getName());
         title.setEditable(false);
         title.showFromLineNo(0);
 
         scrollBox.setHeight(getAvailableHeight());
         scrollBox.addChild(scrollBoxContent);
 
-        addScrollBoxContent(lblTbCode, TbCode, TB.getTBCode());
-        String ImgUrl = TB.getImageUrl();
+        addScrollBoxContent(lblTbCode, TbCode, trackable.getTbCode());
+        String ImgUrl = trackable.getImageUrl();
         if (ImgUrl != null && ImgUrl.length() > 0) {
-            image.setHeight(this.getWidth() / 3);
+            image.setHeight(getWidth() / 3);
             image.setImageURL(ImgUrl);
         } else {
             image.setHeight(0);
         }
         scrollBoxContent.addLast(image, FIXED);
-        addScrollBoxContent(lblTypeName, TypeName, TB.getTypeName());
-        addScrollBoxContent(lblOwner, Owner, TB.getOwner());
-        addScrollBoxContent(lblBirth, Birth, TB.getBirth());
-        addScrollBoxContent(lblGoal, currentGoal, TB.getCurrentGoal());
-        addScrollBoxContent(lblDescription, description, TB.getDescription());
+        addScrollBoxContent(lblTypeName, TypeName, trackable.getTypeName());
+        addScrollBoxContent(lblOwner, Owner, trackable.getOwner());
+        addScrollBoxContent(lblBirth, Birth, trackable.getBirth());
+        addScrollBoxContent(lblGoal, currentGoal, trackable.getCurrentGoal());
+        addScrollBoxContent(lblDescription, description, trackable.getDescription());
         scrollBoxContent.adjustHeight();
 
         scrollBox.setVirtualHeight(scrollBoxContent.getHeight());
@@ -156,17 +155,17 @@ public class TB_Details extends ActivityBase {
 
     private void showLogMenu() {
         final Menu menuLog = new Menu("TB_DetailsLogMenuTitle");
-        menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.getInstance().Show(TB, GeoCacheLogType.note));
-        if (TB.isLogTypePossible(GeoCacheLogType.discovered, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.getInstance().Show(TB, GeoCacheLogType.discovered));
-        if (TB.isLogTypePossible(GeoCacheLogType.visited, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.getInstance().Show(TB, GeoCacheLogType.visited));
-        if (TB.isLogTypePossible(GeoCacheLogType.dropped_off, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.getInstance().Show(TB, GeoCacheLogType.dropped_off));
-        if (TB.isLogTypePossible(GeoCacheLogType.grab_it, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.getInstance().Show(TB, GeoCacheLogType.grab_it));
-        if (TB.isLogTypePossible(GeoCacheLogType.retrieve, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.getInstance().Show(TB, GeoCacheLogType.retrieve));
+        menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.note));
+        if (trackable.isLogTypePossible(GeoCacheLogType.discovered, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.discovered));
+        if (trackable.isLogTypePossible(GeoCacheLogType.visited, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.visited));
+        if (trackable.isLogTypePossible(GeoCacheLogType.dropped_off, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.dropped_off));
+        if (trackable.isLogTypePossible(GeoCacheLogType.grab_it, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.grab_it));
+        if (trackable.isLogTypePossible(GeoCacheLogType.retrieve, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.retrieve));
         menuLog.show();
     }
 

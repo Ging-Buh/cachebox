@@ -365,6 +365,12 @@ public class DesktopMain {
 
             }
 
+            @Override
+            public String removeHtmlEntyties(String text) {
+                // todo Jsoup.parse(s).text();
+                return text.replaceAll("\\<[^>]*>","");
+            }
+
         });
         LocatorBasePlatFormMethods.setMethods(new DesktopLocatorBaseMethods());
 
