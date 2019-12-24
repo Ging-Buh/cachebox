@@ -51,8 +51,7 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
         setForceHandleTouchEvents();
         itemRec = (new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).scaleCenter(0.97f);
         setBackground(Sprites.ListBack);
-
-        setAdapter(null);
+        // setAdapter(null);
         setCache(GlobalCore.getSelectedCache());
         setDisposeFlag(false);
     }

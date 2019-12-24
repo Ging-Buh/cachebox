@@ -167,7 +167,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         }
 
         if (waypoints.size() > 1) {
-            RouteOverlay.routesChanged();
+            RouteOverlay.trackListChanged();
         }
     }
 

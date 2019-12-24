@@ -80,7 +80,7 @@ public class RouteOverlay {
     // public static int ReduceTrackPoints = 0;
     // public static int DrawedLineCount = 0;
 
-    public static void routesChanged() {
+    public static void trackListChanged() {
         mRoutesChanged = true;
         GL.that.renderOnce();
     }
@@ -577,7 +577,7 @@ public class RouteOverlay {
             routingTrack = null;
         }
         tracks.remove(track);
-        routesChanged();
+        trackListChanged();
     }
 
     /**
@@ -587,7 +587,7 @@ public class RouteOverlay {
      */
     public static void add(Track track) {
         tracks.add(track);
-        routesChanged();
+        trackListChanged();
     }
 
     public static void setRoutingTrack(Track track) {
@@ -600,7 +600,7 @@ public class RouteOverlay {
         }
         tracks.add(0, track);
         routingTrack = track;
-        routesChanged();
+        trackListChanged();
     }
 
     public static boolean existsRoutingTrack() {
@@ -610,14 +610,14 @@ public class RouteOverlay {
     public static void removeRoutingTrack() {
         tracks.remove(routingTrack);
         routingTrack = null;
-        routesChanged();
+        trackListChanged();
     }
 
-    public static int getRouteCount() {
+    public static int getNumberOfTracks() {
         return tracks.size();
     }
 
-    public static Track getRoute(int position) {
+    public static Track getTrack(int position) {
         return tracks.get(position);
     }
 

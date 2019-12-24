@@ -66,9 +66,11 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
             });
             menu.addMenuItem("MailToFinder", Sprites.getSprite("bigLetterbox"), () -> {
                 try {
-                    PlatformUIBase.getClipboard().setContents("Concerning https://coord.info/" + GlobalCore.getSelectedCache().getGcCode() + " " + GlobalCore.getSelectedCache().getName() + "\r");
-                    String finder = URLEncoder.encode(logEntry.finder, "UTF-8");
-                    PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + finder);
+                    if (PlatformUIBase.getClipboard() != null) {
+                        PlatformUIBase.getClipboard().setContents("Concerning https://coord.info/" + GlobalCore.getSelectedCache().getGcCode() + " " + GlobalCore.getSelectedCache().getName() + "\r");
+                        String finder = URLEncoder.encode(logEntry.finder, "UTF-8");
+                        PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + finder);
+                    }
                 } catch (Exception ignored) {
                 }
             });
@@ -102,6 +104,10 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         });
     }
 
+    /*
+    // we use
+    //          PlatformUIBase.callUrl("https://www.geocaching.com/seek/log.aspx?LID=" + logEntry.logId);
+    // instead of            // PlatformUIBase.callUrl("https://coord.info/" + getGcIdFromLogId(logEntry.logId));
     private String getGcIdFromLogId(long logId) {
         String referenceCode;
         if (logId < 65536)
@@ -121,6 +127,8 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         }
         return referenceCode.reverse().toString();
     }
+
+     */
 
 
     private void iniImage() {
@@ -205,9 +213,12 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
     @Override
     public String copyToClipboard() {
-        PlatformUIBase.getClipboard().setContents(logEntry.logText);
-        // GL.that.Toast(Translation.get("CopyToClipboard"));
-        return logEntry.logText;
+        if (PlatformUIBase.getClipboard() != null) {
+            PlatformUIBase.getClipboard().setContents(logEntry.logText);
+            // GL.that.Toast(Translation.get("CopyToClipboard"));
+            return logEntry.logText;
+        }
+        return "";
     }
 
     @Override

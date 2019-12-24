@@ -255,7 +255,7 @@ public class TrackRecorder {
                 // notify TrackListView
                 TrackListView.getInstance().notifyActTrackChanged();
 
-                RouteOverlay.routesChanged();
+                RouteOverlay.trackListChanged();
                 LastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
                 GlobalCore.AktuelleRoute.trackLength += cachedDistance;
 

@@ -17,22 +17,19 @@ package de.droidcachebox.main.menuBtn3;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import de.droidcachebox.*;
-import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
+import de.droidcachebox.CB_UI_Settings;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.RouteOverlay;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate.Type;
-import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.TrackListView;
-import de.droidcachebox.gdx.views.TrackListViewItem;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
@@ -91,56 +88,6 @@ public class ShowTrackList extends AbstractShowAction {
         Menu cm = new Menu("TrackListViewContextMenuTitle");
         cm.addMenuItem("load", null, this::loadTrackList);
         cm.addMenuItem("generate", null, this::showMenuCreate);
-
-        // rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
-        TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
-        if (selectedTrackItem != null && !selectedTrackItem.getTrack().isActualTrack) {
-            cm.addMenuItem("rename", null, () -> {
-                StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getTrack().getName(), Translation.get("RenameTrack"), selectedTrackItem.getTrack().getName(), (which, data) -> {
-                    String text = StringInputBox.editText.getText();
-                    switch (which) {
-                        case 1: // ok Clicket
-                            selectedTrackItem.getTrack().setName(text);
-                            TrackListView.getInstance().notifyDataSetChanged();
-                            break;
-                        case 2: // cancel clicket
-                            break;
-                        case 3:
-                            break;
-                    }
-
-                    return true;
-                });
-                TrackListView.getInstance().notifyDataSetChanged();
-            });
-            cm.addMenuItem("save", null, () -> PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(),
-                    "*.gpx",
-                    Translation.get("SaveTrack"),
-                    Translation.get("save"),
-                    new IgetFileReturnListener() {
-                        TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
-                        @Override
-                        public void returnFile(String path) {
-                            if (path != null) {
-                                RouteOverlay.saveRoute(path, selectedTrackItem.getTrack());
-                                Log.debug(log, "Load Track :" + path);
-                                TrackListView.getInstance().notifyDataSetChanged();
-                            }
-                        }
-                    }));
-            cm.addMenuItem("delete", null, () -> {
-                TrackListViewItem trackListViewItem = TrackListView.getInstance().getSelectedItem();
-
-                if (trackListViewItem == null) {
-                    MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
-                } else if (trackListViewItem.getTrack().isActualTrack) {
-                    MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
-                } else {
-                    RouteOverlay.remove(trackListViewItem.getTrack());
-                    TrackListView.getInstance().notifyDataSetChanged();
-                }
-            });
-        }
         return cm;
     }
 
