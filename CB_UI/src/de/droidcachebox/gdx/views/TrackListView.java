@@ -31,7 +31,7 @@ public class TrackListView extends V_ListView {
 
         setBackground(Sprites.ListBack);
 
-        setAdapter(new CustomAdapter());
+        setAdapter(new TrackListViewAdapter());
 
     }
 
@@ -81,9 +81,9 @@ public class TrackListView extends V_ListView {
 
     }
 
-    public class CustomAdapter implements Adapter {
+    public class TrackListViewAdapter implements Adapter {
 
-        public CustomAdapter() {
+        public TrackListViewAdapter() {
         }
 
         @Override

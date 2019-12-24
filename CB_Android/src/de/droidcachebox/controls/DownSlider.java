@@ -35,7 +35,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import de.droidcachebox.*;
 import de.droidcachebox.components.CacheDraw;
-import de.droidcachebox.components.CacheDraw.DrawStyle;
 import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
@@ -429,7 +428,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
             versatz += CacheInfoHeight;
             canvas.translate(5, -versatz);
-            CacheDraw.DrawInfo(mCache, canvas, width - 10, CacheInfoHeight, WPisDraw ? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), DrawStyle.withOwnerAndName);
+            CacheDraw.DrawInfo(mCache, canvas, width - 10, CacheInfoHeight, WPisDraw ? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), CacheDraw.DrawStyle.withOwnerAndName);
 
             // draw Attributes
 
@@ -453,7 +452,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
                         }
 
                         if (image != null) {
-                            left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
+                            left += ActivityUtils.putImageTargetHeight(canvas, image, left, top, attHeight) + 3;
                             i++;
                             if (i % 8 == 0 && i > 7) {
                                 left = 8;
@@ -483,7 +482,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         try {
             // draw icon
             if ((mWaypoint.waypointType.ordinal()) < Global.CacheIconsBig.length)
-                iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[mWaypoint.waypointType.ordinal()], UiSizes.getInstance().getHalfCornerSize(), UiSizes.getInstance().getCornerSize(), imgSize);
+                iconWidth = ActivityUtils.putImageTargetHeight(canvas, Global.CacheIconsBig[mWaypoint.waypointType.ordinal()], UiSizes.getInstance().getHalfCornerSize(), UiSizes.getInstance().getCornerSize(), imgSize);
         } catch (Exception e1) {
 
         }
@@ -524,7 +523,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         int iconWidth = 0;
         // draw icon
-        iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], UiSizes.getInstance().getHalfCornerSize(), UiSizes.getInstance().getCornerSize(), imgSize);
+        iconWidth = ActivityUtils.putImageTargetHeight(canvas, Global.Icons[30], UiSizes.getInstance().getHalfCornerSize(), UiSizes.getInstance().getCornerSize(), imgSize);
 
         // draw Text info
         left += iconWidth;

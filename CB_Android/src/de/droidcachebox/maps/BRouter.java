@@ -17,6 +17,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Date;
 
+import static de.droidcachebox.utils.MathUtils.DEG_RAD;
+
 public class BRouter implements Router {
     private final static String sKlasse = "BRouter";
     private Activity mainActivity;
@@ -73,7 +75,7 @@ public class BRouter implements Router {
                         if (lat != null) {
                             final String lon = atts.getValue("lon");
                             if (lon != null) {
-                                track.trackPoints.add(new TrackPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0, 0, new Date()));
+                                track.trackPoints.add( new TrackPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0, 0, new Date()));
                             }
                         }
                     }
@@ -82,9 +84,25 @@ public class BRouter implements Router {
         } catch (Exception ex) {
             Log.err("Brouter", "getTrack", ex);
         }
+        // calc tracklength
+        double sourceLatitude = start.getLatitude();
+        double sourceLongitude = start.getLongitude();
+        for (int i = 0; i < track.trackPoints.size(); i++) {
+            TrackPoint t = track.trackPoints.get(i);
+            track.trackLength = track.trackLength + calcDistance(sourceLatitude, sourceLongitude, t.y, t.x);
+            sourceLatitude = t.y;
+            sourceLongitude = t.x;
+        }
         return track;
     }
 
+    private double calcDistance(double sourceLat, double sourceLon, double targetLat, double targetLon) {
+        double lat1 = sourceLat * DEG_RAD;
+        double lon1 = sourceLon * DEG_RAD;
+        double lat2 = targetLat * DEG_RAD;
+        double lon2 = targetLon * DEG_RAD;
+        return (6378137 * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))));
+    }
 
     /**
      * Return a valid track (with at least two points, including the start and destination).

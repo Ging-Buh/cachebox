@@ -30,7 +30,7 @@ public class UnitFormatter {
     // / </summary>
     // / <param name="distance"></param>
     // / <returns></returns>
-    public static String DistanceString(float distance) {
+    public static String distanceString(float distance) {
         if (mUseImperialUnits)
             return DistanceStringImperial(distance);
         else

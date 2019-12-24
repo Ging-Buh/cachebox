@@ -28,7 +28,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     private Track track;
     private float left;
     private CB_Label trackName;
-    private CB_Label EntryLength;
+    private CB_Label trackLength;
     private Sprite colorReck;
     private boolean Clicked = false;
 
@@ -45,11 +45,11 @@ public class TrackListViewItem extends ListViewItemBackground {
 
         boolean rClick;
         boolean lClick;
-        if (this.isPressed) {
+        if (isPressed) {
             // Log.debug(log, "TrackListViewItem => is Pressed");
 
-            lClick = lBounds.contains(this.lastItemTouchPos);
-            rClick = rBounds.contains(this.lastItemTouchPos);
+            lClick = lBounds.contains(lastItemTouchPos);
+            rClick = rBounds.contains(lastItemTouchPos);
 
             if (lClick || rClick)
                 Clicked = true;
@@ -65,8 +65,8 @@ public class TrackListViewItem extends ListViewItemBackground {
             if (Clicked) {
                 // Log.debug(log, "TrackListViewItem => is Clicked");
                 Clicked = false;
-                lClick = lBounds.contains(this.lastItemTouchPos);
-                rClick = rBounds.contains(this.lastItemTouchPos);
+                lClick = lBounds.contains(lastItemTouchPos);
+                rClick = rBounds.contains(lastItemTouchPos);
                 if (lClick)
                     colorClick();
                 if (rClick)
@@ -80,7 +80,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         drawColorRec(batch);
 
         // draw Name
-        if (trackName == null || EntryLength == null) {
+        if (trackName == null || trackLength == null) {
             createLabel();
         }
 
@@ -91,22 +91,20 @@ public class TrackListViewItem extends ListViewItemBackground {
     private void createLabel() {
         if (trackName == null) {
 
-            CB_RectF rec = new CB_RectF(left, this.getHeight() / 2, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
+            CB_RectF rec = new CB_RectF(left, getHeight() / 2, getWidth() - left - getHeight() - 10, getHeight() / 2);
             trackName = new CB_Label(rec);
 
             trackName.setText(track.getName());
 
-            this.addChild(trackName);
+            addChild(trackName);
         }
 
         // draw Length
-        if (EntryLength == null) {
-
-            CB_RectF rec = new CB_RectF(left, 0, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
-            EntryLength = new CB_Label(this.name + " EntryLength", rec, "");
-            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) track.trackLength) + " / " + UnitFormatter.DistanceString((float) track.altitudeDifference));
-
-            this.addChild(EntryLength);
+        if (trackLength == null) {
+            CB_RectF rec = new CB_RectF(left, 0, getWidth() - left - getHeight() - 10, getHeight() / 2);
+            trackLength = new CB_Label(name + " EntryLength", rec, "");
+            trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.trackLength) + " / " + UnitFormatter.distanceString((float) track.altitudeDifference));
+            addChild(trackLength);
         }
 
         GL.that.renderOnce();
@@ -182,8 +180,8 @@ public class TrackListViewItem extends ListViewItemBackground {
 
     public void notifyTrackChanged(Track track) {
         this.track = track;
-        if (EntryLength != null)
-            EntryLength.setText(Translation.get("length") + ": " + UnitFormatter.DistanceString((float) this.track.trackLength) + " / " + UnitFormatter.DistanceString((float) this.track.altitudeDifference));
+        if (trackLength != null)
+            trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.trackLength) + " / " + UnitFormatter.distanceString((float) track.altitudeDifference));
     }
 
     public Track getTrack() {

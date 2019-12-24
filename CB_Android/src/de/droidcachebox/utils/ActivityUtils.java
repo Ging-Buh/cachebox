@@ -145,7 +145,7 @@ public class ActivityUtils {
     // / <param name="x"></param>
     // / <param name="y"></param>
     // / <param name="height"></param>
-    public static int PutImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height) {
+    public static int putImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height) {
         // float scale = (float)height / (float)image.getBounds().height();
         // int width = (int)Math.round(image.getBounds().width() * scale);
 
@@ -188,7 +188,7 @@ public class ActivityUtils {
     // / <param name="y"></param>
     // / <param name="height"></param>
     @SuppressWarnings("deprecation")
-    public static int PutImageTargetHeight(Canvas canvas, Drawable image, double Angle, int x, int y, int newHeight) {
+    public static int putImageTargetHeight(Canvas canvas, Drawable image, double Angle, int x, int y, int newHeight) {
 
         float scale = (float) newHeight / (float) image.getIntrinsicHeight();
         float newWidth = (int) Math.round((float) image.getIntrinsicWidth() * scale);
@@ -219,7 +219,7 @@ public class ActivityUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static int PutImageScale(Canvas canvas, Drawable image, double Angle, int x, int y, double scale) {
+    public static int putImageScale(Canvas canvas, Drawable image, double Angle, int x, int y, double scale) {
 
         if (scale == 0.0)
             return 0;

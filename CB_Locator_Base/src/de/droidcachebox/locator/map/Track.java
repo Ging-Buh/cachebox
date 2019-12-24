@@ -18,6 +18,7 @@ public class Track {
         trackPoints = new ArrayList<>();
         this.name = name;
         this.color = color;
+        trackLength = 0;
     }
 
     public String getName() {

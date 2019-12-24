@@ -224,11 +224,11 @@ public class ShowTrackList extends AbstractShowAction {
 
             float[] dist = new float[4];
             TrackColor = RouteOverlay.getNextColor();
-            Track route = new Track(null, TrackColor);
-            route.setName("Circle Route");
+            Track track = new Track(null, TrackColor);
+            track.setName("Circle Route");
 
-            route.isVisible = true;
-            RouteOverlay.add(route);
+            track.isVisible = true;
+            RouteOverlay.add(track);
 
             Coordinate Projektion;
             Coordinate LastCoord = new CoordinateGPS(0, 0);
@@ -236,10 +236,10 @@ public class ShowTrackList extends AbstractShowAction {
             // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme mit dem Reduktionsalgorythmus
             for (int i = 0; i <= 360; i += 10) {
                 Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
-                route.trackPoints.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
+                track.trackPoints.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
                 if (LastCoord.isValid()) {
                     MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
-                    route.trackLength = route.trackLength + dist[0];
+                    track.trackLength = track.trackLength + dist[0];
                 }
                 LastCoord = Projektion; // !! LastCoord = new Coordinate(Projektion);
                 LastCoord.setValid(true);

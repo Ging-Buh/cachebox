@@ -110,7 +110,7 @@ public class Trackable implements Comparable<Trackable> {
      */
 
     public String formatTravelDistance() {
-        return UnitFormatter.DistanceString(travelDistance);
+        return UnitFormatter.distanceString(travelDistance);
     }
 
     public String getBirth() {

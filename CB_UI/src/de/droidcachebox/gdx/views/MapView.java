@@ -676,12 +676,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // Beschriftung
         if (wayPointRenderInfo.cache != null && showTitles && (aktZoom >= 15)) {
             try {
-                String Name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getName();
+                String name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getName();
 
                 if (layout == null)
-                    layout = new GlyphLayout(Fonts.getNormal(), Name);
+                    layout = new GlyphLayout(Fonts.getNormal(), name);
                 else
-                    layout.setText(Fonts.getNormal(), Name);
+                    layout.setText(Fonts.getNormal(), name);
 
                 float halfWidth = layout.width / 2;
                 Fonts.getNormal().draw(batch, layout, screen.x - halfWidth, screen.y - wpUnderlay.getHalfHeight() - nameYMovement);

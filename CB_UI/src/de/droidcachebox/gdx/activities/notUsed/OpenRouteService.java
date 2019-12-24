@@ -71,7 +71,7 @@ public class OpenRouteService {
                                 public void run() {
                                     Coordinate lastAcceptedCoordinate = null;
                                     float[] dist = new float[4];
-                                    double Distance = 0;
+                                    double distance = 0;
                                     Coordinate FromPosition = new CoordinateGPS(0, 0);
 
                                     if (canceld)
@@ -146,7 +146,7 @@ public class OpenRouteService {
                                                     } else {
                                                         MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
                                                                 lastAcceptedCoordinate.getLongitude(), dist);
-                                                        Distance += dist[0];
+                                                        distance += dist[0];
                                                         FromPosition = new Coordinate(lastAcceptedCoordinate);
                                                         IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
                                                     }
@@ -154,8 +154,8 @@ public class OpenRouteService {
                                             }
 
                                             if (IsRoute) {
-                                                final String sDistance = UnitFormatter.DistanceString((float) Distance);
-                                                route.trackLength = Distance;
+                                                final String sDistance = UnitFormatter.distanceString((float) distance);
+                                                route.trackLength = distance;
                                                 RouteOverlay.setRoutingTrack(route);
                                                 TrackListView.getInstance().notifyDataSetChanged();
 

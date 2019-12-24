@@ -130,7 +130,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 double heading = Locator.getInstance().getHeading();
                 double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
                 double cacheBearing = -(bearing - heading);
-                setDistanceString(UnitFormatter.DistanceString(distance));
+                setDistanceString(UnitFormatter.distanceString(distance));
 
                 arrow.setRotation((float) cacheBearing);
                 if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore

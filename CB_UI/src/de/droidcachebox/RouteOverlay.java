@@ -17,11 +17,10 @@ package de.droidcachebox;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.gdx.DrawUtils;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -32,9 +31,7 @@ import de.droidcachebox.locator.map.PolylineReduction;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.utils.File;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.MathUtils;
+import de.droidcachebox.utils.*;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.Log;
 
@@ -410,11 +407,11 @@ public class RouteOverlay {
         if (routes != null && routes.size() > 0) {
             for (Route route : routes) {
 
-                Sprite ArrowSprite = route.ArrowSprite;
-                Sprite PointSprite = route.PointSprite;
+                Sprite arrow = route.arrow;
+                Sprite point = route.point;
                 float overlap = route.overlap;
-                ArrowSprite.setColor(route.mColor);
-                PointSprite.setColor(route.mColor);
+                arrow.setColor(route.mColor);
+                point.setColor(route.mColor);
                 float scale = UiSizes.getInstance().getScale();
 
                 for (int ii = 0; ii < route.trackPoints.size() - 1; ii++) {
@@ -436,20 +433,44 @@ public class RouteOverlay {
 
                     // chk if line on Screen
                     if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen2.x, screen2.y)) {
-                        DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x, screen2.y);
+                        DrawUtils.drawSpriteLine(batch, arrow, point, overlap * scale, screen1.x, screen1.y, screen2.x, screen2.y);
                         // DrawedLineCount++;
                     } else {// chk if intersection
                         if (chkRec.getIntersection(screen1, screen2, 2) != null) {
-                            DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x, screen2.y);
+                            DrawUtils.drawSpriteLine(batch, arrow, point, overlap * scale, screen1.x, screen1.y, screen2.x, screen2.y);
                             // DrawedLineCount++;
                         }
-
                         // the line is not on the screen
                     }
 
+                    if (chkRec.contains(screen2.x, screen2.y)) {
+                        if (ii == route.trackPoints.size() - 2) {
+                            try {
+                                drawText(batch, UnitFormatter.distanceString((float) route.tracklength), screen2);
+                            }
+                            catch (Exception ex) {
+                                Log.err(log, "for loop: " + route.tracklength, ex);
+                            }
+                        }
+                    }
                 }
 
             }
+        }
+    }
+
+    private static GlyphLayout glyphLayout;
+    private static void drawText(Batch batch, String text, Vector2 position) {
+        try {
+            Fonts.getSmall().setColor(COLOR.getFontColor());
+            if (glyphLayout == null)
+                glyphLayout = new GlyphLayout(Fonts.getSmall(), text);
+            else
+                glyphLayout.setText(Fonts.getSmall(), text);
+            float halfWidth = glyphLayout.width / 2;
+            Fonts.getSmall().draw(batch, glyphLayout, position.x - halfWidth, position.y);
+        } catch (Exception ex) {
+            Log.err(log, "drawText", ex);
         }
     }
 
@@ -475,6 +496,7 @@ public class RouteOverlay {
 
             Route route = new Route(track.getColor(), track == routingTrack);
             route.trackPoints = reducedPoints;
+            route.tracklength = track.trackLength;
 
             routes.add(route);
 
@@ -578,7 +600,6 @@ public class RouteOverlay {
         }
         tracks.add(0, track);
         routingTrack = track;
-
         routesChanged();
     }
 
@@ -603,38 +624,35 @@ public class RouteOverlay {
     public static class Route {
         private final Color mColor;
         protected ArrayList<TrackPoint> trackPoints;
-        Sprite ArrowSprite;
-        Sprite PointSprite;
+        double tracklength;
+        Sprite arrow;
+        Sprite point;
         float overlap;
-        private boolean isInternalRoutingTrack = false;
 
         public Route(Color color) {
             mColor = color;
             trackPoints = new ArrayList<>();
-            ArrowSprite = Sprites.Arrows.get(5); // 5 = track-line
-            PointSprite = Sprites.Arrows.get(10); // 10 = track-point
+            arrow = Sprites.Arrows.get(5); // 5 = track-line
+            point = Sprites.Arrows.get(10); // 10 = track-point
             overlap = 0.9f;
+            tracklength = 0;
         }
 
         public Route(Color color, boolean isInternalRoutingTrack) {
-            this.isInternalRoutingTrack = isInternalRoutingTrack;
             if (isInternalRoutingTrack) {
-                ArrowSprite = new Sprite(Sprites.Arrows.get(5));
-                PointSprite = new Sprite(Sprites.Arrows.get(10));
-                ArrowSprite.scale(1.6f);
-                PointSprite.scale(0.2f);
+                arrow = new Sprite(Sprites.Arrows.get(5));
+                point = new Sprite(Sprites.Arrows.get(10));
+                arrow.scale(1.6f);
+                point.scale(0.2f);
                 overlap = 1.9f;
             } else {
-                ArrowSprite = Sprites.Arrows.get(5);
-                PointSprite = Sprites.Arrows.get(10);
+                arrow = Sprites.Arrows.get(5);
+                point = Sprites.Arrows.get(10);
                 overlap = 0.9f;
             }
             mColor = color;
             trackPoints = new ArrayList<>();
-        }
-
-        public boolean isInternalRoutingTrack() {
-            return isInternalRoutingTrack;
+            tracklength = 0;
         }
 
     }

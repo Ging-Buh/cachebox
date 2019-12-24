@@ -137,7 +137,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
             double cacheBearing = -(result[2] - heading);
             mCache.cachedDistance = result[0];
-            setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
+            setDistanceString(UnitFormatter.distanceString(mCache.cachedDistance));
 
             arrow.setRotation((float) cacheBearing);
             if (arrow.getColor() == DISABLE_COLOR) {
@@ -149,7 +149,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         } else {
             if (mCache.cachedDistance >= 0) // (mCache.cachedDistance > 0)|| mCache == GlobalCore.getSelectedCache())
             {
-                setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
+                setDistanceString(UnitFormatter.distanceString(mCache.cachedDistance));
             }
         }
     }

@@ -332,7 +332,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
             int radius = Locator.getInstance().getMyPosition().getAccuracy();
 
             if (Accuracy != null)
-                Accuracy.setText("+/- " + UnitFormatter.DistanceString(radius) + " (" + Locator.getInstance().getProvider().toString() + ")");
+                Accuracy.setText("+/- " + UnitFormatter.distanceString(radius) + " (" + Locator.getInstance().getProvider().toString() + ")");
         } else {
             if (Accuracy != null)
                 Accuracy.setText("?");

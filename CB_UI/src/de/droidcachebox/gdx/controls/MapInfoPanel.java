@@ -121,7 +121,7 @@ public class MapInfoPanel extends CB_View_Base {
             if (distance == -1)
                 lblDistance.setText("?");
             else
-                lblDistance.setText(UnitFormatter.DistanceString(distance));
+                lblDistance.setText(UnitFormatter.distanceString(distance));
             GL.that.renderOnce();
         } catch (Exception e) {
             e.printStackTrace();

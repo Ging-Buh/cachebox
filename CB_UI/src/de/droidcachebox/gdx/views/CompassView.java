@@ -670,7 +670,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (scale != null)
             scale.setRotate((float) heading);
         if (lblDistance != null && !lblDistance.isDisposed()) {
-            float labelWidth = lblDistance.setText(UnitFormatter.DistanceString(distance)).getTextWidth() + (6 * margin);
+            float labelWidth = lblDistance.setText(UnitFormatter.distanceString(distance)).getTextWidth() + (6 * margin);
             if (showMap) {
                 if (distanceBack != null && !distanceBack.isDisposed()) {
                     distanceBack.setWidth(labelWidth);
@@ -682,7 +682,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         }
 
         if (lblAccuracy != null && !lblAccuracy.isDisposed()) {
-            lblAccuracy.setText("  +/- " + UnitFormatter.DistanceString(position.getAccuracy()));
+            lblAccuracy.setText("  +/- " + UnitFormatter.distanceString(position.getAccuracy()));
         }
 
         if (showSatInfos && lblAlt != null && !lblAlt.isDisposed()) {
