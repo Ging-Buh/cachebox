@@ -34,7 +34,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.main.OptionMenu;
 import de.droidcachebox.gdx.views.MapView;
@@ -80,7 +79,7 @@ public class ShowMap extends AbstractShowAction {
     private SpriteDrawable[] routeProfileIcons;
 
     private ShowMap() {
-        super("Map", MenuID.AID_SHOW_MAP);
+        super("Map");
         normalMapView = new MapView(ViewManager.leftTab.getContentRec(), MapMode.Normal);
         normalMapView.SetZoom(Config.lastZoomLevel.getValue());
     }
@@ -374,9 +373,12 @@ public class ShowMap extends AbstractShowAction {
 
     public Sprite getRouterIcon() {
         switch (Config.routeProfile.getValue()) {
-            case 0: return Sprites.getSprite("pedestrian");
-            case 1: return Sprites.getSprite("bicycle");
-            default: return Sprites.getSprite("car");
+            case 0:
+                return Sprites.getSprite("pedestrian");
+            case 1:
+                return Sprites.getSprite("bicycle");
+            default:
+                return Sprites.getSprite("car");
         }
     }
 

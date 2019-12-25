@@ -8,7 +8,6 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
@@ -21,7 +20,7 @@ public class ShowSpoiler extends AbstractShowAction {
     private Menu contextMenu;
 
     private ShowSpoiler() {
-        super("spoiler", MenuID.AID_SHOW_SPOILER);
+        super("spoiler");
         // contextMenu = createContextMenu();
         SpoilerExistsIcon = Sprites.getSprite(IconName.imagesIcon.name());
         NoSpoilerIcon = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));

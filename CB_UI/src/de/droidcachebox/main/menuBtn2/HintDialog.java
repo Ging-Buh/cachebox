@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.utils.UnitFormatter;
@@ -31,7 +30,7 @@ public class HintDialog extends AbstractAction {
     private static HintDialog that;
 
     private HintDialog() {
-        super("hint", MenuID.AID_SHOW_HINT);
+        super("hint");
     }
 
     public static HintDialog getInstance() {

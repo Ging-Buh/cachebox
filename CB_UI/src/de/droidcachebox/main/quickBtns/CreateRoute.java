@@ -4,13 +4,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.main.menuBtn3.ShowMap;
 
-import static de.droidcachebox.gdx.main.MenuID.AID_CreateRoute;
-
 public class CreateRoute extends AbstractAction {
     private static CreateRoute createRoute;
 
     private CreateRoute() {
-        super("generateRoute", AID_CreateRoute);
+        super("generateRoute");
     }
 
     public static CreateRoute getInstance() {

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.settings.SettingsActivity;
 
@@ -14,7 +13,7 @@ public class Settings extends AbstractAction {
     boolean lastNightValue;
 
     private Settings() {
-        super("settings", MenuID.AID_SHOW_SETTINGS);
+        super("settings");
     }
 
     public static Settings getInstance() {

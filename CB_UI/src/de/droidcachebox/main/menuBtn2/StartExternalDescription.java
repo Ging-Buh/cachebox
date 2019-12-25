@@ -24,7 +24,6 @@ import de.droidcachebox.database.Database;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.utils.log.Log;
 
@@ -46,7 +45,7 @@ public class StartExternalDescription extends AbstractAction {
     private final LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
 
     private StartExternalDescription() {
-        super("descExt", MenuID.AID_SHOW_DescExt);
+        super("descExt");
     }
 
     public static StartExternalDescription getInstance() {

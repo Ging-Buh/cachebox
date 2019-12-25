@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.NotesView;
 import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
@@ -14,7 +13,7 @@ public class ShowNotes extends AbstractShowAction {
     private static ShowNotes that;
 
     private ShowNotes() {
-        super("Notes", MenuID.AID_SHOW_NOTES);
+        super("Notes");
     }
 
     public static ShowNotes getInstance() {

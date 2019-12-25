@@ -5,7 +5,6 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.TrackableListView;
 import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
@@ -14,7 +13,7 @@ public class ShowTrackableList extends AbstractShowAction {
     private static ShowTrackableList that;
 
     private ShowTrackableList() {
-        super("TBList", MenuID.AID_SHOW_TRACKABLELIST);
+        super("TBList");
     }
 
     public static ShowTrackableList getInstance() {

@@ -16,7 +16,6 @@
 
 package de.droidcachebox.gdx.controls;
 
-import de.droidcachebox.KeyboardFocusChangedEvent;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.FilterProperties;
@@ -28,13 +27,9 @@ import de.droidcachebox.translation.Translation;
 /**
  * @author Longri
  */
-public class TextFilterView extends CB_View_Base implements KeyboardFocusChangedEvent {
+public class TextFilterView extends CB_View_Base implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static FilterProperties tmpFilterProps;
 
-    /**
-     * Clear button, for clearing text input
-     */
-    private CB_Button mBtnClear, getSql;
     /**
      * Option Title, der drei Optionen Title/GC-Code/Owner
      */
@@ -73,7 +68,7 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
         mTglBtnOwner = new MultiToggleButton("mTglBtnOwner");
         mEingabe = new EditTextField(this, "mEingabe");
         mEingabe.setText("");
-        mBtnClear = new CB_Button("clear");
+        CB_Button mBtnClear = new CB_Button("clear");
         mBtnClear.setText(Translation.get("clear"));
         mBtnClear.setClickHandler((view, x, y, pointer, button) -> {
             mEingabe.setText("");
@@ -112,7 +107,7 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
         switchFilterMode(0);
 
         addNext(new CB_Label("select * from Caches as c "));
-        getSql = new CB_Button(Translation.get("getSql"));
+        CB_Button getSql = new CB_Button(Translation.get("getSql"));
         getSql.setClickHandler((view, x, y, pointer, button) -> {
             String sqlString = tmpFilterProps.getSqlWhere("").trim();
             if (tmpFilterProps.isUserDefinedSQL() || sqlString.length() == 0)

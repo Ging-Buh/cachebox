@@ -8,8 +8,8 @@ public class PlatformAction extends AbstractAction {
     private ViewID viewID;
     private Sprite sprite;
 
-    public PlatformAction(String Name, int ID, ViewID viewID, Sprite icon) {
-        super(Name, ID);
+    public PlatformAction(String Name, ViewID viewID, Sprite icon) {
+        super(Name);
         this.viewID = viewID;
         this.sprite = icon;
     }

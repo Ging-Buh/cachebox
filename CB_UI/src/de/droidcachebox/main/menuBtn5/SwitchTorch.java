@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 
 public class SwitchTorch extends AbstractAction {
@@ -27,7 +26,7 @@ public class SwitchTorch extends AbstractAction {
     private static SwitchTorch that;
 
     private SwitchTorch() {
-        super("torch", MenuID.AID_TORCH);
+        super("torch");
     }
 
     public static SwitchTorch getInstance() {

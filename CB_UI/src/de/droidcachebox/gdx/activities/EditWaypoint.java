@@ -3,7 +3,6 @@ package de.droidcachebox.gdx.activities;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.KeyboardFocusChangedEvent;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.database.GeoCacheType;
@@ -24,7 +23,7 @@ import de.droidcachebox.translation.Translation;
 
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
-public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEvent {
+public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
 
     private float virtualHeight = 0;
     private boolean showWaypointListAfterFinish;

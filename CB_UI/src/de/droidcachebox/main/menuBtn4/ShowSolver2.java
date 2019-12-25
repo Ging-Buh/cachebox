@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.SolverView2;
 import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
@@ -14,7 +13,7 @@ public class ShowSolver2 extends AbstractShowAction {
     private static ShowSolver2 that;
 
     private ShowSolver2() {
-        super("Solver v2", MenuID.AID_SHOW_SOLVER2);
+        super("Solver v2");
     }
 
     public static ShowSolver2 getInstance() {

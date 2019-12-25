@@ -28,7 +28,6 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate.Type;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
@@ -50,7 +49,7 @@ public class ShowTrackList extends AbstractShowAction {
     private Color TrackColor;
 
     private ShowTrackList() {
-        super("Tracks", MenuID.AID_SHOW_TRACKLIST);
+        super("Tracks");
     }
 
     public static ShowTrackList getInstance() {

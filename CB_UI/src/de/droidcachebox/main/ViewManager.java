@@ -32,7 +32,10 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
-import de.droidcachebox.gdx.main.*;
+import de.droidcachebox.gdx.main.CB_ButtonBar;
+import de.droidcachebox.gdx.main.CB_TabView;
+import de.droidcachebox.gdx.main.GestureButton;
+import de.droidcachebox.gdx.main.MainViewBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -257,7 +260,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn1.addAction(ShowCacheList.getInstance(), true, GestureDirection.Up);
         mainBtn1.addAction(ParkingDialog.getInstance(), false, GestureDirection.Down);
         mainBtn1.addAction(ShowTrackableList.getInstance(), false, GestureDirection.Right);
-        actionShare = new PlatformAction("Share", MenuID.AID_Share, ViewConst.Share, Sprites.getSprite(IconName.share.name()));
+        actionShare = new PlatformAction("Share", ViewConst.Share, Sprites.getSprite(IconName.share.name()));
         mainBtn1.addAction(actionShare, false, GestureDirection.Left);
 
         mainBtn2.addAction(ShowDescription.getInstance(), true, GestureDirection.Up);
@@ -273,7 +276,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         mainBtn3.addAction(ShowMap.getInstance(), true, GestureDirection.Up);
         mainBtn3.addAction(ShowCompass.getInstance(), false, GestureDirection.Right);
-        PlatformAction actionNavigateTo = new PlatformAction("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
+        PlatformAction actionNavigateTo = new PlatformAction("NavigateTo", ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
         mainBtn3.addAction(actionNavigateTo, false, GestureDirection.Down);
         mainBtn3.addAction(ShowTrackList.getInstance(), false, GestureDirection.Left);
         mainBtn3.addAction(MapDownload.getInstance(), false);
@@ -281,11 +284,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn4.addAction(ShowDrafts.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         mainBtn4.addAction(ShowSolver1.getInstance(), false, GestureDirection.Left);
         mainBtn4.addAction(ShowSolver2.getInstance(), false, GestureDirection.Right);
-        actionTakePicture = new PlatformAction("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
+        actionTakePicture = new PlatformAction("TakePhoto", ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
         mainBtn4.addAction(actionTakePicture, false, GestureDirection.Down);
-        actionRecordVideo = new PlatformAction("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
+        actionRecordVideo = new PlatformAction("RecVideo", ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
         mainBtn4.addAction(actionRecordVideo, false);
-        actionRecordVoice = new PlatformAction("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
+        actionRecordVoice = new PlatformAction("VoiceRec", ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
         mainBtn4.addAction(actionRecordVoice, false);
         mainBtn4.addAction(ParkingDialog.getInstance(), false);
 

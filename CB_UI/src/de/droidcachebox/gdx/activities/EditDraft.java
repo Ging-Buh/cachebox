@@ -43,7 +43,7 @@ import java.util.*;
 
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 
-public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent {
+public class EditDraft extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private FilterSetListViewItem GcVote;
     private CB_Label title;
     private Draft altfieldNote;

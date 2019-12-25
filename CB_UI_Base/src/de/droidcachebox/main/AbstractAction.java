@@ -20,18 +20,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public abstract class AbstractAction {
 
     protected String titleTranlationId;
-    protected int id;
     protected String titleExtension;
 
-    public AbstractAction(String titleTranlationId, int id) {
+    public AbstractAction(String titleTranlationId) {
         this.titleTranlationId = titleTranlationId;
-        this.id = id;
         titleExtension = "";
     }
 
-    public AbstractAction(String titleTranlationId, String titleExtension, int id) {
+    public AbstractAction(String titleTranlationId, String titleExtension) {
         this.titleTranlationId = titleTranlationId;
-        this.id = id;
         this.titleExtension = titleExtension;
     }
 
@@ -45,10 +42,6 @@ public abstract class AbstractAction {
 
     public String getTitleExtension() {
         return titleExtension;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public boolean getEnabled() {

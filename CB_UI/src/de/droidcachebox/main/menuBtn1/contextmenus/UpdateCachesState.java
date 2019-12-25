@@ -16,7 +16,6 @@ import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ProgresssChangedEventList;
@@ -181,7 +180,7 @@ public class UpdateCachesState extends AbstractAction {
     };
 
     UpdateCachesState() {
-        super("chkState", MenuID.AID_CHK_STATE);
+        super("chkState");
     }
 
     @Override

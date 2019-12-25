@@ -20,7 +20,6 @@ import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.File;
@@ -46,7 +45,7 @@ public class ShowImportMenu extends AbstractShowAction {
     private boolean cancel = false;
 
     private ShowImportMenu() {
-        super("ImportMenu", MenuID.AID_SHOW_IMPORT_MENU);
+        super("ImportMenu");
     }
 
     public static ShowImportMenu getInstance() {

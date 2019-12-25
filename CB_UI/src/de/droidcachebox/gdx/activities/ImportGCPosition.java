@@ -17,7 +17,10 @@ package de.droidcachebox.gdx.activities;
 
 import android.text.InputType;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import de.droidcachebox.*;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.KeyboardFocusChangedEventList;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreSettingsForward;
@@ -42,7 +45,7 @@ import java.util.Date;
 import static de.droidcachebox.core.GroundspeakAPI.*;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
-public class ImportGCPosition extends ActivityBase implements KeyboardFocusChangedEvent {
+public class ImportGCPosition extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static final String log = "ImportGCPosition";
     private CB_Button btnOK, btnCancel, btnPlus, btnMinus;
     private CB_Label lblHeader, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
@@ -72,6 +75,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private EditTextField edtCategory;
     private SimpleDateFormat simpleDateFormat;
     private SearchCoordinates searchCoordinates;
+
     public ImportGCPosition() {
         super(activityRec(), "searchOverPosActivity");
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");

@@ -3,7 +3,6 @@ package de.droidcachebox.main.menuBtn1;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 
 public class ParkingDialog extends AbstractAction {
@@ -11,7 +10,7 @@ public class ParkingDialog extends AbstractAction {
     private static ParkingDialog that;
 
     private ParkingDialog() {
-        super("MyParking", MenuID.AID_SHOW_PARKING_DIALOG);
+        super("MyParking");
     }
 
     public static ParkingDialog getInstance() {

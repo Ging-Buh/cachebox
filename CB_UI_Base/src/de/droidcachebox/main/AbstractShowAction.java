@@ -5,12 +5,12 @@ import de.droidcachebox.gdx.main.Menu;
 
 public abstract class AbstractShowAction extends AbstractAction {
 
-    public AbstractShowAction(String translationId, int id) {
-        super(translationId, id);
+    public AbstractShowAction(String translationId) {
+        super(translationId);
     }
 
-    public AbstractShowAction(String translationId, String translationExtension, int id) {
-        super(translationId, translationExtension, id);
+    public AbstractShowAction(String translationId, String translationExtension) {
+        super(translationId, translationExtension);
     }
 
     /**

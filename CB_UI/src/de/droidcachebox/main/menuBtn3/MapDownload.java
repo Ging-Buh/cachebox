@@ -7,13 +7,11 @@ import de.droidcachebox.gdx.activities.FZKDownload;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.main.AbstractAction;
 
-import static de.droidcachebox.gdx.main.MenuID.AID_MAP_DOWNOAD;
-
 public class MapDownload extends AbstractAction {
     private static MapDownload that;
 
     private MapDownload() {
-        super("MapDownload", AID_MAP_DOWNOAD);
+        super("MapDownload");
     }
 
     public static MapDownload getInstance() {

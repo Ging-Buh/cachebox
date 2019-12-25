@@ -6,7 +6,6 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.utils.http.Webb;
 
@@ -17,7 +16,7 @@ public class ContactOwner extends AbstractAction {
     private static ContactOwner that;
 
     private ContactOwner() {
-        super("contactOwner", MenuID.AID_ContactOwner);
+        super("contactOwner");
     }
 
     public static ContactOwner getInstance() {

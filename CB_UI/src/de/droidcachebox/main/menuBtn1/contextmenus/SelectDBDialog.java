@@ -31,7 +31,6 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.SelectDB;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.main.ViewManager;
@@ -43,7 +42,7 @@ public class SelectDBDialog extends AbstractAction {
     private WaitDialog wd;
 
     private SelectDBDialog() {
-        super("manageDB", MenuID.AID_SHOW_SELECT_DB_DIALOG);
+        super("manageDB");
     }
 
     public static SelectDBDialog getInstance() {

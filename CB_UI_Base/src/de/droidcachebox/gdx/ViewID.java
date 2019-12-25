@@ -16,8 +16,6 @@
 
 package de.droidcachebox.gdx;
 
-import static de.droidcachebox.gdx.main.MenuID.*;
-
 /**
  * Stellt die Identifizierung einer View dar.
  *
@@ -27,11 +25,11 @@ public class ViewID {
 
     public final static int DESCRIPTION_VIEW = 4;
 
-    public final static int NAVIGATE_TO = AID_NAVIGATE_TO;
-    public final static int VOICE_REC = AID_VOICE_REC;
-    public final static int TAKE_PHOTO = AID_TAKE_PHOTO;
-    public final static int VIDEO_REC = AID_VIDEO_REC;
-    public final static int WhatsApp = AID_Share;
+    public final static int NAVIGATE_TO = 10;
+    public final static int VOICE_REC = 11;
+    public final static int TAKE_PHOTO = 12;
+    public final static int VIDEO_REC = 13;
+    public final static int WhatsApp = 14;
 
     private final int Id;
     private final UI_Pos pos;

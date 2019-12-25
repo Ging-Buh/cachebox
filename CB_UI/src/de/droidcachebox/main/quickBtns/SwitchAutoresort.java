@@ -6,7 +6,6 @@ import de.droidcachebox.database.CacheWithWP;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 
 public class SwitchAutoresort extends AbstractAction {
@@ -14,7 +13,7 @@ public class SwitchAutoresort extends AbstractAction {
     private static SwitchAutoresort that;
 
     private SwitchAutoresort() {
-        super("AutoResort", MenuID.AID_AUTO_RESORT);
+        super("AutoResort");
     }
 
     public static SwitchAutoresort getInstance() {

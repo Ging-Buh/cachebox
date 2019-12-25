@@ -32,9 +32,8 @@ import de.droidcachebox.utils.log.Log;
 /**
  * @author Longri
  */
-public class NotesView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEvent {
+public class NotesView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static NotesView that;
-    private final String sKlasse = "NotesView";
     private boolean mustLoadNotes;
     private EditTextField notes;
     private float notesDefaultYPos;
@@ -154,6 +153,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
             try {
                 Database.setNote(aktCache, text);
             } catch (Exception e) {
+                String sKlasse = "NotesView";
                 Log.err(sKlasse, "Write note to database", e);
             }
         }

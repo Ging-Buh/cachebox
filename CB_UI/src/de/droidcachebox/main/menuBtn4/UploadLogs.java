@@ -4,14 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.activities.UploadDraftsOrLogs;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 
 public class UploadLogs extends AbstractAction {
     private static UploadLogs that;
 
     private UploadLogs() {
-        super("directLog", MenuID.AID_UPLOAD_LOGS);
+        super("directLog");
     }
 
     public static UploadLogs getInstance() {

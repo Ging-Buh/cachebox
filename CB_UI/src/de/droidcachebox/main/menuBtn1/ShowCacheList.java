@@ -18,7 +18,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.main.AbstractShowAction;
@@ -35,7 +34,7 @@ public class ShowCacheList extends AbstractShowAction {
     private MessageBox gL_MsgBox;
 
     private ShowCacheList() {
-        super("cacheList", "  (" + Database.Data.cacheList.size() + ")", MenuID.AID_SHOW_CACHELIST);
+        super("cacheList", "  (" + Database.Data.cacheList.size() + ")");
         editCache = null;
     }
 

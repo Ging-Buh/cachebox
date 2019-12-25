@@ -20,7 +20,7 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
 public class KeyboardFocusChangedEventList {
-    public static CB_List<KeyboardFocusChangedEvent> list = new CB_List<KeyboardFocusChangedEvent>();
+    public final static CB_List<KeyboardFocusChangedEvent> list = new CB_List<>();
 
     // normally is only one item in this list: the active view or activity
     public static void Add(KeyboardFocusChangedEvent event) {
@@ -37,7 +37,7 @@ public class KeyboardFocusChangedEventList {
     }
 
     public static void Call(final EditTextField editTextField) {
-        if (editTextField == null || (editTextField != null && !editTextField.isKeyboardPopupDisabled())) {
+        if (editTextField == null || !editTextField.isKeyboardPopupDisabled()) {
             synchronized (list) {
                 for (int i = 0, n = list.size(); i < n; i++) {
                     KeyboardFocusChangedEvent event = list.get(i);
@@ -46,6 +46,10 @@ public class KeyboardFocusChangedEventList {
                 }
             }
         }
+    }
+
+    public interface KeyboardFocusChangedEvent {
+        void keyboardFocusChanged(EditTextField focus);
     }
 
 }

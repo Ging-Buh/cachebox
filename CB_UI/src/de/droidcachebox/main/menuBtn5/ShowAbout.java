@@ -5,7 +5,6 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.main.ViewManager;
 
@@ -14,7 +13,7 @@ public class ShowAbout extends AbstractShowAction {
     private static ShowAbout that;
 
     private ShowAbout() {
-        super("about", MenuID.AID_SHOW_ABOUT);
+        super("about");
     }
 
     public static ShowAbout getInstance() {

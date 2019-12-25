@@ -19,7 +19,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.LogListView;
 import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.main.AbstractShowAction;
@@ -43,7 +42,7 @@ public class ShowLogs extends AbstractShowAction {
     private boolean doCancelThread = false;
 
     private ShowLogs() {
-        super("ShowLogs", MenuID.AID_SHOW_LOGS);
+        super("ShowLogs");
         // createContextMenu();  see getContextMenu
     }
 

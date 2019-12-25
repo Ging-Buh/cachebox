@@ -27,7 +27,6 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.popups.PopUp_Base;
 import de.droidcachebox.gdx.controls.popups.QuickDraftFeedbackPopUp;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.DraftsView;
 import de.droidcachebox.main.AbstractAction;
 
@@ -36,7 +35,7 @@ public class QuickDraft extends AbstractAction {
     private static QuickDraft that;
 
     private QuickDraft() {
-        super("QuickDraft", MenuID.AID_QUICK_DRAFT);
+        super("QuickDraft");
     }
 
     public static QuickDraft getInstance() {

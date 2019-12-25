@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.Quit;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.main.menuBtn3.ShowMap;
 
@@ -27,7 +26,7 @@ public class ShowQuit extends AbstractAction {
     private static ShowQuit that;
 
     private ShowQuit() {
-        super("quit", MenuID.AID_SHOW_QUIT);
+        super("quit");
     }
 
     public static ShowQuit getInstance() {

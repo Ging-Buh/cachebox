@@ -39,7 +39,7 @@ import de.droidcachebox.utils.Plattform;
 /**
  * @author Longri
  */
-public class SolverView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEvent {
+public class SolverView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
 
     private static SolverView that;
     private WindowState windowState = WindowState.Both;

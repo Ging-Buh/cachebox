@@ -2,7 +2,6 @@ package de.droidcachebox.main.quickBtns;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.gdx.views.WaypointView;
 import de.droidcachebox.main.AbstractAction;
 import de.droidcachebox.main.menuBtn3.ShowMap;
@@ -12,7 +11,7 @@ public class AddWayPoint extends AbstractAction {
     private static AddWayPoint addWayPoint;
 
     private AddWayPoint() {
-        super("addWP", MenuID.AID_ADD_WP);
+        super("addWP");
     }
 
     public static AddWayPoint getInstance() {

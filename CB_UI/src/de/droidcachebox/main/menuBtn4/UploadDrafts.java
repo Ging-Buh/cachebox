@@ -4,14 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.activities.UploadDraftsOrLogs;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.main.MenuID;
 import de.droidcachebox.main.AbstractAction;
 
 public class UploadDrafts extends AbstractAction {
     private static UploadDrafts that;
 
     private UploadDrafts() {
-        super("uploadDrafts", MenuID.AID_UPLOAD_DRAFT);
+        super("uploadDrafts");
     }
 
     public static UploadDrafts getInstance() {

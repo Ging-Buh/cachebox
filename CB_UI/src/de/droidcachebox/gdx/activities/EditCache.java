@@ -3,7 +3,6 @@ package de.droidcachebox.gdx.activities;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.KeyboardFocusChangedEvent;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -22,7 +21,7 @@ import de.droidcachebox.translation.Translation;
 import java.util.Date;
 import java.util.Locale;
 
-public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent {
+public class EditCache extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     // Allgemein
     private final GeoCacheType[] CacheTypNumbers = GeoCacheType.caches();
     private final GeoCacheSize[] CacheSizeNumbers = new GeoCacheSize[]{GeoCacheSize.other, // 0

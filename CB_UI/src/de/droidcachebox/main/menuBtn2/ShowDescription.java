@@ -27,11 +27,10 @@ import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
 
 public class ShowDescription extends AbstractShowAction {
 
-    private static final int AID_SHOW_DESCRIPTION = 105;
     private static ShowDescription that;
 
     private ShowDescription() {
-        super("Description", AID_SHOW_DESCRIPTION);
+        super("Description");
     }
 
     public static ShowDescription getInstance() {
