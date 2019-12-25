@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2012 team-cachebox.de
+ * Copyright (C) 2011-2020 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -31,26 +31,23 @@ public class ViewID {
     public final static int VIDEO_REC = 13;
     public final static int WhatsApp = 14;
 
-    private final int Id;
+    private final int id;
     private final UI_Pos pos;
-    private final UI_Pos posTab;
     private final UI_Type type;
 
     /**
-     * @param ID     = Int
-     * @param Type   = Android or OpenGL
-     * @param Pos    = Left or Right for Phone layout
-     * @param PosTab = Left or Right for Tab layout
+     * @param id     = Int
+     * @param type   = Android or OpenGL
+     * @param pos    = Left or Right for Phone layout
      */
-    public ViewID(int ID, UI_Type Type, UI_Pos Pos, UI_Pos PosTab) {
-        Id = ID;
-        type = Type;
-        pos = Pos;
-        posTab = PosTab;
+    public ViewID(int id, UI_Type type, UI_Pos pos) {
+        this.id = id;
+        this.type = type;
+        this.pos = pos;
     }
 
     public int getID() {
-        return Id;
+        return id;
     }
 
     public UI_Type getType() {

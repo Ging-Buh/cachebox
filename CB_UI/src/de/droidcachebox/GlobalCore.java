@@ -59,7 +59,7 @@ import static de.droidcachebox.core.GroundspeakAPI.*;
  * @author longri
  */
 public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
-    private static final String aboutMsg1 = "Team Cachebox (2011-2019)" + br;
+    private static final String aboutMsg1 = "Team Cachebox (2011-2020)" + br;
     private static final String teamLink = "www.team-cachebox.de";
     private static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
