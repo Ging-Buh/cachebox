@@ -315,7 +315,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         }
 
-        setVolumeState(Config.GlobalVolume.getValue().Mute);
+        setVolumeState(Config.globalVolume.getValue().Mute);
         apiBtn.setImage();
 
     }
@@ -1002,7 +1002,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private CB_View_Base getLangSpinnerView() {
-        Sprachen = Translation.that.getLangs(Config.LanguagePath.getValue());
+        Sprachen = Translation.that.getLangs(Config.languagePath.getValue());
 
         if (Sprachen == null || Sprachen.size() == 0)
             return null;

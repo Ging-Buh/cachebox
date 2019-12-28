@@ -36,7 +36,7 @@ public class SoundCache {
     }
 
     public static void play(Sounds sound, boolean ignoreMute) {
-        if (Config.GlobalVolume.getValue().Mute && !ignoreMute)
+        if (Config.globalVolume.getValue().Mute && !ignoreMute)
             return;
 
         switch (sound) {
@@ -57,7 +57,7 @@ public class SoundCache {
                     AutoResort.play();
                 break;
             case Global:
-                if ((ignoreMute || !Config.GlobalVolume.getValue().Mute) && GlobalVolumeSound != null)
+                if ((ignoreMute || !Config.globalVolume.getValue().Mute) && GlobalVolumeSound != null)
                     GlobalVolumeSound.play();
                 break;
         }
@@ -65,13 +65,13 @@ public class SoundCache {
 
     public static void loadSounds() {
 
-        GlobalVolumeSound = getMusikFromSetting(Config.GlobalVolume);
+        GlobalVolumeSound = getMusikFromSetting(Config.globalVolume);
         Approach = getMusikFromSetting(Config.Approach);
         GPS_fix = getMusikFromSetting(Config.GPS_fix);
         GPS_lose = getMusikFromSetting(Config.GPS_lose);
         AutoResort = getMusikFromSetting(Config.AutoResortSound);
 
-        Config.GlobalVolume.addSettingChangedListener(changedListener);
+        Config.globalVolume.addSettingChangedListener(changedListener);
         Config.Approach.addSettingChangedListener(changedListener);
         Config.GPS_fix.addSettingChangedListener(changedListener);
         Config.GPS_lose.addSettingChangedListener(changedListener);
@@ -83,7 +83,7 @@ public class SoundCache {
     private static void setVolumes() {
 
         // calc volume Global and own
-        float GlobalVolume = Config.GlobalVolume.getValue().Volume;
+        float GlobalVolume = Config.globalVolume.getValue().Volume;
 
         if (GlobalVolumeSound != null)
             GlobalVolumeSound.setVolume(GlobalVolume);

@@ -236,8 +236,10 @@ public class GroundspeakAPI {
             // report
         } finally {
             try {
-                writer.close();
-            } catch (Exception ex) {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (Exception ignored) {
             }
         }
     }

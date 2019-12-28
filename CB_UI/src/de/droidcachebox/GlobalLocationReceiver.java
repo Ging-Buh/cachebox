@@ -75,7 +75,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
     @Override
     public void positionChanged() {
 
-        PlaySounds = !CB_UI_Base_Settings.GlobalVolume.getValue().Mute;
+        PlaySounds = !CB_UI_Base_Settings.globalVolume.getValue().Mute;
 
         if (newLocationThread != null) {
             if (newLocationThread.getState() != Thread.State.TERMINATED)
@@ -222,7 +222,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
     @Override
     public void Fix() {
-        PlaySounds = !CB_UI_Base_Settings.GlobalVolume.getValue().Mute;
+        PlaySounds = !CB_UI_Base_Settings.globalVolume.getValue().Mute;
 
         try {
 
@@ -244,7 +244,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
     @Override
     public void FallBackToNetworkProvider() {
-        PlaySounds = !CB_UI_Base_Settings.GlobalVolume.getValue().Mute;
+        PlaySounds = !CB_UI_Base_Settings.globalVolume.getValue().Mute;
 
         if (initialFixSoundCompleted && !loseSoundCompleated) {
 

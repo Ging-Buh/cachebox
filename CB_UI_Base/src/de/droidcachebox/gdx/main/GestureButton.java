@@ -253,7 +253,7 @@ public class GestureButton extends CB_Button {
         cb_actionButtons.add(Action);
 
         // disable Gesture ?
-        if (!CB_UI_Base_Settings.GestureOn.getValue())
+        if (!CB_UI_Base_Settings.gestureOn.getValue())
             Action.setGestureDirection(GestureDirection.None);
 
         GestureDirection gestureDirection = Action.getGestureDirection();

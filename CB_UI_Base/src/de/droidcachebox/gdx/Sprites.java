@@ -120,11 +120,11 @@ public class Sprites {
                 return getSprite("shaddowrect-selected");
             case live:
                 Sprite live = getSprite(IconName.shaddowrect);
-                live.setColor(CB_UI_Base_Settings.LiveMapBackgroundColor.getValue());
+                live.setColor(CB_UI_Base_Settings.liveMapBackgroundColor.getValue());
                 return live;
             case liveSelected:
                 Sprite liveSelected = getSprite("shaddowrect-selected");
-                liveSelected.setColor(CB_UI_Base_Settings.LiveMapBackgroundColor.getValue());
+                liveSelected.setColor(CB_UI_Base_Settings.liveMapBackgroundColor.getValue());
                 return liveSelected;
             default:
                 return getSprite(i);
@@ -239,7 +239,7 @@ public class Sprites {
             tmp = createSprite(atlasDefault, "bigUndefined"); // damit kein null Sprite zurückgegeben wird falls ich was übersehen habe
         } else {
             if (name.endsWith("Solved")) {
-                tmp.setColor(CB_UI_Base_Settings.SolvedMysteryColor.getValue());
+                tmp.setColor(CB_UI_Base_Settings.solvedMysteryColor.getValue());
             }
         }
 

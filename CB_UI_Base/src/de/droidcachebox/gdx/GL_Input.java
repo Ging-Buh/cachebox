@@ -36,7 +36,7 @@ public class GL_Input implements InputProcessor {
     public GL_Input() {
         isTouchDown = false;
         touchDraggedActive = false;
-        mLongClickTime = CB_UI_Base_Settings.LongClickTime.getValue();
+        mLongClickTime = CB_UI_Base_Settings.longClickTime.getValue();
         that = this;
     }
 

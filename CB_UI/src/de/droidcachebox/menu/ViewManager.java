@@ -388,6 +388,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         // change the icon
         boolean isFiltered = FilterInstances.isLastFilterSet();
         mainBtn1.isFiltered(isFiltered);
+        mainBtn3.isFiltered(isFiltered);
 
         if (!Config.useDescriptiveCB_Buttons.getValue()) {
             if (isFiltered) {

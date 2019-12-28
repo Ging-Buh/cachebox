@@ -37,11 +37,11 @@ public interface CB_UI_Base_Settings {
 
     SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, true, Global, ACB, true);
     SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, true, Global, ACB, true);
-    SettingBool GestureOn = new SettingBool("GestureOn", Skin, EXPERT, true, Global, ACB,true);
+    SettingBool gestureOn = new SettingBool("GestureOn", Skin, EXPERT, true, Global, ACB,true);
     SettingBool useMipMap = new SettingBool("useMipMap", Skin, DEVELOPER, false, Global, ACB);
     SettingBool useGrayFader = new SettingBool("useGrayFader", Skin, EXPERT, false, Global, ACB, false);
     SettingInt fadeToGrayAfterXSeconds = new SettingInt("fadeToGrayAfterXSeconds", Skin, EXPERT, 10, Global, ACB);
-    SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", Skin, DEVELOPER, new HSV_Color(0.2f, 1f, 0.2f, 1f), Global, ACB);
+    SettingColor solvedMysteryColor = new SettingColor("SolvedMysteryColor", Skin, DEVELOPER, new HSV_Color(0.2f, 1f, 0.2f, 1f), Global, ACB);
 
     SettingInt FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", Skin, EXPERT, 25, Global, ACB);
     SettingInt FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", Skin, EXPERT, 16, Global, ACB);
@@ -50,8 +50,8 @@ public interface CB_UI_Base_Settings {
     SettingInt FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", Skin, EXPERT, 12, Global, ACB);
     SettingInt FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", Skin, EXPERT, 10, Global, ACB);
 
-    SettingInt LongClickTime = new SettingInt("LongClicktime", Misc, EXPERT, 600, Global, ACB);
-    SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), Global, ACB);
+    SettingInt longClickTime = new SettingInt("LongClicktime", Misc, EXPERT, 600, Global, ACB);
+    SettingsAudio globalVolume = new SettingsAudio("GlobalVolume", Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), Global, ACB);
 
     SettingFloat mapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, displayDensity, Global, ACB);
     SettingFloat mapViewTextFaktor = new SettingFloat("MapViewTextFaktor", Map, EXPERT, 2f, Global, ACB);
@@ -59,11 +59,11 @@ public interface CB_UI_Base_Settings {
     SettingFolder imageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
 
 
-    SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), Global, ACB);
+    SettingColor liveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), Global, ACB);
 
     SettingBool isExpert = new SettingBool("SettingsShowExpert", Internal, NEVER, false, Global, ACB);
     SettingBool isDeveloper = new SettingBool("SettingsShowAll", Internal, NEVER, false, Global, ACB);
 
-    SettingFolder LanguagePath = new SettingFolder("LanguagePath", Folder, NEVER, "data/lang", Global, ALL, true);
+    SettingFolder languagePath = new SettingFolder("LanguagePath", Folder, NEVER, "data/lang", Global, ALL, true);
 
 }
