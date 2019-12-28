@@ -239,22 +239,22 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
     @SuppressWarnings("deprecation")
     private void loadSimulateRoute(String Path) {
 
-        simulationRoute = RouteOverlay.multiLoadRoute(Path, Color.BLACK);
+        simulationRoute = RouteOverlay.getInstance().readFromGpxFile(Path, Color.BLACK);
 
         // Don't display loaded simulate route
-        RouteOverlay.remove(simulationRoute);
+        RouteOverlay.getInstance().remove(simulationRoute);
 
         // TODO set GPX File Name to lblGPX
         if (simulationRoute != null && simulationRoute.getName() != null) {
             trackPointIndex = 0;
-            int idx = simulationRoute.fileName.lastIndexOf("\\");
+            int idx = simulationRoute.getFileName().lastIndexOf("\\");
 
             String Name = "";
 
             if (idx == -1)
-                Name = simulationRoute.fileName;
+                Name = simulationRoute.getFileName();
             else
-                Name = simulationRoute.fileName.substring(idx + 1);
+                Name = simulationRoute.getFileName().substring(idx + 1);
 
             lblGPX.setText(Name);
         } else {

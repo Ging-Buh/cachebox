@@ -76,7 +76,6 @@ public class V_ListView extends ListViewBase {
 
             // aufräumen
             if (clearList.size() > 0) {
-
                 synchronized (mAddedIndexList) {
                     for (int i = 0; i < clearList.size(); i++) {
                         ListViewItemBase tmp = clearList.get(i);
@@ -93,9 +92,7 @@ public class V_ListView extends ListViewBase {
                     }
                     clearList.clear();
                 }
-
             }
-
         }
 
         // setze First Index, damit nicht alle Items durchlaufen werden müssen
@@ -124,10 +121,10 @@ public class V_ListView extends ListViewBase {
      * Wenn Kinetic == True werden mehr Items geladen, damit beim schnellen Scrollen die Items schon erstellt sind, bevor sie in den
      * sichtbaren Bereich kommen.
      *
-     * @param Kinetic
+     * @param kinetic ?
      */
     @Override
-    protected void addVisibleItems(boolean Kinetic) {
+    protected void addVisibleItems(boolean kinetic) {
 
         try {
 
@@ -155,7 +152,7 @@ public class V_ListView extends ListViewBase {
                                     tmp.isSelected = true;
                                     tmp.resetIsInitialized();
                                 }
-                                this.addChild(tmp);
+                                addChild(tmp);
                             }
 
                             // Log.debug(log, "Add Item " + i);
@@ -211,7 +208,7 @@ public class V_ListView extends ListViewBase {
             if (mPosDefault != null) {
                 mPosDefault.clear();
             } else {
-                mPosDefault = new CB_List<Float>();
+                mPosDefault = new CB_List<>();
             }
 
             minimumItemSize = this.getHeight();
@@ -221,7 +218,7 @@ public class V_ListView extends ListViewBase {
             mAllSize = 0;
             if (hasInvisibleItems) {
                 for (int i = 0; i < adapter.getCount(); i++) {
-                    float itemHeight = 0;
+                    float itemHeight;
                     ListViewItemBase item = adapter.getView(i);
                     if (item != null && item.isVisible() && item.getHeight() > 0) {
                         itemHeight = adapter.getItemSize(i);

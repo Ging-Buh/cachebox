@@ -32,7 +32,7 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancel;
 import de.droidcachebox.utils.UnitFormatter;

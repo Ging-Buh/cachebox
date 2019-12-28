@@ -17,8 +17,8 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.main.menuBtn2.ShowWaypoint;
-import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn2.ShowWaypoint;
+import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;

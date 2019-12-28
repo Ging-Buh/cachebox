@@ -15,7 +15,7 @@ public class StringInputBox extends MessageBox {
         super(size, "StringInputBox");
     }
 
-    public static void Show(WrapType type, String msg, String title, String initialString, OnMsgBoxClickListener Listener) {
+    public static void show(WrapType type, String msg, String title, String initialString, OnMsgBoxClickListener Listener) {
 
         StringInputBox msgBox = new StringInputBox(calcMsgBoxSize(msg, true, true, false));
 

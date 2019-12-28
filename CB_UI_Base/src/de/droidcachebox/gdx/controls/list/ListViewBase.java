@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent {
     private static final String log = "ListViewBase";
-    private final CB_List<IListPosChanged> EventHandlerList;
+    private final CB_List<IListPosChanged> eventHandlerList;
     private Scrollbar scrollbar;
     private MoveableList<GL_View_Base> noListChilds;
     protected Boolean mBottomAnimation;
@@ -58,7 +58,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     /**
      * Enthällt die Indexes, welche schon als Child exestieren.
      */
-    protected CB_List<Integer> mAddedIndexList;
+    protected final CB_List<Integer> mAddedIndexList;
     /**
      * Aktuelle Position der Liste
      */
@@ -101,7 +101,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     ListViewBase(CB_RectF rec, String Name) {
         super(rec, Name);
         setClickable(true);
-        EventHandlerList = new CB_List<>();
+        eventHandlerList = new CB_List<>();
         noListChilds = new MoveableList<>();
         runOnGL_List = new CB_List<>();
         runOnGL_ListWaitpool = new CB_List<>();
@@ -141,7 +141,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     ListViewBase(CB_RectF rec, GL_View_Base parent, String name) {
         super(rec, parent, name);
         this.setClickable(true);
-        EventHandlerList = new CB_List<>();
+        eventHandlerList = new CB_List<>();
         noListChilds = new MoveableList<>();
         runOnGL_List = new CB_List<>();
         runOnGL_ListWaitpool = new CB_List<>();
@@ -185,8 +185,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     protected abstract float getListViewLength();
 
     public void addListPosChangedEventHandler(IListPosChanged handler) {
-        if (!EventHandlerList.contains(handler))
-            EventHandlerList.add(handler);
+        if (!eventHandlerList.contains(handler))
+            eventHandlerList.add(handler);
     }
 
     public void runIfListInitial(IRunOnGL run) {
@@ -205,8 +205,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     void callListPosChangedEvent() {
-        for (int i = 0, n = EventHandlerList.size(); i < n; i++) {
-            IListPosChanged handler = EventHandlerList.get(i);
+        for (int i = 0, n = eventHandlerList.size(); i < n; i++) {
+            IListPosChanged handler = eventHandlerList.get(i);
             if (handler != null)
                 handler.ListPosChanged();
         }
@@ -752,7 +752,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         if (mAddedIndexList != null) {
             mAddedIndexList.clear();
         }
-        mAddedIndexList = null;
         if (mPosDefault != null) {
             mPosDefault.clear();
         }

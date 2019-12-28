@@ -8,7 +8,7 @@ public class Track {
     public final ArrayList<TrackPoint> trackPoints;
     private String name;
     private Color color;
-    public String fileName;
+    private String fileName;
     public boolean isVisible = false;
     public boolean isActualTrack = false;
     public double trackLength;
@@ -18,6 +18,7 @@ public class Track {
         trackPoints = new ArrayList<>();
         this.name = name;
         this.color = color;
+        fileName = "";
         trackLength = 0;
     }
 
@@ -37,4 +38,11 @@ public class Track {
         this.color = color;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 }

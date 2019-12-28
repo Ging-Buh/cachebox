@@ -70,7 +70,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     public static String restartCache;
     public static String restartWaypoint;
     public static boolean filterLogsOfFriends = false;
-    public static Track AktuelleRoute = null;
+    public static Track aktuelleRoute = null;
     public static int aktuelleRouteCount = 0;
     public static boolean switchToCompassCompleted = false;
     public static GlobalLocationReceiver receiver;

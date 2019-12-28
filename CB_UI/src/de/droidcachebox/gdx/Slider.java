@@ -16,7 +16,7 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeChangedEvent;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.WaypointViewItem;
-import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.utils.CB_List;
 
 import java.util.ArrayList;

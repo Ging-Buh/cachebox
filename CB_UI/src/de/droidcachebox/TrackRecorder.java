@@ -64,12 +64,12 @@ public class TrackRecorder {
     public static void startRecording() {
         distanceForNextTrackpoint = Config.TrackDistance.getValue();
 
-        GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
-        GlobalCore.AktuelleRoute.isVisible = true;
-        GlobalCore.AktuelleRoute.isActualTrack = true;
+        GlobalCore.aktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
+        GlobalCore.aktuelleRoute.isVisible = true;
+        GlobalCore.aktuelleRoute.isActualTrack = true;
         GlobalCore.aktuelleRouteCount = 0;
-        GlobalCore.AktuelleRoute.trackLength = 0;
-        GlobalCore.AktuelleRoute.altitudeDifference = 0;
+        GlobalCore.aktuelleRoute.trackLength = 0;
+        GlobalCore.aktuelleRoute.altitudeDifference = 0;
 
         String directory = CB_UI_Settings.TrackFolder.getValue();
         if (!FileIO.createDirectory(directory))
@@ -250,18 +250,18 @@ public class TrackRecorder {
 
                 NewPoint = new TrackPoint(Locator.getInstance().getLongitude(GPS), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getAlt(), Locator.getInstance().getHeading(_GPS), new Date());
 
-                GlobalCore.AktuelleRoute.trackPoints.add(NewPoint);
+                GlobalCore.aktuelleRoute.trackPoints.add(NewPoint);
 
                 // notify TrackListView
                 TrackListView.getInstance().notifyActTrackChanged();
 
-                RouteOverlay.trackListChanged();
+                RouteOverlay.getInstance().trackListChanged();
                 LastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
-                GlobalCore.AktuelleRoute.trackLength += cachedDistance;
+                GlobalCore.aktuelleRoute.trackLength += cachedDistance;
 
                 AltDiff = Math.abs(SaveAltitude - Locator.getInstance().getAlt());
                 if (AltDiff >= 25) {
-                    GlobalCore.AktuelleRoute.altitudeDifference += AltDiff;
+                    GlobalCore.aktuelleRoute.altitudeDifference += AltDiff;
                     SaveAltitude = Locator.getInstance().getAlt();
                 }
                 writePos = false;
@@ -279,9 +279,9 @@ public class TrackRecorder {
     }
 
     public static void stopRecording() {
-        if (GlobalCore.AktuelleRoute != null) {
-            GlobalCore.AktuelleRoute.isActualTrack = false;
-            GlobalCore.AktuelleRoute.setName(Translation.get("recordetTrack"));
+        if (GlobalCore.aktuelleRoute != null) {
+            GlobalCore.aktuelleRoute.isActualTrack = false;
+            GlobalCore.aktuelleRoute.setName(Translation.get("recordetTrack"));
         }
         pauseRecording = false;
         recording = false;

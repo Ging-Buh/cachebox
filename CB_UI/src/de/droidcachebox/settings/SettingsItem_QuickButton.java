@@ -17,8 +17,8 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.main.QuickAction;
-import de.droidcachebox.main.QuickButtonItem;
+import de.droidcachebox.menu.QuickAction;
+import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MoveableList;
 

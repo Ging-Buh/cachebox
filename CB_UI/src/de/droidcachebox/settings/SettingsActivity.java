@@ -23,8 +23,8 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.locator.PositionChangedListeners;
-import de.droidcachebox.main.QuickButtonItem;
-import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.menu.QuickButtonItem;
+import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Lang;
 import de.droidcachebox.translation.SelectedLangChangedEvent;
 import de.droidcachebox.translation.SelectedLangChangedEventList;
@@ -445,7 +445,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
 
-            StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
+            StringInputBox.show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
                     (which, data) -> {
                         String text = StringInputBox.editText.getText();
                         if (which == MessageBox.BTN_LEFT_POSITIVE) {

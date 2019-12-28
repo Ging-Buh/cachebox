@@ -24,17 +24,25 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.MapViewBase;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
-import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
-import java.util.ArrayList;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSITIVE;
 
 public class TrackListViewItem extends ListViewItemBackground {
+    private final static String log = "TrackListViewItem";
     private static Sprite chkOff;
     private static Sprite chkOn;
-
     private static CB_RectF colorIcon;
     private static CB_RectF checkBoxIcon;
     private static CB_RectF scaledCheckBoxIcon;
@@ -44,8 +52,8 @@ public class TrackListViewItem extends ListViewItemBackground {
     private CB_Label trackLength;
     private Sprite colorReck;
 
-    public TrackListViewItem(CB_RectF rec, int Index, Track track) {
-        super(rec, Index, track.getName());
+    public TrackListViewItem(CB_RectF rec, int index, Track track) {
+        super(rec, index, track.getName());
         this.track = track;
         setClickHandler((v, x, y, pointer, button) -> {
             TrackListViewItem clickedItem = (TrackListViewItem) v;
@@ -58,54 +66,37 @@ public class TrackListViewItem extends ListViewItemBackground {
             } else {
                 Menu cm = new Menu("TrackRecordMenuTitle");
                 cm.addMenuItem("ShowOnMap", Sprites.getSprite(Sprites.IconName.targetDay.name()), this::positionLatLon);
-                // rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
-                TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
-                if (selectedTrackItem != null && !selectedTrackItem.getTrack().isActualTrack) {
-                    cm.addMenuItem("rename", null, () -> {
-                        StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getTrack().getName(), Translation.get("RenameTrack"), selectedTrackItem.getTrack().getName(), (which, data) -> {
-                            String text = StringInputBox.editText.getText();
-                            switch (which) {
-                                case 1: // ok Clicket
-                                    selectedTrackItem.getTrack().setName(text);
-                                    TrackListView.getInstance().notifyDataSetChanged();
-                                    break;
-                                case 2: // cancel clicket
-                                    break;
-                                case 3:
-                                    break;
-                            }
-                            return true;
-                        });
-                        TrackListView.getInstance().notifyDataSetChanged();
-                    });
-                    cm.addMenuItem("save", null, () -> PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(),
-                            "*.gpx",
-                            Translation.get("SaveTrack"),
-                            Translation.get("save"),
-                            new PlatformUIBase.IgetFileReturnListener() {
-                                TrackListViewItem selectedTrackItem = TrackListView.getInstance().getSelectedItem();
+                cm.addMenuItem("rename", null, this::setTrackName);
+                cm.addMenuItem("save", null, this::saveAsFile);
+                cm.addMenuItem("unload", null, this::hideTrack);
 
-                                @Override
-                                public void returnFile(String path) {
-                                    if (path != null) {
-                                        RouteOverlay.saveRoute(path, selectedTrackItem.getTrack());
-                                        Log.debug("TrackListViewItem", "Load Track :" + path);
-                                        TrackListView.getInstance().notifyDataSetChanged();
-                                    }
-                                }
-                            }));
-                    cm.addMenuItem("unload", null, () -> {
-                        TrackListViewItem trackListViewItem = TrackListView.getInstance().getSelectedItem();
-                        if (trackListViewItem == null) {
-                            MessageBox.show(Translation.get("NoTrackSelected"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
-                        } else if (trackListViewItem.getTrack().isActualTrack) {
-                            MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
-                        } else {
-                            RouteOverlay.remove(trackListViewItem.getTrack());
-                            TrackListView.getInstance().notifyDataSetChanged();
+                // (rename, save,) delete darf nicht mit dem aktuellen Track gemacht werden....
+                if (!this.track.isActualTrack) {
+                    if (this.track.getFileName().length() > 0) {
+                        if (!this.track.isActualTrack) {
+                            File trackFile = FileFactory.createFile(this.track.getFileName());
+                            if (trackFile.exists()) {
+                                cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> MessageBox.show(Translation.get("DeleteTrack"),
+                                        Translation.get("DeleteTrack"),
+                                        MessageBoxButton.YesNo,
+                                        MessageBoxIcon.Question,
+                                        (which, data) -> {
+                                            if (which == BTN_LEFT_POSITIVE) {
+                                                try {
+                                                    trackFile.delete();
+                                                    RouteOverlay.getInstance().remove(this.track);
+                                                    TrackListView.getInstance().notifyDataSetChanged();
+                                                } catch (Exception ex) {
+                                                    MessageBox.show(ex.toString(), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                                                }
+                                            }
+                                            return true;
+                                        }));
+                            }
                         }
-                    });
+                    }
                 }
+
                 cm.show();
             }
             return true;
@@ -113,10 +104,8 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void positionLatLon() {
-        TrackListViewItem trackListViewItem = TrackListView.getInstance().getSelectedItem();
-        ArrayList<TrackPoint> tracklist = trackListViewItem.getTrack().trackPoints;
-        if (tracklist.size() > 0) {
-            TrackPoint trackpoint = tracklist.get(0);
+        if (track.trackPoints.size() > 0) {
+            TrackPoint trackpoint = track.trackPoints.get(0);
             double latitude = trackpoint.y;
             double longitude = trackpoint.x;
             ShowMap.getInstance().execute();
@@ -203,7 +192,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     private void checkBoxIconClicked() {
         GL.that.RunOnGL(() -> {
             track.isVisible = !track.isVisible;
-            RouteOverlay.trackListChanged();
+            RouteOverlay.getInstance().trackListChanged();
         });
         GL.that.renderOnce();
     }
@@ -230,4 +219,95 @@ public class TrackListViewItem extends ListViewItemBackground {
         return track;
     }
 
+    private void setTrackName() {
+        StringInputBox.show(WrapType.SINGLELINE, this.track.getName(), Translation.get("RenameTrack"), this.track.getName(), (which, data) -> {
+            String text = StringInputBox.editText.getText();
+            if (which == BTN_LEFT_POSITIVE) {
+                this.track.setName(text);
+                TrackListView.getInstance().notifyDataSetChanged();
+            }
+            return true;
+        });
+        TrackListView.getInstance().notifyDataSetChanged();
+    }
+
+    private void saveAsFile() {
+        PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(),
+                "*.gpx",
+                Translation.get("SaveTrack"),
+                Translation.get("save"),
+                path -> {
+                    if (path != null) {
+                        saveRoute(path, this.track);
+                        Log.debug("TrackListViewItem", "Load Track :" + path);
+                        TrackListView.getInstance().notifyDataSetChanged();
+                    }
+                });
+    }
+
+    private void saveRoute(String Path, Track track) {
+        FileWriter writer = null;
+        File gpxfile = FileFactory.createFile(Path);
+        try {
+            writer = gpxfile.getFileWriter();
+            try {
+                writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                writer.append(
+                        "<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
+
+                Date now = new Date();
+                SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                String sDate = datFormat.format(now);
+                datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                sDate += "T" + datFormat.format(now) + "Z";
+                writer.append("<time>").append(sDate).append("</time>\n");
+
+                writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
+
+                writer.append("<trk>\n");
+                writer.append("<name>").append(track.getName()).append("</name>\n");
+                writer.append("<extensions>\n<gpxx:TrackExtension>\n");
+                writer.append("<gpxx:ColorRGB>").append(track.getColor().toString()).append("</gpxx:ColorRGB>\n");
+                writer.append("</gpxx:TrackExtension>\n</extensions>\n");
+                writer.append("<trkseg>\n");
+                writer.flush();
+            } catch (IOException e) {
+                Log.err(log, "SaveTrack", e);
+            }
+        } catch (IOException e1) {
+            Log.err(log, "SaveTrack", e1);
+        }
+
+        if (writer != null) {
+            try {
+                for (int i = 0; i < track.trackPoints.size(); i++) {
+                    writer.append("<trkpt lat=\"").append(String.valueOf(track.trackPoints.get(i).y)).append("\" lon=\"").append(String.valueOf(track.trackPoints.get(i).x)).append("\">\n");
+
+                    writer.append("   <ele>").append(String.valueOf(track.trackPoints.get(i).elevation)).append("</ele>\n");
+                    SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    String sDate = datFormat.format(track.trackPoints.get(i).date);
+                    datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                    sDate += "T" + datFormat.format(track.trackPoints.get(i).date) + "Z";
+                    writer.append("   <time>").append(sDate).append("</time>\n");
+                    writer.append("</trkpt>\n");
+                }
+                writer.append("</trkseg>\n");
+                writer.append("</trk>\n");
+                writer.append("</gpx>\n");
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                Log.err(log, "SaveTrack", e);
+            }
+        }
+    }
+
+    private void hideTrack() {
+        if (this.track.isActualTrack) {
+            MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
+        } else {
+            RouteOverlay.getInstance().remove(this.track);
+            TrackListView.getInstance().notifyDataSetChanged();
+        }
+    }
 }

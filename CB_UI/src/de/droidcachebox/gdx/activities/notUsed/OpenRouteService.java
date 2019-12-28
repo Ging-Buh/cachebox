@@ -88,7 +88,7 @@ public class OpenRouteService {
 
                                         StringBuilder builder = new StringBuilder();
                                         String line = "";
-                                        Color TrackColor = RouteOverlay.getNextColor();
+                                        Color TrackColor = RouteOverlay.getInstance().getNextColor();
                                         Track route = new Track(null, TrackColor);
                                         route.setName("OpenRouteService");
                                         route.isVisible = true;
@@ -156,7 +156,7 @@ public class OpenRouteService {
                                             if (IsRoute) {
                                                 final String sDistance = UnitFormatter.distanceString((float) distance);
                                                 route.trackLength = distance;
-                                                RouteOverlay.setRoutingTrack(route);
+                                                RouteOverlay.getInstance().setRoutingTrack(route);
                                                 TrackListView.getInstance().notifyDataSetChanged();
 
                                                 wd.close();
@@ -211,7 +211,7 @@ public class OpenRouteService {
                                             }
                                         });
                                     }
-                                    RouteOverlay.trackListChanged();
+                                    RouteOverlay.getInstance().trackListChanged();
 
                                 }
 

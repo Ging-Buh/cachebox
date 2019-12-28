@@ -34,7 +34,7 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.views.MapView.MapMode;
 import de.droidcachebox.locator.*;
-import de.droidcachebox.main.ViewManager;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.MathUtils;

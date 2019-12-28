@@ -42,8 +42,8 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.main.ViewManager;
-import de.droidcachebox.main.menuBtn3.ShowMap;
+import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.SettingStringList;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -365,13 +365,13 @@ public class EditFilterSettings extends ActivityBase {
         if (exist) {
             MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButton.OK, MessageBoxIcon.Warning,
                     (which, data) -> {
-                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().execute();
+                        de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
                         return true;
                     });
             return;
         }
 
-        StringInputBox.Show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset",
+        StringInputBox.show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset",
                 (which, data) -> {
                     if (which == MessageBox.BTN_LEFT_POSITIVE) { // ok Clicked
                         String nameOfNewFilter = StringInputBox.editText.getText();
@@ -392,7 +392,7 @@ public class EditFilterSettings extends ActivityBase {
                         presetView.fillPresetList();
                         presetView.notifyDataSetChanged();
                     }
-                    de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().execute();
+                    de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
                     return true;
                 });
     }
@@ -499,7 +499,7 @@ public class EditFilterSettings extends ActivityBase {
                                                 Log.err(log, "DelUserPreset", ex);
                                             }
                                         }
-                                        de.droidcachebox.main.quickBtns.EditFilterSettings.getInstance().execute();
+                                        de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
                                         return true;
                                     });
                             return true;

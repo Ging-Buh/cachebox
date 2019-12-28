@@ -58,8 +58,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.main.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_CBS;
-import static de.droidcachebox.main.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_GCV;
+import static de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_CBS;
+import static de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_GCV;
 
 public class Import extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "Import";

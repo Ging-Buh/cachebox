@@ -9,7 +9,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import de.CB_PlugIn.IPlugIn;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.main.QuickButtonItem;
+import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.utils.MoveableList;
 
 import java.text.SimpleDateFormat;

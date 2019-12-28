@@ -7,8 +7,8 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.main.QuickAction;
-import de.droidcachebox.main.QuickButtonItem;
+import de.droidcachebox.menu.QuickAction;
+import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
 

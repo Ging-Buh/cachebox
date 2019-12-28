@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import de.droidcachebox.AbstractAction;
+import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -15,8 +17,6 @@ import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
-import de.droidcachebox.main.AbstractAction;
-import de.droidcachebox.main.AbstractShowAction;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 

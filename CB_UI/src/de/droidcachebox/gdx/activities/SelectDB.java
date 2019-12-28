@@ -37,7 +37,7 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
-import de.droidcachebox.main.menuBtn5.ShowQuit;
+import de.droidcachebox.menu.menuBtn5.ShowQuit;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.*;
 import de.droidcachebox.utils.log.Log;

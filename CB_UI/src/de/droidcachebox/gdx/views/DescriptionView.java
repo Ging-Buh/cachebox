@@ -33,8 +33,8 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.PolygonDrawable;
 import de.droidcachebox.gdx.math.*;
-import de.droidcachebox.main.ViewManager;
-import de.droidcachebox.main.menuBtn1.contextmenus.CacheContextMenu;
+import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
 import de.droidcachebox.translation.Translation;
 
 import java.util.Timer;

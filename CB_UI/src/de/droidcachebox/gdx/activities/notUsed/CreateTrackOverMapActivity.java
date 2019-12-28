@@ -158,26 +158,26 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         if (waypoints.size() == 2) {
             // Two Points, begins with Track drawing
             Track track = new Track("generate", Color.RED);
-            GlobalCore.AktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(0)));
-            GlobalCore.AktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(1)));
+            GlobalCore.aktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(0)));
+            GlobalCore.aktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(1)));
         }
 
         if (waypoints.size() > 2) {
-            GlobalCore.AktuelleRoute.trackPoints.add(convertToTrackPoint(wp));
+            GlobalCore.aktuelleRoute.trackPoints.add(convertToTrackPoint(wp));
         }
 
         if (waypoints.size() > 1) {
-            RouteOverlay.trackListChanged();
+            RouteOverlay.getInstance().trackListChanged();
         }
     }
 
     private void createNewTrack() {
-        GlobalCore.AktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
-        GlobalCore.AktuelleRoute.isVisible = true;
-        GlobalCore.AktuelleRoute.isActualTrack = true;
+        GlobalCore.aktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
+        GlobalCore.aktuelleRoute.isVisible = true;
+        GlobalCore.aktuelleRoute.isActualTrack = true;
         GlobalCore.aktuelleRouteCount = 0;
-        GlobalCore.AktuelleRoute.trackLength = 0;
-        GlobalCore.AktuelleRoute.altitudeDifference = 0;
+        GlobalCore.aktuelleRoute.trackLength = 0;
+        GlobalCore.aktuelleRoute.altitudeDifference = 0;
     }
 
     private TrackPoint convertToTrackPoint(Waypoint wp) {
