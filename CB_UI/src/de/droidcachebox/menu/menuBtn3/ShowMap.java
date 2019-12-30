@@ -392,8 +392,8 @@ public class ShowMap extends AbstractShowAction {
         if (destination != null) {
             if (start.isValid()) {
                 Track track = router.getTrack(start, destination);
-                if (track != null && track.trackPoints.size() > 0) {
-                    track.isVisible = true;
+                if (track != null && track.getTrackPoints().size() > 0) {
+                    track.setVisible(true);
                     RouteOverlay.getInstance().setRoutingTrack(track);
                 } else {
                     Log.err(log, "no route generated");

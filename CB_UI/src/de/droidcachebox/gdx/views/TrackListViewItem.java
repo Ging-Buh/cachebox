@@ -68,12 +68,12 @@ public class TrackListViewItem extends ListViewItemBackground {
                 cm.addMenuItem("ShowOnMap", Sprites.getSprite(Sprites.IconName.targetDay.name()), this::positionLatLon);
                 cm.addMenuItem("rename", null, this::setTrackName);
                 cm.addMenuItem("save", null, this::saveAsFile);
-                cm.addMenuItem("unload", null, this::hideTrack);
+                cm.addMenuItem("unload", null, this::unloadTrack);
 
                 // (rename, save,) delete darf nicht mit dem aktuellen Track gemacht werden....
-                if (!this.track.isActualTrack) {
+                if (!this.track.isActualTrack()) {
                     if (this.track.getFileName().length() > 0) {
-                        if (!this.track.isActualTrack) {
+                        if (!this.track.isActualTrack()) {
                             File trackFile = FileFactory.createFile(this.track.getFileName());
                             if (trackFile.exists()) {
                                 cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> MessageBox.show(Translation.get("DeleteTrack"),
@@ -84,7 +84,7 @@ public class TrackListViewItem extends ListViewItemBackground {
                                             if (which == BTN_LEFT_POSITIVE) {
                                                 try {
                                                     trackFile.delete();
-                                                    RouteOverlay.getInstance().remove(this.track);
+                                                    RouteOverlay.getInstance().removeTrack(this.track);
                                                     TrackListView.getInstance().notifyDataSetChanged();
                                                 } catch (Exception ex) {
                                                     MessageBox.show(ex.toString(), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
@@ -104,8 +104,8 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void positionLatLon() {
-        if (track.trackPoints.size() > 0) {
-            TrackPoint trackpoint = track.trackPoints.get(0);
+        if (track.getTrackPoints().size() > 0) {
+            TrackPoint trackpoint = track.getTrackPoints().get(0);
             double latitude = trackpoint.y;
             double longitude = trackpoint.x;
             ShowMap.getInstance().execute();
@@ -138,7 +138,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (trackLength == null) {
             CB_RectF rec = new CB_RectF(left, 0, getWidth() - left - getHeight() - 10, getHeight() / 2);
             trackLength = new CB_Label(name + " EntryLength", rec, "");
-            trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.trackLength) + " / " + UnitFormatter.distanceString((float) track.altitudeDifference));
+            trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.getTrackLength()) + " / " + UnitFormatter.distanceString((float) track.getAltitudeDifference()));
             addChild(trackLength);
         }
 
@@ -181,7 +181,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             chkOn.setBounds(scaledCheckBoxIcon.getX(), scaledCheckBoxIcon.getY(), scaledCheckBoxIcon.getWidth(), scaledCheckBoxIcon.getHeight());
         }
 
-        if (track.isVisible) {
+        if (track.isVisible()) {
             chkOn.draw(batch);
         } else {
             chkOff.draw(batch);
@@ -191,7 +191,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
     private void checkBoxIconClicked() {
         GL.that.RunOnGL(() -> {
-            track.isVisible = !track.isVisible;
+            track.setVisible(!track.isVisible());
             RouteOverlay.getInstance().trackListChanged();
         });
         GL.that.renderOnce();
@@ -209,10 +209,9 @@ public class TrackListViewItem extends ListViewItemBackground {
         GL.that.renderOnce();
     }
 
-    public void notifyTrackChanged(Track track) {
-        this.track = track;
+    public void notifyTrackChanged() {
         if (trackLength != null)
-            trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.trackLength) + " / " + UnitFormatter.distanceString((float) track.altitudeDifference));
+            trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.getTrackLength()) + " / " + UnitFormatter.distanceString((float) track.getAltitudeDifference()));
     }
 
     public Track getTrack() {
@@ -280,14 +279,14 @@ public class TrackListViewItem extends ListViewItemBackground {
 
         if (writer != null) {
             try {
-                for (int i = 0; i < track.trackPoints.size(); i++) {
-                    writer.append("<trkpt lat=\"").append(String.valueOf(track.trackPoints.get(i).y)).append("\" lon=\"").append(String.valueOf(track.trackPoints.get(i).x)).append("\">\n");
+                for (int i = 0; i < track.getTrackPoints().size(); i++) {
+                    writer.append("<trkpt lat=\"").append(String.valueOf(track.getTrackPoints().get(i).y)).append("\" lon=\"").append(String.valueOf(track.getTrackPoints().get(i).x)).append("\">\n");
 
-                    writer.append("   <ele>").append(String.valueOf(track.trackPoints.get(i).elevation)).append("</ele>\n");
+                    writer.append("   <ele>").append(String.valueOf(track.getTrackPoints().get(i).elevation)).append("</ele>\n");
                     SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                    String sDate = datFormat.format(track.trackPoints.get(i).date);
+                    String sDate = datFormat.format(track.getTrackPoints().get(i).date);
                     datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                    sDate += "T" + datFormat.format(track.trackPoints.get(i).date) + "Z";
+                    sDate += "T" + datFormat.format(track.getTrackPoints().get(i).date) + "Z";
                     writer.append("   <time>").append(sDate).append("</time>\n");
                     writer.append("</trkpt>\n");
                 }
@@ -302,12 +301,13 @@ public class TrackListViewItem extends ListViewItemBackground {
         }
     }
 
-    private void hideTrack() {
-        if (this.track.isActualTrack) {
+    private void unloadTrack() {
+        if (this.track.isActualTrack()) {
             MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
         } else {
-            RouteOverlay.getInstance().remove(this.track);
+            RouteOverlay.getInstance().removeTrack(track); // index passt nicht mehr
             TrackListView.getInstance().notifyDataSetChanged();
+            dispose();
         }
     }
 }

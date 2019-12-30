@@ -16,7 +16,6 @@
 package de.droidcachebox.gdx.activities.notUsed;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -157,13 +156,13 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         waypoints.add(wp);
         if (waypoints.size() == 2) {
             // Two Points, begins with Track drawing
-            Track track = new Track("generate", Color.RED);
-            GlobalCore.aktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(0)));
-            GlobalCore.aktuelleRoute.trackPoints.add(convertToTrackPoint(waypoints.get(1)));
+            Track track = new Track("generate");
+            GlobalCore.aktuelleRoute.getTrackPoints().add(convertToTrackPoint(waypoints.get(0)));
+            GlobalCore.aktuelleRoute.getTrackPoints().add(convertToTrackPoint(waypoints.get(1)));
         }
 
         if (waypoints.size() > 2) {
-            GlobalCore.aktuelleRoute.trackPoints.add(convertToTrackPoint(wp));
+            GlobalCore.aktuelleRoute.getTrackPoints().add(convertToTrackPoint(wp));
         }
 
         if (waypoints.size() > 1) {
@@ -172,12 +171,12 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     }
 
     private void createNewTrack() {
-        GlobalCore.aktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
-        GlobalCore.aktuelleRoute.isVisible = true;
-        GlobalCore.aktuelleRoute.isActualTrack = true;
+        GlobalCore.aktuelleRoute = new Track(Translation.get("actualTrack"));
+        GlobalCore.aktuelleRoute.setVisible(true);
+        GlobalCore.aktuelleRoute.setActualTrack(true);
         GlobalCore.aktuelleRouteCount = 0;
-        GlobalCore.aktuelleRoute.trackLength = 0;
-        GlobalCore.aktuelleRoute.altitudeDifference = 0;
+        GlobalCore.aktuelleRoute.setTrackLength(0);
+        GlobalCore.aktuelleRoute.setAltitudeDifference(0);
     }
 
     private TrackPoint convertToTrackPoint(Waypoint wp) {

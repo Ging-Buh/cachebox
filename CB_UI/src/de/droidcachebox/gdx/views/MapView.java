@@ -459,7 +459,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             iconSize = 2; // default Images
 
         if (mapMode != MapMode.Compass)
-            RouteOverlay.getInstance().renderRoute(batch, this);
+            RouteOverlay.getInstance().renderTracks(batch, this);
         renderWPs(GL_UISizes.wayPointSizes[iconSize], GL_UISizes.underlaySizes[iconSize], batch);
         renderPositionMarker(batch);
         renderTargetArrow(batch);

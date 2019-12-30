@@ -1,6 +1,5 @@
 package de.droidcachebox.gdx.activities.notUsed;
 
-import com.badlogic.gdx.graphics.Color;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.RouteOverlay;
 import de.droidcachebox.gdx.GL;
@@ -88,10 +87,8 @@ public class OpenRouteService {
 
                                         StringBuilder builder = new StringBuilder();
                                         String line = "";
-                                        Color TrackColor = RouteOverlay.getInstance().getNextColor();
-                                        Track route = new Track(null, TrackColor);
-                                        route.setName("OpenRouteService");
-                                        route.isVisible = true;
+                                        Track route = new Track("OpenRouteService");
+                                        route.setVisible(true);
                                         boolean RouteGeometryBlockFound = false;
                                         boolean IsRoute = false;
 
@@ -137,7 +134,7 @@ public class OpenRouteService {
 
                                                     lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
 
-                                                    route.trackPoints.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), 0, 0, null));
+                                                    route.getTrackPoints().add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), 0, 0, null));
 
                                                     // Calculate the length of a Track
                                                     if (!FromPosition.isValid()) {
@@ -155,7 +152,7 @@ public class OpenRouteService {
 
                                             if (IsRoute) {
                                                 final String sDistance = UnitFormatter.distanceString((float) distance);
-                                                route.trackLength = distance;
+                                                route.setTrackLength(distance);
                                                 RouteOverlay.getInstance().setRoutingTrack(route);
                                                 TrackListView.getInstance().notifyDataSetChanged();
 

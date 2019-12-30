@@ -65,7 +65,7 @@ public class BRouter implements Router {
             default: routeProfile = "motorcar";
         }
         params.putString("v", routeProfile);
-        Track track = new Track("", null);
+        Track track = new Track("");
         try {
             Xml.parse(brouter.getTrackFromParams(params), new DefaultHandler() {
                 @Override
@@ -75,7 +75,7 @@ public class BRouter implements Router {
                         if (lat != null) {
                             final String lon = atts.getValue("lon");
                             if (lon != null) {
-                                track.trackPoints.add( new TrackPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0, 0, new Date()));
+                                track.getTrackPoints().add( new TrackPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0, 0, new Date()));
                             }
                         }
                     }
@@ -87,9 +87,9 @@ public class BRouter implements Router {
         // calc tracklength
         double sourceLatitude = start.getLatitude();
         double sourceLongitude = start.getLongitude();
-        for (int i = 0; i < track.trackPoints.size(); i++) {
-            TrackPoint t = track.trackPoints.get(i);
-            track.trackLength = track.trackLength + calcDistance(sourceLatitude, sourceLongitude, t.y, t.x);
+        for (int i = 0; i < track.getTrackPoints().size(); i++) {
+            TrackPoint t = track.getTrackPoints().get(i);
+            track.setTrackLength(track.getTrackLength() + calcDistance(sourceLatitude, sourceLongitude, t.y, t.x));
             sourceLatitude = t.y;
             sourceLongitude = t.x;
         }

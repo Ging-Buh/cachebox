@@ -17,7 +17,6 @@ package de.droidcachebox.menu.menuBtn3;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractShowAction;
-import de.droidcachebox.RouteOverlay;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -66,8 +65,8 @@ public class ShowTracks extends AbstractShowAction {
     @Override
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListViewContextMenuTitle");
-        cm.addMenuItem("load", null, RouteOverlay.getInstance()::loadTrackList);
-        cm.addMenuItem("generate", null, TrackCreation::getInstance);
+        cm.addMenuItem("load", null, TrackListView.getInstance()::selectTrackFileReadAndAddToTracks);
+        cm.addMenuItem("generate", null, () -> TrackCreation.getInstance().show());
         return cm;
     }
 }

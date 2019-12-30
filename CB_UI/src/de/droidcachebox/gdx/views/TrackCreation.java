@@ -17,19 +17,23 @@ import java.util.Date;
 
 public class TrackCreation {
     private static TrackCreation trackCreation;
-
+    Menu cm2;
     private TrackCreation() {
-        Menu cm2 = new Menu("TrackListViewCreateTrackTitle");
+        cm2 = new Menu("TrackListViewCreateTrackTitle");
         cm2.addMenuItem("Point2Point", null, trackCreation::genTrackP2P);
         cm2.addMenuItem("Projection", null, trackCreation::genTrackProjection);
         cm2.addMenuItem("Circle", null, trackCreation::genTrackCircle);
-        cm2.show();
     }
 
-    public static void getInstance() {
+    public static TrackCreation getInstance() {
         if (trackCreation == null) {
             trackCreation = new TrackCreation();
         }
+        return trackCreation;
+    }
+
+    public void show() {
+        cm2.show();
     }
 
     private void genTrackP2P() {
@@ -44,16 +48,14 @@ public class TrackCreation {
                 return;
 
             float[] dist = new float[4];
-            Track route = new Track(null, RouteOverlay.getInstance().getNextColor());
-
-            route.setName("Point 2 Point Route");
-            route.trackPoints.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-            route.trackPoints.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            Track route = new Track("Point 2 Point Route");
+            route.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            route.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
             MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-            route.trackLength = dist[0];
+            route.setTrackLength(dist[0]);
 
-            route.isVisible = true;
+            route.setVisible(true);
             RouteOverlay.getInstance().addTrack(route);
             TrackListView.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.Type.p2p, null);
@@ -72,16 +74,15 @@ public class TrackCreation {
                 return;
 
             float[] dist = new float[4];
-            Track route = new Track(null, RouteOverlay.getInstance().getNextColor());
-            route.setName("Projected Route");
+            Track route = new Track("Projected Route");
 
-            route.trackPoints.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-            route.trackPoints.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            route.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            route.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
             MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-            route.trackLength = dist[0];
+            route.setTrackLength(dist[0]);
 
-            route.isVisible = true;
+            route.setVisible(true);
             RouteOverlay.getInstance().addTrack(route);
             TrackListView.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.Type.projetion, null);
@@ -101,10 +102,9 @@ public class TrackCreation {
                 return;
 
             float[] dist = new float[4];
-            Track track = new Track(null, RouteOverlay.getInstance().getNextColor());
-            track.setName("Circle Route");
+            Track track = new Track("Circle Route");
 
-            track.isVisible = true;
+            track.setVisible(true);
             RouteOverlay.getInstance().addTrack(track);
 
             Coordinate Projektion;
@@ -113,10 +113,10 @@ public class TrackCreation {
             // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme mit dem Reduktionsalgorythmus
             for (int i = 0; i <= 360; i += 10) {
                 Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
-                track.trackPoints.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
+                track.getTrackPoints().add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
                 if (LastCoord.isValid()) {
                     MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
-                    track.trackLength = track.trackLength + dist[0];
+                    track.setTrackLength(track.getTrackLength() + dist[0]);
                 }
                 LastCoord = Projektion; // !! LastCoord = new Coordinate(Projektion);
                 LastCoord.setValid(true);

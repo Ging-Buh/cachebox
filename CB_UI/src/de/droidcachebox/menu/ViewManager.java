@@ -40,6 +40,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CompassView;
+import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.menuBtn1.ParkingDialog;
@@ -311,7 +312,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             String[] files = dir.list();
             if (files != null) {
                 for (String file : files) {
-                    RouteOverlay.getInstance().loadTrack(trackPath, file);
+                    TrackListView.getInstance().loadTrack(trackPath, file);
                 }
             }
         } else {

@@ -63,7 +63,7 @@ public class CB_View_Base extends GL_View_Base {
     }
 
     public void resetIsInitialized() {
-        // for not to directly call initialize() in overwitten
+        // for not to directly call initialize() in overwritten
         isInitialized = false;
     }
 

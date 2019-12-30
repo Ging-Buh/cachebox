@@ -16,6 +16,7 @@
 package de.droidcachebox;
 
 import com.badlogic.gdx.graphics.Color;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.Location;
 import de.droidcachebox.locator.Location.ProviderType;
@@ -64,12 +65,13 @@ public class TrackRecorder {
     public static void startRecording() {
         distanceForNextTrackpoint = Config.TrackDistance.getValue();
 
-        GlobalCore.aktuelleRoute = new Track(Translation.get("actualTrack"), Color.BLUE);
-        GlobalCore.aktuelleRoute.isVisible = true;
-        GlobalCore.aktuelleRoute.isActualTrack = true;
+        GlobalCore.aktuelleRoute = new Track(Translation.get("actualTrack"));
+        GlobalCore.aktuelleRoute.setColor(Color.BLUE);
+        GlobalCore.aktuelleRoute.setVisible(true);
+        GlobalCore.aktuelleRoute.setActualTrack(true);
         GlobalCore.aktuelleRouteCount = 0;
-        GlobalCore.aktuelleRoute.trackLength = 0;
-        GlobalCore.aktuelleRoute.altitudeDifference = 0;
+        GlobalCore.aktuelleRoute.setTrackLength(0);
+        GlobalCore.aktuelleRoute.setAltitudeDifference(0);
 
         String directory = CB_UI_Settings.TrackFolder.getValue();
         if (!FileIO.createDirectory(directory))
@@ -250,18 +252,19 @@ public class TrackRecorder {
 
                 NewPoint = new TrackPoint(Locator.getInstance().getLongitude(GPS), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getAlt(), Locator.getInstance().getHeading(_GPS), new Date());
 
-                GlobalCore.aktuelleRoute.trackPoints.add(NewPoint);
+                GlobalCore.aktuelleRoute.getTrackPoints().add(NewPoint);
 
                 // notify TrackListView
-                TrackListView.getInstance().notifyActTrackChanged();
+                TrackListView.getInstance().getAktRouteItem().notifyTrackChanged();
+                GL.that.renderOnce();
 
                 RouteOverlay.getInstance().trackListChanged();
                 LastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
-                GlobalCore.aktuelleRoute.trackLength += cachedDistance;
+                GlobalCore.aktuelleRoute.setTrackLength(GlobalCore.aktuelleRoute.getTrackLength() + cachedDistance);
 
                 AltDiff = Math.abs(SaveAltitude - Locator.getInstance().getAlt());
                 if (AltDiff >= 25) {
-                    GlobalCore.aktuelleRoute.altitudeDifference += AltDiff;
+                    GlobalCore.aktuelleRoute.setAltitudeDifference(GlobalCore.aktuelleRoute.getAltitudeDifference() + AltDiff);
                     SaveAltitude = Locator.getInstance().getAlt();
                 }
                 writePos = false;
@@ -280,7 +283,7 @@ public class TrackRecorder {
 
     public static void stopRecording() {
         if (GlobalCore.aktuelleRoute != null) {
-            GlobalCore.aktuelleRoute.isActualTrack = false;
+            GlobalCore.aktuelleRoute.setActualTrack(false);
             GlobalCore.aktuelleRoute.setName(Translation.get("recordetTrack"));
         }
         pauseRecording = false;

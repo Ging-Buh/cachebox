@@ -1,8 +1,8 @@
 package de;
 
-import com.badlogic.gdx.graphics.Color;
 import de.droidcachebox.Config;
 import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.Location.ProviderType;
 import de.droidcachebox.locator.map.Track;
@@ -121,8 +121,8 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
         NetworkSend = false;
 
-        trackPointIndexEnd = simulationRoute.trackPoints.size() - 1;
-        long nextTimeStamp = (simulationRoute.trackPoints.get(trackPointIndex + 1).date.getTime() - simulationRoute.trackPoints.get(trackPointIndex).date.getTime());
+        trackPointIndexEnd = simulationRoute.getTrackPoints().size() - 1;
+        long nextTimeStamp = (simulationRoute.getTrackPoints().get(trackPointIndex + 1).date.getTime() - simulationRoute.getTrackPoints().get(trackPointIndex).date.getTime());
 
         if (!chekRealSpeed.getState())
             nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
@@ -134,7 +134,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                TrackPoint trk = simulationRoute.trackPoints.get(trackPointIndex);
+                TrackPoint trk = simulationRoute.getTrackPoints().get(trackPointIndex);
                 Coordinate pos = new CoordinateGPS(trk.y, trk.x);
                 Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.direction, 95, ProviderType.GPS));
 
@@ -239,10 +239,11 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
     @SuppressWarnings("deprecation")
     private void loadSimulateRoute(String Path) {
 
-        simulationRoute = RouteOverlay.getInstance().readFromGpxFile(Path, Color.BLACK);
-
+        TrackListView.getInstance().readFromGpxFile(Path);
+        // !!! one file may have more than one route : get last added
+        simulationRoute = RouteOverlay.getInstance().getTrack(RouteOverlay.getInstance().getNumberOfTracks() - 1);
         // Don't display loaded simulate route
-        RouteOverlay.getInstance().remove(simulationRoute);
+        simulationRoute.setVisible(false);
 
         // TODO set GPX File Name to lblGPX
         if (simulationRoute != null && simulationRoute.getName() != null) {
