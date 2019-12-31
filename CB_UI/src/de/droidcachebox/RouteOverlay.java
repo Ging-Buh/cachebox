@@ -36,15 +36,14 @@ import java.util.ArrayList;
 /**
  * mainly holds the list of tracks in tracks with getNumberOfTracks
  * and its accessor methods getTrack, addTrack, removeTrack .
- *
+ * <p>
  * further holds a track called routingTrack, calculated by some routing code (at the moment the BRouter Code for Android)
  * with accessors existsRoutingTrack, setRoutingTrack and removeRoutingTrack
- *
+ * <p>
  * if a track is changed, aTrackChanged is set to true until rendered once again on one called map !!! only once
- *
+ * <p>
  * a track is selected for rendering, if its isVisible is set (in addToTracksToDraw with reduced number of trackpoints)
  * further the GlobalCore.aktuelleRoute is addToTracksToDraw for rendering. (if tracking has been switched on)
- *
  */
 public class RouteOverlay {
     private final static String log = "RouteOverlay";
@@ -207,7 +206,7 @@ public class RouteOverlay {
             else
                 glyphLayout.setText(Fonts.getSmall(), text);
             float halfWidth = glyphLayout.width / 2;
-            Fonts.getSmall().draw(batch, glyphLayout, position.x - halfWidth, position.y - glyphLayout.height);
+            Fonts.getSmall().draw(batch, glyphLayout, position.x - halfWidth, position.y - 2 * glyphLayout.height);
         } catch (Exception ex) {
             Log.err(log, "drawText", ex);
         }

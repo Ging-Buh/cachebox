@@ -257,7 +257,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         this.removeChilds();
 
         if (this.adapter != null) {
-            calcDefaultPosList();
+            calculateItemPosition();
             reloadItems();
             firstItemSize = this.adapter.getItemSize(0);
             lastItemSize = this.adapter.getItemSize(this.adapter.getCount() - 1);
@@ -271,7 +271,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      */
     public void setDividerSize(float value) {
         mDividerSize = value;
-        calcDefaultPosList();
+        calculateItemPosition();
 
         // Items neu laden
         reloadItems();
@@ -324,12 +324,12 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     /**
      * Fragt die Höhen aller Items ab und speichert die damit berechneten Positonen ab.
      */
-    protected abstract void calcDefaultPosList();
+    protected abstract void calculateItemPosition();
 
     @Override
     public void onResized(CB_RectF rec) {
         // Items neu laden
-        calcDefaultPosList();
+        calculateItemPosition();
         mMustSetPos = true;
     }
 

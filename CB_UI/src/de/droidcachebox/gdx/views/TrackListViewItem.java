@@ -67,7 +67,7 @@ public class TrackListViewItem extends ListViewItemBackground {
                 Menu cm = new Menu("TrackRecordMenuTitle");
                 cm.addMenuItem("ShowOnMap", Sprites.getSprite(Sprites.IconName.targetDay.name()), this::positionLatLon);
                 cm.addMenuItem("rename", null, this::setTrackName);
-                cm.addMenuItem("save", null, this::saveAsFile);
+                cm.addMenuItem("save", Sprites.getSprite(Sprites.IconName.save.name()), this::saveAsFile);
                 cm.addMenuItem("unload", null, this::unloadTrack);
 
                 // (rename, save,) delete darf nicht mit dem aktuellen Track gemacht werden....
@@ -231,17 +231,36 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void saveAsFile() {
-        PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(),
-                "*.gpx",
-                Translation.get("SaveTrack"),
-                Translation.get("save"),
-                path -> {
-                    if (path != null) {
-                        saveRoute(path, this.track);
-                        Log.debug("TrackListViewItem", "Load Track :" + path);
-                        TrackListView.getInstance().notifyDataSetChanged();
+        if (this.track.getName().length() > 0) {
+            PlatformUIBase.getFolder(CB_UI_Settings.TrackFolder.getValue(),
+                    Translation.get("SaveTrack"),
+                    Translation.get("save"), path -> {
+                        if (path != null) {
+                            String extension = this.track.getName().toLowerCase().endsWith(".gpx") ? "" : ".gpx";
+                            File f = FileFactory.createFile(path + "/" + this.track.getName() + extension);
+                            saveRoute(path + "/" + this.track.getName() + extension, this.track);
+                            if (f.exists()) {
+                                track.setFileName(f.getAbsolutePath());
+                                Log.info(log, f.getAbsolutePath() + " saved.");
+                            }
+                            else {
+                                Log.err(log, "Error saving " + path + "/" + this.track.getName() + extension);
+                            }
+                        }
                     }
-                });
+            );
+        } else {
+            PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(),
+                    "*.gpx",
+                    Translation.get("SaveTrack"),
+                    Translation.get("save"),
+                    pathAndName -> {
+                        if (pathAndName != null) {
+                            saveRoute(pathAndName, this.track);
+                            Log.debug("TrackListViewItem", "Load Track :" + pathAndName);
+                        }
+                    });
+        }
     }
 
     private void saveRoute(String Path, Track track) {

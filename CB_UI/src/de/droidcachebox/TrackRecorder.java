@@ -48,8 +48,8 @@ public class TrackRecorder {
     public static boolean pauseRecording = false;
     public static boolean recording = false;
     public static int distanceForNextTrackpoint;
-    private static double SaveAltitude = 0;
-    private static Location LastRecordedPosition = Location.NULL_LOCATION;
+    private static double savedAltitude = 0;
+    private static Location lastRecordedPosition = Location.NULL_LOCATION;
     private static String mFriendlyName = "";
     private static String mMediaPath = "";
     private static Location mMediaCoord = null;
@@ -113,7 +113,7 @@ public class TrackRecorder {
         pauseRecording = false;
         recording = true;
 
-        // updateRecorderButtonAccessibility();
+        TrackListView.getInstance().notifyDataSetChanged();
     }
 
     private static String GetDateTimeString() {
@@ -197,10 +197,10 @@ public class TrackRecorder {
             mustRecPos = true;
         }
 
-        if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
+        if (lastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
         {
-            LastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
-            SaveAltitude = LastRecordedPosition.getAltitude();
+            lastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
+            savedAltitude = lastRecordedPosition.getAltitude();
         } else {
             writePos = true;
             TrackPoint NewPoint;
@@ -210,7 +210,7 @@ public class TrackRecorder {
             // zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
             float[] dist = new float[1];
 
-            MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
+            MathUtils.computeDistanceAndBearing(CalculationType.FAST, lastRecordedPosition.getLatitude(), lastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
             float cachedDistance = dist[0];
 
             if (cachedDistance > distanceForNextTrackpoint) {
@@ -254,18 +254,20 @@ public class TrackRecorder {
 
                 GlobalCore.aktuelleRoute.getTrackPoints().add(NewPoint);
 
-                // notify TrackListView
-                TrackListView.getInstance().getAktRouteItem().notifyTrackChanged();
-                GL.that.renderOnce();
+                // notify TrackListView (if already created)
+                if (TrackListView.getInstance().getAktRouteItem() != null) {
+                    TrackListView.getInstance().getAktRouteItem().notifyTrackChanged();
+                    GL.that.renderOnce();
+                }
 
                 RouteOverlay.getInstance().trackListChanged();
-                LastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
+                lastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
                 GlobalCore.aktuelleRoute.setTrackLength(GlobalCore.aktuelleRoute.getTrackLength() + cachedDistance);
 
-                AltDiff = Math.abs(SaveAltitude - Locator.getInstance().getAlt());
+                AltDiff = Math.abs(savedAltitude - Locator.getInstance().getAlt());
                 if (AltDiff >= 25) {
                     GlobalCore.aktuelleRoute.setAltitudeDifference(GlobalCore.aktuelleRoute.getAltitudeDifference() + AltDiff);
-                    SaveAltitude = Locator.getInstance().getAlt();
+                    savedAltitude = Locator.getInstance().getAlt();
                 }
                 writePos = false;
 

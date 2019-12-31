@@ -41,7 +41,7 @@ public class GalleryView extends H_ListView {
     }
 
     @Override
-    protected void calcDefaultPosList() {
+    protected void calculateItemPosition() {
         if (mPosDefault != null) {
             mPosDefault.clear();
         } else {

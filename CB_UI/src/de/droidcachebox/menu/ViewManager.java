@@ -431,9 +431,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public void positionChanged() {
         try {
             TrackRecorder.recordPosition();
-        } catch (Exception e) {
-            Log.err(log, "Core.MainViewBase.PositionChanged()", "TrackRecorder.recordPosition()", e);
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err(log, "PositionChanged()", "TrackRecorder.recordPosition()", ex);
         }
 
         if (GlobalCore.isSetSelectedCache()) {

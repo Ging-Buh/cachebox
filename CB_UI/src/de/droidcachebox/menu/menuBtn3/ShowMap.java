@@ -38,6 +38,7 @@ import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.main.OptionMenu;
 import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.gdx.views.MapView.MapMode;
+import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.map.*;
 import de.droidcachebox.maps.Router;
@@ -323,6 +324,7 @@ public class ShowMap extends AbstractShowAction {
                         } else {
                             RouteOverlay.getInstance().removeRoutingTrack();
                         }
+                        TrackListView.getInstance().notifyDataSetChanged();
                     }
                     return true;
                 });
@@ -366,6 +368,11 @@ public class ShowMap extends AbstractShowAction {
         else
             cm2.addMenuItem("pause", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
         cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
+        cm2.addDivider();
+        cm2.addMenuItem("load", null, TrackListView.getInstance()::selectTrackFileReadAndAddToTracks);
+        //cm2.addMenuItem("generate", null, () -> TrackCreation.getInstance().show());
+        cm2.addDivider();
+        cm2.addMenuItem("Tracks", Sprites.getSprite(IconName.trackListIcon.name()), () -> ViewManager.leftTab.showView(TrackListView.getInstance()));
         cm2.show();
     }
 
@@ -388,12 +395,18 @@ public class ShowMap extends AbstractShowAction {
 
     public void setRoutingTrack() {
         Coordinate start = Locator.getInstance().getMyPosition(Location.ProviderType.GPS);
+        if (start == null || !start.isValid()) {
+            // from center map
+            Coordinate mapCenter = ShowMap.getInstance().normalMapView.center;
+            if (mapCenter != null) start = mapCenter;
+        }
         Coordinate destination = GlobalCore.getSelectedCoordinate();
         if (destination != null) {
             if (start.isValid()) {
                 Track track = router.getTrack(start, destination);
                 if (track != null && track.getTrackPoints().size() > 0) {
                     track.setVisible(true);
+                    track.setName("Route");
                     RouteOverlay.getInstance().setRoutingTrack(track);
                 } else {
                     Log.err(log, "no route generated");

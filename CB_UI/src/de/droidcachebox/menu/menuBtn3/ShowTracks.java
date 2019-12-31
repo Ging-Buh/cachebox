@@ -21,7 +21,6 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.views.TrackCreation;
 import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.menu.ViewManager;
 
@@ -66,7 +65,7 @@ public class ShowTracks extends AbstractShowAction {
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListViewContextMenuTitle");
         cm.addMenuItem("load", null, TrackListView.getInstance()::selectTrackFileReadAndAddToTracks);
-        cm.addMenuItem("generate", null, () -> TrackCreation.getInstance().show());
+        // cm.addMenuItem("generate", null, () -> TrackCreation.getInstance().show());
         return cm;
     }
 }

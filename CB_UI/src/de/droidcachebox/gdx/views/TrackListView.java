@@ -49,6 +49,18 @@ public class TrackListView extends V_ListView {
         return trackListView;
     }
 
+    @Override
+    public void onShow() {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        Log.info(log, "Dataset changed");
+
+    }
+
     public TrackListViewItem getAktRouteItem() {
         return aktRouteItem;
     }
@@ -107,6 +119,7 @@ public class TrackListView extends V_ListView {
         double deltaAltitude;
         CoordinateGPS fromPosition = new CoordinateGPS(0, 0);
         BufferedReader reader;
+        HSV_Color trackColor = null;
 
         try {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
@@ -309,7 +322,8 @@ public class TrackListView extends V_ListView {
                             int couEndIdx = line.indexOf("</gpxx:colorrgb>", couIdx);
 
                             String couStr = line.substring(couIdx, couEndIdx);
-                            track.setColor(new HSV_Color(couStr));
+                            trackColor = new HSV_Color(couStr);
+                            track.setColor(trackColor);
                         }
 
                         if ((line.contains("</trkpt>")) | (line.contains("</rtept>")) | ((line.contains("/>")) & isTrkptOrRtept)) {
@@ -345,6 +359,7 @@ public class TrackListView extends V_ListView {
             Log.err(log, "readFromGpxFile", ex);
         }
         for (Track track : tracks) {
+            if (trackColor != null) track.setColor(trackColor);
             RouteOverlay.getInstance().addTrack(track);
         }
         notifyDataSetChanged();
@@ -377,12 +392,11 @@ public class TrackListView extends V_ListView {
 
         @Override
         public ListViewItemBase getView(int viewPosition) {
+            Log.info(log, "get track item number " + viewPosition + " (" + (GlobalCore.aktuelleRoute != null ? "with " : "without ") + "tracking." + ")");
             int tracksIndex = viewPosition;
             if (GlobalCore.aktuelleRoute != null) {
                 if (viewPosition == 0) {
-                    if (aktRouteItem == null) {
-                        aktRouteItem = new TrackListViewItem(itemRec, viewPosition, GlobalCore.aktuelleRoute);
-                    }
+                    aktRouteItem = new TrackListViewItem(itemRec, viewPosition, GlobalCore.aktuelleRoute);
                     return aktRouteItem;
                 }
                 tracksIndex--; // viewPosition - 1, if tracking is activated

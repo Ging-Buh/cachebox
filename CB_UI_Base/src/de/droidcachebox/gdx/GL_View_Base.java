@@ -389,24 +389,16 @@ public abstract class GL_View_Base extends CB_RectF {
             Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1, (int) intersectRec.getHeight() + 1);
         }
 
-        float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
+        Color savedColor = null;
 
-        boolean ColorFilterSeted = false; // Wir benutzen hier dieses Boolean um am ende dieser Methode zu entscheiden, ob wir die alte
+        boolean batchHadColor = false; // Wir benutzen hier dieses Boolean um am ende dieser Methode zu entscheiden, ob wir die alte
         // Farbe des Batches wieder herstellen müssen. Wir verlassen uns hier nicht darauf, das
         // mColorFilter!= null ist, da dies in der zwichenzeit passiert sein kann.
 
         // Set Colorfilter ?
         if (mColorFilter != null) {
-            ColorFilterSeted = true;
-            // zuerst alte Farbe abspeichern, um sie Wieder Herstellen zu können
-            // hier muss jeder Wert einzeln abgespeichert werden, da bei getColor()
-            // nur eine Referenz zurück gegeben wird
-            Color c = batch.getColor();
-            A = c.a;
-            R = c.r;
-            G = c.g;
-            B = c.b;
-
+            savedColor = new Color(batch.getColor());
+            batchHadColor = true;
             batch.setColor(mColorFilter);
         }
 
@@ -436,9 +428,9 @@ public abstract class GL_View_Base extends CB_RectF {
         } catch (IllegalStateException e) {
             Log.err(log, "renderChilds", e);
             // reset Colorfilter ?
-            if (ColorFilterSeted) {
+            if (batchHadColor) {
                 // alte abgespeicherte Farbe des Batches wieder herstellen!
-                batch.setColor(R, G, B, A);
+                batch.setColor(savedColor);
             }
             return;
         }
@@ -515,9 +507,9 @@ public abstract class GL_View_Base extends CB_RectF {
         }
 
         // reset Colorfilter ?
-        if (ColorFilterSeted) {
+        if (batchHadColor) {
             // alte abgespeicherte Farbe des Batches wieder herstellen!
-            batch.setColor(R, G, B, A);
+            batch.setColor(savedColor);
         }
 
     }

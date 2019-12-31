@@ -97,7 +97,7 @@ public class H_ListView extends ListViewBase {
         if (adapter == null)
             return;
         if (mPosDefault == null)
-            calcDefaultPosList();
+            calculateItemPosition();
 
         for (int i = mFirstIndex; i < adapter.getCount(); i++) {
             if (!mAddedIndexList.contains(i)) {
@@ -153,7 +153,7 @@ public class H_ListView extends ListViewBase {
     }
 
     @Override
-    protected void calcDefaultPosList() {
+    protected void calculateItemPosition() {
         if (mPosDefault != null) {
             mPosDefault.clear();
         } else {
@@ -232,7 +232,7 @@ public class H_ListView extends ListViewBase {
 
     @Override
     public void notifyDataSetChanged() {
-        calcDefaultPosList();
+        calculateItemPosition();
         reloadItems();
 
         if (mAllSize > this.getWidth()) {

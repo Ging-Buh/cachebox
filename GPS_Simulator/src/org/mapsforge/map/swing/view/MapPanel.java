@@ -124,15 +124,15 @@ public class MapPanel extends JPanel implements ActionListener {
             // load Map
             PlatformUIBase.getFile("", "", "Load Map", "Load", new IgetFileReturnListener() {
                 @Override
-                public void returnFile(String Path) {
-                    SimulatorMain.prefs.put("loadedMap", Path);
+                public void returnFile(String pathAndName) {
+                    SimulatorMain.prefs.put("loadedMap", pathAndName);
                     try {
                         SimulatorMain.prefs.flush();
                     } catch (BackingStoreException e) {
                         e.printStackTrace();
                     }
 
-                    addLayers(mapView, Path);
+                    addLayers(mapView, pathAndName);
                 }
             });
         }

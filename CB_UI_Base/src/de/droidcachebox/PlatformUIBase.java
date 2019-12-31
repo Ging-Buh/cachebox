@@ -298,11 +298,11 @@ public class PlatformUIBase {
     }
 
     public interface IgetFileReturnListener {
-        void returnFile(String PathAndName);
+        void returnFile(String pathAndName);
     }
 
     public interface IgetFolderReturnListener {
-        void returnFolder(String Path);
+        void returnFolder(String path);
     }
 
 }

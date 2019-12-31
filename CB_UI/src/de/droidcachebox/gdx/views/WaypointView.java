@@ -450,7 +450,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                         });
                         waypointViewItem.addListener(() -> {
                             // relayout items
-                            WaypointView.this.calcDefaultPosList();
+                            WaypointView.this.calculateItemPosition();
                             mMustSetPos = true;
                             GL.that.renderOnce(true);
                         });
@@ -497,7 +497,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                         });
                         waypointViewItem.addListener(() -> {
                             // relayout items
-                            WaypointView.this.calcDefaultPosList();
+                            WaypointView.this.calculateItemPosition();
                             mMustSetPos = true;
                             GL.that.renderOnce(true);
                         });

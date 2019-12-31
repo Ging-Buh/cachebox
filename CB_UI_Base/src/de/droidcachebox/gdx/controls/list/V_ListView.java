@@ -131,7 +131,7 @@ public class V_ListView extends ListViewBase {
             if (adapter == null)
                 return;
             if (mPosDefault == null)
-                calcDefaultPosList();
+                calculateItemPosition();
 
             final float workPos = mPos;
 
@@ -194,7 +194,7 @@ public class V_ListView extends ListViewBase {
     }
 
     @Override
-    public void calcDefaultPosList() {
+    public void calculateItemPosition() {
         if (this.isDisposed() || isInCalculation.get()) {
             return;
         }
@@ -254,7 +254,7 @@ public class V_ListView extends ListViewBase {
                 this.setUnDraggable();
             }
         } catch (Exception ex) {
-            Log.err("V_ListView", "calcDefaultPosList", ex);
+            Log.err("V_ListView", "calculateItemPosition", ex);
         }
 
         isInCalculation.set(false);
@@ -305,7 +305,7 @@ public class V_ListView extends ListViewBase {
 
     @Override
     public void notifyDataSetChanged() {
-        calcDefaultPosList();
+        calculateItemPosition();
         reloadItems();
         if (adapter != null && adapter.getCount() <= mSelectedIndex)
             setSelection(adapter.getCount() - 1);

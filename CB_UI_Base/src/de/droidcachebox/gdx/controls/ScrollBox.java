@@ -66,7 +66,7 @@ public class ScrollBox extends CB_View_Base {
 
         item.setHeight(virtualHeight);
         lv.setSize(innerWidth, innerHeight);
-        lv.calcDefaultPosList();
+        lv.calculateItemPosition();
         lv.setPos(leftBorder, bottomBorder);
         lv.scrollTo(lv.getScrollPos());
     }
