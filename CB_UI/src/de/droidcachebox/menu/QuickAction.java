@@ -66,6 +66,7 @@ public enum QuickAction {
     uploadDrafts, // 24
     torch, // 25
     createRoute,
+    rememberGeoCache,
 
     // ScreenLock, // 21
 
@@ -128,6 +129,8 @@ public enum QuickAction {
                 return SwitchTorch.getInstance();
             case createRoute:
                 return CreateRoute.getInstance();
+            case rememberGeoCache:
+                return RememberGeoCache.getInstance();
         }
         return null;
     }
@@ -188,6 +191,8 @@ public enum QuickAction {
                 return "torch";
             case createRoute:
                 return "generateRoute";
+            case rememberGeoCache:
+                return "rememberGeoCacheTitle";
         }
         return "empty";
     }

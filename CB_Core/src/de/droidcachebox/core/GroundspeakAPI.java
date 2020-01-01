@@ -530,7 +530,7 @@ public class GroundspeakAPI {
                         .asVoid();
             }
             LastAPIError = "";
-            Log.info(log, "UploadDraftOrLog done");
+            Log.info(log, "UploadDraftOrLog done: " + gcCode);
             return OK;
         } catch (Exception e) {
             retry(e);

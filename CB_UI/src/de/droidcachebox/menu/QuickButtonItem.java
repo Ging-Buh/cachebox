@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.AbstractAction;
+import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.Sprites;
@@ -29,7 +30,7 @@ import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.menu.quickBtns.CreateRoute;
+import de.droidcachebox.menu.quickBtns.RememberGeoCache;
 
 /**
  * Stellt ein Item der Quick Button List dar
@@ -128,8 +129,19 @@ public class QuickButtonItem extends ListViewItemBase {
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));
                 state = 0;
             }
-        } else if (quickAction == QuickAction.createRoute) {
-            mButtonIcon.setDrawable(new SpriteDrawable(CreateRoute.getInstance().getIcon()));
+        } else if (quickAction == QuickAction.rememberGeoCache) {
+            if (getOnLongClickListener() == null) {
+                setOnLongClickListener(RememberGeoCache.getInstance().getLongClickListener());
+                setLongClickable(true);
+            }
+            if (Config.rememberedGeoCache.getValue().length() > 0) {
+                mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(Sprites.IconName.lockIcon.name())));
+            }
+            else {
+                Sprite sprite = new Sprite(Sprites.getSprite(IconName.lockIcon.name()));
+                sprite.setColor(DISABLE_COLOR);
+                mButtonIcon.setDrawable(new SpriteDrawable(sprite));
+            }
         }
     }
 
