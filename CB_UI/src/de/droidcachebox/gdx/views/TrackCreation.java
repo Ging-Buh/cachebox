@@ -1,8 +1,12 @@
 package de.droidcachebox.gdx.views;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.RouteOverlay;
 import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.locator.Coordinate;
@@ -15,14 +19,11 @@ import de.droidcachebox.utils.MathUtils;
 
 import java.util.Date;
 
-public class TrackCreation {
+public class TrackCreation extends AbstractShowAction {
     private static TrackCreation trackCreation;
     Menu cm2;
     private TrackCreation() {
-        cm2 = new Menu("TrackListViewCreateTrackTitle");
-        cm2.addMenuItem("Point2Point", null, trackCreation::genTrackP2P);
-        cm2.addMenuItem("Projection", null, trackCreation::genTrackProjection);
-        cm2.addMenuItem("Circle", null, trackCreation::genTrackCircle);
+        super("");
     }
 
     public static TrackCreation getInstance() {
@@ -32,8 +33,36 @@ public class TrackCreation {
         return trackCreation;
     }
 
-    public void show() {
-        cm2.show();
+    @Override
+    public CB_View_Base getView() {
+        // don't return a view.
+        // show menu direct.
+        GL.that.RunOnGL(this::execute);
+        return null;
+    }
+
+    @Override
+    public void execute() {
+        getContextMenu().show();
+    }
+
+    @Override
+    public Sprite getIcon() {
+        return null;
+    }
+
+    @Override
+    public boolean hasContextMenu() {
+        return true;
+    }
+
+    @Override
+    public Menu getContextMenu() {
+        cm2 = new Menu("TrackListViewCreateTrackTitle");
+        cm2.addMenuItem("Point2Point", null, this::genTrackP2P);
+        cm2.addMenuItem("Projection", null, this::genTrackProjection);
+        cm2.addMenuItem("Circle", null, this::genTrackCircle);
+        return cm2;
     }
 
     private void genTrackP2P() {
@@ -125,5 +154,4 @@ public class TrackCreation {
         }, ProjectionCoordinate.Type.circle, null);
         pC.show();
     }
-
 }

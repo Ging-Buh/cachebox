@@ -38,6 +38,7 @@ import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.main.OptionMenu;
 import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.gdx.views.MapView.MapMode;
+import de.droidcachebox.gdx.views.TrackCreation;
 import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.map.*;
@@ -143,7 +144,7 @@ public class ShowMap extends AbstractShowAction {
             };
             searchCoordinates.doShow();
         });
-        icm.addMenuItem("TrackRecordMenuTitle", null, this::showMenuTrackRecording);
+        icm.addMenuItem("TrackRecordMenuTitle", null, this::showMenuTrackFunctions);
         return icm;
     }
 
@@ -300,7 +301,7 @@ public class ShowMap extends AbstractShowAction {
         normalMapView.setNewSettings(INITIAL_WP_LIST);
     }
 
-    private void showMenuTrackRecording() {
+    private void showMenuTrackFunctions() {
         Menu cm2 = new Menu("TrackRecordMenuTitle");
         if (router != null) {
             if (router.open()) {
@@ -348,7 +349,7 @@ public class ShowMap extends AbstractShowAction {
                 int newValue = (Integer) data;
                 Config.TrackDistance.setValue(newValue);
                 Config.AcceptChanges();
-                showMenuTrackRecording();
+                showMenuTrackFunctions();
                 return true;
             };
             tdMenu.setSingleSelection();
@@ -370,7 +371,7 @@ public class ShowMap extends AbstractShowAction {
         cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
         cm2.addDivider();
         cm2.addMenuItem("load", null, TrackListView.getInstance()::selectTrackFileReadAndAddToTracks);
-        //cm2.addMenuItem("generate", null, () -> TrackCreation.getInstance().show());
+        cm2.addMenuItem("generate", null, () -> TrackCreation.getInstance().execute());
         cm2.addDivider();
         cm2.addMenuItem("Tracks", Sprites.getSprite(IconName.trackListIcon.name()), () -> ViewManager.leftTab.showView(TrackListView.getInstance()));
         cm2.show();
