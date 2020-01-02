@@ -84,8 +84,8 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
 
     @Override
     public void initialize() {
-        setEmptyMsg(Translation.get("EmptyLogList"));
-        scrollTo(0);
+        aktCache = null;
+        setCache(GlobalCore.getSelectedCache());
     }
 
     private CB_RectF getItemRect_F(LogEntry logEntry) {
