@@ -32,7 +32,7 @@ public interface CB_Core_Settings {
     SettingString GcLogin = new SettingString("GcLogin", Login, DEVELOPER, "", Global, ALL);
     SettingBool UseTestUrl = new SettingBool("StagingAPI", Folder, DEVELOPER, false, Global, ALL);
     SettingEncryptedString AccessTokenForTest = new SettingEncryptedString("GcAPIStaging", Login, DEVELOPER, "", Global, ALL);
-    SettingString Friends = new SettingString("Friends", Login, NORMAL, "", Global, ALL);
+    SettingString friends = new SettingString("Friends", Login, NORMAL, "", Global, ALL);
     SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", Login, NORMAL, "", Global, ALL);
 
     SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", Folder, DEVELOPER, Config_Core.mWorkPath + "/PocketQuery", Global, ALL, true);

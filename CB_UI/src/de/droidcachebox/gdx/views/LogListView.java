@@ -51,9 +51,19 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
         setForceHandleTouchEvents();
         itemRec = (new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).scaleCenter(0.97f);
         setBackground(Sprites.ListBack);
-        // setAdapter(null);
-        setCache(GlobalCore.getSelectedCache());
+
+        createFriendList();
+        Config.friends.addSettingChangedListener(this::createFriendList);
+
         setDisposeFlag(false);
+        setCache(GlobalCore.getSelectedCache());
+
+    }
+
+    private void createFriendList() {
+        String friends = Config.friends.getValue().replace(", ", "|").replace(",", "|");
+        friendList = new ArrayList<>();
+        Collections.addAll(friendList, friends.split("\\|"));
     }
 
     public static LogListView getInstance() {
@@ -74,37 +84,8 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
 
     @Override
     public void initialize() {
-        // super.Initial(); does nothing at the moment
-
-        String friends = Config.Friends.getValue().replace(", ", "|").replace(",", "|");
-        String[] finder = friends.split("\\|");
-        friendList = new ArrayList<>();
-        Collections.addAll(friendList, finder);
-
-        createItemList();
-
-        logListViewAdapter = new LogListViewAdapter();
-        setAdapter(logListViewAdapter);
-
         setEmptyMsg(Translation.get("EmptyLogList"));
-
         scrollTo(0);
-    }
-
-    private void createItemList() {
-
-        if (aktCache == null)
-            return;
-
-        logs = new CB_List<>();
-        for (LogEntry logEntry : Database.getLogs(aktCache)) {
-            if (GlobalCore.filterLogsOfFriends) {
-                if (!friendList.contains(logEntry.finder)) {
-                    continue;
-                }
-            }
-            logs.add(new LogItem(logEntry));
-        }
     }
 
     private CB_RectF getItemRect_F(LogEntry logEntry) {
@@ -118,9 +99,28 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
     }
 
     public void setCache(Cache cache) {
+        if (cache == null) {
+            setAdapter(null);
+            logs = new CB_List<>();
+            setEmptyMsg(Translation.get("EmptyLogList"));
+            return;
+        }
         if (aktCache != cache) {
             aktCache = cache;
-            resetIsInitialized();
+            setAdapter(null);
+            logs = new CB_List<>();
+            setEmptyMsg(Translation.get("EmptyLogList"));
+            for (LogEntry logEntry : Database.getLogs(aktCache)) {
+                if (GlobalCore.filterLogsOfFriends) {
+                    if (!friendList.contains(logEntry.finder)) {
+                        continue;
+                    }
+                }
+                logs.add(new LogItem(logEntry));
+            }
+            logListViewAdapter = new LogListViewAdapter();
+            setAdapter(logListViewAdapter);
+            scrollTo(0);
         }
     }
 
@@ -139,11 +139,11 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
 
     private static class LogItem {
         LogEntry logEntry;
-        LogViewItem logViewItem;
+        LogListViewItem logListViewItem;
 
         public LogItem(LogEntry logEntry) {
             this.logEntry = logEntry;
-            logViewItem = null;
+            logListViewItem = null;
         }
     }
 
@@ -167,12 +167,12 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
             if (logs != null) {
                 if (logs.size() > 0) {
                     LogItem logItem = logs.get(position);
-                    if (logItem.logViewItem == null) {
-                        logItem.logViewItem = new LogViewItem(getItemRect_F(logItem.logEntry), index++, logItem.logEntry);
+                    if (logItem.logListViewItem == null) {
+                        logItem.logListViewItem = new LogListViewItem(getItemRect_F(logItem.logEntry), index++, logItem.logEntry);
                     }
-                    // todo for not to get stack or heap overflow handle a list to set a old (no longer visible) logViewItem to null
+                    // todo for not to get stack or heap overflow handle a list to set a old (no longer visible) logListViewItem to null
                     // reducing the list from database is not handled (like in DraftsView)
-                    return logItem.logViewItem;
+                    return logItem.logListViewItem;
                 }
             }
             return null;

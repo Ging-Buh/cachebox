@@ -544,7 +544,7 @@ public class GroundspeakAPI {
 
         LinkedList<String> friendList = new LinkedList<>();
         if (!all) {
-            String friends = CB_Core_Settings.Friends.getValue().replace(", ", "|").replace(",", "|");
+            String friends = CB_Core_Settings.friends.getValue().replace(", ", "|").replace(",", "|");
             for (String f : friends.split("\\|")) {
                 friendList.add(f.toLowerCase(Locale.US));
             }

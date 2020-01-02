@@ -88,7 +88,7 @@ public class ShowLogs extends AbstractShowAction {
     private Menu createContextMenu() {
         Menu contextMenu = new Menu("LogListViewContextMenuTitle");
         contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), () -> loadLogs(true));
-        if (CB_Core_Settings.Friends.getValue().length() > 0) {
+        if (CB_Core_Settings.friends.getValue().length() > 0) {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
@@ -189,7 +189,7 @@ public class ShowLogs extends AbstractShowAction {
         GL.that.postAsync(() -> {
             String friends = GroundspeakAPI.fetchFriends();
             if (GroundspeakAPI.APIError == 0) {
-                Config.Friends.setValue(friends);
+                Config.friends.setValue(friends);
                 Config.AcceptChanges();
                 MessageBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
             } else {

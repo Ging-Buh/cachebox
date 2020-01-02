@@ -37,14 +37,14 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
+public class LogListViewItem extends ListViewItemBackground implements ICopyPaste {
     private static NinePatch headerBackground;
     private static float measuredLabelHeight = 0;
     private static float headHeight;
     private LogEntry logEntry;
     private float secondTab = 0;
 
-    public LogViewItem(CB_RectF rec, int Index, LogEntry logEntry) {
+    public LogListViewItem(CB_RectF rec, int Index, LogEntry logEntry) {
         super(rec, Index, "");
         setLongClickable(false);
         this.logEntry = logEntry;
