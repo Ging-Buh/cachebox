@@ -124,7 +124,7 @@ public class Coordinate extends LatLong implements Serializable {
 
     public static Coordinate Crossbearing(CalculationType type, Coordinate coord1, double direction1, Coordinate coord2, double direction2) {
         float[] dist = new float[4];
-        MathUtils.computeDistanceAndBearing(type, coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude(), dist);
+        MathUtils.calculateDistanceAndBearing(type, coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude(), dist);
         double distance = dist[0];
         Coordinate coord3 = Project(coord1, direction1, distance);
         Coordinate coord4 = Project(coord2, direction2, distance);
@@ -335,7 +335,7 @@ public class Coordinate extends LatLong implements Serializable {
             // See if we already have the result
             // if (getLatitude() != mLat1 || getLongitude() != mLon1 || dest.getLatitude() != mLat2 || dest.getLongitude() != mLon2)
             // {
-            // MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
+            // MathUtils.calculateDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
             // mLat1 = getLatitude();
             // mLon1 = getLongitude();
             // mLat2 = dest.getLatitude();
@@ -345,7 +345,7 @@ public class Coordinate extends LatLong implements Serializable {
             // return mInitialBearing;
 
             synchronized (mResults) {
-                MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
+                MathUtils.calculateDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
                 return mResults[1];
             }
         }
@@ -359,7 +359,7 @@ public class Coordinate extends LatLong implements Serializable {
      */
     public float Distance(Coordinate coord, CalculationType type) {
         // float[] dist = new float[1];
-        MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), coord.getLatitude(), coord.getLongitude(), mResults);
+        MathUtils.calculateDistanceAndBearing(type, getLatitude(), getLongitude(), coord.getLatitude(), coord.getLongitude(), mResults);
         return mResults[0];
     }
 
@@ -370,7 +370,7 @@ public class Coordinate extends LatLong implements Serializable {
      */
     public float Distance(CalculationType type) {
         float[] dist = new float[1];
-        MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), Locator.getInstance().getLatitude(), Locator.getInstance().getLongitude(), dist);
+        MathUtils.calculateDistanceAndBearing(type, getLatitude(), getLongitude(), Locator.getInstance().getLatitude(), Locator.getInstance().getLongitude(), dist);
         return dist[0];
     }
 

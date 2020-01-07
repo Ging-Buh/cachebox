@@ -86,14 +86,14 @@ public class SunMoonCalculator {
     public static final double J2000 = 2451545.0;
     /**
      * Values for azimuth, elevation, rise, set, and transit for the Sun. Angles in radians, rise ... as Julian days in UT.
-     * Distance in AU.
+     * distance in AU.
      */
     public double sunAz, sunEl, sunRise, sunSet, sunTransit, sunTransitElev, sunDist;
 
     ;
     /**
      * Values for azimuth, elevation, rise, set, and transit for the Moon. Angles in radians, rise ... as Julian days in UT.
-     * Moon age is the number of days since last new Moon, in days, from 0 to 29.5. Distance in AU.
+     * Moon age is the number of days since last new Moon, in days, from 0 to 29.5. distance in AU.
      */
     public double moonAz, moonEl, moonRise, moonSet, moonTransit, moonAge, moonTransitElev, moonDist;
     /**

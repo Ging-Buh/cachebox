@@ -40,6 +40,7 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CompassView;
 import de.droidcachebox.gdx.views.TrackListView;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.menuBtn1.ParkingDialog;
@@ -186,7 +187,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         // add Slider as last
         Slider slider = new Slider(this, "Slider");
-        this.addChild(slider);
+        addChild(slider);
 
         Log.debug(log, "Ende ViewManager-Initial");
 
@@ -348,14 +349,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             GL.that.onStart();
             callSkinChanged();
 
-            this.removeChilds();
+            removeChilds();
 
             GestureButton.refreshContextMenuSprite();
             addPhoneTab();
 
             // add Slider as last
             Slider slider = new Slider(this, "Slider");
-            this.addChild(slider);
+            addChild(slider);
             slider.selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
             String state = Config.nightMode.getValue() ? "Night" : "Day";
@@ -434,7 +435,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         }
 
         if (GlobalCore.isSetSelectedCache()) {
-            float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
+            float distance = GlobalCore.getSelectedCache().recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
             if (GlobalCore.getSelectedWaypoint() != null) {
                 distance = GlobalCore.getSelectedWaypoint().getDistance();
             }

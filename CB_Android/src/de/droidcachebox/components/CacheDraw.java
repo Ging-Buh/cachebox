@@ -307,7 +307,7 @@ public class CacheDraw {
             double heading = Locator.getInstance().getHeading();
             double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), cache.getCoordinate().getLatitude(), cache.getCoordinate().getLongitude());
             double cacheBearing = bearing - heading;
-            String cacheDistance = UnitFormatter.distanceString(cache.Distance(CalculationType.FAST, false));
+            String cacheDistance = UnitFormatter.distanceString(cache.recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition()));
             drawBearing(canvas, drawingRec, cacheDistance, cacheBearing);
         }
     }

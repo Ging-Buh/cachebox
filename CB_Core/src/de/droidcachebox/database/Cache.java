@@ -17,7 +17,6 @@ package de.droidcachebox.database;
 
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.locator.Locator;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
 import de.droidcachebox.utils.MathUtils;
@@ -366,16 +365,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    /**
-     * Gibt die Entfernung zur uebergebenen User Position als Float zurueck.
-     *
-     * @return Entfernung zur uebergebenen User Position als Float
-     */
-    public float Distance(CalculationType type, boolean useFinal) {
-        return Distance(type, useFinal, Locator.getInstance().getMyPosition());
-    }
-
-    public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos) {
+    public float recalculateAndGetDistance(CalculationType type, boolean useFinal, Coordinate fromPos) {
         if (isDisposed)
             return 0;
         Waypoint waypoint = null;
@@ -393,7 +383,7 @@ public class Cache implements Comparable<Cache>, Serializable {
                 toPos = coordinate;
         }
         float[] dist = new float[4];
-        MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
+        MathUtils.calculateDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
         cachedDistance = dist[0];
         return cachedDistance;
     }

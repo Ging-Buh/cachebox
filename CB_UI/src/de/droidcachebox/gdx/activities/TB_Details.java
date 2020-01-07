@@ -28,7 +28,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
 /**
- * TODO Visit,Home und Distance müssen noch angezeigt werden!
+ * TODO Visit,Home und distance müssen noch angezeigt werden!
  */
 public class TB_Details extends ActivityBase {
     public static TB_Details that;

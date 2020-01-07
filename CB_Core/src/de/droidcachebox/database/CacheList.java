@@ -33,8 +33,8 @@ public class CacheList extends MoveableList<Cache> {
     public boolean ResortAtWork = false;
 
     public Cache getCacheByGcCodeFromCacheList(String GcCode) {
-        for (int i = 0, n = this.size(); i < n; i++) {
-            Cache cache = this.get(i);
+        for (int i = 0, n = size(); i < n; i++) {
+            Cache cache = get(i);
             if (cache.getGcCode().equalsIgnoreCase(GcCode))
                 return cache;
         }
@@ -42,66 +42,48 @@ public class CacheList extends MoveableList<Cache> {
     }
 
     public Cache getCacheByIdFromCacheList(long cacheId) {
-        for (int i = 0, n = this.size(); i < n; i++) {
-            Cache cache = this.get(i);
+        for (int i = 0, n = size(); i < n; i++) {
+            Cache cache = get(i);
             if (cache.Id == cacheId)
                 return cache;
         }
         return null;
     }
 
-    /*
-     * @param selectedCoord
-     *            GlobalCore.getSelectedCoord()
-     * @param selected
-     *            new CacheWithWp(GlobalCore.getSelectedCache(),GlobalCore.getSelectedWP())
-     * @param userName
-     *            Config.settings.GcLogin.getValue()
-     * @param ParkingLatitude
-     *            Config.settings.ParkingLatitude.getValue()
-     * @param ParkingLongitude
-     *            Config.settings.ParkingLongitude.getValue()
-     * @return CacheWithWP [null posible] set To<br>
-     *         GlobalCore.setSelectedWaypoint(nextCache, waypoint, false);<br>
-     *         GlobalCore.NearestCache(nextCache);
-     */
-
     public CacheWithWP resort(Coordinate selectedCoord, CacheWithWP selected) {
 
         CacheWithWP retValue = null;
 
-        this.ResortAtWork = true;
+        ResortAtWork = true;
         boolean isLocatorValid = Locator.getInstance().isValid();
         // Alle Distanzen aktualisieren
         if (isLocatorValid) {
-            for (int i = 0, n = this.size(); i < n; i++) {
-                Cache cache = this.get(i);
-                cache.Distance(CalculationType.FAST, true);
+            for (int i = 0, n = size(); i < n; i++) {
+                get(i).recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
             }
         } else {
-            // sort after Distance from selected Cache
+            // sort after distance from selected Cache
             Coordinate fromPos = selectedCoord;
             // avoid "illegal waypoint"
             if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)) {
                 fromPos = selected.getCache().getCoordinate();
             }
             if (fromPos == null) {
-                this.ResortAtWork = false;
+                ResortAtWork = false;
                 return retValue;
             }
-            for (int i = 0, n = this.size(); i < n; i++) {
-                Cache cache = this.get(i);
-                cache.Distance(CalculationType.FAST, true, fromPos);
+            for (int i = 0, n = size(); i < n; i++) {
+                get(i).recalculateAndGetDistance(CalculationType.FAST, true, fromPos);
             }
         }
 
-        this.sort();
+        sort();
 
         // Nächsten Cache auswählen
-        if (this.size() > 0) {
-            Cache nextCache = this.get(0); // or null ...
-            for (int i = 0; i < this.size(); i++) {
-                nextCache = this.get(i);
+        if (size() > 0) {
+            Cache nextCache = get(0); // or null ...
+            for (int i = 0; i < size(); i++) {
+                nextCache = get(i);
                 if (!nextCache.isArchived()) {
                     if (nextCache.isAvailable()) {
                         if (!nextCache.isFound()) {
@@ -153,11 +135,11 @@ public class CacheList extends MoveableList<Cache> {
         // vorhandenen Parkplatz Cache nach oben schieben
         Cache park = getCacheByGcCodeFromCacheList("CBPark");
         if (park != null) {
-            this.moveItemFirst(this.indexOf(park));
+            moveItemFirst(indexOf(park));
         }
 
         // Cursor.Current = Cursors.Default;
-        this.ResortAtWork = false;
+        ResortAtWork = false;
         return retValue;
     }
 
@@ -167,11 +149,10 @@ public class CacheList extends MoveableList<Cache> {
      */
     @Override
     public void clear() {
-        for (int i = 0, n = this.size(); i < n; i++) {
-            Cache cache = this.get(i);
+        for (int i = 0, n = size(); i < n; i++) {
+            Cache cache = get(i);
             if (!cache.isLive())
                 cache.dispose();
-            cache = null;
         }
         super.clear();
     }
@@ -184,8 +165,8 @@ public class CacheList extends MoveableList<Cache> {
 
     public ArrayList<String> getGcCodes() {
         ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0, n = this.size(); i < n; i++) {
-            list.add(this.get(i).getGcCode());
+        for (int i = 0, n = size(); i < n; i++) {
+            list.add(get(i).getGcCode());
         }
         return list;
     }
@@ -196,10 +177,8 @@ public class CacheList extends MoveableList<Cache> {
             return -1;
 
         int index = -1;
-        for (int i = 0, n = this.size(); i < n; i++) {
-
-            Cache cache = get(i);
-            if (cache.Id == ca.Id) {
+        for (int i = 0, n = size(); i < n; i++) {
+            if (get(i).Id == ca.Id) {
                 index = i;
             }
         }
@@ -208,7 +187,7 @@ public class CacheList extends MoveableList<Cache> {
             // Replace LiveCache with Cache
             if (get(index).isLive()) {
                 if (!ca.isLive()) {
-                    this.replace(ca, index);
+                    replace(ca, index);
                     return index;
                 }
             }

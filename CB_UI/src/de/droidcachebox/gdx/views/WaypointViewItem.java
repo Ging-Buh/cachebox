@@ -119,7 +119,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 if (mWaypoint == null) {
                     lat = mCache.getLatitude();
                     lon = mCache.getLongitude();
-                    distance = mCache.Distance(CalculationType.FAST, true);
+                    distance = mCache.recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
                 } else {
                     lat = mWaypoint.getLatitude();
                     lon = mWaypoint.getLongitude();

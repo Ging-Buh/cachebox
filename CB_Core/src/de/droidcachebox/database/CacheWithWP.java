@@ -9,21 +9,21 @@ public class CacheWithWP {
     private Cache cache;
     private Waypoint waypoint;
 
-    public CacheWithWP(Cache Cache, Waypoint waypoint) {
-        this.cache = Cache;
+    public CacheWithWP(Cache cache, Waypoint waypoint) {
+        this.cache = cache;
         this.waypoint = waypoint;
     }
 
     public void dispose() {
-        this.cache = null;
-        this.waypoint = null;
+        cache = null;
+        waypoint = null;
     }
 
     public Cache getCache() {
-        return this.cache;
+        return cache;
     }
 
     public Waypoint getWaypoint() {
-        return this.waypoint;
+        return waypoint;
     }
 }

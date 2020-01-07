@@ -933,7 +933,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
                     float[] result = new float[2];
 
-                    MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
+                    MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
 
                     float bearing = result[1];
 

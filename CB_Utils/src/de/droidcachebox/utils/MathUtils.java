@@ -32,16 +32,6 @@ public class MathUtils {
     static public final double RAD_DEG = 180.0 / Math.PI;
 
     /**
-     * precalculation of Math.PI * 2
-     */
-    static public final double PI2 = Math.PI * 2;
-
-    /**
-     * precalculation of Math.PI / 2
-     */
-    static public final double HALF_PI = Math.PI / 2;
-
-    /**
      * WGS84 major axis = 6378137.0
      */
     static public final double WGS84_MAJOR_AXIS = 6378137.0; // WGS84 major axis
@@ -56,10 +46,10 @@ public class MathUtils {
     /**
      * Legalize the given degrees in to a value between 0 and 360!
      *
-     * @param value
-     * @return
+     * @param value ?
+     * @return ?
      */
-    static public float LegalizeDegreese(float value) {
+    static public float legalizeDegrees(float value) {
         while (value > 360) {
             value = value - 360;
         }
@@ -85,17 +75,17 @@ public class MathUtils {
      * @param results        an array of floats to hold the results
      * @throws IllegalArgumentException if results is null or has length < 1
      */
-    public static void computeDistanceAndBearing(CalculationType type, double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results) {
+    public static void calculateDistanceAndBearing(CalculationType type, double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results) {
         if (results == null || results.length < 1) {
             throw new IllegalArgumentException("results is null or has length < 1");
         }
 
         switch (type) {
             case ACCURATE:
-                computeDistanceAndBearingAccurate(startLatitude, startLongitude, endLatitude, endLongitude, results);
+                calculateDistanceAndBearingAccurate(startLatitude, startLongitude, endLatitude, endLongitude, results);
                 break;
             case FAST:
-                computeDistanceAndBearingFast(startLatitude, startLongitude, endLatitude, endLongitude, results);
+                calculateDistanceAndBearingFast(startLatitude, startLongitude, endLatitude, endLongitude, results);
                 break;
         }
     }
@@ -103,13 +93,13 @@ public class MathUtils {
     /**
      * Fast calculation with Cos/Sin/Atan over LockUpTable
      *
-     * @param lat1
-     * @param lon1
-     * @param lat2
-     * @param lon2
-     * @param results
+     * @param lat1 ?
+     * @param lon1 ?
+     * @param lat2 ?
+     * @param lon2 ?
+     * @param results ?
      */
-    private static void computeDistanceAndBearingFast(double lat1, double lon1, double lat2, double lon2, float[] results) {
+    private static void calculateDistanceAndBearingFast(double lat1, double lon1, double lat2, double lon2, float[] results) {
         double longitude1 = lon1;
         double longitude2 = lon2;
         double latitude1 = Math.toRadians(lat1);
@@ -140,7 +130,7 @@ public class MathUtils {
         }
     }
 
-    private static void computeDistanceAndBearingAccurate(double lat1, double lon1, double lat2, double lon2, float[] results) {
+    private static void calculateDistanceAndBearingAccurate(double lat1, double lon1, double lat2, double lon2, float[] results) {
         // Based on http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
         // using the "Inverse Formula" (section 4)
 
@@ -165,10 +155,10 @@ public class MathUtils {
 
         double sigma = 0.0;
         double deltaSigma = 0.0;
-        double cosSqAlpha = 0.0;
-        double cos2SM = 0.0;
-        double cosSigma = 0.0;
-        double sinSigma = 0.0;
+        double cosSqAlpha;
+        double cos2SM;
+        double cosSigma;
+        double sinSigma;
         double cosLambda = 0.0;
         double sinLambda = 0.0;
 

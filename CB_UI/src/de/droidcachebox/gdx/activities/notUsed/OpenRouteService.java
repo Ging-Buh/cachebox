@@ -141,7 +141,7 @@ public class OpenRouteService {
                                                         FromPosition = new Coordinate(lastAcceptedCoordinate);
                                                         FromPosition.setValid(true);
                                                     } else {
-                                                        MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+                                                        MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
                                                                 lastAcceptedCoordinate.getLongitude(), dist);
                                                         distance += dist[0];
                                                         FromPosition = new Coordinate(lastAcceptedCoordinate);

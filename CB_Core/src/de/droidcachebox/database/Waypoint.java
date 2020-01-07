@@ -82,7 +82,7 @@ public class Waypoint implements Serializable {
         Coordinate fromPos = Locator.getInstance().getLocation().toCordinate();
         float[] dist = new float[4];
 
-        MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude(), dist);
+        MathUtils.calculateDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude(), dist);
         return dist[0];
     }
 

@@ -210,7 +210,7 @@ public class TrackRecorder {
             // zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
             float[] dist = new float[1];
 
-            MathUtils.computeDistanceAndBearing(CalculationType.FAST, lastRecordedPosition.getLatitude(), lastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
+            MathUtils.calculateDistanceAndBearing(CalculationType.FAST, lastRecordedPosition.getLatitude(), lastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
             float cachedDistance = dist[0];
 
             if (cachedDistance > distanceForNextTrackpoint) {

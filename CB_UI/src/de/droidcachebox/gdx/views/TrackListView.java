@@ -338,7 +338,7 @@ public class TrackListView extends V_ListView {
                                     fromPosition.setElevation(lastAcceptedCoordinate.getElevation());
                                     fromPosition.setValid(true);
                                 } else {
-                                    MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, fromPosition.getLatitude(), fromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
+                                    MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.ACCURATE, fromPosition.getLatitude(), fromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
                                     distance = distance + dist[0];
                                     deltaAltitude = Math.abs(fromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
                                     fromPosition = new CoordinateGPS(lastAcceptedCoordinate);

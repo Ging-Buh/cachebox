@@ -38,7 +38,7 @@ public class FunctionDistance extends Function {
         }
         float[] dist = new float[2];
         try {
-            MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, coord[0].getLatitude(), coord[0].getLongitude(), coord[1].getLatitude(), coord[1].getLongitude(), dist);
+            MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, coord[0].getLatitude(), coord[0].getLongitude(), coord[1].getLatitude(), coord[1].getLongitude(), dist);
             return String.valueOf(dist[0]);
         } catch (Exception ex) {
             return Translation.get("StdError", "$solverFuncDistance", ex.getMessage(), coord[0].formatCoordinate() + " -> " + coord[1].formatCoordinate());

@@ -381,7 +381,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             mCompassMapView.setZeroPos();
             rightBox.addChild(mCompassMapView);
 
-            lblDistance = new CB_Label("Distance", margin, margin, rightBox.getWidth(), (Fonts.measureForBigFont("T").height * 2.5f));
+            lblDistance = new CB_Label("lblDistance", margin, margin, rightBox.getWidth(), (Fonts.measureForBigFont("T").height * 2.5f));
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.CENTER);
@@ -392,7 +392,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             rightBox.addChild(lblDistance);
         } else {
             float h = Fonts.measureForBigFont("T").height * 2.5f;
-            lblDistance = new CB_Label("Distance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
+            lblDistance = new CB_Label("lblDistance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.LEFT);
@@ -641,7 +641,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         float[] result = new float[4];
 
         try {
-            MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
+            MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
         } catch (Exception e1) {
             Log.info(log, "PositionChanged but error calculating distance and bearing");
             return;
@@ -714,7 +714,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
             float[] result = new float[2];
 
-            MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
+            MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
 
             float bearing = result[1];
 

@@ -555,7 +555,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     @Override
     public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         Log.info(sKlasse, "=> selectedCacheChanged");
-        float distance = cache.Distance(CalculationType.FAST, false);
+        float distance = cache.recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
         if (waypoint != null) {
             distance = waypoint.getDistance();
         }
