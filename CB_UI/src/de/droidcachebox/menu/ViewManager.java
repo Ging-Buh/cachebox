@@ -32,7 +32,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
-import de.droidcachebox.gdx.main.CB_ButtonBar;
 import de.droidcachebox.gdx.main.CB_TabView;
 import de.droidcachebox.gdx.main.GestureButton;
 import de.droidcachebox.gdx.main.MainViewBase;
@@ -66,7 +65,7 @@ import de.droidcachebox.utils.log.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
 /**
@@ -235,26 +234,25 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         leftTab = new CB_TabView(rec, "leftTab");
 
         if (Config.useDescriptiveCB_Buttons.getValue()) {
-            mainBtn1 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "CacheList");
-            mainBtn2 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Cache");
-            mainBtn3 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Nav");
-            mainBtn4 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Tool");
-            mainBtn5 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Misc");
+            mainBtn1 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "CacheList");
+            mainBtn2 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Cache");
+            mainBtn3 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Nav");
+            mainBtn4 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Tool");
+            mainBtn5 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Misc");
         } else {
-            mainBtn1 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mainBtn2 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mainBtn3 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mainBtn4 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mainBtn5 = new GestureButton(mainBtnSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            mainBtn1 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            mainBtn2 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            mainBtn3 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            mainBtn4 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            mainBtn5 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
-        CB_ButtonBar mainButtonBar = new CB_ButtonBar();
-        mainButtonBar.addButton(mainBtn1);
-        mainButtonBar.addButton(mainBtn2);
-        mainButtonBar.addButton(mainBtn3);
-        mainButtonBar.addButton(mainBtn4);
-        mainButtonBar.addButton(mainBtn5);
-        leftTab.setButtonList(mainButtonBar);
+        leftTab.addMainButton(mainBtn1);
+        leftTab.addMainButton(mainBtn2);
+        leftTab.addMainButton(mainBtn3);
+        leftTab.addMainButton(mainBtn4);
+        leftTab.addMainButton(mainBtn5);
+        leftTab.setButtonList();
         addChild(leftTab);
 
         // Actions den Buttons zuweisen

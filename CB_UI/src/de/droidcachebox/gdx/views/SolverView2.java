@@ -59,9 +59,9 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             SolverZeile zeile;
             if (neu) {
                 zeile = new SolverZeile(solver, backString);
-                solver.add(mSelectedIndex, zeile);
+                solver.add(selectedIndex, zeile);
             } else {
-                zeile = solver.get(mSelectedIndex);
+                zeile = solver.get(selectedIndex);
                 zeile.setText(backString);
             }
 
@@ -72,7 +72,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
 
             if (!neu) {
                 // wenn der letzte Eintrag geändert wurde dann soll hinter dem letzten Eintrag eine weitere neue Zeile eingefügt werden
-                if (mSelectedIndex == solver.size() - 1) {
+                if (selectedIndex == solver.size() - 1) {
                     solver.add(solver.size(), new SolverZeile(solver, ""));
                     neu = true; // damit die Liste neu geladen wird
                 }
@@ -209,8 +209,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     }
 
     private void ChangeLine() {
-        if (solver == null || mSelectedIndex < 0) return;
-        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, solver.get(mSelectedIndex).getOrgText(), true, DataType.None);
+        if (solver == null || selectedIndex < 0) return;
+        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, solver.get(selectedIndex).getOrgText(), true, DataType.None);
         neu = false;
         solverDialog.show(backListener);
     }
@@ -224,7 +224,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     private void DeleteLine() {
         MessageBox.show("Zeile löschen?", "Solver", MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
             if (which == 1) {
-                solver.remove(mSelectedIndex);
+                solver.remove(selectedIndex);
                 solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
                 solver.Solve();
                 solver.add(solver.size(), new SolverZeile(solver, ""));
@@ -245,7 +245,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         // if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
         // if the result(s) does not include any coordinate -> return null
         try {
-            SolverZeile zeile = solver.get(mSelectedIndex);
+            SolverZeile zeile = solver.get(selectedIndex);
             String text = zeile.Solution;
             // Wenn in dieser Zeile eine Zuweisung enthalten ist -> diese einfach entfernen!
             if (text.contains("=")) {
@@ -254,7 +254,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             CoordinateGPS result = new CoordinateGPS(text);
             if (!result.isValid()) {
                 // Zweizeilig versuchen
-                SolverZeile zeile2 = solver.get(mSelectedIndex + 1);
+                SolverZeile zeile2 = solver.get(selectedIndex + 1);
                 String text2 = zeile2.Solution;
                 if (text2.contains("="))
                     text2 = text2.substring(text2.indexOf("=") + 1);

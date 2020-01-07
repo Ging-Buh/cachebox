@@ -49,14 +49,6 @@ public class CB_View_Base extends GL_View_Base {
         super(size, Name);
     }
 
-    private static void setToNull(CB_View_Base view) {
-        if (view.childs.size() != 0) {
-            synchronized (view.childs) {
-                view.childs.clear();
-            }
-        }
-    }
-
     @Override
     public boolean isDisposed() {
         return isDisposed;
@@ -88,9 +80,7 @@ public class CB_View_Base extends GL_View_Base {
     }
 
     @Override
-    public void onLongClick(int x, int y, int pointer, int button) {
-
-    }
+    public void onLongClick(int x, int y, int pointer, int button) {}
 
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
@@ -109,34 +99,22 @@ public class CB_View_Base extends GL_View_Base {
 
     @Override
     public void dispose() {
-        // Remove from RenderViews if registered
-        GL.that.removeRenderView(this);
-
-        if (childs == null) {
-            // set this to null!
-            setToNull(this);
-        } else {
-            try {
-                synchronized (childs) {
-                    for (int i = 0; i < childs.size(); i++) {
-                        GL_View_Base view;
-                        try {
-                            view = childs.get(i);
-                        } catch (Exception e) {
-                            break;
-                        }
-                        if (view != null && !view.isDisposed())
-                            view.dispose();
+        GL.that.removeRenderView(this); // Remove from RenderViews if registered
+        try {
+            synchronized (childs) {
+                for (int i = 0; i < childs.size(); i++) {
+                    GL_View_Base view;
+                    try {
+                        view = childs.get(i);
+                    } catch (Exception e) {
+                        break;
                     }
-
-                    childs.clear();
-                    // set this to null!
-                    setToNull(this);
+                    if (view != null && !view.isDisposed())
+                        view.dispose();
                 }
-            } catch (Exception e) {
-                // NoSuchElementException
-                setToNull(this);
+                childs.clear();
             }
+        } catch (Exception ignored) {
         }
 
         if (row != null) {
@@ -145,7 +123,6 @@ public class CB_View_Base extends GL_View_Base {
             }
             row.clear();
         }
-
         row = null;
 
         isDisposed = true;

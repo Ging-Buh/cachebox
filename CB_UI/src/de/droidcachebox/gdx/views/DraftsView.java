@@ -92,7 +92,7 @@ public class DraftsView extends V_ListView {
         setAdapter(null);
         lvAdapter = new DraftsViewAdapter(drafts);
         setAdapter(lvAdapter);
-        setEmptyMsg(Translation.get("EmptyDrafts"));
+        setEmptyMsgBmpFntCah(Translation.get("EmptyDrafts"));
         firstShow = true;
     }
 

@@ -115,7 +115,7 @@ public class GL_UISizes implements SizeChangedEvent {
      */
     public static SizeF targetArrow;
     public static float margin;
-    public static CB_RectF mainBtnSize;
+    public static CB_RectF mainButtonSize;
     static float frameHeight = -1;
     // /**
     // * Die Größe der D/T Wertungs Stars
@@ -242,7 +242,7 @@ public class GL_UISizes implements SizeChangedEvent {
         int frameLeftwidth = UiSizes.getInstance().RefWidth;
         // private static int BottomButtonHeight = convertDip2Pix(65);
         int MainButtonSideLength = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
-        mainBtnSize = new CB_RectF(0, 0, MainButtonSideLength, MainButtonSideLength);
+        mainButtonSize = new CB_RectF(0, 0, MainButtonSideLength, MainButtonSideLength);
 
         margin = (float) (6.6666667 * dpi);
 

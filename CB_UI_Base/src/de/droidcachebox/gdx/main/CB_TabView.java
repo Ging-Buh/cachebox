@@ -10,36 +10,39 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.log.Log;
 
-import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
+import java.util.ArrayList;
+
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 
 /**
- * the CB_TabView shows the aktView<br>
- * which is shown by clicking a button of the mButtonList
+ * the CB_TabView shows the currentView<br>
+ * which is shown by clicking a button of the gestureButtons
  */
 public class CB_TabView extends CB_View_Base {
     private final static String sKlasse = "CB_TabView";
-
     private final CB_RectF mContentRec;
-    private CB_ButtonBar mButtonList;
-    private H_ListView buttonListView;
-    private CB_View_Base aktView;
+    private ArrayList<GestureButton> mainButtons;
+    private H_ListView mainButtonListView;
+    private CB_View_Base currentView;
 
     public CB_TabView(CB_RectF rec, String Name) {
         super(rec, Name);
+        mainButtons = new ArrayList<>();
         mContentRec = new CB_RectF(rec);
         layout();
     }
 
-    public void setButtonList(CB_ButtonBar buttonList) {
-        mButtonList = buttonList;
-        if (mButtonList == null)
-            return;
-        buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), mainBtnSize.getHeight()), "ButtonList von " + this.getName());
-        buttonListView.setAdapter(new CustomAdapter());
-        buttonListView.setUnDraggable();
-        buttonListView.setBackground(Sprites.ButtonBack);
-        buttonListView.setDisposeFlag(false);
-        this.addChild(buttonListView);
+    public void setButtonList() {
+        mainButtonListView = new H_ListView(new CB_RectF(0, 0, getWidth(), mainButtonSize.getHeight()), "ButtonList von " + getName());
+        mainButtonListView.setAdapter(new MainButtonListViewAdapter());
+        mainButtonListView.setUnDraggable();
+        mainButtonListView.setBackground(Sprites.ButtonBack);
+        mainButtonListView.setDisposeFlag(false);
+        addChild(mainButtonListView);
+    }
+
+    public void addMainButton(GestureButton button) {
+        mainButtons.add(button);
     }
 
     @Override
@@ -48,13 +51,13 @@ public class CB_TabView extends CB_View_Base {
     }
 
     private void layout() {
-        mContentRec.setHeight(this.getHeight() - mainBtnSize.getHeight());
-        mContentRec.setPos(0, mainBtnSize.getHeight());
+        mContentRec.setHeight(getHeight() - mainButtonSize.getHeight());
+        mContentRec.setPos(0, mainButtonSize.getHeight());
 
-        if (aktView != null) {
+        if (currentView != null) {
             // set View size and pos
-            aktView.setSize(this.getWidth(), this.getHeight() - buttonListView.getHeight());
-            aktView.setPos(new Vector2(0, buttonListView.getHeight()));
+            currentView.setSize(getWidth(), getHeight() - mainButtonListView.getHeight());
+            currentView.setPos(new Vector2(0, mainButtonListView.getHeight()));
 
         }
     }
@@ -62,74 +65,61 @@ public class CB_TabView extends CB_View_Base {
     @Override
     protected void initialize() {
         // Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
-        if (mButtonList.Buttons.size() <= buttonListView.getMaxItemCount()) {
-            float sollDivider = (buttonListView.getWidth() - (mainBtnSize.getHeight() * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
-            buttonListView.setDividerSize(sollDivider);
+        if (mainButtons.size() <= mainButtonListView.getMaxItemCount()) {
+            float sollDivider = (mainButtonListView.getWidth() - (mainButtonSize.getHeight() * mainButtons.size())) / (mainButtons.size() + 1);
+            mainButtonListView.setDividerSize(sollDivider);
         }
 
-        // Das Button Seitenverh�ltniss ist 88x76!
-        // H�he der Buttons einstellen und diese Zentrieren!
-        float buttonHeight = mainBtnSize.getHeight() * 0.863f;
-        for (GestureButton btn : mButtonList.Buttons) {
-            btn.setHeight(buttonHeight);
+        // the main button is 88x76!
+        float buttonHeight = mainButtonSize.getHeight() * 0.863f;
+        for (GestureButton mainButton : mainButtons) {
+            mainButton.setHeight(buttonHeight);
         }
 
     }
 
     public void showView(final CB_View_Base view) {
-
-        Thread th = new Thread(() -> {
+        new Thread(() -> {
             try {
                 GL.that.clearRenderViews();
                 GL.that.closeAllDialogs();
-
-                if (aktView != null && aktView != view) {
-                    removeChild(aktView);
-                    // aktView.onStop();
-                    aktView.onHide();
-                    aktView.setInvisible();
+                if (currentView != null && currentView != view) {
+                    removeChild(currentView);
+                    currentView.onHide();
+                    currentView.setInvisible();
                 }
-
                 try {
-                    // set View size and pos
-                    view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
-                    view.setPos(new Vector2(0, buttonListView.getHeight()));
+                    view.setSize(getWidth(), getHeight() - mainButtonListView.getHeight());
+                    view.setPos(new Vector2(0, mainButtonListView.getHeight()));
                 } catch (Exception ex) {
                     Log.err(sKlasse, "set view size", ex);
                     return;
                 }
-
-                if (aktView == view)
+                if (currentView == view)
                     return;
-
-                aktView = view;
-                addChild(aktView);
-
-                aktView.setVisible();
-                sendOnShow2aktView();
-
+                currentView = view;
+                addChild(currentView);
+                currentView.setVisible();
+                sendOnShow2CurrentView();
                 GL.that.renderOnce();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.err(sKlasse, "", ex);
             }
-        });
-
-        th.start();
-
+        }).start();
     }
 
-    /**
-     * Beim Wechsel der View, kann es sein, dass noch nicht alle Childs der View geladen sind, da die meisten Childs erst in der initial()
-     * erstellt werden. Damit erhalten diese Childs dann kein onShow(). Als Abhilfe werden hier erst 150ms gewartet, bevor ein onShow()
-     * ausgef�hrt wird.
-     */
-    private void sendOnShow2aktView() {
-        GL.that.RunOnGL(() -> GL.that.RunOnGL(() -> {
-            if (aktView != null && aktView.isVisible())
-                aktView.onShow();
-            buttonListView.notifyDataSetChanged();
-        }));
+    private void sendOnShow2CurrentView() {
+        // on changing the view the children are perhaps not yet created, cause they are created in initializing method.
+        // resulting they would not be shown. therefore doing RunOnGL twice (resulting in waittime 150ms)
+        GL.that.RunOnGL(
+                () -> GL.that.RunOnGL(
+                        () -> {
+                            if (currentView != null && currentView.isVisible())
+                                currentView.onShow();
+                            mainButtonListView.notifyDataSetChanged();
+                        }
+                )
+        );
     }
 
     public CB_RectF getContentRec() {
@@ -138,31 +128,30 @@ public class CB_TabView extends CB_View_Base {
 
     @Override
     public void skinIsChanged() {
-        showView(aktView);
+        showView(currentView);
     }
 
-    public class CustomAdapter implements Adapter {
-
-        public CustomAdapter() {
-        }
-
-        @Override
-        public ListViewItemBase getView(int position) {
-            if (mButtonList == null || mButtonList.Buttons == null)
-                return null;
-            GestureButton btn = mButtonList.Buttons.get(position);
-            btn.setActView(aktView);
-            return new CB_ButtonListItem(position, btn, "Item " + position);
+    private class MainButtonListViewAdapter implements Adapter {
+        public MainButtonListViewAdapter() {
         }
 
         @Override
         public int getCount() {
-            return mButtonList.Buttons.size();
+            return mainButtons.size();
+        }
+
+        @Override
+        public ListViewItemBase getView(int position) {
+            if (mainButtons == null)
+                return null;
+            GestureButton gestureButton = mainButtons.get(position);
+            gestureButton.setCurrentView(currentView);
+            return new CB_ButtonListItem(position, gestureButton, "Item " + position);
         }
 
         @Override
         public float getItemSize(int position) {
-            return mainBtnSize.getHeight();
+            return mainButtonSize.getHeight();
         }
     }
 

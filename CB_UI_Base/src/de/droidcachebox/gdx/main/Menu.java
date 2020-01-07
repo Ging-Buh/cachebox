@@ -474,7 +474,7 @@ public class Menu extends ButtonDialog {
     }
 
     public void addDivider() {
-        MenuItemDivider item = new MenuItemDivider(mItems.size(), "Menu Devider");
+        MenuItemDivider item = new MenuItemDivider(mItems.size(), "Menu Divider");
         item.setHeight(ItemHeight / 5);
         item.setEnabled(false);
         mItems.add(item);

@@ -48,23 +48,23 @@ public class GalleryView extends H_ListView {
             mPosDefault = new CB_List<>();
         }
 
-        float countPos = this.getWidth();
-        minimumItemSize = this.getWidth();
-        mAllSize = 0;
+        float countPos = getWidth();
+        minimumItemSize = getWidth();
+        allSize = 0;
         for (int i = 0; i < adapter.getCount(); i++) {
             float itemWidth = adapter.getItemSize(i);
-            countPos -= itemWidth + mDividerSize;
-            mPosDefault.add(0, countPos - mItemPosOffset);
-            mAllSize += itemWidth + mDividerSize;
+            countPos -= itemWidth + dividerSize;
+            mPosDefault.add(0, countPos - itemPosOffset);
+            allSize += itemWidth + dividerSize;
 
             if (itemWidth < minimumItemSize)
                 minimumItemSize = itemWidth;
         }
-        mcalcAllSizeBase = countPos - mDividerSize;
-        mPos = countPos - mDividerSize;
-        mMaxItemCount = (int) (this.getWidth() / minimumItemSize);
-        if (mMaxItemCount < 1)
-            mMaxItemCount = 1;
+        calculateAllSizeBase = countPos - dividerSize;
+        currentPosition = countPos - dividerSize;
+        maxItemCount = (int) (getWidth() / minimumItemSize);
+        if (maxItemCount < 1)
+            maxItemCount = 1;
     }
 
     @Override
@@ -79,13 +79,13 @@ public class GalleryView extends H_ListView {
 
             int n = mPosDefault.size() - 1;
             for (int i = 0; i < n; i++) {
-                final float pos1 = mPosDefault.get(i) - this.getHalfWidth() + (itemWidth / 2);
-                final float pos2 = mPosDefault.get(i + 1) - this.getHalfWidth() + (itemWidth / 2);
+                final float pos1 = mPosDefault.get(i) - getHalfWidth() + (itemWidth / 2);
+                final float pos2 = mPosDefault.get(i + 1) - getHalfWidth() + (itemWidth / 2);
 
-                if (mPos > pos1 && mPos < pos2 || mPos < 0 || mPos > mAllSize + itemWidth) {
+                if (currentPosition > pos1 && currentPosition < pos2 || currentPosition < 0 || currentPosition > allSize + itemWidth) {
                     //search max Div
-                    final float div1 = Math.abs(mPos - pos1);
-                    final float div2 = Math.abs(mPos - pos2);
+                    final float div1 = Math.abs(currentPosition - pos1);
+                    final float div2 = Math.abs(currentPosition - pos2);
 
                     if (div1 <= div2) {
                         // setSelection(i);
@@ -123,21 +123,21 @@ public class GalleryView extends H_ListView {
         for (int i = 0, n = mPosDefault.size() - 1; i < n; i++) {
             final float pos1 = mPosDefault.get(i);
             final float pos2 = mPosDefault.get(i + 1);
-            if (mPos > pos1 && mPos < pos2) {
+            if (currentPosition > pos1 && currentPosition < pos2) {
                 //search max Div
-                final float div1 = Math.abs(mPos - pos1);
-                final float div2 = Math.abs(mPos - pos2);
+                final float div1 = Math.abs(currentPosition - pos1);
+                final float div2 = Math.abs(currentPosition - pos2);
                 final int idx = i;
                 GL.that.RunOnGL(() -> {
                     if (div1 <= div2) {
                         //Snap to 1
-                        mBottomAnimation = false;
+                        bottomAnimation = false;
                         scrollTo(pos1);
                         Log.debug(log, "SnapIn first " + pos1);
                         snapIn(idx);
                     } else {
                         //Snap to 2
-                        mBottomAnimation = true;
+                        bottomAnimation = true;
                         scrollTo(pos2);
                         Log.debug(log, "SnapIn second " + pos2);
                         snapIn(idx + 1);
@@ -149,19 +149,19 @@ public class GalleryView extends H_ListView {
     }
 
     public void reloadItemsNow() {
-        this.removeChildsDirekt();
-        this.mAddedIndexList.clear();
-        this.addVisibleItems(true);
+        removeChildsDirekt();
+        addedIndexList.clear();
+        addVisibleItems(true);
     }
 
     @Override
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-        if (!mIsDraggable)
+        if (!isDraggable)
             return false;
-        mDragged = x - mLastTouch;
-        float sollPos = mLastPos_onTouch - mDragged;
-        if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase) {
-            if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase) {
+        dragged = x - lastTouchInMoveDirection;
+        float sollPos = mLastPos_onTouch - dragged;
+        if (sollPos - firstItemSize > 0 || sollPos < calculateAllSizeBase) {
+            if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < calculateAllSizeBase) {
                 if (KineticPan)
                     GL_Input.that.StopKinetic(x, y, pointer, true);
                 return true;
@@ -188,10 +188,10 @@ public class GalleryView extends H_ListView {
         if (idx < 0)
             return;
         float defaultpos = mPosDefault.get(idx);
-        float sollpos = defaultpos - this.getHalfWidth() + (adapter.getItemSize(idx) / 2);
-        mBottomAnimation = sollpos > mPos;
+        float sollpos = defaultpos - getHalfWidth() + (adapter.getItemSize(idx) / 2);
+        bottomAnimation = sollpos > currentPosition;
         scrollTo(sollpos);
-        this.mSelectedIndex = idx;
+        selectedIndex = idx;
     }
 
     @Override
@@ -203,7 +203,7 @@ public class GalleryView extends H_ListView {
 
         int idx = 0;
         for (int n = adapter.getCount(); idx < n; idx++) {
-            if (mPosDefault.get(idx) > mPos - 50 && mPosDefault.get(idx) < mPos + 50)
+            if (mPosDefault.get(idx) > currentPosition - 50 && mPosDefault.get(idx) < currentPosition + 50)
                 break;
         }
 

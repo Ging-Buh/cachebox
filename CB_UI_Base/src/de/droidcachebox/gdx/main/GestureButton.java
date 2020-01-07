@@ -23,7 +23,7 @@ import de.droidcachebox.utils.Point;
 import java.util.ArrayList;
 
 import static de.droidcachebox.gdx.Sprites.getSprite;
-import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 
 /**
  * this is the class for the lower 5 buttons, the main buttons
@@ -259,7 +259,7 @@ public class GestureButton extends CB_Button {
         GestureDirection gestureDirection = Action.getGestureDirection();
         if (gestureDirection != GestureDirection.None) {
             if (help == null) {
-                float h = mainBtnSize.getHeight() * 2;
+                float h = mainButtonSize.getHeight() * 2;
                 help = new GestureHelp(new SizeF(h, h), "help");
             }
 
@@ -444,7 +444,7 @@ public class GestureButton extends CB_Button {
         return true;
     }
 
-    public void setActView(CB_View_Base View) {
+    public void setCurrentView(CB_View_Base View) {
         for (CB_ActionButton ba : cb_actionButtons) {
             AbstractAction action = ba.getAction();
             AbstractShowAction ActionView = null;

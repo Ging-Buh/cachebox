@@ -102,14 +102,14 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
         if (cache == null) {
             setAdapter(null);
             logs = new CB_List<>();
-            setEmptyMsg(Translation.get("EmptyLogList"));
+            setEmptyMsgBmpFntCah(Translation.get("EmptyLogList"));
             return;
         }
         if (aktCache != cache) {
             aktCache = cache;
             setAdapter(null);
             logs = new CB_List<>();
-            setEmptyMsg(Translation.get("EmptyLogList"));
+            setEmptyMsgBmpFntCah(Translation.get("EmptyLogList"));
             for (LogEntry logEntry : Database.getLogs(aktCache)) {
                 if (GlobalCore.filterLogsOfFriends) {
                     if (!friendList.contains(logEntry.finder)) {

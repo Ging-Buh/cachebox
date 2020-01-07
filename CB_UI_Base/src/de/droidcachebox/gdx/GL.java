@@ -56,7 +56,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static de.droidcachebox.gdx.math.GL_UISizes.mainBtnSize;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 
 public class GL implements ApplicationListener {
 
@@ -1183,7 +1183,7 @@ public class GL implements ApplicationListener {
 
     public void Toast(String string, int length) {
         if (toast == null) {
-            toast = new Toast(new CB_RectF(0, 0, 100, mainBtnSize.getHeight() / 1.5f), "StringToast");
+            toast = new Toast(new CB_RectF(0, 0, 100, mainButtonSize.getHeight() / 1.5f), "StringToast");
         }
         toast.setWrappedText(string);
 
@@ -1194,7 +1194,7 @@ public class GL implements ApplicationListener {
         toast.setWidth(bounds.width + border);
         toast.setHeight(bounds.height + border);
 
-        toast.setPos((width >> 1) - (bounds.width / 2), mainBtnSize.getHeight() * 1.3f);
+        toast.setPos((width >> 1) - (bounds.width / 2), mainButtonSize.getHeight() * 1.3f);
 
         Toast(toast, length);
     }
