@@ -5,6 +5,22 @@
 • Streichungen = -
 • Offen = •
 
+Änderungen bis Version 3567:
+    + Zeige Gefiltertstatus an der Kartenschaltfläche
+	+ Schnellschaltfläche zum Merken eines Caches (Vergessen bei Langklick)
+	+ Direktes Kontextmenü für Tracks auf der Trackliste
+	+ Zeige Wegstrecke auf der Karte (zentriert am ersten Streckenpunkt)
+	+ Länge am Ende der Strecke anzeigen
+	+ Direktes Kontextmenü für Logs auf der Logliste
+	+ Routenberechnung mit BRouter (Anzeige auf Karte)
+	+ Schnellschaltfläche zum Aktualisieren der Route
+	+ Zeige den Geocachetype als Symbolbild in der Schiebeleiste
+	+ Zeige Farben für die letzten Logeinträge in der Schiebeleiste	
+	(grün=Fund, gelb=Wartung, rot=DNF, grau=Sonst)
+	+ Abstandskreise (161 Meter)
+	- intern: MenüID eliminiert
+	• Korrektes Filtern der Cache auf der Live-Karte
+
 Änderungen bis Version 3525:
     + Filtercaches mit freiem SQL
     + Sicherheitsfrage zum Löschen des Caches

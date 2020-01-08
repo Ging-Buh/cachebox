@@ -1,8 +1,26 @@
+
 • News = +
 • Changes = ~
 • Fixes = *
 • Deletions = -
+• Unsolved = •
 
+Changes up to version 3567:
+    + show filtered at map button
+	+ QuickButton for remember a cache (longclick for forget)
+	+ direct context menu for track on tracklist
+	+ show track on map (centers to the first trackpoint)
+	+ show distance at end of track 
+	+ show context menu for log on loglist
+	+ Calculation of route with BRouter (show on map)
+	+ QuickButton for actualize the route
+	+ show geocachetype as icon in slider
+	+ show colors for last logs in slider
+	(green=found, yellow=needs maintenance, red=dnf, gray=other)
+	+ Distancecircles (161 meters)
+	- internal: complete remove MenuId
+	• correct filtering of caches on the livemap
+	
 Changes up to version 3525:
     + filter caches with free sql	
 	+ safty question for delete cache
