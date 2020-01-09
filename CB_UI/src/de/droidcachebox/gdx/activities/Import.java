@@ -1169,7 +1169,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     @Override
-    public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
+    public void progressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
 
         GL.that.RunOnGL(() -> {
             pgBar.setProgress(Progress);

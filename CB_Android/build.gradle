@@ -77,8 +77,8 @@ android {
         targetSdkVersion 28
         // versionCode = Integer.decode(buildTime())
         // versionName = buildTime()
-        setVersionCode(20200107)
-        setVersionName("20200107Rel")
+        setVersionCode(20200109)
+        setVersionName("20200109Rel")
         multiDexEnabled true
     }
 

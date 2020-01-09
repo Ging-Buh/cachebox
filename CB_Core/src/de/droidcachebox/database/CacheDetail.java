@@ -13,10 +13,6 @@ public class CacheDetail implements Serializable {
     private static final long serialVersionUID = 2088367633865443637L;
     private static final String log = "CacheDetail";
 
-    /*
-     * Public Member
-     */
-
     /**
      * Erschaffer des Caches
      */
@@ -382,8 +378,8 @@ public class CacheDetail implements Serializable {
                     String ext = FileIO.getFileExtension(file);
                     if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif")) {
                         ImageEntry imageEntry = new ImageEntry();
-                        imageEntry.LocalPath = directory + "/" + file;
-                        imageEntry.Name = file;
+                        imageEntry.setLocalPath(directory + "/" + file);
+                        imageEntry.setName(file);
                         // Log.debug(log, imageEntry.Name);
                         spoilerRessources.add(imageEntry);
                     }

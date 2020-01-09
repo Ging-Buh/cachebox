@@ -10,14 +10,14 @@ public class ProgresssChangedEventList {
     public static void Call(String Msg, String ProgressMessage, int Progress) {
         for (int i = 0, n = list.size(); i < n; i++) {
             ProgressChangedEvent event = list.get(i);
-            event.ProgressChangedEventCalled(Msg, ProgressMessage, Progress);
+            event.progressChangedEventCalled(Msg, ProgressMessage, Progress);
         }
     }
 
     public static void Call(String ProgressMessage, int Progress) {
         for (int i = 0, n = list.size(); i < n; i++) {
             ProgressChangedEvent event = list.get(i);
-            event.ProgressChangedEventCalled("", ProgressMessage, Progress);
+            event.progressChangedEventCalled("", ProgressMessage, Progress);
         }
     }
 

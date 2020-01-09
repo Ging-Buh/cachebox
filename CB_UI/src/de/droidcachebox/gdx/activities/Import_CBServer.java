@@ -309,7 +309,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     }
 
     @Override
-    public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
+    public void progressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
 
         GL.that.RunOnGL(() -> {
             pgBar.setProgress(Progress);

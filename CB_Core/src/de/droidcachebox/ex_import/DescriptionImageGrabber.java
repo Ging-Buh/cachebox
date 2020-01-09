@@ -103,7 +103,7 @@ public class DescriptionImageGrabber {
      * @param _uri
      * @return
      */
-    public static String BuildDescriptionImageFilename(String GcCode, URI _uri) {
+    public static String buildDescriptionImageFilename(String GcCode, URI _uri) {
         // in der DB stehts ohne large. der Dateiname wurde aber mit large gebildet. Ev auch nur ein Handy / PC Problem.
         String path = _uri.getPath();
         String authority = _uri.getAuthority();
@@ -182,7 +182,7 @@ public class DescriptionImageGrabber {
                 String src = img.text.substring(srcStart + 1, srcEnd);
                 try {
                     URI imgUri = URI.create(/* baseUri, */src);
-                    String localFile = BuildDescriptionImageFilename(Cache.getGcCode(), imgUri);
+                    String localFile = buildDescriptionImageFilename(Cache.getGcCode(), imgUri);
 
                     if (FileIO.fileExistsNotEmpty(localFile)) {
                         int idx = 0;
@@ -279,7 +279,7 @@ public class DescriptionImageGrabber {
                 if (BreakawayImportThread.isCanceled())
                     return 0;
 
-                String local = BuildDescriptionImageFilename(gcCode, uri);
+                String local = buildDescriptionImageFilename(gcCode, uri);
 
                 ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
@@ -337,14 +337,14 @@ public class DescriptionImageGrabber {
                     if (BreakawayImportThread.isCanceled())
                         return 0;
 
-                    String uri = imageEntry.ImageUrl;
+                    String uri = imageEntry.getImageUrl();
 
                     ip.ProgressChangeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                     imageEntry = BuildAdditionalImageFilenameHashNew(imageEntry);
                     if (imageEntry != null) {
                         // todo ? should write or update database
-                        String filename = imageEntry.LocalPath.substring(imageEntry.LocalPath.lastIndexOf('/') + 1);
+                        String filename = imageEntry.getLocalPath().substring(imageEntry.getLocalPath().lastIndexOf('/') + 1);
 
                         if (allSpoilers.contains(filename)) {
                             // wenn ja, dann aus der Liste der aktuell vorhandenen Spoiler entfernen und mit dem nächsten Spoiler weitermachen
@@ -352,12 +352,12 @@ public class DescriptionImageGrabber {
                             continue; // dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
                         }
                         // todo first look for an image from gsak
-                        if (download(imageEntry.ImageUrl, imageEntry.LocalPath)) {
+                        if (download(imageEntry.getImageUrl(), imageEntry.getLocalPath())) {
                             // there could be an pseudo image indicating a pprevious error
                             // this file must be deleted
-                            DeleteMissingImageInformation(imageEntry.LocalPath);
+                            DeleteMissingImageInformation(imageEntry.getLocalPath());
                         } else {
-                            imageLoadError = HandleMissingImages(imageLoadError, uri, imageEntry.LocalPath);
+                            imageLoadError = HandleMissingImages(imageLoadError, uri, imageEntry.getLocalPath());
                         }
                     }
                 }
@@ -433,19 +433,19 @@ public class DescriptionImageGrabber {
      */
     public static ImageEntry BuildAdditionalImageFilenameHashNew(ImageEntry imageEntry) {
         try {
-            String uriPath = new URI(imageEntry.ImageUrl).getPath();
-            String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + imageEntry.GcCode.substring(0, 4);
+            String uriPath = new URI(imageEntry.getImageUrl()).getPath();
+            String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + imageEntry.getGcCode().substring(0, 4);
 
             if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-                imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + imageEntry.GcCode.substring(0, 4);
-            imageEntry.Name = imageEntry.Description.trim();
-            imageEntry.Name = imageEntry.Name.replaceAll("[^a-zA-Z0-9_\\.\\-]", "_");
+                imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + imageEntry.getGcCode().substring(0, 4);
+            imageEntry.setName(imageEntry.getDescription().trim());
+            imageEntry.setName(imageEntry.getName().replaceAll("[^a-zA-Z0-9_\\.\\-]", "_"));
 
-            int idx = imageEntry.ImageUrl.lastIndexOf('.');
-            String extension = (idx >= 0) ? imageEntry.ImageUrl.substring(idx) : ".";
+            int idx = imageEntry.getImageUrl().lastIndexOf('.');
+            String extension = (idx >= 0) ? imageEntry.getImageUrl().substring(idx) : ".";
 
             // Create sdbm Hash from Path of URI, not from complete URI
-            imageEntry.LocalPath = imagePath + "/" + imageEntry.GcCode + " - " + imageEntry.Name + " @" + SDBM_Hash.sdbm(uriPath) + "@" + extension;
+            imageEntry.setLocalPath(imagePath + "/" + imageEntry.getGcCode() + " - " + imageEntry.getName() + " @" + SDBM_Hash.sdbm(uriPath) + "@" + extension);
             return imageEntry;
         } catch (Exception ex) {
             return null;

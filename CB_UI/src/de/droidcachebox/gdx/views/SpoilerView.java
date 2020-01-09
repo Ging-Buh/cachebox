@@ -110,22 +110,22 @@ public class SpoilerView extends CB_View_Base {
 
                         String description = "";
 
-                        String localName = FileIO.getFileNameWithoutExtension(imageEntry.LocalPath);
+                        String localName = FileIO.getFileNameWithoutExtension(imageEntry.getLocalPath());
                         for (ImageEntry dbImage : dbImages) {
-                            String localNameFromDB = FileIO.getFileNameWithoutExtension(dbImage.LocalPath);
+                            String localNameFromDB = FileIO.getFileNameWithoutExtension(dbImage.getLocalPath());
                             if (localNameFromDB.equals(localName)) {
                                 // Description
-                                description = dbImage.Name + "\n" + dbImage.Description;
+                                description = dbImage.getName() + "\n" + dbImage.getDescription();
                                 break;
                             } else {
-                                if (FileIO.getFileNameWithoutExtension(dbImage.Name).equals(localName)) {
+                                if (FileIO.getFileNameWithoutExtension(dbImage.getName()).equals(localName)) {
                                     // Spoiler CacheWolf
-                                    description = dbImage.Description;
+                                    description = dbImage.getDescription();
                                     break;
                                 } else {
-                                    if (localName.contains(FileIO.getFileNameWithoutExtension(dbImage.Name))) {
+                                    if (localName.contains(FileIO.getFileNameWithoutExtension(dbImage.getName()))) {
                                         // Spoiler ACB
-                                        description = localName + "\n" + dbImage.Description;
+                                        description = localName + "\n" + dbImage.getDescription();
                                         break;
                                     }
                                 }
@@ -134,12 +134,12 @@ public class SpoilerView extends CB_View_Base {
 
                         ImageLoader loader = new ImageLoader(true); // image loader with thumb
                         loader.setThumbWidth(MAX_THUMB_WIDTH, "");
-                        loader.setImage(imageEntry.LocalPath);
+                        loader.setImage(imageEntry.getLocalPath());
                         String label;
                         if (description.length() > 0)
                             label = removeHashFromLabel(description);
                         else {
-                            label = removeHashFromLabel(FileIO.getFileNameWithoutExtension(imageEntry.Name));
+                            label = removeHashFromLabel(FileIO.getFileNameWithoutExtension(imageEntry.getName()));
                         }
 
                         GalleryBigItem item = new GalleryBigItem(new CB_RectF(gallery), i, loader, label);
@@ -159,7 +159,7 @@ public class SpoilerView extends CB_View_Base {
 
                         ImageLoader overviewloader = new ImageLoader(true); // image loader with thumb
                         overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
-                        overviewloader.setImage(imageEntry.LocalPath);
+                        overviewloader.setImage(imageEntry.getLocalPath());
                         GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
                         overviewItem.setClickHandler((v, x, y, pointer, button) -> {
                             final int idx = ((GalleryItem) v).getIndex();

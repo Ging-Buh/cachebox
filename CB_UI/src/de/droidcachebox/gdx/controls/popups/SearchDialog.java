@@ -526,7 +526,7 @@ public class SearchDialog extends PopUp_Base {
                                     logDAO.WriteToDatabase(log);
                                 }
                                 for (ImageEntry image : geoCacheRelated.images) {
-                                    imageDAO.WriteToDatabase(image, false);
+                                    imageDAO.writeToDatabase(image, false);
                                 }
                                 for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
                                     Waypoint waypoint = cache.waypoints.get(i);

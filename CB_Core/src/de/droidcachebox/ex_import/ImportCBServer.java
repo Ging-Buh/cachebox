@@ -115,8 +115,8 @@ public class ImportCBServer {
                                     if (pos >= 0) {
                                         url = url.substring(0, pos); // Port abschneiden, da dieser bereits in der imageURL der Images steht
                                     }
-                                    url = "http://" + url + image.ImageUrl;
-                                    File file = FileFactory.createFile(image.LocalPath);
+                                    url = "http://" + url + image.getImageUrl();
+                                    File file = FileFactory.createFile(image.getLocalPath());
                                     url += cache.getGcCode().substring(0, 4) + "/";
 
                                     try {
@@ -127,7 +127,7 @@ public class ImportCBServer {
                                     }
 
                                     String imagePath;
-                                    if (image.ImageUrl.indexOf("/spoilers/") >= 0) {
+                                    if (image.getImageUrl().indexOf("/spoilers/") >= 0) {
                                         imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
                                         if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0) {
                                             imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();

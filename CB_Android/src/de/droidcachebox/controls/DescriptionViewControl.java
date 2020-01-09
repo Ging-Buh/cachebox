@@ -86,7 +86,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             }
 
                             ImageDAO imageDAO = new ImageDAO();
-                            for (ImageEntry image : geoCacheRelated.images) imageDAO.WriteToDatabase(image, false);
+                            for (ImageEntry image : geoCacheRelated.images) imageDAO.writeToDatabase(image, false);
 
                             Database.Data.sql.setTransactionSuccessful();
                             Database.Data.sql.endTransaction();

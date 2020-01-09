@@ -125,7 +125,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
     }
 
     @Override
-    public void ProgressChangedEventCalled(String Message, String ProgressMessage, int Progress) {
+    public void progressChangedEventCalled(String Message, String ProgressMessage, int Progress) {
         setProgress(Message, ProgressMessage, Progress);
     }
 

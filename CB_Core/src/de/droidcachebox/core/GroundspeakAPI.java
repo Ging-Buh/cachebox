@@ -1399,15 +1399,15 @@ public class GroundspeakAPI {
                 if (uri.length() > 0) {
                     if (isCacheImage || withLogImages) {
                         ImageEntry imageEntry = new ImageEntry();
-                        imageEntry.CacheId = Cache.generateCacheId(GcCode);
-                        imageEntry.Description = Description;
-                        imageEntry.GcCode = GcCode;
-                        imageEntry.ImageUrl = uri.replace("img.geocaching.com/gc/cache", "img.geocaching.com/cache");
+                        imageEntry.setCacheId(Cache.generateCacheId(GcCode));
+                        imageEntry.setDescription(Description);
+                        imageEntry.setGcCode(GcCode);
+                        imageEntry.setImageUrl(uri.replace("img.geocaching.com/gc/cache", "img.geocaching.com/cache"));
 
-                        imageEntry.IsCacheImage = false; // todo check is spoiler or what is it used for
-                        imageEntry.LocalPath = ""; // create at download / read from DB
-                        // imageEntry.LocalPath =  DescriptionImageGrabber.BuildDescriptionImageFilename(GcCode, URI.create(uri));
-                        imageEntry.Name = ""; // does not exist in API 1.0
+                        imageEntry.setCacheImage(false); // todo check is spoiler or what is it used for
+                        imageEntry.setLocalPath(""); // create at download / read from DB
+                        // imageEntry.LocalPath =  DescriptionImageGrabber.buildDescriptionImageFilename(GcCode, URI.create(uri));
+                        imageEntry.setName(""); // does not exist in API 1.0
                         imageEntries.add(imageEntry);
                     }
                 }
@@ -1424,20 +1424,20 @@ public class GroundspeakAPI {
             // do not take those from spoilers or
             boolean isNotInImageList = true;
             for (ImageEntry im : imageList) {
-                if (im.ImageUrl.equalsIgnoreCase(url)) {
+                if (im.getImageUrl().equalsIgnoreCase(url)) {
                     isNotInImageList = false;
                     break;
                 }
             }
             if (isNotInImageList) {
                 ImageEntry imageEntry = new ImageEntry();
-                imageEntry.CacheId = cache.Id;
-                imageEntry.GcCode = cache.getGcCode();
-                imageEntry.Name = "";
-                imageEntry.Description = url.substring(url.lastIndexOf("/") + 1);
-                imageEntry.ImageUrl = url;
-                imageEntry.IsCacheImage = true;
-                imageEntry.LocalPath = ""; // create at download / read from DB
+                imageEntry.setCacheId(cache.Id);
+                imageEntry.setGcCode(cache.getGcCode());
+                imageEntry.setName("");
+                imageEntry.setDescription(url.substring(url.lastIndexOf("/") + 1));
+                imageEntry.setImageUrl(url);
+                imageEntry.setCacheImage(true);
+                imageEntry.setLocalPath(""); // create at download / read from DB
                 imageList.add(imageEntry);
             }
         }

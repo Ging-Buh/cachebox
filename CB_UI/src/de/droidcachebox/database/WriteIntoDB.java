@@ -152,7 +152,7 @@ public class WriteIntoDB {
 
         imageDAO.deleteImagesForCache(cache.getGcCode());
         for (ImageEntry image : geoCacheRelated.images) {
-            imageDAO.WriteToDatabase(image, false);
+            imageDAO.writeToDatabase(image, false);
         }
 
         for (int i = 0, n = cache.waypoints.size(); i < n; i++) {

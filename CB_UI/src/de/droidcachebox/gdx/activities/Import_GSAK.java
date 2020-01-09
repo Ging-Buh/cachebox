@@ -20,6 +20,7 @@ import de.droidcachebox.utils.log.Log;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static de.droidcachebox.database.Cache.IS_FULL;
 
@@ -250,8 +251,8 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                         // Log.trace(sKlasse, GcCode);
                         Cache cache = createGeoCache(reader);
                         if (cache != null && GcCode.length() > 0) {
-                            cache = addAttributes(cache);
-                            cache = addWayPoints(cache);
+                            addAttributes(cache);
+                            addWayPoints(cache);
                             // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
                             GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
                             WriteIntoDB.CacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
@@ -287,6 +288,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         if (file.exists()) {
             // sql.execSQL("ATTACH DATABASE " + file.getAbsolutePath() + " AS imagesLink");
             SQLiteInterface sqlImageLink = PlatformUIBase.getSQLInstance();
+            if (sqlImageLink == null) return;
             if (sqlImageLink.openReadOnly(file.getAbsolutePath())) {
                 Config.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
                 Config.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
@@ -310,11 +312,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 String fName = imageLinkReader.getString("Fname");
                 if (fName != null) {
                     ImageEntry imageEntry = new ImageEntry();
-                    imageEntry.GcCode = imagesReader.getString("iCode");
-                    if (imageEntry.GcCode != null) {
-                        imageEntry.Description = imagesReader.getString("iName");
-                        if (imageEntry.Description == null) imageEntry.Description = "";
-                        imageEntry.ImageUrl = link;
+                    imageEntry.setGcCode(imagesReader.getString("iCode"));
+                    if (imageEntry.getGcCode() != null) {
+                        imageEntry.setDescription(imagesReader.getString("iName"));
+                        if (imageEntry.getDescription() == null) imageEntry.setDescription("");
+                        imageEntry.setImageUrl(link);
                         ProgresssChangedEventList.Call(fName, count + "/" + anz, count * 100 / anz);
                         copyImage(mImagesPath + "/" + fName, imageEntry);
                     }
@@ -328,18 +330,20 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     private void copyImage(String source, ImageEntry imageEntry) {
         imageEntry = DescriptionImageGrabber.BuildAdditionalImageFilenameHashNew(imageEntry);
-        File dst = FileFactory.createFile(imageEntry.LocalPath);
-        /* create parent directories, if necessary */
-        final File parent = dst.getParentFile();
-        if ((parent != null) && !parent.exists()) {
-            parent.mkdirs();
-        }
-        if (!dst.exists()) {
-            File src = FileFactory.createFile(source);
-            if (src.exists()) {
-                try {
-                    Copy.copyFolder(src, dst);
-                } catch (Exception ignored) {
+        if (imageEntry != null) {
+            File dst = FileFactory.createFile(imageEntry.getLocalPath());
+            /* create parent directories, if necessary */
+            final File parent = dst.getParentFile();
+            if ((parent != null) && !parent.exists()) {
+                parent.mkdirs();
+            }
+            if (!dst.exists()) {
+                File src = FileFactory.createFile(source);
+                if (src.exists()) {
+                    try {
+                        Copy.copyFolder(src, dst);
+                    } catch (Exception ignored) {
+                    }
                 }
             }
         }
@@ -359,7 +363,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 logEntry.CacheId = cache.Id;
                 logEntry.Comment = LogsReader.getString("lText");
                 logEntry.Finder = LogsReader.getString("lBy");
-                logEntry.Timestamp = DateFromString(LogsReader.getString("lDate"));
+                logEntry.Timestamp = dateFromString(LogsReader.getString("lDate"));
                 logEntry.Type = GeoCacheLogType.parseString(LogsReader.getString("lType"));
                 logEntry.Id = LogsReader.getInt("lLogId");
                 logList.add(logEntry);
@@ -389,7 +393,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             logEntry.cacheId = Cache.generateCacheId(LogsReader.getString("lParent"));
             logEntry.logText = LogsReader.getString("lText");
             logEntry.finder = LogsReader.getString("lBy");
-            logEntry.logDate = DateFromString(LogsReader.getString("lDate"));
+            logEntry.logDate = dateFromString(LogsReader.getString("lDate"));
             logEntry.geoCacheLogType = GeoCacheLogType.parseString(LogsReader.getString("lType"));
             logEntry.logId = LogsReader.getInt("lLogId");
 
@@ -401,7 +405,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     }
 
-    private Cache addWayPoints(Cache cache) {
+    private void addWayPoints(Cache cache) {
         String cmd = "select cLat,cLon,cName,cType,Waypoints.cCode as cCode,WayMemo.cComment as cComment from Waypoints inner join WayMemo on WayMemo.cCode = Waypoints.cCode";
         CoreCursor WaypointsReader = sql.rawQuery(cmd + " where Waypoints.cParent = ?", new String[]{cache.getGcCode()});
         WaypointsReader.moveToFirst();
@@ -411,17 +415,16 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             waypoint.setCoordinate(new Coordinate((float) WaypointsReader.getDouble("cLat"), (float) WaypointsReader.getDouble("cLon")));
             waypoint.setTitle(WaypointsReader.getString("cName"));
             waypoint.setDescription(WaypointsReader.getString("cComment"));
-            waypoint.waypointType = CacheTypeFromGSString(WaypointsReader.getString("cType"));
+            waypoint.waypointType = geoCacheTypeFromGSString(WaypointsReader.getString("cType"));
             waypoint.setGcCode(WaypointsReader.getString("cCode"));
             cache.waypoints.add(waypoint);
             WaypointsReader.moveToNext();
         }
         WaypointsReader.close();
-        return cache;
     }
 
-    private Cache addAttributes(Cache cache) {
-        CoreCursor GcAttributesReader = sql.rawQuery("select aId,aInc from Attribute where aCode = ?", new String[]{cache.getGcCode()});
+    private void addAttributes(Cache cache) {
+        CoreCursor GcAttributesReader = sql.rawQuery("select aId,aInc from Attributes where aCode = ?", new String[]{cache.getGcCode()});
         GcAttributesReader.moveToFirst();
         while (!GcAttributesReader.isAfterLast()) {
             int aId = GcAttributesReader.getInt(0); // aId;
@@ -435,7 +438,6 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             GcAttributesReader.moveToNext();
         }
         GcAttributesReader.close();
-        return cache;
     }
 
     private Cache createGeoCache(CoreCursor reader) {
@@ -467,13 +469,13 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     cache.favPoints = reader.getInt(ii);
                     break;
                 case "PlacedDate":
-                    cache.setDateHidden(DateFromString(reader.getString(ii)));
+                    cache.setDateHidden(dateFromString(reader.getString(ii)));
                     break;
                 case "CacheType":
-                    cache.setType(CacheTypeFrom1CharAbbreviation(reader.getString(ii)));
+                    cache.setType(geoCacheTypeFrom1CharAbbreviation(reader.getString(ii)));
                     break;
                 case "Container":
-                    cache.Size = CacheSizeFromString(reader.getString(ii));
+                    cache.Size = geoCacheSizeFromString(reader.getString(ii));
                     break;
                 case "Country":
                     cache.setCountry(reader.getString(ii));
@@ -481,11 +483,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     cache.setState(reader.getString(ii));
                     break;
                 case "Archived":
-                    boolean archived = reader.getInt(ii) == 0 ? false : true;
+                    boolean archived = reader.getInt(ii) != 0;
                     cache.setArchived(archived);
                     break;
                 case "TempDisabled":
-                    boolean available = reader.getInt("TempDisabled") == 0 ? true : false;
+                    boolean available = reader.getInt("TempDisabled") == 0;
                     cache.setAvailable(available);
                     break;
                 case "PlacedBy":
@@ -498,12 +500,12 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     cache.setTmpNote(reader.getString(ii));
                     break;
                 case "Found":
-                    cache.setFound(reader.getInt(ii) == 0 ? false : true);
+                    cache.setFound(reader.getInt(ii) != 0);
                     // FoundByMeDate possible
                     break;
                 case "HasCorrected":
                     // " ,Latitude,Longitude,,,LatOriginal,LonOriginal,";
-                    boolean hasCorrected = reader.getInt(ii) == 0 ? false : true;
+                    boolean hasCorrected = reader.getInt(ii) != 0;
                     // switch subValue
                     if (hasCorrected) {
                         if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
@@ -554,15 +556,12 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     cache.setUserNote(reader.getString(ii));
                     break;
                 case "LatOriginal":
-                    break;
                 case "LonOriginal":
-                    break;
                 case "Latitude":
-                    break;
                 case "Longitude":
                     break;
                 case "UserFlag":
-                    cache.setFavorite(reader.getInt(ii) == 0 ? false : true);
+                    cache.setFavorite(reader.getInt(ii) != 0);
                     break;
                 default:
                     // Remind the programmer
@@ -572,7 +571,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         return cache;
     }
 
-    private GeoCacheSize CacheSizeFromString(String container) {
+    private GeoCacheSize geoCacheSizeFromString(String container) {
         // R=regular, L=large, M=micro, S=small, V=virtual, and U=unknown
         switch (container.toLowerCase()) {
             case "regular":
@@ -591,7 +590,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         return GeoCacheSize.other;
     }
 
-    private GeoCacheType CacheTypeFromGSString(String cacheType) {
+    private GeoCacheType geoCacheTypeFromGSString(String cacheType) {
         switch (cacheType) {
             case "Parking Area":
                 return GeoCacheType.ParkingArea;
@@ -609,7 +608,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         return GeoCacheType.ReferencePoint;
     }
 
-    private GeoCacheType CacheTypeFrom1CharAbbreviation(String abbreviation) {
+    private GeoCacheType geoCacheTypeFrom1CharAbbreviation(String abbreviation) {
         switch (abbreviation) {
             case "A":
                 return GeoCacheType.APE;
@@ -640,7 +639,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             case "O":
                 return GeoCacheType.Cache; // Other
             case "P":
-                return GeoCacheType.Event; // Groundspeak Block Party
+                return GeoCacheType.HQBlockParty; // Groundspeak Block Party
             case "Q":
                 return GeoCacheType.Lab;
             case "R":
@@ -664,10 +663,10 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         return GeoCacheType.Undefined;
     }
 
-    private Date DateFromString(String d) {
+    private Date dateFromString(String d) {
         String ps = "yyyy-MM-dd";
         try {
-            return new SimpleDateFormat(ps).parse(d);
+            return new SimpleDateFormat(ps, Locale.US).parse(d);
         } catch (Exception e) {
             Log.err(sKlasse, "DateFromString", e);
             return new Date();
@@ -682,7 +681,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     @Override
-    public void ProgressChangedEventCalled(String message, String progressMessage, int progress) {
+    public void progressChangedEventCalled(String message, String progressMessage, int progress) {
         progressBar.setProgress(progress, progressMessage);
     }
 
