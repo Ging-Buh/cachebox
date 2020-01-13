@@ -102,7 +102,7 @@ public class ShowImportMenu extends AbstractShowAction {
         icm.addMenuItem("chkState", null, this::checkStateOfGeoCache);
         icm.addMenuItem("moreImport", null, () -> GL.that.postAsync(() -> new Import().show()));
         icm.addMenuItem("importCachesOverPosition", null, () -> new ImportGCPosition().show());
-        icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", null, SearchOverNameOwnerGcCode::ShowInstanz);
+        icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", null, SearchOverNameOwnerGcCode::showInstance);
         icm.addMenuItem("GCVoteRatings", null, () -> new Import(MI_IMPORT_GCV).show());
         icm.addMenuItem("GSAKMenuImport", null, () -> new Import_GSAK().show());
         icm.addDivider();

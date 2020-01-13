@@ -26,6 +26,7 @@ import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.*;
@@ -48,34 +49,17 @@ import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 public class SearchOverNameOwnerGcCode extends ActivityBase {
     private static final String log = "SearchOverNameOwnerGcCode";
     private final float lineHeight;
-    private CB_Button bImport, bCancel;
+    private CB_Button btnImport, btnCancel;
     private CB_Label lblTitle, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
     private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
-    /**
-     * Such Eingabe Feld
-     */
-    private EditTextField mEingabe;
+    private EditTextField editTextField;
     private volatile Thread thread;
-    private ImportAnimation dis;
+    private ImportAnimation importAnimation;
     private Box box;
     private boolean importRuns = false;
     private SearchDialog.SearchMode actSearchType = null;
-
-    /**
-     * Option Title, der drei Optionen Title/GC-Code/Owner
-     */
-    private MultiToggleButton mTglBtnTitle;
-
-    /**
-     * Option GC-Code, der drei Optionen Title/GC-Code/Owner
-     */
-    private MultiToggleButton mTglBtnGc;
-
-    /**
-     * Option Owner, der drei Optionen Title/GC-Code/Owner
-     */
-    private MultiToggleButton mTglBtnOwner;
+    private MultiToggleButton mTglBtnTitle, mTglBtnGc, mTglBtnOwner;
 
     public SearchOverNameOwnerGcCode() {
         super(activityRec(), "searchOverPosActivity");
@@ -90,7 +74,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         initialContent();
     }
 
-    public static void ShowInstanz() {
+    public static void showInstance() {
         new SearchOverNameOwnerGcCode().show();
     }
 
@@ -100,21 +84,21 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bImport = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bImport.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
+        btnImport = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        btnCancel = new CB_Button(btnImport.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         // Translations
-        bImport.setText(Translation.get("import"));
-        bCancel.setText(Translation.get("cancel"));
+        btnImport.setText(Translation.get("import"));
+        btnCancel.setText(Translation.get("cancel"));
 
-        this.addChild(bImport);
-        bImport.setClickHandler((v, x, y, pointer, button) -> {
-            ImportNow();
+        addChild(btnImport);
+        btnImport.setClickHandler((v, x, y, pointer, button) -> {
+            GL.that.postAsync(this::importNow);
             return true;
         });
 
-        this.addChild(bCancel);
-        bCancel.setClickHandler((v, x, y, pointer, button) -> {
+        addChild(btnCancel);
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importRuns) {
 
                 cancelImport();
@@ -134,32 +118,32 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             thread.interrupt();
 
         importRuns = false;
-        this.removeChildsDirekt(dis);
-        dis.dispose();
-        dis = null;
+        removeChildsDirekt(importAnimation);
+        importAnimation.dispose();
+        importAnimation = null;
 
     }
 
     private void createBox() {
         box = new Box(activityRec(), "ScrollBox");
-        this.addChild(box);
-        box.setHeight(this.getHeight() - lineHeight - bImport.getMaxY() - margin - margin);
-        box.setY(bImport.getMaxY() + margin);
-        box.setBackground(this.getBackground());
+        addChild(box);
+        box.setHeight(getHeight() - lineHeight - btnImport.getMaxY() - margin - margin);
+        box.setY(btnImport.getMaxY() + margin);
+        box.setBackground(getBackground());
     }
 
     private void createTitleLine() {
 
-        float lineHeight = UiSizes.getInstance().getButtonHeight() * 0.75f;
-
-        gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight, lineHeight, "", false);
+        float sideLength = UiSizes.getInstance().getButtonHeight() * 0.75f;
+        CB_RectF rec = new CB_RectF(innerWidth - margin - sideLength, getHeight() - getTopHeight() - sideLength - margin, sideLength);
+        gsLogo = new Image(rec, "", false);
         gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.dayGcLiveIcon.name())));
-        this.addChild(gsLogo);
+        addChild(gsLogo);
 
-        lblTitle = new CB_Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
+        lblTitle = new CB_Label(name + " lblTitle", leftBorder + margin, getHeight() - getTopHeight() - sideLength - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), sideLength);
         lblTitle.setFont(Fonts.getBig());
         lblTitle.setWrappedText(Translation.get("API_IMPORT_NAME_OWNER_CODE"));
-        this.addChild(lblTitle);
+        addChild(lblTitle);
 
     }
 
@@ -176,19 +160,19 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
         box.addChild(checkBoxExcludeFounds);
 
-        lblOnlyAvailable = new CB_Label(this.name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.get("SearchOnlyAvailable"));
+        lblOnlyAvailable = new CB_Label(name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.get("SearchOnlyAvailable"));
         lblOnlyAvailable.setX(checkBoxOnlyAvailable.getMaxX() + margin);
-        lblOnlyAvailable.setWidth(this.getWidth() - margin - checkBoxOnlyAvailable.getMaxX() - margin);
+        lblOnlyAvailable.setWidth(getWidth() - margin - checkBoxOnlyAvailable.getMaxX() - margin);
         box.addChild(lblOnlyAvailable);
 
-        lblExcludeHides = new CB_Label(this.name + " lblExcludeHides", checkBoxExcludeHides, Translation.get("SearchWithoutOwns"));
+        lblExcludeHides = new CB_Label(name + " lblExcludeHides", checkBoxExcludeHides, Translation.get("SearchWithoutOwns"));
         lblExcludeHides.setX(checkBoxOnlyAvailable.getMaxX() + margin);
-        lblExcludeHides.setWidth(this.getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
+        lblExcludeHides.setWidth(getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
         box.addChild(lblExcludeHides);
 
-        lblExcludeFounds = new CB_Label(this.name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.get("SearchWithoutFounds"));
+        lblExcludeFounds = new CB_Label(name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.get("SearchWithoutFounds"));
         lblExcludeFounds.setX(checkBoxOnlyAvailable.getMaxX() + margin);
-        lblExcludeFounds.setWidth(this.getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
+        lblExcludeFounds.setWidth(getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
         box.addChild(lblExcludeFounds);
 
     }
@@ -216,9 +200,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         line.setY(checkBoxExcludeFounds.getY() - margin - line.getHeight());
         line.setX(margin);
 
-        mEingabe = new EditTextField(rec, this, "mEingabe", WrapType.SINGLELINE);
+        editTextField = new EditTextField(rec, this, "mEingabe", WrapType.SINGLELINE);
 
-        mEingabe.setTextFieldListener(new TextFieldListener() {
+        editTextField.setTextFieldListener(new TextFieldListener() {
 
             @Override
             public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
@@ -230,9 +214,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                 textBox_TextChanged();
             }
         });
-        mEingabe.setText("");
+        editTextField.setText("");
 
-        line.addLast(mEingabe);
+        line.addLast(editTextField);
 
         box.addChild(line);
     }
@@ -260,7 +244,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         });
     }
 
-    private void ImportNow() {
+    private void importNow() {
 
         Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
         Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
@@ -268,26 +252,22 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 
         Config.AcceptChanges();
 
-        bImport.disable();
+        btnImport.disable();
 
         // disable UI
-        dis = new ImportAnimation(box);
-        dis.setBackground(getBackground());
+        importAnimation = new ImportAnimation(box);
+        importAnimation.setBackground(getBackground());
 
-        this.addChild(dis, false);
+        addChild(importAnimation, false);
 
         importRuns = true;
         thread = new Thread(() -> {
             boolean threadCanceld = false;
-
             try {
                 Thread.sleep(200);
-
                 if (actSearchType != null) {
 
-                    // alle per API importierten Caches landen in der Category und
-                    // GpxFilename
-                    // API-Import
+                    // alle per API importierten Caches landen in der Category und GpxFilename API-Import
                     // Category suchen, die dazu gehört
                     Category category = CoreSettingsForward.categories.getCategory("API-Import");
                     if (category != null) // should not happen!!!
@@ -295,7 +275,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                         GpxFilename gpxFilename = category.addGpxFilename("API-Import");
                         if (gpxFilename != null) {
 
-                            String searchPattern = mEingabe.getText().trim();
+                            String searchPattern = editTextField.getText().trim();
 
                             Coordinate searchCoord;
                             if (ShowMap.getInstance().normalMapView.isVisible()) {
@@ -320,7 +300,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
                             ArrayList<GeoCacheRelated> geoCacheRelateds;
-                            dis.setAnimationType(AnimationType.Download);
+                            importAnimation.setAnimationType(AnimationType.Download);
                             switch (actSearchType) {
                                 case Title:
                                     q.searchInCircleOf100Miles(searchCoord)
@@ -342,10 +322,10 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                     break;
                             }
 
-                            dis.setAnimationType(AnimationType.Work);
+                            importAnimation.setAnimationType(AnimationType.Work);
                             if (geoCacheRelateds.size() > 0) {
                                 try {
-                                    dis.setAnimationType(AnimationType.Work);
+                                    importAnimation.setAnimationType(AnimationType.Work);
                                     WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
                                 } catch (InterruptedException e) {
                                     Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
@@ -356,7 +336,6 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                     }
                 }
             } catch (InterruptedException e) {
-                // Thread abgebrochen!
                 threadCanceld = true;
             }
 
@@ -376,7 +355,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                 // Notify Map
                 ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
-                bImport.enable();
+                btnImport.enable();
             }
             importRuns = false;
         });
@@ -410,18 +389,18 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void textBox_TextChanged() {
-        boolean isText = mEingabe.getText().length() != 0;
-        bImport.setEnable(isText);
+        boolean isText = editTextField.getText().length() != 0;
+        btnImport.setEnable(isText);
     }
 
     @Override
     public void dispose() {
-        if (bImport != null)
-            bImport.dispose();
-        bImport = null;
-        if (bCancel != null)
-            bCancel.dispose();
-        bCancel = null;
+        if (btnImport != null)
+            btnImport.dispose();
+        btnImport = null;
+        if (btnCancel != null)
+            btnCancel.dispose();
+        btnCancel = null;
         if (lblTitle != null)
             lblTitle.dispose();
         lblTitle = null;
@@ -446,12 +425,12 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         if (checkBoxExcludeHides != null)
             checkBoxExcludeHides.dispose();
         checkBoxExcludeHides = null;
-        if (mEingabe != null)
-            mEingabe.dispose();
-        mEingabe = null;
-        if (dis != null)
-            dis.dispose();
-        dis = null;
+        if (editTextField != null)
+            editTextField.dispose();
+        editTextField = null;
+        if (importAnimation != null)
+            importAnimation.dispose();
+        importAnimation = null;
         if (box != null)
             box.dispose();
         box = null;

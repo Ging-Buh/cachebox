@@ -44,31 +44,31 @@ public class Image extends CB_View_Base {
     private Color mColor = new Color(1, 1, 1, 1);
     private HAlignment hAlignment = HAlignment.CENTER;
 
-    public Image(float X, float Y, float Width, float Height, String Name, boolean reziseHeight) {
+    public Image(float X, float Y, float Width, float Height, String Name, boolean resizeHeight) {
         super(X, Y, Width, Height, Name);
-        this.imageLoader = new ImageLoader();
-        this.imageLoader.reziseHeight = reziseHeight;
-        if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
-            this.imageLoader.setResizeListener(Image.this::setSize, this.getWidth());
+        imageLoader = new ImageLoader();
+        imageLoader.resizeHeight = resizeHeight;
+        if (imageLoader.resizeHeight && imageLoader.getResizeListener() == null) {
+            imageLoader.setResizeListener(Image.this::setSize, getWidth());
         }
 
     }
 
-    public Image(CB_RectF rec, String Name, boolean reziseHeight) {
+    public Image(CB_RectF rec, String Name, boolean resizeHeight) {
         super(rec, Name);
-        this.imageLoader = new ImageLoader();
-        this.imageLoader.reziseHeight = reziseHeight;
-        if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
-            this.imageLoader.setResizeListener(Image.this::setSize, this.getWidth());
+        imageLoader = new ImageLoader();
+        imageLoader.resizeHeight = resizeHeight;
+        if (imageLoader.resizeHeight && imageLoader.getResizeListener() == null) {
+            imageLoader.setResizeListener(Image.this::setSize, getWidth());
         }
     }
 
-    public Image(ImageLoader img, CB_RectF rec, String Name, boolean reziseHeight) {
+    public Image(ImageLoader img, CB_RectF rec, String Name, boolean resizeHeight) {
         super(rec, Name);
-        this.imageLoader = img;
-        this.imageLoader.reziseHeight = reziseHeight;
-        if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
-            this.imageLoader.setResizeListener(Image.this::setSize, this.getWidth());
+        imageLoader = img;
+        imageLoader.resizeHeight = resizeHeight;
+        if (imageLoader.resizeHeight && imageLoader.getResizeListener() == null) {
+            imageLoader.setResizeListener(Image.this::setSize, getWidth());
         }
 
     }
@@ -105,7 +105,7 @@ public class Image extends CB_View_Base {
             if (!imageLoader.isDrawableNULL()) {
                 if (Wait != null) {
                     GL.that.removeRenderView(Wait);
-                    this.removeChild(Wait);
+                    removeChild(Wait);
                     Wait = null;
                 }
                 imageLoader.inLoad = false;
@@ -150,16 +150,16 @@ public class Image extends CB_View_Base {
                 if (Wait == null) {
                     Wait = new WorkAnimation();
                     GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
-                    this.addChild(Wait);
+                    addChild(Wait);
                 }
 
                 GL.that.renderOnce();
             } else if (imageLoader.ImageLoadError) {
                 if (Wait != null) {
-                    this.removeChild(Wait);
+                    removeChild(Wait);
 
                     //set error image
-                    this.setSprite(new Sprite(Sprites.getSprite(IconName.disabled.name())));
+                    setSprite(new Sprite(Sprites.getSprite(IconName.disabled.name())));
 
                 }
 
@@ -221,7 +221,7 @@ public class Image extends CB_View_Base {
     }
 
     public void setHAlignment(HAlignment alignment) {
-        this.hAlignment = alignment;
+        hAlignment = alignment;
     }
 
     public void setSprite(Sprite sprite) {
@@ -241,7 +241,6 @@ public class Image extends CB_View_Base {
     }
 
     public ImageLoader getImageLoader() {
-
         return imageLoader;
     }
 }

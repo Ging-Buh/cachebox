@@ -55,7 +55,7 @@ public class ImageLoader {
     private final boolean thumbnail;
     boolean ImageLoadError = false;
     boolean inLoad = false;
-    boolean reziseHeight;
+    boolean resizeHeight;
     private int State = 0;
     private Thread loadingThread;
     private String mPath;

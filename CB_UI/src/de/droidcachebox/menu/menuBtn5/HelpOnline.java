@@ -27,7 +27,8 @@ public class HelpOnline extends AbstractAction {
 
     @Override
     public void execute() {
-        callUrl("http://www.team-cachebox.de/index.php/de/kurzanleitung");
+        callUrl("https://github.com/Ging-Buh/cachebox/wiki#willkommen-bei-cachebox-");
+        // http://www.team-cachebox.de/index.php/de/kurzanleitung
     }
 
 }
