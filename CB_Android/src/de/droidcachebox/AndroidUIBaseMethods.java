@@ -163,12 +163,12 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
 
     @Override
     public void switchToGpsMeasure() {
-        Log.info(sKlasse, "switchToGpsMeasure()");
-        int updateTime = Config.gpsUpdateTime.getValue();
         try {
+            Log.info(sKlasse, "switchToGpsMeasure()");
+            int updateTime = Config.gpsUpdateTime.getValue();
             getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, mainMain);
-        } catch (SecurityException sex) {
-            Log.err(sKlasse, "switchToGpsMeasure: " + sex.getLocalizedMessage());
+        } catch (SecurityException ex) {
+            Log.err(sKlasse, "switchToGpsMeasure: ",ex);
         }
     }
 

@@ -854,6 +854,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
         targetArrowScreenRec = null;
+        distanceCircle = null;
+        directLine = null;
     }
 
     @Override

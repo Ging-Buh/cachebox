@@ -193,7 +193,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
         disposeTexture();
 
-        CB_RectF panelRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, innerWidth);
+        CB_RectF panelRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth);
 
         int w = (int) panelRec.getWidth();
         int h = (int) panelRec.getHeight();
@@ -330,7 +330,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
             chart.setDrawWithAlpha(false);
             PlatformUIBase.switchToGpsMeasure();
         }
-
     }
 
     @Override
