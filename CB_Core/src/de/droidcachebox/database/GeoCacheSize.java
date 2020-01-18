@@ -59,9 +59,9 @@ public enum GeoCacheSize {
     }
 
     public static String toShortString(Cache cache) {
-        if (cache.Size == null) return "?";
+        if (cache.geoCacheSize == null) return "?";
 
-        switch (cache.Size) {
+        switch (cache.geoCacheSize) {
             case large:
                 return "L";
             case micro:

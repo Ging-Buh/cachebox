@@ -66,7 +66,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
                 b.setText("Cancel");
                 GL.that.RunOnGL(() -> {
                     String UploadText = notes.getText().replace("<Import from Geocaching.com>", "").replace("</Import from Geocaching.com>", "").trim();
-                    int result = GroundspeakAPI.uploadCacheNote(aktCache.getGcCode(), UploadText);
+                    int result = GroundspeakAPI.uploadCacheNote(aktCache.getGeoCacheCode(), UploadText);
                     b.disable();
                     if (result == 0) {
                         b.setText(Translation.get("successful"));

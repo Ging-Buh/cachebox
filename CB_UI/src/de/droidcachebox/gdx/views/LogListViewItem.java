@@ -67,7 +67,7 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
             menu.addMenuItem("MailToFinder", Sprites.getSprite("bigLetterbox"), () -> {
                 try {
                     if (PlatformUIBase.getClipboard() != null) {
-                        PlatformUIBase.getClipboard().setContents("Concerning https://coord.info/" + GlobalCore.getSelectedCache().getGcCode() + " " + GlobalCore.getSelectedCache().getName() + "\r");
+                        PlatformUIBase.getClipboard().setContents("Concerning https://coord.info/" + GlobalCore.getSelectedCache().getGeoCacheCode() + " " + GlobalCore.getSelectedCache().getGeoCacheName() + "\r");
                         String finder = URLEncoder.encode(logEntry.finder, "UTF-8");
                         PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + finder);
                     }

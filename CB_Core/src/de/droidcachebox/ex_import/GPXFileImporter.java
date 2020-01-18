@@ -1056,8 +1056,8 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("wpt_name")) {
-            cache.setGcCode(values.get("wpt_name"));
-            cache.Id = Cache.generateCacheId(cache.getGcCode());
+            cache.setGeoCacheCode(values.get("wpt_name"));
+            cache.generatedId = Cache.generateCacheId(cache.getGeoCacheCode());
         }
 
         if (values.containsKey("wpt_time")) {
@@ -1065,7 +1065,7 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("cache_attribute_id")) {
-            cache.setGcId(values.get("cache_attribute_id"));
+            cache.setGeoCacheId(values.get("cache_attribute_id"));
         }
 
         if (values.containsKey("wpt_url")) {
@@ -1076,7 +1076,7 @@ public class GPXFileImporter {
         // Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + cache.GcCode + "\"");
 
         // Read from IndexDBList
-        boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.getGcCode());
+        boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.getGeoCacheCode());
 
         cache.setFavorite(fav);
 
@@ -1085,7 +1085,7 @@ public class GPXFileImporter {
             // Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + cache.GcCode + "\"");
 
             // Read from IndexDBList
-            boolean Found = CacheInfoList.CacheIsFoundInDB(cache.getGcCode());
+            boolean Found = CacheInfoList.CacheIsFoundInDB(cache.getGeoCacheCode());
 
             if (!Found) {
                 cache.setFound(values.get("wpt_sym").equalsIgnoreCase("Geocache Found"));
@@ -1115,10 +1115,10 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("cache_name")) {
-            cache.setName(values.get("cache_name"));
+            cache.setGeoCacheName(values.get("cache_name"));
         } else if (values.containsKey("wpt_desc")) // kein Name gefunden? Dann versuche den WP-Namen
         {
-            cache.setName(values.get("wpt_desc"));
+            cache.setGeoCacheName(values.get("wpt_desc"));
         }
 
         if (values.containsKey("cache_placed_by")) {
@@ -1130,17 +1130,17 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("cache_type")) {
-            cache.setType(GeoCacheType.parseString(values.get("cache_type")));
-            if (cache.getGcCode().indexOf("MZ") == 0)
-                cache.setType(GeoCacheType.Munzee);
+            cache.setGeoCacheType(GeoCacheType.parseString(values.get("cache_type")));
+            if (cache.getGeoCacheCode().indexOf("MZ") == 0)
+                cache.setGeoCacheType(GeoCacheType.Munzee);
         } else {
-            cache.setType(GeoCacheType.Undefined);
+            cache.setGeoCacheType(GeoCacheType.Undefined);
         }
 
         if (values.containsKey("cache_container")) {
-            cache.Size = GeoCacheSize.parseString(values.get("cache_container"));
+            cache.geoCacheSize = GeoCacheSize.parseString(values.get("cache_container"));
         } else {
-            cache.Size = GeoCacheSize.other;
+            cache.geoCacheSize = GeoCacheSize.other;
         }
 
         if (values.containsKey("cache_difficulty")) {
@@ -1233,7 +1233,7 @@ public class GPXFileImporter {
                 int count = Integer.parseInt(values.get("cache_logs_count"));
 
                 for (int i = 1; i <= count; i++) {
-                    log.cacheId = cache.Id;
+                    log.cacheId = cache.generatedId;
                     String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
                     if (attrValue != null) {
                         try {
@@ -1288,11 +1288,11 @@ public class GPXFileImporter {
                     cache.setCoordinate(new Coordinate(lat, lon));
 
                     // create final WP with Corrected Coords
-                    String newGcCode = Database.Data.createFreeGcCode(cache.getGcCode());
+                    String newGcCode = Database.Data.createFreeGcCode(cache.getGeoCacheCode());
 
                     // Check if "Final GSAK Corrected" exist
                     WaypointDAO WPDao = new WaypointDAO();
-                    CB_List<Waypoint> wplist = WPDao.getWaypointsFromCacheID(cache.Id, false);
+                    CB_List<Waypoint> wplist = WPDao.getWaypointsFromCacheID(cache.generatedId, false);
 
                     for (int i = 0; i < wplist.size(); i++) {
                         Waypoint wp = wplist.get(i);
@@ -1302,9 +1302,9 @@ public class GPXFileImporter {
                         }
                     }
 
-                    Waypoint FinalWp = new Waypoint(newGcCode, GeoCacheType.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
+                    Waypoint FinalWp = new Waypoint(newGcCode, GeoCacheType.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.generatedId, "", "Final GSAK Corrected");
 
-                    cache.waypoints.add(FinalWp);
+                    cache.getWayPoints().add(FinalWp);
 
                     // the coordinates of the Cache are not changed. we have a Final with valid coordinates
                 }
@@ -1346,7 +1346,7 @@ public class GPXFileImporter {
         }
 
         // Merge mit cache info
-        if (CacheInfoList.ExistCache(cache.getGcCode())) {
+        if (CacheInfoList.ExistCache(cache.getGeoCacheCode())) {
             CacheInfoList.mergeCacheInfo(cache);
         } else {
             // Neue CacheInfo erstellen und zur Liste Hinzufügen

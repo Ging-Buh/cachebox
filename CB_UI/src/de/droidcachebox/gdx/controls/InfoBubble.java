@@ -58,13 +58,13 @@ public class InfoBubble extends CB_View_Base {
         }
 
         if (!force) {
-            if ((mCache != null) && (mCache.Id == cache.Id) && (mWaypoint == waypoint))
+            if ((mCache != null) && (mCache.generatedId == cache.generatedId) && (mWaypoint == waypoint))
                 return;
         }
 
         // Log.debug(log, "New Cache @InfoBubble");
         mCache = cache;
-        mCacheId = cache.Id;
+        mCacheId = cache.generatedId;
         mWaypoint = waypoint;
         // SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
         SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());

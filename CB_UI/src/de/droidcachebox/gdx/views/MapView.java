@@ -353,7 +353,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     @Override
                     public void run() {
 
-                        String GCCode = infoBubble.getCache().getGcCode();
+                        String GCCode = infoBubble.getCache().getGeoCacheCode();
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
                         if (geoCacheRelateds.size() > 0) {
                             try {
@@ -611,7 +611,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         // Don't render if outside of screen !!
         if ((screen.x < 0 - wpSize.getWidth() || screen.x > getWidth() + wpSize.getHeight()) || (screen.y < 0 - wpSize.getHeight() || screen.y > getHeight() + wpSize.getHeight())) {
-            if (wayPointRenderInfo.cache != null && (wayPointRenderInfo.cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
+            if (wayPointRenderInfo.cache != null && (wayPointRenderInfo.cache.generatedId == infoBubble.getCacheId()) && infoBubble.isVisible()) {
                 // check if wp selected
                 if (wayPointRenderInfo.waypoint != null && wayPointRenderInfo.waypoint.equals(infoBubble.getWaypoint()) || wayPointRenderInfo.waypoint == null && infoBubble.getWaypoint() == null)
                     infoBubble.setInvisible();
@@ -664,8 +664,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         boolean drawAsWaypoint = wayPointRenderInfo.waypoint != null;
 
         // Rating des Caches darstellen
-        if (wayPointRenderInfo.cache != null && showRating && (!drawAsWaypoint) && (wayPointRenderInfo.cache.Rating > 0) && (aktZoom >= 15)) {
-            Sprite rating = MapStars.get((int) Math.min(wayPointRenderInfo.cache.Rating * 2, 5 * 2));
+        if (wayPointRenderInfo.cache != null && showRating && (!drawAsWaypoint) && (wayPointRenderInfo.cache.gcVoteRating > 0) && (aktZoom >= 15)) {
+            Sprite rating = MapStars.get((int) Math.min(wayPointRenderInfo.cache.gcVoteRating * 2, 5 * 2));
             rating.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight() - wpUnderlay.getHeight48(), wpUnderlay.getWidth(), wpUnderlay.getHeight48());
             rating.setOrigin(wpUnderlay.getWidth() / 2, wpUnderlay.getHeight48() / 2);
             rating.setRotation(0);
@@ -676,7 +676,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // Beschriftung
         if (wayPointRenderInfo.cache != null && showTitles && (aktZoom >= 15)) {
             try {
-                String name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getName();
+                String name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getGeoCacheName();
 
                 if (layout == null)
                     layout = new GlyphLayout(Fonts.getNormal(), name);
@@ -704,7 +704,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             terrain.draw(batch);
         }
 
-        if (wayPointRenderInfo.cache != null && (wayPointRenderInfo.cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
+        if (wayPointRenderInfo.cache != null && (wayPointRenderInfo.cache.generatedId == infoBubble.getCacheId()) && infoBubble.isVisible()) {
             if (infoBubble.getWaypoint() == wayPointRenderInfo.waypoint) {
                 Vector2 pos = new Vector2(screen.x - infoBubble.getHalfWidth(), screen.y);
                 infoBubble.setPos(pos);
@@ -808,7 +808,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     public void createWaypointAtCenter() {
         String newGcCode;
         try {
-            newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+            newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
         } catch (Exception e) {
             return;
         }
@@ -818,12 +818,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if ((coord == null) || (!coord.isValid()))
             return;
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
-        Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
+        Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
 
         EditWaypoint EdWp = new EditWaypoint(newWP, waypoint -> {
             if (waypoint != null) {
 
-                GlobalCore.getSelectedCache().waypoints.add(waypoint);
+                GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
                 GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 if (waypoint.isStartWaypoint) {
                     // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt

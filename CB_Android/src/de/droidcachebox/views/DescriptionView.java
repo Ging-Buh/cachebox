@@ -88,8 +88,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
     public void selectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
         if (selectedCache == null || mDescriptionViewControl == null)
             return;
-        if (aktCacheID != selectedCache.Id) {
-            aktCacheID = selectedCache.Id;
+        if (aktCacheID != selectedCache.generatedId) {
+            aktCacheID = selectedCache.generatedId;
             mDescriptionViewControl.setCache(selectedCache);
         }
     }

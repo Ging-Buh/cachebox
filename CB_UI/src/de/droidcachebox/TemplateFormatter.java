@@ -18,7 +18,7 @@ public class TemplateFormatter {
         template = template.replace("<br>", "\n");
         template = template.replace("##date##", sdate);
         template = template.replace("##time##", stime);
-        if (GlobalCore.isSetSelectedCache() && draft.gcCode.equals(GlobalCore.getSelectedCache().getGcCode())) {
+        if (GlobalCore.isSetSelectedCache() && draft.gcCode.equals(GlobalCore.getSelectedCache().getGeoCacheCode())) {
             template = template.replace("##owner##", GlobalCore.getSelectedCache().getOwner());
         } else {
             template = template.replace("##owner##", "????????");

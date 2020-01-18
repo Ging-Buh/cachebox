@@ -66,14 +66,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             for (LogEntry apiLog : geoCacheRelated.logs) logDAO.WriteToDatabase(apiLog);
 
                             WaypointDAO waypointDAO = new WaypointDAO();
-                            for (int i = 0, n = newCache.waypoints.size(); i < n; i++) {
-                                Waypoint waypoint = newCache.waypoints.get(i);
+                            for (int i = 0, n = newCache.getWayPoints().size(); i < n; i++) {
+                                Waypoint waypoint = newCache.getWayPoints().get(i);
 
                                 boolean update = true;
 
                                 // dont refresh wp if aktCache.wp is user changed
-                                for (int j = 0, m = aktCache.waypoints.size(); j < m; j++) {
-                                    Waypoint wp = aktCache.waypoints.get(j);
+                                for (int j = 0, m = aktCache.getWayPoints().size(); j < m; j++) {
+                                    Waypoint wp = aktCache.getWayPoints().get(j);
                                     if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
                                         if (wp.isUserWaypoint)
                                             update = false;
@@ -270,10 +270,10 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     public static void setCache(final Cache cache) {
         if (cache != null) {
-            Log.debug(log, "set " + cache.getGcCode() + " for description");
+            Log.debug(log, "set " + cache.getGeoCacheCode() + " for description");
             if (aktCache == cache) {
                 // todo check maybe new cache values
-                Log.debug(log, "same Cche " + cache.getGcCode());
+                Log.debug(log, "same Cche " + cache.getGeoCacheCode());
                 return;
             }
             aktCache = cache;
@@ -352,7 +352,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         }
 
         if (cache != null)
-            Log.debug(log, "set " + cache.getGcCode() + " finished for description (despite fetching images etc...)");
+            Log.debug(log, "set " + cache.getGeoCacheCode() + " finished for description (despite fetching images etc...)");
     }
 
     private static String getAttributesHtml(Cache cache) {

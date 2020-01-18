@@ -81,7 +81,7 @@ public class EditCoord extends ActivityBase {
                 writer = txtFile.getFileOutputStream();
                 writer.write(("LON,LAT,Waypoint\r\n").getBytes(StandardCharsets.UTF_8));
                 if (GlobalCore.getSelectedWaypoint() == null) {
-                    writer.write((coordsToWrite + GlobalCore.getSelectedCache().getGcCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
+                    writer.write((coordsToWrite + GlobalCore.getSelectedCache().getGeoCacheCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
                 } else {
                     writer.write((coordsToWrite + GlobalCore.getSelectedWaypoint().getGcCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
                 }

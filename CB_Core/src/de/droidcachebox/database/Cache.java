@@ -58,113 +58,72 @@ public class Cache implements Comparable<Cache>, Serializable {
     private final static short MASK_HAS_USER_DATA = 1 << 8;
     private final static short MASK_LISTING_CHANGED = 1 << 9;
     private static String gcLogin = null;
-    /**
-     * Detail Information of Waypoint which are not always loaded
-     */
-    public CacheDetail detail = null;
-    /**
-     * Id des Caches in der Datenbank von geocaching.com
-     */
-    public long Id;
-    private Coordinate coordinate = new Coordinate(0, 0);
-    /**
-     * Durchschnittliche Bewertung des Caches von GcVote
-     */
-    public float Rating;
-    /**
-     * Grondspeak favorite points
-     */
+    public long generatedId;
+    public float gcVoteRating;
     public int favPoints = 0;
     /**
-     * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
+     * size of geoCache
+     * geoCacheType = Wikipedia: this is the radius in meters
      */
-    public GeoCacheSize Size;
+    public GeoCacheSize geoCacheSize;
+    public int numTravelbugs;
     /**
-     * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
-     */
-    public int NumTravelbugs;
-    /**
-     * Falls keine erneute Distanzberechnung noetig ist nehmen wir diese Distanz
+     * use this, if no need of recalculation
      */
     public float cachedDistance = 0;
-    /**
-     * Liste der zusaetzlichen Wegpunkte des Caches
-     */
-    public CB_List<Waypoint> waypoints;
-    /**
-     * Art des Caches
-     */
-    private GeoCacheType Type = GeoCacheType.Undefined;
-    /**
-     * Waypoint Code des Caches
-     */
-    private byte[] GcCode;
-    /**
-     * Name des Caches
-     */
-    private byte[] Name;
-    private byte[] GcId;
-    /**
-     * Bin ich der Owner? </br>
-     * -1 noch nicht getestet </br>
-     * 1 ja </br>
-     * 0 nein
-     */
-    private int myCache = -1;
-    // /**
-    // * Das Listing hat sich geaendert!
-    // */
-    // public boolean listingChanged = false;
-    private boolean isDisposed = false;
-    /**
-     * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
-     * from DB to get the changes from Solver 1
-     */
-    private boolean solver1Changed = false;
-    private short BitFlags = 0;
+    private CB_List<Waypoint> wayPoints;
+    private CacheDetail geoCacheDetail = null;
+    private Coordinate coordinate = new Coordinate(0, 0);
+    private GeoCacheType geoCacheType = GeoCacheType.Undefined;
+    private byte[] geoCacheCode;
+    private byte[] geoCacheName;
+    private byte[] geoCacheId;
     /**
      * Stored Difficulty and Terrain<br>
      * <br>
      * First four bits for Difficulty<br>
      * Last four bits for Terrain
      */
-    private byte DifficultyTerrain = 0;
+    private byte difficultyTerrain = 0;
+    private byte[] owner;
     /**
-     * Verantwortlicher
+     * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
+     * from DB to get the changes from Solver 1
      */
-    private byte[] Owner;
+    private boolean solver1Changed = false;
+    private short bitFlags = 0;
+    /**
+     * Bin ich der Owner? </br>
+     * -1 noch nicht getestet </br>
+     * 1 ja </br>
+     * 0 nein
+     */
+    private int isMyCache = -1;
+    private boolean isDisposed = false;
 
-    /*
-     * Constructors
-     */
-    /**
-     * Constructor
-     */
     public Cache(boolean withDetails) {
-        this.NumTravelbugs = 0;
-        this.setDifficulty(0);
-        this.setTerrain(0);
-        this.Size = GeoCacheSize.other;
-        this.setAvailable(true);
-        waypoints = new CB_List<>();
+        numTravelbugs = 0;
+        setDifficulty(0);
+        setTerrain(0);
+        geoCacheSize = GeoCacheSize.other;
+        setAvailable(true);
+        wayPoints = new CB_List<>();
         if (withDetails) {
-            detail = new CacheDetail();
+            geoCacheDetail = new CacheDetail();
         }
     }
-    /**
-     * Constructor
-     */
-    public Cache(double Latitude, double Longitude, String Name, GeoCacheType cacheType, String GcCode) {
-        this.coordinate = new Coordinate(Latitude, Longitude);
-        this.setName(Name);
-        this.Type = cacheType;
-        this.setGcCode(GcCode);
-        this.NumTravelbugs = 0;
-        this.setDifficulty(0);
-        this.setTerrain(0);
-        this.Size = GeoCacheSize.other;
-        this.setAvailable(true);
-        waypoints = new CB_List<>();
+
+    public Cache(double Latitude, double Longitude, String geoCacheName, GeoCacheType cacheType, String geoCacheCode) {
+        coordinate = new Coordinate(Latitude, Longitude);
+        setGeoCacheName(geoCacheName);
+        geoCacheType = cacheType;
+        setGeoCacheCode(geoCacheCode);
+        numTravelbugs = 0;
+        setDifficulty(0);
+        setTerrain(0);
+        geoCacheSize = GeoCacheSize.other;
+        setAvailable(true);
+        wayPoints = new CB_List<>();
     }
 
     public static long generateCacheId(String GcCode) {
@@ -184,12 +143,12 @@ public class Cache implements Comparable<Cache>, Serializable {
         return result;
     }
 
-    public GeoCacheType getType() {
-        return Type;
+    public GeoCacheType getGeoCacheType() {
+        return geoCacheType;
     }
 
-    public void setType(GeoCacheType cacheType) {
-        this.Type = cacheType;
+    public void setGeoCacheType(GeoCacheType cacheType) {
+        geoCacheType = cacheType;
     }
 
     /**
@@ -212,15 +171,15 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Delete Detail Information to save memory
      */
     public void deleteDetail(boolean showAllWaypoints) {
-        if (this.detail == null)
+        if (geoCacheDetail == null)
             return;
-        this.detail.dispose();
-        this.detail = null;
+        geoCacheDetail.dispose();
+        geoCacheDetail = null;
         // remove all Detail Information from Waypoints
         // remove all Waypoints != Start and Final
-        if ((waypoints != null) && (!showAllWaypoints)) {
-            for (int i = 0; i < waypoints.size(); i++) {
-                Waypoint wp = waypoints.get(i);
+        if ((wayPoints != null) && (!showAllWaypoints)) {
+            for (int i = 0; i < wayPoints.size(); i++) {
+                Waypoint wp = wayPoints.get(i);
                 if (wp.isStartWaypoint || wp.waypointType == GeoCacheType.Final) {
 
                     if (wp.detail != null)
@@ -231,7 +190,7 @@ public class Cache implements Comparable<Cache>, Serializable {
                         wp.detail.dispose();
                         wp.detail = null;
                     }
-                    waypoints.remove(i);
+                    wayPoints.remove(i);
                     i--;
                 }
             }
@@ -239,7 +198,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     }
 
     public boolean mustLoadDetail() {
-        return (detail == null);
+        return (geoCacheDetail == null);
     }
 
     /**
@@ -250,13 +209,13 @@ public class Cache implements Comparable<Cache>, Serializable {
         dao.readDetail(this);
         // load all Waypoints with full Details
         WaypointDAO wdao = new WaypointDAO();
-        CB_List<Waypoint> readWaypoints = wdao.getWaypointsFromCacheID(Id, true);
-        if (waypoints == null) waypoints = new CB_List<>();
+        CB_List<Waypoint> readWaypoints = wdao.getWaypointsFromCacheID(generatedId, true);
+        if (wayPoints == null) wayPoints = new CB_List<>();
         for (int i = 0; i < readWaypoints.size(); i++) {
             Waypoint readWaypoint = readWaypoints.get(i);
             boolean found = false;
-            for (int j = 0; j < waypoints.size(); j++) {
-                Waypoint existingWaypoint = waypoints.get(j);
+            for (int j = 0; j < wayPoints.size(); j++) {
+                Waypoint existingWaypoint = wayPoints.get(j);
                 if (readWaypoint.getGcCode().equals(existingWaypoint.getGcCode())) {
                     found = true;
                     existingWaypoint.detail = readWaypoint.detail; // copy Detail Info
@@ -264,51 +223,46 @@ public class Cache implements Comparable<Cache>, Serializable {
                 }
             }
             if (!found) {
-                waypoints.add(readWaypoint);
+                wayPoints.add(readWaypoint);
             }
         }
     }
 
-    public boolean ImTheOwner() {
-        String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
-        if (myCache == 0)
+    public boolean iAmTheOwner() {
+        if (isMyCache == 0)
             return false;
-        if (myCache == 1)
+        if (isMyCache == 1)
             return true;
-
-        if (gcLogin == null) {
-            gcLogin = userName;
-        }
-
         boolean ret = false;
-
         try {
-            ret = this.getOwner().toLowerCase(Locale.getDefault()).equals(gcLogin);
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (gcLogin == null) {
+                gcLogin = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
+            }
+            ret = getOwner().toLowerCase(Locale.getDefault()).equals(gcLogin);
+        } catch (Exception ignored) {
         }
-        myCache = ret ? 1 : 0;
+        isMyCache = ret ? 1 : 0;
         return ret;
     }
 
     /**
      * -- korrigierte Koordinaten (kommt nur aus GSAK? bzw CacheWolf-Import) -- oder Mystery mit gueltigem Final
      */
-    public boolean hasCorrectedCoordiantesOrHasCorrectedFinal() {
+    public boolean hasCorrectedCoordinatesOrHasCorrectedFinal() {
         return hasCorrectedCoordinates() || getCorrectedFinal() != null;
     }
 
     // also checks flag userwaypoint
     public Waypoint getCorrectedFinal() {
-        if (waypoints == null || waypoints.size() == 0)
+        if (wayPoints == null || wayPoints.size() == 0)
             return null;
 
-        for (int i = 0, n = waypoints.size(); i < n; i++) {
-            Waypoint wp = waypoints.get(i);
-            if (wp.waypointType == GeoCacheType.Final) {
-                if (!wp.getCoordinate().isValid() || wp.getCoordinate().isZero())
+        for (int i = 0, n = wayPoints.size(); i < n; i++) {
+            Waypoint waypoint = wayPoints.get(i);
+            if (waypoint.waypointType == GeoCacheType.Final) {
+                if (!waypoint.getCoordinate().isValid() || waypoint.getCoordinate().isZero())
                     continue;
-                if (wp.isUserWaypoint) return wp;
+                if (waypoint.isUserWaypoint) return waypoint;
             }
         }
         return null;
@@ -318,14 +272,14 @@ public class Cache implements Comparable<Cache>, Serializable {
      * search the start Waypoint for a multi or mystery
      */
     public Waypoint getStartWaypoint() {
-        if ((this.Type != GeoCacheType.Multi) && (this.Type != GeoCacheType.Mystery))
+        if ((geoCacheType != GeoCacheType.Multi) && (geoCacheType != GeoCacheType.Mystery))
             return null;
 
-        if (waypoints == null || waypoints.size() == 0)
+        if (wayPoints == null || wayPoints.size() == 0)
             return null;
 
-        for (int i = 0, n = waypoints.size(); i < n; i++) {
-            Waypoint wp = waypoints.get(i);
+        for (int i = 0, n = wayPoints.size(); i < n; i++) {
+            Waypoint wp = wayPoints.get(i);
             if ((wp.waypointType == GeoCacheType.MultiStage) && (wp.isStartWaypoint)) {
                 return wp;
             }
@@ -339,8 +293,8 @@ public class Cache implements Comparable<Cache>, Serializable {
      * @return ArrayList of String
      */
     public CB_List<ImageEntry> getSpoilerRessources() {
-        if (detail != null) {
-            return detail.getSpoilerRessources(this);
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.getSpoilerRessources(this);
         } else {
             return null;
         }
@@ -352,16 +306,16 @@ public class Cache implements Comparable<Cache>, Serializable {
      * @return Boolean
      */
     public boolean hasSpoiler() {
-        if (detail != null) {
-            return detail.hasSpoiler(this);
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.hasSpoiler(this);
         } else {
             return false;
         }
     }
 
     public void loadSpoilerRessources() {
-        if (detail != null) {
-            detail.loadSpoilerRessources(this);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.loadSpoilerRessources(this);
         }
     }
 
@@ -393,12 +347,12 @@ public class Cache implements Comparable<Cache>, Serializable {
         if (!(obj instanceof Cache))
             return false;
         Cache other = (Cache) obj;
-        return Arrays.equals(this.GcCode, other.GcCode);
+        return Arrays.equals(geoCacheCode, other.geoCacheCode);
     }
 
     @Override
     public int compareTo(Cache c2) {
-        float dist1 = this.cachedDistance;
+        float dist1 = cachedDistance;
         float dist2 = c2.cachedDistance;
         return (Float.compare(dist1, dist2));
     }
@@ -406,8 +360,8 @@ public class Cache implements Comparable<Cache>, Serializable {
     private Waypoint findWaypointByGc(String gc) {
         if (isDisposed)
             return null;
-        for (int i = 0, n = waypoints.size(); i < n; i++) {
-            Waypoint wp = waypoints.get(i);
+        for (int i = 0, n = wayPoints.size(); i < n; i++) {
+            Waypoint wp = wayPoints.get(i);
             if (wp.getGcCode().equals(gc)) {
                 return wp;
             }
@@ -418,89 +372,86 @@ public class Cache implements Comparable<Cache>, Serializable {
     // copy all Informations from cache into this
     // this is used after actualization of cache with API
     public void copyFrom(Cache cache) {
-        // this.MapX = cache.MapX;
-        // this.MapY = cache.MapY;
-        this.Name = cache.Name;
-        this.coordinate = cache.coordinate;
-        this.Rating = cache.Rating;
-        this.favPoints = cache.favPoints;
-        this.Size = cache.Size;
-        this.setDifficulty(cache.getDifficulty());
-        this.setTerrain(cache.getTerrain());
-        this.setArchived(cache.isArchived());
-        this.setAvailable(cache.isAvailable());
-        // this.favorite = false;
-        // this.noteCheckSum = 0;
-        // this.solverCheckSum = 0;
-        // this.hasUserData = false;
-        // this.CorrectedCoordinates = false;
+        // MapX = cache.MapX;
+        // MapY = cache.MapY;
+        geoCacheName = cache.geoCacheName;
+        coordinate = cache.coordinate;
+        gcVoteRating = cache.gcVoteRating;
+        favPoints = cache.favPoints;
+        geoCacheSize = cache.geoCacheSize;
+        setDifficulty(cache.getDifficulty());
+        setTerrain(cache.getTerrain());
+        setArchived(cache.isArchived());
+        setAvailable(cache.isAvailable());
+        // favorite = false;
+        // noteCheckSum = 0;
+        // solverCheckSum = 0;
+        // hasUserData = false;
+        // CorrectedCoordinates = false;
         // only change the found status when it is true in the loaded cache
         // This will prevent ACB from overriding a found cache which is still not found in GC
         if (cache.isFound())
-            this.setFound(cache.isFound());
-        // this.TourName = "";
-        // this.GPXFilename_ID = 0;
-        this.Type = cache.Type;
-        // this.PlacedBy = cache.PlacedBy;
-        this.Owner = cache.Owner;
-        // this.listingChanged = true; // so that spoiler download will be done again
-        this.NumTravelbugs = cache.NumTravelbugs;
-        // this.cachedDistance = 0;
+            setFound(cache.isFound());
+        // TourName = "";
+        // GPXFilename_ID = 0;
+        geoCacheType = cache.geoCacheType;
+        // PlacedBy = cache.PlacedBy;
+        owner = cache.owner;
+        // listingChanged = true; // so that spoiler download will be done again
+        numTravelbugs = cache.numTravelbugs;
+        // cachedDistance = 0;
         // do not copy waypoints List directly because actual user defined Waypoints would be deleted
-        // this.waypoints = new ArrayList<Waypoint>();
 
-        for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
-            Waypoint newWaypoint = cache.waypoints.get(i);
-
-            Waypoint aktWaypoint = this.findWaypointByGc(newWaypoint.getGcCode());
-            if (aktWaypoint == null) {
+        for (Waypoint newWaypoint : cache.wayPoints) {
+            Waypoint wayPoint = findWaypointByGc(newWaypoint.getGcCode());
+            if (wayPoint == null) {
                 // this waypoint is new -> Add to list
-                this.waypoints.add(newWaypoint);
+                wayPoints.add(newWaypoint);
             } else {
                 // this waypoint is already in our list -> Copy Informations
-                aktWaypoint.setDescription(newWaypoint.getDescription());
-                aktWaypoint.setCoordinate(newWaypoint.getCoordinate());
-                aktWaypoint.setTitle(newWaypoint.getTitle());
-                aktWaypoint.waypointType = newWaypoint.waypointType;
+                wayPoint.setDescription(newWaypoint.getDescription());
+                wayPoint.setCoordinate(newWaypoint.getCoordinate());
+                wayPoint.setTitle(newWaypoint.getTitle());
+                wayPoint.waypointType = newWaypoint.waypointType;
             }
         }
-        // this.spoilerRessources = null;
+        // spoilerRessources = null;
         // copy Detail Information
-        this.detail = cache.detail;
-        this.myCache = cache.myCache;
-        // this.gcLogin = null;
+        geoCacheDetail = cache.geoCacheDetail;
+        isMyCache = cache.isMyCache;
+        // gcLogin = null;
 
     }
 
     @Override
     public String toString() {
-        return "Cache:" + getGcCode();
+        return "Cache:" + getGeoCacheCode();
     }
 
     public void dispose() {
         isDisposed = true;
 
-        if (detail != null)
-            detail.dispose();
-        detail = null;
+        if (geoCacheDetail != null)
+            geoCacheDetail.dispose();
+        geoCacheDetail = null;
 
-        GcCode = null;
-        Name = null;
+        geoCacheCode = null;
+        geoCacheName = null;
         coordinate = null;
-        Size = null;
-        Type = null;
-        Owner = null;
+        geoCacheSize = null;
+        geoCacheType = null;
+        owner = null;
 
-        if (waypoints != null) {
-            for (int i = 0, n = waypoints.size(); i < n; i++) {
-                Waypoint entry = waypoints.get(i);
+        if (wayPoints != null) {
+            for (int i = 0, n = wayPoints.size(); i < n; i++) {
+                Waypoint entry = wayPoints.get(i);
                 entry.dispose();
             }
 
-            waypoints.clear();
-            waypoints = null;
+            wayPoints.clear();
+            wayPoints = null;
         }
-        Owner = null;
+        owner = null;
 
     }
 
@@ -509,90 +460,89 @@ public class Cache implements Comparable<Cache>, Serializable {
     }
 
     public void setSolver1Changed(boolean b) {
-        this.solver1Changed = b;
+        solver1Changed = b;
     }
 
-    public String getGcCode() {
-        if (GcCode == null)
+    public String getGeoCacheCode() {
+        if (geoCacheCode == null)
             return EMPTY_STRING;
-        return new String(GcCode, US_ASCII);
+        return new String(geoCacheCode, US_ASCII);
     }
 
-    public void setGcCode(String gcCode) {
-        if (gcCode == null) {
-            GcCode = null;
+    public void setGeoCacheCode(String geoCacheCode) {
+        if (geoCacheCode == null) {
+            this.geoCacheCode = null;
             return;
         }
-        GcCode = gcCode.getBytes(US_ASCII);
+        this.geoCacheCode = geoCacheCode.getBytes(US_ASCII);
     }
 
-    public String getName() {
-        if (Name == null)
+    public String getGeoCacheName() {
+        if (geoCacheName == null)
             return EMPTY_STRING;
-        return new String(Name, UTF_8);
+        return new String(geoCacheName, UTF_8);
     }
 
-    public void setName(String name) {
-        if (name == null) {
-            Name = null;
+    public void setGeoCacheName(String geoCacheName) {
+        if (geoCacheName == null) {
+            this.geoCacheName = null;
             return;
         }
-        Name = name.getBytes(UTF_8);
+        this.geoCacheName = geoCacheName.getBytes(UTF_8);
     }
 
     public String getOwner() {
-        if (Owner == null)
+        if (owner == null)
             return EMPTY_STRING;
-        return new String(Owner, UTF_8);
+        return new String(owner, UTF_8);
     }
 
     public void setOwner(String owner) {
         if (owner == null) {
-            Owner = null;
+            this.owner = null;
             return;
         }
-        Owner = owner.getBytes(UTF_8);
+        this.owner = owner.getBytes(UTF_8);
     }
 
-    public String getGcId() {
-        if (GcId == null)
+    public String getGeoCacheId() {
+        if (geoCacheId == null)
             return EMPTY_STRING;
-        return new String(GcId, UTF_8);
+        return new String(geoCacheId, UTF_8);
     }
 
-    public void setGcId(String gcId) {
-
-        if (gcId == null) {
-            GcId = null;
+    public void setGeoCacheId(String geoCacheId) {
+        if (geoCacheId == null) {
+            this.geoCacheId = null;
             return;
         }
-        GcId = gcId.trim().getBytes(UTF_8);
+        this.geoCacheId = geoCacheId.trim().getBytes(UTF_8);
     }
 
     public String getHint() {
-        if (detail != null) {
-            return detail.getHint();
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.getHint();
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setHint(String hint) {
-        if (detail != null) {
-            detail.setHint(hint);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.setHint(hint);
         }
     }
 
     public long getGPXFilename_ID() {
-        if (detail != null) {
-            return detail.GPXFilename_ID;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.GPXFilename_ID;
         }
         return 0;
     }
 
     public void setGPXFilename_ID(long gpxFilenameId) {
-        if (detail != null) {
-            detail.GPXFilename_ID = gpxFilenameId;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.GPXFilename_ID = gpxFilenameId;
         }
 
     }
@@ -600,15 +550,15 @@ public class Cache implements Comparable<Cache>, Serializable {
     // Getter and Setter over Mask
 
     public boolean hasHint() {
-        if (detail != null) {
-            return detail.getHint().length() > 0;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.getHint().length() > 0;
         } else {
             return false;
         }
     }
 
     private boolean getMaskValue(short mask) {
-        return (BitFlags & mask) == mask;
+        return (bitFlags & mask) == mask;
     }
 
     private void setMaskValue(short mask, boolean value) {
@@ -616,61 +566,61 @@ public class Cache implements Comparable<Cache>, Serializable {
             return;
 
         if (value) {
-            BitFlags |= mask;
+            bitFlags |= mask;
         } else {
-            BitFlags &= ~mask;
+            bitFlags &= ~mask;
         }
 
     }
 
     public boolean hasCorrectedCoordinates() {
-        return this.getMaskValue(MASK_CORECTED_COORDS);
+        return getMaskValue(MASK_CORECTED_COORDS);
     }
 
     public void setHasCorrectedCoordinates(boolean correctedCoordinates) {
-        this.setMaskValue(MASK_CORECTED_COORDS, correctedCoordinates);
+        setMaskValue(MASK_CORECTED_COORDS, correctedCoordinates);
     }
 
     public boolean isArchived() {
-        return this.getMaskValue(MASK_ARCHIVED);
+        return getMaskValue(MASK_ARCHIVED);
     }
 
     public void setArchived(boolean archived) {
-        this.setMaskValue(MASK_ARCHIVED, archived);
+        setMaskValue(MASK_ARCHIVED, archived);
     }
 
     public boolean isAvailable() {
-        return this.getMaskValue(MASK_AVAILABLE);
+        return getMaskValue(MASK_AVAILABLE);
     }
 
     public void setAvailable(boolean available) {
-        this.setMaskValue(MASK_AVAILABLE, available);
+        setMaskValue(MASK_AVAILABLE, available);
     }
 
     public boolean isFavorite() {
-        return this.getMaskValue(MASK_FAVORITE);
+        return getMaskValue(MASK_FAVORITE);
     }
 
     public void setFavorite(boolean favorite) {
-        this.setMaskValue(MASK_FAVORITE, favorite);
+        setMaskValue(MASK_FAVORITE, favorite);
     }
 
     public float getDifficulty() {
-        return getFloatX_5FromByte((byte) (DifficultyTerrain & 15));
+        return getFloatX_5FromByte((byte) (difficultyTerrain & 15));
     }
 
     public void setDifficulty(float difficulty) {
-        DifficultyTerrain = (byte) (DifficultyTerrain & (byte) 240);// clear Bits
-        DifficultyTerrain = (byte) (DifficultyTerrain | getDT_HalfByte(difficulty));
+        difficultyTerrain = (byte) (difficultyTerrain & (byte) 240);// clear Bits
+        difficultyTerrain = (byte) (difficultyTerrain | getDT_HalfByte(difficulty));
     }
 
     public float getTerrain() {
-        return getFloatX_5FromByte((byte) (DifficultyTerrain >>> 4));
+        return getFloatX_5FromByte((byte) (difficultyTerrain >>> 4));
     }
 
     public void setTerrain(float terrain) {
-        DifficultyTerrain = (byte) (DifficultyTerrain & (byte) 15);// clear Bits
-        DifficultyTerrain = (byte) (DifficultyTerrain | getDT_HalfByte(terrain) << 4);
+        difficultyTerrain = (byte) (difficultyTerrain & (byte) 15);// clear Bits
+        difficultyTerrain = (byte) (difficultyTerrain | getDT_HalfByte(terrain) << 4);
     }
 
     private byte getDT_HalfByte(float value) {
@@ -716,291 +666,291 @@ public class Cache implements Comparable<Cache>, Serializable {
     }
 
     public boolean isFound() {
-        return this.getMaskValue(MASK_FOUND);
+        return getMaskValue(MASK_FOUND);
     }
 
     public void setFound(boolean found) {
-        this.setMaskValue(MASK_FOUND, found);
+        setMaskValue(MASK_FOUND, found);
     }
 
     public boolean isLive() {
-        return this.getMaskValue(MASK_IS_LIVE);
+        return getMaskValue(MASK_IS_LIVE);
     }
 
     public void setLive(boolean isLive) {
-        this.setMaskValue(MASK_IS_LIVE, isLive);
+        setMaskValue(MASK_IS_LIVE, isLive);
     }
 
     public boolean isHasUserData() {
-        return this.getMaskValue(MASK_HAS_USER_DATA);
+        return getMaskValue(MASK_HAS_USER_DATA);
     }
 
     public void setHasUserData(boolean hasUserData) {
-        this.setMaskValue(MASK_HAS_USER_DATA, hasUserData);
+        setMaskValue(MASK_HAS_USER_DATA, hasUserData);
     }
 
     public boolean isListingChanged() {
-        return this.getMaskValue(MASK_LISTING_CHANGED);
+        return getMaskValue(MASK_LISTING_CHANGED);
     }
 
     void setListingChanged(boolean listingChanged) {
-        this.setMaskValue(MASK_LISTING_CHANGED, listingChanged);
+        setMaskValue(MASK_LISTING_CHANGED, listingChanged);
     }
 
     public String getPlacedBy() {
-        if (detail != null) {
-            return detail.PlacedBy;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.PlacedBy;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setPlacedBy(String value) {
-        if (detail != null) {
-            detail.PlacedBy = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.PlacedBy = value;
         }
     }
 
     public Date getDateHidden() {
-        if (detail != null) {
-            return detail.DateHidden;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.DateHidden;
         } else {
             return null;
         }
     }
 
     public void setDateHidden(Date date) {
-        if (detail != null) {
-            detail.DateHidden = date;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.DateHidden = date;
         }
     }
 
     public byte getApiStatus() {
-        if (detail != null) {
-            return detail.ApiStatus;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.ApiStatus;
         } else {
             return NOT_LIVE;
         }
     }
 
     public void setApiStatus(byte value) {
-        if (detail != null) {
-            detail.ApiStatus = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.ApiStatus = value;
         }
     }
 
     int getNoteChecksum() {
-        if (detail != null) {
-            return detail.noteCheckSum;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.noteCheckSum;
         } else {
             return 0;
         }
     }
 
     public void setNoteChecksum(int value) {
-        if (detail != null) {
-            detail.noteCheckSum = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.noteCheckSum = value;
         }
     }
 
     public String getTmpNote() {
-        if (detail != null) {
-            return detail.tmpNote;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.tmpNote;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setTmpNote(String value) {
-        if (detail != null) {
-            detail.tmpNote = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.tmpNote = value;
         }
     }
 
     public String getUserNote() {
-        if (detail != null) {
-            return detail.userNote;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.userNote;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setUserNote(String value) {
-        if (detail != null) {
-            detail.userNote = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.userNote = value;
         }
     }
 
     int getSolverChecksum() {
-        if (detail != null) {
-            return detail.solverCheckSum;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.solverCheckSum;
         } else {
             return 0;
         }
     }
 
     public void setSolverChecksum(int value) {
-        if (detail != null) {
-            detail.solverCheckSum = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.solverCheckSum = value;
         }
     }
 
     public String getTmpSolver() {
-        if (detail != null) {
-            return detail.tmpSolver;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.tmpSolver;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setTmpSolver(String value) {
-        if (detail != null) {
-            detail.tmpSolver = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.tmpSolver = value;
         }
     }
 
     public String getUrl() {
-        if (detail != null) {
-            return detail.Url;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.Url;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setUrl(String value) {
-        if (detail != null) {
-            detail.Url = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.Url = value;
         }
     }
 
     public String getCountry() {
-        if (detail != null) {
-            return detail.Country;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.Country;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setCountry(String value) {
-        if (detail != null) {
-            detail.Country = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.Country = value;
         }
     }
 
     public String getState() {
-        if (detail != null) {
-            return detail.State;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.State;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setState(String value) {
-        if (detail != null) {
-            detail.State = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.State = value;
         }
     }
 
     public ArrayList<Attribute> getAttributes() {
-        if (detail != null) {
-            return detail.getAttributes(Id);
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.getAttributes(generatedId);
         } else {
             return null;
         }
     }
 
     public void addAttributeNegative(Attribute attribute) {
-        if (detail != null) {
-            detail.addAttributeNegative(attribute);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.addAttributeNegative(attribute);
         }
     }
 
     public void addAttributePositive(Attribute attribute) {
-        if (detail != null) {
-            detail.addAttributePositive(attribute);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.addAttributePositive(attribute);
         }
     }
 
     DLong getAttributesPositive() {
-        if (detail != null) {
-            return detail.getAttributesPositive(Id);
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.getAttributesPositive(generatedId);
         } else {
             return null;
         }
     }
 
     public void setAttributesPositive(DLong dLong) {
-        if (detail != null) {
-            detail.setAttributesPositive(dLong);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.setAttributesPositive(dLong);
         }
     }
 
     DLong getAttributesNegative() {
-        if (detail != null) {
-            return detail.getAttributesNegative(Id);
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.getAttributesNegative(generatedId);
         } else {
             return null;
         }
     }
 
     public void setAttributesNegative(DLong dLong) {
-        if (detail != null) {
-            detail.setAttributesNegative(dLong);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.setAttributesNegative(dLong);
         }
     }
 
     public String getLongDescription() {
-        if (detail != null) {
-            if (detail.getLongDescription() == null || detail.getLongDescription().length() == 0) {
+        if (geoCacheDetail != null) {
+            if (geoCacheDetail.getLongDescription() == null || geoCacheDetail.getLongDescription().length() == 0) {
                 return Database.getDescription(this);
             }
-            return detail.getLongDescription();
+            return geoCacheDetail.getLongDescription();
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setLongDescription(String value) {
-        if (detail != null) {
-            detail.setLongDescription(value);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.setLongDescription(value);
 
         }
     }
 
     public String getShortDescription() {
-        if (detail != null) {
-            if (detail.getShortDescription() == null || detail.getShortDescription().length() == 0) {
+        if (geoCacheDetail != null) {
+            if (geoCacheDetail.getShortDescription() == null || geoCacheDetail.getShortDescription().length() == 0) {
                 return Database.getShortDescription(this);
             }
-            return detail.getShortDescription();
+            return geoCacheDetail.getShortDescription();
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setShortDescription(String value) {
-        if (detail != null) {
-            detail.setShortDescription(value);
+        if (geoCacheDetail != null) {
+            geoCacheDetail.setShortDescription(value);
         }
     }
 
     public String getTourName() {
-        if (detail != null) {
-            return detail.TourName;
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.TourName;
         } else {
             return EMPTY_STRING;
         }
     }
 
     public void setTourName(String value) {
-        if (detail != null) {
-            detail.TourName = value;
+        if (geoCacheDetail != null) {
+            geoCacheDetail.TourName = value;
         }
     }
 
     public boolean isAttributePositiveSet(Attribute attribute) {
-        if (detail != null) {
-            return detail.isAttributePositiveSet(attribute);
+        if (geoCacheDetail != null) {
+            return geoCacheDetail.isAttributePositiveSet(attribute);
         } else {
             return false;
         }
@@ -1014,13 +964,18 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Returns true if the Cache a event like Giga, Cito, Event or Mega
      */
     public boolean isEvent() {
-        if (this.Type == GeoCacheType.Giga)
-            return true;
-        if (this.Type == GeoCacheType.CITO)
-            return true;
-        if (this.Type == GeoCacheType.Event)
-            return true;
-        return this.Type == GeoCacheType.MegaEvent;
+        switch (geoCacheType) {
+            case Giga:
+            case CITO:
+            case Event:
+            case CelebrationEvent:
+            case HQCelebration:
+            case HQBlockParty:
+            case MegaEvent:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -1032,5 +987,27 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
+    }
+
+    /**
+     * Detail Information of Waypoint which are not always loaded
+     */
+    public CacheDetail getGeoCacheDetail() {
+        return geoCacheDetail;
+    }
+
+    public void setGeoCacheDetail(CacheDetail geoCacheDetail) {
+        this.geoCacheDetail = geoCacheDetail;
+    }
+
+    /**
+     * list of wayPoints for the geoCache
+     */
+    public CB_List<Waypoint> getWayPoints() {
+        return wayPoints;
+    }
+
+    public void setWayPoints(CB_List<Waypoint> wayPoints) {
+        this.wayPoints = wayPoints;
     }
 }

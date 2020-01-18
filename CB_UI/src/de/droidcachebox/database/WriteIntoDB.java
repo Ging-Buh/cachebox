@@ -46,10 +46,10 @@ public class WriteIntoDB {
         Cache cache = geoCacheRelated.cache;
         Cache oldCache = null;
         if (keepOldCacheValues) {
-            oldCache = cacheDAO.getFromDbByCacheId(cache.Id); // !!! without Details and without Description
+            oldCache = cacheDAO.getFromDbByCacheId(cache.generatedId); // !!! without Details and without Description
             if (oldCache != null) {
                 oldCache.loadDetail(); // Details and Waypoints but without "Description, Solver, Notes, ShortDescription "
-                cache.Rating = oldCache.Rating;
+                cache.gcVoteRating = oldCache.gcVoteRating;
                 if (!cache.isFound()) {
                     if (oldCache.isFound()) cache.setFound(true);
                 }
@@ -150,21 +150,21 @@ public class WriteIntoDB {
             logDAO.WriteToDatabase(log);
         }
 
-        imageDAO.deleteImagesForCache(cache.getGcCode());
+        imageDAO.deleteImagesForCache(cache.getGeoCacheCode());
         for (ImageEntry image : geoCacheRelated.images) {
             imageDAO.writeToDatabase(image, false);
         }
 
-        for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
+        for (int i = 0, n = cache.getWayPoints().size(); i < n; i++) {
             // must Cast to Full Waypoint. If Waypoint, is wrong created!
-            Waypoint waypoint = cache.waypoints.get(i);
+            Waypoint waypoint = cache.getWayPoints().get(i);
             boolean update = true;
 
             // dont refresh wp if aktCache.wp is user changed
             if (oldCache != null) {
-                if (oldCache.waypoints != null) {
-                    for (int j = 0, m = oldCache.waypoints.size(); j < m; j++) {
-                        Waypoint oldWaypoint = oldCache.waypoints.get(j);
+                if (oldCache.getWayPoints() != null) {
+                    for (int j = 0, m = oldCache.getWayPoints().size(); j < m; j++) {
+                        Waypoint oldWaypoint = oldCache.getWayPoints().get(j);
                         if (waypoint.isUserWaypoint && waypoint.waypointType == GeoCacheType.Final)
                             if (oldWaypoint.isUserWaypoint && oldWaypoint.waypointType == GeoCacheType.Final) {
                                 waypoint.setGcCode(oldWaypoint.getGcCode());

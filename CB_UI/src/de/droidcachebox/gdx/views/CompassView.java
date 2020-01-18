@@ -170,7 +170,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             synchronized (aktCache) {
                 if (aktCache == null)
                     return;
-                Log.debug(log, "new cache: " + aktCache.getGcCode() + ":" + aktCache.getName());
+                Log.debug(log, "new cache: " + aktCache.getGeoCacheCode() + ":" + aktCache.getGeoCacheName());
 
                 if (aktCache.mustLoadDetail()) {
                     Log.debug(log, "loading details.");
@@ -201,10 +201,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
                 if (showIcon && Icon != null) {
                     if (aktWaypoint == null) {
-                        if (aktCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getType().name() + "Solved")));
+                        if (aktCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
+                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getGeoCacheType().name() + "Solved")));
                         } else {
-                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getType().name())));
+                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getGeoCacheType().name())));
                         }
                     } else {
                         Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktWaypoint.waypointType.name())));
@@ -213,14 +213,14 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
                 if (showName && lbl_Name != null) {
                     if (aktWaypoint == null) {
-                        lbl_Name.setText(aktCache.getName());
+                        lbl_Name.setText(aktCache.getGeoCacheName());
                     } else {
                         lbl_Name.setText(aktWaypoint.getTitleForGui());
                     }
                 }
 
                 if (showGcCode && lblGcCode != null) {
-                    lblGcCode.setText(aktCache.getGcCode());
+                    lblGcCode.setText(aktCache.getGeoCacheCode());
                 }
 
                 if (showCoords && lblCoords != null) {

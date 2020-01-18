@@ -110,7 +110,7 @@ public class UpdateCachesState extends AbstractAction {
                             GroundspeakAPI.uploadCacheNote(aktCache.getGcCode(), uploadText);
                             perhapsUploadedSomething = true;
                         }
-                        if (aktCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+                        if (aktCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
                             if (aktCache.hasCorrectedCoordinates()) {
                                 GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.Pos);
                                 perhapsUploadedSomething = true;

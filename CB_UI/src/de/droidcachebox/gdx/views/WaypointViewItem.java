@@ -70,7 +70,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 distance = null;
                 return;
             }
-            cacheInfo = new ExtendedCacheInfo(this, "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+            cacheInfo = new ExtendedCacheInfo(this, "CacheInfo " + Index + " @" + cache.getGeoCacheCode(), cache);
             cacheInfo.setZeroPos();
             cacheInfo.setViewMode(viewMode);
             addChild(cacheInfo);

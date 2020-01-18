@@ -145,9 +145,9 @@ public enum GeoCacheType {
     }
 
     public static String toShortString(Cache cache) {
-        if (cache.getType() == null) return " ";
+        if (cache.getGeoCacheType() == null) return " ";
 
-        switch (cache.getType()) {
+        switch (cache.getGeoCacheType()) {
             case CITO:
             case Event:
             case Giga:

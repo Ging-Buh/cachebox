@@ -103,7 +103,7 @@ public class SpoilerView extends CB_View_Base {
                     CB_RectF orItemRec = new CB_RectF(galleryOverwiew);
                     orItemRec.setWidth(galleryOverwiew.getHeight());
 
-                    ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGcCode());
+                    ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGeoCacheCode());
 
                     for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
                         ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);

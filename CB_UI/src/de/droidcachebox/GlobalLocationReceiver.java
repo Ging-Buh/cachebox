@@ -148,9 +148,9 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                         continue;
                                     if (cache.isFound())
                                         continue;
-                                    if (cache.ImTheOwner())
+                                    if (cache.iAmTheOwner())
                                         continue;
-                                    if (cache.getType() == GeoCacheType.Mystery && !cache.hasCorrectedCoordiantesOrHasCorrectedFinal())
+                                    if (cache.getGeoCacheType() == GeoCacheType.Mystery && !cache.hasCorrectedCoordinatesOrHasCorrectedFinal())
                                         continue;
                                     if (cache.recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition()) < nearestDistance) {
                                         resort = true;

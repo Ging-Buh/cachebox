@@ -382,7 +382,7 @@ public class MainViewInit extends MainViewBase {
                 if (c != null) {
                     if (GlobalCore.restartWaypoint != null) {
                         WaypointDAO dao = new WaypointDAO();
-                        CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(c.Id, true);
+                        CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(c.generatedId, true);
                         if (waypoints != null) {
                             Waypoint w = null;
 
@@ -392,10 +392,10 @@ public class MainViewInit extends MainViewBase {
                                     w = wp;
                                 }
                             }
-                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache + WP.");
+                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache + WP.");
                             GlobalCore.setSelectedWaypoint(c, w);
                         } else {
-                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache.");
+                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache.");
                             GlobalCore.setSelectedCache(c);
                         }
                     }

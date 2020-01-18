@@ -66,7 +66,7 @@ public abstract class Database extends Database_Core {
 
     // Methodes für Cache
     public static String getNote(Cache cache) {
-        String resultString = getNote(cache.Id);
+        String resultString = getNote(cache.generatedId);
         cache.setNoteChecksum((int) SDBM_Hash.sdbm(resultString));
         return resultString;
     }
@@ -99,15 +99,15 @@ public abstract class Database extends Database_Core {
     public static void setNote(Cache cache, String value) {
         int newNoteCheckSum = (int) SDBM_Hash.sdbm(value);
 
-        Replication.NoteChanged(cache.Id, cache.getNoteChecksum(), newNoteCheckSum);
+        Replication.NoteChanged(cache.generatedId, cache.getNoteChecksum(), newNoteCheckSum);
         if (newNoteCheckSum != cache.getNoteChecksum()) {
-            setNote(cache.Id, value);
+            setNote(cache.generatedId, value);
             cache.setNoteChecksum(newNoteCheckSum);
         }
     }
 
     public static String getSolver(Cache cache) {
-        String resultString = getSolver(cache.Id);
+        String resultString = getSolver(cache.generatedId);
         cache.setSolverChecksum((int) SDBM_Hash.sdbm(resultString));
         return resultString;
     }
@@ -141,9 +141,9 @@ public abstract class Database extends Database_Core {
     public static void setSolver(Cache cache, String value) {
         int newSolverCheckSum = (int) SDBM_Hash.sdbm(value);
 
-        Replication.SolverChanged(cache.Id, cache.getSolverChecksum(), newSolverCheckSum);
+        Replication.SolverChanged(cache.generatedId, cache.getSolverChecksum(), newSolverCheckSum);
         if (newSolverCheckSum != cache.getSolverChecksum()) {
-            setSolver(cache.Id, value);
+            setSolver(cache.generatedId, value);
             cache.setSolverChecksum(newSolverCheckSum);
         }
     }
@@ -155,11 +155,11 @@ public abstract class Database extends Database_Core {
     public static CB_List<LogEntry> getLogs(Cache cache) {
         if (cache == null)
             return cacheLogs;
-        if (cache.getGcCode().equals(lastGeoCache)) return cacheLogs;
-        lastGeoCache = cache.getGcCode();
+        if (cache.getGeoCacheCode().equals(lastGeoCache)) return cacheLogs;
+        lastGeoCache = cache.getGeoCacheCode();
         cacheLogs.clear();
-        Log.info(log, "getLogs for cache: " + cache.getGcCode());
-        CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]{Long.toString(cache.Id)});
+        Log.info(log, "getLogs for cache: " + cache.getGeoCacheCode());
+        CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]{Long.toString(cache.generatedId)});
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -212,7 +212,7 @@ public abstract class Database extends Database_Core {
 
     public static String getDescription(Cache cache) {
         String description = "";
-        CoreCursor reader = Database.Data.sql.rawQuery("select Description from Caches where Id=?", new String[]{Long.toString(cache.Id)});
+        CoreCursor reader = Database.Data.sql.rawQuery("select Description from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
         if (reader == null)
             return "";
         reader.moveToFirst();
@@ -228,7 +228,7 @@ public abstract class Database extends Database_Core {
 
     public static String getShortDescription(Cache cache) {
         String description = "";
-        CoreCursor reader = Database.Data.sql.rawQuery("select ShortDescription from Caches where Id=?", new String[]{Long.toString(cache.Id)});
+        CoreCursor reader = Database.Data.sql.rawQuery("select ShortDescription from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
         if (reader == null)
             return "";
         reader.moveToFirst();

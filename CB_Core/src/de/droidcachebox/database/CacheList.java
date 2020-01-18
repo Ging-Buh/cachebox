@@ -35,7 +35,7 @@ public class CacheList extends MoveableList<Cache> {
     public Cache getCacheByGcCodeFromCacheList(String GcCode) {
         for (int i = 0, n = size(); i < n; i++) {
             Cache cache = get(i);
-            if (cache.getGcCode().equalsIgnoreCase(GcCode))
+            if (cache.getGeoCacheCode().equalsIgnoreCase(GcCode))
                 return cache;
         }
         return null;
@@ -44,7 +44,7 @@ public class CacheList extends MoveableList<Cache> {
     public Cache getCacheByIdFromCacheList(long cacheId) {
         for (int i = 0, n = size(); i < n; i++) {
             Cache cache = get(i);
-            if (cache.Id == cacheId)
+            if (cache.generatedId == cacheId)
                 return cache;
         }
         return null;
@@ -88,8 +88,8 @@ public class CacheList extends MoveableList<Cache> {
                     if (nextCache.isAvailable()) {
                         if (!nextCache.isFound()) {
                             // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht)
-                            if (!nextCache.ImTheOwner()) {
-                                if ((nextCache.getType() == GeoCacheType.Event) || (nextCache.getType() == GeoCacheType.MegaEvent) || (nextCache.getType() == GeoCacheType.CITO) || (nextCache.getType() == GeoCacheType.Giga)) {
+                            if (!nextCache.iAmTheOwner()) {
+                                if ((nextCache.getGeoCacheType() == GeoCacheType.Event) || (nextCache.getGeoCacheType() == GeoCacheType.MegaEvent) || (nextCache.getGeoCacheType() == GeoCacheType.CITO) || (nextCache.getGeoCacheType() == GeoCacheType.Giga)) {
                                     Calendar dateHidden = GregorianCalendar.getInstance();
                                     Calendar today = GregorianCalendar.getInstance();
                                     try {
@@ -99,11 +99,11 @@ public class CacheList extends MoveableList<Cache> {
                                             break;
                                         }
                                     } catch (Exception ex) {
-                                        Log.err("CacheList", nextCache.getGcCode() + " Hidden:" + nextCache.getDateHidden());
+                                        Log.err("CacheList", nextCache.getGeoCacheCode() + " Hidden:" + nextCache.getDateHidden());
                                     }
                                 } else {
-                                    if (nextCache.getType() == GeoCacheType.Mystery) {
-                                        if (nextCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+                                    if (nextCache.getGeoCacheType() == GeoCacheType.Mystery) {
+                                        if (nextCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
                                             break;
                                         }
                                     } else {
@@ -166,7 +166,7 @@ public class CacheList extends MoveableList<Cache> {
     public ArrayList<String> getGcCodes() {
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0, n = size(); i < n; i++) {
-            list.add(get(i).getGcCode());
+            list.add(get(i).getGeoCacheCode());
         }
         return list;
     }
@@ -178,7 +178,7 @@ public class CacheList extends MoveableList<Cache> {
 
         int index = -1;
         for (int i = 0, n = size(); i < n; i++) {
-            if (get(i).Id == ca.Id) {
+            if (get(i).generatedId == ca.generatedId) {
                 index = i;
             }
         }

@@ -258,17 +258,17 @@ public final class GpxSerializer {
                 solver = "";
 
             multipleTexts(gpx, PREFIX_GPX, //
-                    "name", cache.getGcCode(), //
-                    "desc", cache.getName(), //
+                    "name", cache.getGeoCacheCode(), //
+                    "desc", cache.getGeoCacheName(), //
                     "url", cache.getUrl(), //
-                    "urlname", cache.getName(), //
+                    "urlname", cache.getGeoCacheName(), //
                     "sym", cache.isFound() ? "Geocache Found" : "Geocache", //
-                    "type", "Geocache|" + cache.getType().toString() + additinalIfFound//
+                    "type", "Geocache|" + cache.getGeoCacheType().toString() + additinalIfFound//
 
             );
 
             gpx.startTag(PREFIX_GROUNDSPEAK, "cache");
-            gpx.attribute("", "id", cache.getGcId());
+            gpx.attribute("", "id", cache.getGeoCacheId());
             gpx.attribute("", "available", cache.isAvailable() ? "True" : "False");
             gpx.attribute("", "archived", cache.isArchived() ? "True" : "False");
             gpx.attribute("", "xmlns:groundspeak", PREFIX_GROUNDSPEAK);
@@ -289,11 +289,11 @@ public final class GpxSerializer {
             }
 
             multipleTexts(gpx, PREFIX_GROUNDSPEAK, //
-                    "name", cache.getName(), //
+                    "name", cache.getGeoCacheName(), //
                     "placed_by", cache.getPlacedBy(), //
                     "owner", cache.getOwner(), //
-                    "type", cache.getType().toString(), //
-                    "container", cache.Size.toString(), //
+                    "type", cache.getGeoCacheType().toString(), //
+                    "container", cache.geoCacheSize.toString(), //
                     "difficulty", difficulty, //
                     "terrain", terrain, //
                     "country", getCountry(cache), //
@@ -342,7 +342,7 @@ public final class GpxSerializer {
 
             countExported++;
             if (progressListener != null) {
-                progressListener.publishProgress(countExported, Translation.get("writeCache", cache.getGcCode()));
+                progressListener.publishProgress(countExported, Translation.get("writeCache", cache.getGeoCacheCode()));
             }
         }
 
@@ -350,12 +350,12 @@ public final class GpxSerializer {
     }
 
     private void writeWaypoints(final Cache cache) throws IOException {
-        final CB_List<Waypoint> waypoints = cache.waypoints;
+        final CB_List<Waypoint> waypoints = cache.getWayPoints();
         final List<Waypoint> ownWaypoints = new ArrayList<>(waypoints.size());
         final List<Waypoint> originWaypoints = new ArrayList<>(waypoints.size());
 
-        for (int i = 0; i < cache.waypoints.size(); i++) {
-            Waypoint wp = cache.waypoints.get(i);
+        for (int i = 0; i < cache.getWayPoints().size(); i++) {
+            Waypoint wp = cache.getWayPoints().get(i);
 
             if (wp.isUserWaypoint) {
                 ownWaypoints.add(wp);
@@ -392,7 +392,7 @@ public final class GpxSerializer {
 
             multipleTexts(gpx, PREFIX_GPX, //
                     "clue", wp.getClue(), //
-                    "Parent", cache.getGcCode());
+                    "Parent", cache.getGeoCacheCode());
             gpx.endTag(PREFIX_GPX, PREFIX_CACHEBOX);
 
             gpx.endTag(PREFIX_GPX, "wpt");
@@ -421,7 +421,7 @@ public final class GpxSerializer {
             try {
                 gpx.text(validateChar(log.logText));
             } catch (final IllegalArgumentException e) {
-                Log.err(sKlasse, "GpxSerializer.writeLogs: cannot write log " + log.logId + " for cache " + cache.getGcCode(), e);
+                Log.err(sKlasse, "GpxSerializer.writeLogs: cannot write log " + log.logId + " for cache " + cache.getGeoCacheCode(), e);
                 gpx.text(" [end of log omitted due to an invalid character]");
             }
             gpx.endTag(PREFIX_GROUNDSPEAK, "text");

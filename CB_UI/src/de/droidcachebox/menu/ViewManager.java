@@ -204,8 +204,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             synchronized (Database.Data.cacheList) {
                 for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                     Cache c = Database.Data.cacheList.get(i);
-                    if (c.getGcCode().equalsIgnoreCase(sGc)) {
-                        Log.debug(log, "ViewManager: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+                    if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
+                        Log.debug(log, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                         GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
                         break;
                     }

@@ -92,10 +92,10 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     }
 
     private void addWaypoints(Cache cache, int iconSize) {
-        if (cache.waypoints == null)
+        if (cache.getWayPoints() == null)
             return;
-        for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
-            addWaypoint(cache, cache.waypoints.get(i), iconSize);
+        for (int i = 0, n = cache.getWayPoints().size(); i < n; i++) {
+            addWaypoint(cache, cache.getWayPoints().get(i), iconSize);
         }
     }
 
@@ -133,7 +133,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
             return getMapIcon(cache);
         } else {
             if (GlobalCore.isSetSelectedCache()) {
-                if (cache.Id == GlobalCore.getSelectedCache().Id) {
+                if (cache.generatedId == GlobalCore.getSelectedCache().generatedId) {
                     // the selected cache always has a big icon
                     return getMapIcon(cache);
                 }
@@ -143,37 +143,37 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     }
 
     private Sprite getMapIcon(Cache cache) {
-        if (cache.ImTheOwner())
+        if (cache.iAmTheOwner())
             return getSprite("star");
         else if (cache.isFound())
             return getSprite("mapFound");
         else if (showAtOriginalPosition && !cache.hasCorrectedCoordinates())
             // todo for corrected coordinates there is no original position saved at the moment
-            return getSprite("map" + cache.getType().name());
-        else if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-            if (cache.getType() == GeoCacheType.Mystery)
+            return getSprite("map" + cache.getGeoCacheType().name());
+        else if (cache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
+            if (cache.getGeoCacheType() == GeoCacheType.Mystery)
                 return getSprite("mapMysterySolved");
-            else if (cache.getType() == GeoCacheType.Multi)
+            else if (cache.getGeoCacheType() == GeoCacheType.Multi)
                 return getSprite("mapMultiSolved");
-            else if (cache.getType() == GeoCacheType.Wherigo)
+            else if (cache.getGeoCacheType() == GeoCacheType.Wherigo)
                 return getSprite("mapWherigoSolved");
-            else if (cache.getType() == GeoCacheType.Letterbox)
+            else if (cache.getGeoCacheType() == GeoCacheType.Letterbox)
                 return getSprite("mapLetterboxSolved");
-            else if (cache.getType() == GeoCacheType.Traditional)
+            else if (cache.getGeoCacheType() == GeoCacheType.Traditional)
                 return getSprite("mapTraditionalSolved");
-            else if (cache.getType() == GeoCacheType.Virtual)
+            else if (cache.getGeoCacheType() == GeoCacheType.Virtual)
                 return getSprite("mapVirtualSolved");
-            else if (cache.getType() == GeoCacheType.Camera)
+            else if (cache.getGeoCacheType() == GeoCacheType.Camera)
                 return getSprite("mapCameraSolved");
-            else if (cache.getType() == GeoCacheType.Earth)
+            else if (cache.getGeoCacheType() == GeoCacheType.Earth)
                 return getSprite("mapEarthSolved");
             return getSprite("mapMysterySolved");
-        } else if ((cache.getType() == GeoCacheType.Multi) && cache.getStartWaypoint() != null)
+        } else if ((cache.getGeoCacheType() == GeoCacheType.Multi) && cache.getStartWaypoint() != null)
             return getSprite("mapMultiStartP"); // Multi mit Startpunkt
-        else if ((cache.getType() == GeoCacheType.Mystery) && cache.getStartWaypoint() != null)
+        else if ((cache.getGeoCacheType() == GeoCacheType.Mystery) && cache.getStartWaypoint() != null)
             return getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
         else
-            return getSprite("map" + cache.getType().name());
+            return getSprite("map" + cache.getGeoCacheType().name());
 
     }
 
@@ -183,12 +183,12 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
 
         if (cache.isFound())
             icon = "small6";
-        else if (cache.ImTheOwner())
+        else if (cache.iAmTheOwner())
             icon = "small7";
         else {
             if (cache.getCorrectedFinal() != null || cache.getStartWaypoint() != null)
                 solved = "Solved";
-            switch (cache.getType()) {
+            switch (cache.getGeoCacheType()) {
                 case Multi:
                     icon = "small2";
                     break;
@@ -209,7 +209,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                     break;
                 case MyParking:
                 case Munzee:
-                    return getSprite("map" + cache.getType().name());
+                    return getSprite("map" + cache.getGeoCacheType().name());
                 default:
                     break;
             }
@@ -225,7 +225,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint, int iconSize) {
         boolean selectedCache = false;
         if (GlobalCore.isSetSelectedCache()) {
-            selectedCache = cache.Id == GlobalCore.getSelectedCache().Id;
+            selectedCache = cache.generatedId == GlobalCore.getSelectedCache().generatedId;
         }
 
         if ((iconSize == 0) && (!selectedCache)) {
@@ -386,7 +386,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                 if (hideMyFinds && cache.isFound()) continue;
                                 boolean selectedCache = false;
                                 if (GlobalCore.isSetSelectedCache()) {
-                                    selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
+                                    selectedCache = GlobalCore.getSelectedCache().generatedId == cache.generatedId;
                                 }
                                 boolean showWaypoints = showAllWaypoints || selectedCache;
                                 double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.getLongitude());
@@ -407,7 +407,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                         }
                                     }
                                     // or show Cache at Startwaypoint (only for Multi and Mysterie)
-                                    if ((cache.getType() == GeoCacheType.Multi) || (cache.getType() == GeoCacheType.Mystery)) {
+                                    if ((cache.getGeoCacheType() == GeoCacheType.Multi) || (cache.getGeoCacheType() == GeoCacheType.Mystery)) {
                                         // todo ? really show corrected coord if a startWP is defined?
                                         if (!cache.hasCorrectedCoordinates() && (finalWaypoint == null)) {
                                             startWaypoint = cache.getStartWaypoint();

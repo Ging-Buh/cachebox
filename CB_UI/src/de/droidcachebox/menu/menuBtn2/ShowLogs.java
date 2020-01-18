@@ -139,7 +139,7 @@ public class ShowLogs extends AbstractShowAction {
                                             Iterator<LogEntry> iterator = logList.iterator();
                                             LogDAO dao = new LogDAO();
                                             if (loadAllLogs)
-                                                dao.deleteLogs(GlobalCore.getSelectedCache().Id);
+                                                dao.deleteLogs(GlobalCore.getSelectedCache().generatedId);
                                             do {
                                                 ChangedCount++;
                                                 try {

@@ -45,7 +45,7 @@ public class CacheContextMenu {
         boolean selectedCacheIsSet = GlobalCore.isSetSelectedCache();
         boolean selectedCacheIsGC = false;
         if (selectedCacheIsSet) {
-            selectedCacheIsGC = GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
+            selectedCacheIsGC = GlobalCore.getSelectedCache().getGeoCacheCode().startsWith("GC");
         }
         if (forCacheList) {
             cacheContextMenu.addCheckableMenuItem("CacheContextMenuShortClickToggle", Config.CacheContextMenuShortClickToggle.getValue(), CacheContextMenu::toggleShortClick);
@@ -56,7 +56,7 @@ public class CacheContextMenu {
         cacheContextMenu.addMenuItem("Watchlist", null, CacheContextMenu::watchList).setEnabled(selectedCacheIsGC);
         cacheContextMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(GlobalCore.getSelectedCache())).setEnabled(selectedCacheIsSet);
         cacheContextMenu.addMenuItem("MI_DELETE_CACHE", Sprites.getSprite(IconName.DELETE.name()), CacheContextMenu::deleteGeoCache).setEnabled(selectedCacheIsSet);
-        cacheContextMenu.addCheckableMenuItem("rememberGeoCache", Config.rememberedGeoCache.getValue().equals(GlobalCore.getSelectedCache().getGcCode()), CacheContextMenu::rememberGeoCache).setEnabled(selectedCacheIsSet);
+        cacheContextMenu.addCheckableMenuItem("rememberGeoCache", Config.rememberedGeoCache.getValue().equals(GlobalCore.getSelectedCache().getGeoCacheCode()), CacheContextMenu::rememberGeoCache).setEnabled(selectedCacheIsSet);
         if (forCacheList) {
             cacheContextMenu.addDivider();
             cacheContextMenu.addMenuItem("Map", Sprites.getSprite(IconName.map.name()), () -> ShowMap.getInstance().execute());
@@ -84,7 +84,7 @@ public class CacheContextMenu {
         if (GlobalCore.isSetSelectedCache()) {
             MessageBox mb = MessageBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
-                Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGcCode());
+                Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
                 Config.AcceptChanges();
                 return mb.finish();
             });
@@ -110,7 +110,7 @@ public class CacheContextMenu {
 
                 @Override
                 public void run() {
-                    String GCCode = GlobalCore.getSelectedCache().getGcCode();
+                    String GCCode = GlobalCore.getSelectedCache().getGeoCacheCode();
                     ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                     if (geoCacheRelateds.size() > 0) {
                         try {
@@ -146,19 +146,19 @@ public class CacheContextMenu {
 
     private static void deleteSelectedCache() {
         ArrayList<String> GcCodeList = new ArrayList<>();
-        GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
+        GcCodeList.add(GlobalCore.getSelectedCache().getGeoCacheCode());
         CacheListDAO.getInstance().delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
-        for (int i = 0, n = GlobalCore.getSelectedCache().waypoints.size(); i < n; i++) {
-            Waypoint wp = GlobalCore.getSelectedCache().waypoints.get(i);
+        for (int i = 0, n = GlobalCore.getSelectedCache().getWayPoints().size(); i < n; i++) {
+            Waypoint wp = GlobalCore.getSelectedCache().getWayPoints().get(i);
             Database.deleteFromDatabase(wp);
         }
 
-        Database.Data.sql.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
+        Database.Data.sql.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGeoCacheCode() + "'", null);
 
         LogDAO logdao = new LogDAO();
         //logdao.ClearOrphanedLogs(); // doit when you have more time
-        logdao.deleteLogs(GlobalCore.getSelectedCache().Id);
+        logdao.deleteLogs(GlobalCore.getSelectedCache().generatedId);
         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
         GlobalCore.setSelectedCache(null);
@@ -183,7 +183,7 @@ public class CacheContextMenu {
         CacheDAO dao = new CacheDAO();
         dao.UpdateDatabase(GlobalCore.getSelectedCache());
         // Update cacheList
-        Database.Data.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+        Database.Data.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
         // Update View
         ShowDescription.getInstance().updateDescriptionView(true);
         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -204,7 +204,7 @@ public class CacheContextMenu {
     private static void addToWatchList() {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
-                if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
+                if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == GroundspeakAPI.OK) {
                     MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
                     MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
@@ -216,7 +216,7 @@ public class CacheContextMenu {
     private static void removeFromWatchList() {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
-                if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
+                if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == GroundspeakAPI.OK) {
                     MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
                     MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);

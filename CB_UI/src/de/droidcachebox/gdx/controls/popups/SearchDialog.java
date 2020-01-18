@@ -357,10 +357,10 @@ public class SearchDialog extends PopUp_Base {
 
                     switch (mSearchState) {
                         case Title:
-                            criterionMatches = tmp.getName().toLowerCase().contains(searchPattern);
+                            criterionMatches = tmp.getGeoCacheName().toLowerCase().contains(searchPattern);
                             break;
                         case GcCode:
-                            criterionMatches = tmp.getGcCode().toLowerCase().contains(searchPattern);
+                            criterionMatches = tmp.getGeoCacheCode().toLowerCase().contains(searchPattern);
                             break;
                         case Owner:
                             criterionMatches = tmp.getOwner().toLowerCase().contains(searchPattern);
@@ -516,7 +516,7 @@ public class SearchDialog extends PopUp_Base {
                         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
                             Cache cache = geoCacheRelated.cache;
                             counter++;
-                            if (Database.Data.cacheList.getCacheByIdFromCacheList(cache.Id) == null) {
+                            if (Database.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
                                 Database.Data.cacheList.add(cache);
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.Id);
@@ -528,8 +528,8 @@ public class SearchDialog extends PopUp_Base {
                                 for (ImageEntry image : geoCacheRelated.images) {
                                     imageDAO.writeToDatabase(image, false);
                                 }
-                                for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
-                                    Waypoint waypoint = cache.waypoints.get(i);
+                                for (int i = 0, n = cache.getWayPoints().size(); i < n; i++) {
+                                    Waypoint waypoint = cache.getWayPoints().get(i);
                                     waypointDAO.WriteToDatabase(waypoint, false); // do not store replication information here
                                 }
                             }
@@ -545,7 +545,7 @@ public class SearchDialog extends PopUp_Base {
 
                     if (counter == 1) {
                         // select this Cache
-                        Cache cache = Database.Data.cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.Id);
+                        Cache cache = Database.Data.cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.generatedId);
                         GlobalCore.setSelectedCache(cache);
                     }
 

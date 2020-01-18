@@ -285,7 +285,7 @@ public class CacheDetail implements Serializable {
 
     public void loadSpoilerRessources(Cache cache) {
 
-        String gcCode = cache.getGcCode();
+        String gcCode = cache.getGeoCacheCode();
         if (gcCode.length() < 4)
             return;
 
@@ -358,7 +358,7 @@ public class CacheDetail implements Serializable {
             @Override
             public boolean accept(File dir, String filename) {
                 filename = filename.toLowerCase(Locale.getDefault());
-                if (filename.indexOf(cache.getGcCode().toLowerCase(Locale.getDefault())) >= 0) {
+                if (filename.indexOf(cache.getGeoCacheCode().toLowerCase(Locale.getDefault())) >= 0) {
                     if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) {
                         // don't load Thumbs
                         if (filename.startsWith(FileFactory.THUMB) || filename.startsWith(FileFactory.THUMB_OVERVIEW + FileFactory.THUMB)) {

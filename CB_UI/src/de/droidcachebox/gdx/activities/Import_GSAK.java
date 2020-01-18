@@ -407,24 +407,24 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     private void addWayPoints(Cache cache) {
         String cmd = "select cLat,cLon,cName,cType,Waypoints.cCode as cCode,WayMemo.cComment as cComment from Waypoints inner join WayMemo on WayMemo.cCode = Waypoints.cCode";
-        CoreCursor WaypointsReader = sql.rawQuery(cmd + " where Waypoints.cParent = ?", new String[]{cache.getGcCode()});
+        CoreCursor WaypointsReader = sql.rawQuery(cmd + " where Waypoints.cParent = ?", new String[]{cache.getGeoCacheCode()});
         WaypointsReader.moveToFirst();
         while (!WaypointsReader.isAfterLast()) {
             Waypoint waypoint = new Waypoint(true);
-            waypoint.geoCacheId = cache.Id;
+            waypoint.geoCacheId = cache.generatedId;
             waypoint.setCoordinate(new Coordinate((float) WaypointsReader.getDouble("cLat"), (float) WaypointsReader.getDouble("cLon")));
             waypoint.setTitle(WaypointsReader.getString("cName"));
             waypoint.setDescription(WaypointsReader.getString("cComment"));
             waypoint.waypointType = geoCacheTypeFromGSString(WaypointsReader.getString("cType"));
             waypoint.setGcCode(WaypointsReader.getString("cCode"));
-            cache.waypoints.add(waypoint);
+            cache.getWayPoints().add(waypoint);
             WaypointsReader.moveToNext();
         }
         WaypointsReader.close();
     }
 
     private void addAttributes(Cache cache) {
-        CoreCursor GcAttributesReader = sql.rawQuery("select aId,aInc from Attributes where aCode = ?", new String[]{cache.getGcCode()});
+        CoreCursor GcAttributesReader = sql.rawQuery("select aId,aInc from Attributes where aCode = ?", new String[]{cache.getGeoCacheCode()});
         GcAttributesReader.moveToFirst();
         while (!GcAttributesReader.isAfterLast()) {
             int aId = GcAttributesReader.getInt(0); // aId;
@@ -447,17 +447,17 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         for (int ii = 0; ii < ResultFieldsArray.length; ii++) {
             switch (ResultFieldsArray[ii]) {
                 case "Caches.Code":
-                    cache.setGcCode(reader.getString("Code"));
-                    if (cache.getGcCode().length() == 0) {
+                    cache.setGeoCacheCode(reader.getString("Code"));
+                    if (cache.getGeoCacheCode().length() == 0) {
                         Log.err(sKlasse, "get no GCCode");
                         return null;
                     }
-                    cache.setUrl("https://coord.info/" + cache.getGcCode());
-                    cache.Id = Cache.generateCacheId(cache.getGcCode());
-                    cache.NumTravelbugs = 0;
+                    cache.setUrl("https://coord.info/" + cache.getGeoCacheCode());
+                    cache.generatedId = Cache.generateCacheId(cache.getGeoCacheCode());
+                    cache.numTravelbugs = 0;
                     break;
                 case "Name":
-                    cache.setName(reader.getString(ii));
+                    cache.setGeoCacheName(reader.getString(ii));
                     break;
                 case "Difficulty":
                     cache.setDifficulty((float) reader.getDouble(ii));
@@ -472,10 +472,10 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     cache.setDateHidden(dateFromString(reader.getString(ii)));
                     break;
                 case "CacheType":
-                    cache.setType(geoCacheTypeFrom1CharAbbreviation(reader.getString(ii)));
+                    cache.setGeoCacheType(geoCacheTypeFrom1CharAbbreviation(reader.getString(ii)));
                     break;
                 case "Container":
-                    cache.Size = geoCacheSizeFromString(reader.getString(ii));
+                    cache.geoCacheSize = geoCacheSizeFromString(reader.getString(ii));
                     break;
                 case "Country":
                     cache.setCountry(reader.getString(ii));
@@ -510,13 +510,13 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                     if (hasCorrected) {
                         if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
                             cache.setCoordinate(new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal")));
-                            cache.waypoints.add(new Waypoint(
-                                    "!?" + cache.getGcCode().substring(2),
+                            cache.getWayPoints().add(new Waypoint(
+                                    "!?" + cache.getGeoCacheCode().substring(2),
                                     GeoCacheType.Final,
                                     "",
                                     reader.getDouble("Latitude"),
                                     reader.getDouble("Longitude"),
-                                    cache.Id,
+                                    cache.generatedId,
                                     "",
                                     "Final GSAK Corrected"));
                         } else {

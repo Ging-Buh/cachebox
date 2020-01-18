@@ -36,26 +36,26 @@ public class CacheDAO {
     static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates, FavPoints ";
     private static final String log = "CacheDAO";
 
-    Cache ReadFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription) {
+    Cache readFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription) {
         try {
             Cache cache = new Cache(fullDetails);
 
-            cache.Id = reader.getLong(0);
-            cache.setGcCode(reader.getString(1).trim());
+            cache.generatedId = reader.getLong(0);
+            cache.setGeoCacheCode(reader.getString(1).trim());
             cache.setCoordinate(new Coordinate(reader.getDouble(2), reader.getDouble(3)));
-            cache.setName(reader.getString(4).trim());
-            cache.Size = GeoCacheSize.CacheSizesFromInt(reader.getInt(5));
+            cache.setGeoCacheName(reader.getString(4).trim());
+            cache.geoCacheSize = GeoCacheSize.CacheSizesFromInt(reader.getInt(5));
             cache.setDifficulty(((float) reader.getShort(6)) / 2);
             cache.setTerrain(((float) reader.getShort(7)) / 2);
             cache.setArchived(reader.getInt(8) != 0);
             cache.setAvailable(reader.getInt(9) != 0);
             cache.setFound(reader.getInt(10) != 0);
-            cache.setType(GeoCacheType.values()[reader.getShort(11)]);
+            cache.setGeoCacheType(GeoCacheType.values()[reader.getShort(11)]);
             cache.setOwner(reader.getString(12).trim());
 
-            cache.NumTravelbugs = reader.getInt(13);
-            cache.setGcId(reader.getString(14));
-            cache.Rating = (reader.getShort(15)) / 100.0f;
+            cache.numTravelbugs = reader.getInt(13);
+            cache.setGeoCacheId(reader.getString(14));
+            cache.gcVoteRating = (reader.getShort(15)) / 100.0f;
             if (reader.getInt(16) > 0)
                 cache.setFavorite(true);
             else
@@ -79,7 +79,7 @@ public class CacheDAO {
             cache.favPoints = reader.getInt(20);
 
             if (fullDetails) {
-                readDetailFromCursor(reader, cache.detail, fullDetails, withDescription);
+                readDetailFromCursor(reader, cache.getGeoCacheDetail(), fullDetails, withDescription);
             }
 
             return cache;
@@ -90,16 +90,16 @@ public class CacheDAO {
     }
 
     public boolean readDetail(Cache cache) {
-        if (cache.detail != null)
+        if (cache.getGeoCacheDetail() != null)
             return true;
-        cache.detail = new CacheDetail();
+        cache.setGeoCacheDetail(new CacheDetail());
 
-        CoreCursor reader = Database.Data.sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.Id)});
+        CoreCursor reader = Database.Data.sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
 
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();
-                readDetailFromCursor(reader, cache.detail, false, false);
+                readDetailFromCursor(reader, cache.getGeoCacheDetail(), false, false);
 
                 reader.close();
                 return true;
@@ -166,13 +166,13 @@ public class CacheDAO {
         // int newCheckSum = createCheckSum(WP);
         // Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
         Parameters args = new Parameters();
-        args.put("Id", cache.Id);
-        args.put("GcCode", cache.getGcCode());
+        args.put("Id", cache.generatedId);
+        args.put("GcCode", cache.getGeoCacheCode());
         args.put("Latitude", cache.getCoordinate().getLatitude());
         args.put("Longitude", cache.getCoordinate().getLongitude());
-        args.put("Name", cache.getName());
+        args.put("Name", cache.getGeoCacheName());
         try {
-            args.put("Size", cache.Size.ordinal());
+            args.put("Size", cache.geoCacheSize.ordinal());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -181,7 +181,7 @@ public class CacheDAO {
         args.put("Archived", cache.isArchived() ? 1 : 0);
         args.put("Available", cache.isAvailable() ? 1 : 0);
         args.put("Found", cache.isFound());
-        args.put("Type", cache.getType().ordinal());
+        args.put("Type", cache.getGeoCacheType().ordinal());
         args.put("Owner", cache.getOwner());
         args.put("Country", cache.getCountry());
         args.put("State", cache.getState());
@@ -202,8 +202,8 @@ public class CacheDAO {
             args.put("Description", cache.getLongDescription());
         }
 
-        args.put("NumTravelbugs", cache.NumTravelbugs);
-        args.put("Rating", (int) (cache.Rating * 100));
+        args.put("NumTravelbugs", cache.numTravelbugs);
+        args.put("Rating", (int) (cache.gcVoteRating * 100));
         // args.put("Vote", cache.);
         // args.put("VotePending", cache.);
         // args.put("Notes", );
@@ -212,9 +212,9 @@ public class CacheDAO {
         args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
         args.put("Favorit", cache.isFavorite() ? 1 : 0);
         args.put("FavPoints", cache.favPoints);
-        if (cache.detail != null) {
+        if (cache.getGeoCacheDetail() != null) {
             // write detail information if existing
-            args.put("GcId", cache.getGcId());
+            args.put("GcId", cache.getGeoCacheId());
             args.put("PlacedBy", cache.getPlacedBy());
             args.put("ApiStatus", cache.getApiStatus());
             try {
@@ -244,8 +244,8 @@ public class CacheDAO {
         Parameters args = new Parameters();
         args.put("found", cache.isFound());
         try {
-            Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.Id)});
-            Replication.FoundChanged(cache.Id, cache.isFound());
+            Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
+            Replication.FoundChanged(cache.generatedId, cache.isFound());
         } catch (Exception exc) {
             Log.err(log, "Write Cache Found", "", exc);
         }
@@ -255,17 +255,17 @@ public class CacheDAO {
 
         Parameters args = new Parameters();
 
-        args.put("Id", cache.Id);
-        args.put("GcCode", cache.getGcCode());
-        args.put("GcId", cache.getGcId());
+        args.put("Id", cache.generatedId);
+        args.put("GcCode", cache.getGeoCacheCode());
+        args.put("GcId", cache.getGeoCacheId());
         if (cache.getCoordinate().isValid() && !cache.getCoordinate().isZero()) {
             // Update Cache position only when new position is valid and not zero
             args.put("Latitude", cache.getCoordinate().getLatitude());
             args.put("Longitude", cache.getCoordinate().getLongitude());
         }
-        args.put("Name", cache.getName());
+        args.put("Name", cache.getGeoCacheName());
         try {
-            args.put("Size", cache.Size.ordinal());
+            args.put("Size", cache.geoCacheSize.ordinal());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -274,7 +274,7 @@ public class CacheDAO {
         args.put("Archived", cache.isArchived() ? 1 : 0);
         args.put("Available", cache.isAvailable() ? 1 : 0);
         args.put("Found", cache.isFound());
-        args.put("Type", cache.getType().ordinal());
+        args.put("Type", cache.getGeoCacheType().ordinal());
         args.put("PlacedBy", cache.getPlacedBy());
         args.put("Owner", cache.getOwner());
         args.put("Country", cache.getCountry());
@@ -298,8 +298,8 @@ public class CacheDAO {
         }
 
         args.put("Url", cache.getUrl());
-        args.put("NumTravelbugs", cache.NumTravelbugs);
-        args.put("Rating", (int) (cache.Rating * 100));
+        args.put("NumTravelbugs", cache.numTravelbugs);
+        args.put("Rating", (int) (cache.gcVoteRating * 100));
         // args.put("Vote", cache.);
         // args.put("VotePending", cache.);
         // args.put("Notes", );
@@ -316,7 +316,7 @@ public class CacheDAO {
         args.put("TourName", cache.getTourName());
         args.put("FavPoints", cache.favPoints);
         try {
-            long ret = Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.Id)});
+            long ret = Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
             return ret > 0;
         } catch (Exception exc) {
             Log.err(log, "Update Cache", "", exc);
@@ -330,7 +330,7 @@ public class CacheDAO {
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();
-                Cache ret = ReadFromCursor(reader, false, false);
+                Cache ret = readFromCursor(reader, false, false);
 
                 reader.close();
                 return ret;
@@ -357,7 +357,7 @@ public class CacheDAO {
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();
-                Cache ret = ReadFromCursor(reader, withDetail, false);
+                Cache ret = readFromCursor(reader, withDetail, false);
 
                 reader.close();
                 return ret;
@@ -396,7 +396,7 @@ public class CacheDAO {
 
         // chk of changes
         boolean changed = false;
-        Cache fromDB = getFromDbByCacheId(writeTmp.Id);
+        Cache fromDB = getFromDbByCacheId(writeTmp.generatedId);
         Parameters args = new Parameters();
 
         if (fromDB == null)
@@ -404,37 +404,37 @@ public class CacheDAO {
 
         if (fromDB.isArchived() != writeTmp.isArchived()) {
             changed = true;
-            Replication.ArchivedChanged(writeTmp.Id, writeTmp.isArchived());
+            Replication.ArchivedChanged(writeTmp.generatedId, writeTmp.isArchived());
             args.put("Archived", writeTmp.isArchived() ? 1 : 0);
         }
         if (fromDB.isAvailable() != writeTmp.isAvailable()) {
             changed = true;
-            Replication.AvailableChanged(writeTmp.Id, writeTmp.isAvailable());
+            Replication.AvailableChanged(writeTmp.generatedId, writeTmp.isAvailable());
             args.put("Available", writeTmp.isAvailable() ? 1 : 0);
         }
 
-        if (fromDB.NumTravelbugs != writeTmp.NumTravelbugs) {
+        if (fromDB.numTravelbugs != writeTmp.numTravelbugs) {
             changed = true;
-            Replication.NumTravelbugsChanged(writeTmp.Id, writeTmp.NumTravelbugs);
-            args.put("NumTravelbugs", writeTmp.NumTravelbugs);
+            Replication.NumTravelbugsChanged(writeTmp.generatedId, writeTmp.numTravelbugs);
+            args.put("NumTravelbugs", writeTmp.numTravelbugs);
         }
 
         if (fromDB.favPoints != writeTmp.favPoints) {
             changed = true;
-            Replication.NumFavPointsChanged(writeTmp.Id, writeTmp.favPoints);
+            Replication.NumFavPointsChanged(writeTmp.generatedId, writeTmp.favPoints);
             args.put("FavPoints", writeTmp.favPoints);
         }
 
         if (fromDB.isFound() != writeTmp.isFound()) {
             changed = true;
-            Replication.FoundChanged(writeTmp.Id, writeTmp.isFound());
+            Replication.FoundChanged(writeTmp.generatedId, writeTmp.isFound());
             args.put("Found", writeTmp.isFound());
         }
 
         if (changed) {
 
             try {
-                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.Id)});
+                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
             } catch (Exception exc) {
                 Log.err(log, "Update Cache", "", exc);
 

@@ -804,13 +804,13 @@ public class FilterProperties {
     boolean passed(Cache geoCache) {
         if (chkFilterBoolean(finds, geoCache.isFound()))
             return false;
-        if (chkFilterBoolean(own, geoCache.ImTheOwner()))
+        if (chkFilterBoolean(own, geoCache.iAmTheOwner()))
             return false;
         if (chkFilterBoolean(notAvailable, !geoCache.isAvailable()))
             return false;
         if (chkFilterBoolean(archived, geoCache.isArchived()))
             return false;
-        if (chkFilterBoolean(containsTravelbugs, geoCache.NumTravelbugs > 0))
+        if (chkFilterBoolean(containsTravelbugs, geoCache.numTravelbugs > 0))
             return false;
         if (chkFilterBoolean(favorites, geoCache.isFavorite()))
             return false;
@@ -821,7 +821,7 @@ public class FilterProperties {
         if (chkFilterBoolean(hasCorrectedCoordinates, geoCache.hasCorrectedCoordinates()))
             return false;
         // TODO ? the other restrictions?
-        return cacheTypes.contains("" + geoCache.getType().ordinal());
+        return cacheTypes.contains("" + geoCache.getGeoCacheType().ordinal());
     }
 
     private boolean chkFilterBoolean(int filterProperty, boolean geoCacheProperty) {

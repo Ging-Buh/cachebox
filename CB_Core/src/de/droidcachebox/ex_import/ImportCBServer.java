@@ -87,7 +87,7 @@ public class ImportCBServer {
                                 Parameters args = new Parameters();
                                 // orginal NoteChecksum in DB speichern
                                 args.put("Notes", cache.getTmpNote());
-                                Database.Data.sql.update("Caches", args, "id=" + cache.Id, null);
+                                Database.Data.sql.update("Caches", args, "id=" + cache.generatedId, null);
 
                                 cache.setTmpNote(null);
                             }
@@ -95,13 +95,13 @@ public class ImportCBServer {
                                 cache.setSolverChecksum((int) SDBM_Hash.sdbm(cache.getTmpSolver()));
                                 Parameters args = new Parameters();
                                 args.put("Solver", cache.getTmpSolver());
-                                Database.Data.sql.update("Caches", args, "id=" + cache.Id, null);
+                                Database.Data.sql.update("Caches", args, "id=" + cache.generatedId, null);
 
                                 cache.setTmpSolver(null);
                             }
 
-                            for (int j = 0, m = cache.waypoints.size(); j < m; j++) {
-                                Waypoint waypoint = cache.waypoints.get(j);
+                            for (int j = 0, m = cache.getWayPoints().size(); j < m; j++) {
+                                Waypoint waypoint = cache.getWayPoints().get(j);
                                 wayDao.WriteToDatabase(waypoint, false); // do not store replication information
                             }
                             if (importImages && (cache.getSpoilerRessources() != null)) {
@@ -117,7 +117,7 @@ public class ImportCBServer {
                                     }
                                     url = "http://" + url + image.getImageUrl();
                                     File file = FileFactory.createFile(image.getLocalPath());
-                                    url += cache.getGcCode().substring(0, 4) + "/";
+                                    url += cache.getGeoCacheCode().substring(0, 4) + "/";
 
                                     try {
                                         url += URLEncoder.encode(file.getName().replace(" ", "%20"), "UTF-8");
@@ -128,14 +128,14 @@ public class ImportCBServer {
 
                                     String imagePath;
                                     if (image.getImageUrl().indexOf("/spoilers/") >= 0) {
-                                        imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
+                                        imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
                                         if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0) {
-                                            imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
+                                            imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
                                         }
                                     } else {
-                                        imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
+                                        imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
                                         if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0) {
-                                            imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
+                                            imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
                                         }
                                     }
                                     file = FileFactory.createFile(imagePath);

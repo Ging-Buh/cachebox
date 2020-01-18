@@ -164,10 +164,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private boolean isWaypoint(String string) {
-        if (string.equals("&" + aktCache.getGcCode()))
+        if (string.equals("&" + aktCache.getGeoCacheCode()))
             return true;
-        for (int i = 0; i < aktCache.waypoints.size(); i++) {
-            Waypoint waypoint = aktCache.waypoints.get(i);
+        for (int i = 0; i < aktCache.getWayPoints().size(); i++) {
+            Waypoint waypoint = aktCache.getWayPoints().get(i);
             if (this.solverString.equals("$" + waypoint.getGcCode()))
                 return true;
         }
@@ -1070,10 +1070,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private void showPageWaypoint() {
-        cbWaypoints = new CB_CheckBox[aktCache.waypoints.size() + 1];
-        lWaypoints = new CB_Label[aktCache.waypoints.size() + 1];
+        cbWaypoints = new CB_CheckBox[aktCache.getWayPoints().size() + 1];
+        lWaypoints = new CB_Label[aktCache.getWayPoints().size() + 1];
 
-        for (int i = 0; i <= aktCache.waypoints.size(); i++) {
+        for (int i = 0; i <= aktCache.getWayPoints().size(); i++) {
             if ((dataType == DataType.Waypoint) && (i == 0)) {
                 continue;
             }
@@ -1081,12 +1081,12 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             String data = "";
             String description = "";
             if (i > 0) {
-                waypoint = aktCache.waypoints.get(i - 1);
+                waypoint = aktCache.getWayPoints().get(i - 1);
                 data = "$" + waypoint.getGcCode();
                 description = "$" + waypoint.getGcCode() + " - " + waypoint.getTitle();
             } else {
-                data = "$" + aktCache.getGcCode();
-                description = "$" + aktCache.getGcCode() + " - " + aktCache.getName();
+                data = "$" + aktCache.getGeoCacheCode();
+                description = "$" + aktCache.getGeoCacheCode() + " - " + aktCache.getGeoCacheName();
             }
 
             cbWaypoints[i] = new CB_CheckBox(data);

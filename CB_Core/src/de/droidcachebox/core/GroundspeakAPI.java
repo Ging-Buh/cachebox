@@ -266,7 +266,7 @@ public class GroundspeakAPI {
 
     public static ArrayList<GeoCacheRelated> fetchGeoCache(Query query, String GcCode) {
         Cache cache = new Cache(true);
-        cache.setGcCode(GcCode);
+        cache.setGeoCacheCode(GcCode);
         ArrayList<Cache> caches = new ArrayList<>();
         caches.add(cache);
         return updateGeoCaches(query, caches);
@@ -276,7 +276,7 @@ public class GroundspeakAPI {
         ArrayList<Cache> caches = new ArrayList<>();
         for (String GcCode : CacheCodes.split(",")) {
             Cache cache = new Cache(true);
-            cache.setGcCode(GcCode);
+            cache.setGeoCacheCode(GcCode);
             caches.add(cache);
         }
         return updateGeoCaches(query, caches);
@@ -311,9 +311,9 @@ public class GroundspeakAPI {
                 int took = 0;
                 for (int i = skip; i < Math.min(skip + take, arrayOfCaches.length); i++) {
                     Cache cache = arrayOfCaches[i];
-                    if (cache.getGcCode().toLowerCase().startsWith("gc")) {
-                        mapOfCaches.put(cache.getGcCode(), cache);
-                        CacheCodes.append(",").append(cache.getGcCode());
+                    if (cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
+                        mapOfCaches.put(cache.getGeoCacheCode(), cache);
+                        CacheCodes.append(",").append(cache.getGeoCacheCode());
                         took++;
                     }
                 }
@@ -376,7 +376,7 @@ public class GroundspeakAPI {
             Cache cache = createGeoCache(fetchedCache, fields, originalCache);
             if (cache != null) {
                 ArrayList<LogEntry> logs = createLogs(cache, fetchedCache.optJSONArray("geocacheLogs"));
-                ArrayList<ImageEntry> images = createImageList(fetchedCache.optJSONArray("images"), cache.getGcCode(), false);
+                ArrayList<ImageEntry> images = createImageList(fetchedCache.optJSONArray("images"), cache.getGeoCacheCode(), false);
                 images = addDescriptionImageList(images, cache);
                 fetchResults.add(new GeoCacheRelated(cache, logs, images));
             }
@@ -561,7 +561,7 @@ public class GroundspeakAPI {
                 doRetry = false;
                 try {
                     JSONArray geocacheLogs = getNetz()
-                            .get(getUrl(1, "geocaches/" + cache.getGcCode() + "/geocachelogs"))
+                            .get(getUrl(1, "geocaches/" + cache.getGeoCacheCode() + "/geocachelogs"))
                             .param("fields", "owner.username,loggedDate,text,type,referenceCode")
                             .param("skip", start)
                             .param("take", count)
@@ -581,7 +581,7 @@ public class GroundspeakAPI {
                             friendList.remove(finder.toLowerCase(Locale.US));
                         }
 
-                        logList.add(createLog(geocacheLog, cache.Id));
+                        logList.add(createLog(geocacheLog, cache.generatedId));
                     }
 
                     // all logs loaded or all friends found
@@ -1081,11 +1081,11 @@ public class GroundspeakAPI {
             cache = new Cache(true);
             cache.setApiStatus(IS_LITE);
         }
-        if (cache.waypoints != null) {
-            cache.waypoints.clear();
+        if (cache.getWayPoints() != null) {
+            cache.getWayPoints().clear();
             // no merging of waypoints here
         } else {
-            cache.waypoints = new CB_List<>();
+            cache.setWayPoints(new CB_List<>());
         }
         String tmp;
         try {
@@ -1101,16 +1101,16 @@ public class GroundspeakAPI {
                 }
                 switch (switchValue) {
                     case "referenceCode":
-                        cache.setGcCode(API1Cache.optString(field, ""));
-                        if (cache.getGcCode().length() == 0) {
+                        cache.setGeoCacheCode(API1Cache.optString(field, ""));
+                        if (cache.getGeoCacheCode().length() == 0) {
                             Log.err(log, "Get no GCCode");
                             return null;
                         }
-                        cache.setUrl("https://coord.info/" + cache.getGcCode());
-                        cache.Id = Cache.generateCacheId(cache.getGcCode());
+                        cache.setUrl("https://coord.info/" + cache.getGeoCacheCode());
+                        cache.generatedId = Cache.generateCacheId(cache.getGeoCacheCode());
                         break;
                     case "name":
-                        cache.setName(API1Cache.optString(switchValue, ""));
+                        cache.setGeoCacheName(API1Cache.optString(switchValue, ""));
                         break;
                     case "difficulty":
                         cache.setDifficulty((float) API1Cache.optDouble(switchValue, 1));
@@ -1122,18 +1122,18 @@ public class GroundspeakAPI {
                         cache.favPoints = API1Cache.optInt(switchValue, 0);
                         break;
                     case "trackableCount":
-                        cache.NumTravelbugs = API1Cache.optInt(switchValue, 0);
+                        cache.numTravelbugs = API1Cache.optInt(switchValue, 0);
                         break;
                     case "placedDate":
                         cache.setDateHidden(DateFromString(API1Cache.optString(switchValue, "")));
                         break;
                     case "geocacheType":
                         // switch subValue
-                        cache.setType(CacheTypeFromID(API1Cache.optJSONObject(switchValue).optInt("id", 0)));
+                        cache.setGeoCacheType(CacheTypeFromID(API1Cache.optJSONObject(switchValue).optInt("id", 0)));
                         break;
                     case "geocacheSize":
                         // switch subValue
-                        cache.Size = CacheSizeFromID(API1Cache.optJSONObject(switchValue).optInt("id", 0));
+                        cache.geoCacheSize = CacheSizeFromID(API1Cache.optJSONObject(switchValue).optInt("id", 0));
                         break;
                     case "location":
                         JSONObject location = API1Cache.optJSONObject(switchValue);
@@ -1183,13 +1183,13 @@ public class GroundspeakAPI {
                                 if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
                                     JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
                                     cache.setCoordinate(new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0)));
-                                    cache.waypoints.add(new Waypoint(
-                                            "!?" + cache.getGcCode().substring(2),
+                                    cache.getWayPoints().add(new Waypoint(
+                                            "!?" + cache.getGeoCacheCode().substring(2),
                                             GeoCacheType.Final,
                                             "",
                                             correctedCoordinate.optDouble("latitude", 0),
                                             correctedCoordinate.optDouble("longitude", 0),
-                                            cache.Id,
+                                            cache.generatedId,
                                             "",
                                             "Final GSAK Corrected"));
                                 } else {
@@ -1285,7 +1285,7 @@ public class GroundspeakAPI {
             for (int j = 0; j < wpts.length(); j++) {
                 JSONObject wpt = wpts.optJSONObject(j);
                 Waypoint waypoint = new Waypoint(true);
-                waypoint.geoCacheId = cache.Id;
+                waypoint.geoCacheId = cache.generatedId;
                 JSONObject coordinates = wpt.optJSONObject("coordinates");
                 if (coordinates != null) {
                     waypoint.setCoordinate(new Coordinate(coordinates.optDouble("latitude", 0), coordinates.optDouble("longitude", 0)));
@@ -1295,8 +1295,8 @@ public class GroundspeakAPI {
                 waypoint.setTitle(wpt.optString("name", ""));
                 waypoint.setDescription(wpt.optString("description", ""));
                 waypoint.waypointType = CacheTypeFromID(wpt.optInt("typeId", 0));
-                waypoint.setGcCode(wpt.optString("prefix", "XX") + cache.getGcCode().substring(2));
-                cache.waypoints.add(waypoint);
+                waypoint.setGcCode(wpt.optString("prefix", "XX") + cache.getGeoCacheCode().substring(2));
+                cache.getWayPoints().add(waypoint);
             }
         }
     }
@@ -1309,7 +1309,7 @@ public class GroundspeakAPI {
                 boolean isCorrectedCoordinates = wpt.optBoolean("isCorrectedCoordinates", false);
                 if (CoordinateOverride || isCorrectedCoordinates) {
                     Waypoint waypoint = new Waypoint(true);
-                    waypoint.geoCacheId = cache.Id;
+                    waypoint.geoCacheId = cache.generatedId;
                     JSONObject coordinates = wpt.optJSONObject("coordinates");
                     if (coordinates != null) {
                         waypoint.setCoordinate(new Coordinate(coordinates.optDouble("latitude", 0), coordinates.optDouble("longitude", 0)));
@@ -1319,8 +1319,8 @@ public class GroundspeakAPI {
                     waypoint.setTitle("Corrected Coordinates (API)");
                     waypoint.setDescription(wpt.optString("description", ""));
                     waypoint.waypointType = GeoCacheType.Final;
-                    waypoint.setGcCode("CO" + cache.getGcCode().substring(2));
-                    cache.waypoints.add(waypoint);
+                    waypoint.setGcCode("CO" + cache.getGeoCacheCode().substring(2));
+                    cache.getWayPoints().add(waypoint);
                 }
             }
         }
@@ -1330,7 +1330,7 @@ public class GroundspeakAPI {
         ArrayList<LogEntry> logList = new ArrayList<>();
         if (geocacheLogs != null) {
             for (int ii = 0; ii < geocacheLogs.length(); ii++) {
-                logList.add(createLog((JSONObject) geocacheLogs.get(ii), cache.Id));
+                logList.add(createLog((JSONObject) geocacheLogs.get(ii), cache.generatedId));
             }
         }
         return logList;
@@ -1431,8 +1431,8 @@ public class GroundspeakAPI {
             }
             if (isNotInImageList) {
                 ImageEntry imageEntry = new ImageEntry();
-                imageEntry.setCacheId(cache.Id);
-                imageEntry.setGcCode(cache.getGcCode());
+                imageEntry.setCacheId(cache.generatedId);
+                imageEntry.setGcCode(cache.getGeoCacheCode());
                 imageEntry.setName("");
                 imageEntry.setDescription(url.substring(url.lastIndexOf("/") + 1));
                 imageEntry.setImageUrl(url);
@@ -1456,7 +1456,7 @@ public class GroundspeakAPI {
         }
 
         if (baseUri == null) {
-            cache.setUrl("http://www.geocaching.com/seek/cache_details.aspx?wp=" + cache.getGcCode());
+            cache.setUrl("http://www.geocaching.com/seek/cache_details.aspx?wp=" + cache.getGeoCacheCode());
             try {
                 baseUri = URI.create(cache.getUrl());
             } catch (Exception exc) {

@@ -147,7 +147,7 @@ public class TrackableListView extends V_ListView {
             @Override
             public void run() {
                 for (Trackable tb : trackableList) {
-                    if (uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGcCode(), LogTypeId, new Date(), LogText) != OK) {
+                    if (uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGeoCacheCode(), LogTypeId, new Date(), LogText) != OK) {
                         MessageBox.show(GroundspeakAPI.LastAPIError, "", MessageBoxButton.OK, MessageBoxIcon.Information, null);
                     }
                 }

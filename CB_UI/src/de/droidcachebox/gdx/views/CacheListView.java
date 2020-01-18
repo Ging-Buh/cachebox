@@ -176,7 +176,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
             synchronized (Database.Data.cacheList) {
                 for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                     Cache ca = Database.Data.cacheList.get(i);
-                    if (ca.Id == GlobalCore.getSelectedCache().Id) {
+                    if (ca.generatedId == GlobalCore.getSelectedCache().generatedId) {
                         geoCacheListView.setSelection(id);
                         if (geoCacheListView.isDraggable()) {
                             if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
@@ -245,7 +245,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
             boolean diverend = true;
 
             try {
-                diverend = GlobalCore.getSelectedCache().Id != ((CacheListViewItem) geoCacheListView.getSelectedItem()).getCache().Id;
+                diverend = GlobalCore.getSelectedCache().generatedId != ((CacheListViewItem) geoCacheListView.getSelectedItem()).getCache().generatedId;
             } catch (Exception ignored) {
             }
 
@@ -262,7 +262,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
             CacheListViewItem selItem = (CacheListViewItem) geoCacheListView.getSelectedItem();
-            if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id) {
+            if (selItem != null && GlobalCore.getSelectedCache().generatedId != selItem.getCache().generatedId) {
                 // TODO Run if ListView Initial and after showing
                 geoCacheListView.runIfListInitial(this::setSelectedCacheVisible);
             }
@@ -370,7 +370,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                 CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, cacheList.get(index));
                 v.setClickable(true);
 
-                if (cacheList.get(index).getType() == GeoCacheType.Traditional) v.setEnabled(false);
+                if (cacheList.get(index).getGeoCacheType() == GeoCacheType.Traditional) v.setEnabled(false);
 
                 v.setClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();

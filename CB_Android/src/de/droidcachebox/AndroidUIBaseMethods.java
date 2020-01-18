@@ -266,9 +266,9 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die
             // SelectedCacheEventList läuft
-            Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
+            Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
             Config.AcceptChanges();
-            Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+            Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         Database.Data.sql.close();
         mainActivity.finish();

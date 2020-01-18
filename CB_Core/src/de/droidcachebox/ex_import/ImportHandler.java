@@ -14,15 +14,15 @@ public class ImportHandler implements IImportHandler {
     @Override
     public void handleCache(Cache cache) {
 
-        if (cacheDAO.cacheExists(cache.Id)) {
+        if (cacheDAO.cacheExists(cache.generatedId)) {
             cacheDAO.UpdateDatabase(cache);
         } else {
             cacheDAO.WriteToDatabase(cache);
         }
 
-        if (cache.waypoints.size() > 0) {
-            for (int i = 0; i < cache.waypoints.size(); i++) {
-                handleWayPoint(cache.waypoints.get(i));
+        if (cache.getWayPoints().size() > 0) {
+            for (int i = 0; i < cache.getWayPoints().size(); i++) {
+                handleWayPoint(cache.getWayPoints().get(i));
             }
         }
 

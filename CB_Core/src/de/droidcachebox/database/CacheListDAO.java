@@ -139,7 +139,7 @@ public class CacheListDAO {
         CacheDAO cacheDAO = new CacheDAO();
 
         while (!reader.isAfterLast()) {
-            Cache cache = cacheDAO.ReadFromCursor(reader, fullDetails, withDescription);
+            Cache cache = cacheDAO.readFromCursor(reader, fullDetails, withDescription);
             /*
             // implemented in sql query in november 2019. arbor95
             boolean doAdd = true;
@@ -150,7 +150,7 @@ public class CacheListDAO {
                         cache.waypoints.add(tmpwaypoints.get(i));
                     }
                 }
-                boolean hasCorrectedCoordinates = cache.hasCorrectedCoordiantesOrHasCorrectedFinal();
+                boolean hasCorrectedCoordinates = cache.hasCorrectedCoordinatesOrHasCorrectedFinal();
                 if (FilterInstances.hasCorrectedCoordinates < 0) {
                     // show only those without corrected ones
                     if (hasCorrectedCoordinates)
@@ -166,15 +166,15 @@ public class CacheListDAO {
             }
              */
             cacheList.add(cache);
-            cache.waypoints.clear();
-            if (waypoints.containsKey(cache.Id)) {
-                CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
+            cache.getWayPoints().clear();
+            if (waypoints.containsKey(cache.generatedId)) {
+                CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.generatedId);
 
                 for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
-                    cache.waypoints.add(tmpwaypoints.get(i));
+                    cache.getWayPoints().add(tmpwaypoints.get(i));
                 }
 
-                waypoints.remove(cache.Id);
+                waypoints.remove(cache.generatedId);
             }
             // ++Global.CacheCount;
             reader.moveToNext();
@@ -252,7 +252,7 @@ public class CacheListDAO {
         ArrayList<String> gcCodes = new ArrayList<>();
 
         for (int i = 0, n = list.size(); i < n; i++) {
-            gcCodes.add(list.get(i).getGcCode());
+            gcCodes.add(list.get(i).getGeoCacheCode());
         }
         list.dispose();
         return gcCodes;

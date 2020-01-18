@@ -161,7 +161,7 @@ public class CacheInfoList {
      * Fügt die CacheInfo in der Liste mit dem Infos des übergebenen Caches zusammen und ändert gegebenenfalls die Changed Attribute neu!
      */
     public static void mergeCacheInfo(Cache cache) {
-        String gcCode = cache.getGcCode();
+        String gcCode = cache.getGeoCacheCode();
         CacheInfo cacheInfo = mCacheInfoList.get(gcCode);
         if (cacheInfo != null) {
             // if already exists and if the category of the cache is pinned:
@@ -308,18 +308,18 @@ public class CacheInfoList {
         String stringForListingCheckSum = Database.getDescription(cache);
         int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
 
-        CacheInfo info = new CacheInfo(cache.Id, cache.getGPXFilename_ID());
+        CacheInfo info = new CacheInfo(cache.generatedId, cache.getGPXFilename_ID());
         info.ListingCheckSum = ListingCheckSum;
         info.Latitude = cache.getLatitude();
         info.Longitude = cache.getLongitude();
         info.Found = cache.isFound();
         info.favorite = cache.isFavorite();
-        info.CorrectedCoordinates = cache.hasCorrectedCoordiantesOrHasCorrectedFinal();
+        info.CorrectedCoordinates = cache.hasCorrectedCoordinatesOrHasCorrectedFinal();
 
         if (mCacheInfoList == null)
             mCacheInfoList = new HashMap<String, CacheInfo>();
 
-        mCacheInfoList.put(cache.getGcCode(), info);
+        mCacheInfoList.put(cache.getGeoCacheCode(), info);
 
     }
 

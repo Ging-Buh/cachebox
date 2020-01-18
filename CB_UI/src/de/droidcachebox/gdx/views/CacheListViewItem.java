@@ -45,9 +45,9 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     private String lastString = "";
 
     public CacheListViewItem(CB_RectF rec, int Index, Cache cache) {
-        super(rec, Index, cache.getName());
+        super(rec, Index, cache.getGeoCacheName());
         mCache = cache;
-        cacheInfo = new ExtendedCacheInfo(UiSizes.getInstance().getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+        cacheInfo = new ExtendedCacheInfo(UiSizes.getInstance().getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGeoCacheCode(), cache);
         cacheInfo.setZeroPos();
         distance.setColor(COLOR.getFontColor());
         this.addChild(cacheInfo);
@@ -109,7 +109,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
             if (mCache.getCoordinate() == null) {
                 // mCache was disposed
-                Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.Id);
+                Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.generatedId);
                 if (c == null) {
                     return;
                 }
@@ -124,7 +124,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
             CalculationType calcType = CalculationType.FAST;
             Cache c = GlobalCore.getSelectedCache();
             if (c != null) {
-                calcType = mCache.Id == GlobalCore.getSelectedCache().Id ? CalculationType.ACCURATE : CalculationType.FAST;
+                calcType = mCache.generatedId == GlobalCore.getSelectedCache().generatedId ? CalculationType.ACCURATE : CalculationType.FAST;
             }
 
             float result[] = new float[4];

@@ -244,8 +244,8 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
                             last5Logs[i].setBackground(Sprites.ProgressBack);
                         }
                     }
-                    geoCacheType.setBackground(new SpriteDrawable(Sprites.getSprite("map" + cache.getType().name()))); // GeoCacheType.toShortString(cache) +
-                    header = header + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getName();
+                    geoCacheType.setBackground(new SpriteDrawable(Sprites.getSprite("map" + cache.getGeoCacheType().name()))); // GeoCacheType.toShortString(cache) +
+                    header = header + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getGeoCacheName();
                 }
                 mLblCacheName.setText(header);
             }

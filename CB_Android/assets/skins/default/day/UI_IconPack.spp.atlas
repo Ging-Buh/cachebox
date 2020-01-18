@@ -1224,7 +1224,7 @@ att-67-0Icon
   index: -1
 att-67-1Icon
   rotate: false
-  xy: 1002, 524
+  xy: 1036, 514
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
@@ -2450,226 +2450,233 @@ mapCameraSolved
   orig: 32, 32
   offset: 0, 0
   index: -1
+mapCelebrationEvent
+  rotate: false
+  xy: 948, 739
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 mapEarth
-  rotate: false
-  xy: 948, 739
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapEarthSolved
-  rotate: false
-  xy: 948, 739
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapEvent
   rotate: false
   xy: 982, 739
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapFinal
+mapEarthSolved
+  rotate: false
+  xy: 982, 739
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+mapEvent
   rotate: false
   xy: 1016, 726
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapFound
+mapFinal
   rotate: false
   xy: 906, 705
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapGiga
+mapFound
   rotate: false
   xy: 940, 705
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapHQ
+mapGiga
   rotate: false
   xy: 974, 705
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapHQBlockParty
+mapHQ
   rotate: false
   xy: 1050, 716
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapHQCelebration
+mapHQBlockParty
   rotate: false
   xy: 906, 671
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapLab
+mapHQCelebration
   rotate: false
   xy: 940, 671
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+mapLab
+  rotate: false
+  xy: 974, 671
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 mapLetterbox
-  rotate: false
-  xy: 974, 671
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapLetterboxSolved
-  rotate: false
-  xy: 974, 671
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapMegaEvent
   rotate: false
   xy: 903, 637
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+mapLetterboxSolved
+  rotate: false
+  xy: 903, 637
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+mapMegaEvent
+  rotate: false
+  xy: 937, 637
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 mapMulti
-  rotate: false
-  xy: 937, 637
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapMultiSolved
-  rotate: false
-  xy: 937, 637
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapMultiQuestion
   rotate: false
   xy: 971, 637
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMultiStage
+mapMultiSolved
+  rotate: false
+  xy: 971, 637
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+mapMultiQuestion
   rotate: false
   xy: 1008, 692
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMultiStageStartP
+mapMultiStage
   rotate: false
   xy: 1008, 658
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMultiStartP
+mapMultiStageStartP
   rotate: false
   xy: 1042, 682
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMunzee
+mapMultiStartP
   rotate: false
   xy: 1042, 648
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMyParking
+mapMunzee
   rotate: false
   xy: 1005, 624
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMystery
+mapMyParking
   rotate: false
   xy: 1039, 614
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMysterySolved
+mapMystery
   rotate: false
   xy: 903, 603
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapMysteryStartP
+mapMysterySolved
   rotate: false
   xy: 937, 603
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapParkingArea
+mapMysteryStartP
   rotate: false
   xy: 971, 603
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapReferencePoint
+mapParkingArea
   rotate: false
   xy: 900, 569
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+mapReferencePoint
+  rotate: false
+  xy: 934, 569
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 mapTraditional
-  rotate: false
-  xy: 934, 569
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapTraditionalSolved
-  rotate: false
-  xy: 934, 569
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-mapTrailhead
   rotate: false
   xy: 968, 569
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapUndefined
+mapTraditionalSolved
+  rotate: false
+  xy: 968, 569
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+mapTrailhead
   rotate: false
   xy: 1005, 590
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-mapVirtual
+mapUndefined
   rotate: false
   xy: 1039, 580
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+mapVirtual
+  rotate: false
+  xy: 1002, 556
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 mapVirtualSolved
   rotate: false
-  xy: 1039, 580
+  xy: 1002, 556
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -2690,7 +2697,7 @@ mapWherigoSolved
   index: -1
 mapWikipedia
   rotate: false
-  xy: 1034, 516
+  xy: 91, 49
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
@@ -2809,14 +2816,14 @@ pedestrian
   index: -1
 pin-icon
   rotate: false
-  xy: 1002, 556
+  xy: 1036, 546
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 pin-icon-disable
   rotate: false
-  xy: 1036, 546
+  xy: 900, 535
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -2844,7 +2851,7 @@ progress-disabled
   index: -1
 rec-pause
   rotate: false
-  xy: 900, 535
+  xy: 934, 535
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -2858,7 +2865,7 @@ rec-record
   index: -1
 rec-stop
   rotate: false
-  xy: 934, 535
+  xy: 968, 535
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -2935,7 +2942,7 @@ shaddowrect-selected
   index: -1
 share
   rotate: false
-  xy: 968, 535
+  xy: 1002, 522
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -3033,7 +3040,7 @@ small4Solved
   index: -1
 small4no
   rotate: false
-  xy: 1091, 852
+  xy: 91, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -3047,21 +3054,21 @@ small5
   index: -1
 small5Solved
   rotate: false
-  xy: 1091, 835
+  xy: 1091, 852
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5no
   rotate: false
-  xy: 1091, 818
+  xy: 91, 15
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5noSolved
   rotate: false
-  xy: 1084, 801
+  xy: 1091, 835
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -3089,7 +3096,7 @@ small7
   index: -1
 small7no
   rotate: false
-  xy: 1084, 784
+  xy: 1091, 818
   size: 15, 15
   orig: 15, 15
   offset: 0, 0

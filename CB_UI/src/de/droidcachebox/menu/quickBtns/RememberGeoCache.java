@@ -30,7 +30,7 @@ public class RememberGeoCache extends AbstractAction {
             if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
         }
         else {
-            Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGcCode());
+            Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
             Config.AcceptChanges();
         }
     }

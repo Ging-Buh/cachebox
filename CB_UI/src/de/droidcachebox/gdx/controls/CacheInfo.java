@@ -234,7 +234,7 @@ public class CacheInfo extends CB_View_Base {
         try {
             if (mCache == null)
                 return;
-            if (mCache.Size == null)
+            if (mCache.geoCacheSize == null)
                 return;
 
             this.removeChilds();
@@ -260,7 +260,7 @@ public class CacheInfo extends CB_View_Base {
                 mLeft += mS_FontCache.getLayouts().first().width + mMargin;
 
                 // mStarSize.scale(mScaleFactor);
-                mSSprite = new Sprite(Sprites.SizesIcons.get((mCache.Size.ordinal())));
+                mSSprite = new Sprite(Sprites.SizesIcons.get((mCache.geoCacheSize.ordinal())));
                 mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.getWidth(), mStarSize.getHeight());
                 // Difficulty
                 mLeft += mSSprite.getWidth() + mMargin + mMargin;
@@ -282,7 +282,7 @@ public class CacheInfo extends CB_View_Base {
                 mTSprite.setRotation(0);
                 // Draw TB
                 mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
-                int numTb = mCache.NumTravelbugs;
+                int numTb = mCache.numTravelbugs;
                 if (numTb > 0) {
                     float sizes = mStarSize.getWidth() / 2.1f;
 
@@ -327,7 +327,7 @@ public class CacheInfo extends CB_View_Base {
                 mLeft = -4 * mScaleFactor;
 
                 mStarSize.scale(0.7f);
-                mRatingSprite = new Sprite(Sprites.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
+                mRatingSprite = new Sprite(Sprites.Stars.get((int) Math.min(mCache.gcVoteRating * 2, 5 * 2)));
                 mRatingSprite.setBounds(mLeft + mStarSize.getHeight(), getHeight() - mTop - mStarSize.getWidth() - mMargin - mMargin - mMargin, mStarSize.getWidth(), mStarSize.getHeight());
                 mRatingSprite.setOrigin(0, mStarSize.getHalfHeight());
                 mRatingSprite.setRotation(90);
@@ -359,16 +359,16 @@ public class CacheInfo extends CB_View_Base {
 
             if (ifModeFlag(SHOW_ICON)) { // Icon Sprite erstellen
 
-                if (mCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getType().name() + "Solved"));
-                } else if ((mCache.getType() == GeoCacheType.Multi) && mCache.getStartWaypoint() != null) {
+                if (mCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getGeoCacheType().name() + "Solved"));
+                } else if ((mCache.getGeoCacheType() == GeoCacheType.Multi) && mCache.getStartWaypoint() != null) {
                     // Multi anders darstellen wenn dieser einen definierten Startpunkt hat
                     mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.Multi.name() + "StartP"));
-                } else if ((mCache.getType() == GeoCacheType.Mystery) && mCache.getStartWaypoint() != null) {
+                } else if ((mCache.getGeoCacheType() == GeoCacheType.Mystery) && mCache.getStartWaypoint() != null) {
                     // Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
                     mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.Mystery.name() + "StartP"));
                 } else {
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getType().name()));
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.getGeoCacheType().name()));
                 }
                 mIconSprite.setSize(mIconSize, mIconSize);
                 mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
@@ -379,7 +379,7 @@ public class CacheInfo extends CB_View_Base {
 
                 if (mCache.isFound()) {
                     mFoundOwnerSprite = new Sprite(Sprites.getSprite("log0icon"));
-                } else if (mCache.ImTheOwner()) {
+                } else if (mCache.iAmTheOwner()) {
                     mFoundOwnerSprite = new Sprite(Sprites.getSprite(IconName.star.name()));
                 }
                 if (mFoundOwnerSprite != null) {
@@ -452,9 +452,9 @@ public class CacheInfo extends CB_View_Base {
         StringBuilder text = new StringBuilder();
         if (ifModeFlag(SHOW_NAME)) {
             if (mViewMode == VIEW_MODE_WAYPOINTS) {
-                text.append(mCache.getGcCode()).append(": ");
+                text.append(mCache.getGeoCacheCode()).append(": ");
             }
-            text.append(mCache.getName());
+            text.append(mCache.getGeoCacheName());
             text.append(br);
         }
         if (mCache != null && (ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_HIDDEN_DATE))) {
@@ -489,7 +489,7 @@ public class CacheInfo extends CB_View_Base {
         }
 
         if (ifModeFlag(SHOW_GC)) {
-            text.append(mCache.getGcCode());
+            text.append(mCache.getGeoCacheCode());
             text.append(br);
         }
 
@@ -537,7 +537,7 @@ public class CacheInfo extends CB_View_Base {
     }
 
     public void setCache(Cache cache) {
-        if (mCache != null && cache != null && mCache.Id == cache.Id)
+        if (mCache != null && cache != null && mCache.generatedId == cache.generatedId)
             return;
         mCache = cache;
         if (cacheIsInitial)

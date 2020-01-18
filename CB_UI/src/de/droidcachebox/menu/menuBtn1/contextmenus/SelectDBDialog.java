@@ -65,9 +65,9 @@ public class SelectDBDialog extends AbstractAction {
 
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-            Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
+            Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
             Config.AcceptChanges();
-            Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+            Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
 
         SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
@@ -104,9 +104,9 @@ public class SelectDBDialog extends AbstractAction {
                 for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                     Cache c = Database.Data.cacheList.get(i);
 
-                    if (c.getGcCode().equalsIgnoreCase(sGc)) {
+                    if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
                         try {
-                            Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+                            Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                             c.loadDetail();
                             GlobalCore.setSelectedCache(c);
                         } catch (Exception ex) {
@@ -118,7 +118,7 @@ public class SelectDBDialog extends AbstractAction {
             }
             // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
             if ((GlobalCore.getSelectedCache() == null) && (Database.Data.cacheList.size() > 0)) {
-                Log.debug(log, "Set selectedCache to " + Database.Data.cacheList.get(0).getGcCode() + " from firstInDB");
+                Log.debug(log, "Set selectedCache to " + Database.Data.cacheList.get(0).getGeoCacheCode() + " from firstInDB");
                 GlobalCore.setSelectedCache(Database.Data.cacheList.get(0));
             }
 

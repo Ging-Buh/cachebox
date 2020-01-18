@@ -359,7 +359,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         savedInstanceState.putInt("WindowHeight", UiSizes.getInstance().getWindowHeight());
 
         if (GlobalCore.isSetSelectedCache())
-            savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
+            savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGeoCacheCode());
         if (GlobalCore.getSelectedWaypoint() != null)
             savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint().getGcCode());
 

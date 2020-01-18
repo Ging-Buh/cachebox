@@ -276,20 +276,20 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         if (result != null) {
             // Create New Waypoint
             Waypoint wp = new Waypoint(true);
-            wp.geoCacheId = GlobalCore.getSelectedCache().Id;
+            wp.geoCacheId = GlobalCore.getSelectedCache().generatedId;
             wp.setCoordinate(result);
             wp.waypointType = GeoCacheType.Final;
             wp.setTitle("Final");
             wp.isUserWaypoint = true;
             try {
-                wp.setGcCode(Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
+                wp.setGcCode(Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode()));
             } catch (Exception e) {
                 return;
             }
             EditWaypoint EdWp = new EditWaypoint(wp, waypoint -> {
                 if (waypoint != null) {
                     // Waypoint in der DB speichern
-                    GlobalCore.getSelectedCache().waypoints.add(waypoint);
+                    GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
                     WaypointDAO waypointDAO = new WaypointDAO();
                     waypointDAO.WriteToDatabase(waypoint);
                     WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());

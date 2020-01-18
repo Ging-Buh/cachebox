@@ -94,7 +94,7 @@ public class CacheDraw {
         try {
             // init
             boolean notAvailable = (!geoCache.isAvailable() || geoCache.isArchived());
-            boolean globalSelected = geoCache.Id == GlobalCore.getSelectedCache().Id;
+            boolean globalSelected = geoCache.generatedId == GlobalCore.getSelectedCache().generatedId;
             if (backgroundColor == -1)
                 backgroundColor = globalSelected ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground);
             if (borderColor == -1)
@@ -136,16 +136,16 @@ public class CacheDraw {
             ActivityUtils.drawFillRoundRecWithBorder(canvas, rec, 2, borderColor, backgroundColor);
 
             // Draw Vote
-            if (geoCache.Rating > 0)
-                ActivityUtils.putImageScale(canvas, Global.StarIcons[(int) (geoCache.Rating * 2)], -90, left, top, (double) getInstance().getScaledIconSize() / 160);
+            if (geoCache.gcVoteRating > 0)
+                ActivityUtils.putImageScale(canvas, Global.StarIcons[(int) (geoCache.gcVoteRating * 2)], -90, left, top, (double) getInstance().getScaledIconSize() / 160);
 
             int correctPos = (int) (getInstance().getScaledFontSize() * 1.3);
 
             // Draw Icon
-            if (geoCache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+            if (geoCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
                 ActivityUtils.putImageTargetHeight(canvas, Global.CacheIconsBig[19], left + voteWidth - correctPos, top - getInstance().getScaledFontSize() / 2, getInstance().getIconSize());
             } else {
-                ActivityUtils.putImageTargetHeight(canvas, Global.CacheIconsBig[geoCache.getType().ordinal()], left + voteWidth - correctPos, top - getInstance().getScaledFontSize() / 2, getInstance().getIconSize());
+                ActivityUtils.putImageTargetHeight(canvas, Global.CacheIconsBig[geoCache.getGeoCacheType().ordinal()], left + voteWidth - correctPos, top - getInstance().getScaledFontSize() / 2, getInstance().getIconSize());
             }
 
             // Draw Cache Name
@@ -165,15 +165,15 @@ public class CacheDraw {
             } catch (Exception ignored) {
             }
 
-            String geoCacheName = (String) TextUtils.ellipsize(geoCache.getName(), namePaint, nameLayoutWidthRightBorder, TextUtils.TruncateAt.END);
+            String geoCacheName = (String) TextUtils.ellipsize(geoCache.getGeoCacheName(), namePaint, nameLayoutWidthRightBorder, TextUtils.TruncateAt.END);
 
             String drawName = (drawStyle == DrawStyle.withOwner) ? "by " + geoCache.getOwner() + ", " + dateString : geoCacheName;
 
             if (drawStyle == DrawStyle.all) {
                 drawName += "\n";
-                drawName += geoCache.getGcCode();
+                drawName += geoCache.getGeoCacheCode();
             } else if (drawStyle == DrawStyle.withOwner) {
-                drawName = drawName + "\n" + geoCache.getCoordinate().formatCoordinate() + "\n" + geoCache.getGcCode();
+                drawName = drawName + "\n" + geoCache.getCoordinate().formatCoordinate() + "\n" + geoCache.getGeoCacheCode();
             }
 
             StaticLayout layoutCacheName;
@@ -206,7 +206,7 @@ public class CacheDraw {
                     counter++;
                 } while (((int) namePaint.measureText(drawText)) >= nameLayoutWidth);
 
-                drawText = drawText + "\n" + "\n" + geoCache.getCoordinate().formatCoordinate() + "\n" + geoCache.getGcCode() + "\n";
+                drawText = drawText + "\n" + "\n" + geoCache.getCoordinate().formatCoordinate() + "\n" + geoCache.getGeoCacheCode() + "\n";
 
                 String LastFound = getLastFoundLogDate(geoCache);
                 if (!LastFound.equals("")) {
@@ -224,7 +224,7 @@ public class CacheDraw {
             // Draw S/D/T
             int sdtleft = left + 2;
             String geoCacheSize;
-            switch (geoCache.Size) {
+            switch (geoCache.geoCacheSize) {
                 case micro:
                     geoCacheSize = "M"; // micro;
                     break;
@@ -243,7 +243,7 @@ public class CacheDraw {
             }
             canvas.drawText(geoCacheSize, sdtleft, sdtLineTop, dtPaint);
             sdtleft += getInstance().getSpaceWidth();
-            sdtleft += ActivityUtils.putImageTargetHeight(canvas, Global.SizeIcons[(geoCache.Size.ordinal())], sdtleft, sdtImageTop, getInstance().getScaledFontSize());
+            sdtleft += ActivityUtils.putImageTargetHeight(canvas, Global.SizeIcons[(geoCache.geoCacheSize.ordinal())], sdtleft, sdtImageTop, getInstance().getScaledFontSize());
             sdtleft += getInstance().getTabWidth();
             canvas.drawText("D", sdtleft, sdtLineTop, dtPaint);
             sdtleft += getInstance().getSpaceWidth();
@@ -255,7 +255,7 @@ public class CacheDraw {
             sdtleft += getInstance().getSpaceWidth();
 
             // Draw TB
-            int numTb = geoCache.NumTravelbugs;
+            int numTb = geoCache.numTravelbugs;
             if (numTb > 0) {
                 sdtleft += ActivityUtils.putImageScale(canvas, Global.Icons[0], -90, sdtleft, (int) (sdtImageTop - (getInstance().getScaledFontSize() / (getInstance().getTbIconSize() * 0.1))),
                         (double) getInstance().getScaledFontSize() / getInstance().getTbIconSize());
@@ -291,7 +291,7 @@ public class CacheDraw {
                 ActivityUtils.putImageTargetHeight(canvas, Global.Icons[14], left + voteWidth - correctPos + 2, top, getInstance().getIconSize() / 2);
             }
 
-            if (geoCache.ImTheOwner()) {
+            if (geoCache.iAmTheOwner()) {
                 ActivityUtils.putImageTargetHeight(canvas, Global.Icons[17], left + voteWidth - correctPos + getInstance().getIconSize() / 2, top - getInstance().getScaledFontSize() / 2 + getInstance().getIconSize() / 2,
                         getInstance().getIconSize() / 2);
             }

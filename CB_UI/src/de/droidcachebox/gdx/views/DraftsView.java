@@ -179,7 +179,7 @@ public class DraftsView extends V_ListView {
                         Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
                         Config.AcceptChanges();
                     } // und eine evtl. vorhandene Draft FoundIt löschen
-                    drafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, GeoCacheLogType.found);
+                    drafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
                 }
             }
             createGeoCacheVisits();
@@ -207,7 +207,7 @@ public class DraftsView extends V_ListView {
         }
 
         // chk car found?
-        if (cache.getGcCode().equalsIgnoreCase("CBPark")) {
+        if (cache.getGeoCacheCode().equalsIgnoreCase("CBPark")) {
 
             if (type == GeoCacheLogType.found) {
                 MessageBox.show(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
@@ -219,7 +219,7 @@ public class DraftsView extends V_ListView {
         }
 
         // kein GC Cache
-        if (!cache.getGcCode().toLowerCase().startsWith("gc")) {
+        if (!cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
 
             if (type == GeoCacheLogType.found || type == GeoCacheLogType.attended || type == GeoCacheLogType.webcam_photo_taken) {
                 // Found it! -> fremden Cache als gefunden markieren
@@ -259,7 +259,7 @@ public class DraftsView extends V_ListView {
             // Is there already a Draft of this type for this cache
             // then change else new
             for (Draft tmpDraft : tmpDrafts) {
-                if ((tmpDraft.CacheId == cache.Id) && (tmpDraft.type == type)) {
+                if ((tmpDraft.CacheId == cache.generatedId) && (tmpDraft.type == type)) {
                     newDraft = tmpDraft;
                     newDraft.DeleteFromDatabase();
                     newDraft.timestamp = new Date();
@@ -270,14 +270,14 @@ public class DraftsView extends V_ListView {
 
         if (newDraft == null) {
             newDraft = new Draft(type);
-            newDraft.CacheName = cache.getName();
-            newDraft.gcCode = cache.getGcCode();
+            newDraft.CacheName = cache.getGeoCacheName();
+            newDraft.gcCode = cache.getGeoCacheCode();
             newDraft.foundNumber = Config.FoundOffset.getValue();
             newDraft.timestamp = new Date();
-            newDraft.CacheId = cache.Id;
+            newDraft.CacheId = cache.generatedId;
             newDraft.comment = templateText;
             newDraft.CacheUrl = cache.getUrl();
-            newDraft.cacheType = cache.getType().ordinal();
+            newDraft.cacheType = cache.getGeoCacheType().ordinal();
             newDraft.fillType();
             aktDraft = newDraft;
         } else {
@@ -343,7 +343,7 @@ public class DraftsView extends V_ListView {
                     Config.AcceptChanges();
                 }
                 // und eine evtl. vorhandene Draft DNF löschen
-                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, GeoCacheLogType.didnt_find);
+                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.didnt_find);
             } else if (newDraft.type == GeoCacheLogType.didnt_find) {
                 // DidNotFound -> Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
@@ -354,7 +354,7 @@ public class DraftsView extends V_ListView {
                     Config.AcceptChanges();
                 }
                 // und eine evtl. vorhandene Draft FoundIt löschen
-                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().Id, GeoCacheLogType.found);
+                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
             }
 
             createGeoCacheVisits();
@@ -410,9 +410,9 @@ public class DraftsView extends V_ListView {
         if (cache != null) {
 
             // Found je nach CacheType
-            if (cache.getType() == null)
+            if (cache.getGeoCacheType() == null)
                 return null;
-            switch (cache.getType()) {
+            switch (cache.getGeoCacheType()) {
                 case Event:
                 case CITO:
                 case MegaEvent:
@@ -432,7 +432,7 @@ public class DraftsView extends V_ListView {
         }
 
         // Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
-        if (cache != null && cache.getGcCode().toLowerCase().startsWith("gc")) {
+        if (cache != null && cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
             cm.addMenuItem("maintenance", Sprites.getSprite("log5icon"), () -> addNewDraft(GeoCacheLogType.needs_maintenance));
             cm.addMenuItem("writenote", Sprites.getSprite("log2icon"), () -> addNewDraft(GeoCacheLogType.note));
         }
@@ -456,7 +456,7 @@ public class DraftsView extends V_ListView {
     private Menu getSecondMenu() {
         Menu sm = new Menu("OwnerLogTypesTitle");
         MenuItem mi;
-        boolean IM_owner = GlobalCore.getSelectedCache().ImTheOwner();
+        boolean IM_owner = GlobalCore.getSelectedCache().iAmTheOwner();
         mi = sm.addMenuItem("enabled", Sprites.getSprite("log4icon"), () -> addNewDraft(GeoCacheLogType.enabled));
         mi.setEnabled(IM_owner);
         mi = sm.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"), () -> addNewDraft(GeoCacheLogType.temporarily_disabled));
@@ -797,7 +797,7 @@ public class DraftsView extends V_ListView {
                                 // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
                                 // damit das Smiley Symbol aus der Map und der CacheList verschwindet
                                 synchronized (Data.cacheList) {
-                                    Cache tc = Data.cacheList.getCacheByIdFromCacheList(cache.Id);
+                                    Cache tc = Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
                                     if (tc != null) {
                                         tc.setFound(false);
                                     }

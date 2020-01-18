@@ -150,19 +150,19 @@ public class TB_Log extends ActivityBase {
 
             String msg = "";
             if (LT == GeoCacheLogType.discovered) {
-                msg = Translation.get("discoveredAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("discoveredAt") + ": " + GlobalCore.br + c.getGeoCacheName();
             }
             if (LT == GeoCacheLogType.visited) {
-                msg = Translation.get("visitedAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("visitedAt") + ": " + GlobalCore.br + c.getGeoCacheName();
             }
             if (LT == GeoCacheLogType.dropped_off) {
-                msg = Translation.get("dropped_offAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("dropped_offAt") + ": " + GlobalCore.br + c.getGeoCacheName();
             }
             if (LT == GeoCacheLogType.retrieve) {
-                msg = Translation.get("retrieveAt") + ": " + GlobalCore.br + c.getName();
+                msg = Translation.get("retrieveAt") + ": " + GlobalCore.br + c.getGeoCacheName();
             }
 
-            CacheIcon.setSprite(Sprites.getSprite("big" + c.getType().name()));
+            CacheIcon.setSprite(Sprites.getSprite("big" + c.getGeoCacheType().name()));
 
             lblPlaced.setWidth(contentBox.getInnerWidth() - CacheIcon.getWidth() - (margin * 3));
             lblPlaced.setWrappedText(msg);
@@ -329,14 +329,14 @@ public class TB_Log extends ActivityBase {
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
                 if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache
                     return TB.getCurrentGeoCacheCode();
                 }
             }
         }
-        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getGcCode() : "";
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getGeoCacheCode() : "";
     }
 
     private String getCache_Name() {
@@ -344,14 +344,14 @@ public class TB_Log extends ActivityBase {
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
                 if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache, but don't want to change selected Cache
                     return TB.getCurrentGeoCacheCode();
                 }
             }
         }
-        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getGeoCacheName() : "";
     }
 
     private long getCache_ID() {
@@ -359,14 +359,14 @@ public class TB_Log extends ActivityBase {
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
                 if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache
                     return Cache.generateCacheId(TB.getCurrentGeoCacheCode());
                 }
             }
         }
-        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().Id : -1;
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().generatedId : -1;
     }
 
     private String getCache_URL() {
@@ -374,7 +374,7 @@ public class TB_Log extends ActivityBase {
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
                 if (LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache, but don't want to change selected Cache
                     return "https://coord.info/" + TB.getCurrentGeoCacheCode();
@@ -389,14 +389,14 @@ public class TB_Log extends ActivityBase {
          * Muss je nach LogType leer oder gefüllt sein
          */
         if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
                 if (LT == GeoCacheLogType.retrieve) {
                     // TB is perhaps not in the selected cache
                     return GeoCacheType.Undefined.ordinal();
                 }
             }
         }
-        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getType().ordinal() : -1;
+        return (LT == GeoCacheLogType.dropped_off || LT == GeoCacheLogType.visited || LT == GeoCacheLogType.retrieve) ? GlobalCore.getSelectedCache().getGeoCacheType().ordinal() : -1;
     }
 
     @Override

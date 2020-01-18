@@ -42,7 +42,7 @@ public class ContactOwner extends AbstractAction {
         menu.addMenuItem("MessageToOwner", Sprites.getSprite("bigLetterbox"), () -> {
             GL.that.postAsync(() -> {
                 try {
-                    String mGCCode = GlobalCore.getSelectedCache().getGcCode();
+                    String mGCCode = GlobalCore.getSelectedCache().getGeoCacheCode();
                     try {
                         String page = Webb.create()
                                 .get("https://coord.info/" + mGCCode)

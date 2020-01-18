@@ -53,11 +53,11 @@ public class CoordinateEntity extends Entity {
         if (selCache != null)
         // In 99,9% der Fälle dürfte der Wegpunkt zum aktuellen Cache gehören
         {
-            if (selCache.getGcCode().equalsIgnoreCase(gcCode)) {
+            if (selCache.getGeoCacheCode().equalsIgnoreCase(gcCode)) {
                 coord = selCache.getCoordinate();
             } else {
-                for (int i = 0, n = selCache.waypoints.size(); i < n; i++) {
-                    Waypoint wp = selCache.waypoints.get(i);
+                for (int i = 0, n = selCache.getWayPoints().size(); i < n; i++) {
+                    Waypoint wp = selCache.getWayPoints().get(i);
                     if (wp.getGcCode().equalsIgnoreCase(gcCode)) {
                         coord = wp.getCoordinate();
                         break;
@@ -103,7 +103,7 @@ public class CoordinateEntity extends Entity {
         try {
             // if ((CB_UI.GlobalCore.getSelectedCache() == null) || (CB_UI.GlobalCore.getSelectedCache().Id != dbWaypoint.CacheId))
             if (Solver.solverCacheInterface != null) {
-                if ((Solver.solverCacheInterface.sciGetSelectedCache() == null) || (Solver.solverCacheInterface.sciGetSelectedCache().Id != dbWaypoint.geoCacheId)) {
+                if ((Solver.solverCacheInterface.sciGetSelectedCache() == null) || (Solver.solverCacheInterface.sciGetSelectedCache().generatedId != dbWaypoint.geoCacheId)) {
                     // Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
                     // Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
                     CacheDAO cacheDAO = new CacheDAO();
@@ -112,7 +112,7 @@ public class CoordinateEntity extends Entity {
                     // sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
                     // String s = String.format(sFmt, cache.Name, waypoint.Title, coord.formatCoordinate());
                     // MessageBox(s, "Solver", MessageBoxButton.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
-                    return Translation.get("solverErrDiffCache", coord.formatCoordinate(), dbWaypoint.getTitle(), cache.getName());
+                    return Translation.get("solverErrDiffCache", coord.formatCoordinate(), dbWaypoint.getTitle(), cache.getGeoCacheName());
                 }
             }
             dbWaypoint.setCoordinate(new Coordinate(coord));
@@ -126,15 +126,15 @@ public class CoordinateEntity extends Entity {
             }
             cacheFromCacheList = Solver.solverCacheInterface.sciGetSelectedCache();
             if (cacheFromCacheList != null) {
-                for (int i = 0, n = cacheFromCacheList.waypoints.size(); i < n; i++) {
-                    Waypoint wp = cacheFromCacheList.waypoints.get(i);
+                for (int i = 0, n = cacheFromCacheList.getWayPoints().size(); i < n; i++) {
+                    Waypoint wp = cacheFromCacheList.getWayPoints().get(i);
                     if (wp.getGcCode().equalsIgnoreCase(this.gcCode)) {
                         wp.setCoordinate(new Coordinate(coord));
                         break;
                     }
                 }
                 if (Solver.solverCacheInterface != null) {
-                    if (Solver.solverCacheInterface.sciGetSelectedCache().Id == cacheFromCacheList.Id) {
+                    if (Solver.solverCacheInterface.sciGetSelectedCache().generatedId == cacheFromCacheList.generatedId) {
                         if (Solver.solverCacheInterface.sciGetSelectedWaypoint() == null) {
                             Solver.solverCacheInterface.sciSetSelectedCache(Solver.solverCacheInterface.sciGetSelectedCache());
                         } else {

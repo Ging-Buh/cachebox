@@ -120,8 +120,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     public void create() {
         newValues = new Cache(true);
-        newValues.setType(GeoCacheType.Traditional);
-        newValues.Size = GeoCacheSize.micro;
+        newValues.setGeoCacheType(GeoCacheType.Traditional);
+        newValues.geoCacheSize = GeoCacheSize.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
         newValues.setCoordinate(ShowMap.getInstance().normalMapView.center);
@@ -132,9 +132,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         int count = 0;
         do {
             count++;
-            newValues.setGcCode(prefix + String.format(Locale.US, "%04d", count));
-        } while (Database.Data.cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGcCode())) != null);
-        newValues.setName(newValues.getGcCode());
+            newValues.setGeoCacheCode(prefix + String.format(Locale.US, "%04d", count));
+        } while (Database.Data.cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGeoCacheCode())) != null);
+        newValues.setGeoCacheName(newValues.getGeoCacheCode());
         newValues.setOwner("Unbekannt");
         newValues.setState("");
         newValues.setCountry("");
@@ -142,7 +142,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.setArchived(false);
         newValues.setAvailable(true);
         newValues.setFound(false);
-        newValues.NumTravelbugs = 0;
+        newValues.numTravelbugs = 0;
         newValues.setShortDescription("");
         newValues.setLongDescription("");
         this.cache = newValues;
@@ -150,23 +150,23 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void doShow() {
-        cacheCode.setText(cache.getGcCode());
+        cacheCode.setText(cache.getGeoCacheCode());
         cacheTyp.setSelection(0);
         for (int i = 0; i < CacheTypNumbers.length; i++) {
-            if (CacheTypNumbers[i] == cache.getType()) {
+            if (CacheTypNumbers[i] == cache.getGeoCacheType()) {
                 cacheTyp.setSelection(i);
             }
         }
         cacheSize.setSelection(0);
         for (int i = 0; i < CacheSizeNumbers.length; i++) {
-            if (CacheSizeNumbers[i] == cache.Size) {
+            if (CacheSizeNumbers[i] == cache.geoCacheSize) {
                 cacheSize.setSelection(i);
             }
         }
         cacheDifficulty.setSelection((int) (cache.getDifficulty() * 2 - 2));
         cacheTerrain.setSelection((int) (cache.getTerrain() * 2 - 2));
         cacheCoords.setCoordinate(cache.getCoordinate());
-        cacheTitle.setText(cache.getName());
+        cacheTitle.setText(cache.getGeoCacheName());
         cacheOwner.setText(cache.getOwner());
         cacheState.setText(cache.getState());
         cacheCountry.setText(cache.getCountry());
@@ -182,26 +182,26 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             boolean update = false;
             CacheDAO cacheDAO = new CacheDAO();
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
-            cache.Id = Cache.generateCacheId(gcc);
+            cache.generatedId = Cache.generateCacheId(gcc);
 
-            Cache cl = Database.Data.cacheList.getCacheByIdFromCacheList(cache.Id);
+            Cache cl = Database.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
 
             if (cl != null) {
                 update = true;
-                if (newValues.getType() == GeoCacheType.Mystery) {
+                if (newValues.getGeoCacheType() == GeoCacheType.Mystery) {
                     if (!(cache.getCoordinate().equals(newValues.getCoordinate()))) {
                         cache.setHasCorrectedCoordinates(true);
                     }
                 }
             }
 
-            cache.setGcCode(gcc);
-            cache.setType(newValues.getType());
-            cache.Size = newValues.Size;
+            cache.setGeoCacheCode(gcc);
+            cache.setGeoCacheType(newValues.getGeoCacheType());
+            cache.geoCacheSize = newValues.geoCacheSize;
             cache.setDifficulty(newValues.getDifficulty());
             cache.setTerrain(newValues.getTerrain());
             cache.setCoordinate(newValues.getCoordinate());
-            cache.setName(cacheTitle.getText());
+            cache.setGeoCacheName(cacheTitle.getText());
             cache.setOwner(cacheOwner.getText());
             cache.setState(cacheState.getText());
             cache.setCountry(cacheCountry.getText());
@@ -254,7 +254,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private ISelectionChangedListener cacheTypSelection() {
         return index -> {
             EditCache.this.show();
-            newValues.setType(CacheTypNumbers[index]);
+            newValues.setGeoCacheType(CacheTypNumbers[index]);
         };
     }
 
@@ -282,7 +282,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private ISelectionChangedListener cacheSizeSelection() {
         return index -> {
             EditCache.this.show();
-            newValues.Size = CacheSizeNumbers[index];
+            newValues.geoCacheSize = CacheSizeNumbers[index];
         };
     }
 

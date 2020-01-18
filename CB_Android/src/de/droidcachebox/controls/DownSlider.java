@@ -352,7 +352,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
         // draw Cache Name
         if (mCache != null)
-            canvas.drawText(mCache.getName(), 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
+            canvas.drawText(mCache.getGeoCacheName(), 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
         // Draw only is visible
         if (Config.quickButtonShow.getValue()) {

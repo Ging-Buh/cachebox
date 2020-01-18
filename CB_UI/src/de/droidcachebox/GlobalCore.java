@@ -123,7 +123,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
 
         setSelectedWaypoint(cache, waypoint, true);
         if (waypoint == null) {
-            CoreSettingsForward.cacheHistory = cache.getGcCode() + "," + CoreSettingsForward.cacheHistory;
+            CoreSettingsForward.cacheHistory = cache.getGeoCacheCode() + "," + CoreSettingsForward.cacheHistory;
             if (CoreSettingsForward.cacheHistory.length() > 120) {
                 CoreSettingsForward.cacheHistory = CoreSettingsForward.cacheHistory.substring(0, CoreSettingsForward.cacheHistory.lastIndexOf(","));
             }
@@ -146,15 +146,15 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         }
 
         // remove Detail Info from old selectedCache
-        if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.detail != null)) {
+        if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.getGeoCacheDetail() != null)) {
             selectedCache.deleteDetail(Config.showAllWaypoints.getValue());
         }
         selectedCache = cache;
-        Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGcCode());
+        Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
         selectedWaypoint = waypoint;
 
         // load Detail Info if not available
-        if (selectedCache.detail == null) {
+        if (selectedCache.getGeoCacheDetail() == null) {
             selectedCache.loadDetail();
         }
 
@@ -191,15 +191,15 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         CacheList List = Database.Data.cacheList;
 
         // Prüfen, ob der SelectedCache noch in der cacheList drin ist.
-        if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().Id) == null)) {
+        if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId) == null)) {
             // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
-            Log.debug(log, "Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
+            Log.debug(log, "Change SelectedCache from " + GlobalCore.getSelectedCache().getGeoCacheCode() + "to" + List.get(0).getGeoCacheCode());
             GlobalCore.setSelectedCache(List.get(0));
         }
         // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
         if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0)) {
             GlobalCore.setSelectedCache(List.get(0));
-            Log.debug(log, "Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
+            Log.debug(log, "Set SelectedCache to " + List.get(0).getGeoCacheCode() + " first in List.");
         }
     }
 
@@ -222,7 +222,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
                 ImporterProgress ip = new ImporterProgress();
                 int result = GroundspeakAPI.ERROR;
                 if (GlobalCore.getSelectedCache() != null)
-                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().Id, GlobalCore.getSelectedCache().getGcCode(), "", "", withLogImages);
+                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
                 wd.close();
                 if (result != OK) {
                     GL.that.Toast(LastAPIError);
@@ -285,7 +285,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         if (selectedCache == null)
             return false;
 
-        return selectedCache.getGcCode().length() != 0;
+        return selectedCache.getGeoCacheCode().length() != 0;
     }
 
     private void initVersionInfos() {

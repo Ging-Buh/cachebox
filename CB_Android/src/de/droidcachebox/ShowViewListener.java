@@ -500,7 +500,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             if (GlobalCore.getSelectedWaypoint() == null) {
                 lat = GlobalCore.getSelectedCache().getLatitude();
                 lon = GlobalCore.getSelectedCache().getCoordinate().getLongitude();
-                targetName = GlobalCore.getSelectedCache().getGcCode();
+                targetName = GlobalCore.getSelectedCache().getGeoCacheCode();
             } else {
                 lat = GlobalCore.getSelectedWaypoint().getLatitude();
                 lon = GlobalCore.getSelectedWaypoint().getLongitude();
@@ -603,7 +603,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
                 String cacheName;
                 if (GlobalCore.isSetSelectedCache()) {
-                    String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+                    String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheName());
                     cacheName = validName.substring(0, Math.min(validName.length(), 32));
                 } else {
                     cacheName = "Voice";
@@ -672,7 +672,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             }
             String cacheName;
             if (GlobalCore.isSetSelectedCache()) {
-                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheName());
                 cacheName = validName.substring(0, Math.min(validName.length(), 32));
             } else {
                 cacheName = "Image";
@@ -777,7 +777,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             mediaFileNameWithoutExtension = Global.GetDateTimeString();
             String cacheName;
             if (GlobalCore.isSetSelectedCache()) {
-                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheName());
                 cacheName = validName.substring(0, Math.min(validName.length(), 32));
             } else {
                 cacheName = "Video";
@@ -874,8 +874,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
              */
 
             Cache cache = GlobalCore.getSelectedCache();
-            String text = cache.getGcCode() + " - " + cache.getName() + ("\n" + "https://coord.info/" + cache.getGcCode());
-            if (cache.hasCorrectedCoordiantesOrHasCorrectedFinal()) {
+            String text = cache.getGeoCacheCode() + " - " + cache.getGeoCacheName() + ("\n" + "https://coord.info/" + cache.getGeoCacheCode());
+            if (cache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
                 text = text + ("\n\n" + "Location (corrected)");
                 if (cache.hasCorrectedCoordinates()) {
                     text = text + ("\n" + Formatter.FormatCoordinate(cache.getCoordinate(), ""));
