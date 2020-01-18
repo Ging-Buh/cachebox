@@ -1,6 +1,6 @@
 package de.droidcachebox.ex_import;
 
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.*;
 
 public class ImportHandler implements IImportHandler {
@@ -42,7 +42,7 @@ public class ImportHandler implements IImportHandler {
 
     @Override
     public Category getCategory(String fileName) {
-        return CoreSettingsForward.categories.getCategory(fileName);
+        return CoreData.categories.getCategory(fileName);
     }
 
     @Override

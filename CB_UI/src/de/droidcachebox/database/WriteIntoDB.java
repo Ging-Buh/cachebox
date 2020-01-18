@@ -1,6 +1,6 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 
 import java.util.ArrayList;
 
@@ -74,7 +74,7 @@ public class WriteIntoDB {
             } else if (oldCache.getGPXFilename_ID() == 0) {
                 cache.setGPXFilename_ID(forCategory.Id);
             } else {
-                Category c = CoreSettingsForward.categories.getCategoryByGpxFilenameId(oldCache.getGPXFilename_ID());
+                Category c = CoreData.categories.getCategoryByGpxFilenameId(oldCache.getGPXFilename_ID());
                 if (c.GpxFilename.equals(forCategory.GpxFileName)) {
                     // update with the new Date
                     cache.setGPXFilename_ID(forCategory.Id);

@@ -33,7 +33,7 @@ public class FilterProperties {
     private final static String SEPARATOR = ",";
     private final static String GPXSEPARATOR = "^";
     // json.getBoolean("isHistory"); // only remember, that last filter was this
-    // the GCCodes are not saved in db but taken from CoreSettingsForward.cacheHistory
+    // the GCCodes are not saved in db but taken from CoreData.cacheHistory
     public boolean isHistory;
     // json.getString("types")
     // was a boolean for each geoCachetype in CacheTypes.caches() !!! no waypoints
@@ -565,7 +565,7 @@ public class FilterProperties {
     public String getSqlWhere(String userName) {
         if (isHistory) {
             ArrayList<String> orParts = new ArrayList<>();
-            String[] gcCodes = CoreSettingsForward.cacheHistory.split(",");
+            String[] gcCodes = CoreData.cacheHistory.split(",");
             for (String gcCode : gcCodes) {
                 if (gcCode.length() > 0) {
                     if (!orParts.contains(gcCode))

@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.ex_import;
 
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.*;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.utils.CB_List;
@@ -168,9 +168,9 @@ public class CacheInfoList {
             // do not use the new GpxFilename_Id (in cache),
             // but use existing category and add the gpxfilename to the category
             long newGpxFilename_Id = cache.getGPXFilename_ID(); // overwrites the actual, if not pinned
-            Category newCategory = CoreSettingsForward.categories.getCategoryByGpxFilenameId(newGpxFilename_Id); // set at beginning of gpx-import
+            Category newCategory = CoreData.categories.getCategoryByGpxFilenameId(newGpxFilename_Id); // set at beginning of gpx-import
             String newGpxFilename = newCategory.getGpxFilename(newGpxFilename_Id); // the gpx-file, that is currently processed
-            Category existingCategory = CoreSettingsForward.categories.getCategoryByGpxFilenameId(cacheInfo.GpxFilename_Id);
+            Category existingCategory = CoreData.categories.getCategoryByGpxFilenameId(cacheInfo.GpxFilename_Id);
             if ((existingCategory != null) && (existingCategory != newCategory) && (existingCategory.pinned)) {
                 // changing cache to the existingGpxFilename_Id
                 cache.setGPXFilename_ID(cacheInfo.GpxFilename_Id);

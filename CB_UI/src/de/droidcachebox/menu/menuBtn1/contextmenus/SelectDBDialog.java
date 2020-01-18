@@ -20,7 +20,7 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.Cache;
@@ -86,7 +86,7 @@ public class SelectDBDialog extends AbstractAction {
 
             Config.settings.ReadFromDB();
 
-            CoreSettingsForward.categories = new Categories();
+            CoreData.categories = new Categories();
 
             FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
 

@@ -25,7 +25,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.*;
@@ -345,7 +345,7 @@ public class MainViewInit extends MainViewBase {
         FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 
-        CoreSettingsForward.categories = new Categories();
+        CoreData.categories = new Categories();
         Database.Data.updateCacheCountForGPXFilenames();
 
         synchronized (Database.Data.cacheList) {

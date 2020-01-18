@@ -153,8 +153,10 @@ public abstract class Database extends Database_Core {
     }
 
     public static CB_List<LogEntry> getLogs(Cache cache) {
-        if (cache == null)
+        if (cache == null || cache.isDisposed()) {
+            cacheLogs.clear();
             return cacheLogs;
+        }
         if (cache.getGeoCacheCode().equals(lastGeoCache)) return cacheLogs;
         lastGeoCache = cache.getGeoCacheCode();
         cacheLogs.clear();

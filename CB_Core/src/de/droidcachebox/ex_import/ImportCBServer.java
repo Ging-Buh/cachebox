@@ -1,7 +1,7 @@
 package de.droidcachebox.ex_import;
 
 import de.droidcachebox.core.CB_Core_Settings;
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.*;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.rpc.*;
@@ -61,7 +61,7 @@ public class ImportCBServer {
                         RpcAnswer_GetCacheList gclAnswer = (RpcAnswer_GetCacheList) answer;
                         System.out.println("************* CacheList ***************");
                         // GPX-Filename und Category Eintrag prüfen
-                        Category cat = CoreSettingsForward.categories.getCategory(item.getDescription());
+                        Category cat = CoreData.categories.getCategory(item.getDescription());
 
                         // GpxFilenames Eintrag erzeugen
 

@@ -458,7 +458,7 @@ public class SearchDialog extends PopUp_Base {
                 }
 
                 // alle per API importierten Caches landen in der Category und GpxFilename API-Import Category suchen, die dazu gehört
-                Category category = CoreSettingsForward.categories.getCategory("API-Import");
+                Category category = CoreData.categories.getCategory("API-Import");
                 if (category == null)
                     return; // should not happen!!!
                 GpxFilename gpxFilename = category.addGpxFilename("API-Import");

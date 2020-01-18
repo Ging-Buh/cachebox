@@ -216,7 +216,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
     private void doImport() {
         GpxFilename gpxFilename = null;
-        Category category = CoreSettingsForward.categories.getCategory(edtCategory.getText());
+        Category category = CoreData.categories.getCategory(edtCategory.getText());
         if (category != null) // should not happen!!!
         {
             gpxFilename = category.addGpxFilename(edtCategory.getText());

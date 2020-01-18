@@ -181,7 +181,6 @@ public class Cache implements Comparable<Cache>, Serializable {
             for (int i = 0; i < wayPoints.size(); i++) {
                 Waypoint wp = wayPoints.get(i);
                 if (wp.isStartWaypoint || wp.waypointType == GeoCacheType.Final) {
-
                     if (wp.detail != null)
                         wp.detail.dispose();
                     wp.detail = null;
@@ -357,13 +356,12 @@ public class Cache implements Comparable<Cache>, Serializable {
         return (Float.compare(dist1, dist2));
     }
 
-    private Waypoint findWaypointByGc(String gc) {
+    private Waypoint findWayPointByGc(String gc) {
         if (isDisposed)
             return null;
-        for (int i = 0, n = wayPoints.size(); i < n; i++) {
-            Waypoint wp = wayPoints.get(i);
-            if (wp.getGcCode().equals(gc)) {
-                return wp;
+        for (Waypoint wayPoint : wayPoints) {
+            if (wayPoint.getGcCode().equals(gc)) {
+                return wayPoint;
             }
         }
         return null;
@@ -403,7 +401,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         // do not copy waypoints List directly because actual user defined Waypoints would be deleted
 
         for (Waypoint newWaypoint : cache.wayPoints) {
-            Waypoint wayPoint = findWaypointByGc(newWaypoint.getGcCode());
+            Waypoint wayPoint = findWayPointByGc(newWaypoint.getGcCode());
             if (wayPoint == null) {
                 // this waypoint is new -> Add to list
                 wayPoints.add(newWaypoint);

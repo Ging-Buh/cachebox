@@ -23,7 +23,7 @@ import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.WriteIntoDB;
@@ -327,13 +327,13 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         edtCategory.setText("API-Import");
         if (GlobalCore.isSetSelectedCache()) {
             long id = GlobalCore.getSelectedCache().getGPXFilename_ID();
-            Category c = CoreSettingsForward.categories.getCategoryByGpxFilenameId(id);
+            Category c = CoreData.categories.getCategoryByGpxFilenameId(id);
             if (c != null)
                 edtCategory.setText(c.GpxFilename);
         }
         edtCategory.setCursorPosition(0);
 
-        Category category = CoreSettingsForward.categories.getCategory(edtCategory.getText());
+        Category category = CoreData.categories.getCategory(edtCategory.getText());
         edtDate.setText(simpleDateFormat.format(category.LastImported()));
         /*
         if (category.size() == 0)
@@ -352,7 +352,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             editTextField.setCursorPosition(editTextField.getText().length());
         } else {
             if (GL.that.getFocusedEditTextField().equals(edtCategory)) {
-                Category category = CoreSettingsForward.categories.getCategory(edtCategory.getText());
+                Category category = CoreData.categories.getCategory(edtCategory.getText());
                 edtDate.setText(simpleDateFormat.format(category.LastImported()));
                 /*
                 if (category.size() == 0)
@@ -453,7 +453,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
             try {
                 if (actSearchPos != null) {
-                    Category category = CoreSettingsForward.categories.getCategory(edtCategory.getText());
+                    Category category = CoreData.categories.getCategory(edtCategory.getText());
                     GpxFilename gpxFilename = category.addGpxFilename(category.GpxFilename); // category.GpxFilename == edtCategory.getText()
                     if (gpxFilename != null) {
                         Query q = new Query()

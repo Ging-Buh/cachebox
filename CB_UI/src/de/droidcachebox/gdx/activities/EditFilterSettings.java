@@ -25,7 +25,7 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.*;
@@ -224,7 +224,7 @@ public class EditFilterSettings extends ActivityBase {
         // init FilterSetListView from tmpFilterProps/FilterInstances.getLastFilter()
         filterSetView.setFilter(tmpFilterProps);
         // init CategoryListView from tmpFilterProps/FilterInstances.getLastFilter()
-        // implicit in creator: fillCategorieList()/ CoreSettingsForward.categories.readFromFilter(tmpFilterProps)
+        // implicit in creator: fillCategorieList()/ CoreData.categories.readFromFilter(tmpFilterProps)
         //
         // init TextFilterView from tmpFilterProps/FilterInstances.getLastFilter()
         textFilterView.setFilter(tmpFilterProps);
@@ -985,8 +985,8 @@ public class EditFilterSettings extends ActivityBase {
             if (categoryListViewItems != null) {
                 for (CategoryListViewItem tmp : categoryListViewItems) {
                     GpxFilename file = tmp.categoryEntry.getFile();
-                    for (int i = 0, n = CoreSettingsForward.categories.size(); i < n; i++) {
-                        Category cat = CoreSettingsForward.categories.get(i);
+                    for (int i = 0, n = CoreData.categories.size(); i < n; i++) {
+                        Category cat = CoreData.categories.get(i);
                         int index = cat.indexOf(file);
                         if (index != -1) {
                             cat.get(index).Checked = tmp.categoryEntry.getState() == 1;
@@ -1000,17 +1000,17 @@ public class EditFilterSettings extends ActivityBase {
                     }
                 }
             }
-            return CoreSettingsForward.categories.updateFilterProperties(filter);
+            return CoreData.categories.updateFilterProperties(filter);
         }
 
         private void fillCategorieList() {
 
-            CoreSettingsForward.categories.readFromFilter(tmpFilterProps);
+            CoreData.categories.readFromFilter(tmpFilterProps);
 
             int Index = 0;
 
-            for (int i = 0, n = CoreSettingsForward.categories.size(); i < n; i++) {
-                Category cat = CoreSettingsForward.categories.get(i);
+            for (int i = 0, n = CoreData.categories.size(); i < n; i++) {
+                Category cat = CoreData.categories.get(i);
                 CategoryListViewItem CollapseItem = addCategoryCollapseItem(Index++, Sprites.getSprite(Sprites.IconName.docIcon.name()), cat);
 
                 for (GpxFilename File : cat) {

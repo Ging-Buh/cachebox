@@ -7,7 +7,7 @@ import de.droidcachebox.database.Categories;
  *
  * @author Longri
  */
-public class CoreSettingsForward {
+public class CoreData {
 
     public static Categories categories;
 

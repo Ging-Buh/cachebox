@@ -19,7 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheList;
@@ -118,14 +118,13 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     }
 
     public static void setSelectedWaypoint(Cache cache, Waypoint waypoint) {
-        if (cache == null)
+        if (cache == null || cache.isDisposed())
             return;
-
         setSelectedWaypoint(cache, waypoint, true);
-        if (waypoint == null) {
-            CoreSettingsForward.cacheHistory = cache.getGeoCacheCode() + "," + CoreSettingsForward.cacheHistory;
-            if (CoreSettingsForward.cacheHistory.length() > 120) {
-                CoreSettingsForward.cacheHistory = CoreSettingsForward.cacheHistory.substring(0, CoreSettingsForward.cacheHistory.lastIndexOf(","));
+        if (!CoreData.cacheHistory.startsWith(cache.getGeoCacheCode())) {
+            CoreData.cacheHistory = cache.getGeoCacheCode() + "," + CoreData.cacheHistory;
+            if (CoreData.cacheHistory.length() > 120) {
+                CoreData.cacheHistory = CoreData.cacheHistory.substring(0, CoreData.cacheHistory.lastIndexOf(","));
             }
         }
     }

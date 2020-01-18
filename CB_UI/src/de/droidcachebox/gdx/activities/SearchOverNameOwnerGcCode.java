@@ -20,7 +20,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.WriteIntoDB;
@@ -269,7 +269,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 
                     // alle per API importierten Caches landen in der Category und GpxFilename API-Import
                     // Category suchen, die dazu gehört
-                    Category category = CoreSettingsForward.categories.getCategory("API-Import");
+                    Category category = CoreData.categories.getCategory("API-Import");
                     if (category != null) // should not happen!!!
                     {
                         GpxFilename gpxFilename = category.addGpxFilename("API-Import");

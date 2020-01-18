@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.database;
 
-import de.droidcachebox.core.CoreSettingsForward;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.utils.log.Log;
 
@@ -70,29 +70,29 @@ public class CategoryDAO {
     public void loadCategoriesFromDatabase() {
         // read all Categories
 
-        CoreSettingsForward.categories.beginnTransaction();
-        CoreSettingsForward.categories.clear();
+        CoreData.categories.beginnTransaction();
+        CoreData.categories.clear();
 
         CoreCursor reader = Database.Data.sql.rawQuery("select ID, GPXFilename, Pinned from Category", null);
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
                 Category category = readFromCursor(reader);
-                CoreSettingsForward.categories.add(category);
+                CoreData.categories.add(category);
                 reader.moveToNext();
             }
             reader.close();
         }
-        CoreSettingsForward.categories.sort();
-        CoreSettingsForward.categories.endTransaction();
+        CoreData.categories.sort();
+        CoreData.categories.endTransaction();
     }
 
     public void deleteEmptyCategories() {
-        CoreSettingsForward.categories.beginnTransaction();
+        CoreData.categories.beginnTransaction();
 
         Categories delete = new Categories();
-        for (int i = 0, n = CoreSettingsForward.categories.size(); i < n; i++) {
-            Category cat = CoreSettingsForward.categories.get(i);
+        for (int i = 0, n = CoreData.categories.size(); i < n; i++) {
+            Category cat = CoreData.categories.get(i);
             if (cat.CacheCount() == 0) {
                 Database.Data.sql.delete("Category", "Id=?", new String[]{String.valueOf(cat.Id)});
                 delete.add(cat);
@@ -100,8 +100,8 @@ public class CategoryDAO {
         }
 
         for (int i = 0, n = delete.size(); i < n; i++) {
-            CoreSettingsForward.categories.remove(delete.get(i));
+            CoreData.categories.remove(delete.get(i));
         }
-        CoreSettingsForward.categories.endTransaction();
+        CoreData.categories.endTransaction();
     }
 }

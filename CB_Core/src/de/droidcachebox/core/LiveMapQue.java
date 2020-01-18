@@ -105,7 +105,7 @@ public class LiveMapQue {
                 if (apiCaches == null) {
 
                     if (gpxFilename == null) {
-                        Category category = CoreSettingsForward.categories.getCategory("API-Import");
+                        Category category = CoreData.categories.getCategory("API-Import");
                         gpxFilename = category.addGpxFilename("API-Import");
                     }
 
@@ -197,7 +197,7 @@ public class LiveMapQue {
             if (result.length() > 0) {
                 JSONArray json = (JSONArray) new JSONTokener(result).nextValue();
                 if (gpxFilename == null) {
-                    Category category = CoreSettingsForward.categories.getCategory("API-Import");
+                    Category category = CoreData.categories.getCategory("API-Import");
                     gpxFilename = category.addGpxFilename("API-Import");
                 }
                 return GroundspeakAPI.getGeoCacheRelateds(json, query.getFields(), null);
