@@ -391,16 +391,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     }
 
     @Override
-    public boolean ItemSelected(MenuItem item) {
+    public boolean itemSelected(MenuItem item) {
         return false;
     }
 
     @Override
-    public void BeforeShowMenu(Menu menu) {
+    public void beforeShowMenu(Menu menu) {
     }
 
     @Override
-    public void OnShow() {
+    public void onShow() {
         mainActivity.runOnUiThread(() -> {
             if (GlobalCore.isSetSelectedCache()) {
                 // aktCache = GlobalCore.getSelectedCache();
@@ -425,26 +425,26 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     }
 
     @Override
-    public void OnHide() {
+    public void onHide() {
     }
 
     @Override
-    public void OnFree() {
+    public void onFree() {
         this.destroy();
     }
 
     @Override
-    public int GetMenuId() {
+    public int getMenuId() {
         return 0;
     }
 
     @Override
-    public int GetContextMenuId() {
+    public int getContextMenuId() {
         return 0;
     }
 
     @Override
-    public boolean ContextMenuItemSelected(MenuItem item) {
+    public boolean contextMenuItemSelected(MenuItem item) {
         return false;
     }
 

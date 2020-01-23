@@ -125,18 +125,18 @@ public class DesktopMain {
             final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
             App.getGraphics().setContinuousRendering(false);
 
-            GL.that.setGL_Listener_Interface(new GL_Listener_Interface() {
+            GL.that.setGlListener(new GL_Listener_Interface() {
 
                 AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
 
                 @Override
-                public void RequestRender() {
+                public void requestRender() {
                     App.getGraphics().requestRendering();
 
                 }
 
                 @Override
-                public void RenderDirty() {
+                public void renderDirty() {
                     App.getGraphics().setContinuousRendering(false);
                     isContinousRenderMode.set(false);
                 }

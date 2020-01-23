@@ -65,11 +65,11 @@ public class Coordinate extends LatLong implements Serializable {
         super(0, 0);
     }
 
-    public static Coordinate Project(Coordinate coord, double Direction, double Distance) {
-        return Project(coord.getLatitude(), coord.getLongitude(), Direction, Distance);
+    public static Coordinate project(Coordinate coord, double Direction, double Distance) {
+        return project(coord.getLatitude(), coord.getLongitude(), Direction, Distance);
     }
 
-    public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance) {
+    public static Coordinate project(double Latitude, double Longitude, double Direction, double Distance) {
         double dist = Distance / EARTH_RADIUS; // convert dist to angular distance in radians
         double brng = Direction * MathUtils.DEG_RAD; //
         double lat1 = Latitude * MathUtils.DEG_RAD;
@@ -126,8 +126,8 @@ public class Coordinate extends LatLong implements Serializable {
         float[] dist = new float[4];
         MathUtils.calculateDistanceAndBearing(type, coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude(), dist);
         double distance = dist[0];
-        Coordinate coord3 = Project(coord1, direction1, distance);
-        Coordinate coord4 = Project(coord2, direction2, distance);
+        Coordinate coord3 = project(coord1, direction1, distance);
+        Coordinate coord4 = project(coord2, direction2, distance);
 
         return Intersection(coord1, coord3, coord2, coord4);
     }

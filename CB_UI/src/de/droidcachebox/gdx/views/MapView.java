@@ -63,7 +63,7 @@ import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.Sprites.*;
 
 public class MapView extends MapViewBase implements SelectedCacheChangedEventListener, PositionChangedEvent {
-    private static final String log = "MapView";
+    private static final String sKlasse = "MapView";
     private CB_RectF targetArrow = new CB_RectF();
     private TreeMap<Integer, Integer> distanceZoomLevel;
     private MapMode mapMode;
@@ -87,18 +87,14 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     private MapInfoPanel info;
     private PointL lastScreenCenter;
     private GL_Paint distanceCirclePaint;
-    private CircleDrawable distanceCircle;
     private GL_Paint directLinePaint;
     private PolygonDrawable directLine;
-    private long lastLoad;
-
 
     public MapView(CB_RectF cb_RectF, MapMode mapMode) {
         super(cb_RectF, mapMode.name());
-        lastLoad = System.currentTimeMillis();
         lastScreenCenter = new PointL(0, 0);
         this.mapMode = mapMode;
-        Log.info(log, "creating Mapview for " + mapMode + " map");
+        Log.info(sKlasse, "creating Mapview for " + mapMode + " map");
         mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
         if (mapMode != MapMode.Normal) {
@@ -359,7 +355,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                             try {
                                 WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                             } catch (InterruptedException ex) {
-                                Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
+                                Log.err(sKlasse, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
                             }
                         } else {
                             String msg = "No Cache loaded: \n remaining Full:" + GroundspeakAPI.fetchMyUserInfos().remaining + "\n remaining Lite:" + GroundspeakAPI.fetchMyUserInfos().remainingLite;
@@ -408,7 +404,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         try {
             center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
         } catch (Exception ex) {
-            Log.err(log, "MapView/CoordinateGPS", ex);
+            Log.err(sKlasse, "MapView/CoordinateGPS", ex);
         }
 
         // Info aktualisieren
@@ -428,9 +424,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         setNightMode();
         Config.nightMode.addSettingChangedListener(this::setNightMode);
 
-        setNorthOriented(Config.isMapNorthOriented.getValue());
+        isNorthOriented = Config.isMapNorthOriented.getValue();
         Config.isMapNorthOriented.addSettingChangedListener(() -> {
-            setNorthOriented(Config.isMapNorthOriented.getValue());
+            isNorthOriented = Config.isMapNorthOriented.getValue();
             positionChanged();
         });
         // to force generation of tiles in loadTiles();
@@ -515,8 +511,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if (coord == null) {
             return;
         }
-        float x = (float) (256.0 * Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, coord.getLongitude()));
-        float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, coord.getLatitude()));
+        float x = (float) (256.0 * Descriptor.longitudeToTileX(MAX_MAP_ZOOM, coord.getLongitude()));
+        float y = (float) (-256.0 * Descriptor.latitudeToTileY(MAX_MAP_ZOOM, coord.getLatitude()));
 
         float halfHeight = getMapIntHeight() / 2.0f - ySpeedVersatz;
         float halfWidth = getMapIntWidth() / 2.0f;
@@ -780,7 +776,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 int maxZoom = Config.dynamicZoomLevelMax.getValue();
                 int minZoom = Config.dynamicZoomLevelMin.getValue();
 
-                double percent = Locator.getInstance().SpeedOverGround() / maxSpeed;
+                double percent = Locator.getInstance().speedOverGround() / maxSpeed;
 
                 float dynZoom = (float) (maxZoom - ((maxZoom - minZoom) * percent));
                 if (dynZoom > maxZoom)
@@ -860,7 +856,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void onHide() {
-        Log.info(log, "Map gets invisible");
+        Log.info(sKlasse, "Map gets invisible");
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         super.onHide();
     }
@@ -882,11 +878,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     protected void directLoadTiles(Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
         if (Energy.isDisplayOff()) return;
         if (isCreated) {
-            long now = System.currentTimeMillis();
-            Log.debug(log, "last now - lastLoad: " + (now - lastLoad));
-            if ((now - lastLoad) < 1000) return;
-            Log.debug(log, "area " + lowerTile + " : " + upperTile);
-            if (lowerTile != upperTile) lastLoad = now;
+
             MapTileLoader.finishYourself.set(true);
             while (MapTileLoader.isWorking.get()) {
                 try {
@@ -1124,7 +1116,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     public void onShow() {
         super.onShow();
         SelectedCacheChangedEventListeners.getInstance().add(this);
-        NorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
+        isNorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
         selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
     }
 
@@ -1189,7 +1181,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if ((InitialFlags & INITIAL_THEME) != 0) {
             if (mapTileLoader.getCurrentLayer() != null) {
                 if (mapTileLoader.getCurrentLayer().isMapsForge()) {
-                    Log.info(log, "modify layer " + mapTileLoader.getCurrentLayer().getName() + " for mapview " + mapMode);
+                    Log.info(sKlasse, "modify layer " + mapTileLoader.getCurrentLayer().getName() + " for mapview " + mapMode);
                     mapTileLoader.modifyCurrentLayer(isCarMode);
                     renderOnce("INITIAL_THEME");
                 }

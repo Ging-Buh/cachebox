@@ -46,7 +46,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, invalidateTextureEvent, CacheListChangedListeners.CacheListChangedListener {
+public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, InvalidateTextureEventList.invalidateTextureEvent, CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "CompassView";
     private static CompassView that;
     private CB_RectF imageRec;
@@ -62,8 +62,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     private SatBarChart chart;
     private CB_Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblOwnCoords, lblBearing;
     private CacheInfo cacheInfo;
-    private Cache aktCache;
-    private Waypoint aktWaypoint;
+    private Cache currentGeoCache;
+    private Waypoint currentWaypoint;
     private float margin;
     private float descHeight;
     private float lblHeight;
@@ -78,8 +78,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     private CompassView() {
         super(ViewManager.leftTab.getContentRec(), "CompassView");
         margin = GL_UISizes.margin;
-        aktCache = GlobalCore.getSelectedCache();
-        aktWaypoint = GlobalCore.getSelectedWaypoint();
+        currentGeoCache = GlobalCore.getSelectedCache();
+        currentWaypoint = GlobalCore.getSelectedWaypoint();
     }
 
     public static CompassView getInstance() {
@@ -89,8 +89,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
     @Override
     public void onShow() {
-        aktCache = GlobalCore.getSelectedCache();
-        aktWaypoint = GlobalCore.getSelectedWaypoint();
+        currentGeoCache = GlobalCore.getSelectedCache();
+        currentWaypoint = GlobalCore.getSelectedWaypoint();
         initialize();
         setCache();
         if (chart != null) {
@@ -106,7 +106,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         SelectedCacheChangedEventListeners.getInstance().add(this);
         PositionChangedListeners.addListener(this);
         CacheListChangedListeners.getInstance().addListener(this);
-        invalidateTextureEventList.Add(this);
+        InvalidateTextureEventList.addListener(this);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             mCompassMapView.onHide();
         }
         CacheListChangedListeners.getInstance().removeListener(this);
-        invalidateTextureEventList.Remove(this);
+        InvalidateTextureEventList.removeListener(this);
     }
 
     @Override
@@ -167,23 +167,23 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     private void setCache() {
 
         try {
-            synchronized (aktCache) {
-                if (aktCache == null)
+            synchronized (currentGeoCache) {
+                if (currentGeoCache == null)
                     return;
-                Log.debug(log, "new cache: " + aktCache.getGeoCacheCode() + ":" + aktCache.getGeoCacheName());
+                Log.debug(log, "new cache: " + currentGeoCache.getGeoCacheCode() + ":" + currentGeoCache.getGeoCacheName());
 
-                if (aktCache.mustLoadDetail()) {
+                if (currentGeoCache.mustLoadDetail()) {
                     Log.debug(log, "loading details.");
-                    aktCache.loadDetail();
+                    currentGeoCache.loadDetail();
                 }
 
                 if (showAtt) {
                     try {
-                        int attributesSize = aktCache.getAttributes().size();
+                        int attributesSize = currentGeoCache.getAttributes().size();
                         for (int i = 0; i < 19; i++) {
                             if (i < attributesSize) {
                                 try {
-                                    String ImageName = aktCache.getAttributes().get(i).getImageName() + "Icon";
+                                    String ImageName = currentGeoCache.getAttributes().get(i).getImageName() + "Icon";
                                     ImageName = ImageName.replace("_", "-");
                                     att[i].setDrawable(new SpriteDrawable(Sprites.getSprite(ImageName)));
                                 } catch (Exception e) {
@@ -200,40 +200,40 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
                 }
 
                 if (showIcon && Icon != null) {
-                    if (aktWaypoint == null) {
-                        if (aktCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
-                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getGeoCacheType().name() + "Solved")));
+                    if (currentWaypoint == null) {
+                        if (currentGeoCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
+                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + currentGeoCache.getGeoCacheType().name() + "Solved")));
                         } else {
-                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.getGeoCacheType().name())));
+                            Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + currentGeoCache.getGeoCacheType().name())));
                         }
                     } else {
-                        Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktWaypoint.waypointType.name())));
+                        Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + currentWaypoint.waypointType.name())));
                     }
                 }
 
                 if (showName && lbl_Name != null) {
-                    if (aktWaypoint == null) {
-                        lbl_Name.setText(aktCache.getGeoCacheName());
+                    if (currentWaypoint == null) {
+                        lbl_Name.setText(currentGeoCache.getGeoCacheName());
                     } else {
-                        lbl_Name.setText(aktWaypoint.getTitleForGui());
+                        lbl_Name.setText(currentWaypoint.getTitleForGui());
                     }
                 }
 
                 if (showGcCode && lblGcCode != null) {
-                    lblGcCode.setText(aktCache.getGeoCacheCode());
+                    lblGcCode.setText(currentGeoCache.getGeoCacheCode());
                 }
 
                 if (showCoords && lblCoords != null) {
-                    if (aktWaypoint == null) {
-                        lblCoords.setText(aktCache.getCoordinate().formatCoordinate());
+                    if (currentWaypoint == null) {
+                        lblCoords.setText(currentGeoCache.getCoordinate().formatCoordinate());
                     } else {
-                        lblCoords.setText(aktWaypoint.getCoordinate().formatCoordinate());
+                        lblCoords.setText(currentWaypoint.getCoordinate().formatCoordinate());
                     }
                 }
 
                 if (showWpDesc && lblDesc != null) {
-                    if (aktWaypoint != null && !aktWaypoint.getDescription().equals("")) {
-                        lblDesc.setWrappedText(aktWaypoint.getDescription());
+                    if (currentWaypoint != null && !currentWaypoint.getDescription().equals("")) {
+                        lblDesc.setWrappedText(currentWaypoint.getDescription());
                     } else {
                         lblDesc.setText("");
                     }
@@ -241,7 +241,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
                 }
 
                 if (showSDT & cacheInfo != null) {
-                    cacheInfo.setCache(aktCache);
+                    cacheInfo.setCache(currentGeoCache);
                 }
 
             }
@@ -332,9 +332,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (showGcCode || showCoords)
             contentHeight += lblHeight + margin;
         if (showWpDesc) {
-            if (aktWaypoint != null) {
-                if (aktWaypoint.getDescription() != null && !aktWaypoint.getDescription().equals("")) {
-                    descHeight = Fonts.MeasureWrapped(aktWaypoint.getDescription(), this.getWidth()).height + margin;
+            if (currentWaypoint != null) {
+                if (currentWaypoint.getDescription() != null && !currentWaypoint.getDescription().equals("")) {
+                    descHeight = Fonts.MeasureWrapped(currentWaypoint.getDescription(), this.getWidth()).height + margin;
                     contentHeight += descHeight + margin;
                 }
             }
@@ -549,7 +549,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
                 infoHeight *= 2.5f;
             }
 
-            cacheInfo = new CacheInfo(new SizeF(topContentBox.getWidth(), infoHeight), "cacheInfo", aktCache);
+            cacheInfo = new CacheInfo(new SizeF(topContentBox.getWidth(), infoHeight), "cacheInfo", currentGeoCache);
             cacheInfo.setViewMode(viewMode);
             topContentBox.addLast(cacheInfo);
         }
@@ -574,8 +574,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         topBox.setVirtualHeight(topContentBox.getHeight());
         topBox.scrollTo(0);
 
-        aktCache = GlobalCore.getSelectedCache();
-        aktWaypoint = GlobalCore.getSelectedWaypoint();
+        currentGeoCache = GlobalCore.getSelectedCache();
+        currentWaypoint = GlobalCore.getSelectedWaypoint();
         setCache();
     }
 
@@ -608,9 +608,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
     @Override
     public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
-        if (aktCache != cache || aktWaypoint != waypoint) {
-            aktCache = cache;
-            aktWaypoint = waypoint;
+        if (currentGeoCache != cache || currentWaypoint != waypoint) {
+            currentGeoCache = cache;
+            currentWaypoint = waypoint;
             setCache();
         }
     }
@@ -620,7 +620,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (this.isDisposed()) {
             return;
         }
-        if (aktCache == null) {
+        if (currentGeoCache == null) {
             return;
         }
 
@@ -636,7 +636,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (lblOwnCoords != null)
             lblOwnCoords.setText(position.formatCoordinate());
 
-        Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.getCoordinate();
+        Coordinate dest = currentWaypoint != null ? currentWaypoint.getCoordinate() : currentGeoCache.getCoordinate();
 
         float[] result = new float[4];
 
@@ -703,14 +703,14 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     public void orientationChanged() {
         if (this.isDisposed())
             return;
-        if (aktCache == null)
+        if (currentGeoCache == null)
             return;
 
         if (Locator.getInstance().isValid()) {
             Coordinate position = Locator.getInstance().getMyPosition();
             double heading = Locator.getInstance().getHeading();
 
-            Coordinate dest = aktWaypoint != null ? aktWaypoint.getCoordinate() : aktCache.getCoordinate();
+            Coordinate dest = currentWaypoint != null ? currentWaypoint.getCoordinate() : currentGeoCache.getCoordinate();
 
             float[] result = new float[2];
 
@@ -794,9 +794,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
     @Override
     public void cacheListChanged() {
-        if (aktCache != GlobalCore.getSelectedCache() || aktWaypoint != GlobalCore.getSelectedWaypoint()) {
-            aktCache = GlobalCore.getSelectedCache();
-            aktWaypoint = GlobalCore.getSelectedWaypoint();
+        if (currentGeoCache != GlobalCore.getSelectedCache() || currentWaypoint != GlobalCore.getSelectedWaypoint()) {
+            currentGeoCache = GlobalCore.getSelectedCache();
+            currentWaypoint = GlobalCore.getSelectedWaypoint();
             setCache();
         }
     }
@@ -881,8 +881,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             cacheInfo.dispose();
         cacheInfo = null;
 
-        aktCache = null;
-        aktWaypoint = null;
+        currentGeoCache = null;
+        currentWaypoint = null;
 
         if (att != null) {
             for (Image img : att) {
@@ -910,7 +910,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         CacheListChangedListeners.getInstance().removeListener(this);
         PositionChangedListeners.removeListener(this);
-        invalidateTextureEventList.Remove(this);
+        InvalidateTextureEventList.removeListener(this);
 
         super.dispose();
         that = null;

@@ -6,21 +6,21 @@ import android.view.MotionEvent;
 
 public interface ViewOptionsMenu {
 
-    boolean ItemSelected(MenuItem item);
+    boolean itemSelected(MenuItem item);
 
-    void BeforeShowMenu(Menu menu);
+    void beforeShowMenu(Menu menu);
 
-    int GetMenuId();
+    int getMenuId();
 
-    void OnShow();
+    void onShow();
 
-    void OnHide();
+    void onHide();
 
-    void OnFree();
+    void onFree();
 
-    int GetContextMenuId();
+    int getContextMenuId();
 
-    boolean ContextMenuItemSelected(MenuItem item);
+    boolean contextMenuItemSelected(MenuItem item);
 
     boolean dispatchTouchEvent(MotionEvent event);
 

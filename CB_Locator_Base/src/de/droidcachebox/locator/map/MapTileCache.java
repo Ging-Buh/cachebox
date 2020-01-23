@@ -66,7 +66,7 @@ public class MapTileCache {
             return;
         // first test, if the tile to dispose has not age 0: won't replace a tile with age 0
         int toBeFreed = indexList[capacity - 1];
-        if (tileList[toBeFreed] == null || tileList[toBeFreed].age > 0) {
+        if (tileList[toBeFreed] == null || tileList[toBeFreed].getAge() > 0) {
             short freeIndex = addIndex();
             // Destroy the holden Tile on this now FreeIndex
             if (tileList[freeIndex] != null) {
@@ -144,9 +144,9 @@ public class MapTileCache {
                         break; // sort changed, begin new
                     }
 
-                    if (tileList[index1].age == tileList[index2].age)
+                    if (tileList[index1].getAge() == tileList[index2].getAge())
                         continue;
-                    if (tileList[index1].age < tileList[index2].age)
+                    if (tileList[index1].getAge() < tileList[index2].getAge())
                         continue;
 
                     // swap
@@ -181,7 +181,7 @@ public class MapTileCache {
         synchronized (tileList) {
             for (short i = 0, n = (short) tileList.length; i < n; i++) {
                 if (tileList[i] != null)
-                    tileList[i].age++;
+                    tileList[i].setAge(tileList[i].getAge() + 1);
             }
         }
     }
@@ -199,7 +199,7 @@ public class MapTileCache {
                 return index;
             if (!tileList[index].canDraw())
                 return index;
-            tileList[index].age = 0;
+            tileList[index].setAge(0);
             tilesToDraw[tilesToDrawCounter++] = index;
             return index;
         } catch (Exception e) {

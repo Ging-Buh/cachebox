@@ -497,13 +497,10 @@ public abstract class GL_View_Base extends CB_RectF {
 
         // Draw Debug REC
         if (debug) {
-
             if (debugSprite != null) {
                 batch.flush();
                 debugSprite.draw(batch);
-
             }
-
         }
 
         // reset Colorfilter ?
@@ -518,29 +515,20 @@ public abstract class GL_View_Base extends CB_RectF {
         return isDisposed;
     }
 
-    protected void writeDebug() {
+    protected void createDebugSprite() {
         if (debugSprite == null) {
             try {
                 GL.that.RunOnGLWithThreadCheck(() -> {
-                    // int w = getNextHighestPO2((int) getWidth());
-                    // int h = getNextHighestPO2((int) getHeight());
-
                     int w = (int) getWidth();
                     int h = (int) getHeight();
-
                     debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
                     debugRegPixmap.setColor(1f, 0f, 0f, 1f);
-                    debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
-
+                    debugRegPixmap.drawRectangle(1, 1, w - 1, h - 1);
                     debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
-
-                    debugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
+                    debugSprite = new Sprite(debugRegTexture, w, h);
                 });
-
-            } catch (Exception e) {
-                Log.err(log, "writeDebug", e);
+            } catch (Exception ignored) {
             }
-
         }
     }
 
@@ -573,7 +561,7 @@ public abstract class GL_View_Base extends CB_RectF {
         thisInvalidate = false;
 
         if (debug)
-            writeDebug();
+            createDebugSprite();
     }
 
     public void invalidate() {

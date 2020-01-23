@@ -223,11 +223,11 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
                     double peakLon = Math.max(Math.abs(sortetdList.get(0).getLongitude() - medianLon), Math.abs(sortetdList.get(sortetdList.size() - 1).getLongitude() - medianLon));
 
                     // Umrechnung in XY
-                    double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
-                    double medianY = Descriptor.LatitudeToTileY(projectionZoom, medianLat);
+                    double medianX = Descriptor.longitudeToTileX(projectionZoom, medianLon);
+                    double medianY = Descriptor.latitudeToTileY(projectionZoom, medianLat);
 
-                    double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon + medianLon);
-                    double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat + medianLat);
+                    double extremeX = Descriptor.longitudeToTileX(projectionZoom, peakLon + medianLon);
+                    double extremeY = Descriptor.latitudeToTileY(projectionZoom, peakLat + medianLat);
 
                     double peakX = Math.abs(extremeX - medianX);
                     double peakY = Math.abs(extremeY - medianY);

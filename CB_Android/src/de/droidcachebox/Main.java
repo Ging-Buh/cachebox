@@ -241,7 +241,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             int height = UiSizes.getInstance().getWindowHeight();
             CB_RectF rec = new CB_RectF(0, 0, width, height);
             new GL(width, height, new MainViewInit(rec), new ViewManager(rec));
-            GL.that.textInput = new Android_TextInput(this);
+            GL.that.setTextInput(new Android_TextInput(this));
 
             // registerReceiver receiver for screen switched on/off
             IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -396,7 +396,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             Log.err("onResume", "GL.that == null");
             restartFromSplash();
         } else {
-            if (GL.that.mGL_Listener_Interface == null) {
+            if (GL.that.getGlListener() == null) {
                 Log.err("onResume", "mGL_Listener_Interface == null");
                 restartFromSplash();
             }
@@ -407,7 +407,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (lastState == LastState.onStop) {
             Log.info(sKlasse, "=> Resume from Stop");
             showWaitToRenderStarted();
-            invalidateTextureEventList.Call();
+            InvalidateTextureEventList.Call();
         } else {
             Log.info(sKlasse, "=> onResume");
         }

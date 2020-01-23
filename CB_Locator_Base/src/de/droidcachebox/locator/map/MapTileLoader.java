@@ -113,7 +113,7 @@ public class MapTileLoader {
     }
 
     public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
-        if (!queueProcessorsAreStarted) startQueueProzessors();
+        if (!queueProcessorsAreStarted || queueProcessors.size() == 0) startQueueProzessors();
         // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
         // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
 
@@ -134,7 +134,6 @@ public class MapTileLoader {
         // preparation
         int midX = (upperTile.getX() + lowerTile.getX()) / 2;
         int midY = (upperTile.getY() + lowerTile.getY()) / 2;
-        // Log.trace(log, "Center: " + new Descriptor(midX, midY, aktZoom));
 
         Array<Descriptor> wantedTiles = new Array<>();
 
@@ -150,10 +149,10 @@ public class MapTileLoader {
         wantedTiles.sort(byDistanceFromCenter);
 
         int orderCount = 0; // don't order more than want to be cached !!!
-        int firstDistance = 0;
-        boolean isSetFirstDistance = false;
+        Log.info(log, "Num wanted: " + wantedTiles.size);
         for (Descriptor descriptor : wantedTiles) {
             if (finishYourself.get()) {
+                Log.info(log, "MapTileLoader finishMyself during tile ordering");
                 return;
             }
             if (!loadedTiles.contains(descriptor.getHashCode(), false) && !alreadyOrdered.contains(descriptor.getHashCode(), false)) {
@@ -163,8 +162,8 @@ public class MapTileLoader {
                     try {
                         thread = queueProcessors.get(nextQueueProcessor);
                         nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
+                        Log.err(log, "get(nextQueueProcessor)", ex);
                         return;
                     }
                     if (nextQueueProcessor == previousQueueProcessor) {
@@ -175,16 +174,6 @@ public class MapTileLoader {
                     }
                 }
                 while (!thread.canTakeOrder);
-                if (!isSetFirstDistance) {
-                    firstDistance = (int) descriptor.Data;
-                    isSetFirstDistance = true;
-                }
-                if (((int) descriptor.Data) - firstDistance > 1) {
-                    // first create the nearest tiles
-                    // if a tile is missing on rendering the load will be ordered there (again)
-                    // Log.info(log, "ordered: " + orderCount + " Distance: " + ((int) descriptor.Data - 1));
-                    return;
-                }
                 // Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " on thread: " + nextQueueProcessor);
                 alreadyOrdered.add(descriptor.getHashCode());
                 thread.addOrder(descriptor, false, mapView);
@@ -194,6 +183,7 @@ public class MapTileLoader {
                     break;
             }
             if (finishYourself.get()) {
+                Log.info(log, "MapTileLoader finishMyself after mapTiles ordered");
                 return;
             }
             if (mapTiles.getCurrentOverlayLayer() != null) {
@@ -221,7 +211,7 @@ public class MapTileLoader {
                 }
             }
         }
-
+        Log.info(log, "MapTileLoader completed.");
     }
 
     int markTileToDraw(long hash) {

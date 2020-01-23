@@ -20,17 +20,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import de.droidcachebox.InvalidateTextureEventList;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
-import de.droidcachebox.invalidateTextureEvent;
-import de.droidcachebox.invalidateTextureEventList;
 
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
+public class ZoomScale extends CB_View_Base implements InvalidateTextureEventList.invalidateTextureEvent {
     private final boolean isVisible = true;
     private final int timeToFadeOut = 5000; // 5Sec
     private final int fadeStep = 50; // 100 mSec
@@ -110,7 +109,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
             e.printStackTrace();
         }
 
-        invalidateTextureEventList.Add(this);
+        InvalidateTextureEventList.addListener(this);
     }
 
     public void setZoom(float value) {

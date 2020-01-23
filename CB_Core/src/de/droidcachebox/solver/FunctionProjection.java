@@ -47,7 +47,7 @@ public class FunctionProjection extends Function {
             return Translation.get("solverErrParamType", "$solverFuncProjection", "3", "$angle", "$number", parameter[2]);
         }
 
-        Coordinate result = CoordinateGPS.Project(coord.getLatitude(), coord.getLongitude(), angle, distance);
+        Coordinate result = CoordinateGPS.project(coord.getLatitude(), coord.getLongitude(), angle, distance);
         if (!result.isValid())
             return Translation.get("InvalidCoordinate", "$solverFuncProjection", "Lat: " + String.valueOf(coord.getLatitude()) + ", Lon: " + String.valueOf(coord.getLongitude()));
         return result.formatCoordinate();

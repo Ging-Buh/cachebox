@@ -20,33 +20,66 @@ import com.badlogic.gdx.utils.Disposable;
 import de.droidcachebox.utils.CB_List;
 
 public abstract class TileGL implements Disposable {
-    private final int DEFAULT_TILE_SIZE = 256;
-    public Descriptor descriptor = null;
-    public TileState State;
+    protected boolean isDisposed = false;
+    private Descriptor descriptor;
+    protected TileState state;
     // zum speichern beliebiger Zusatzinfos
-    public Object data;
+    private Object data;
     // / <summary>
     // / Frames seit dem letzten Zugriff auf die Textur
     // / </summary>
-    public long age = 0;
-    protected boolean isDisposed = false;
+    private long age;
+
+    protected TileGL() {
+        age = 0;
+        descriptor = null;
+    }
 
     public abstract boolean isDisposed();
 
     public abstract boolean canDraw();
-
-    @Override
-    public abstract String toString();
 
     public abstract long getWidth();
 
     public abstract long getHeight();
 
     public float getScaleFactor() {
-        return getWidth() / DEFAULT_TILE_SIZE;
+        return ((float) getWidth()) / 256;
     }
 
     public abstract void draw(Batch batch, float f, float y, float tILESIZE, float tILESIZE2, CB_List<TileGL_RotateDrawables> rotateList);
+
+    public Descriptor getDescriptor() {
+        return descriptor;
+    }
+
+    public void setDescriptor(Descriptor descriptor) {
+        this.descriptor = descriptor;
+    }
+
+    public TileState getState() {
+        return state;
+    }
+
+    public void setState(TileState state) {
+        this.state = state;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
+    }
 
     public enum TileState {
         Scheduled, Present, LowResolution, Disposed

@@ -64,8 +64,8 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_ACTION = 50;
     public static final int FRAME_RATE_FAST_ACTION = 40;
     public static GL that;
-    public TextInputInterface textInput;
-    public GL_Listener_Interface mGL_Listener_Interface; // implementation in ../ViewGL : Desktop-Launcher/DesktopMain/start
+    private TextInputInterface textInput;
+    private GL_Listener_Interface glListener; // implementation in ../ViewGL : Desktop-Launcher/DesktopMain/start
     private AsyncExecutor asyncExecutor;
     private int width, height;
     private MainViewBase mSplash;
@@ -195,8 +195,8 @@ public class GL implements ApplicationListener {
 
         GL_ThreadId = Thread.currentThread().getId();
 
-        if (mGL_Listener_Interface != null && mGL_Listener_Interface.isContinous()) {
-            mGL_Listener_Interface.RenderDirty();
+        if (glListener != null && glListener.isContinous()) {
+            glListener.renderDirty();
         }
 
         stateTime += Gdx.graphics.getDeltaTime();
@@ -428,8 +428,8 @@ public class GL implements ApplicationListener {
         // App wird verkleinert oder Gerät ausgeschaltet
         // Log.debug(log, "GL_Listener => onStop");
         stopTimer();
-        if (mGL_Listener_Interface != null)
-            mGL_Listener_Interface.renderContinous();
+        if (glListener != null)
+            glListener.renderContinous();
         child.onStop();
         toast = null; // regenerate toast control
     }
@@ -437,8 +437,8 @@ public class GL implements ApplicationListener {
     public void onStart() {
         // App wird wiederhergestellt oder Gerät eingeschaltet
         started.set(true);
-        if (mGL_Listener_Interface != null)
-            mGL_Listener_Interface.RenderDirty();
+        if (glListener != null)
+            glListener.renderDirty();
 
         if (currentActivityIsShown || currentDialogIsShown) {
             PlatformUIBase.showForDialog();
@@ -823,8 +823,8 @@ public class GL implements ApplicationListener {
             }
 
             private void TimerMethod() {
-                if (mGL_Listener_Interface != null)
-                    mGL_Listener_Interface.RequestRender();
+                if (glListener != null)
+                    glListener.requestRender();
             }
 
         }, 0, delay);
@@ -1012,16 +1012,16 @@ public class GL implements ApplicationListener {
                 if (renderViews.containsKey(view)) {
                     renderViews.remove(view);
                     calcNewRenderSpeed();
-                    if (mGL_Listener_Interface != null)
-                        mGL_Listener_Interface.RequestRender();
+                    if (glListener != null)
+                        glListener.requestRender();
                 }
                 return;
             }
             renderViews.remove(view);
             renderViews.put(view, delay);
             calcNewRenderSpeed();
-            if (mGL_Listener_Interface != null)
-                mGL_Listener_Interface.RequestRender();
+            if (glListener != null)
+                glListener.requestRender();
         }
     }
 
@@ -1071,8 +1071,8 @@ public class GL implements ApplicationListener {
 
         lastRenderOnceTime = this.getStateTime();
 
-        if (mGL_Listener_Interface != null)
-            mGL_Listener_Interface.RequestRender();
+        if (glListener != null)
+            glListener.requestRender();
     }
 
     private void calcNewRenderSpeed() {
@@ -1213,8 +1213,8 @@ public class GL implements ApplicationListener {
      * ViewManager:reloadSprites(boolean switchDayNight)
      */
     public void restartRendering() {
-        if (mGL_Listener_Interface != null) {
-            mGL_Listener_Interface.renderContinous();
+        if (glListener != null) {
+            glListener.renderContinous();
         }
         renderingIsStopped = false;
         renderOnce();
@@ -1307,10 +1307,6 @@ public class GL implements ApplicationListener {
         allIsInitialized = value;
     }
 
-    public void setGL_Listener_Interface(GL_Listener_Interface _GL_Listener_Interface) {
-        mGL_Listener_Interface = _GL_Listener_Interface;
-    }
-
     public PolygonSpriteBatch getPolygonSpriteBatch() {
         return mPolygonSpriteBatch;
     }
@@ -1321,8 +1317,8 @@ public class GL implements ApplicationListener {
         mSplash = null;
         initMarkerOverlay();
         mMainView.onShow();
-        if (mGL_Listener_Interface != null)
-            mGL_Listener_Interface.RenderDirty();
+        if (glListener != null)
+            glListener.renderDirty();
     }
 
     void resetAmbiantMode() {
@@ -1351,6 +1347,22 @@ public class GL implements ApplicationListener {
             }
             return null;
         });
+    }
+
+    public GL_Listener_Interface getGlListener() {
+        return glListener;
+    }
+
+    public void setGlListener(GL_Listener_Interface _GL_Listener_Interface) {
+        glListener = _GL_Listener_Interface;
+    }
+
+    public TextInputInterface getTextInput() {
+        return textInput;
+    }
+
+    public void setTextInput(TextInputInterface textInput) {
+        this.textInput = textInput;
     }
 
     /*

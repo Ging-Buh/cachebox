@@ -19,18 +19,17 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import de.droidcachebox.InvalidateTextureEventList;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.invalidateTextureEvent;
-import de.droidcachebox.invalidateTextureEventList;
 import de.droidcachebox.utils.log.Log;
 
 import java.text.NumberFormat;
 
-public class MapScale extends CB_View_Base implements invalidateTextureEvent {
+public class MapScale extends CB_View_Base implements InvalidateTextureEventList.invalidateTextureEvent {
     private static final String log = "MapScale";
     private final static NumberFormat nf = NumberFormat.getInstance();
     private final int[] scaleNumUnits = new int[]{4, 3, 4, 3, 4, 5, 3};
@@ -62,7 +61,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
         fontCache = new BitmapFontCache(Fonts.getNormal());
         fontCache.setColor(COLOR.getFontColor());
         fontCache.setText("", 0, 0);
-        invalidateTextureEventList.Add(this);
+        InvalidateTextureEventList.addListener(this);
     }
 
     @Override

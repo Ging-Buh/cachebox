@@ -32,8 +32,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     protected boolean isPressed = false;
     boolean inChange = false;
     private Cache mCache;
-    private Waypoint mWaypoint;
-    private CB_RectF ArrowRec;
+    private Waypoint wayPoint;
+    private CB_RectF arrowRec;
     private Sprite arrow = new Sprite(Sprites.Arrows.get(0));
     private BitmapFontCache distance;
     private Sprite mIconSprite;
@@ -58,7 +58,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
     private void initial(int Index, Cache cache, Waypoint waypoint) {
         mCache = cache;
-        mWaypoint = waypoint;
+        wayPoint = waypoint;
 
         distance = new BitmapFontCache(Fonts.getSmall());
         distance.setColor(COLOR.getFontColor());
@@ -84,17 +84,17 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     public Waypoint getWaypoint() {
-        return mWaypoint;
+        return wayPoint;
     }
 
     private void setDistanceString(final String txt) {
         if (txt != null) {
             try {
-                GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-                float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+                GlyphLayout bounds = distance.setText(txt, arrowRec.getX(), arrowRec.getY());
+                float x = arrowRec.getHalfWidth() - (bounds.width / 2f);
                 distance.setPosition(x, 0);
-            } catch (Exception e) {
-                Log.err(log, "setDistanceString: '" + txt + "'" + e.getLocalizedMessage());
+            } catch (Exception ex) {
+                Log.err(log, "setDistanceString: '" + txt + "'", ex);
             }
         }
     }
@@ -104,26 +104,26 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             return;
 
         if (Locator.getInstance().isValid()) {
-            boolean isDefined = mWaypoint != null;
+            boolean isDefined = wayPoint != null;
             if (isDefined) {
-                if (mWaypoint.getCoordinate() == null) {
+                if (wayPoint.getCoordinate() == null) {
                     isDefined = false;
                 } else {
-                    if (mWaypoint.getCoordinate().isZero()) isDefined = false;
+                    if (wayPoint.getCoordinate().isZero()) isDefined = false;
                 }
             }
 
             if (isDefined) {
                 double lat, lon;
                 float distance;
-                if (mWaypoint == null) {
+                if (wayPoint == null) {
                     lat = mCache.getLatitude();
                     lon = mCache.getLongitude();
                     distance = mCache.recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
                 } else {
-                    lat = mWaypoint.getLatitude();
-                    lon = mWaypoint.getLongitude();
-                    distance = mWaypoint.getDistance();
+                    lat = wayPoint.getLatitude();
+                    lon = wayPoint.getLongitude();
+                    distance = wayPoint.getDistance();
                 }
 
                 Coordinate position = Locator.getInstance().getMyPosition();
@@ -138,8 +138,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 {
                     float size = getHeight() / 2.3f;
                     arrow = new Sprite(Sprites.Arrows.get(0));
-                    arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-                    arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+                    arrow.setBounds(arrowRec.getX(), arrowRec.getY(), size, size);
+                    arrow.setOrigin(arrowRec.getHalfWidth(), arrowRec.getHalfHeight());
                 }
             } else {
                 arrow = null;
@@ -163,7 +163,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
         if (mIconSprite != null)
             mIconSprite.draw(batch);
-        if (mIconSprite == null && mWaypoint != null)
+        if (mIconSprite == null && wayPoint != null)
             requestLayout();
 
         if (mNameCache != null)
@@ -229,9 +229,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
         if (viewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
         {
             float size = UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight() / 2.3f;
-            ArrowRec = new CB_RectF(getWidth() - (size * 1.2f), getHeight() - (size * 1.6f), size, size);
-            arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-            arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+            arrowRec = new CB_RectF(getWidth() - (size * 1.2f), getHeight() - (size * 1.6f), size, size);
+            arrow.setBounds(arrowRec.getX(), arrowRec.getY(), size, size);
+            arrow.setOrigin(arrowRec.getHalfWidth(), arrowRec.getHalfHeight());
 
             if (Locator.getInstance().isValid()) {
                 arrow.setColor(DISABLE_COLOR);
@@ -245,7 +245,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             distance = null;
         }
 
-        if (mWaypoint != null) {
+        if (wayPoint != null) {
             float scaleFactor = getWidth() / UiSizes.getInstance().getCacheListItemRec().getWidth();
             float mLeft = 3 * scaleFactor;
             float mTop = 3 * scaleFactor;
@@ -256,10 +256,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             { // Icon Sprite erstellen
                 // MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
-                if ((mWaypoint.waypointType == GeoCacheType.MultiStage) && mWaypoint.isStartWaypoint)
+                if ((wayPoint.waypointType == GeoCacheType.MultiStage) && wayPoint.isStartWaypoint)
                     mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.MultiStage.name() + "StartP"));
                 else
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + mWaypoint.waypointType.name()));
+                    mIconSprite = new Sprite(Sprites.getSprite("big" + wayPoint.waypointType.name()));
 
                 mIconSprite.setSize(mIconSize, mIconSize);
                 mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
@@ -279,13 +279,13 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             float textYPos = getHeight() - mLeft;
 
-            float allHeight = (mNameCache.setText(mWaypoint.getGcCode().substring(0, 2) + ": " + mWaypoint.getTitleForGui(), mSpriteCachePos.x + mIconSize + mLeft, textYPos)).height + mLeft + mLeft;
+            float allHeight = (mNameCache.setText(wayPoint.getGcCode().substring(0, 2) + ": " + wayPoint.getTitleForGui(), mSpriteCachePos.x + mIconSize + mLeft, textYPos)).height + mLeft + mLeft;
             textYPos -= allHeight;
 
             if (viewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
                 mDescCache = null;
             } else {
-                String wpDescription = mWaypoint.getDescription();
+                String wpDescription = wayPoint.getDescription();
                 if (wpDescription.length() > 0) {
                     float textXPos = mSpriteCachePos.x + mIconSize + mLeft;
                     GlyphLayout gl = mDescCache.setText(wpDescription, textXPos, textYPos, getWidth() - (textXPos + mIconSize + mLeft), Align.left, true);
@@ -298,9 +298,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             String sCoord;
 
             if (viewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
-                sCoord = mWaypoint.getCoordinate().formatCoordinateLineBreak();
+                sCoord = wayPoint.getCoordinate().formatCoordinateLineBreak();
             } else {
-                sCoord = mWaypoint.getCoordinate().formatCoordinate();
+                sCoord = wayPoint.getCoordinate().formatCoordinate();
             }
 
             float coordHeight = (mCoordCache.setText(sCoord, mSpriteCachePos.x + mIconSize + mLeft, textYPos)).height + mLeft + mLeft;
@@ -337,7 +337,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
         return cacheInfo.getAttributeHeight();
     }
 
-    public float getTexteHeight() {
+    public float getTextHeight() {
         if (cacheInfo == null)
             return 0;
         return cacheInfo.getTextHeight();
@@ -349,10 +349,6 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             return 0;
         return cacheInfo.getStarsHeight();
 
-    }
-
-    public ExtendedCacheInfo getCacheInfo() {
-        return cacheInfo;
     }
 
     /**

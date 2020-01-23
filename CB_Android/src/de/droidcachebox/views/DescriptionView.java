@@ -32,19 +32,19 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
     }
 
     @Override
-    public boolean ItemSelected(MenuItem item) {
+    public boolean itemSelected(MenuItem item) {
         return false;
     }
 
     @Override
-    public void BeforeShowMenu(Menu menu) {
+    public void beforeShowMenu(Menu menu) {
     }
 
     @Override
-    public void OnShow() {
+    public void onShow() {
         this.forceLayout();
 
-        mDescriptionViewControl.OnShow();
+        mDescriptionViewControl.onShow();
 
         mLinearLayout.setWillNotDraw(false);
         mLinearLayout.invalidate();
@@ -56,27 +56,27 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
     }
 
     @Override
-    public void OnHide() {
+    public void onHide() {
     }
 
     @Override
-    public void OnFree() {
+    public void onFree() {
         if (mDescriptionViewControl != null)
-            mDescriptionViewControl.OnFree();
+            mDescriptionViewControl.onFree();
     }
 
     @Override
-    public int GetMenuId() {
+    public int getMenuId() {
         return 0;
     }
 
     @Override
-    public int GetContextMenuId() {
+    public int getContextMenuId() {
         return 0;
     }
 
     @Override
-    public boolean ContextMenuItemSelected(MenuItem item) {
+    public boolean contextMenuItemSelected(MenuItem item) {
         return false;
     }
 

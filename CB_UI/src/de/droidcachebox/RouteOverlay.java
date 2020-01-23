@@ -156,11 +156,11 @@ public class RouteOverlay {
 
                 for (int ii = 0; ii < drawTrack.trackPoints.size() - 1; ii++) {
 
-                    double mapX1 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii).x);
-                    double mapY1 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii).y);
+                    double mapX1 = 256.0 * Descriptor.longitudeToTileX(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii).x);
+                    double mapY1 = -256.0 * Descriptor.latitudeToTileY(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii).y);
 
-                    double mapX2 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii + 1).x);
-                    double mapY2 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii + 1).y);
+                    double mapX2 = 256.0 * Descriptor.longitudeToTileX(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii + 1).x);
+                    double mapY2 = -256.0 * Descriptor.latitudeToTileY(MapView.MAX_MAP_ZOOM, drawTrack.trackPoints.get(ii + 1).y);
 
                     Vector2 screen1 = mapView.worldToScreen(new Vector2((float) mapX1, (float) mapY1));
                     Vector2 screen2 = mapView.worldToScreen(new Vector2((float) mapX2, (float) mapY2));

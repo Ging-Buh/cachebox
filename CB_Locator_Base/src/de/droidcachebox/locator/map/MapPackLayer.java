@@ -108,11 +108,11 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
 
     private void createBoudingBoxesFromBounds(int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon) {
         for (int zoom = minZoom; zoom <= maxZoom; zoom++) {
-            int minX = (int) Descriptor.LongitudeToTileX(zoom, minLon);
-            int maxX = (int) Descriptor.LongitudeToTileX(zoom, maxLon);
+            int minX = (int) Descriptor.longitudeToTileX(zoom, minLon);
+            int maxX = (int) Descriptor.longitudeToTileX(zoom, maxLon);
 
-            int minY = (int) Descriptor.LatitudeToTileY(zoom, maxLat);
-            int maxY = (int) Descriptor.LatitudeToTileY(zoom, minLat);
+            int minY = (int) Descriptor.latitudeToTileY(zoom, maxLat);
+            int maxY = (int) Descriptor.latitudeToTileY(zoom, minLat);
 
             BoundingBoxes.add(new BoundingBox(zoom, minX, maxX, minY, maxY, 0));
         }

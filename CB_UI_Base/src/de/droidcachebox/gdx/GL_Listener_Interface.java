@@ -1,9 +1,9 @@
 package de.droidcachebox.gdx;
 
 public interface GL_Listener_Interface {
-     void RequestRender();
+     void requestRender();
 
-     void RenderDirty();
+     void renderDirty();
 
      void renderContinous();
 

@@ -135,19 +135,19 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     // all you have to do on Main Destroy
     void onDestroyWithFinishing() {
         if (aktView != null) {
-            aktView.OnHide();
-            aktView.OnFree();
+            aktView.onHide();
+            aktView.onFree();
         }
         aktView = null;
 
         if (aktTabView != null) {
-            aktTabView.OnHide();
-            aktTabView.OnFree();
+            aktTabView.onHide();
+            aktTabView.onFree();
         }
         aktTabView = null;
 
         for (ViewOptionsMenu vom : ViewList) {
-            vom.OnFree();
+            vom.onFree();
         }
         ViewList.clear();
 
@@ -166,14 +166,14 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
     void onDestroyWithoutFinishing() {
         if (aktView != null)
-            aktView.OnHide();
+            aktView.onHide();
         if (aktTabView != null)
-            aktTabView.OnHide();
+            aktTabView.onHide();
     }
 
     public int getAktViewId() {
         if (aktView != null)
-            return aktView.GetMenuId();
+            return aktView.getMenuId();
         else
             return 0;
     }
@@ -223,7 +223,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             if (ID.getType() == ViewID.UI_Type.Activity) {
                 showActivity(ID);
             } else if (!(aktView == null) && ID == aktViewId) {
-                aktView.OnShow();
+                aktView.onShow();
             } else {
                 if (ID.getPos() == ViewID.UI_Pos.Left) {
                     aktViewId = ID;
@@ -246,7 +246,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private void showAndroidView(ViewOptionsMenu view, ViewID ID) {
 
         if (aktView != null) {
-            aktView.OnHide();
+            aktView.onHide();
 
             if (ID.getType() == ViewID.UI_Type.OpenGl) {
                 Log.info(sKlasse, "showView OpenGl onPause");
@@ -255,7 +255,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
             if (aktView.equals(descriptionView)) {
                 aktView = null;
-                descriptionView.OnHide();
+                descriptionView.onHide();
             }
 
         }
@@ -277,7 +277,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             ((FrameLayout) parent).removeAllViews();
         }
         layoutContent.addView((View) aktView);
-        aktView.OnShow();
+        aktView.onShow();
 
         downSlider.invalidate();
         ((View) aktView).forceLayout();
@@ -347,7 +347,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             Log.info(sKlasse, "Hide View with ID = " + viewID.getID());
 
             if (!(aktView == null) && viewID == aktViewId) {
-                aktView.OnHide();
+                aktView.onHide();
             }
 
             if (aktTabViewId != null && aktTabViewId == viewID && aktTabViewId.getPos() == ViewID.UI_Pos.Right) {
@@ -397,12 +397,12 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                     if (GL.that.isNotShownDialogOrActivity()) {
                         if (aktView != null) {
                             ((View) aktView).setVisibility(View.VISIBLE);
-                            aktView.OnShow();
+                            aktView.onShow();
                             setContentSize(lastLeft, lastTop, lastRight, lastBottom);
                         }
                         if (aktTabView != null) {
                             ((View) aktTabView).setVisibility(View.VISIBLE);
-                            aktTabView.OnShow();
+                            aktTabView.onShow();
                             setContentSize(lastLeft, lastTop, lastRight, lastBottom);
                         }
                         if (downSlider != null)
@@ -468,7 +468,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             gdxView.setOnTouchListener(onTouchListener);
 
             if (GL.that != null) {
-                if (GL.that.mGL_Listener_Interface == null)
+                if (GL.that.getGlListener() == null)
                     new ViewGL(mainActivity, inflater, gdxView);
             } else {
                 Log.err(sKlasse, "GL is null");

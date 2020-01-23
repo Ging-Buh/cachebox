@@ -404,7 +404,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         rec.setWidth(this.getWidth());
         if (actCache != null) {
             cacheDesc = new WaypointViewItem(rec, 0, actCache, null, CacheInfo.VIEW_MODE_SLIDER);
-            cacheDesc.setHeight(cacheDesc.getHeight() + cacheDesc.getAttributeHeight() + cacheDesc.getStarsHeight() + (cacheDesc.getTexteHeight() / 2));
+            cacheDesc.setHeight(cacheDesc.getHeight() + cacheDesc.getAttributeHeight() + cacheDesc.getStarsHeight() + (cacheDesc.getTextHeight() / 2));
             cacheDesc.requestLayout();
             cacheDesc.isSelected = true;
             cacheDesc.addListener(onItemSizeChanged);

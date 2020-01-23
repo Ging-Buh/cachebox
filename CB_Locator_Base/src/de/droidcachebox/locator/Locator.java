@@ -167,7 +167,7 @@ public class Locator {
                     break;
             }
 
-            if (location.getHasSpeed()) PositionChangedListeners.SpeedChanged();
+            if (location.getHasSpeed()) PositionChangedListeners.speedChanged();
             PositionChangedListeners.positionChanged();
             if (location.getHasBearing()) PositionChangedListeners.orientationChanged();
         }
@@ -293,7 +293,7 @@ public class Locator {
     public String SpeedString() {
         synchronized (locator) {
             if (locator.hasSpeed)
-                return Formatter.SpeedString(SpeedOverGround(), mUseImperialUnits);
+                return Formatter.SpeedString(speedOverGround(), mUseImperialUnits);
             else
                 return "-----";
         }
@@ -303,7 +303,7 @@ public class Locator {
      * Returns the Speed as float
      *
      */
-    public float SpeedOverGround() {
+    public float speedOverGround() {
         synchronized (locator) {
             if (locator.hasSpeed) {
                 return locator.speed * 3600 / 1000;
@@ -457,7 +457,7 @@ public class Locator {
 
         // set last used compass Type
 
-        if ((locator.mlastGPSHeading > -1 && SpeedOverGround() > mMagneticCompassLevel) || !mUseMagneticCompass) {
+        if ((locator.mlastGPSHeading > -1 && speedOverGround() > mMagneticCompassLevel) || !mUseMagneticCompass) {
             locator.mLastUsedCompassType = CompassType.GPS;
         } else {
             locator.mLastUsedCompassType = CompassType.Magnetic;

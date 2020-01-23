@@ -220,7 +220,7 @@ public class TrackRecorder {
                         .append("   <ele>").append(Locator.getInstance().getAlt()).append("</ele>\n")
                         .append("   <time>").append(GetDateTimeString()).append("</time>\n")
                         .append("   <course>").append(Locator.getInstance().getHeading(_GPS)).append("</course>\n")
-                        .append("   <speed>").append(Locator.getInstance().SpeedOverGround()).append("</speed>\n")
+                        .append("   <speed>").append(Locator.getInstance().speedOverGround()).append("</speed>\n")
                         .append("</trkpt>\n");
 
                 RandomAccessFile rand;

@@ -19,22 +19,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listener_Interface {
     public final static int GLSURFACE_VIEW20 = 0;
     public final static int GLSURFACE_GLSURFACE = 3;
-    private static final String log = "ViewGL";
     private View gdxView;
-    private static int mAktSurfaceType = -1;
-    private AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
+    private static int currentSurfaceType = -1;
+    private AtomicBoolean isContinuousRenderMode = new AtomicBoolean(true);
 
-    public ViewGL(Context context, LayoutInflater inflater, View gdxView) {
+    public ViewGL(Context context, LayoutInflater inflater, View _gdxView) {
         super(context);
-        this.gdxView = gdxView;
-        GL.that.setGL_Listener_Interface(this);
+        gdxView = _gdxView;
+        GL.that.setGlListener(this);
         try {
-
             RelativeLayout mapviewLayout = (RelativeLayout) inflater.inflate(R.layout.mapviewgl, null, false);
-            this.addView(mapviewLayout);
-
-            mapviewLayout.addView(gdxView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-        } catch (Exception ex) {
+            addView(mapviewLayout);
+            mapviewLayout.addView(_gdxView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        } catch (Exception ignored) {
         }
     }
 
@@ -42,62 +39,57 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
         super(context);
     }
 
-    public static int getSurfaceType() {
-        return mAktSurfaceType;
-    }
-
     /**
      * Setzt den OpenGl Surface Type!
      *
-     * @param Type </br> GLSURFACE_VIEW20=0 </br> GLSURFACE_CUPCAKE = 1 </br> GLSURFACE_DEFAULT = 2 </br> GLSURFACE_GLSURFACE = 3
+     * @param surfaceType </br> GLSURFACE_VIEW20=0 </br> GLSURFACE_CUPCAKE = 1 </br> GLSURFACE_DEFAULT = 2 </br> GLSURFACE_GLSURFACE = 3
      */
-    public static void setSurfaceType(int Type) {
-        mAktSurfaceType = Type;
+    public static void setSurfaceType(int surfaceType) {
+        currentSurfaceType = surfaceType;
     }
 
     @Override
-    public boolean ItemSelected(MenuItem item) {
+    public boolean itemSelected(MenuItem item) {
         return item.getItemId() == 0;
     }
 
     @Override
-    public void BeforeShowMenu(Menu menu) {
+    public void beforeShowMenu(Menu menu) {
     }
 
     @Override
-    public int GetMenuId() {
+    public int getMenuId() {
         return 0;
     }
 
     @Override
-    public void OnShow() {
+    public void onShow() {
     }
 
     @Override
-    public void OnHide() {
+    public void onHide() {
     }
 
     @Override
-    public void OnFree() {
-
+    public void onFree() {
     }
 
     @Override
-    public int GetContextMenuId() {
+    public int getContextMenuId() {
         return 0;
     }
 
     @Override
-    public boolean ContextMenuItemSelected(MenuItem item) {
+    public boolean contextMenuItemSelected(MenuItem item) {
         return false;
     }
 
     @Override
-    public void RequestRender() {
+    public void requestRender() {
 
-        // Log.debug(log, "RequestRender von : " + requestName);
+        // Log.debug(log, "requestRender von : " + requestName);
 
-        switch (mAktSurfaceType) {
+        switch (currentSurfaceType) {
             case GLSURFACE_VIEW20:
                 ((GLSurfaceView20) gdxView).requestRender();
                 break;
@@ -109,10 +101,10 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     }
 
     @Override
-    public void RenderDirty() {
-        // Log.debug(log, "Set: RenderDirty");
+    public void renderDirty() {
+        // Log.debug(log, "Set: renderDirty");
         try {
-            switch (mAktSurfaceType) {
+            switch (currentSurfaceType) {
                 case GLSURFACE_VIEW20:
                     ((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
                     break;
@@ -121,7 +113,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
                     ((GLSurfaceView) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
                     break;
             }
-            isContinousRenderMode.set(false);
+            isContinuousRenderMode.set(false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -130,7 +122,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     @Override
     public void renderContinous() {
         // .Log.info(log, "Set: renderContinous");
-        switch (mAktSurfaceType) {
+        switch (currentSurfaceType) {
             case GLSURFACE_VIEW20:
                 ((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
                 break;
@@ -139,12 +131,12 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
                 ((GLSurfaceView) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
                 break;
         }
-        isContinousRenderMode.set(true);
+        isContinuousRenderMode.set(true);
     }
 
     @Override
     public boolean isContinous() {
-        return isContinousRenderMode.get();
+        return isContinuousRenderMode.get();
     }
 
     @Override

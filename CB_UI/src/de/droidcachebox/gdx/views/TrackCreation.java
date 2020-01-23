@@ -141,7 +141,7 @@ public class TrackCreation extends AbstractShowAction {
 
             // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme mit dem Reduktionsalgorythmus
             for (int i = 0; i <= 360; i += 10) {
-                Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
+                Projektion = CoordinateGPS.project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
                 track.getTrackPoints().add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
                 if (LastCoord.isValid()) {
                     MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);

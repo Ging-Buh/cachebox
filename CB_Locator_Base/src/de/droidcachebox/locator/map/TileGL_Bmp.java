@@ -38,8 +38,8 @@ public class TileGL_Bmp extends TileGL {
     private boolean inCreation = false;
 
     TileGL_Bmp(Descriptor desc, TileBitmap bitmap, TileState state, Format format) {
-        descriptor = desc;
-        this.texture = null;
+        setDescriptor(desc);
+        texture = null;
         this.format = format;
         this.bitmap = bitmap;
         if (bitmap instanceof GDXBitmap) {
@@ -52,17 +52,17 @@ public class TileGL_Bmp extends TileGL {
             this.bitmap = null;
             /* */
         }
-        State = state;
+        this.state = state;
         createTexture();
     }
 
     TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state, Format format) {
-        descriptor = desc;
-        this.texture = null;
+        setDescriptor(desc);
+        texture = null;
         this.format = format;
         this.bytes = bytes;
         this.bitmap = null;
-        State = state;
+        this.state = state;
         createTexture();
     }
 
@@ -140,7 +140,7 @@ public class TileGL_Bmp extends TileGL {
 
     @Override
     public String toString() {
-        return "[Age: " + age + " " + State.toString() + ", " + descriptor.toString();
+        return "[Age: " + getAge() + " " + getState().toString() + ", " + getDescriptor().toString();
     }
 
     @Override

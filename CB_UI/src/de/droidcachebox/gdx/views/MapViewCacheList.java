@@ -49,14 +49,13 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
      */
     private final AtomicInteger state = new AtomicInteger(0);
     private final MoveableList<WayPointRenderInfo> wayPointRenderInfos = new MoveableList<>();
-    public int anz = 0;
     private MapViewCacheListUpdateData savedQuery = null;
     private MapViewCacheListUpdateData lastUpdateData = null;
     private QueueProcessor queueProcessor = null;
     private Vector2 point1;
     private Vector2 point2;
     private int zoom = 15;
-    private WayPointRenderInfo selectedWP;
+    private WayPointRenderInfo selectedWPRenderInfo;
     private boolean hideMyFinds = false;
     private boolean showAllWaypoints = false;
     private boolean showAtOriginalPosition = false;
@@ -100,8 +99,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     }
 
     private void addWaypoint(Cache cache, Waypoint wp, int iconSize) {
-        double mapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.getLongitude());
-        double mapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.getLatitude());
+        double mapX = 256.0 * Descriptor.longitudeToTileX(maxZoomLevel, wp.getLongitude());
+        double mapY = -256.0 * Descriptor.latitudeToTileY(maxZoomLevel, wp.getLatitude());
         if (isVisible(mapX, mapY) || (GlobalCore.getSelectedWaypoint() == wp)) {
             WayPointRenderInfo wayPointRenderInfo = new WayPointRenderInfo();
             wayPointRenderInfo.mapX = (float) mapX;
@@ -112,7 +111,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
             wayPointRenderInfo.underlayIcon = getUnderlayIcon(wayPointRenderInfo.cache, wayPointRenderInfo.waypoint, iconSize);
             wayPointRenderInfo.selected = (GlobalCore.getSelectedWaypoint() == wp);
             if (wayPointRenderInfo.selected)
-                selectedWP = wayPointRenderInfo;
+                selectedWPRenderInfo = wayPointRenderInfo;
             wayPointRenderInfos.add(wayPointRenderInfo);
         }
     }
@@ -378,7 +377,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                             iconSize = 2; // default Images
 
                         wayPointRenderInfos.clear();
-                        selectedWP = null;
+                        selectedWPRenderInfo = null;
                         synchronized (Database.Data.cacheList) {
                             for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                                 Cache cache = Database.Data.cacheList.get(i);
@@ -389,8 +388,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                     selectedCache = GlobalCore.getSelectedCache().generatedId == cache.generatedId;
                                 }
                                 boolean showWaypoints = showAllWaypoints || selectedCache;
-                                double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.getLongitude());
-                                double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.getLatitude());
+                                double MapX = 256.0 * Descriptor.longitudeToTileX(maxZoomLevel, cache.getLongitude());
+                                double MapY = -256.0 * Descriptor.latitudeToTileY(maxZoomLevel, cache.getLatitude());
                                 Waypoint finalWaypoint = null;
                                 Waypoint startWaypoint;
                                 if (showWaypoints) {
@@ -402,8 +401,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                         finalWaypoint = cache.getCorrectedFinal();
                                         if (finalWaypoint != null) {
                                             // show cache at Final coords
-                                            MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, finalWaypoint.getLongitude());
-                                            MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, finalWaypoint.getLatitude());
+                                            MapX = 256.0 * Descriptor.longitudeToTileX(maxZoomLevel, finalWaypoint.getLongitude());
+                                            MapY = -256.0 * Descriptor.latitudeToTileY(maxZoomLevel, finalWaypoint.getLatitude());
                                         }
                                     }
                                     // or show Cache at Startwaypoint (only for Multi and Mysterie)
@@ -412,8 +411,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                         if (!cache.hasCorrectedCoordinates() && (finalWaypoint == null)) {
                                             startWaypoint = cache.getStartWaypoint();
                                             if (startWaypoint != null) {
-                                                MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, startWaypoint.getLongitude());
-                                                MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, startWaypoint.getLatitude());
+                                                MapX = 256 * Descriptor.longitudeToTileX(maxZoomLevel, startWaypoint.getLongitude());
+                                                MapY = -256 * Descriptor.latitudeToTileY(maxZoomLevel, startWaypoint.getLatitude());
                                             }
                                         }
                                     }
@@ -430,8 +429,8 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                                     wpi.cache = cache;
                                     wpi.waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
                                     wpi.selected = selectedCache;
-                                    if (wpi.selected && selectedWP == null)
-                                        selectedWP = wpi;// select nur wenn kein WP selectiert ist (draw last)
+                                    if (wpi.selected && selectedWPRenderInfo == null)
+                                        selectedWPRenderInfo = wpi;// select nur wenn kein WP selectiert ist (draw last)
                                     wayPointRenderInfos.add(wpi);
                                 }
                             }
@@ -439,7 +438,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
 
                         synchronized (list) {
                             // move selected WPI to last
-                            int index = wayPointRenderInfos.indexOf(selectedWP);
+                            int index = wayPointRenderInfos.indexOf(selectedWPRenderInfo);
                             if (index >= 0 && index <= wayPointRenderInfos.size())
                                 wayPointRenderInfos.MoveItemLast(index);
 
@@ -452,7 +451,6 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                         }
                         Thread.sleep(50);
                         state.set(0);
-                        anz++;
                         if (savedQuery != null) {
                             // es steht noch eine Anfrage an!
                             // Diese jetzt ausführen!

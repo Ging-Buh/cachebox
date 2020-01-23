@@ -373,7 +373,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                     }
                 }
             }
-            invalidateTextureEventList.Call();
+            InvalidateTextureEventList.Call();
         } catch (Exception ex) {
             Log.err(log, "reloadSprites", ex);
         }

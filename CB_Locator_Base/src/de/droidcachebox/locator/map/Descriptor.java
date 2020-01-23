@@ -89,8 +89,8 @@ public class Descriptor implements Comparable<Descriptor> {
      * @param zoom
      */
     public Descriptor(Coordinate coord, int zoom) {
-        this.X = (int) LongitudeToTileX(zoom, coord.getLongitude());
-        this.Y = (int) LatitudeToTileY(zoom, coord.getLatitude());
+        this.X = (int) longitudeToTileX(zoom, coord.getLongitude());
+        this.Y = (int) latitudeToTileY(zoom, coord.getLatitude());
         this.zoom = zoom;
         hashCode = 0;
     }
@@ -123,7 +123,7 @@ public class Descriptor implements Comparable<Descriptor> {
      * @return PointD
      */
     public static PointD projectCoordinate(double latitude, double longitude, int projectionZoom) {
-        return new PointD(LongitudeToTileX(projectionZoom, longitude), LatitudeToTileY(projectionZoom, latitude));
+        return new PointD(longitudeToTileX(projectionZoom, longitude), latitudeToTileY(projectionZoom, latitude));
     }
 
     /**
@@ -133,16 +133,16 @@ public class Descriptor implements Comparable<Descriptor> {
      * @param longitude Longitude
      * @return double
      */
-    public static double LongitudeToTileX(double zoom, double longitude) {
+    public static double longitudeToTileX(double zoom, double longitude) {
         return (longitude + 180.0) / 360.0 * Math.pow(2, zoom);
 
     }
 
-    public static double LongitudeToTileX(byte zoom, double longitude) {
-        return LongitudeToTileX(zoom, longitude, 1);
+    public static double longitudeToTileX(byte zoom, double longitude) {
+        return longitudeToTileX(zoom, longitude, 1);
     }
 
-    public static double LongitudeToTileX(byte zoom, double longitude, int TileSize) {
+    public static double longitudeToTileX(byte zoom, double longitude, int TileSize) {
 
         long mapSize = TileSize << zoom;
         return (longitude + 180) / 360 * mapSize;
@@ -155,17 +155,17 @@ public class Descriptor implements Comparable<Descriptor> {
      * @param latitude Latitude
      * @return double
      */
-    public static double LatitudeToTileY(double zoom, double latitude) {
+    public static double latitudeToTileY(double zoom, double latitude) {
         double latRad = latitude * MathUtils.DEG_RAD;
 
         return (1 - Math.log(Math.tan(latRad) + (1.0 / Math.cos(latRad))) / Math.PI) / 2 * Math.pow(2, zoom);
     }
 
-    public static double LatitudeToTileY(byte zoom, double latitude) {
-        return LatitudeToTileY(zoom, latitude, 1);
+    public static double latitudeToTileY(byte zoom, double latitude) {
+        return latitudeToTileY(zoom, latitude, 1);
     }
 
-    public static double LatitudeToTileY(byte zoom, double latitude, int TileSize) {
+    public static double latitudeToTileY(byte zoom, double latitude, int TileSize) {
         double sinLatitude = Math.sin(latitude * (Math.PI / 180));
         long mapSize = TileSize << zoom;
         // FIXME improve this formula so that it works correctly without the clipping

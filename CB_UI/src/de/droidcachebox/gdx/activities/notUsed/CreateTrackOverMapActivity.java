@@ -195,8 +195,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         for (int i = 0; i < waypoints.size(); i++) {
             Waypoint wp = waypoints.get(i);
 
-            double MapX = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, wp.getLongitude());
-            double MapY = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, wp.getLatitude());
+            double MapX = 256.0 * Descriptor.longitudeToTileX(MapView.MAX_MAP_ZOOM, wp.getLongitude());
+            double MapY = -256.0 * Descriptor.latitudeToTileY(MapView.MAX_MAP_ZOOM, wp.getLatitude());
             if (true)// isVisible(MapX, MapY)
             {
                 WayPointRenderInfo wpi = new WayPointRenderInfo();

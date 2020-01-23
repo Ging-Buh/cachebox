@@ -18,18 +18,18 @@ package de.droidcachebox;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
-public class invalidateTextureEventList {
-    private static final String log = "invalidateTextureEventList";
+public class InvalidateTextureEventList {
+    private static final String log = "InvalidateTextureEventList";
     public static CB_List<invalidateTextureEvent> list = new CB_List<invalidateTextureEvent>();
 
-    public static void Add(invalidateTextureEvent event) {
+    public static void addListener(invalidateTextureEvent event) {
         synchronized (list) {
             if (!list.contains(event))
                 list.add(event);
         }
     }
 
-    public static void Remove(invalidateTextureEvent event) {
+    public static void removeListener(invalidateTextureEvent event) {
         synchronized (list) {
             list.remove(event);
         }
@@ -49,4 +49,9 @@ public class invalidateTextureEventList {
             Log.err(log, "Call()", e);
         }
     }
+
+    public interface invalidateTextureEvent {
+        void invalidateTexture();
+    }
+
 }

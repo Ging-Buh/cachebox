@@ -148,7 +148,7 @@ public class PopUpMenu extends PopUp_Base {
     }
 
     @Override
-    protected void writeDebug() {
+    protected void createDebugSprite() {
         if (debugSprite == null) {
             try {
                 GL.that.RunOnGLWithThreadCheck(() -> {

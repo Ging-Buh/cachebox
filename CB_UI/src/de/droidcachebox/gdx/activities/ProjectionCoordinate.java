@@ -218,7 +218,7 @@ public class ProjectionCoordinate extends ActivityBase {
             if (ImperialUnits)
                 Distance *= 0.9144f;
 
-            Coordinate newCoord = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), Bearing, Distance);
+            Coordinate newCoord = Coordinate.project(coord.getLatitude(), coord.getLongitude(), Bearing, Distance);
 
             if (newCoord.isValid()) {
                 projCoord = newCoord;

@@ -88,7 +88,7 @@ public class PositionChangedListeners {
         }
     }
 
-    public static void SpeedChanged() {
+    public static void speedChanged() {
 
         if (Locator.getInstance().isDisplayOff())
             return; // Hier braucht niemand ein SpeedChangedEvent
