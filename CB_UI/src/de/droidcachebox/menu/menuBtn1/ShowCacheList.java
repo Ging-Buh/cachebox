@@ -5,6 +5,7 @@ import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CacheWithWP;
@@ -27,6 +28,8 @@ import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
 import de.droidcachebox.translation.Translation;
+
+import static de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter;
 
 public class ShowCacheList extends AbstractShowAction {
     private static ShowCacheList that;
@@ -98,7 +101,7 @@ public class ShowCacheList extends AbstractShowAction {
                 EditFilterSettings.getInstance().execute();
             } else {
                 FilterInstances.setLastFilter(new FilterProperties());
-                de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
+                applyFilter(FilterInstances.getLastFilter());
             }
             return true;
         });
@@ -160,8 +163,17 @@ public class ShowCacheList extends AbstractShowAction {
             editCache.create();
         });
         cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> DeleteDialog.getInstance().execute());
+        cm.addMenuItem("ClearHistory",  Sprites.getSprite("HISTORY"), this::clearHistory);
 
         return cm;
+    }
+
+    private void clearHistory() {
+        CoreData.cacheHistory = "";
+        if (FilterInstances.getLastFilter().isHistory) {
+            applyFilter(FilterInstances.ALL);
+            FilterInstances.setLastFilter(FilterInstances.ALL);
+        }
     }
 
     private void gL_MsgBox_close() {

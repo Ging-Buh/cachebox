@@ -122,7 +122,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
             return;
         setSelectedWaypoint(cache, waypoint, true);
         if (!CoreData.cacheHistory.startsWith(cache.getGeoCacheCode())) {
-            CoreData.cacheHistory = cache.getGeoCacheCode() + "," + CoreData.cacheHistory;
+            CoreData.cacheHistory = cache.getGeoCacheCode() + (CoreData.cacheHistory.length() > 0 ? "," : "") + CoreData.cacheHistory.replace("," + cache.getGeoCacheCode(), "");
             if (CoreData.cacheHistory.length() > 120) {
                 CoreData.cacheHistory = CoreData.cacheHistory.substring(0, CoreData.cacheHistory.lastIndexOf(","));
             }
