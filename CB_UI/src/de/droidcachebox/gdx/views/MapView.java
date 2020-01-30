@@ -118,20 +118,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         setBackground(ListBack);
 
-        // calculate max Map Tile cache
-        try {
-            int aTile = 256 * 256;
-            maxTilesPerScreen = (int) ((getWidth() * getHeight()) / aTile + 0.5);
-            maxNumTiles = (int) (maxTilesPerScreen * 6);// 6 times as much as necessary
-
-        } catch (Exception e) {
-            maxNumTiles = 60;
-        }
-        maxNumTiles = Math.min(maxNumTiles, 60);
-        maxNumTiles = Math.max(maxNumTiles, 20);
-        // maxNumTiles between 20 and 60
-        mapTileLoader = new MapTileLoader(maxNumTiles);
-
         mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.zoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
 
         if (mapMode == MapMode.Normal) {
@@ -265,12 +251,12 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         setMapIntHeight((int) getHeight());
         midVector2 = new Vector2((float) getMapIntWidth() / 2f, (float) getMapIntHeight() / 2f);
 
-        if (mapTileLoader.getCurrentLayer() == null) {
-            mapTileLoader.setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()), isCarMode);
+        if (MapTileLoader.getInstance().getCurrentLayer() == null) {
+            MapTileLoader.getInstance().setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()), isCarMode);
         }
         String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayerName.getValue()};
-        if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
-            mapTileLoader.setCurrentOverlayLayer(LayerManager.getInstance().getOverlayLayer(currentOverlayLayerName));
+        if (MapTileLoader.getInstance().getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
+            MapTileLoader.getInstance().setCurrentOverlayLayer(LayerManager.getInstance().getOverlayLayer(currentOverlayLayerName));
         initializeMap();
 
         // initial Zoom Scale
@@ -890,7 +876,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             MapTileLoader.finishYourself.set(false);
 
             MapTileLoader.isWorking.set(true);
-            mapTileLoader.loadTiles(this, lowerTile, upperTile, aktZoom);
+            MapTileLoader.getInstance().loadTiles(this, lowerTile, upperTile, aktZoom);
             MapTileLoader.isWorking.set(false);
 
 
@@ -1180,17 +1166,17 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         }
 
         if ((InitialFlags & INITIAL_THEME) != 0) {
-            if (mapTileLoader.getCurrentLayer() != null) {
-                if (mapTileLoader.getCurrentLayer().isMapsForge()) {
-                    Log.info(sKlasse, "modify layer " + mapTileLoader.getCurrentLayer().getName() + " for mapview " + mapMode);
-                    mapTileLoader.modifyCurrentLayer(isCarMode);
+            if (MapTileLoader.getInstance().getCurrentLayer() != null) {
+                if (MapTileLoader.getInstance().getCurrentLayer().isMapsForge()) {
+                    Log.info(sKlasse, "modify layer " + MapTileLoader.getInstance().getCurrentLayer().getName() + " for mapview " + mapMode);
+                    MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
                     renderOnce("INITIAL_THEME");
                 }
             }
-            if (mapTileLoader.getCurrentOverlayLayer() != null) {
-                if (mapTileLoader.getCurrentOverlayLayer().isMapsForge()) {
+            if (MapTileLoader.getInstance().getCurrentOverlayLayer() != null) {
+                if (MapTileLoader.getInstance().getCurrentOverlayLayer().isMapsForge()) {
                     // until now there are only Online Overlays
-                    // ((MapsForgeLayer) mapTileLoader.getCurrentOverlayLayer()).initTheme(isCarMode);
+                    // ((MapsForgeLayer) MapTileLoader.getInstance().getCurrentOverlayLayer()).initTheme(isCarMode);
                 }
             }
         }

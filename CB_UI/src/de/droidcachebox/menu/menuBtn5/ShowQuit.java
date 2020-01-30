@@ -20,7 +20,7 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Quit;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.locator.map.MapTileLoader;
 
 public class ShowQuit extends AbstractAction {
     private static ShowQuit that;
@@ -36,7 +36,7 @@ public class ShowQuit extends AbstractAction {
 
     @Override
     public void execute() {
-        ShowMap.getInstance().normalMapView.mapTileLoader.stopQueueProzessors();
+        MapTileLoader.getInstance().stopQueueProzessors();
         Quit.quit();
     }
 

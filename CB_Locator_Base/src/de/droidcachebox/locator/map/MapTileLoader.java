@@ -23,33 +23,52 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * at moment there is only one (static) MapTileLoader for (all) the three MapView Modes (normal, compass, track)
+ * at moment MapTileLoader is singleton ( meaning: there is only one instance ) for (all) the three MapView Modes (normal, compass, track)
+ * So the loadTiles can be called from different threads.
+ * These are handled and synced by is isWorking and finishYourself
+ * Every call to loadTiles empties the orders, because there is possibly a new area to cover with mapTiles. Tiles already in generation will not be affected.
  */
 public class MapTileLoader {
     private static final String log = "MapTileLoader";
     public static AtomicBoolean finishYourself, isWorking;
+    private static MapTileLoader mapTileLoader;
     private static int PROCESSOR_COUNT; // == nr of threads for getting tiles ?
-    private static int nextQueueProcessor;
     private static CopyOnWriteArrayList<MultiThreadQueueProcessor> queueProcessors;
+    private final Array<MultiThreadQueueProcessor.OrderData> orders;
     private final MapTiles mapTiles; // the tiles from the layer: to show
     private Comparator<Descriptor> byDistanceFromCenter;
     private Thread queueProcessorAliveCheck;
-    private Array<Long> alreadyOrdered, alreadyOrderedOverlays;
+    private Array<Long> mapTilesInGeneration, overlayTilesInGeneration;
     private boolean queueProcessorsAreStarted;
 
-    public MapTileLoader(int capacity) {
-        mapTiles = new MapTiles(capacity);
-        alreadyOrdered = new Array<>();
-        alreadyOrderedOverlays = new Array<>();
+    public MapTileLoader() {
+        int capacity = 60;
+        /*
+        // calculate max Map Tile cache (only if not singleton)
+        try {
+            int aTile = 256 * 256;
+            maxTilesPerScreen = (int) ((getWidth() * getHeight()) / aTile + 0.5);
+            capacity = (int) (maxTilesPerScreen * 6);// 6 times as much as necessary
+
+        } catch (Exception e) {
+            capacity = 60;
+        }
+        capacity = Math.min(capacity, 60);
+        capacity = Math.max(capacity, 20);
+        // capacity between 20 and 60
+         */
+        mapTiles = new MapTiles(capacity); // this is for all visible maps together
+        mapTilesInGeneration = new Array<>();
+        overlayTilesInGeneration = new Array<>();
         finishYourself = new AtomicBoolean();
         finishYourself.set(false);
         isWorking = new AtomicBoolean();
         isWorking.set(false);
+        orders = new Array<>(true, mapTiles.getCapacity());
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
         Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
         queueProcessorsAreStarted = false;
-        nextQueueProcessor = 0;
         byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.Data, (Integer) o2.Data);
 
         queueProcessorAliveCheck = new Thread(() -> {
@@ -87,6 +106,11 @@ public class MapTileLoader {
         });
     }
 
+    public static MapTileLoader getInstance() {
+        if (mapTileLoader == null) mapTileLoader = new MapTileLoader();
+        return mapTileLoader;
+    }
+
     private void startQueueProzessors() {
         for (int i = 0; i < PROCESSOR_COUNT; i++) {
             MultiThreadQueueProcessor thread = new MultiThreadQueueProcessor(mapTiles);
@@ -113,105 +137,85 @@ public class MapTileLoader {
     }
 
     public void loadTiles(MapViewBase mapView, Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
-        if (!queueProcessorsAreStarted || queueProcessors.size() == 0) startQueueProzessors();
-        // take care of possibly different threads calling this (removed calling from render thread (GL Thread).  )
-        // using a static boolean finishYourself that should finish this order and a new order with list of wantedtiles is supplied
+        synchronized (orders) {
+            orders.clear();
+            if (!queueProcessorsAreStarted || queueProcessors.size() == 0) startQueueProzessors();
 
-        // make a copy of the loaded tiles (worst case an already generated Tile will be created again)
-        Array<Long> loadedTiles = mapTiles.getTilesHashCopy();
-        for (Long loaded : loadedTiles) {
-            alreadyOrdered.removeValue(loaded, false);
-        }
-
-        // make a copy of the loaded overlaytiles
-        Array<Long> loadedOverlayTiles = mapTiles.getOverlayTilesHashCopy();
-        for (Long loaded : loadedOverlayTiles) {
-            alreadyOrderedOverlays.removeValue(loaded, false);
-        }
-
-        // calc nearest to middle and not yet handled
-        // get tiles from middle of rectangle to border and not yet created
-        // preparation
-        int midX = (upperTile.getX() + lowerTile.getX()) / 2;
-        int midY = (upperTile.getY() + lowerTile.getY()) / 2;
-
-        Array<Descriptor> wantedTiles = new Array<>();
-
-        for (int i = lowerTile.getX(); i <= upperTile.getX(); i++) {
-            for (int j = lowerTile.getY(); j <= upperTile.getY(); j++) {
-                Descriptor descriptor = new Descriptor(i, j, aktZoom);
-                descriptor.Data = Math.max(Math.abs(i - midX), Math.abs(j - midY));
-                wantedTiles.add(descriptor);
+            // make a copy of the loaded tiles (worst case an already generated Tile will be created again)
+            Array<Long> loadedTiles = mapTiles.getTilesHashCopy();
+            for (Long loaded : loadedTiles) {
+                mapTilesInGeneration.removeValue(loaded, false);
             }
-        }
-        if (wantedTiles.size == 0)
-            return;
-        wantedTiles.sort(byDistanceFromCenter);
 
-        int orderCount = 0; // don't order more than want to be cached !!!
-        Log.info(log, "Num wanted: " + wantedTiles.size);
-        for (Descriptor descriptor : wantedTiles) {
-            if (finishYourself.get()) {
-                Log.info(log, "MapTileLoader finishMyself during tile ordering");
+            // make a copy of the loaded overlaytiles
+            Array<Long> loadedOverlayTiles = mapTiles.getOverlayTilesHashCopy();
+            for (Long loaded : loadedOverlayTiles) {
+                overlayTilesInGeneration.removeValue(loaded, false);
+            }
+
+            // calc nearest to middle and not yet handled
+            // get tiles from middle of rectangle to border and not yet created
+            // preparation
+            int midX = (upperTile.getX() + lowerTile.getX()) / 2;
+            int midY = (upperTile.getY() + lowerTile.getY()) / 2;
+
+            Array<Descriptor> wantedTiles = new Array<>();
+
+            for (int i = lowerTile.getX(); i <= upperTile.getX(); i++) {
+                for (int j = lowerTile.getY(); j <= upperTile.getY(); j++) {
+                    Descriptor descriptor = new Descriptor(i, j, aktZoom);
+                    descriptor.Data = Math.max(Math.abs(i - midX), Math.abs(j - midY));
+                    wantedTiles.add(descriptor);
+                }
+            }
+            if (wantedTiles.size == 0)
                 return;
-            }
-            if (!loadedTiles.contains(descriptor.getHashCode(), false) && !alreadyOrdered.contains(descriptor.getHashCode(), false)) {
-                MultiThreadQueueProcessor thread;
-                int previousQueueProcessor = nextQueueProcessor;
-                do {
-                    try {
-                        thread = queueProcessors.get(nextQueueProcessor);
-                        nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
-                    } catch (Exception ex) {
-                        Log.err(log, "get(nextQueueProcessor)", ex);
-                        return;
-                    }
-                    if (nextQueueProcessor == previousQueueProcessor) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception ignored) {
-                        }
+            wantedTiles.sort(byDistanceFromCenter);
+
+            Log.info(log, "Num wanted: " + wantedTiles.size);
+            for (Descriptor descriptor : wantedTiles) {
+                if (finishYourself.get()) {
+                    Log.info(log, "MapTileLoader finishMyself during tile ordering");
+                    return;
+                }
+                if (!loadedTiles.contains(descriptor.getHashCode(), false) && !mapTilesInGeneration.contains(descriptor.getHashCode(), false)) {
+                    orders.add(new MultiThreadQueueProcessor.OrderData(descriptor, false, mapView));
+                }
+                if (finishYourself.get()) {
+                    Log.info(log, "MapTileLoader finishMyself after mapTiles ordered");
+                    return;
+                }
+                if (mapTiles.getCurrentOverlayLayer() != null) {
+                    if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false) && !overlayTilesInGeneration.contains(descriptor.getHashCode(), false)) {
+                        orders.add(new MultiThreadQueueProcessor.OrderData(descriptor, false, mapView));
                     }
                 }
-                while (!thread.canTakeOrder);
-                // Log.info(log, "order: " + descriptor + " Distance: " + firstDistance + " on thread: " + nextQueueProcessor);
-                alreadyOrdered.add(descriptor.getHashCode());
-                thread.addOrder(descriptor, false, mapView);
+            }
+            // wakeup of possibly sleeping MultiThreadQueueProcessor threads
+            for (MultiThreadQueueProcessor thread : queueProcessors) {
                 thread.interrupt();
-                orderCount++;
-                if (orderCount == mapTiles.getCapacity())
-                    break;
             }
-            if (finishYourself.get()) {
-                Log.info(log, "MapTileLoader finishMyself after mapTiles ordered");
-                return;
-            }
-            if (mapTiles.getCurrentOverlayLayer() != null) {
-                if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false) && !alreadyOrderedOverlays.contains(descriptor.getHashCode(), false)) {
-                    MultiThreadQueueProcessor thread;
-                    int previousQueueProcessor = nextQueueProcessor;
-                    do {
-                        thread = queueProcessors.get(nextQueueProcessor);
-                        nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
-                        if (nextQueueProcessor == previousQueueProcessor) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (Exception ignored) {
-                            }
-                        }
-                    }
-                    while (!thread.canTakeOrder);
-                    alreadyOrderedOverlays.add(descriptor.getHashCode());
-                    thread.addOrder(descriptor, true, mapView);
-                    thread.interrupt();
-                    nextQueueProcessor = (nextQueueProcessor + 1) % PROCESSOR_COUNT;
-                    orderCount++;
-                    if (orderCount == mapTiles.getCapacity())
-                        break;
-                }
-            }
+
+            Log.info(log, "MapTileLoader completed.");
         }
-        Log.info(log, "MapTileLoader completed.");
+    }
+
+    /**
+     * this is for one of the MultiThreadQueueProcessor threads to generate a new tile
+     */
+    MultiThreadQueueProcessor.OrderData getNextOrder(MultiThreadQueueProcessor forThread) {
+        synchronized (orders) {
+            if (orders.size > 0) {
+                MultiThreadQueueProcessor.OrderData newOrder = orders.get(0);
+                orders.removeIndex(0);
+                if (newOrder.forOverlay)
+                    overlayTilesInGeneration.add(newOrder.descriptor.getHashCode());
+                else
+                    mapTilesInGeneration.add(newOrder.descriptor.getHashCode());
+                return newOrder;
+            }
+            return null;
+        }
     }
 
     int markTileToDraw(long hash) {

@@ -151,7 +151,7 @@ public class ShowMap extends AbstractShowAction {
     private void showMapLayerMenu() {
         Menu icm = new Menu("MapViewLayerMenuTitle");
 
-        String[] curentLayerNames = MapView.mapTileLoader.getCurrentLayer().getAllLayerNames();
+        String[] curentLayerNames = MapTileLoader.getInstance().getCurrentLayer().getAllLayerNames();
         for (Layer layer : LayerManager.getInstance().getLayers()) {
             //set icon (Online, Mapsforge or Freizeitkarte)
             Sprite sprite = null;
@@ -196,7 +196,7 @@ public class ShowMap extends AbstractShowAction {
             normalMapView.clearAdditionalLayers();
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
-            if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
+            if (MapTileLoader.getInstance().getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
                 MessageBox msgBox = MessageBox.show(
                         Translation.get("AddOrChangeMap"),
                         Translation.get("Layer"),
@@ -256,7 +256,7 @@ public class ShowMap extends AbstractShowAction {
             MenuItem mi = icm.addMenuItem(layer.getFriendlyName(), "", null,
                     (v, x, y, pointer, button) -> {
                         Layer layer1 = (Layer) v.getData();
-                        if (layer1 == MapView.mapTileLoader.getCurrentOverlayLayer()) {
+                        if (layer1 == MapTileLoader.getInstance().getCurrentOverlayLayer()) {
                             // switch off Overlay
                             normalMapView.setCurrentOverlayLayer(null);
                         } else {
@@ -266,7 +266,7 @@ public class ShowMap extends AbstractShowAction {
                         return true;
                     });
             mi.setCheckable(true);
-            mi.setChecked(layer == MapView.mapTileLoader.getCurrentOverlayLayer());
+            mi.setChecked(layer == MapTileLoader.getInstance().getCurrentOverlayLayer());
             mi.setData(layer);
         }
         icm.show();

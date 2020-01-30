@@ -42,7 +42,6 @@ import java.util.LinkedHashMap;
 public abstract class MapViewBase extends CB_View_Base implements PositionChangedEvent, InvalidateTextureEventList.invalidateTextureEvent {
     public static final int MAX_MAP_ZOOM = 22;
     private static final String sKlasse = "MapViewBase";
-    public static MapTileLoader mapTileLoader;
     public static int INITIAL_SETTINGS = 1;
     public static int INITIAL_THEME = 2;
     public static int INITIAL_WP_LIST = 4;
@@ -68,7 +67,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected boolean showDistanceCircle;
     protected int aktZoom;
     protected KineticZoom kineticZoom = null;
-    protected float maxTilesPerScreen = 0;
     protected boolean positionInitialized = false;
     protected OrthographicCamera camera;
     protected boolean isCarMode = false;
@@ -83,7 +81,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected float lastDynamicZoom = -1;
     protected InputState inputState = InputState.Idle;
     protected boolean isShown, isCreated;
-    protected int maxNumTiles;
     protected CircleDrawable distanceCircle;
     Descriptor lastDescriptorOrdered;
     int lastNumberOfTilesToShow;
@@ -180,43 +177,43 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     public Layer getCurrentLayer() {
-        return mapTileLoader.getCurrentLayer();
+        return MapTileLoader.getInstance().getCurrentLayer();
     }
 
     public void setCurrentLayer(Layer newLayer) {
-        Layer currentLayer = mapTileLoader.getCurrentLayer();
+        Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         if (newLayer == null) {
             LocatorSettings.currentMapLayer.setValue(new String[0]);
         } else {
             LocatorSettings.currentMapLayer.setValue(newLayer.getAllLayerNames());
         }
-        if (mapTileLoader.setCurrentLayer(newLayer, isCarMode)) {
+        if (MapTileLoader.getInstance().setCurrentLayer(newLayer, isCarMode)) {
             renderOnce("setCurrentLayer");
         }
     }
 
     public void addAdditionalLayer(Layer layer) {
-        Layer currentLayer = mapTileLoader.getCurrentLayer();
+        Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.addAdditionalMap(layer);
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.modifyCurrentLayer(isCarMode);
+        MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
         renderOnce("addAdditionalLayer");
     }
 
     public void clearAdditionalLayers() {
-        Layer currentLayer = mapTileLoader.getCurrentLayer();
+        Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.modifyCurrentLayer(isCarMode);
+        MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
         renderOnce("clearAdditionalLayers");
     }
 
     public void removeAdditionalLayer() {
-        Layer currentLayer = mapTileLoader.getCurrentLayer();
+        Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
-        mapTileLoader.modifyCurrentLayer(isCarMode);
+        MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
         renderOnce("removeAdditionalLayer");
     }
 
@@ -226,7 +223,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         } else {
             LocatorSettings.CurrentMapOverlayLayerName.setValue(newLayer.getName());
         }
-        mapTileLoader.setCurrentOverlayLayer(newLayer);
+        MapTileLoader.getInstance().setCurrentOverlayLayer(newLayer);
     }
 
     @Override
@@ -325,7 +322,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
         batch.setProjectionMatrix(mat);
 
-        mapTileLoader.increaseAge();
+        MapTileLoader.getInstance().increaseAge();
 
         if (screenCenterWorld.isNull()) {
             synchronized (screenCenterT) {
@@ -346,10 +343,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             // Descriptor rightTile = screenToDescriptor(new Vector2(mapIntWidth, drawingHeight), aktZoom);
             // Descriptor midTile = screenToDescriptor(new Vector2(halfDrawingtWidth, halfDrawingHeight), aktZoom);
 
-            mapTileLoader.resetTilesToDrawCounter();
+            MapTileLoader.getInstance().resetTilesToDrawCounter();
 
-            if (mapTileLoader.getCurrentOverlayLayer() != null) {
-                mapTileLoader.resetOverlayTilesToDrawCounter();
+            if (MapTileLoader.getInstance().getCurrentOverlayLayer() != null) {
+                MapTileLoader.getInstance().resetOverlayTilesToDrawCounter();
             }
 
             boolean canOrder = true; // only once per renderstep
@@ -362,11 +359,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                     Descriptor desc = new Descriptor(i, j, aktZoom);
 
                     boolean canDraw;
-                    canDraw = mapTileLoader.markTileToDraw(desc.getHashCode()) >= 0;
+                    canDraw = MapTileLoader.getInstance().markTileToDraw(desc.getHashCode()) >= 0;
 
                     boolean canDrawOverlay = false;
-                    if (mapTileLoader.getCurrentOverlayLayer() != null) {
-                        canDrawOverlay = mapTileLoader.markOverlayTileToDraw(desc.getHashCode()) >= 0;
+                    if (MapTileLoader.getInstance().getCurrentOverlayLayer() != null) {
+                        canDrawOverlay = MapTileLoader.getInstance().markOverlayTileToDraw(desc.getHashCode()) >= 0;
                     }
 
                     if (!canDraw) {
@@ -384,7 +381,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                         }
                     }
 
-                    if (mapTileLoader.getCurrentOverlayLayer() != null) {
+                    if (MapTileLoader.getInstance().getCurrentOverlayLayer() != null) {
                         if (!canDrawOverlay) {
                             if (!renderBiggerOverlayTiles(i, j, aktZoom))
                                 renderSmallerOverlayTiles(i, j, aktZoom);
@@ -393,14 +390,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
                 }
             }
-            mapTileLoader.sortByAge();
+            MapTileLoader.getInstance().sortByAge();
 
-            Log.trace(sKlasse,numberOfTilesToShow + " maptiles to draw. Missing " + numberOfMissingTiles + " Zoom " + aktZoom + " ttd " + mapTileLoader.getTilesToDrawCounter());
+            Log.trace(sKlasse, numberOfTilesToShow + " maptiles to draw. Missing " + numberOfMissingTiles + " Zoom " + aktZoom + " ttd " + MapTileLoader.getInstance().getTilesToDrawCounter());
 
             CB_List<TileGL_RotateDrawables> rotateList = new CB_List<>();
             synchronized (screenCenterWorld) {
-                for (int i = mapTileLoader.getTilesToDrawCounter() - 1; i > -1; i--) {
-                    TileGL tile = mapTileLoader.getDrawingTile(i);
+                for (int i = MapTileLoader.getInstance().getTilesToDrawCounter() - 1; i > -1; i--) {
+                    TileGL tile = MapTileLoader.getInstance().getDrawingTile(i);
                     if (tile != null) {
                         long posFactor = getscaledMapTilePosFactor(tile);
                         long xPos = tile.getDescriptor().getX() * posFactor * tile.getWidth() - screenCenterWorld.getX();
@@ -423,10 +420,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 rotateList = null;
             }
 
-            if (mapTileLoader.getCurrentOverlayLayer() != null) {
+            if (MapTileLoader.getInstance().getCurrentOverlayLayer() != null) {
                 synchronized (screenCenterWorld) {
-                    for (int i = mapTileLoader.getOverlayTilesToDrawCounter() - 1; i > -1; i--) {
-                        TileGL tile = mapTileLoader.getOverlayDrawingTile(i);
+                    for (int i = MapTileLoader.getInstance().getOverlayTilesToDrawCounter() - 1; i > -1; i--) {
+                        TileGL tile = MapTileLoader.getInstance().getOverlayDrawingTile(i);
                         if (tile != null) {
                             long posFactor = getscaledMapTilePosFactor(tile);
                             long xPos = tile.getDescriptor().getX() * posFactor * tile.getWidth() - screenCenterWorld.getX();
@@ -530,7 +527,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         int zoomzoom = zoom2 - 1;
 
         Descriptor desc = new Descriptor(ii, jj, zoomzoom);
-        boolean canDraw = mapTileLoader.markTileToDraw(desc.getHashCode()) >= 0;
+        boolean canDraw = MapTileLoader.getInstance().markTileToDraw(desc.getHashCode()) >= 0;
 
         if (canDraw) {
             return true;
@@ -547,7 +544,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         int zoomzoom = zoom2 - 1;
 
         Descriptor desc = new Descriptor(ii, jj, zoomzoom);
-        boolean canDraw = mapTileLoader.markOverlayTileToDraw(desc.getHashCode()) >= 0;
+        boolean canDraw = MapTileLoader.getInstance().markOverlayTileToDraw(desc.getHashCode()) >= 0;
 
         if (canDraw) {
             return true;
@@ -570,7 +567,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         for (int ii = i1; ii <= i2; ii++) {
             for (int jj = j1; jj <= j2; jj++) {
                 Descriptor desc = new Descriptor(ii, jj, zoomzoom);
-                if (mapTileLoader.markTileToDraw(desc.getHashCode()) >= 0) continue;
+                if (MapTileLoader.getInstance().markTileToDraw(desc.getHashCode()) >= 0) continue;
                 if ((zoomzoom <= aktZoom) && (zoomzoom <= MAX_MAP_ZOOM)) {
                     renderSmallerTiles(ii, jj, zoomzoom);
                 }
@@ -589,7 +586,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         for (int ii = i1; ii <= i2; ii++) {
             for (int jj = j1; jj <= j2; jj++) {
                 Descriptor desc = new Descriptor(ii, jj, zoomzoom);
-                if (mapTileLoader.markOverlayTileToDraw(desc.getHashCode()) >= 0) continue;
+                if (MapTileLoader.getInstance().markOverlayTileToDraw(desc.getHashCode()) >= 0) continue;
                 if ((zoomzoom <= aktZoom) && (zoomzoom <= MAX_MAP_ZOOM)) {
                     renderSmallerOverlayTiles(ii, jj, zoomzoom);
                 }

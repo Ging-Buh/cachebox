@@ -15,7 +15,6 @@
  */
 package de.droidcachebox.locator.map;
 
-import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -25,11 +24,9 @@ import de.droidcachebox.utils.log.Log;
 class MultiThreadQueueProcessor extends Thread {
     private static int threadIndex = -1;
     private final MapTiles mapTiles;
-    private final Array<OrderData> orders;
     boolean isWorking, canTakeOrder, doStop;
     long startTime;
     private String log = "MapTileQueueThread";
-    private OrderData newOrder;
 
     MultiThreadQueueProcessor(MapTiles mapTiles) {
         threadIndex++;
@@ -37,31 +34,9 @@ class MultiThreadQueueProcessor extends Thread {
         this.mapTiles = mapTiles;
         isWorking = false;
         startTime = System.currentTimeMillis();
-        orders = new Array<>(true, mapTiles.getCapacity());
         canTakeOrder = true;
         Log.info(log, "Starting a new thread with index: " + threadIndex);
         doStop = false;
-    }
-
-    /**
-     * used by MapTileLoader for ordering a new Tile (so a Texture to draw)
-     */
-    void addOrder(Descriptor descriptor, boolean forOverlay, MapViewBase mapView) {
-        synchronized (orders) {
-            orders.add(new OrderData(descriptor, forOverlay, mapView));
-        }
-        // Log.info(log, "put Order: " + descriptor + " Distance: " + (Integer) descriptor.Data ;
-    }
-
-    private boolean getNextOrder() {
-        synchronized (orders) {
-            if (orders.size > 0) {
-                newOrder = orders.get(0);
-                orders.removeIndex(0);
-                return true;
-            }
-            return false;
-        }
     }
 
     @Override
@@ -69,7 +44,8 @@ class MultiThreadQueueProcessor extends Thread {
         try {
             do {
                 canTakeOrder = false;
-                if (getNextOrder()) {
+                OrderData newOrder = MapTileLoader.getInstance().getNextOrder(this);
+                if (newOrder != null) {
                     startTime = System.currentTimeMillis();
                     isWorking = true;
                     // Log.info(log, "got Order: " + newOrder.descriptor + " Distance: " + (Integer) newOrder.descriptor.Data + " for " + newOrder.orderGroup);
@@ -103,13 +79,13 @@ class MultiThreadQueueProcessor extends Thread {
         mapTiles.setIsReady();
     }
 
-    private static class OrderData {
+    static class OrderData {
         Descriptor descriptor;
         boolean forOverlay;
         MapViewBase mapView;
 
         OrderData(Descriptor actualDescriptor, boolean forOverlay, MapViewBase mapView) {
-            this.descriptor = actualDescriptor;
+            descriptor = actualDescriptor;
             this.forOverlay = forOverlay;
             this.mapView = mapView;
         }
