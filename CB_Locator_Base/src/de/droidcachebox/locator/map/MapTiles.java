@@ -58,16 +58,16 @@ class MapTiles {
             isReady.set(true);
         });
 
-        /*
-        int timeout = 0; // with timeout ~ one second (10 * 100)
-        while (!isReady.get() && timeout < 10) {
+        /* wait for tile to be loaded */
+        int timeout = 0; // with timeout ~ ten seconds (100 * 100)
+        while (!isReady.get() && timeout < 100) {
             timeout++;
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {
             }
         }
-         */
+        /* */
 
     }
 
@@ -88,29 +88,15 @@ class MapTiles {
         // overlay is never mapsforge: so no new thread
         TileGL tile = currentOverlayLayer.getTileGL(descriptor);
         if (tile == null) {
-            // isReady.set(false);
             GL.that.postAsync(() -> {
                 // download in separate thread
                 if (currentOverlayLayer.cacheTileToFile(descriptor)) {
                     addOverlayTile(descriptor, currentOverlayLayer.getTileGL(descriptor));
                 }
-                // isReady.set(true);
             });
         } else {
             addOverlayTile(descriptor, tile);
         }
-
-        // don't wait
-        /*
-        while (!isReady.get()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {
-            }
-        }
-
-         */
-
     }
 
     private void addOverlayTile(Descriptor descriptor, TileGL tile) {

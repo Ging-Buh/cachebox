@@ -48,20 +48,23 @@ class MultiThreadQueueProcessor extends Thread {
                 if (newOrder != null) {
                     startTime = System.currentTimeMillis();
                     isWorking = true;
-                    // Log.info(log, "got Order: " + newOrder.descriptor + " Distance: " + (Integer) newOrder.descriptor.Data + " for " + newOrder.orderGroup);
+                    Log.debug(log, "order: " + newOrder.descriptor + " Distance: " + newOrder.descriptor.Data);
                     newOrder.descriptor.Data = newOrder.mapView;
                     if (newOrder.forOverlay) {
                         if (!doStop) mapTiles.loadOverlayTile(newOrder.descriptor);
                     } else {
                         if (!doStop) mapTiles.loadTile(newOrder.descriptor);
                     }
+                    Log.info(log, "ready: " + newOrder.descriptor + " lasts: " + (System.currentTimeMillis() - startTime));
                     isWorking = false;
                 } else {
                     try {
+                        Log.debug(log, "sleeping deep");
                         canTakeOrder = true;
                         Thread.sleep(100000);
                     } catch (InterruptedException ignored) {
                     }
+                    Log.debug(log, "waking up");
                 }
             } while (!doStop);
             Log.info(log, "stopping");

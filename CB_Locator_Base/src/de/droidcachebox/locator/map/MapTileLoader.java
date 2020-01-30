@@ -172,7 +172,7 @@ public class MapTileLoader {
                 return;
             wantedTiles.sort(byDistanceFromCenter);
 
-            Log.info(log, "Num wanted: " + wantedTiles.size);
+            Log.debug(log, "Num wanted: " + wantedTiles.size);
             for (Descriptor descriptor : wantedTiles) {
                 if (finishYourself.get()) {
                     Log.info(log, "MapTileLoader finishMyself during tile ordering");
@@ -193,10 +193,10 @@ public class MapTileLoader {
             }
             // wakeup of possibly sleeping MultiThreadQueueProcessor threads
             for (MultiThreadQueueProcessor thread : queueProcessors) {
-                thread.interrupt();
+                if (thread.canTakeOrder) thread.interrupt();
             }
 
-            Log.info(log, "MapTileLoader completed.");
+            Log.debug(log, "MapTileLoader completed with " + orders.size + " tile orders.");
         }
     }
 

@@ -191,7 +191,7 @@ public class H_ListView extends ListViewBase {
             return false;
         dragged = x - lastTouchInMoveDirection;
         float sollPos = mLastPos_onTouch - dragged;
-        float toMuch = 0;
+        float tooMuch = 0;
         if (sollPos - firstItemSize > 0 || sollPos < calculateAllSizeBase) {
             if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < calculateAllSizeBase) {
                 if (KineticPan)
@@ -200,17 +200,14 @@ public class H_ListView extends ListViewBase {
             }
 
             if (sollPos - firstItemSize > 0) {
-                toMuch = 0 - sollPos + firstItemSize;
-                toMuch /= 2;
+                tooMuch = 0 - sollPos + firstItemSize;
+                tooMuch /= 2;
             } else if (sollPos < calculateAllSizeBase) {
-                toMuch = calculateAllSizeBase - sollPos;
-                toMuch /= 2;
+                tooMuch = calculateAllSizeBase - sollPos;
+                tooMuch /= 2;
             }
         }
-
-        if (toMuch != 0)
-            Log.debug(log, "tomuch" + toMuch);
-        setListPos(sollPos + toMuch, KineticPan);
+        setListPos(sollPos + tooMuch, KineticPan);
         return true;
     }
 

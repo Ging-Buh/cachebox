@@ -170,7 +170,7 @@ public class MapsForgeLayer extends Layer {
 
     @Override
     TileGL getTileGL(Descriptor desc) {
-        
+        // hint: if returns null, caching to file is called. think of using for smaller ZoomFactors ( zoomed out )
         // create bitmap from tile-definition
         try {
             // Log.info(log, "MF step 1: " + desc);

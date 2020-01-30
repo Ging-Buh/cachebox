@@ -115,22 +115,22 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             if (isDefined) {
                 double lat, lon;
-                float distance;
+                float calculatedDistance;
                 if (wayPoint == null) {
                     lat = mCache.getLatitude();
                     lon = mCache.getLongitude();
-                    distance = mCache.recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
+                    calculatedDistance = mCache.recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
                 } else {
                     lat = wayPoint.getLatitude();
                     lon = wayPoint.getLongitude();
-                    distance = wayPoint.getDistance();
+                    calculatedDistance = wayPoint.getDistance();
                 }
 
                 Coordinate position = Locator.getInstance().getMyPosition();
                 double heading = Locator.getInstance().getHeading();
                 double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
                 double cacheBearing = -(bearing - heading);
-                setDistanceString(UnitFormatter.distanceString(distance));
+                setDistanceString(UnitFormatter.distanceString(calculatedDistance));
 
                 arrow.setRotation((float) cacheBearing);
                 if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore
