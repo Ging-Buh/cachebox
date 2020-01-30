@@ -101,7 +101,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
     private void addWaypoint(Cache cache, Waypoint wp, int iconSize) {
         double mapX = 256.0 * Descriptor.longitudeToTileX(maxZoomLevel, wp.getLongitude());
         double mapY = -256.0 * Descriptor.latitudeToTileY(maxZoomLevel, wp.getLatitude());
-        if (isVisible(mapX, mapY) || (GlobalCore.getSelectedWaypoint() == wp)) {
+        if (isVisible(mapX, mapY) || (GlobalCore.getSelectedWayPoint() == wp)) {
             WayPointRenderInfo wayPointRenderInfo = new WayPointRenderInfo();
             wayPointRenderInfo.mapX = (float) mapX;
             wayPointRenderInfo.mapY = (float) mapY;
@@ -109,7 +109,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
             wayPointRenderInfo.cache = cache;
             wayPointRenderInfo.waypoint = wp;
             wayPointRenderInfo.underlayIcon = getUnderlayIcon(wayPointRenderInfo.cache, wayPointRenderInfo.waypoint, iconSize);
-            wayPointRenderInfo.selected = (GlobalCore.getSelectedWaypoint() == wp);
+            wayPointRenderInfo.selected = (GlobalCore.getSelectedWayPoint() == wp);
             if (wayPointRenderInfo.selected)
                 selectedWPRenderInfo = wayPointRenderInfo;
             wayPointRenderInfos.add(wayPointRenderInfo);
@@ -244,7 +244,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                     return getMapOverlay(IconName.shaddowrect);
                 }
             } else {
-                if (waypoint == GlobalCore.getSelectedWaypoint()) {
+                if (waypoint == GlobalCore.getSelectedWayPoint()) {
                     return getMapOverlay(IconName.shaddowrectselected);
                 } else {
                     return getMapOverlay(IconName.shaddowrect);

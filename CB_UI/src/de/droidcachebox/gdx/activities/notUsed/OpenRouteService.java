@@ -37,8 +37,8 @@ public class OpenRouteService {
             start = Locator.getInstance().getMyPosition();
         }
 
-        if (GlobalCore.getSelectedWaypoint() != null) {
-            target = GlobalCore.getSelectedWaypoint().getCoordinate();
+        if (GlobalCore.getSelectedWayPoint() != null) {
+            target = GlobalCore.getSelectedWayPoint().getCoordinate();
         } else if (GlobalCore.isSetSelectedCache()) {
             target = GlobalCore.getSelectedCache().getCoordinate();
         } else {

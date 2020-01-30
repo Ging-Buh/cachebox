@@ -15,9 +15,9 @@
  */
 package de.droidcachebox.gdx.math;
 
-import de.droidcachebox.AbstractGlobal;
-
 import java.util.ArrayList;
+
+import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * @param <T>
@@ -57,7 +57,7 @@ public class Stack<T> {
 
         sb.append("Stack of " + m_list.get(0).getClass().getName());
         for (T t : m_list) {
-            sb.append("  > " + t.toString() + AbstractGlobal.br);
+            sb.append("  > " + t.toString() + br);
         }
         return sb.toString();
     }

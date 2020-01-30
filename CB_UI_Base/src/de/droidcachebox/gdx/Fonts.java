@@ -26,8 +26,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import de.droidcachebox.AbstractGlobal;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
 
@@ -82,7 +82,7 @@ public class Fonts {
 
         if (font == null || !font.exists()) {
             // no skin font found, use default font
-            font = AbstractGlobal.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
+            font = FileFactory.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
         }
 
         Log.debug(log, "Generate scaled Fonts from " + font);
@@ -187,7 +187,7 @@ public class Fonts {
     }
 
     private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale) {
-        String fs = AbstractGlobal.fs;
+        String fs = System.getProperty("file.separator");
         String fontPath = "";
         // fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
 

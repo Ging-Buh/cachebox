@@ -79,7 +79,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         super(ViewManager.leftTab.getContentRec(), "CompassView");
         margin = GL_UISizes.margin;
         currentGeoCache = GlobalCore.getSelectedCache();
-        currentWaypoint = GlobalCore.getSelectedWaypoint();
+        currentWaypoint = GlobalCore.getSelectedWayPoint();
     }
 
     public static CompassView getInstance() {
@@ -90,7 +90,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     @Override
     public void onShow() {
         currentGeoCache = GlobalCore.getSelectedCache();
-        currentWaypoint = GlobalCore.getSelectedWaypoint();
+        currentWaypoint = GlobalCore.getSelectedWayPoint();
         initialize();
         setCache();
         if (chart != null) {
@@ -575,7 +575,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         topBox.scrollTo(0);
 
         currentGeoCache = GlobalCore.getSelectedCache();
-        currentWaypoint = GlobalCore.getSelectedWaypoint();
+        currentWaypoint = GlobalCore.getSelectedWayPoint();
         setCache();
     }
 
@@ -794,9 +794,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
     @Override
     public void cacheListChanged() {
-        if (currentGeoCache != GlobalCore.getSelectedCache() || currentWaypoint != GlobalCore.getSelectedWaypoint()) {
+        if (currentGeoCache != GlobalCore.getSelectedCache() || currentWaypoint != GlobalCore.getSelectedWayPoint()) {
             currentGeoCache = GlobalCore.getSelectedCache();
-            currentWaypoint = GlobalCore.getSelectedWaypoint();
+            currentWaypoint = GlobalCore.getSelectedWayPoint();
             setCache();
         }
     }

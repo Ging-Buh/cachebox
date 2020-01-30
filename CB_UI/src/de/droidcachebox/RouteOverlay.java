@@ -139,8 +139,8 @@ public class RouteOverlay {
                 }
             }
 
-            if (GlobalCore.aktuelleRoute != null && GlobalCore.aktuelleRoute.isVisible()) {
-                addToTracksToDraw(tolerance, GlobalCore.aktuelleRoute, mapZoom);
+            if (GlobalCore.currentRoute != null && GlobalCore.currentRoute.isVisible()) {
+                addToTracksToDraw(tolerance, GlobalCore.currentRoute, mapZoom);
             }
 
         }

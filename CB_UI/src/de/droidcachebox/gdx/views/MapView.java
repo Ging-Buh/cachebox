@@ -61,6 +61,7 @@ import java.util.TreeMap;
 
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.Sprites.*;
+import static de.droidcachebox.utils.Config_Core.displayDensity;
 
 public class MapView extends MapViewBase implements SelectedCacheChangedEventListener, PositionChangedEvent {
     private static final String sKlasse = "MapView";
@@ -108,10 +109,10 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             });
         }
 
-        Config.MapsforgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsForgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsForgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsForgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsForgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
 
         registerSkinChangedEvent();
 
@@ -185,8 +186,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
             if (targetArrow != null && targetArrow.contains(x, y)) {
                 if (GlobalCore.isSetSelectedCache()) {
-                    if (GlobalCore.getSelectedWaypoint() != null) {
-                        Coordinate tmp = GlobalCore.getSelectedWaypoint().getCoordinate();
+                    if (GlobalCore.getSelectedWayPoint() != null) {
+                        Coordinate tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     } else {
                         Coordinate tmp = GlobalCore.getSelectedCache().getCoordinate();
@@ -278,7 +279,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         // from create
 
         if (Config.mapViewDPIFaktor.getValue() == 1) {
-            Config.mapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+            Config.mapViewDPIFaktor.setValue(displayDensity);
             Config.AcceptChanges();
         }
         iconFactor = Config.mapViewDPIFaktor.getValue();
@@ -506,7 +507,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
+        Coordinate coord = (GlobalCore.getSelectedWayPoint() != null) ? GlobalCore.getSelectedWayPoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
 
         if (coord == null) {
             return;
@@ -597,7 +598,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         Vector2 screen = worldToScreen(new Vector2(wayPointRenderInfo.mapX, wayPointRenderInfo.mapY));
 
         screen.y = screen.y - ySpeedVersatz;
-        if (myPointOnScreen != null && showDirectLine && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWaypoint())) {
+        if (myPointOnScreen != null && showDirectLine && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWayPoint())) {
             if (directLine == null)
                 directLine = new PolygonDrawable(directLinePaint, getMapIntWidth(), getMapIntHeight());
             // FIXME render only if visible on screen (intersect the screen rec)
@@ -628,7 +629,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             }
         }
 
-        if ((aktZoom >= zoomCross) && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWaypoint())) {
+        if ((aktZoom >= zoomCross) && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWayPoint())) {
             // Draw Cross and move screen vector
             Sprite cross = getMapOverlay(IconName.cross);
             cross.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight(), wpUnderlay.getWidth(), wpUnderlay.getHeight());
@@ -918,7 +919,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 Coordinate position = Locator.getInstance().getMyPosition();
 
                 if (GlobalCore.isSetSelectedCache()) {
-                    Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
+                    Coordinate dest = (GlobalCore.getSelectedWayPoint() != null) ? GlobalCore.getSelectedWayPoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
 
                     if (dest == null)
                         return;
@@ -1056,10 +1057,10 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             float distance = -1;
             if (GlobalCore.isSetSelectedCache() && position.isValid()) {
                 try {
-                    if (GlobalCore.getSelectedWaypoint() == null)
+                    if (GlobalCore.getSelectedWayPoint() == null)
                         distance = position.Distance(GlobalCore.getSelectedCache().getCoordinate(), CalculationType.ACCURATE);
                     else
-                        distance = position.Distance(GlobalCore.getSelectedWaypoint().getCoordinate(), CalculationType.ACCURATE);
+                        distance = position.Distance(GlobalCore.getSelectedWayPoint().getCoordinate(), CalculationType.ACCURATE);
                 } catch (Exception e) {
                     distance = 10;
                 }
@@ -1117,7 +1118,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         super.onShow();
         SelectedCacheChangedEventListeners.getInstance().add(this);
         isNorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
-        selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+        selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
     }
 
     /**
@@ -1148,7 +1149,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (InitialFlags == INITIAL_ALL) {
 
                 if (Config.mapViewDPIFaktor.getValue() == 1) {
-                    Config.mapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+                    Config.mapViewDPIFaktor.setValue(displayDensity);
                     Config.AcceptChanges();
                 }
                 iconFactor = Config.mapViewDPIFaktor.getValue();
@@ -1242,8 +1243,8 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     @Override
     public void mapStateChangedToWP() {
         if (GlobalCore.isSetSelectedCache()) {
-            if (GlobalCore.getSelectedWaypoint() != null) {
-                Coordinate tmp = GlobalCore.getSelectedWaypoint().getCoordinate();
+            if (GlobalCore.getSelectedWayPoint() != null) {
+                Coordinate tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
                 setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
             } else {
                 Coordinate tmp = GlobalCore.getSelectedCache().getCoordinate();

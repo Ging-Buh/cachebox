@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.FloatArray;
-import de.droidcachebox.AbstractGlobal;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
@@ -40,6 +39,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class EditTextField extends EditTextFieldBase {
     private static final String log = "EditTextField";
@@ -210,8 +211,7 @@ public class EditTextField extends EditTextFieldBase {
                     if (line.displayText != null) {
                         try {
                             style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
-                        }
-                        catch (Exception ex) {
+                        } catch (Exception ex) {
                             Log.err(log, "not displayed: " + line.displayText + " length: " + line.displayText.length());
                         }
                         textY -= style.font.getLineHeight();
@@ -1263,7 +1263,7 @@ public class EditTextField extends EditTextFieldBase {
         int index = 0;
         for (Line line : lines) {
             if ((index > 0) && (!line.autoWrap)) {
-                sb.append(AbstractGlobal.br);
+                sb.append(br);
             }
             sb.append(line.displayText);
             index++;
@@ -1337,7 +1337,7 @@ public class EditTextField extends EditTextFieldBase {
 
                 sb.append(line.displayText, startPos, endPos);
                 if (n < selectedArea.cursorEnd.y) {
-                    sb.append(AbstractGlobal.br);
+                    sb.append(br);
                 }
             }
         }
@@ -1604,6 +1604,16 @@ public class EditTextField extends EditTextFieldBase {
 
     //#########################################################################################################
 
+    private static class Selection {
+        private final Point cursorStart;
+        private final Point cursorEnd;
+
+        private Selection(Point cursorStart, Point cursorEnd) {
+            this.cursorStart = cursorStart;
+            this.cursorEnd = cursorEnd;
+        }
+    }
+
     private class Line {
         private final GlyphLayout textBounds = new GlyphLayout();
         private final FloatArray glyphAdvances = new FloatArray();
@@ -1640,16 +1650,6 @@ public class EditTextField extends EditTextFieldBase {
         @Override
         public String toString() {
             return this.displayText;
-        }
-    }
-
-    private static class Selection {
-        private final Point cursorStart;
-        private final Point cursorEnd;
-
-        private Selection(Point cursorStart, Point cursorEnd) {
-            this.cursorStart = cursorStart;
-            this.cursorEnd = cursorEnd;
         }
     }
 }

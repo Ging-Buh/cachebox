@@ -67,6 +67,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static android.os.Build.VERSION_CODES.KITKAT;
+import static de.droidcachebox.utils.Config_Core.displayDensity;
 
 /**
  * what is this good for:
@@ -153,7 +154,7 @@ public class Splash extends Activity {
             // could bundle utils too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
             if (Database.Settings.isDbNew()) {
-                Config.mapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+                Config.mapViewDPIFaktor.setValue(displayDensity);
             }
             Global.Paints.init(this);
             mainIntent.putExtras(bundeledData); // the prepared Data
@@ -273,9 +274,9 @@ public class Splash extends Activity {
                     height = height - heightOfStatusBar;
                 }
             }
-            GlobalCore.displayDensity = displaymetrics.density;
-            int dpH = (int) (height / GlobalCore.displayDensity + 0.5);
-            int dpW = (int) (width / GlobalCore.displayDensity + 0.5);
+            displayDensity = displaymetrics.density;
+            int dpH = (int) (height / displayDensity + 0.5);
+            int dpW = (int) (width / displayDensity + 0.5);
             if (dpH * dpW >= 960 * 720)
                 GlobalCore.displayType = DisplayType.xLarge;
             else if (dpH * dpW >= 640 * 480)

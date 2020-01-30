@@ -65,13 +65,13 @@ public class TrackRecorder {
     public static void startRecording() {
         distanceForNextTrackpoint = Config.TrackDistance.getValue();
 
-        GlobalCore.aktuelleRoute = new Track(Translation.get("actualTrack"));
-        GlobalCore.aktuelleRoute.setColor(Color.BLUE);
-        GlobalCore.aktuelleRoute.setVisible(true);
-        GlobalCore.aktuelleRoute.setActualTrack(true);
-        GlobalCore.aktuelleRouteCount = 0;
-        GlobalCore.aktuelleRoute.setTrackLength(0);
-        GlobalCore.aktuelleRoute.setAltitudeDifference(0);
+        GlobalCore.currentRoute = new Track(Translation.get("actualTrack"));
+        GlobalCore.currentRoute.setColor(Color.BLUE);
+        GlobalCore.currentRoute.setVisible(true);
+        GlobalCore.currentRoute.setActualTrack(true);
+        GlobalCore.currentRouteCount = 0;
+        GlobalCore.currentRoute.setTrackLength(0);
+        GlobalCore.currentRoute.setAltitudeDifference(0);
 
         String directory = CB_UI_Settings.TrackFolder.getValue();
         if (!FileIO.createDirectory(directory))
@@ -252,7 +252,7 @@ public class TrackRecorder {
 
                 NewPoint = new TrackPoint(Locator.getInstance().getLongitude(GPS), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getAlt(), Locator.getInstance().getHeading(_GPS), new Date());
 
-                GlobalCore.aktuelleRoute.getTrackPoints().add(NewPoint);
+                GlobalCore.currentRoute.getTrackPoints().add(NewPoint);
 
                 // notify TrackListView (if already created)
                 if (TrackListView.getInstance().getAktRouteItem() != null) {
@@ -262,11 +262,11 @@ public class TrackRecorder {
 
                 RouteOverlay.getInstance().trackListChanged();
                 lastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
-                GlobalCore.aktuelleRoute.setTrackLength(GlobalCore.aktuelleRoute.getTrackLength() + cachedDistance);
+                GlobalCore.currentRoute.setTrackLength(GlobalCore.currentRoute.getTrackLength() + cachedDistance);
 
                 AltDiff = Math.abs(savedAltitude - Locator.getInstance().getAlt());
                 if (AltDiff >= 25) {
-                    GlobalCore.aktuelleRoute.setAltitudeDifference(GlobalCore.aktuelleRoute.getAltitudeDifference() + AltDiff);
+                    GlobalCore.currentRoute.setAltitudeDifference(GlobalCore.currentRoute.getAltitudeDifference() + AltDiff);
                     savedAltitude = Locator.getInstance().getAlt();
                 }
                 writePos = false;
@@ -284,9 +284,9 @@ public class TrackRecorder {
     }
 
     public static void stopRecording() {
-        if (GlobalCore.aktuelleRoute != null) {
-            GlobalCore.aktuelleRoute.setActualTrack(false);
-            GlobalCore.aktuelleRoute.setName(Translation.get("recordetTrack"));
+        if (GlobalCore.currentRoute != null) {
+            GlobalCore.currentRoute.setActualTrack(false);
+            GlobalCore.currentRoute.setName(Translation.get("recordetTrack"));
         }
         pauseRecording = false;
         recording = false;

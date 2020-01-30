@@ -25,8 +25,7 @@ import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheList;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Waypoint;
-import de.droidcachebox.ex_import.DescriptionImageGrabber;
-import de.droidcachebox.ex_import.ImporterProgress;
+import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
@@ -51,27 +50,29 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static de.droidcachebox.core.API_ErrorEventHandlerList.handleApiKeyError;
-import static de.droidcachebox.core.GroundspeakAPI.*;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * @author ging-buh
  * @author arbor95
  * @author longri
  */
-public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
-    private static final String aboutMsg1 = "Team Cachebox (2011-2020)" + br;
-    private static final String teamLink = "www.team-cachebox.de";
-    private static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
+public class GlobalCore implements SolverCacheInterface {
+    public static final String aboutMsg1 = "Team Cachebox (2011-2020)" + br;
+    public static final String teamLink = "www.team-cachebox.de";
+    public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
     public static final String splashMsg = aboutMsg + br + br + "POWERED BY:";
     private static final String CurrentVersion = "2.0.";
     private static final String log = "GlobalCore";
+    public static DisplayType displayType = DisplayType.Normal;
     public static boolean restartAfterKill = false;
     public static String restartCache;
-    public static String restartWaypoint;
+    public static String restartWayPoint;
     public static boolean filterLogsOfFriends = false;
-    public static Track aktuelleRoute = null;
-    public static int aktuelleRouteCount = 0;
+    public static Track currentRoute = null;
+    public static int currentRouteCount = 0;
     public static boolean switchToCompassCompleted = false;
     public static GlobalLocationReceiver receiver;
     public static boolean RunFromSplash = false;
@@ -79,8 +80,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
     private static Cache selectedCache = null;
     private static boolean autoResort;
     private static Cache nearestCache = null;
-    private static Waypoint selectedWaypoint = null;
-    private static CancelWaitDialog wd;
+    private static Waypoint selectedWayPoint = null;
     private int CurrentRevision;
     private String VersionPrefix;
 
@@ -117,6 +117,10 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         return nearestCache;
     }
 
+    public static void setNearestCache(Cache Cache) {
+        nearestCache = Cache;
+    }
+
     public static void setSelectedWaypoint(Cache cache, Waypoint waypoint) {
         if (cache == null || cache.isDisposed())
             return;
@@ -140,7 +144,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
 
         if (cache == null) {
             selectedCache = null;
-            selectedWaypoint = null;
+            selectedWayPoint = null;
             return;
         }
 
@@ -150,14 +154,14 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         }
         selectedCache = cache;
         Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
-        selectedWaypoint = waypoint;
+        selectedWayPoint = waypoint;
 
         // load Detail Info if not available
         if (selectedCache.getGeoCacheDetail() == null) {
             selectedCache.loadDetail();
         }
 
-        SelectedCacheChangedEventListeners.getInstance().fireEvent(selectedCache, selectedWaypoint);
+        SelectedCacheChangedEventListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
 
         if (changeAutoResort) {
             // switch off auto select
@@ -167,18 +171,14 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
         GL.that.renderOnce();
     }
 
-    public static void setNearestCache(Cache Cache) {
-        nearestCache = Cache;
-    }
-
-    public static Waypoint getSelectedWaypoint() {
-        return selectedWaypoint;
+    public static Waypoint getSelectedWayPoint() {
+        return selectedWayPoint;
     }
 
     public static Coordinate getSelectedCoordinate() {
         Coordinate ret = null;
-        if (selectedWaypoint != null) {
-            ret = selectedWaypoint.getCoordinate();
+        if (selectedWayPoint != null) {
+            ret = selectedWayPoint.getCoordinate();
         } else if (selectedCache != null) {
             ret = selectedCache.getCoordinate();
         }
@@ -208,32 +208,6 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
 
     public static void setAutoResort(boolean value) {
         GlobalCore.autoResort = value;
-    }
-
-    public static CancelWaitDialog ImportSpoiler(boolean withLogImages) {
-        wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
-            // canceled
-        }, new ICancelRunnable() {
-
-            @Override
-            public void run() {
-                // Importer importer = new Importer();
-                ImporterProgress ip = new ImporterProgress();
-                int result = GroundspeakAPI.ERROR;
-                if (GlobalCore.getSelectedCache() != null)
-                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
-                wd.close();
-                if (result != OK) {
-                    GL.that.Toast(LastAPIError);
-                }
-            }
-
-            @Override
-            public boolean doCancel() {
-                return false;
-            }
-        });
-        return wd;
     }
 
     public static void MsgDownloadLimit() {
@@ -347,7 +321,7 @@ public class GlobalCore extends AbstractGlobal implements SolverCacheInterface {
 
     @Override
     public Waypoint sciGetSelectedWaypoint() {
-        return getSelectedWaypoint();
+        return getSelectedWayPoint();
     }
 
     public interface iChkReadyHandler {

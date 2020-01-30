@@ -3,7 +3,6 @@ package de.droidcachebox.gdx.controls.popups;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import de.droidcachebox.AbstractGlobal;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -13,6 +12,8 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
+
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class CopyPastePopUp extends PopUp_Base {
     private final static String sKlasse = "CopyPastePopUp";
@@ -37,17 +38,13 @@ public class CopyPastePopUp extends PopUp_Base {
         btnPaste.setY(rec.getHeight() * 0.4f);
         if (!copyPasteControl.isEditable())
             btnPaste.disable();
-        btnPaste.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                Log.err(sKlasse, "Paste Button Clicked");
-                close();
-                String Msg = copyPasteControl.pasteFromClipboard();
-                if (Msg != null)
-                    GL.that.Toast(Translation.get("PasteFromClipboard") + AbstractGlobal.br + Msg);
-                return false;
-            }
+        btnPaste.setClickHandler((view, x, y, pointer, button) -> {
+            Log.err(sKlasse, "Paste Button Clicked");
+            close();
+            String Msg = copyPasteControl.pasteFromClipboard();
+            if (Msg != null)
+                GL.that.Toast(Translation.get("PasteFromClipboard") + br + Msg);
+            return false;
         });
 
         this.addChild(btnPaste);
@@ -64,7 +61,7 @@ public class CopyPastePopUp extends PopUp_Base {
                 close();
                 String Msg = copyPasteControl.copyToClipboard();
                 if (Msg != null)
-                    GL.that.Toast(Translation.get("CopyToClipboard") + AbstractGlobal.br + Msg);
+                    GL.that.Toast(Translation.get("CopyToClipboard") + br + Msg);
                 return false;
             }
         });
@@ -87,7 +84,7 @@ public class CopyPastePopUp extends PopUp_Base {
                 close();
                 String Msg = copyPasteControl.cutToClipboard();
                 if (Msg != null)
-                    GL.that.Toast(Translation.get("CutToClipboard") + AbstractGlobal.br + Msg);
+                    GL.that.Toast(Translation.get("CutToClipboard") + br + Msg);
                 return false;
             }
         });

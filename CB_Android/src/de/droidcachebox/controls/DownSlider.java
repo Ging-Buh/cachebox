@@ -243,7 +243,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             }
 
             if (GlobalCore.isSetSelectedCache()) {
-                DownSlider.Me.setCache_onUI(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+                DownSlider.Me.setCache_onUI(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
             }
 
         }

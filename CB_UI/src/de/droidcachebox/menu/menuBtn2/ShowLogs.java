@@ -32,6 +32,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static de.droidcachebox.core.GroundspeakAPI.*;
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class ShowLogs extends AbstractShowAction {
 
@@ -97,7 +98,7 @@ public class ShowLogs extends AbstractShowAction {
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> ShowSpoiler.getInstance().ImportSpoiler(true).setReadyListener(() -> {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -156,7 +157,7 @@ public class ShowLogs extends AbstractShowAction {
                                             // update LogListView
                                             LogListView.getInstance().resetIsInitialized();
                                             // for update slider, ?, ?, ? with latest logs
-                                            SelectedCacheChangedEventListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+                                            SelectedCacheChangedEventListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
                                         }
 
@@ -168,7 +169,7 @@ public class ShowLogs extends AbstractShowAction {
 
                                 @Override
                                 public void runnableIsReady(boolean canceled) {
-                                    String sCanceled = canceled ? Translation.get("isCanceled") + GlobalCore.br : "";
+                                    String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
                                     pd.close();
                                     if (result != -1) {
                                         synchronized (Database.Data.cacheList) {

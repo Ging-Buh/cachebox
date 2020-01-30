@@ -223,7 +223,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     Global.initIcons(this);
 
                     GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
-                    GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
+                    GlobalCore.restartWayPoint = savedInstanceState.getString("selectedWayPoint");
                 }
             } else {
                 Log.info(sKlasse, "=> onCreate first start");
@@ -360,8 +360,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (GlobalCore.isSetSelectedCache())
             savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGeoCacheCode());
-        if (GlobalCore.getSelectedWaypoint() != null)
-            savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint().getGcCode());
+        if (GlobalCore.getSelectedWayPoint() != null)
+            savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWayPoint().getGcCode());
 
         super.onSaveInstanceState(savedInstanceState);
         Log.info(sKlasse, "onSaveInstanceState <=");

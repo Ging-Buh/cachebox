@@ -47,14 +47,14 @@ public interface LocatorSettings {
     SettingBool hideMyFinds = new SettingBool("MapHideMyFinds", Map, NEVER, false, Global, ACB);
     SettingInt lastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", Map, NEVER, 0, Global, ACB);
 
-    SettingFile MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", Map, NEVER, "", Global, ACB, "xml");
-    SettingFile MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", Map, NEVER, "", Global, ACB, "xml");
-    SettingFile MapsforgeCarDayTheme = new SettingFile("MapsforgeCarDayTheme", Map, NEVER, "CAR", Global, ACB, "xml");
-    SettingFile MapsforgeCarNightTheme = new SettingFile("MapsforgeCarNightTheme", Map, NEVER, "CAR", Global, ACB, "xml");
-    SettingString MapsforgeDayStyle = new SettingString("MapsforgeDayStyle", Map, NEVER, "", Global, ACB);
-    SettingString MapsforgeNightStyle = new SettingString("MapsforgeNightStyle", Map, NEVER, "", Global, ACB);
-    SettingString MapsforgeCarDayStyle = new SettingString("MapsforgeCarDayStyle", Map, NEVER, "", Global, ACB);
-    SettingString MapsforgeCarNightStyle = new SettingString("MapsforgeCarNightStyle", Map, NEVER, "", Global, ACB);
+    SettingFile MapsForgeDayTheme = new SettingFile("MapsforgeDayTheme", Map, NEVER, "", Global, ACB, "xml");
+    SettingFile MapsForgeNightTheme = new SettingFile("MapsforgeNightTheme", Map, NEVER, "", Global, ACB, "xml");
+    SettingFile MapsForgeCarDayTheme = new SettingFile("MapsforgeCarDayTheme", Map, NEVER, "CAR", Global, ACB, "xml");
+    SettingFile MapsForgeCarNightTheme = new SettingFile("MapsforgeCarNightTheme", Map, NEVER, "CAR", Global, ACB, "xml");
+    SettingString MapsForgeDayStyle = new SettingString("MapsforgeDayStyle", Map, NEVER, "", Global, ACB);
+    SettingString MapsForgeNightStyle = new SettingString("MapsforgeNightStyle", Map, NEVER, "", Global, ACB);
+    SettingString MapsForgeCarDayStyle = new SettingString("MapsforgeCarDayStyle", Map, NEVER, "", Global, ACB);
+    SettingString MapsForgeCarNightStyle = new SettingString("MapsforgeCarNightStyle", Map, NEVER, "", Global, ACB);
     SettingString PreferredMapLanguage = new SettingString("MapLanguage", Map, NEVER, "", Global, ALL);
 
     SettingBool MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", CarMode, NORMAL, false, Global, ACB);

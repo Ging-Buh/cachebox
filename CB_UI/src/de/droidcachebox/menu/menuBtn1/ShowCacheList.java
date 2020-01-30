@@ -86,7 +86,7 @@ public class ShowCacheList extends AbstractShowAction {
         MenuItem mi;
         cm.addMenuItem("ResortList", Sprites.getSprite(IconName.sortIcon.name()), () -> {
             synchronized (Database.Data.cacheList) {
-                CacheWithWP nearstCacheWp = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                CacheWithWP nearstCacheWp = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
                 if (nearstCacheWp != null)
                     GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
                 CacheListView.getInstance().setSelectedCacheVisible();
@@ -151,7 +151,7 @@ public class ShowCacheList extends AbstractShowAction {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {
                 synchronized (Database.Data.cacheList) {
-                    Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                    Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
                 }
             }
         });

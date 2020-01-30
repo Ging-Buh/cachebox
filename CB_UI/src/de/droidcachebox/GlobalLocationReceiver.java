@@ -82,8 +82,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                 if (PlaySounds && !approachSoundCompleted) {
                     if (GlobalCore.isSetSelectedCache()) {
                         float distance = GlobalCore.getSelectedCache().recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
-                        if (GlobalCore.getSelectedWaypoint() != null) {
-                            distance = GlobalCore.getSelectedWaypoint().getDistance();
+                        if (GlobalCore.getSelectedWayPoint() != null) {
+                            distance = GlobalCore.getSelectedWayPoint().getDistance();
                         }
 
                         if (!approachSoundCompleted && (distance < CB_UI_Settings.SoundApproachDistance.getValue())) {
@@ -101,7 +101,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                 if (!initialResortAfterFirstFixCompleted && Locator.getInstance().getProvider() != ProviderType.NULL) {
                     if (GlobalCore.getSelectedCache() == null) {
                         synchronized (Database.Data.cacheList) {
-                            CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                            CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
                             if (ret != null && ret.getCache() != null) {
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 GlobalCore.setNearestCache(ret.getCache());
@@ -159,7 +159,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                 }
                             }
                             if (resort || z == 0) {
-                                CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+                                CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
 
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 GlobalCore.setNearestCache(ret.getCache());

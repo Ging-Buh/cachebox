@@ -17,10 +17,11 @@ package de.droidcachebox.gdx.math;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.AbstractGlobal;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.utils.log.Log;
+
+import static de.droidcachebox.utils.Config_Core.displayDensity;
 
 /**
  * Diese Klasse Kapselt die Werte, welche in der OpenGL Map benötigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Grösse
@@ -130,7 +131,6 @@ public class GL_UISizes implements SizeChangedEvent {
 
     /**
      * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der übergebenen Größe und des Eingestellten DPI Faktors.
-     *
      */
     public static void initial(float width, float height) {
 
@@ -139,7 +139,7 @@ public class GL_UISizes implements SizeChangedEvent {
 
 
         if (CB_UI_Base_Settings.mapViewDPIFaktor.getValue() == 1) {
-            CB_UI_Base_Settings.mapViewDPIFaktor.setValue(AbstractGlobal.displayDensity);
+            CB_UI_Base_Settings.mapViewDPIFaktor.setValue(displayDensity);
         }
 
 

@@ -4,9 +4,9 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import de.droidcachebox.AbstractGlobal;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.graphics.HSV_Color;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
 public class CB_Skin {
@@ -45,17 +45,17 @@ public class CB_Skin {
     private void init() {
 
         if (CB_UI_Base_Settings.skinFolder.getValue().equals("default")) {
-            SkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
+            SkinFolder = FileFactory.getInternalFileHandle("skins/default");
         } else if (CB_UI_Base_Settings.skinFolder.getValue().equals("small")) {
-            SkinFolder = AbstractGlobal.getInternalFileHandle("skins/small");
+            SkinFolder = FileFactory.getInternalFileHandle("skins/small");
         } else {
             SkinFolder = Gdx.files.absolute(CB_UI_Base_Settings.skinFolder.getValue());
             if (!SkinFolder.isDirectory()) {
-                SkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
+                SkinFolder = FileFactory.getInternalFileHandle("skins/default");
             }
         }
 
-        DefaultSkinFolder = AbstractGlobal.getInternalFileHandle("skins/default");
+        DefaultSkinFolder = FileFactory.getInternalFileHandle("skins/default");
 
         SizeBiggest = CB_UI_Base_Settings.FONT_SIZE_COMPASS_DISTANCE.getValue();
         SizeBig = CB_UI_Base_Settings.FONT_SIZE_BIG.getValue();
@@ -66,9 +66,9 @@ public class CB_Skin {
 
         NightMode = CB_UI_Base_Settings.nightMode.getValue();
 
-        FileHandle default_day_skinPath = AbstractGlobal.getInternalFileHandle("skins/default/day/skin.json");
+        FileHandle default_day_skinPath = FileFactory.getInternalFileHandle("skins/default/day/skin.json");
         default_day_skin = new Skin(default_day_skinPath);
-        FileHandle default_night_skinPath = AbstractGlobal.getInternalFileHandle("skins/default/night/skin.json");
+        FileHandle default_night_skinPath = FileFactory.getInternalFileHandle("skins/default/night/skin.json");
         default_night_skin = new Skin(default_night_skinPath);
         try {
             String day_skinPath = SkinFolder + "/day/skin.json";
@@ -122,6 +122,10 @@ public class CB_Skin {
         return NightMode;
     }
 
+    public void setNightMode(boolean value) {
+        NightMode = value;
+    }
+
     public FileHandle getSkinFolder() {
         return SkinFolder;
     }
@@ -131,30 +135,26 @@ public class CB_Skin {
     }
 
     public int getSizeBiggest() {
-        return  SizeBiggest;
+        return SizeBiggest;
     }
 
     public int getSizeBig() {
-        return  SizeBig;
+        return SizeBig;
     }
 
     public int getSizeNormal() {
-        return  SizeNormal;
+        return SizeNormal;
     }
 
     public int getSizeNormalBubble() {
-        return  SizeNormalbubble;
+        return SizeNormalbubble;
     }
 
     public int getSizeSmall() {
-        return  SizeSmall;
+        return SizeSmall;
     }
 
     public int getSizeSmallBubble() {
-        return  SizeSmallBubble;
-    }
-
-    public void setNightMode(boolean value) {
-        NightMode = value;
+        return SizeSmallBubble;
     }
 }

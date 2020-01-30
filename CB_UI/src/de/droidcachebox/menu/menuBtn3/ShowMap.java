@@ -640,16 +640,16 @@ public class ShowMap extends AbstractShowAction {
         mi.setCheckable(true);
         switch (whichCase) {
             case day:
-                mi.setChecked(Config.MapsforgeDayTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.MapsForgeDayTheme.getValue().equals(themePaN));
                 break;
             case night:
-                mi.setChecked(Config.MapsforgeNightTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.MapsForgeNightTheme.getValue().equals(themePaN));
                 break;
             case carday:
-                mi.setChecked(Config.MapsforgeCarDayTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.MapsForgeCarDayTheme.getValue().equals(themePaN));
                 break;
             case carnight:
-                mi.setChecked(Config.MapsforgeCarNightTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.MapsForgeCarNightTheme.getValue().equals(themePaN));
                 break;
         }
     }
@@ -736,16 +736,16 @@ public class ShowMap extends AbstractShowAction {
         String configStyle;
         switch (whichCase) {
             case day:
-                configStyle = Config.MapsforgeDayStyle.getValue();
+                configStyle = Config.MapsForgeDayStyle.getValue();
                 break;
             case night:
-                configStyle = Config.MapsforgeNightStyle.getValue();
+                configStyle = Config.MapsForgeNightStyle.getValue();
                 break;
             case carday:
-                configStyle = Config.MapsforgeCarDayStyle.getValue();
+                configStyle = Config.MapsForgeCarDayStyle.getValue();
                 break;
             default:
-                configStyle = Config.MapsforgeCarNightStyle.getValue();
+                configStyle = Config.MapsForgeCarNightStyle.getValue();
         }
         if (configStyle.startsWith(mapStyleId)) {
             return configStyle;
@@ -758,20 +758,20 @@ public class ShowMap extends AbstractShowAction {
     private void setConfig(String selectedThemePaN, String mapStyleValue) {
         switch (whichCase) {
             case day:
-                Config.MapsforgeDayStyle.setValue(mapStyleValue);
-                Config.MapsforgeDayTheme.setValue(selectedThemePaN);
+                Config.MapsForgeDayStyle.setValue(mapStyleValue);
+                Config.MapsForgeDayTheme.setValue(selectedThemePaN);
                 break;
             case night:
-                Config.MapsforgeNightStyle.setValue(mapStyleValue);
-                Config.MapsforgeNightTheme.setValue(selectedThemePaN);
+                Config.MapsForgeNightStyle.setValue(mapStyleValue);
+                Config.MapsForgeNightTheme.setValue(selectedThemePaN);
                 break;
             case carday:
-                Config.MapsforgeCarDayStyle.setValue(mapStyleValue);
-                Config.MapsforgeCarDayTheme.setValue(selectedThemePaN);
+                Config.MapsForgeCarDayStyle.setValue(mapStyleValue);
+                Config.MapsForgeCarDayTheme.setValue(selectedThemePaN);
                 break;
             case carnight:
-                Config.MapsforgeCarNightStyle.setValue(mapStyleValue);
-                Config.MapsforgeCarNightTheme.setValue(selectedThemePaN);
+                Config.MapsForgeCarNightStyle.setValue(mapStyleValue);
+                Config.MapsForgeCarNightTheme.setValue(selectedThemePaN);
                 break;
         }
     }

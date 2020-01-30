@@ -40,6 +40,7 @@ import de.droidcachebox.utils.ICancelRunnable;
 import java.util.Date;
 
 import static de.droidcachebox.core.GroundspeakAPI.*;
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class TB_Log extends ActivityBase {
     private static WaitDialog wd;
@@ -150,16 +151,16 @@ public class TB_Log extends ActivityBase {
 
             String msg = "";
             if (LT == GeoCacheLogType.discovered) {
-                msg = Translation.get("discoveredAt") + ": " + GlobalCore.br + c.getGeoCacheName();
+                msg = Translation.get("discoveredAt") + ": " + br + c.getGeoCacheName();
             }
             if (LT == GeoCacheLogType.visited) {
-                msg = Translation.get("visitedAt") + ": " + GlobalCore.br + c.getGeoCacheName();
+                msg = Translation.get("visitedAt") + ": " + br + c.getGeoCacheName();
             }
             if (LT == GeoCacheLogType.dropped_off) {
-                msg = Translation.get("dropped_offAt") + ": " + GlobalCore.br + c.getGeoCacheName();
+                msg = Translation.get("dropped_offAt") + ": " + br + c.getGeoCacheName();
             }
             if (LT == GeoCacheLogType.retrieve) {
-                msg = Translation.get("retrieveAt") + ": " + GlobalCore.br + c.getGeoCacheName();
+                msg = Translation.get("retrieveAt") + ": " + br + c.getGeoCacheName();
             }
 
             CacheIcon.setSprite(Sprites.getSprite("big" + c.getGeoCacheType().name()));

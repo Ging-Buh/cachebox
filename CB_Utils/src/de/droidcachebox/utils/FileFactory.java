@@ -1,5 +1,8 @@
 package de.droidcachebox.utils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
 /**
  * Created by Longri on 17.02.2016.
  */
@@ -13,6 +16,20 @@ public abstract class FileFactory {
         if (INSTANCE != null)
             throw new RuntimeException("You need only one FileFactory instance");
         INSTANCE = this;
+    }
+
+    public static FileHandle getInternalFileHandle(String path) {
+        if (Plattform.used == Plattform.undef)
+            throw new IllegalArgumentException("Platform not def");
+
+        if (Plattform.used == Plattform.Android) {
+            return Gdx.files.internal(path);
+        } else {
+            FileHandle ret = Gdx.files.classpath(path);
+            //try internal
+            if (ret != null && !ret.exists()) ret = Gdx.files.internal(path);
+            return ret;
+        }
     }
 
     public static File createFile(String path) {

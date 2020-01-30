@@ -165,23 +165,22 @@ public class GcApiLogin extends Activity {
         // webView.setWebChromeClient(new WebChromeClient());
 
 
-        {//delete cookies and cache
-            webView.clearCache(true);
-            webView.clearHistory();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                Log.debug("GcApiLogin", "Using clearCookies code for API >=" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
-                CookieManager.getInstance().removeAllCookies(null);
-                CookieManager.getInstance().flush();
-            } else {
-                Log.debug("GcApiLogin", "Using clearCookies code for API <" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
-                CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(this);
-                cookieSyncMngr.startSync();
-                CookieManager cookieManager = CookieManager.getInstance();
-                cookieManager.removeAllCookie();
-                cookieManager.removeSessionCookie();
-                cookieSyncMngr.stopSync();
-                cookieSyncMngr.sync();
-            }
+        //delete cookies and cache
+        webView.clearCache(true);
+        webView.clearHistory();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            Log.debug("GcApiLogin", "Using clearCookies code for API >=" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+            CookieManager.getInstance().removeAllCookies(null);
+            CookieManager.getInstance().flush();
+        } else {
+            Log.debug("GcApiLogin", "Using clearCookies code for API <" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(this);
+            cookieSyncMngr.startSync();
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncMngr.stopSync();
+            cookieSyncMngr.sync();
         }
 
         webView.getSettings().setJavaScriptEnabled(true);

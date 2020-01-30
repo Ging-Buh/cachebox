@@ -43,7 +43,7 @@ public class MapsForgeLayer extends Layer {
     private static RenderThemeFuture renderThemeFuture;
     private static int PROCESSOR_COUNT;
     private static boolean mustInitialize = true;
-    private final ArrayList<MapsForgeLayer> additionalMapsforgeLayers;
+    private final ArrayList<MapsForgeLayer> additionalMapsForgeLayers;
     private final TileCache firstLevelTileCache; // perhaps static?
     private MapFile mapFile;
     private float textScale;
@@ -73,7 +73,7 @@ public class MapsForgeLayer extends Layer {
         firstLevelTileCache = new InMemoryTileCache(128);
         textScale = 1;
 
-        additionalMapsforgeLayers = new ArrayList<>();
+        additionalMapsForgeLayers = new ArrayList<>();
 
         mapsforgeThemesStyle = "";
         mapsforgeTheme = "";
@@ -98,33 +98,33 @@ public class MapsForgeLayer extends Layer {
 
     @Override
     public void addAdditionalMap(Layer layer) {
-        MapsForgeLayer additionalMapsforgeLayer = (MapsForgeLayer) layer;
-        if (!additionalMapsforgeLayers.contains(additionalMapsforgeLayer)) {
-            additionalMapsforgeLayers.add(additionalMapsforgeLayer);
+        MapsForgeLayer additionalMapsForgeLayer = (MapsForgeLayer) layer;
+        if (!additionalMapsForgeLayers.contains(additionalMapsForgeLayer)) {
+            additionalMapsForgeLayers.add(additionalMapsForgeLayer);
             for (MultiMapDataStore mmds : multiMapDataStores) {
-                mmds.addMapDataStore(additionalMapsforgeLayer.getMapFile(), false, false);
+                mmds.addMapDataStore(additionalMapsForgeLayer.getMapFile(), false, false);
             }
         }
     }
 
     @Override
     public void clearAdditionalMaps() {
-        for (MapsForgeLayer additionalMapsforgeLayer : additionalMapsforgeLayers) {
-            additionalMapsforgeLayer.getMapFile().close();
+        for (MapsForgeLayer additionalMapsForgeLayer : additionalMapsForgeLayers) {
+            additionalMapsForgeLayer.getMapFile().close();
         }
         for (MultiMapDataStore mmds : multiMapDataStores) {
             mmds = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
             mmds.addMapDataStore(mapFile, false, false);
         }
-        additionalMapsforgeLayers.clear();
+        additionalMapsForgeLayers.clear();
     }
 
     @Override
     public String[] getAllLayerNames() {
-        String[] ret = new String[additionalMapsforgeLayers.size() + 1];
+        String[] ret = new String[additionalMapsForgeLayers.size() + 1];
         ret[0] = getName();
         int idx = 1;
-        for (Layer additionalLayer : additionalMapsforgeLayers) {
+        for (Layer additionalLayer : additionalMapsForgeLayers) {
             ret[idx] = additionalLayer.getName();
             idx++;
         }
@@ -138,10 +138,10 @@ public class MapsForgeLayer extends Layer {
         sb.append(this.getName());
         sb.append("] additional Layer:");
 
-        if (additionalMapsforgeLayers == null || additionalMapsforgeLayers.isEmpty()) {
+        if (additionalMapsForgeLayers == null || additionalMapsForgeLayers.isEmpty()) {
             sb.append("--");
         } else {
-            for (Layer addLayer : additionalMapsforgeLayers) {
+            for (Layer addLayer : additionalMapsForgeLayers) {
                 sb.append(addLayer.getName()).append(", ");
             }
         }
@@ -154,7 +154,7 @@ public class MapsForgeLayer extends Layer {
                 // Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
                 multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
                 multiMapDataStores[i].addMapDataStore(mapFile, false, false);
-                for (MapsForgeLayer mapsforgeLayer : additionalMapsforgeLayers) {
+                for (MapsForgeLayer mapsforgeLayer : additionalMapsForgeLayers) {
                     multiMapDataStores[i].addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
                 }
                 HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
@@ -170,6 +170,7 @@ public class MapsForgeLayer extends Layer {
 
     @Override
     TileGL getTileGL(Descriptor desc) {
+        
         // create bitmap from tile-definition
         try {
             // Log.info(log, "MF step 1: " + desc);
@@ -276,20 +277,20 @@ public class MapsForgeLayer extends Layer {
         if (carMode) {
             textScale = DEFAULT_TEXT_SCALE * 1.35f;
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themeStyle = LocatorSettings.MapsforgeCarNightStyle.getValue();
-                path = LocatorSettings.MapsforgeCarNightTheme.getValue();
+                themeStyle = LocatorSettings.MapsForgeCarNightStyle.getValue();
+                path = LocatorSettings.MapsForgeCarNightTheme.getValue();
             } else {
-                themeStyle = LocatorSettings.MapsforgeCarDayStyle.getValue();
-                path = LocatorSettings.MapsforgeCarDayTheme.getValue();
+                themeStyle = LocatorSettings.MapsForgeCarDayStyle.getValue();
+                path = LocatorSettings.MapsForgeCarDayTheme.getValue();
             }
         } else {
             textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.mapViewTextFaktor.getValue();
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themeStyle = LocatorSettings.MapsforgeNightStyle.getValue();
-                path = LocatorSettings.MapsforgeNightTheme.getValue();
+                themeStyle = LocatorSettings.MapsForgeNightStyle.getValue();
+                path = LocatorSettings.MapsForgeNightTheme.getValue();
             } else {
-                themeStyle = LocatorSettings.MapsforgeDayStyle.getValue();
-                path = LocatorSettings.MapsforgeDayTheme.getValue();
+                themeStyle = LocatorSettings.MapsForgeDayStyle.getValue();
+                path = LocatorSettings.MapsForgeDayTheme.getValue();
             }
         }
         if (path.length() > 0) {

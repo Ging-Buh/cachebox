@@ -1,8 +1,11 @@
 package de.droidcachebox.settings;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import de.droidcachebox.*;
+import de.droidcachebox.Config;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.SoundCache;
 import de.droidcachebox.SoundCache.Sounds;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
@@ -34,6 +37,8 @@ import de.droidcachebox.utils.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
@@ -445,7 +450,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
 
-            StringInputBox.show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
+            StringInputBox.show(type, "default:" + br + SB.getDefaultValue(), trans, SB.getValue(),
                     (which, data) -> {
                         String text = StringInputBox.editText.getText();
                         if (which == MessageBox.BTN_LEFT_POSITIVE) {
@@ -627,7 +632,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             EditKey = Config.settings.indexOf(SB);
 
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListener() {
+            NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {
                     SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
@@ -669,7 +674,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             EditKey = Config.settings.indexOf(SB);
 
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
+            NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
                     SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
@@ -711,7 +716,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             EditKey = Config.settings.indexOf(SB);
 
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
+            NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
                     SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
@@ -837,13 +842,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 if (SB.getName().equals("DebugDisplayInfo")) {
                     String info = "";
 
-                    info += "Density= " + GL_UISizes.dpi + GlobalCore.br;
-                    info += "Height= " + UiSizes.getInstance().getWindowHeight() + GlobalCore.br;
-                    info += "Width= " + UiSizes.getInstance().getWindowWidth() + GlobalCore.br;
-                    info += "Scale= " + UiSizes.getInstance().getScale() + GlobalCore.br;
-                    info += "FontSize= " + UiSizes.getInstance().getScaledFontSize() + GlobalCore.br;
-                    info += "GPS min pos Time= " + PositionChangedListeners.minPosEventTime + GlobalCore.br;
-                    info += "GPS min Orientation Time= " + PositionChangedListeners.minOrientationEventTime + GlobalCore.br;
+                    info += "Density= " + GL_UISizes.dpi + br;
+                    info += "Height= " + UiSizes.getInstance().getWindowHeight() + br;
+                    info += "Width= " + UiSizes.getInstance().getWindowWidth() + br;
+                    info += "Scale= " + UiSizes.getInstance().getScale() + br;
+                    info += "FontSize= " + UiSizes.getInstance().getScaledFontSize() + br;
+                    info += "GPS min pos Time= " + PositionChangedListeners.minPosEventTime + br;
+                    info += "GPS min Orientation Time= " + PositionChangedListeners.minOrientationEventTime + br;
 
                     MessageBox.show(info, msgBoxReturnListener);
 
@@ -960,7 +965,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             int intValueSec = Integer.parseInt(s[1]);
 
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
+            NumericInputBox.Show("default: " + br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
                 @Override
                 public void returnValue(int min, int sec) {
                     SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);

@@ -3,7 +3,6 @@ package de.droidcachebox.menu.menuBtn1.contextmenus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.Config;
-import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.database.Cache;
@@ -25,6 +24,7 @@ import de.droidcachebox.utils.log.Log;
 import java.util.ArrayList;
 
 import static de.droidcachebox.core.GroundspeakAPI.*;
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class UpdateCachesState extends AbstractAction {
     private static final String sKlasse = "UpdateCachesState";
@@ -161,7 +161,7 @@ public class UpdateCachesState extends AbstractAction {
         @Override
         public void runnableIsReady(boolean canceled) {
             Log.debug(sKlasse, "chkState ready");
-            String sCanceld = canceled ? Translation.get("isCanceld") + GlobalCore.br : "";
+            String sCanceld = canceled ? Translation.get("isCanceld") + br : "";
             if (result != -1) {
                 // Reload result from DB
                 synchronized (Database.Data.cacheList) {

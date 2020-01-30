@@ -32,7 +32,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncTask;
-import de.droidcachebox.*;
+import de.droidcachebox.CB_UI_Base_Settings;
+import de.droidcachebox.Energy;
+import de.droidcachebox.KeyboardFocusChangedEventList;
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.animation.Fader;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
@@ -63,6 +66,7 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_IDLE = 200;
     public static final int FRAME_RATE_ACTION = 50;
     public static final int FRAME_RATE_FAST_ACTION = 40;
+    public static final boolean isTestVersion = false;
     public static GL that;
     private TextInputInterface textInput;
     private GL_Listener_Interface glListener; // implementation in ../ViewGL : Desktop-Launcher/DesktopMain/start
@@ -366,7 +370,7 @@ public class GL implements ApplicationListener {
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
         mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
 
-        if (AbstractGlobal.isTestVersion()) {
+        if (isTestVersion) {
             float FpsInfoSize = 4 * UiSizes.getInstance().getScale();
             if (FpsInfoSprite != null) {
                 mPolygonSpriteBatch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);

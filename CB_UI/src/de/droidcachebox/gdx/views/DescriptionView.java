@@ -17,7 +17,6 @@ package de.droidcachebox.gdx.views;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import de.droidcachebox.AbstractGlobal;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -42,6 +41,7 @@ import java.util.TimerTask;
 
 import static de.droidcachebox.core.GroundspeakAPI.*;
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class DescriptionView extends CB_View_Base {
     private final static String BASIC = "Basic";
@@ -289,13 +289,13 @@ public class DescriptionView extends CB_View_Base {
         }
 
         sb.append(Translation.get("LiveDescMessage", MemberType, limit));
-        sb.append(AbstractGlobal.br);
+        sb.append(br);
         if (GroundspeakAPI.fetchMyUserInfos().remaining > 0)
             sb.append(Translation.get("LiveDescAfter", actLimit)); // "
 
         if (GroundspeakAPI.fetchMyUserInfos().remaining == 0) {
             sb.append(Translation.get("LiveDescLimit"));
-            sb.append(AbstractGlobal.br);
+            sb.append(br);
             if (!premium)
                 sb.append(Translation.get("LiveDescLimitBasic"));
         }

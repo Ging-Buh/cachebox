@@ -20,12 +20,12 @@ import de.droidcachebox.settings.*;
 import de.droidcachebox.utils.Config_Core;
 import de.droidcachebox.utils.log.LogLevel;
 
-import static de.droidcachebox.AbstractGlobal.displayDensity;
 import static de.droidcachebox.settings.SettingCategory.*;
 import static de.droidcachebox.settings.SettingModus.*;
 import static de.droidcachebox.settings.SettingStoreType.*;
 import static de.droidcachebox.settings.SettingUsage.ACB;
 import static de.droidcachebox.settings.SettingUsage.ALL;
+import static de.droidcachebox.utils.Config_Core.displayDensity;
 
 public interface CB_UI_Base_Settings {
     SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", Debug, NORMAL, LogLevel.OFF, Platform, ALL, LogLevel.OFF);

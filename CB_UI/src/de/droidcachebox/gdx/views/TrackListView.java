@@ -385,18 +385,18 @@ public class TrackListView extends V_ListView {
         @Override
         public int getCount() {
             int size = RouteOverlay.getInstance().getNumberOfTracks();
-            if (GlobalCore.aktuelleRoute != null)
+            if (GlobalCore.currentRoute != null)
                 size++;
             return size;
         }
 
         @Override
         public ListViewItemBase getView(int viewPosition) {
-            Log.info(log, "get track item number " + viewPosition + " (" + (GlobalCore.aktuelleRoute != null ? "with " : "without ") + "tracking." + ")");
+            Log.info(log, "get track item number " + viewPosition + " (" + (GlobalCore.currentRoute != null ? "with " : "without ") + "tracking." + ")");
             int tracksIndex = viewPosition;
-            if (GlobalCore.aktuelleRoute != null) {
+            if (GlobalCore.currentRoute != null) {
                 if (viewPosition == 0) {
-                    aktRouteItem = new TrackListViewItem(itemRec, viewPosition, GlobalCore.aktuelleRoute);
+                    aktRouteItem = new TrackListViewItem(itemRec, viewPosition, GlobalCore.currentRoute);
                     return aktRouteItem;
                 }
                 tracksIndex--; // viewPosition - 1, if tracking is activated
@@ -406,7 +406,7 @@ public class TrackListView extends V_ListView {
 
         @Override
         public float getItemSize(int position) {
-            if (GlobalCore.aktuelleRoute != null && position == 1) {
+            if (GlobalCore.currentRoute != null && position == 1) {
                 // so there is a distance between aktuelleRoute and the others
                 return itemRec.getHeight() + itemRec.getHalfHeight();
             }

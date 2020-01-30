@@ -100,14 +100,14 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             this.setDraggable();
         }
 
-        if (de.droidcachebox.GlobalCore.getSelectedWaypoint() != null) {
+        if (de.droidcachebox.GlobalCore.getSelectedWayPoint() != null) {
 
-            if (aktWaypoint == de.droidcachebox.GlobalCore.getSelectedWaypoint()) {
+            if (aktWaypoint == de.droidcachebox.GlobalCore.getSelectedWayPoint()) {
                 // is selected
                 return;
             }
 
-            aktWaypoint = de.droidcachebox.GlobalCore.getSelectedWaypoint();
+            aktWaypoint = de.droidcachebox.GlobalCore.getSelectedWayPoint();
             int id = 0;
 
             for (int i = 0, n = aktCache.getWayPoints().size(); i < n; i++) {

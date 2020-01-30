@@ -53,6 +53,7 @@ import java.util.*;
 
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.*;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.utils.Config_Core.br;
 
 /*
  Defining a Filter for geoCaches to show is done by selection within 4 Tabs (in contentBox):
@@ -363,7 +364,7 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         if (exist) {
-            MessageBox.show(Translation.get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButton.OK, MessageBoxIcon.Warning,
+            MessageBox.show(Translation.get("PresetExist") + br + br + "\"" + existName + "\"", null, MessageBoxButton.OK, MessageBoxIcon.Warning,
                     (which, data) -> {
                         de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
                         return true;
@@ -1058,7 +1059,7 @@ public class EditFilterSettings extends ActivityBase {
             categoryListViewItems.add(v);
 
             v.setClickHandler((v1, X, Y, pointer, button) -> {
-                CB_RectF hitRec =  new CB_RectF(v1);
+                CB_RectF hitRec = new CB_RectF(v1);
                 hitRec.setY(0);
 
                 CB_RectF plusBtnHitRec = new CB_RectF(hitRec.getWidth() - hitRec.getHeight(), 0, hitRec.getHeight(), hitRec.getMaxY());

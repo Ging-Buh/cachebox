@@ -80,10 +80,10 @@ public class EditCoord extends ActivityBase {
                 String coordsToWrite = coord.getLongitude() + "," + coord.getLatitude() + ",";
                 writer = txtFile.getFileOutputStream();
                 writer.write(("LON,LAT,Waypoint\r\n").getBytes(StandardCharsets.UTF_8));
-                if (GlobalCore.getSelectedWaypoint() == null) {
+                if (GlobalCore.getSelectedWayPoint() == null) {
                     writer.write((coordsToWrite + GlobalCore.getSelectedCache().getGeoCacheCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
                 } else {
-                    writer.write((coordsToWrite + GlobalCore.getSelectedWaypoint().getGcCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
+                    writer.write((coordsToWrite + GlobalCore.getSelectedWayPoint().getGcCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
                 }
                 writer.flush();
                 writer.close();

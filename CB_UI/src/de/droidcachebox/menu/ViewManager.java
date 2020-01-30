@@ -68,6 +68,7 @@ import java.util.TimerTask;
 
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * the ViewManager has one tab (leftTab) on the phone<br>
@@ -127,7 +128,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
+                        String Msg = Translation.get("apiKeyInvalid") + br + br;
                         Msg += Translation.get("wantApi");
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
@@ -147,7 +148,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
+                        String Msg = Translation.get("apiKeyExpired") + br + br;
                         Msg += Translation.get("wantApi");
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
@@ -168,7 +169,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
+                        String Msg = Translation.get("apiKeyNeeded") + br + br;
                         Msg += Translation.get("wantApi");
 
                         MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live,
@@ -357,7 +358,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             // add Slider as last
             Slider slider = new Slider(this, "Slider");
             addChild(slider);
-            slider.selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+            slider.selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
             String state = Config.nightMode.getValue() ? "Night" : "Day";
 
@@ -436,8 +437,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         if (GlobalCore.isSetSelectedCache()) {
             float distance = GlobalCore.getSelectedCache().recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
-            if (GlobalCore.getSelectedWaypoint() != null) {
-                distance = GlobalCore.getSelectedWaypoint().getDistance();
+            if (GlobalCore.getSelectedWayPoint() != null) {
+                distance = GlobalCore.getSelectedWayPoint().getDistance();
             }
 
             if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Config.SoundApproachDistance.getValue())) {

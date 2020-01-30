@@ -45,6 +45,7 @@ import de.droidcachebox.utils.UnitFormatter;
 
 import static de.droidcachebox.PlatformUIBase.callUrl;
 import static de.droidcachebox.PlatformUIBase.hideForDialog;
+import static de.droidcachebox.utils.Config_Core.br;
 
 public class AboutView extends CB_View_Base implements SelectedCacheChangedEventListener, GpsStateChangeEvent, PositionChangedEvent {
     private static AboutView that;
@@ -120,7 +121,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
         CB_Logo.setDrawable(new SpriteDrawable(Sprites.getSpriteDrawable("cachebox-logo")));
         this.addChild(CB_Logo);
 
-        String VersionString = GlobalCore.getInstance().getVersionString() + GlobalCore.br + GlobalCore.br + GlobalCore.aboutMsg;
+        String VersionString = GlobalCore.getInstance().getVersionString() + br + br + GlobalCore.aboutMsg;
 
         GlyphLayout layout = new GlyphLayout();
         layout.setText(Fonts.getSmall(), VersionString);
@@ -136,6 +137,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
 
         CachesFoundLabel.setClickHandler(new OnClickListener() {
             MessageBox messageBox;
+
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 messageBox = MessageBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live,
@@ -306,7 +308,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
             CachesFoundLabel.setText(Translation.get("caches_found") + " " + Config.FoundOffset.getValue());
 
             Cache selectedCache = GlobalCore.getSelectedCache();
-            Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
+            Waypoint selectedWaypoint = GlobalCore.getSelectedWayPoint();
 
             if (selectedCache != null) {
                 try {

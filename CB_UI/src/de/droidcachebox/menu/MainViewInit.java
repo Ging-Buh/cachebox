@@ -50,6 +50,8 @@ import de.droidcachebox.utils.log.Log;
 
 import java.io.IOException;
 
+import static de.droidcachebox.utils.Config_Core.br;
+
 /**
  * @author ging-buh
  * @author Longri
@@ -146,7 +148,7 @@ public class MainViewInit extends MainViewBase {
         this.addLast(dummy);
 
         String VersionString = GlobalCore.getInstance().getVersionString();
-        descTextView = new CB_Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
+        descTextView = new CB_Label(VersionString + br + br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
         descTextView.setHeight(descTextView.getTextHeight());
         this.addLast(descTextView);
 
@@ -380,7 +382,7 @@ public class MainViewInit extends MainViewBase {
             synchronized (Database.Data.cacheList) {
                 Cache c = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
                 if (c != null) {
-                    if (GlobalCore.restartWaypoint != null) {
+                    if (GlobalCore.restartWayPoint != null) {
                         WaypointDAO dao = new WaypointDAO();
                         CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(c.generatedId, true);
                         if (waypoints != null) {
@@ -388,7 +390,7 @@ public class MainViewInit extends MainViewBase {
 
                             for (int i = 0, n = waypoints.size(); i < n; i++) {
                                 Waypoint wp = waypoints.get(i);
-                                if (wp.getGcCode().equalsIgnoreCase(GlobalCore.restartWaypoint)) {
+                                if (wp.getGcCode().equalsIgnoreCase(GlobalCore.restartWayPoint)) {
                                     w = wp;
                                 }
                             }

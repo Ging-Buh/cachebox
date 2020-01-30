@@ -17,11 +17,12 @@ package de.droidcachebox.gdx.math;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.AbstractGlobal;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.Join;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * Holds the four edge points of a square.<br>
@@ -333,7 +334,7 @@ public class Quadrangle implements IGeometry {
     public String toString() {
         String ret = "";
         if (cor != null) {
-            ret = "[l " + cor[0] + "," + cor[1] + "-" + cor[2] + "," + cor[3] + "]" + AbstractGlobal.br;
+            ret = "[l " + cor[0] + "," + cor[1] + "-" + cor[2] + "," + cor[3] + "]" + br;
         }
         return ret + "[" + vertices[0] + "," + vertices[1] + " | " + vertices[2] + "," + vertices[3] + " | " + vertices[4] + "," + vertices[5] + " | " + vertices[6] + "," + vertices[7] + "]";
     }

@@ -5,19 +5,31 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.ex_import.DescriptionImageGrabber;
+import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.ICancelRunnable;
+
+import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
 
 public class ShowSpoiler extends AbstractShowAction {
-    private static ShowSpoiler that;
+    private static ShowSpoiler showSpoiler;
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
     private Sprite SpoilerExistsIcon;
     private Sprite NoSpoilerIcon;
     private Menu contextMenu;
+    private static CancelWaitDialog wd;
 
     private ShowSpoiler() {
         super("spoiler");
@@ -29,8 +41,8 @@ public class ShowSpoiler extends AbstractShowAction {
     }
 
     public static ShowSpoiler getInstance() {
-        if (that == null) that = new ShowSpoiler();
-        return that;
+        if (showSpoiler == null) showSpoiler = new ShowSpoiler();
+        return showSpoiler;
     }
 
     @Override
@@ -76,7 +88,7 @@ public class ShowSpoiler extends AbstractShowAction {
         contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
         contextMenu.addMenuItem("reloadSpoiler", null, () -> {
-            GlobalCore.ImportSpoiler(false).setReadyListener(() -> {
+            ImportSpoiler(false).setReadyListener(() -> {
                 // do after import
                 if (GlobalCore.isSetSelectedCache()) {
                     GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -88,7 +100,7 @@ public class ShowSpoiler extends AbstractShowAction {
         });
 
         contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> {
-            GlobalCore.ImportSpoiler(true).setReadyListener(() -> {
+            ImportSpoiler(true).setReadyListener(() -> {
                 // do after import
                 if (GlobalCore.isSetSelectedCache()) {
                     GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -104,5 +116,32 @@ public class ShowSpoiler extends AbstractShowAction {
             if (file != null) PlatformUIBase.startPictureApp(file);
         });
     }
+
+
+    public CancelWaitDialog ImportSpoiler(boolean withLogImages) {
+        wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
+            // canceled
+        }, new ICancelRunnable() {
+            @Override
+            public void run() {
+                // Importer importer = new Importer();
+                ImporterProgress ip = new ImporterProgress();
+                int result = GroundspeakAPI.ERROR;
+                if (GlobalCore.getSelectedCache() != null)
+                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
+                wd.close();
+                if (result != OK) {
+                    GL.that.Toast(LastAPIError);
+                }
+            }
+
+            @Override
+            public boolean doCancel() {
+                return false;
+            }
+        });
+        return wd;
+    }
+
 
 }

@@ -19,6 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import de.droidcachebox.settings.SettingsAudio;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
@@ -100,11 +101,11 @@ public class SoundCache {
     private static Music getMusikFromSetting(SettingsAudio set) {
         String path = set.getValue().Path;
 
-        FileHandle handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : GlobalCore.getInternalFileHandle(path);
+        FileHandle handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : FileFactory.getInternalFileHandle(path);
 
         if (handle == null || !handle.exists() || handle.isDirectory() || path.length() == 0) {
             path = set.getDefaultValue().Path;
-            handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : GlobalCore.getInternalFileHandle(path);
+            handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : FileFactory.getInternalFileHandle(path);
             if (handle != null && handle.exists()) {
                 set.loadDefault();
                 set.setDirty();

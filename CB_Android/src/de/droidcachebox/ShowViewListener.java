@@ -497,14 +497,14 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             double lon;
             String targetName;
 
-            if (GlobalCore.getSelectedWaypoint() == null) {
+            if (GlobalCore.getSelectedWayPoint() == null) {
                 lat = GlobalCore.getSelectedCache().getLatitude();
                 lon = GlobalCore.getSelectedCache().getCoordinate().getLongitude();
                 targetName = GlobalCore.getSelectedCache().getGeoCacheCode();
             } else {
-                lat = GlobalCore.getSelectedWaypoint().getLatitude();
-                lon = GlobalCore.getSelectedWaypoint().getLongitude();
-                targetName = GlobalCore.getSelectedWaypoint().getGcCode();
+                lat = GlobalCore.getSelectedWayPoint().getLatitude();
+                lon = GlobalCore.getSelectedWayPoint().getLongitude();
+                targetName = GlobalCore.getSelectedWayPoint().getGcCode();
             }
 
             String selectedNavi = Config.Navis.getValue();

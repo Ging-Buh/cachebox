@@ -21,6 +21,8 @@ import de.droidcachebox.translation.Translation;
 import java.util.Date;
 import java.util.Locale;
 
+import static de.droidcachebox.utils.Config_Core.br;
+
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     // Allgemein
     private final GeoCacheType[] CacheTypNumbers = GeoCacheType.caches();
@@ -170,7 +172,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         cacheOwner.setText(cache.getOwner());
         cacheState.setText(cache.getState());
         cacheCountry.setText(cache.getCountry());
-        if (cache.getLongDescription().equals(GlobalCore.br))
+        if (cache.getLongDescription().equals(br))
             cache.setLongDescription("");
         cacheDescription.setText(cache.getLongDescription());
         cacheDescription.setCursorPosition(0);
