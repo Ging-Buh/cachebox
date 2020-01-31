@@ -238,7 +238,7 @@ public class ShowMap extends AbstractShowAction {
                         lsm.addMenuItem("", lang, null, (v, x, y, pointer, button) -> {
                             lsm.close();
                             String selectedLanguage = ((MenuItem) v).getTitle();
-                            Config.PreferredMapLanguage.setValue(selectedLanguage);
+                            Config.preferredMapLanguage.setValue(selectedLanguage);
                             Config.AcceptChanges();
                             return true;
                         });
@@ -640,16 +640,16 @@ public class ShowMap extends AbstractShowAction {
         mi.setCheckable(true);
         switch (whichCase) {
             case day:
-                mi.setChecked(Config.MapsForgeDayTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.mapsForgeDayTheme.getValue().equals(themePaN));
                 break;
             case night:
-                mi.setChecked(Config.MapsForgeNightTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.mapsForgeNightTheme.getValue().equals(themePaN));
                 break;
             case carday:
-                mi.setChecked(Config.MapsForgeCarDayTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.mapsForgeCarDayTheme.getValue().equals(themePaN));
                 break;
             case carnight:
-                mi.setChecked(Config.MapsForgeCarNightTheme.getValue().equals(themePaN));
+                mi.setChecked(Config.mapsForgeCarNightTheme.getValue().equals(themePaN));
                 break;
         }
     }
@@ -736,16 +736,16 @@ public class ShowMap extends AbstractShowAction {
         String configStyle;
         switch (whichCase) {
             case day:
-                configStyle = Config.MapsForgeDayStyle.getValue();
+                configStyle = Config.mapsForgeDayStyle.getValue();
                 break;
             case night:
-                configStyle = Config.MapsForgeNightStyle.getValue();
+                configStyle = Config.mapsForgeNightStyle.getValue();
                 break;
             case carday:
-                configStyle = Config.MapsForgeCarDayStyle.getValue();
+                configStyle = Config.mapsForgeCarDayStyle.getValue();
                 break;
             default:
-                configStyle = Config.MapsForgeCarNightStyle.getValue();
+                configStyle = Config.mapsForgeCarNightStyle.getValue();
         }
         if (configStyle.startsWith(mapStyleId)) {
             return configStyle;
@@ -758,20 +758,20 @@ public class ShowMap extends AbstractShowAction {
     private void setConfig(String selectedThemePaN, String mapStyleValue) {
         switch (whichCase) {
             case day:
-                Config.MapsForgeDayStyle.setValue(mapStyleValue);
-                Config.MapsForgeDayTheme.setValue(selectedThemePaN);
+                Config.mapsForgeDayStyle.setValue(mapStyleValue);
+                Config.mapsForgeDayTheme.setValue(selectedThemePaN);
                 break;
             case night:
-                Config.MapsForgeNightStyle.setValue(mapStyleValue);
-                Config.MapsForgeNightTheme.setValue(selectedThemePaN);
+                Config.mapsForgeNightStyle.setValue(mapStyleValue);
+                Config.mapsForgeNightTheme.setValue(selectedThemePaN);
                 break;
             case carday:
-                Config.MapsForgeCarDayStyle.setValue(mapStyleValue);
-                Config.MapsForgeCarDayTheme.setValue(selectedThemePaN);
+                Config.mapsForgeCarDayStyle.setValue(mapStyleValue);
+                Config.mapsForgeCarDayTheme.setValue(selectedThemePaN);
                 break;
             case carnight:
-                Config.MapsForgeCarNightStyle.setValue(mapStyleValue);
-                Config.MapsForgeCarNightTheme.setValue(selectedThemePaN);
+                Config.mapsForgeCarNightStyle.setValue(mapStyleValue);
+                Config.mapsForgeCarNightTheme.setValue(selectedThemePaN);
                 break;
         }
     }

@@ -26,7 +26,7 @@ public class TmsLayer extends Layer {
         if ((name == null) || (url == null)) {
             throw new Exception("bad tms file " + file);
         }
-        mLayerUsage = LayerUsage.normal;
+        layerUsage = LayerUsage.normal;
         mapType = MapType.ONLINE;
         friendlyName = name;
         storageType = Layer.StorageType.PNG;

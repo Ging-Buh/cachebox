@@ -27,7 +27,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         friendlyName = readString(reader, 128);
         url = readString(reader, 256);
         mapType = MapType.MapPack;
-        mLayerUsage = LayerUsage.normal;
+        layerUsage = LayerUsage.normal;
         storageType = Layer.StorageType.PNG;
 
         maxAge = Long.reverseBytes(reader.readLong());

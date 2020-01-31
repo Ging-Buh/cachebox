@@ -33,6 +33,7 @@ import org.json.JSONTokener;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -227,9 +228,9 @@ public class GroundspeakAPI {
     private static void writeSearchResultsToDisc(JSONArray fetchedCaches, Descriptor descriptor) {
         Writer writer = null;
         try {
-            String Path = descriptor.getLocalCachePath(LiveMapQue.LIVE_CACHE_NAME) + LiveMapQue.LIVE_CACHE_EXTENSION;
-            if (FileIO.createDirectory(Path)) {
-                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Path), "utf-8"));
+            String path = LiveMapQue.getLocalCachePath(descriptor);
+            if (FileIO.createDirectory(path)) {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8));
                 writer.write(fetchedCaches.toString());
             }
         } catch (IOException ex) {

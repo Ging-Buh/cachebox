@@ -15,8 +15,8 @@ public interface LocatorSettings {
     Integer[] Level = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
     Integer[] CrossLevel = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
 
-    SettingFolder TileCacheFolder = new SettingFolder("TileCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Global, ALL, true);
-    SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", Folder, NEVER, "", Local, ALL, true);
+    SettingFolder tileCacheFolder = new SettingFolder("TileCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Global, ALL, true);
+    SettingFolder tileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", Folder, NEVER, "", Local, ALL, true);
 
     SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", Map, EXPERT, 16, Global, ACB, CrossLevel);
     SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", Map, EXPERT, Config_Core.mWorkPath + "/repository/maps", Global, ALL, false);
@@ -32,6 +32,7 @@ public interface LocatorSettings {
     SettingStringList currentMapLayer = new SettingStringList("CurrentMapLayer", Map, NEVER, new String[]{"Mapnik"}, Global, ACB);
     SettingString CurrentMapOverlayLayerName = new SettingString("CurrentMapOverlayLayer", Map, NEVER, "", Global, ACB);
     SettingInt lastZoomLevel = new SettingInt("lastZoomLevel", Map, NEVER, 14, Global, ALL);
+    SettingInt mapsForgeSaveZoomLevel = new SettingInt("mapsForgeSaveZoomLevel", Map, EXPERT, 14, Global, ALL);
 
     SettingBool showRating = new SettingBool("MapShowRating", Map, NEVER, true, Global, ACB);
     SettingBool showDifficultyTerrain = new SettingBool("MapShowDT", Map, NEVER, true, Global, ACB);
@@ -47,15 +48,15 @@ public interface LocatorSettings {
     SettingBool hideMyFinds = new SettingBool("MapHideMyFinds", Map, NEVER, false, Global, ACB);
     SettingInt lastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", Map, NEVER, 0, Global, ACB);
 
-    SettingFile MapsForgeDayTheme = new SettingFile("MapsforgeDayTheme", Map, NEVER, "", Global, ACB, "xml");
-    SettingFile MapsForgeNightTheme = new SettingFile("MapsforgeNightTheme", Map, NEVER, "", Global, ACB, "xml");
-    SettingFile MapsForgeCarDayTheme = new SettingFile("MapsforgeCarDayTheme", Map, NEVER, "CAR", Global, ACB, "xml");
-    SettingFile MapsForgeCarNightTheme = new SettingFile("MapsforgeCarNightTheme", Map, NEVER, "CAR", Global, ACB, "xml");
-    SettingString MapsForgeDayStyle = new SettingString("MapsforgeDayStyle", Map, NEVER, "", Global, ACB);
-    SettingString MapsForgeNightStyle = new SettingString("MapsforgeNightStyle", Map, NEVER, "", Global, ACB);
-    SettingString MapsForgeCarDayStyle = new SettingString("MapsforgeCarDayStyle", Map, NEVER, "", Global, ACB);
-    SettingString MapsForgeCarNightStyle = new SettingString("MapsforgeCarNightStyle", Map, NEVER, "", Global, ACB);
-    SettingString PreferredMapLanguage = new SettingString("MapLanguage", Map, NEVER, "", Global, ALL);
+    SettingFile mapsForgeDayTheme = new SettingFile("MapsforgeDayTheme", Map, NEVER, "", Global, ACB, "xml");
+    SettingFile mapsForgeNightTheme = new SettingFile("MapsforgeNightTheme", Map, NEVER, "", Global, ACB, "xml");
+    SettingFile mapsForgeCarDayTheme = new SettingFile("MapsforgeCarDayTheme", Map, NEVER, "CAR", Global, ACB, "xml");
+    SettingFile mapsForgeCarNightTheme = new SettingFile("MapsforgeCarNightTheme", Map, NEVER, "CAR", Global, ACB, "xml");
+    SettingString mapsForgeDayStyle = new SettingString("MapsforgeDayStyle", Map, NEVER, "", Global, ACB);
+    SettingString mapsForgeNightStyle = new SettingString("MapsforgeNightStyle", Map, NEVER, "", Global, ACB);
+    SettingString mapsForgeCarDayStyle = new SettingString("MapsforgeCarDayStyle", Map, NEVER, "", Global, ACB);
+    SettingString mapsForgeCarNightStyle = new SettingString("MapsforgeCarNightStyle", Map, NEVER, "", Global, ACB);
+    SettingString preferredMapLanguage = new SettingString("MapLanguage", Map, NEVER, "", Global, ALL);
 
     SettingBool MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", CarMode, NORMAL, false, Global, ACB);
     SettingInt MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", CarMode, NORMAL, 60, Global, ACB);

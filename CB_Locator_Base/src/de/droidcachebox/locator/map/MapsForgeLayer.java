@@ -12,7 +12,6 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MultiMapDataStore;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.renderer.DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
@@ -22,10 +21,12 @@ import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.*;
 
 /**
  * MapsForge (Offline): getting tiles from a file in mapsforge format (one of these can be taken from Freizeitkarte)
@@ -61,9 +62,9 @@ public class MapsForgeLayer extends Layer {
         if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
             mapType = Layer.MapType.FREIZEITKARTE;
         }
-        mLayerUsage = LayerUsage.normal;
+        layerUsage = LayerUsage.normal;
         name = FileIO.getFileNameWithoutExtension(pathAndName);
-        friendlyName = getName();
+        friendlyName = name;
         url = "";
         storageType = Layer.StorageType.PNG;
         data = null;
@@ -102,7 +103,7 @@ public class MapsForgeLayer extends Layer {
         if (!additionalMapsForgeLayers.contains(additionalMapsForgeLayer)) {
             additionalMapsForgeLayers.add(additionalMapsForgeLayer);
             for (MultiMapDataStore mmds : multiMapDataStores) {
-                mmds.addMapDataStore(additionalMapsForgeLayer.getMapFile(), false, false);
+                mmds.addMapDataStore(additionalMapsForgeLayer.mapFile, false, false);
             }
         }
     }
@@ -110,7 +111,7 @@ public class MapsForgeLayer extends Layer {
     @Override
     public void clearAdditionalMaps() {
         for (MapsForgeLayer additionalMapsForgeLayer : additionalMapsForgeLayers) {
-            additionalMapsForgeLayer.getMapFile().close();
+            additionalMapsForgeLayer.mapFile.close();
         }
         for (MultiMapDataStore mmds : multiMapDataStores) {
             mmds = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
@@ -155,10 +156,10 @@ public class MapsForgeLayer extends Layer {
                 multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
                 multiMapDataStores[i].addMapDataStore(mapFile, false, false);
                 for (MapsForgeLayer mapsforgeLayer : additionalMapsForgeLayers) {
-                    multiMapDataStores[i].addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
+                    multiMapDataStores[i].addMapDataStore(mapsforgeLayer.mapFile, false, false);
                 }
-                HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
-                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, hillsRenderConfig);
+                // last parameter of new DatabaseRenderer HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
+                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, null);
             }
             String additional = mapFile.getMapFileInfo().comment == null ? "" : " : " + mapFile.getMapFileInfo().comment;
             Log.info(log, "prepareLayer " + getName() + additional);
@@ -170,7 +171,33 @@ public class MapsForgeLayer extends Layer {
 
     @Override
     TileGL getTileGL(Descriptor desc) {
-        // hint: if returns null, caching to file is called. think of using for smaller ZoomFactors ( zoomed out )
+        // hint: if returns null, cacheTileToFile(Descriptor descriptor) is called, but we already cache the tile to file here.
+        String cachedTileFilename = getLocalFilename(desc); // to do perhaps extend name with language, theme, style
+        if (desc.getZoom() <= LocatorSettings.mapsForgeSaveZoomLevel.getValue()) {
+            try {
+                long lastModified = 0;
+                if (FileIO.fileExists(cachedTileFilename)) {
+                    File info = FileFactory.createFile(cachedTileFilename);
+                    lastModified = info.lastModified(); // must compare to date of .map-file (if replaced with newer one)
+                    if (lastModified < mapFile.getDataTimestamp(null)) lastModified = 0; // there is a newer mapfile
+                }
+
+                if (lastModified != 0) {
+                    if (FileIO.fileExistsNotEmpty(cachedTileFilename)) {
+                        byte[] bytes = getImageFromFile(cachedTileFilename);
+                        if (CB_UI_Base_Settings.nightMode.getValue()) {
+                            bytes = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(bytes)));
+                        }
+                        return new TileGL_Bmp(desc, bytes, TileGL.TileState.Present, Pixmap.Format.RGB565);
+                    } else {
+                        FileFactory.createFile(cachedTileFilename).delete();
+                    }
+                }
+
+            } catch (Exception ex) {
+                Log.err(log, "getTileGL", ex);
+            }
+        }
         // create bitmap from tile-definition
         try {
             // Log.info(log, "MF step 1: " + desc);
@@ -182,8 +209,34 @@ public class MapsForgeLayer extends Layer {
                 Log.err(log, "MF step 2: " + desc);
                 return null;
             } else {
-                // Log.info(log, "MF step 2: " + desc);
-                return new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
+                TileGL_Bmp mfTile = new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
+                if (desc.getZoom() <= LocatorSettings.mapsForgeSaveZoomLevel.getValue()) {
+                    // cache to file here
+                    byte[]  bytesOfMfTile = mfTile.getBytes();
+                    if (bytesOfMfTile != null) {
+                        File outFile = null;
+                        try {
+                            outFile = FileFactory.createFile(cachedTileFilename);
+                            outFile.delete();
+                            outFile.getParentFile().mkdirs();
+                            outFile.createNewFile();
+                            FileOutputStream stream = outFile.getFileOutputStream();
+                            stream.write(bytesOfMfTile);
+                            stream.close(); // There is no more need for this line since you had created the instance of "stream" inside the try. And this will automatically close the OutputStream
+                            Log.info(log, "cached " + outFile.getName());
+                            outFile.setLastModified(mapFile.getDataTimestamp(null));
+                        }
+                        catch (Exception ex) {
+                            Log.err(log,"bad write to disk ", ex);;
+                            try {
+                                if (outFile != null) outFile.delete();
+                            } catch (IOException e) {
+                                Log.err(log,"delete File after bad write to disk ", e);;
+                            }
+                        }
+                    }
+                }
+                return mfTile;
             }
         } catch (Exception ex) {
             Log.err(log, "get mapsfore tile: ", ex);
@@ -196,7 +249,7 @@ public class MapsForgeLayer extends Layer {
         if (getLanguages() == null) {
             mapFile = new MapFile(file);
         } else {
-            String preferredLanguage = LocatorSettings.PreferredMapLanguage.getValue();
+            String preferredLanguage = LocatorSettings.preferredMapLanguage.getValue();
             if (preferredLanguage.length() > 0) {
                 for (String la : getLanguages()) {
                     if (la.equals(preferredLanguage)) {
@@ -215,12 +268,8 @@ public class MapsForgeLayer extends Layer {
     }
 
     boolean cacheTileToFile(Descriptor descriptor) {
-        // don't want to cache for mapsforge
+        // don't want to cache for mapsforge or cache after generation
         return false;
-    }
-
-    private MapFile getMapFile() {
-        return mapFile;
     }
 
     private void setRenderTheme(String theme, String themestyle) {
@@ -277,20 +326,20 @@ public class MapsForgeLayer extends Layer {
         if (carMode) {
             textScale = DEFAULT_TEXT_SCALE * 1.35f;
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themeStyle = LocatorSettings.MapsForgeCarNightStyle.getValue();
-                path = LocatorSettings.MapsForgeCarNightTheme.getValue();
+                themeStyle = LocatorSettings.mapsForgeCarNightStyle.getValue();
+                path = LocatorSettings.mapsForgeCarNightTheme.getValue();
             } else {
-                themeStyle = LocatorSettings.MapsForgeCarDayStyle.getValue();
-                path = LocatorSettings.MapsForgeCarDayTheme.getValue();
+                themeStyle = LocatorSettings.mapsForgeCarDayStyle.getValue();
+                path = LocatorSettings.mapsForgeCarDayTheme.getValue();
             }
         } else {
             textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.mapViewTextFaktor.getValue();
             if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themeStyle = LocatorSettings.MapsForgeNightStyle.getValue();
-                path = LocatorSettings.MapsForgeNightTheme.getValue();
+                themeStyle = LocatorSettings.mapsForgeNightStyle.getValue();
+                path = LocatorSettings.mapsForgeNightTheme.getValue();
             } else {
-                themeStyle = LocatorSettings.MapsForgeDayStyle.getValue();
-                path = LocatorSettings.MapsForgeDayTheme.getValue();
+                themeStyle = LocatorSettings.mapsForgeDayStyle.getValue();
+                path = LocatorSettings.mapsForgeDayTheme.getValue();
             }
         }
         if (path.length() > 0) {

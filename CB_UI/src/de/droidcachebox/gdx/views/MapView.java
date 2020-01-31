@@ -109,10 +109,10 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             });
         }
 
-        Config.MapsForgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsForgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsForgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.MapsForgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.mapsForgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.mapsForgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.mapsForgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.mapsForgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
 
         registerSkinChangedEvent();
 
@@ -883,7 +883,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (isCarMode && CB_UI_Settings.LiveMapEnabeld.getValue()) {
                 LiveMapQue.setCenterDescriptor(center);
                 // LiveMap queue complete screen
-                lowerTile.Data = center;
+                lowerTile.setData(center);
                 LiveMapQue.queScreen(lowerTile, upperTile);
             }
 

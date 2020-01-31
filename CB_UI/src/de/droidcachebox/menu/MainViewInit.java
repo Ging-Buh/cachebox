@@ -279,7 +279,7 @@ public class MainViewInit extends MainViewBase {
     private void ini_Dirs() {
         Log.info(log, "ini_Dirs");
         ini_Dir(Config.PocketQueryFolder.getValue());
-        ini_Dir(Config.TileCacheFolder.getValue());
+        ini_Dir(Config.tileCacheFolder.getValue());
         ini_Dir(Config.mWorkPath + "/User");
         ini_Dir(Config.TrackFolder.getValue());
         ini_Dir(Config.UserImageFolder.getValue());

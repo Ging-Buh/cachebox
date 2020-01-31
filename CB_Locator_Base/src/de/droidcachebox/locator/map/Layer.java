@@ -27,17 +27,17 @@ public class Layer {
     StorageType storageType;
     String friendlyName = "";
     String[] languages;
-    LayerUsage mLayerUsage;
+    LayerUsage layerUsage;
 
     public Layer() {
     }
 
-    public Layer(MapType mapType, LayerUsage LayerUsage, StorageType storageType, String name, String friendlyName, String url) {
+    public Layer(MapType mapType, LayerUsage layerUsage, StorageType storageType, String name, String friendlyName, String url) {
         this.mapType = mapType;
         this.name = name;
         this.friendlyName = friendlyName;
         this.url = url;
-        this.mLayerUsage = LayerUsage;
+        this.layerUsage = layerUsage;
         this.storageType = storageType;
         data = null;
     }
@@ -66,25 +66,25 @@ public class Layer {
             lUrl = lUrl.replace("{" + max + "}", "" + randomNum);
             return lUrl.replace("{x}", "" + desc.getX()).replace("{y}", "" + desc.getY()).replace("{z}", "" + desc.getZoom());
         } else
-            return url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + this.storageType.extension; // now obsolete
+            return url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + storageType.extension; // now obsolete
     }
 
     String getLocalFilename(Descriptor desc) {
         if (desc == null)
-            return null;
-        return desc.getLocalCachePath(name) + this.storageType.extension;
+            return "";
+        return desc.getLocalCachePath(name) + storageType.extension;
     }
 
     public boolean isOverlay() {
-        return mLayerUsage == LayerUsage.overlay;
+        return layerUsage == LayerUsage.overlay;
     }
 
     public boolean isMapsForge() {
-        return this.mapType == MapType.FREIZEITKARTE || this.mapType == MapType.MAPSFORGE;
+        return mapType == MapType.FREIZEITKARTE || mapType == MapType.MAPSFORGE;
     }
 
     public MapType getMapType() {
-        return this.mapType;
+        return mapType;
     }
 
     public void addAdditionalMap(Layer layer) {
@@ -175,7 +175,7 @@ public class Layer {
      *
      * @return ImageData
      */
-    private LocatorBasePlatFormMethods.ImageData getImageDataWithColorMatrixManipulation(LocatorBasePlatFormMethods.ImageData imgData) {
+    LocatorBasePlatFormMethods.ImageData getImageDataWithColorMatrixManipulation(LocatorBasePlatFormMethods.ImageData imgData) {
 
         int[] data = imgData.PixelColorArray;
         for (int i = 0; i < data.length; i++) {
@@ -236,7 +236,7 @@ public class Layer {
                     try {
                         FileFactory.createFile(filename).delete();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.err(log,"delete File after bad download ", e);;
                     }
                     return false;
                 }

@@ -374,7 +374,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                             lastDescriptorOrdered = lowerTile;
                             lastNumberOfTilesToShow = numberOfTilesToShow;
                         }
-                        desc.Data = this;
+                        desc.setData(this);
                         // at moment there is no suitable tile for this zoom, first try a bigger one, else try from smaller ones
                         if (!renderBiggerTiles(i, j, aktZoom)) {
                             renderSmallerTiles(i, j, aktZoom);
@@ -447,7 +447,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     protected void renderPositionMarker(Batch batch) {
-        PointD point = Descriptor.ToWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MAX_MAP_ZOOM,
+        PointD point = Descriptor.toWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MAX_MAP_ZOOM,
                 MAX_MAP_ZOOM);
 
         Vector2 vPoint = new Vector2((float) point.x, -(float) point.y);
@@ -646,7 +646,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 center = new CoordinateGPS(48.0, 12.0);
             positionInitialized = true;
             center = value;
-            PointD point = Descriptor.ToWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, center.getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, center.getLatitude()), MAX_MAP_ZOOM,
+            PointD point = Descriptor.toWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, center.getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, center.getLatitude()), MAX_MAP_ZOOM,
                     MAX_MAP_ZOOM);
             setScreenCenter(new Vector2((float) point.x, (float) point.y));
         }
@@ -1027,9 +1027,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     protected void calcCenter() {
         // berechnet anhand des ScreenCenterW die Center-Coordinaten
-        PointD point = Descriptor.FromWorld(screenCenterWorld.getX(), screenCenterWorld.getY(), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
+        PointD point = Descriptor.fromWorld(screenCenterWorld.getX(), screenCenterWorld.getY(), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
 
-        center = new CoordinateGPS(Descriptor.TileYToLatitude(MAX_MAP_ZOOM, -point.y), Descriptor.TileXToLongitude(MAX_MAP_ZOOM, point.x));
+        center = new CoordinateGPS(Descriptor.tileYToLatitude(MAX_MAP_ZOOM, -point.y), Descriptor.tileXToLongitude(MAX_MAP_ZOOM, point.x));
     }
 
     protected void calcPixelsPerMeter() {

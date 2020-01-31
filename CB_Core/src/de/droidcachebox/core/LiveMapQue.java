@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static de.droidcachebox.locator.map.Descriptor.TileXToLongitude;
-import static de.droidcachebox.locator.map.Descriptor.TileYToLatitude;
+import static de.droidcachebox.locator.map.Descriptor.tileXToLongitude;
+import static de.droidcachebox.locator.map.Descriptor.tileYToLatitude;
 import static de.droidcachebox.utils.MathUtils.DEG_RAD;
 import static de.droidcachebox.utils.MathUtils.WGS84_MAJOR_AXIS;
 
@@ -85,10 +85,10 @@ public class LiveMapQue {
                     eventList.get(i).stateChanged();
                 DownloadIsActive.set(true);
 
-                double lon1 = DEG_RAD * TileXToLongitude(desc.getZoom(), desc.getX());
-                double lat1 = DEG_RAD * TileYToLatitude(desc.getZoom(), desc.getY());
-                double lon2 = DEG_RAD * TileXToLongitude(desc.getZoom(), desc.getX() + 1);
-                double lat2 = DEG_RAD * TileYToLatitude(desc.getZoom(), desc.getY() + 1);
+                double lon1 = DEG_RAD * tileXToLongitude(desc.getZoom(), desc.getX());
+                double lat1 = DEG_RAD * tileYToLatitude(desc.getZoom(), desc.getY());
+                double lon2 = DEG_RAD * tileXToLongitude(desc.getZoom(), desc.getX() + 1);
+                double lat2 = DEG_RAD * tileYToLatitude(desc.getZoom(), desc.getY() + 1);
                 Used_max_request_radius = (int) (WGS84_MAJOR_AXIS * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))) / 2 + 0.5); // round
 
                 GroundspeakAPI.Query q = new GroundspeakAPI.Query()
@@ -179,7 +179,7 @@ public class LiveMapQue {
     }
 
     private static ArrayList<GroundspeakAPI.GeoCacheRelated> loadDescLiveFromCache(GroundspeakAPI.Query query) {
-        String path = query.getDescriptor().getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
+        String path = getLocalCachePath(query.getDescriptor());
 
         String result;
         FileHandle fh = new FileHandle(path);
@@ -210,8 +210,14 @@ public class LiveMapQue {
     }
 
     private static boolean descExistLiveCache(Descriptor desc) {
-        String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
+        String path = getLocalCachePath(desc);
         return FileIO.fileExistsMaxAge(path, CB_Core_Settings.LiveCacheTime.getEnumValue().getMinuten());
+    }
+
+    static String getLocalCachePath(Descriptor desc) {
+        if (desc == null)
+            return "";
+        return Descriptor.getTileCacheFolder() + "/" + LIVE_CACHE_NAME + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + LIVE_CACHE_EXTENSION;
     }
 
     static public void quePosition(Coordinate coord) {
@@ -251,7 +257,7 @@ public class LiveMapQue {
             for (int j = lo.getY(); j <= ru.getY(); j++) {
                 Descriptor desc = new Descriptor(i, j, lo.getZoom());
 
-                CB_List<Descriptor> descAddList = desc.AdjustZoom(Used_Zoom);
+                CB_List<Descriptor> descAddList = desc.adjustZoom(Used_Zoom);
 
                 for (int k = 0; k < descAddList.size(); k++) {
                     if (!descList.contains(descAddList.get(k)))
@@ -272,8 +278,8 @@ public class LiveMapQue {
             // Descriptor MapCenter=MapViewBase.center
 
             Coordinate center = null;
-            if ((lo.Data != null) && (lo.Data instanceof Coordinate))
-                center = (Coordinate) lo.Data;
+            if ((lo.getData() != null) && (lo.getData() instanceof Coordinate))
+                center = (Coordinate) lo.getData();
             if (center != null) {
                 final Descriptor mapCenterDesc = new Descriptor(center, lo.getZoom());
                 descStack.sort(new Comparator<Descriptor>() {

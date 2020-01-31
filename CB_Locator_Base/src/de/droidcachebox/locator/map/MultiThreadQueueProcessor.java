@@ -48,8 +48,8 @@ class MultiThreadQueueProcessor extends Thread {
                 if (newOrder != null) {
                     startTime = System.currentTimeMillis();
                     isWorking = true;
-                    Log.debug(log, "order: " + newOrder.descriptor + " Distance: " + newOrder.descriptor.Data);
-                    newOrder.descriptor.Data = newOrder.mapView;
+                    Log.debug(log, "order: " + newOrder.descriptor + " Distance: " + newOrder.descriptor.getData());
+                    newOrder.descriptor.setData(newOrder.mapView);
                     if (newOrder.forOverlay) {
                         if (!doStop) mapTiles.loadOverlayTile(newOrder.descriptor);
                     } else {

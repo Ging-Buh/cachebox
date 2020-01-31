@@ -69,7 +69,7 @@ public class MapTileLoader {
         Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
         queueProcessorsAreStarted = false;
-        byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.Data, (Integer) o2.Data);
+        byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.getData(), (Integer) o2.getData());
 
         queueProcessorAliveCheck = new Thread(() -> {
             do {
@@ -164,7 +164,7 @@ public class MapTileLoader {
             for (int i = lowerTile.getX(); i <= upperTile.getX(); i++) {
                 for (int j = lowerTile.getY(); j <= upperTile.getY(); j++) {
                     Descriptor descriptor = new Descriptor(i, j, aktZoom);
-                    descriptor.Data = Math.max(Math.abs(i - midX), Math.abs(j - midY));
+                    descriptor.setData(Math.max(Math.abs(i - midX), Math.abs(j - midY)));
                     wantedTiles.add(descriptor);
                 }
             }

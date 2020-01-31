@@ -89,28 +89,28 @@ public class SelectDB extends ActivityBase {
                     Config.DescriptionImageFolderLocal.setValue(folder + "Images");
                     Config.MapPackFolderLocal.setValue(folder + "Maps");
                     Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
-                    Config.TileCacheFolderLocal.setValue(folder + "Cache");
+                    Config.tileCacheFolderLocal.setValue(folder + "Cache");
                     Config.AcceptChanges();
                     Log.debug(log,
                             NewDB_Name + " has own Repository:\n" + //
                                     Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
                                     Config.MapPackFolderLocal.getValue() + ", \n" + //
                                     Config.SpoilerFolderLocal.getValue() + ", \n" + //
-                                    Config.TileCacheFolderLocal.getValue()//
+                                    Config.tileCacheFolderLocal.getValue()//
                     );
 
                     // Create Folder?
                     boolean creationOK = FileIO.createDirectory(Config.DescriptionImageFolderLocal.getValue());
                     creationOK = creationOK && FileIO.createDirectory(Config.MapPackFolderLocal.getValue());
                     creationOK = creationOK && FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
-                    creationOK = creationOK && FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
+                    creationOK = creationOK && FileIO.createDirectory(Config.tileCacheFolderLocal.getValue());
                     if (!creationOK)
                         Log.debug(log,
                                 "Problem with creation of one of the Directories:" + //
                                         Config.DescriptionImageFolderLocal.getValue() + ", " + //
                                         Config.MapPackFolderLocal.getValue() + ", " + //
                                         Config.SpoilerFolderLocal.getValue() + ", " + //
-                                        Config.TileCacheFolderLocal.getValue()//
+                                        Config.tileCacheFolderLocal.getValue()//
                         );
                 }
 

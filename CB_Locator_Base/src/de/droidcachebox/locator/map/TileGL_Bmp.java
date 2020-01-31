@@ -193,4 +193,7 @@ public class TileGL_Bmp extends TileGL {
         return isDisposed;
     }
 
+    public byte[] getBytes() {
+        return bytes;
+    }
 }
