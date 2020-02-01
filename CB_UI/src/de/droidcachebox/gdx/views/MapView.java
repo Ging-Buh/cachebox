@@ -843,7 +843,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void onHide() {
-        Log.info(sKlasse, "Map gets invisible");
+        Log.debug(sKlasse, "Map gets invisible");
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         super.onHide();
     }
@@ -863,6 +863,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     protected void directLoadTiles(Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
+        Log.debug(sKlasse, "directLoadTiles");
         if (Energy.isDisplayOff()) return;
         if (isCreated) {
 
@@ -929,6 +930,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void initializeMap() {
+        Log.debug(sKlasse, "initializeMap");
         zoomCross = Config.ZoomCross.getValue();
         super.initializeMap();
     }
@@ -951,6 +953,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void requestLayout() {
+        Log.debug(sKlasse, "requestLayout");
 
         if (isDisposed()) return;
 
@@ -987,6 +990,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void setMapState(MapState state) {
+        Log.debug(sKlasse, "setMapState :" + state);
         if (super.getMapState() == state)
             return;
 
@@ -1015,7 +1019,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void positionChanged() {
-
+        Log.debug(sKlasse, "positionChanged");
         if (isCarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
             if (!Locator.getInstance().isGPSprovided())
@@ -1080,6 +1084,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     protected void skinIsChanged() {
+        Log.debug(sKlasse, "skinIsChanged");
         super.skinIsChanged();
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), aktZoom, true);
         data.hideMyFinds = hideMyFinds;
@@ -1101,6 +1106,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void onShow() {
+        Log.debug(sKlasse, "onShow");
         super.onShow();
         SelectedCacheChangedEventListeners.getInstance().add(this);
         isNorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
@@ -1112,6 +1118,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
      */
     @Override
     public void setNewSettings(int InitialFlags) {
+        Log.debug(sKlasse, "setNewSettings");
         if ((InitialFlags & INITIAL_SETTINGS) != 0) {
             showRating = mapMode == MapMode.Compass ? false : Config.showRating.getValue();
             showDT = mapMode == MapMode.Compass ? false : Config.showDifficultyTerrain.getValue();
@@ -1170,11 +1177,13 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 if (MapTileLoader.getInstance().getCurrentLayer().isMapsForge()) {
                     Log.info(sKlasse, "modify layer " + MapTileLoader.getInstance().getCurrentLayer().getName() + " for mapview " + mapMode);
                     MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
+                    lastDescriptorOrdered = new Descriptor(0, 0, 10);
                     renderOnce("INITIAL_THEME");
                 }
             }
             if (MapTileLoader.getInstance().getCurrentOverlayLayer() != null) {
                 if (MapTileLoader.getInstance().getCurrentOverlayLayer().isMapsForge()) {
+                    lastDescriptorOrdered = new Descriptor(0, 0, 10);
                     // until now there are only Online Overlays
                     // ((MapsForgeLayer) MapTileLoader.getInstance().getCurrentOverlayLayer()).initTheme(isCarMode);
                 }
@@ -1197,9 +1206,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     protected void setInitialLocation() {
+        Log.debug(sKlasse, "setInitialLocation");
         try {
             if (Database.Data != null) {
-
                 if (Database.Data.cacheList != null) {
                     synchronized (Database.Data.cacheList) {
                         if (Database.Data.cacheList.size() > 0) {
@@ -1228,6 +1237,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void mapStateChangedToWP() {
+        Log.debug(sKlasse, "mapStateChangedToWP");
         if (GlobalCore.isSetSelectedCache()) {
             if (GlobalCore.getSelectedWayPoint() != null) {
                 Coordinate tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
@@ -1241,11 +1251,13 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void setAlignToCompass(boolean value) {
+        Log.debug(sKlasse, "setAlignToCompass");
         super.setAlignToCompass(value);
         Config.isMapNorthOriented.setValue(!value);
     }
 
     private void onResume() {
+        Log.debug(sKlasse, "onResume");
         MapView.this.renderOnce("OnResumeListeners");
     }
 

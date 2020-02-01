@@ -82,7 +82,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected InputState inputState = InputState.Idle;
     protected boolean isShown, isCreated;
     protected CircleDrawable distanceCircle;
-    Descriptor lastDescriptorOrdered;
+    protected Descriptor lastDescriptorOrdered;
     int lastNumberOfTilesToShow;
     private int mapIntWidth;
     private int mapIntHeight;
@@ -189,6 +189,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             LocatorSettings.currentMapLayer.setValue(newLayer.getAllLayerNames());
         }
         if (MapTileLoader.getInstance().setCurrentLayer(newLayer, isCarMode)) {
+            lastDescriptorOrdered = new Descriptor(0, 0, 10);
             renderOnce("setCurrentLayer");
         }
     }
@@ -599,6 +600,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected abstract void directLoadTiles(Descriptor upperLeftTile, Descriptor lowerRightTile, int aktZoom);
 
     public void initializeMap() {
+        lastDescriptorOrdered = new Descriptor(0, 0, 10);
         zoomBtn.setZoom(LocatorSettings.lastZoomLevel.getValue());
         // Bestimmung der ersten Position auf der Karte
         if (!positionInitialized) {

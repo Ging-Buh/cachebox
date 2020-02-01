@@ -143,12 +143,14 @@ public class MapTileLoader {
 
             // make a copy of the loaded tiles (worst case an already generated Tile will be created again)
             Array<Long> loadedTiles = mapTiles.getTilesHashCopy();
+            Log.trace(log, "Num loadedTiles: " + loadedTiles.size);
             for (Long loaded : loadedTiles) {
                 mapTilesInGeneration.removeValue(loaded, false);
             }
 
             // make a copy of the loaded overlaytiles
             Array<Long> loadedOverlayTiles = mapTiles.getOverlayTilesHashCopy();
+            Log.trace(log, "Num loadedOverlayTiles: " + loadedOverlayTiles.size);
             for (Long loaded : loadedOverlayTiles) {
                 overlayTilesInGeneration.removeValue(loaded, false);
             }
@@ -181,6 +183,10 @@ public class MapTileLoader {
                 if (!loadedTiles.contains(descriptor.getHashCode(), false) && !mapTilesInGeneration.contains(descriptor.getHashCode(), false)) {
                     orders.add(new MultiThreadQueueProcessor.OrderData(descriptor, false, mapView));
                 }
+                else {
+                    Log.trace(log, "Descriptor in loadedTiles: " + !loadedTiles.contains(descriptor.getHashCode(), false));
+                    Log.trace(log, "Descriptor in Generation : " + !mapTilesInGeneration.contains(descriptor.getHashCode(), false));
+                }
                 if (finishYourself.get()) {
                     Log.info(log, "MapTileLoader finishMyself after mapTiles ordered");
                     return;
@@ -212,6 +218,7 @@ public class MapTileLoader {
                     overlayTilesInGeneration.add(newOrder.descriptor.getHashCode());
                 else
                     mapTilesInGeneration.add(newOrder.descriptor.getHashCode());
+                Log.trace(log, "mapTilesInGeneration : " + mapTilesInGeneration.size);
                 return newOrder;
             }
             return null;
@@ -264,6 +271,7 @@ public class MapTileLoader {
 
     public boolean setCurrentLayer(Layer layer, boolean isCarMode) {
         if (layer != mapTiles.getCurrentLayer()) {
+            mapTilesInGeneration.clear();
             mapTiles.clearTiles();
             Log.info(log, "set layer to " + layer.name);
             layer.prepareLayer(isCarMode);
@@ -274,6 +282,7 @@ public class MapTileLoader {
     }
 
     public void modifyCurrentLayer(boolean isCarMode) {
+        mapTilesInGeneration.clear();
         mapTiles.clearTiles();
         mapTiles.getCurrentLayer().prepareLayer(isCarMode);
     }
@@ -283,6 +292,7 @@ public class MapTileLoader {
     }
 
     public void setCurrentOverlayLayer(Layer layer) {
+        overlayTilesInGeneration.clear();
         mapTiles.setCurrentOverlayLayer(layer);
         mapTiles.clearOverlayTiles();
     }
