@@ -212,7 +212,7 @@ public class EditTextField extends EditTextFieldBase {
                         try {
                             style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
                         } catch (Exception ex) {
-                            Log.err(log, "not displayed: " + line.displayText + " length: " + line.displayText.length());
+                            Log.err(log, "not displayed: " + line.displayText + " length: " + line.displayText.length(), ex);
                         }
                         textY -= style.font.getLineHeight();
                     }

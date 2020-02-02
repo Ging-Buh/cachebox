@@ -55,7 +55,7 @@ class MultiThreadQueueProcessor extends Thread {
                     } else {
                         if (!doStop) mapTiles.loadTile(newOrder.descriptor);
                     }
-                    Log.info(log, "ready: " + newOrder.descriptor + " lasts: " + (System.currentTimeMillis() - startTime));
+                    Log.debug(log, "ready: " + newOrder.descriptor + " lasts: " + (System.currentTimeMillis() - startTime));
                     isWorking = false;
                 } else {
                     try {

@@ -88,8 +88,12 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     private void setDistanceString(final String txt) {
+        if (this.isDisposed())
+            return;
         if (txt != null) {
             try {
+                distance = new BitmapFontCache(Fonts.getSmall());
+                distance.setColor(COLOR.getFontColor());
                 GlyphLayout bounds = distance.setText(txt, arrowRec.getX(), arrowRec.getY());
                 float x = arrowRec.getHalfWidth() - (bounds.width / 2f);
                 distance.setPosition(x, 0);
