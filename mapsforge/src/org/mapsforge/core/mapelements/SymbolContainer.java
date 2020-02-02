@@ -77,6 +77,6 @@ public class SymbolContainer extends MapElementContainer {
         } else {
             matrix.rotate(theta);
         }
-        canvas.drawBitmap(this.symbol, matrix, filter);
+        canvas.drawBitmap(this.symbol, matrix, 1, filter);
     }
 }

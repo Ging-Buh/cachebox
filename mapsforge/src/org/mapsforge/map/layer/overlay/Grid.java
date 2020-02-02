@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,16 +40,16 @@ public class Grid extends Layer {
         DecimalFormat df = new DecimalFormat("00");
         int degrees = (int) Math.floor(coordinate);
         sb.append(df.format(degrees));
-        sb.append('°');
+        sb.append('\u00b0');
         coordinate -= degrees;
         coordinate *= 60.0;
         int minutes = (int) Math.floor(coordinate);
         sb.append(df.format(minutes));
-        sb.append('′');
+        sb.append('\u2032');
         coordinate -= minutes;
         coordinate *= 60.0;
         sb.append(df.format(coordinate));
-        sb.append('″');
+        sb.append('\u2033');
         return sb.toString();
     }
 

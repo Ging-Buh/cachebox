@@ -43,7 +43,7 @@ public class AwtSvgBitmap extends AwtResourceBitmap {
 
             SVGIcon icon = new SVGIcon();
             icon.setAntiAlias(true);
-            // todo icon.setAutosize(SVGIcon.AUTOSIZE_STRETCH);
+            icon.setAutosize(SVGIcon.AUTOSIZE_STRETCH);
             icon.setPreferredSize(new Dimension((int) bmpSize[0], (int) bmpSize[1]));
             icon.setSvgURI(uri);
             BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);

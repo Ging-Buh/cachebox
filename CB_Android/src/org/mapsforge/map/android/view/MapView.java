@@ -58,7 +58,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView, Observer {
 
     /**
-     * Child view layout information associated with MapView.
+     * Child view Layout information associated with MapView.
      */
     public static class LayoutParams extends ViewGroup.LayoutParams {
 

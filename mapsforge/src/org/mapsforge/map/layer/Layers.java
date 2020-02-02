@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016-2019 devemux86
  * Copyright 2016 Andrey Novikov
+ * Copyright 2019 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -170,8 +171,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param layers The new layers to add
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers) {
-        addAll(layers, true);
+    public synchronized boolean addAll(Collection<Layer> layers) {
+        return addAll(layers, true);
     }
 
     /**
@@ -181,18 +182,21 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param redraw Whether the map should be redrawn after adding the layers
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers, boolean redraw) {
+    public synchronized boolean addAll(Collection<Layer> layers, boolean redraw) {
         checkIsNull(layers);
         for (Layer layer : layers) {
             layer.setDisplayModel(this.displayModel);
         }
-        this.layersList.addAll(layers);
-        for (Layer layer : layers) {
-            layer.assign(this.redrawer);
+        if (this.layersList.addAll(layers)) {
+            for (Layer layer : layers) {
+                layer.assign(this.redrawer);
+            }
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
         }
-        if (redraw) {
-            this.redrawer.redrawLayers();
-        }
+        return false;
     }
 
     /**
@@ -205,8 +209,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param layers The new layers to add
      * @see List#addAll(int, Collection)
      */
-    public synchronized void addAll(int index, Collection<Layer> layers) {
-        addAll(index, layers, true);
+    public synchronized boolean addAll(int index, Collection<Layer> layers) {
+        return addAll(index, layers, true);
     }
 
     /**
@@ -217,16 +221,19 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param redraw Whether the map should be redrawn after adding the layers
      * @see List#addAll(int, Collection)
      */
-    public synchronized void addAll(int index, Collection<Layer> layers, boolean redraw) {
+    public synchronized boolean addAll(int index, Collection<Layer> layers, boolean redraw) {
         checkIsNull(layers);
-        this.layersList.addAll(index, layers);
-        for (Layer layer : layers) {
-            layer.setDisplayModel(this.displayModel);
-            layer.assign(this.redrawer);
+        if (this.layersList.addAll(index, layers)) {
+            for (Layer layer : layers) {
+                layer.setDisplayModel(this.displayModel);
+                layer.assign(this.redrawer);
+            }
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
         }
-        if (redraw) {
-            this.redrawer.redrawLayers();
-        }
+        return false;
     }
 
     /**
@@ -239,8 +246,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param group  The layer group
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers, int group) {
-        addAll(layers, group, true);
+    public synchronized boolean addAll(Collection<Layer> layers, int group) {
+        return addAll(layers, group, true);
     }
 
     /**
@@ -251,7 +258,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param redraw Whether the map should be redrawn after adding the layers
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers, int group, boolean redraw) {
+    public synchronized boolean addAll(Collection<Layer> layers, int group, boolean redraw) {
         int index = this.groupList.indexOf(group);
         if (index < 0) {
             throw new IllegalArgumentException("unknown layer group");
@@ -259,14 +266,17 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 
         index++;
         if (index == this.groupList.size()) {
-            addAll(layers, redraw);
+            return addAll(layers, redraw);
         } else {
-            addAll(this.groupIndex.get(this.groupList.get(index)), layers, redraw);
-            for (int i = index; i < this.groupList.size(); i++) {
-                group = this.groupList.get(i);
-                this.groupIndex.put(group, this.groupIndex.get(group) + layers.size());
+            if (addAll(this.groupIndex.get(this.groupList.get(index)), layers, redraw)) {
+                for (int i = index; i < this.groupList.size(); i++) {
+                    group = this.groupList.get(i);
+                    this.groupIndex.put(group, this.groupIndex.get(group) + layers.size());
+                }
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -418,6 +428,56 @@ public class Layers implements Iterable<Layer>, RandomAccess {
                 int pointer = this.groupIndex.get(group);
                 if (pointer > index) {
                     this.groupIndex.put(group, pointer - 1);
+                }
+            }
+
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Removes multiple layers.
+     * <p/>
+     * Note: By default a redraw will take place afterwards.
+     * To avoid this, use {@link #removeAll(Collection, boolean)}.
+     *
+     * @param layers The layers to remove
+     * @see List#removeAll(Collection)
+     */
+    public synchronized boolean removeAll(Collection<Layer> layers) {
+        return removeAll(layers, true);
+    }
+
+    /**
+     * Removes multiple layers.
+     *
+     * @param layers The layers to remove
+     * @param redraw Whether the map should be redrawn after removing the layers
+     * @see List#removeAll(Collection)
+     */
+    public synchronized boolean removeAll(Collection<Layer> layers, boolean redraw) {
+        checkIsNull(layers);
+        int[] indexes = new int[layers.size()];
+        int i = 0;
+        for (Layer layer : layers) {
+            indexes[i++] = this.layersList.indexOf(layer);
+        }
+        if (this.layersList.removeAll(layers)) {
+            for (Layer layer : layers) {
+                layer.unassign();
+            }
+
+            // update layer group pointers
+            for (int index : indexes) {
+                for (Integer group : this.groupIndex.keySet()) {
+                    int pointer = this.groupIndex.get(group);
+                    if (pointer > index) {
+                        this.groupIndex.put(group, pointer - 1);
+                    }
                 }
             }
 
