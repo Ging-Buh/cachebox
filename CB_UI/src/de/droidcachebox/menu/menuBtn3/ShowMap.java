@@ -836,7 +836,7 @@ public class ShowMap extends AbstractShowAction {
         @Override
         public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
             styles = new HashMap<>();
-            LinkedHashMap<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
+            LinkedHashMap<String, XmlRenderThemeStyleLayer> styleLayers = (LinkedHashMap<String, XmlRenderThemeStyleLayer>) style.getLayers();
 
             for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
                 if (styleLayer.isVisible()) {
