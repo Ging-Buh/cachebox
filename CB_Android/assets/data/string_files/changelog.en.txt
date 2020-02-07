@@ -5,6 +5,12 @@
 • Deletions = -
 • Unsolved = •
 
+Changes up to version 3585:
+    ~ update to mapsforge library 0.13.0
+    + "Clear history" in cachelist contextmenu
+	+ Caching of mapsforgecompatible maptiles for bigger (setup) zooms to speed up map presentation
+    * Position of distance circles and direct line on resizing; update Celebration Event, ...
+    + Restart of documentation at github wiki
 Changes up to version 3567:
     + show filtered at map button
 	+ QuickButton for remember a cache (longclick for forget)

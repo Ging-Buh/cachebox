@@ -218,25 +218,25 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
 
-    private void showView(ViewID ID) {
-        if (ID != null) {
-            if (ID.getType() == ViewID.UI_Type.Activity) {
-                showActivity(ID);
-            } else if (!(aktView == null) && ID == aktViewId) {
+    private void showView(ViewID viewID) {
+        if (viewID != null) {
+            if (viewID.getType() == ViewID.UI_Type.Activity) {
+                showActivity(viewID);
+            } else if (!(aktView == null) && viewID == aktViewId) {
                 aktView.onShow();
             } else {
-                if (ID.getPos() == ViewID.UI_Pos.Left) {
-                    aktViewId = ID;
+                if (viewID.getPos() == ViewID.UI_Pos.Left) {
+                    aktViewId = viewID;
                 } else {
-                    aktTabViewId = ID;
+                    aktTabViewId = viewID;
                 }
                 if (aktViewId != null && aktViewId.getType() == ViewID.UI_Type.Android) {
                     layoutContent.setVisibility(View.VISIBLE);
                 }
-                if (ID.getType() == ViewID.UI_Type.Android) {
-                    showAndroidView(getView(ID), ID);
+                if (viewID.getType() == ViewID.UI_Type.Android) {
+                    showAndroidView(getView(viewID), viewID);
                 }
-                if (ID.getType() == ViewID.UI_Type.OpenGl) {
+                if (viewID.getType() == ViewID.UI_Type.OpenGl) {
                     ShowGLView();
                 }
             }

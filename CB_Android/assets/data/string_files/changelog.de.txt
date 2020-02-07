@@ -5,6 +5,12 @@
 • Streichungen = -
 • Offen = •
 
+Änderungen bis Version 3585:
+    ~ Aktualisiere mapsforge Bibliothek 0.13.0
+    + "Lösche Verlauf" im Cachelist Kontextmenü
+	+ Speichern mapsforgekompatibler Kartenkacheln ab einstellbarem Zoom zur Steigerung der Geschwindigkeit der Kartendarstellung
+    * Abstandskreise, direkte Linie bei Grössenänderung; Celebration Event, ...
+    + Anfang Neuaufbau der Dokumentation im github Wiki
 Änderungen bis Version 3567:
     + Zeige Gefiltertstatus an der Kartenschaltfläche
 	+ Schnellschaltfläche zum Merken eines Caches (Vergessen bei Langklick)
