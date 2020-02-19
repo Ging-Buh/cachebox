@@ -35,12 +35,12 @@ public interface CB_Core_Settings {
     SettingString friends = new SettingString("Friends", Login, NORMAL, "", Global, ALL);
     SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", Login, NORMAL, "", Global, ALL);
 
-    SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", Folder, DEVELOPER, Config_Core.mWorkPath + "/PocketQuery", Global, ALL, true);
-    SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/images", Global, ALL, true);
-    SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/spoilers", Global, ALL, true);
+    SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", Folder, DEVELOPER, Config_Core.workPath + "/PocketQuery", Global, ALL, true);
+    SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", Folder, NEVER, Config_Core.workPath + "/repository/images", Global, ALL, true);
+    SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", Folder, NEVER, Config_Core.workPath + "/repository/spoilers", Global, ALL, true);
     SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolderLocal", Folder, NEVER, "", SettingStoreType.Local, ALL, true);
     SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolderLocal", Folder, NEVER, "", SettingStoreType.Local, ALL, true);
-    SettingFolder UserImageFolder = new SettingFolder("UserImageFolder", Folder, NORMAL, Config_Core.mWorkPath + "/User/Media", Global, ALL, true);
+    SettingFolder UserImageFolder = new SettingFolder("UserImageFolder", Folder, NORMAL, Config_Core.workPath + "/User/Media", Global, ALL, true);
 
     SettingInt connection_timeout = new SettingInt("conection_timeout", Internal, DEVELOPER, 10000, Global, ALL);
     SettingInt socket_timeout = new SettingInt("socket_timeout", Internal, DEVELOPER, 60000, Global, ALL);

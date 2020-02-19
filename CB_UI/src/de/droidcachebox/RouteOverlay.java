@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * if a track is changed, aTrackChanged is set to true until rendered once again on one called map !!! only once
  * <p>
  * a track is selected for rendering, if its isVisible is set (in addToTracksToDraw with reduced number of trackpoints)
- * further the GlobalCore.aktuelleRoute is addToTracksToDraw for rendering. (if tracking has been switched on)
+ * further the GlobalCore.currentRoute is addToTracksToDraw for rendering. (if tracking has been switched on)
  */
 public class RouteOverlay {
     private final static String log = "RouteOverlay";
@@ -124,7 +124,7 @@ public class RouteOverlay {
 
     public void renderTracks(Batch batch, MapView mapView) {
 
-        int mapZoom = mapView.getAktZoom();
+        int mapZoom = mapView.getCurrentZoom();
         float yVersatz = mapView.ySpeedVersatz;
 
         if (thisZoom != mapZoom || aTrackChanged) {

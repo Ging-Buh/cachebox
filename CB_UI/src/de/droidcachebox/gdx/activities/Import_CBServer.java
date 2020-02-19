@@ -69,8 +69,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private volatile BreakawayImportThread importThread;
 
     public Import_CBServer() {
-        super(activityRec(), "importActivity");
-        scrollBox = new ScrollBox(activityRec());
+        super("importActivity");
+        scrollBox = new ScrollBox(this);
         scrollBox.setBackground(this.getBackground());
         createOkCancelBtn();
         createTitleLine();

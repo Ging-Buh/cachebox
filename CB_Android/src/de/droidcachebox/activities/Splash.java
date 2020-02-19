@@ -137,6 +137,7 @@ public class Splash extends Activity {
     }
 
     private void startMain() {
+        saveSDCardPath();
         GlobalCore.RunFromSplash = true;
         Intent mainIntent;
         if (main == null) {
@@ -555,8 +556,8 @@ public class Splash extends Activity {
                 // close select dialog
                 dialog.dismiss();
                 getFolder(Translation.get("select_folder"), Translation.get("select"), path -> {
-                    if (FileIO.canWrite(path)) {
-                        AdditionalWorkPathArray.add(path);
+                    if (path.canWrite()) {
+                        AdditionalWorkPathArray.add(path.getAbsolutePath());
                         Splash.this.writeAdditionalWorkPathArray(AdditionalWorkPathArray);
                         // Start again to include the new Folder
                         Splash.this.onStart();
@@ -575,10 +576,9 @@ public class Splash extends Activity {
     }
 
     // don't want to implement PlatformConnector for Splash, for only need of getFolder
-    private void getFolder(String TitleText, String ButtonText, PlatformUIBase.IgetFolderReturnListener returnListener) {
+    private void getFolder(String TitleText, String ButtonText, PlatformUIBase.IReturnAbstractFile returnListener) {
         Android_FileExplorer folderDialog = new Android_FileExplorer(this, FileFactory.createFile(""), TitleText, ButtonText);
-        folderDialog.setSelectDirectoryOption();
-        folderDialog.setFolderReturnListener(returnListener);
+        folderDialog.setFolderReturn(returnListener);
         folderDialog.showDialog();
     }
 
@@ -741,7 +741,7 @@ public class Splash extends Activity {
 
     private String getExternalSdPath() {
         // we have minsdk >= KITKAT
-        File sandbox = getExternalSandbox();
+        AbstractFile sandbox = getExternalSandbox();
         if (sandbox != null) {
             return sandbox.getAbsolutePath();
         } else {
@@ -826,7 +826,7 @@ public class Splash extends Activity {
 
                 String[] exclude = new String[]{"webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", ""};
                 CopyAssetFolder myCopie = new CopyAssetFolder();
-                myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
+                myCopie.copyAll(getAssets(), Config.workPath, exclude);
 
                 Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
                 Config.newInstall.setValue(true);
@@ -919,7 +919,7 @@ public class Splash extends Activity {
         }
     }
 
-    private File getExternalSandbox() {
+    private AbstractFile getExternalSandbox() {
         java.io.File[] dirs = getExternalFilesDirs(null);
         if (dirs.length > 1) {
             return FileFactory.createFile(dirs[1].getAbsolutePath());
@@ -956,6 +956,39 @@ public class Splash extends Activity {
         } catch (Exception e) {
             Log.err(log, e.getLocalizedMessage());
         }
+    }
+
+    private void saveSDCardPath() {
+        java.io.File[] dirs = getExternalFilesDirs(null);
+        String firstSDCard, secondSDCard;
+        if (dirs.length > 0) {
+            String tmp = dirs[0].getAbsolutePath();
+            int pos = tmp.indexOf("Android") - 1;
+            if (pos > 0)
+                firstSDCard = tmp.substring(0, pos);
+            else
+                firstSDCard = "";
+        } else {
+            firstSDCard = "";
+        }
+
+        if (dirs.length > 1) {
+            String tmp;
+            try {
+                tmp = dirs[1].getAbsolutePath();
+                int pos = tmp.indexOf("Android") - 1;
+                if (pos > 0)
+                    secondSDCard = tmp.substring(0, pos);
+                else
+                    secondSDCard = "";
+            } catch (Exception e) {
+                secondSDCard = "";
+            }
+        } else {
+            secondSDCard = "";
+        }
+        GlobalCore.firstSDCard = firstSDCard;
+        GlobalCore.secondSDCard = secondSDCard;
     }
 
 }

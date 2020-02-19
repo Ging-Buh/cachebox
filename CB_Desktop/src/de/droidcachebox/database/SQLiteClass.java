@@ -1,6 +1,6 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
@@ -46,11 +46,11 @@ public class SQLiteClass implements SQLiteInterface {
 
     public boolean create(String databasePath) {
         // if exists, delete old database file
-        File file = FileFactory.createFile(databasePath);
-        if (file.exists()) {
+        AbstractFile abstractFile = FileFactory.createFile(databasePath);
+        if (abstractFile.exists()) {
             Log.trace(log, "RESET DB, delete file: " + databasePath);
             try {
-                file.delete();
+                abstractFile.delete();
             } catch (IOException e) {
                 e.printStackTrace();
             }

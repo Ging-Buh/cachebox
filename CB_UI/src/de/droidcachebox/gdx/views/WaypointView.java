@@ -18,7 +18,6 @@ package de.droidcachebox.gdx.views;
 import de.droidcachebox.WaypointListChangedEventList;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.*;
-import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.EditWaypoint;
@@ -310,7 +309,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         Log.debug(log, "   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
         Log.debug(log, "   using Coord:" + coord.toString());
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.activityRec(), "Projection", coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate("Projection", coord, (targetCoord, startCoord, Bearing, distance) -> {
             if (targetCoord == null || targetCoord.equals(coord))
                 return;
 
@@ -340,7 +339,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     private void addMeasure() {
         createNewWaypoint = true;
 
-        MeasureCoordinate mC = new MeasureCoordinate(ActivityBase.activityRec(), "Projection", returnCoord -> {
+        MeasureCoordinate mC = new MeasureCoordinate("Projection", returnCoord -> {
             if (returnCoord == null)
                 return;
 

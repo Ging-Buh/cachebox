@@ -42,8 +42,8 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileList;
 import de.droidcachebox.utils.log.Log;
@@ -240,8 +240,8 @@ public class MainViewInit extends MainViewBase {
             // Load from Assets changes
             // delete work path from settings value
             String altValue = Config.Sel_LanguagePath.getValue();
-            if (altValue.contains(Config.mWorkPath)) {
-                String newValue = altValue.replace(Config.mWorkPath + "/", "");
+            if (altValue.contains(Config.workPath)) {
+                String newValue = altValue.replace(Config.workPath + "/", "");
                 Config.Sel_LanguagePath.setValue(newValue);
                 Config.AcceptChanges();
             }
@@ -252,7 +252,7 @@ public class MainViewInit extends MainViewBase {
                 Config.AcceptChanges();
             }
 
-            Translation trans = new Translation(Config.mWorkPath, FileType.Internal);
+            Translation trans = new Translation(Config.workPath, FileType.Internal);
             try {
                 trans.loadTranslation(Config.Sel_LanguagePath.getValue());
             } catch (Exception e) {
@@ -280,16 +280,16 @@ public class MainViewInit extends MainViewBase {
         Log.info(log, "ini_Dirs");
         ini_Dir(Config.PocketQueryFolder.getValue());
         ini_Dir(Config.tileCacheFolder.getValue());
-        ini_Dir(Config.mWorkPath + "/User");
+        ini_Dir(Config.workPath + "/User");
         ini_Dir(Config.TrackFolder.getValue());
         ini_Dir(Config.UserImageFolder.getValue());
-        ini_Dir(Config.mWorkPath + "/repository");
+        ini_Dir(Config.workPath + "/repository");
         ini_Dir(Config.DescriptionImageFolder.getValue());
         ini_Dir(Config.MapPackFolder.getValue());
         ini_Dir(Config.SpoilerFolder.getValue());
 
         // prevent mediascanner to parse all the images in the cachebox folder
-        File nomedia = FileFactory.createFile(Config.mWorkPath, ".nomedia");
+        AbstractFile nomedia = FileFactory.createFile(Config.workPath, ".nomedia");
         if (!nomedia.exists()) {
             try {
                 nomedia.createNewFile();
@@ -299,7 +299,7 @@ public class MainViewInit extends MainViewBase {
     }
 
     private void ini_Dir(String Folder) {
-        File ff = FileFactory.createFile(Folder);
+        AbstractFile ff = FileFactory.createFile(Folder);
         if (!ff.exists()) {
             ff.mkdir();
         }
@@ -314,7 +314,7 @@ public class MainViewInit extends MainViewBase {
         // search number of DB3 files
         FileList fileList = null;
         try {
-            fileList = new FileList(Config.mWorkPath, "DB3");
+            fileList = new FileList(Config.workPath, "DB3");
         } catch (Exception ex) {
             Log.err(log, "slpash.Initial()", "search number of DB3 files", ex);
         }
@@ -340,7 +340,7 @@ public class MainViewInit extends MainViewBase {
     private void ini_CacheDB() {
         Log.info(log, "ini_CacheDB");
 
-        Database.Data.startUp(Config.mWorkPath + "/" + Config.DatabaseName.getValue());
+        Database.Data.startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
 
         Config.settings.ReadFromDB();
 
@@ -356,7 +356,7 @@ public class MainViewInit extends MainViewBase {
 
         CacheListChangedListeners.getInstance().cacheListChanged();
 
-        Database.Drafts.startUp(Config.mWorkPath + "/User/FieldNotes.db3");
+        Database.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
 
     }
 

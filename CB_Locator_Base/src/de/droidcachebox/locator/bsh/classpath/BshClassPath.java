@@ -36,7 +36,7 @@ package de.droidcachebox.locator.bsh.classpath;
 import de.droidcachebox.locator.bsh.ClassPathException;
 import de.droidcachebox.locator.bsh.NameSource;
 import de.droidcachebox.locator.bsh.StringUtil;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 
 import java.io.DataInputStream;
@@ -122,19 +122,19 @@ public class BshClassPath implements ClassPathListener, NameSource {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static String[] traverseDirForClasses(File dir) throws IOException {
+    static String[] traverseDirForClasses(AbstractFile dir) throws IOException {
         List list = traverseDirForClassesAux(dir, dir);
         return (String[]) list.toArray(new String[0]);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    static List traverseDirForClassesAux(File topDir, File dir) throws IOException {
+    static List traverseDirForClassesAux(AbstractFile topDir, AbstractFile dir) throws IOException {
         List list = new ArrayList();
         String top = topDir.getAbsolutePath();
 
-        File[] children = dir.listFiles();
+        AbstractFile[] children = dir.listFiles();
         for (int i = 0; i < children.length; i++) {
-            File child = children[i];
+            AbstractFile child = children[i];
             if (child.isDirectory())
                 list.addAll(traverseDirForClassesAux(topDir, child));
             else {
@@ -244,7 +244,7 @@ public class BshClassPath implements ClassPathListener, NameSource {
             return userClassPathComp;
 
         String cp = System.getProperty("java.class.path");
-        String[] paths = StringUtil.split(cp, File.pathSeparator);
+        String[] paths = StringUtil.split(cp, AbstractFile.pathSeparator);
 
         URL[] urls = new URL[paths.length];
         try {
@@ -550,7 +550,7 @@ public class BshClassPath implements ClassPathListener, NameSource {
 
     synchronized void map(URL url) throws IOException {
         String name = url.getFile();
-        File f = FileFactory.createFile(name);
+        AbstractFile f = FileFactory.createFile(name);
 
         if (f.isDirectory()) {
             classMapping("Directory " + f.toString());
@@ -769,35 +769,35 @@ public class BshClassPath implements ClassPathListener, NameSource {
     }
 
     public static class DirClassSource extends ClassSource {
-        DirClassSource(File dir) {
+        DirClassSource(AbstractFile dir) {
             source = dir;
         }
 
-        public static byte[] readBytesFromFile(File base, String className) {
-            String n = className.replace('.', File.separatorChar) + ".class";
-            File file = FileFactory.createFile(base, n);
+        public static byte[] readBytesFromFile(AbstractFile base, String className) {
+            String n = className.replace('.', AbstractFile.separatorChar) + ".class";
+            AbstractFile abstractFile = FileFactory.createFile(base, n);
 
-            if (file == null || !file.exists())
+            if (abstractFile == null || !abstractFile.exists())
                 return null;
 
             byte[] bytes;
             try {
-                FileInputStream fis = file.getFileInputStream();
+                FileInputStream fis = abstractFile.getFileInputStream();
                 DataInputStream dis = new DataInputStream(fis);
 
-                bytes = new byte[(int) file.length()];
+                bytes = new byte[(int) abstractFile.length()];
 
                 dis.readFully(bytes);
                 dis.close();
             } catch (IOException ie) {
-                throw new RuntimeException("Couldn't load file: " + file);
+                throw new RuntimeException("Couldn't load file: " + abstractFile);
             }
 
             return bytes;
         }
 
-        public File getDir() {
-            return (File) source;
+        public AbstractFile getDir() {
+            return (AbstractFile) source;
         }
 
         @Override

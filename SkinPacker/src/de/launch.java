@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.DesktopFileFactory;
 import de.droidcachebox.utils.FileFactory;
 
@@ -166,8 +167,8 @@ public class launch extends JFrame {
 
         Thread t = new Thread() {
             public void run() {
-                de.droidcachebox.utils.File f = FileFactory.createFile(selectedPath + "/Icons");
-                for (de.droidcachebox.utils.File dir : f.listFiles()) {
+                AbstractFile f = FileFactory.createFile(selectedPath + "/Icons");
+                for (AbstractFile dir : f.listFiles()) {
                     if (dir.isDirectory()) {
                         CreateTextureAndCopy(dir.getName());
                     }

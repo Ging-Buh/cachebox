@@ -34,7 +34,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
     SettingsItem_QuickButton(CB_RectF rec, String Name) {
         super(rec, Name);
 
-        this.setClickHandler((v, x, y, pointer, button) -> {
+        setClickHandler((v, x, y, pointer, button) -> {
             showSelect();
             return true;
         });
@@ -104,22 +104,21 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         add.setWidth(up.getHeight());
 
         up.setImage(new SpriteDrawable(Sprites.Arrows.get(11)));
-        down.setImage(new SpriteDrawable(Sprites.Arrows.get(11)));
-        del.setImage(new SpriteDrawable(Sprites.getSprite(IconName.DELETE.name())));
-        add.setImage(new SpriteDrawable(Sprites.getSprite(IconName.ADD.name())));
-
         up.setImageScale(0.7f);
+        up.setImageRotation(90f);
+        down.setImage(new SpriteDrawable(Sprites.Arrows.get(11)));
         down.setImageScale(0.7f);
+        down.setImageRotation(-90f);
+        del.setImage(new SpriteDrawable(Sprites.getSprite(IconName.DELETE.name())));
         del.setImageScale(0.7f);
+        add.setImage(new SpriteDrawable(Sprites.getSprite(IconName.ADD.name())));
         add.setImageScale(0.7f);
 
-        up.setImageRotation(90f);
-        down.setImageRotation(-90f);
 
-        this.addChild(up);
-        this.addChild(down);
-        this.addChild(del);
-        this.addChild(add);
+        addChild(up);
+        addChild(down);
+        addChild(del);
+        addChild(add);
 
         add.setClickHandler((v, x, y, pointer, button) -> {
             showSelect();
@@ -176,7 +175,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
     }
 
     private void initialListView() {
-        CB_RectF rec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
+        CB_RectF rec = new CB_RectF(0, 0, getWidth(), getHeight());
         boxForListView = new Box(rec, "");
         boxForListView.setBackground(Sprites.activityBackground);
 
@@ -192,7 +191,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             listView.setBackground(new ColorDrawable(c));
         }
 
-        this.addChild(boxForListView);
+        addChild(boxForListView);
 
     }
 
@@ -203,11 +202,11 @@ public class SettingsItem_QuickButton extends CB_View_Base {
     }
 
     private void layout() {
-        float btnLeft = this.getWidth() - rightBorder - up.getWidth();
+        float btnLeft = getWidth() - rightBorder - up.getWidth();
         float margin = up.getHalfHeight() / 2;
 
         add.setX(btnLeft);
-        add.setY(this.getBottomHeight() + margin);
+        add.setY(getBottomHeight() + margin);
 
         del.setX(btnLeft);
         del.setY(add.getMaxY() + margin);
@@ -218,12 +217,12 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         up.setX(btnLeft);
         up.setY(down.getMaxY() + margin);
 
-        this.setHeight(up.getMaxY() + margin);
+        setHeight(up.getMaxY() + margin);
 
         boxForListView.setX(margin);
         boxForListView.setY(margin);
         boxForListView.setWidth(add.getX() - margin - margin);
-        boxForListView.setHeight(this.getHeight() - (margin * 2));
+        boxForListView.setHeight(getHeight() - (margin * 2));
 
         listView.setX(margin);
         listView.setY(margin / 2);

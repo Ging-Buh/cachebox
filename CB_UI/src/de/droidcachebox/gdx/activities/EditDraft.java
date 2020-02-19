@@ -31,8 +31,6 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.DraftViewItem;
 import de.droidcachebox.gdx.views.DraftsView;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
-import de.droidcachebox.utils.FileFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -64,7 +62,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private CB_Button btnHow;
 
     public EditDraft(Draft note, IReturnListener listener, boolean isNewDraft) {
-        super(ActivityBase.activityRec(), "");
+        super("EditDraft");
         this.isNewDraft = isNewDraft;
         mReturnListener = listener;
         draft = note;
@@ -316,21 +314,20 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         btnFromFile.setClickHandler((v, x, y, pointer, button) -> {
             String mPath = Config.TemplateLastUsedPath.getValue();
             if (mPath.length() == 0) {
-                mPath = Config.mWorkPath + "/User";
+                mPath = Config.workPath + "/User";
             }
             mPath = mPath + "/" + Config.TemplateLastUsedName.getValue();
-            PlatformUIBase.getFile(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), PathAndName -> {
-                File file = FileFactory.createFile(PathAndName);
+            PlatformUIBase.getFile(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), abstractFile -> {
                 BufferedReader br = null;
                 String strLine;
                 StringBuilder text = new StringBuilder();
                 try {
-                    br = new BufferedReader(new InputStreamReader(file.getFileInputStream()));
+                    br = new BufferedReader(new InputStreamReader(abstractFile.getFileInputStream()));
                     while ((strLine = br.readLine()) != null) {
                         text.append(strLine).append("\n");
                     }
-                    Config.TemplateLastUsedPath.setValue(file.getParent());
-                    Config.TemplateLastUsedName.setValue(file.getName());
+                    Config.TemplateLastUsedPath.setValue(abstractFile.getParent());
+                    Config.TemplateLastUsedName.setValue(abstractFile.getName());
                     Config.AcceptChanges();
                 } catch (Exception ignored) {
                 }

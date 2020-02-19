@@ -83,8 +83,7 @@ public class CB_Label extends CB_View_Base {
     }
 
     /**
-     * object for holding Text. default size is ButtonWidthWide x ButtonHeight
-     * from UI_Size_Base
+     * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
     public CB_Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType) {
         super(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight(), "Label");

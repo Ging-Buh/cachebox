@@ -32,7 +32,7 @@ import de.droidcachebox.locator.Location;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
@@ -716,8 +716,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                         String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
                                         String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
                                         if (!sourceName.equals(destinationName)) {
-                                            File source = FileFactory.createFile(sourceName);
-                                            File destination = FileFactory.createFile(destinationName);
+                                            AbstractFile source = FileFactory.createFile(sourceName);
+                                            AbstractFile destination = FileFactory.createFile(destinationName);
                                             if (!source.renameTo(destination)) {
                                                 Log.err(sKlasse, "move from " + sourceName + " to " + destinationName + " failed");
                                             }
@@ -825,9 +825,9 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                         if (recordedVideoFilePath.length() > 0) {
                                             ext = FileIO.getFileExtension(recordedVideoFilePath);
 
-                                            File source = FileFactory.createFile(recordedVideoFilePath);
+                                            AbstractFile source = FileFactory.createFile(recordedVideoFilePath);
                                             String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
-                                            File destination = FileFactory.createFile(destinationName);
+                                            AbstractFile destination = FileFactory.createFile(destinationName);
                                             if (!source.renameTo(destination)) {
                                                 Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
                                             } else {

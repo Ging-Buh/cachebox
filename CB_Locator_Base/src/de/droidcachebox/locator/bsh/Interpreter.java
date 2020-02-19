@@ -33,7 +33,7 @@
 
 package de.droidcachebox.locator.bsh;
 
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 
 import java.io.*;
@@ -556,10 +556,10 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable {
      * Read text from fileName and eval it.
      */
     public Object source(String filename, NameSpace nameSpace) throws FileNotFoundException, IOException, EvalError {
-        File file = pathToFile(filename);
+        AbstractFile abstractFile = pathToFile(filename);
         if (Interpreter.DEBUG)
-            debug("Sourcing file: " + file);
-        Reader sourceIn = new BufferedReader(file.getFileReader());
+            debug("Sourcing file: " + abstractFile);
+        Reader sourceIn = new BufferedReader(abstractFile.getFileReader());
         try {
             return eval(sourceIn, nameSpace, filename);
         } finally {
@@ -961,18 +961,18 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable {
     /**
      * Localize a path to the file name based on the bsh.cwd interpreter working directory.
      */
-    public File pathToFile(String fileName) throws IOException {
-        File file = FileFactory.createFile(fileName);
+    public AbstractFile pathToFile(String fileName) throws IOException {
+        AbstractFile abstractFile = FileFactory.createFile(fileName);
 
         // if relative, fix up to bsh.cwd
-        if (!file.isAbsolute()) {
+        if (!abstractFile.isAbsolute()) {
             String cwd = (String) getu("bsh.cwd");
-            file = FileFactory.createFile(cwd + java.io.File.separator + fileName);
+            abstractFile = FileFactory.createFile(cwd + java.io.File.separator + fileName);
         }
 
         // The canonical file name is also absolute.
         // No need for getAbsolutePath() here...
-        return FileFactory.createFile(file.getCanonicalPath());
+        return FileFactory.createFile(abstractFile.getCanonicalPath());
     }
 
     /**

@@ -49,8 +49,8 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn4.UploadDrafts;
 import de.droidcachebox.menu.menuBtn4.UploadLogs;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_FixSizeList;
-import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.converter.Base64;
@@ -105,10 +105,10 @@ public class DraftsView extends V_ListView {
         Drafts drafts = new Drafts();
         drafts.loadDrafts("", "Timestamp ASC", LoadingType.Loadall);
 
-        File txtFile = FileFactory.createFile(Config.DraftsGarminPath.getValue());
+        AbstractFile txtAbstractFile = FileFactory.createFile(Config.DraftsGarminPath.getValue());
         FileOutputStream writer;
         try {
-            writer = txtFile.getFileOutputStream();
+            writer = txtAbstractFile.getFileOutputStream();
 
             // write utf8 bom EF BB BF
             byte[] bom = {(byte) 239, (byte) 187, (byte) 191};
@@ -127,8 +127,8 @@ public class DraftsView extends V_ListView {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            Log.err(log, e.toString() + " at\n" + txtFile.getAbsolutePath());
-            MessageBox.show(e.toString() + " at\n" + txtFile.getAbsolutePath(), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
+            Log.err(log, e.toString() + " at\n" + txtAbstractFile.getAbsolutePath());
+            MessageBox.show(e.toString() + " at\n" + txtAbstractFile.getAbsolutePath(), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
         }
     }
 
@@ -624,17 +624,16 @@ public class DraftsView extends V_ListView {
         private void uploadLogImage() {
             String mPath = Config.ImageUploadLastUsedPath.getValue();
             if (mPath.length() == 0) {
-                mPath = Config.mWorkPath + "/User/Media/";
+                mPath = Config.workPath + "/User/Media/";
             }
-            PlatformUIBase.getFile(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), PathAndName -> {
+            PlatformUIBase.getFile(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), abstractFile -> {
                 InputString inputDescription = new InputString("imageDescription") {
                     public void callBack(String description) {
                         GL.that.postAsync(() -> {
-                            File file = FileFactory.createFile(PathAndName);
-                            Config.ImageUploadLastUsedPath.setValue(file.getParent());
+                            Config.ImageUploadLastUsedPath.setValue(abstractFile.getParent());
                             Config.AcceptChanges();
                             try {
-                                String image = Base64.encodeBytes(WebbUtils.readBytes(file.getFileInputStream()));
+                                String image = Base64.encodeBytes(WebbUtils.readBytes(abstractFile.getFileInputStream()));
                                 GroundspeakAPI.uploadLogImage(aktDraft.GcId, image, description);
                                 if (GroundspeakAPI.APIError == OK) {
                                     MessageBox.show(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButton.OK, MessageBoxIcon.Information, null);

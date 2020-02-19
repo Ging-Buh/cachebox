@@ -19,7 +19,7 @@ import de.droidcachebox.core.*;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GCVoteDAO;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.ProgresssChangedEventList;
@@ -54,14 +54,14 @@ public class Importer {
 
         // Extract all Zip Files!
 
-        File file = FileFactory.createFile(directoryPath);
+        AbstractFile abstractFile = FileFactory.createFile(directoryPath);
 
-        if (file.isDirectory()) {
-            ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(file, new ArrayList<>(), "zip", false);
+        if (abstractFile.isDirectory()) {
+            ArrayList<AbstractFile> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(abstractFile, new ArrayList<>(), "zip", false);
 
             ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
 
-            for (File tmpZip : ordnerInhalt_Zip) {
+            for (AbstractFile tmpZip : ordnerInhalt_Zip) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e2) {
@@ -91,16 +91,16 @@ public class Importer {
         }
 
         // Import all GPX files
-        File[] FileList = GetFilesToLoad(directoryPath);
+        AbstractFile[] abstractFileList = GetFilesToLoad(directoryPath);
 
-        ip.setJobMax("AnalyseGPX", FileList.length);
+        ip.setJobMax("AnalyseGPX", abstractFileList.length);
 
         ImportHandler importHandler = new ImportHandler();
 
         Integer countwpt = 0;
         HashMap<String, Integer> wptCount = new HashMap<>();
 
-        for (File fFile : FileList) {
+        for (AbstractFile fAbstractFile : abstractFileList) {
 
             try {
                 Thread.sleep(10);
@@ -108,12 +108,12 @@ public class Importer {
                 return; // Thread Canceld
             }
 
-            ip.ProgressInkrement("AnalyseGPX", fFile.getName(), false);
+            ip.ProgressInkrement("AnalyseGPX", fAbstractFile.getName(), false);
 
             BufferedReader br;
             String strLine;
             try {
-                br = new BufferedReader(new InputStreamReader(fFile.getFileInputStream()));
+                br = new BufferedReader(new InputStreamReader(fAbstractFile.getFileInputStream()));
                 while ((strLine = br.readLine()) != null) {
                     if (strLine.contains("<wpt"))
                         countwpt++;
@@ -122,11 +122,11 @@ public class Importer {
                 Log.err(log, e1.getLocalizedMessage(), e1);
             }
 
-            wptCount.put(fFile.getAbsolutePath(), countwpt);
+            wptCount.put(fAbstractFile.getAbsolutePath(), countwpt);
             countwpt = 0;
         }
 
-        if (FileList.length == 0) {
+        if (abstractFileList.length == 0) {
             ip.ProgressInkrement("AnalyseGPX", "", true);
         }
 
@@ -137,27 +137,27 @@ public class Importer {
         // Indiziere DB
         CacheInfoList.IndexDB();
 
-        ip.setJobMax("ImportGPX", FileList.length + countwpt);
-        for (File File : FileList) {
+        ip.setJobMax("ImportGPX", abstractFileList.length + countwpt);
+        for (AbstractFile AbstractFile : abstractFileList) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e2) {
                 return; // Thread Canceled
             }
 
-            ip.ProgressInkrement("ImportGPX", "Import: " + File.getName(), false);
-            GPXFileImporter importer = new GPXFileImporter(File, ip);
+            ip.ProgressInkrement("ImportGPX", "Import: " + AbstractFile.getName(), false);
+            GPXFileImporter importer = new GPXFileImporter(AbstractFile, ip);
 
             try {
-                importer.doImport(importHandler, wptCount.get(File.getAbsolutePath()));
+                importer.doImport(importHandler, wptCount.get(AbstractFile.getAbsolutePath()));
             } catch (Exception e) {
-                Log.err(log, "importer.doImport => " + File.getAbsolutePath(), e);
+                Log.err(log, "importer.doImport => " + AbstractFile.getAbsolutePath(), e);
                 throw e;
             }
 
         }
 
-        if (FileList.length == 0) {
+        if (abstractFileList.length == 0) {
             ip.ProgressInkrement("ImportGPX", "", true);
         }
 
@@ -353,21 +353,21 @@ public class Importer {
 
     }
 
-    private File[] GetFilesToLoad(String directoryPath) {
-        ArrayList<File> files = new ArrayList<>();
+    private AbstractFile[] GetFilesToLoad(String directoryPath) {
+        ArrayList<AbstractFile> abstractFiles = new ArrayList<>();
 
-        File file = FileFactory.createFile(directoryPath);
-        if (file.isFile()) {
-            files.add(file);
+        AbstractFile abstractFile = FileFactory.createFile(directoryPath);
+        if (abstractFile.isFile()) {
+            abstractFiles.add(abstractFile);
         } else {
             if (FileIO.directoryExists(directoryPath)) {
-                files = FileIO.recursiveDirectoryReader(FileFactory.createFile(directoryPath), files);
+                abstractFiles = FileIO.recursiveDirectoryReader(FileFactory.createFile(directoryPath), abstractFiles);
             }
         }
 
-        File[] fileArray = files.toArray(new File[0]);
+        AbstractFile[] abstractFileArray = abstractFiles.toArray(new AbstractFile[0]);
 
-        Arrays.sort(fileArray, (f1, f2) -> {
+        Arrays.sort(abstractFileArray, (f1, f2) -> {
 
             if (f1.getName().equalsIgnoreCase(f2.getName().replace(".gpx", "") + "-wpts.gpx")) {
                 return 1;
@@ -382,7 +382,7 @@ public class Importer {
             }
         });
 
-        return fileArray;
+        return abstractFileArray;
     }
 
 }

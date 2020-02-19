@@ -1,7 +1,7 @@
 package de.droidcachebox.ex_import;
 
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
@@ -36,16 +36,16 @@ public class UnZip {
     static public String extractFolder(String zipFile, boolean here) throws ZipException, IOException {
         Log.debug(log, "unzip from " + zipFile);
         int BUFFER = 2048;
-        File file = FileFactory.createFile(zipFile);
+        AbstractFile abstractFile = FileFactory.createFile(zipFile);
         ZipFile zip;
         if (PlatformUIBase.AndroidVersion >= 24) {
             // todo Android has nothing to do in Core
-            zip = new ZipFile(file.getAbsolutePath(), Charset.forName("ISO-8859-1"));
+            zip = new ZipFile(abstractFile.getAbsolutePath(), Charset.forName("ISO-8859-1"));
         } else {
-            zip = new ZipFile(file.getAbsolutePath());
+            zip = new ZipFile(abstractFile.getAbsolutePath());
         }
 
-        String newPath = file.getParent(); //  zipFile.substring(0, zipFile.length() - 4);
+        String newPath = abstractFile.getParent(); //  zipFile.substring(0, zipFile.length() - 4);
 
         if (!here) {
             newPath = zipFile.substring(0, zipFile.length() - 4);
@@ -59,13 +59,13 @@ public class UnZip {
             // grab a zip file entry
             ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
             String currentEntry = entry.getName();
-            File destFile = FileFactory.createFile(newPath, currentEntry);
-            if (destFile.exists()) {
-                destFile.delete();
+            AbstractFile destAbstractFile = FileFactory.createFile(newPath, currentEntry);
+            if (destAbstractFile.exists()) {
+                destAbstractFile.delete();
             }
-            Log.debug(log, "  zipEntry: " + destFile.getAbsolutePath());
+            Log.debug(log, "  zipEntry: " + destAbstractFile.getAbsolutePath());
 
-            File destinationParent = destFile.getParentFile();
+            AbstractFile destinationParent = destAbstractFile.getParentFile();
             destinationParent.mkdirs();
             destinationParent.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
 
@@ -74,7 +74,7 @@ public class UnZip {
                 int currentByte;
                 byte data[] = new byte[BUFFER];
 
-                FileOutputStream fos = destFile.getFileOutputStream();
+                FileOutputStream fos = destAbstractFile.getFileOutputStream();
                 BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 
                 BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
@@ -89,12 +89,12 @@ public class UnZip {
                 fos.close();
 
             }
-            destFile.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
-            Log.debug(log, "  done with size " + destFile.length());
+            destAbstractFile.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
+            Log.debug(log, "  done with size " + destAbstractFile.length());
 
             if (currentEntry.endsWith(".zip")) {
                 // found a zip file, try to open recursiv
-                extractFolder(destFile.getAbsolutePath());
+                extractFolder(destAbstractFile.getAbsolutePath());
             }
         }
 

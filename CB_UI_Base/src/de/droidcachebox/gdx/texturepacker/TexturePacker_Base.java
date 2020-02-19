@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 
 import java.io.FileWriter;
@@ -51,14 +51,14 @@ public abstract class TexturePacker_Base {
         if (!packFullFileName.endsWith("/"))
             packFullFileName += "/";
         packFullFileName += packFileName;
-        File outputFile = FileFactory.createFile(packFullFileName);
-        if (!outputFile.exists())
+        AbstractFile outputAbstractFile = FileFactory.createFile(packFullFileName);
+        if (!outputAbstractFile.exists())
             return true;
 
-        File inputFile = FileFactory.createFile(input);
-        if (!inputFile.exists())
-            throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
-        return inputFile.lastModified() > outputFile.lastModified();
+        AbstractFile inputAbstractFile = FileFactory.createFile(input);
+        if (!inputAbstractFile.exists())
+            throw new IllegalArgumentException("Input file does not exist: " + inputAbstractFile.getAbsolutePath());
+        return inputAbstractFile.lastModified() > outputAbstractFile.lastModified();
     }
 
     public static void processIfModified(String input, String output, String packFileName) {
@@ -88,22 +88,22 @@ public abstract class TexturePacker_Base {
         }
 
         if (output == null) {
-            File inputFile = FileFactory.createFile(input);
-            output = FileFactory.createFile(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
+            AbstractFile inputAbstractFile = FileFactory.createFile(input);
+            output = FileFactory.createFile(inputAbstractFile.getParentFile(), inputAbstractFile.getName() + "-packed").getAbsolutePath();
         }
 
         process(input, output, packFileName);
     }
 
-    public abstract void writeImages(File outputDir, Array<Page> pages, String packFileName);
+    public abstract void writeImages(AbstractFile outputDir, Array<Page> pages, String packFileName);
 
-    public abstract TexturePacker_Base getInstanz(File rootDir, Settings settings);
+    public abstract TexturePacker_Base getInstanz(AbstractFile rootDir, Settings settings);
 
-    public void addImage(File file) {
-        imageProcessor.addImage(file);
+    public void addImage(AbstractFile abstractFile) {
+        imageProcessor.addImage(abstractFile);
     }
 
-    public void pack(File outputDir, String packFileName) {
+    public void pack(AbstractFile outputDir, String packFileName) {
         outputDir.mkdirs();
 
         if (packFileName.indexOf('.') == -1)
@@ -118,12 +118,12 @@ public abstract class TexturePacker_Base {
         }
     }
 
-    void writePackFile(File outputDir, Array<Page> pages, String packFileName) throws IOException {
-        File packFile = FileFactory.createFile(outputDir, packFileName);
+    void writePackFile(AbstractFile outputDir, Array<Page> pages, String packFileName) throws IOException {
+        AbstractFile packAbstractFile = FileFactory.createFile(outputDir, packFileName);
 
-        if (packFile.exists()) {
+        if (packAbstractFile.exists()) {
             // Make sure there aren't duplicate names.
-            TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile.getAbsolutePath()), new FileHandle(packFile.getAbsolutePath()), false);
+            TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packAbstractFile.getAbsolutePath()), new FileHandle(packAbstractFile.getAbsolutePath()), false);
             for (Page page : pages) {
                 for (Rect_Base rect : page.outputRects) {
                     String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
@@ -137,7 +137,7 @@ public abstract class TexturePacker_Base {
             }
         }
 
-        FileWriter writer = packFile.getFileWriter();
+        FileWriter writer = packAbstractFile.getFileWriter();
         // if (settings.jsonOutput) {
         // } else {
         for (Page page : pages) {

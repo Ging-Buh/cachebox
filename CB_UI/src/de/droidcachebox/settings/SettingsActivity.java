@@ -32,7 +32,10 @@ import de.droidcachebox.translation.Lang;
 import de.droidcachebox.translation.SelectedLangChangedEvent;
 import de.droidcachebox.translation.SelectedLangChangedEventList;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.Config_Core;
+import de.droidcachebox.utils.FileFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +61,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private Linearlayout LinearLayout;
 
     public SettingsActivity() {
-        super(ActivityBase.activityRec(), "Settings");
+        super("Settings");
         initial();
         SelectedLangChangedEventList.Add(this);
         that = this;
@@ -404,7 +407,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             EditKey = Config.settings.indexOf(SB);
 
             GL.that.RunOnGLWithThreadCheck(() -> {
-                ColorPicker clrPick = new ColorPicker(ActivityBase.activityRec(), SB.getValue(), color -> {
+                ColorPicker clrPick = new ColorPicker(SB.getValue(), color -> {
                     if (color == null)
                         return; // nothing changed
 
@@ -762,17 +765,17 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(settingFolder);
-            File file = FileFactory.createFile(settingFolder.getValue());
-            final String absolutePath = (file != null) ? file.getAbsolutePath() : "";
+            AbstractFile abstractFile = FileFactory.createFile(settingFolder.getValue());
+            final String absolutePath = (abstractFile != null) ? abstractFile.getAbsolutePath() : "";
             Menu icm = new Menu("SelectPathTitle");
             icm.addMenuItem("select_folder", null,
-                    () -> PlatformUIBase.getFolder(absolutePath, Translation.get("select_folder"), Translation.get("select"), Path -> {
+                    () -> PlatformUIBase.getFolder(absolutePath, Translation.get("select_folder"), Translation.get("select"), abstractFile1 -> {
                         // check WriteProtection
-                        if (needWritePermission && !FileIO.canWrite(Path)) {
+                        if (needWritePermission && !abstractFile1.canWrite()) {
                             String WriteProtectionMsg = Translation.get("NoWriteAcces");
                             GL.that.Toast(WriteProtectionMsg, 8000);
                         } else {
-                            settingFolder.setValue(Path);
+                            settingFolder.setValue(abstractFile1.getAbsolutePath());
                             resortList();
                         }
                     }));
@@ -801,15 +804,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(settingFile);
-            File file = FileFactory.createFile(settingFile.getValue());
+            AbstractFile abstractFile = FileFactory.createFile(settingFile.getValue());
 
-            final String Path = (file.getParent() != null) ? file.getParent() : "";
+            final String Path = (abstractFile.getParent() != null) ? abstractFile.getParent() : "";
 
             Menu icm = new Menu("SelectFileTitle");
 
             icm.addMenuItem("select_file", null,
-                    () -> PlatformUIBase.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), Path1 -> {
-                        settingFile.setValue(Path1);
+                    () -> PlatformUIBase.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), abstractFile1 -> {
+                        settingFile.setValue(abstractFile1.getAbsolutePath());
                         resortList();
                     }));
             icm.addMenuItem("ClearPath", null, () -> {
@@ -1016,11 +1019,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         int index = 0;
         int selection = -1;
 
-        File file1 = FileFactory.createFile(Config.Sel_LanguagePath.getValue());
+        AbstractFile abstractFile1 = FileFactory.createFile(Config.Sel_LanguagePath.getValue());
 
         for (Lang tmp : Sprachen) {
-            File file2 = FileFactory.createFile(tmp.Path);
-            if (file1.getAbsoluteFile().compareTo(file2.getAbsoluteFile()) == 0) {
+            AbstractFile abstractFile2 = FileFactory.createFile(tmp.Path);
+            if (abstractFile1.getAbsoluteFile().compareTo(abstractFile2.getAbsoluteFile()) == 0) {
                 selection = index;
             }
 
@@ -1066,11 +1069,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private CB_View_Base getSkinSpinnerView() {
-        String SkinFolder = Config.mWorkPath + "/skins";
-        File dir = FileFactory.createFile(SkinFolder);
+        String SkinFolder = Config.workPath + "/skins";
+        AbstractFile dir = FileFactory.createFile(SkinFolder);
         final ArrayList<String> skinFolders = new ArrayList<>();
         dir.listFiles((f, name) -> {
-            File found = FileFactory.createFile(f, name);
+            AbstractFile found = FileFactory.createFile(f, name);
             if (found.isDirectory()) {
                 String Path = f.getAbsolutePath();
                 if (!Path.contains(".svn")) {
@@ -1119,7 +1122,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             } else if (selected.equals("small")) {
                 Config.skinFolder.setValue("small");
             } else {
-                Config.skinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
+                Config.skinFolder.setValue(Config_Core.workPath + "/skins/" + selected);
             }
         });
 

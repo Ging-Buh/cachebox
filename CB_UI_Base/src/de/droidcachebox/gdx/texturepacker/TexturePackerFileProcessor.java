@@ -17,7 +17,7 @@ package de.droidcachebox.gdx.texturepacker;
  ******************************************************************************/
 
 import com.badlogic.gdx.utils.*;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 
 import java.util.ArrayList;
@@ -30,11 +30,11 @@ import java.util.regex.Pattern;
  */
 public class TexturePackerFileProcessor extends FileProcessor {
     private final Settings defaultSettings;
-    ArrayList<File> ignoreDirs = new ArrayList<File>();
-    private ObjectMap<File, Settings> dirToSettings = new ObjectMap<File, Settings>();
+    ArrayList<AbstractFile> ignoreDirs = new ArrayList<AbstractFile>();
+    private ObjectMap<AbstractFile, Settings> dirToSettings = new ObjectMap<AbstractFile, Settings>();
     private Json json = new Json();
     private String packFileName;
-    private File root;
+    private AbstractFile root;
 
     public TexturePackerFileProcessor() {
         this(new Settings(), "pack.atlas");
@@ -51,28 +51,28 @@ public class TexturePackerFileProcessor extends FileProcessor {
         addInputSuffix(".png", ".jpg");
     }
 
-    public ArrayList<Entry> process(File inputFile, File outputRoot) throws Exception {
-        root = inputFile;
+    public ArrayList<Entry> process(AbstractFile inputAbstractFile, AbstractFile outputRoot) throws Exception {
+        root = inputAbstractFile;
 
         // Collect pack.json setting files.
-        final ArrayList<File> settingsFiles = new ArrayList<File>();
+        final ArrayList<AbstractFile> settingsAbstractFiles = new ArrayList<AbstractFile>();
         FileProcessor settingsProcessor = new FileProcessor() {
             protected void processFile(Entry inputFile) throws Exception {
-                settingsFiles.add(inputFile.inputFile);
+                settingsAbstractFiles.add(inputFile.inputAbstractFile);
             }
         };
         settingsProcessor.addInputRegex("pack\\.json");
-        settingsProcessor.process(inputFile, null);
+        settingsProcessor.process(inputAbstractFile, null);
         // Sort parent first.
-        Collections.sort(settingsFiles, new Comparator<File>() {
-            public int compare(File file1, File file2) {
-                return file1.toString().length() - file2.toString().length();
+        Collections.sort(settingsAbstractFiles, new Comparator<AbstractFile>() {
+            public int compare(AbstractFile abstractFile1, AbstractFile abstractFile2) {
+                return abstractFile1.toString().length() - abstractFile2.toString().length();
             }
         });
-        for (File settingsFile : settingsFiles) {
+        for (AbstractFile settingsAbstractFile : settingsAbstractFiles) {
             // Find first parent with settings, or use defaults.
             Settings settings = null;
-            File parent = settingsFile.getParentFile();
+            AbstractFile parent = settingsAbstractFile.getParentFile();
             while (true) {
                 if (parent.equals(root))
                     break;
@@ -87,24 +87,24 @@ public class TexturePackerFileProcessor extends FileProcessor {
                 settings = new Settings(defaultSettings);
             // Merge settings from current directory.
             try {
-                json.readFields(settings, new JsonReader().parse(settingsFile.getFileReader()));
+                json.readFields(settings, new JsonReader().parse(settingsAbstractFile.getFileReader()));
             } catch (SerializationException ex) {
-                throw new GdxRuntimeException("Error reading settings file: " + settingsFile, ex);
+                throw new GdxRuntimeException("Error reading settings file: " + settingsAbstractFile, ex);
             }
-            dirToSettings.put(settingsFile.getParentFile(), settings);
+            dirToSettings.put(settingsAbstractFile.getParentFile(), settings);
         }
 
         // Do actual processing.
-        return super.process(inputFile, outputRoot);
+        return super.process(inputAbstractFile, outputRoot);
     }
 
-    public ArrayList<Entry> process(File[] files, File outputRoot) throws Exception {
+    public ArrayList<Entry> process(AbstractFile[] abstractFiles, AbstractFile outputRoot) throws Exception {
         // Delete pack file and images.
         if (outputRoot.exists()) {
             FileFactory.createFile(outputRoot, packFileName).delete();
             FileProcessor deleteProcessor = new FileProcessor() {
                 protected void processFile(Entry inputFile) throws Exception {
-                    inputFile.inputFile.delete();
+                    inputFile.inputAbstractFile.delete();
                 }
             };
             deleteProcessor.setRecursive(false);
@@ -117,16 +117,16 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
             deleteProcessor.process(outputRoot, null);
         }
-        return super.process(files, outputRoot);
+        return super.process(abstractFiles, outputRoot);
     }
 
     protected void processDir(Entry inputDir, ArrayList<Entry> files) throws Exception {
-        if (ignoreDirs.contains(inputDir.inputFile))
+        if (ignoreDirs.contains(inputDir.inputAbstractFile))
             return;
 
         // Find first parent with settings, or use defaults.
         Settings settings = null;
-        File parent = inputDir.inputFile;
+        AbstractFile parent = inputDir.inputAbstractFile;
         while (true) {
             settings = dirToSettings.get(parent);
             if (settings != null)
@@ -142,23 +142,23 @@ public class TexturePackerFileProcessor extends FileProcessor {
             // Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.
             files = new FileProcessor(this) {
                 protected void processDir(Entry entryDir, ArrayList<Entry> files) {
-                    ignoreDirs.add(entryDir.inputFile);
+                    ignoreDirs.add(entryDir.inputAbstractFile);
                 }
 
                 protected void processFile(Entry entry) {
                     addProcessedFile(entry);
                 }
-            }.process(inputDir.inputFile, null);
+            }.process(inputDir.inputAbstractFile, null);
         }
 
         if (files.isEmpty())
             return;
 
         // Pack.
-        System.out.println(inputDir.inputFile.getName());
+        System.out.println(inputDir.inputAbstractFile.getName());
         TexturePacker_Base packer = TexturePacker_Base.that.getInstanz(root, settings);
         for (Entry file : files)
-            packer.addImage(file.inputFile);
+            packer.addImage(file.inputAbstractFile);
         packer.pack(inputDir.outputDir, packFileName);
     }
 }

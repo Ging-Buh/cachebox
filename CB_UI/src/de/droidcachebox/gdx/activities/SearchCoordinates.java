@@ -20,7 +20,7 @@ public class SearchCoordinates extends ActivityBase {
     private EditTextField edtStreet;
 
     public SearchCoordinates() {
-        super(ActivityBase.activityRec(), "SearchCoordinates");
+        super("SearchCoordinates");
         createControls();
     }
 

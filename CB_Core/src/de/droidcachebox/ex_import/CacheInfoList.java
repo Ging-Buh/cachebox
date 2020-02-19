@@ -18,8 +18,8 @@ package de.droidcachebox.ex_import;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.*;
 import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.SDBM_Hash;
 import de.droidcachebox.utils.log.Log;
@@ -272,17 +272,17 @@ public class CacheInfoList {
     }
 
     private static void createChangedListingFile(String changedFileString) throws IOException {
-        File file = FileFactory.createFile(changedFileString);
+        AbstractFile abstractFile = FileFactory.createFile(changedFileString);
 
-        if (!file.exists()) {
+        if (!abstractFile.exists()) {
             String changedFileDir = changedFileString.substring(0, changedFileString.lastIndexOf("/"));
-            File Directory = FileFactory.createFile(changedFileDir);
+            AbstractFile Directory = FileFactory.createFile(changedFileDir);
 
             if (!Directory.exists()) {
                 Directory.mkdirs();
             }
 
-            PrintWriter writer = new PrintWriter(file.getFileWriter());
+            PrintWriter writer = new PrintWriter(abstractFile.getFileWriter());
 
             writer.write("Listing Changed!");
             writer.close();

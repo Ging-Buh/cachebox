@@ -82,7 +82,7 @@ public class MapScale extends CB_View_Base implements InvalidateTextureEventList
     public void zoomChanged() {
         if (mapInstanz.pixelsPerMeter <= 0)
             return;
-        if (mapInstanz.getAktZoom() == generatedZomm)
+        if (mapInstanz.getCurrentZoom() == generatedZomm)
             return;
 
         try {
@@ -151,9 +151,9 @@ public class MapScale extends CB_View_Base implements InvalidateTextureEventList
     protected void render(Batch batch) {
         if (pixelsPerMeter <= 0)
             return;
-        if (mapInstanz.getAktZoom() != generatedZomm) {
+        if (mapInstanz.getCurrentZoom() != generatedZomm) {
             zoomChanged();
-            generatedZomm = mapInstanz.getAktZoom();
+            generatedZomm = mapInstanz.getCurrentZoom();
         }
         if (CachedScaleDrawable == null)
             zoomChanged();

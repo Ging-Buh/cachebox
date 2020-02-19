@@ -6,7 +6,7 @@ import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.locator.map.BoundingBox;
 import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -145,8 +145,8 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
 
     @Override
     public byte[] getImageFromFile(String cachedTileFilename) throws IOException {
-        File myImageFile = FileFactory.createFile(cachedTileFilename);
-        BufferedImage img = ImageIO.read(myImageFile.getFileInputStream());
+        AbstractFile myImageAbstractFile = FileFactory.createFile(cachedTileFilename);
+        BufferedImage img = ImageIO.read(myImageAbstractFile.getFileInputStream());
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
         ImageIO.write(img, "png", bas);
         return bas.toByteArray();

@@ -31,6 +31,13 @@ public class Log {
         LogLevel.setLogLevel(old);
     }
 
+    public static void err(String sKlasse, Throwable t) {
+        LogLevel old = LogLevel.getLogLevel();
+        LogLevel.setLogLevel(LogLevel.ERROR);
+        LoggerFactory.getLogger(sKlasse).error("", t);
+        LogLevel.setLogLevel(old);
+    }
+
     public static void err(String sKlasse, String logText, Throwable t) {
         LogLevel old = LogLevel.getLogLevel();
         LogLevel.setLogLevel(LogLevel.ERROR);

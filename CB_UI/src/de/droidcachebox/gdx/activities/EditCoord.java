@@ -6,11 +6,10 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
-import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.converter.UTMConvert;
 import de.droidcachebox.utils.log.Log;
@@ -73,12 +72,12 @@ public class EditCoord extends ActivityBase {
             showPage((Integer) mtb.getTag());
             // write a file for Nissan Connect
             // LON,LAT,Waypoint
-            String dirFileName = Config.mWorkPath + "/User/nissan.csv";
-            File txtFile = FileFactory.createFile(dirFileName);
+            String dirFileName = Config.workPath + "/User/nissan.csv";
+            AbstractFile txtAbstractFile = FileFactory.createFile(dirFileName);
             FileOutputStream writer;
             try {
                 String coordsToWrite = coord.getLongitude() + "," + coord.getLatitude() + ",";
-                writer = txtFile.getFileOutputStream();
+                writer = txtAbstractFile.getFileOutputStream();
                 writer.write(("LON,LAT,Waypoint\r\n").getBytes(StandardCharsets.UTF_8));
                 if (GlobalCore.getSelectedWayPoint() == null) {
                     writer.write((coordsToWrite + GlobalCore.getSelectedCache().getGeoCacheCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
@@ -93,8 +92,8 @@ public class EditCoord extends ActivityBase {
         }
     };
 
-    public EditCoord(CB_RectF rec, String Name, Coordinate mActCoord, ReturnListener returnListener) {
-        super(rec, Name);
+    public EditCoord(String Name, Coordinate mActCoord, ReturnListener returnListener) {
+        super(Name);
         coord = mActCoord;
         cancelCoord = coord.copy();
         mReturnListener = returnListener;

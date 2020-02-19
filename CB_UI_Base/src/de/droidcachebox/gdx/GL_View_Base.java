@@ -162,7 +162,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     protected void setForceHandleTouchEvents() {
-        this.forceHandleTouchEvents = true;
+        forceHandleTouchEvents = true;
     }
 
     public void setVisible() {
@@ -197,9 +197,9 @@ public abstract class GL_View_Base extends CB_RectF {
      *
      */
     public boolean isVisible() {
-        if (this.isDisposed)
+        if (isDisposed)
             return false;
-        if (this.getWidth() <= 0f || this.getHeight() <= 0f)
+        if (getWidth() <= 0f || getHeight() <= 0f)
             return false;
         return mVisible;
     }
@@ -329,12 +329,12 @@ public abstract class GL_View_Base extends CB_RectF {
             leftBorder = background.getLeftWidth();
             rightBorder = background.getRightWidth();
             topBorder = background.getTopHeight();
-            bottomBorder = background.getBottomHeight(); // this.BottomHeight;
+            bottomBorder = background.getBottomHeight(); // BottomHeight;
         } else {
             leftBorder = 0;
             rightBorder = 0;
             topBorder = 0;
-            bottomBorder = 0; // this.BottomHeight;
+            bottomBorder = 0; // BottomHeight;
         }
         innerWidth = getWidth() - leftBorder - rightBorder;
         innerHeight = getHeight() - topBorder - bottomBorder;
@@ -373,7 +373,7 @@ public abstract class GL_View_Base extends CB_RectF {
         if (myParentInfo == null)
             return;
 
-        if (this.isDisposed)
+        if (isDisposed)
             return;
 
         if (thisInvalidate) {
@@ -424,7 +424,7 @@ public abstract class GL_View_Base extends CB_RectF {
         }
 
         try {
-            this.render(batch);
+            render(batch);
         } catch (IllegalStateException e) {
             Log.err(log, "renderChilds", e);
             // reset Colorfilter ?
@@ -478,13 +478,13 @@ public abstract class GL_View_Base extends CB_RectF {
                         } else {
                             if (view != null && view.isDisposed()) {
                                 // Remove disposedView from child list
-                                this.removeChild(view);
+                                removeChild(view);
                             }
                         }
                     } catch (java.lang.IllegalStateException e) {
                         if (view.isDisposed()) {
                             // Remove disposedView from child list
-                            this.removeChild(view);
+                            removeChild(view);
                         }
                     }
 
@@ -549,7 +549,7 @@ public abstract class GL_View_Base extends CB_RectF {
     private void calcMyInfoForChild() {
         childsInvalidate = true;
         thisWorldRec.setRec(this);
-        thisWorldRec.offset(-this.getX() + myParentInfo.Vector().x, -this.getY() + myParentInfo.Vector().y);
+        thisWorldRec.offset(-getX() + myParentInfo.Vector().x, -getY() + myParentInfo.Vector().y);
         boolean mustSetScissor = !myParentInfo.drawRec().contains(thisWorldRec);
 
         if (mustSetScissor) {
@@ -580,8 +580,8 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public void setOriginCenter() {
-        mOriginX = this.getHalfWidth();
-        mOriginY = this.getHalfHeight();
+        mOriginX = getHalfWidth();
+        mOriginY = getHalfHeight();
     }
 
     /**
@@ -957,7 +957,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     boolean isDoubleClickable() {
-        if (!this.isVisible())
+        if (!isVisible())
             return false;
         return isDoubleClickable | ChildIsDoubleClickable;
     }
@@ -967,7 +967,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     boolean isLongClickable() {
-        if (!this.isVisible())
+        if (!isVisible())
             return false;
         return isLongClickable | ChildIsLongClickable;
     }
@@ -977,7 +977,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     protected boolean isClickable() {
-        if (!this.isVisible())
+        if (!isVisible())
             return false;
         return isClickable | ChildIsClickable;
     }
@@ -995,39 +995,39 @@ public abstract class GL_View_Base extends CB_RectF {
 
     @Override
     public void setY(float i) {
-        if (this.getY() == i)
+        if (getY() == i)
             return;
         super.setY(i);
-        this.invalidate(); // Scissor muss neu berechnet werden
+        invalidate(); // Scissor muss neu berechnet werden
         GL.that.renderOnce();
     }
 
     @Override
     public void setX(float i) {
-        if (this.getX() == i)
+        if (getX() == i)
             return;
         super.setX(i);
-        this.invalidate(); // Scissor muss neu berechnet werden
+        invalidate(); // Scissor muss neu berechnet werden
         GL.that.renderOnce();
     }
 
     @Override
     public void setPos(Vector2 Pos) {
         super.setPos(Pos);
-        this.invalidate(); // Scissor muss neu berechnet werden
+        invalidate(); // Scissor muss neu berechnet werden
         GL.that.renderOnce();
     }
 
     public void setZeroPos() {
         super.setPos(0, 0);
-        this.invalidate(); // Scissor muss neu berechnet werden
+        invalidate(); // Scissor muss neu berechnet werden
         GL.that.renderOnce();
     }
 
     @Override
     public void setPos(float x, float y) {
         super.setPos(x, y);
-        this.invalidate(); // Scissor muss neu berechnet werden
+        invalidate(); // Scissor muss neu berechnet werden
         GL.that.renderOnce();
     }
 
@@ -1078,7 +1078,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public void setData(Object data) {
-        this.data = data;
+        data = data;
     }
 
     protected ParentInfo getMyInfoForChild() {

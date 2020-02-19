@@ -13,11 +13,11 @@ public class Copy {
     }
 
     public Copy(CopyRule rule) {
-        mRules = new ArrayList<CopyRule>();
+        mRules = new ArrayList<>();
         mRules.add(rule);
     }
 
-    public static void copyFolder(File src, File dest) throws IOException {
+    public static void copyFolder(AbstractFile src, AbstractFile dest) throws IOException {
 
         if (src.isDirectory()) {
 
@@ -27,21 +27,21 @@ public class Copy {
             }
 
             // list all the directory contents
-            String files[] = src.list();
+            String[] files = src.list();
 
             for (String file : files) {
                 if (file.contains(".svn"))
                     continue;
                 // construct the src and dest file structure
-                File srcFile = FileFactory.createFile(src, file);
-                File destFile = FileFactory.createFile(dest, file);
+                AbstractFile srcAbstractFile = FileFactory.createFile(src, file);
+                AbstractFile destAbstractFile = FileFactory.createFile(dest, file);
                 // recursive copy
-                copyFolder(srcFile, destFile);
+                copyFolder(srcAbstractFile, destAbstractFile);
             }
 
         } else {
 
-            File parent = FileFactory.createFile(dest.getParent());
+            AbstractFile parent = FileFactory.createFile(dest.getParent());
 
             if (!parent.exists())
                 parent.mkdir();
@@ -77,6 +77,6 @@ public class Copy {
     }
 
     public interface CopyMsg {
-        public void Msg(String msg);
+        void Msg(String msg);
     }
 }

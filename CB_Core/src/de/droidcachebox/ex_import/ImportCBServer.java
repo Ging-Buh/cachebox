@@ -6,7 +6,7 @@ import de.droidcachebox.database.*;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.rpc.*;
 import de.droidcachebox.rpc.RpcAnswer_GetExportList.ListItem;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.SDBM_Hash;
 import de.droidcachebox.utils.log.Log;
@@ -116,11 +116,11 @@ public class ImportCBServer {
                                         url = url.substring(0, pos); // Port abschneiden, da dieser bereits in der imageURL der Images steht
                                     }
                                     url = "http://" + url + image.getImageUrl();
-                                    File file = FileFactory.createFile(image.getLocalPath());
+                                    AbstractFile abstractFile = FileFactory.createFile(image.getLocalPath());
                                     url += cache.getGeoCacheCode().substring(0, 4) + "/";
 
                                     try {
-                                        url += URLEncoder.encode(file.getName().replace(" ", "%20"), "UTF-8");
+                                        url += URLEncoder.encode(abstractFile.getName().replace(" ", "%20"), "UTF-8");
                                         url = url.replace("%2520", "%20"); // replace wrong converted " " with %20
                                     } catch (UnsupportedEncodingException e) {
                                         continue;
@@ -128,18 +128,18 @@ public class ImportCBServer {
 
                                     String imagePath;
                                     if (image.getImageUrl().indexOf("/spoilers/") >= 0) {
-                                        imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
+                                        imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + abstractFile.getName();
                                         if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0) {
-                                            imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
+                                            imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + abstractFile.getName();
                                         }
                                     } else {
-                                        imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
+                                        imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + abstractFile.getName();
                                         if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0) {
-                                            imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + file.getName();
+                                            imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + cache.getGeoCacheCode().substring(0, 4) + "/" + abstractFile.getName();
                                         }
                                     }
-                                    file = FileFactory.createFile(imagePath);
-                                    if (!file.exists()) {
+                                    abstractFile = FileFactory.createFile(imagePath);
+                                    if (!abstractFile.exists()) {
                                         Log.info(log, "Download " + imagePath + " from " + url);
                                         download(url, imagePath);
                                     } else {

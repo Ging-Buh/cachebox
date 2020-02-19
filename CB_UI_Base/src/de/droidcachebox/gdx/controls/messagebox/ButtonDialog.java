@@ -36,17 +36,17 @@ import java.util.Iterator;
 
 public class ButtonDialog extends Dialog {
 
-    private final ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
+    private final ArrayList<CB_View_Base> FooterItems = new ArrayList<>();
 
-    public CB_Button button1;
-    public CB_Button button2;
-    public CB_Button button3;
+    public CB_Button btnLeftPositive;
+    public CB_Button btnMiddleNeutral;
+    public CB_Button btnRightNegative;
     public MessageBox.OnMsgBoxClickListener mMsgBoxClickListener;
     protected CB_Label label;
     protected Object data;
-    protected OnClickListener positiveButtonClickListener;
-    protected OnClickListener neutralButtonClickListener;
-    protected OnClickListener negativeButtonClickListener;
+    protected OnClickListener btnLeftPositiveClickListener;
+    protected OnClickListener btnMiddleNeutralClickListener;
+    protected OnClickListener btnRightNegativeClickListener;
 
     public ButtonDialog(String Name, String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, MessageBox.OnMsgBoxClickListener Listener) {
         this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButton.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
@@ -125,8 +125,8 @@ public class ButtonDialog extends Dialog {
             createButtons(3, Translation.get("yes"), Translation.get("no"), Translation.get("cancel"));
         } else if (buttons == MessageBoxButton.Cancel) {
             createButtons(3, "", "", Translation.get("cancel"));
-            button1.setInvisible();
-            button2.setInvisible();
+            btnLeftPositive.setInvisible();
+            btnMiddleNeutral.setInvisible();
         } else {
             // no Buttons
             setFooterHeight(calcFooterHeight(false));
@@ -142,31 +142,31 @@ public class ButtonDialog extends Dialog {
 
         switch (anzahl) {
             case 1:
-                button1 = new CB_Button(t1);
-                this.addLast(button1);
-                button1.setClickHandler(positiveButtonClickListener);
+                btnLeftPositive = new CB_Button(t1);
+                this.addLast(btnLeftPositive);
+                btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
                 // addFooterChild(button1);
                 break;
             case 2:
-                button1 = new CB_Button(t1);
-                button3 = new CB_Button(t3);
-                this.addNext(button1);
-                this.addLast(button3);
-                button1.setClickHandler(positiveButtonClickListener);
-                button3.setClickHandler(negativeButtonClickListener);
+                btnLeftPositive = new CB_Button(t1);
+                btnRightNegative = new CB_Button(t3);
+                this.addNext(btnLeftPositive);
+                this.addLast(btnRightNegative);
+                btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
+                btnRightNegative.setClickHandler(btnRightNegativeClickListener);
                 // addFooterChild(button1);
                 // addFooterChild(button3);
                 break;
             case 3:
-                button1 = new CB_Button(t1);
-                button2 = new CB_Button(t2);
-                button3 = new CB_Button(t3);
-                this.addNext(button1);
-                this.addNext(button2);
-                this.addLast(button3);
-                button1.setClickHandler(positiveButtonClickListener);
-                button2.setClickHandler(neutralButtonClickListener);
-                button3.setClickHandler(negativeButtonClickListener);
+                btnLeftPositive = new CB_Button(t1);
+                btnMiddleNeutral = new CB_Button(t2);
+                btnRightNegative = new CB_Button(t3);
+                this.addNext(btnLeftPositive);
+                this.addNext(btnMiddleNeutral);
+                this.addLast(btnRightNegative);
+                btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
+                btnMiddleNeutral.setClickHandler(btnMiddleNeutralClickListener);
+                btnRightNegative.setClickHandler(btnRightNegativeClickListener);
                 // addFooterChild(button1);
                 // addFooterChild(button2);
                 // addFooterChild(button3);
@@ -180,9 +180,9 @@ public class ButtonDialog extends Dialog {
     }
 
     private void setButtonListener() {
-        positiveButtonClickListener = (v, x, y, pointer, button) -> ButtonClick(1);
-        neutralButtonClickListener = (v, x, y, pointer, button) -> ButtonClick(2);
-        negativeButtonClickListener = (v, x, y, pointer, button) -> ButtonClick(3);
+        btnLeftPositiveClickListener = (v, x, y, pointer, button) -> ButtonClick(1);
+        btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> ButtonClick(2);
+        btnRightNegativeClickListener = (v, x, y, pointer, button) -> ButtonClick(3);
     }
 
     private boolean ButtonClick(int button) {

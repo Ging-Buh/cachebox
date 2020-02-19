@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
@@ -126,7 +126,7 @@ public class Layer {
             String cachedTileFilename = getLocalFilename(desc);
             long cachedTileAge = 0;
             if (FileIO.fileExists(cachedTileFilename)) {
-                File info = FileFactory.createFile(cachedTileFilename);
+                AbstractFile info = FileFactory.createFile(cachedTileFilename);
                 cachedTileAge = info.lastModified();
             }
 

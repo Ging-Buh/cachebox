@@ -25,8 +25,8 @@ import static de.droidcachebox.utils.Config_Core.br;
 
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     // Allgemein
-    private final GeoCacheType[] CacheTypNumbers = GeoCacheType.caches();
-    private final GeoCacheSize[] CacheSizeNumbers = new GeoCacheSize[]{GeoCacheSize.other, // 0
+    private final GeoCacheType[] geoCacheTypNumbers = GeoCacheType.caches();
+    private final GeoCacheSize[] geoCacheSizeNumbers = new GeoCacheSize[]{GeoCacheSize.other, // 0
             GeoCacheSize.micro, // 1
             GeoCacheSize.small, // 2
             GeoCacheSize.regular, // 3
@@ -51,7 +51,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     // ctor
     public EditCache() {
-        super(ActivityBase.activityRec(), "EditCache");
+        super("EditCache");
         // das übliche
         btnOK = new CB_Button(Translation.get("ok"));
         btnCancel = new CB_Button(Translation.get("cancel"));
@@ -154,14 +154,14 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private void doShow() {
         cacheCode.setText(cache.getGeoCacheCode());
         cacheTyp.setSelection(0);
-        for (int i = 0; i < CacheTypNumbers.length; i++) {
-            if (CacheTypNumbers[i] == cache.getGeoCacheType()) {
+        for (int i = 0; i < geoCacheTypNumbers.length; i++) {
+            if (geoCacheTypNumbers[i] == cache.getGeoCacheType()) {
                 cacheTyp.setSelection(i);
             }
         }
         cacheSize.setSelection(0);
-        for (int i = 0; i < CacheSizeNumbers.length; i++) {
-            if (CacheSizeNumbers[i] == cache.geoCacheSize) {
+        for (int i = 0; i < geoCacheSizeNumbers.length; i++) {
+            if (geoCacheSizeNumbers[i] == cache.geoCacheSize) {
                 cacheSize.setSelection(i);
             }
         }
@@ -237,18 +237,18 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         return new SpinnerAdapter() {
             @Override
             public String getText(int index) {
-                return CacheTypNumbers[index].name();
+                return geoCacheTypNumbers[index].name();
                 // return "";nur Icons geht nicht
             }
 
             @Override
             public Drawable getIcon(int index) {
-                return new SpriteDrawable(Sprites.getSprite("big" + CacheTypNumbers[index].name()));
+                return new SpriteDrawable(Sprites.getSprite("big" + geoCacheTypNumbers[index].name()));
             }
 
             @Override
             public int getCount() {
-                return CacheTypNumbers.length;
+                return geoCacheTypNumbers.length;
             }
         };
     }
@@ -256,7 +256,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private ISelectionChangedListener cacheTypSelection() {
         return index -> {
             EditCache.this.show();
-            newValues.setGeoCacheType(CacheTypNumbers[index]);
+            newValues.setGeoCacheType(geoCacheTypNumbers[index]);
         };
     }
 
@@ -264,7 +264,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         return new SpinnerAdapter() {
             @Override
             public String getText(int index) {
-                return CacheSizeNumbers[index].name();
+                return geoCacheSizeNumbers[index].name();
             }
 
             @Override
@@ -276,7 +276,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
             @Override
             public int getCount() {
-                return CacheSizeNumbers.length;
+                return geoCacheSizeNumbers.length;
             }
         };
     }
@@ -284,7 +284,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private ISelectionChangedListener cacheSizeSelection() {
         return index -> {
             EditCache.this.show();
-            newValues.geoCacheSize = CacheSizeNumbers[index];
+            newValues.geoCacheSize = geoCacheSizeNumbers[index];
         };
     }
 

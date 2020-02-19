@@ -13,8 +13,8 @@ public class FileIO {
      * @return true, wenn das File existiert, ansonsten false.
      */
     public static boolean fileExists(String filename) {
-        File file = FileFactory.createFile(filename);
-        return file.exists();
+        AbstractFile abstractFile = FileFactory.createFile(filename);
+        return abstractFile.exists();
     }
 
     /**
@@ -24,10 +24,10 @@ public class FileIO {
      * @return true, wenn das File existiert, ansonsten false.
      */
     public static boolean fileExistsNotEmpty(String filename) {
-        File file = FileFactory.createFile(filename);
-        if (!file.exists())
+        AbstractFile abstractFile = FileFactory.createFile(filename);
+        if (!abstractFile.exists())
             return false;
-        if (file.length() <= 0)
+        if (abstractFile.length() <= 0)
             return false;
 
         return true;
@@ -42,11 +42,11 @@ public class FileIO {
      * @return true, wenn das File existiert und das Alter nicht größer als {maxAge} ist, ansonsten false.
      */
     public static boolean fileExistsMaxAge(String filename, int maxAge) {
-        File file = FileFactory.createFile(filename);
-        if (!file.exists())
+        AbstractFile abstractFile = FileFactory.createFile(filename);
+        if (!abstractFile.exists())
             return false;
 
-        int age = (int) ((new Date().getTime() - file.lastModified()) / 100000);
+        int age = (int) ((new Date().getTime() - abstractFile.lastModified()) / 100000);
 
         if (age > maxAge)
             return false;
@@ -64,9 +64,9 @@ public class FileIO {
         try {
             String testFolderName = path + "/Test/";
 
-            File testFolder = FileFactory.createFile(testFolderName);
+            AbstractFile testFolder = FileFactory.createFile(testFolderName);
             if (testFolder.mkdirs()) {
-                File test = FileFactory.createFile(testFolderName + "Test.txt");
+                AbstractFile test = FileFactory.createFile(testFolderName + "Test.txt");
                 test.createNewFile();
                 if (!test.exists()) {
                     result = false;
@@ -106,7 +106,7 @@ public class FileIO {
             return false;
         }
 
-        File f = FileFactory.createFile(folder);
+        AbstractFile f = FileFactory.createFile(folder);
 
         if (f.isDirectory())
             return true;
@@ -116,17 +116,17 @@ public class FileIO {
         }
     }
 
-    public static File createFile(String pathAndName) {
+    public static AbstractFile createFile(String pathAndName) {
         // works, if FileFactory is initialized
         try {
-            File file = FileFactory.createFile(pathAndName);
-            File path = file.getParentFile();
+            AbstractFile abstractFile = FileFactory.createFile(pathAndName);
+            AbstractFile path = abstractFile.getParentFile();
             path.mkdirs();
             if (path.exists()) {
-                file.createNewFile();
+                abstractFile.createNewFile();
             }
-            if (file.exists())
-                return file;
+            if (abstractFile.exists())
+                return abstractFile;
             else
                 return null;
         } catch (IOException ignored) {
@@ -158,7 +158,7 @@ public class FileIO {
     public static String getFileName(String filename) {
         int slashposition = Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\\"));
         if (slashposition >= 0)
-            filename = filename.substring(slashposition + 1, filename.length());
+            filename = filename.substring(slashposition + 1);
         return filename;
 
     }
@@ -225,54 +225,48 @@ public class FileIO {
      * Gibt eine ArrayList<File> zurück, die alle Files mit der Endung gpx enthält.
      *
      * @param directory
-     * @param files
+     * @param abstractFiles
      * @return
      */
-    public static ArrayList<File> recursiveDirectoryReader(File directory, ArrayList<File> files) {
-        return recursiveDirectoryReader(directory, files, "gpx", false);
+    public static ArrayList<AbstractFile> recursiveDirectoryReader(AbstractFile directory, ArrayList<AbstractFile> abstractFiles) {
+        return recursiveDirectoryReader(directory, abstractFiles, "gpx", false);
     }
 
     /**
      * Gibt eine ArrayList<File> zurück, die alle Files mit der angegebenen Endung haben.
      *
      * @param directory
-     * @param files
+     * @param abstractFiles
      * @return
      */
-    public static ArrayList<File> recursiveDirectoryReader(File directory, ArrayList<File> files, final String Endung, boolean exludeHides) {
+    public static ArrayList<AbstractFile> recursiveDirectoryReader(AbstractFile directory, ArrayList<AbstractFile> abstractFiles, final String Endung, boolean exludeHides) {
 
-        File[] filelist = directory.listFiles(new FilenameFilter() {
-
-            @Override
-            public boolean accept(File dir, String filename) {
-                return filename.contains("." + Endung);
-            }
-        });
+        AbstractFile[] filelist = directory.listFiles((dir, filename) -> filename.contains("." + Endung));
 
         if (filelist != null) {
-            for (File localFile : filelist)
-                files.add(localFile);
+            for (AbstractFile localAbstractFile : filelist)
+                abstractFiles.add(localAbstractFile);
         }
 
-        File[] directories = directory.listFiles(new FilenameFilter() {
+        AbstractFile[] directories = directory.listFiles(new FilenameFilter() {
             @Override
-            public boolean accept(File dir, String filename) {
+            public boolean accept(AbstractFile dir, String filename) {
                 return dir.isDirectory();
             }
         });
         if (directories != null) {
-            for (File recursiveDir : directories) {
+            for (AbstractFile recursiveDir : directories) {
                 if (recursiveDir.isDirectory()) {
                     if (!(exludeHides && recursiveDir.getName().startsWith("."))) {
-                        recursiveDirectoryReader(recursiveDir, files, Endung, exludeHides);
+                        recursiveDirectoryReader(recursiveDir, abstractFiles, Endung, exludeHides);
                     }
                 }
             }
         }
-        return files;
+        return abstractFiles;
     }
 
-    public static void deleteDirectory(File directory) {
+    public static void deleteDirectory(AbstractFile directory) {
         if (directory.isDirectory()) {
 
             // directory is empty, then delete it
@@ -292,10 +286,10 @@ public class FileIO {
 
                 for (String temp : files) {
                     // construct the file structure
-                    File fileDelete = FileFactory.createFile(directory, temp);
+                    AbstractFile abstractFileDelete = FileFactory.createFile(directory, temp);
 
                     // recursive delete
-                    deleteDirectory(fileDelete);
+                    deleteDirectory(abstractFileDelete);
                 }
 
                 // check the directory again, if empty then delete it

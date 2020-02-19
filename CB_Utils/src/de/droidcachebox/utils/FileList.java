@@ -4,26 +4,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class FileList extends ArrayList<File> implements Comparator<File> {
+public class FileList extends ArrayList<AbstractFile> implements Comparator<AbstractFile> {
     private static final long serialVersionUID = 2454564654L;
 
     public FileList(String path, String extension) {
         ini(path, extension, false);
     }
 
-    public FileList(String path, String extension, boolean AbsolutePath) {
-        ini(path, extension, AbsolutePath);
+    public FileList(String path, String extension, boolean absolutePath) {
+        ini(path, extension, absolutePath);
     }
 
     private void ini(String path, String extension, boolean AbsolutePath) {
-        File dir = FileFactory.createFile(path);
-        String[] files = dir.list();
+        AbstractFile dir = FileFactory.createFile(path);
+        String[] fileNames = dir.list();
         String absolutePath = AbsolutePath ? path + "/" : "";
-        if (!(files == null)) {
-            if (files.length > 0) {
-                for (String file : files) {
-                    if (FileIO.getFileExtension(file).equalsIgnoreCase(extension)) {
-                        File newfile = FileFactory.createFile(absolutePath + file);
+        if (!(fileNames == null)) {
+            if (fileNames.length > 0) {
+                for (String fileName : fileNames) {
+                    if (FileIO.getFileExtension(fileName).equalsIgnoreCase(extension)) {
+                        AbstractFile newfile = FileFactory.createFile(absolutePath + fileName);
                         this.add(newfile);
                     }
                 }
@@ -37,13 +37,8 @@ public class FileList extends ArrayList<File> implements Comparator<File> {
     }
 
     @Override
-    public int compare(File object1, File object2) {
-        if (object1.lastModified() > object2.lastModified())
-            return 1;
-        else if (object1.lastModified() < object2.lastModified())
-            return -1;
-        else
-            return 0;
+    public int compare(AbstractFile object1, AbstractFile object2) {
+        return Long.compare(object1.lastModified(), object2.lastModified());
     }
 
 }

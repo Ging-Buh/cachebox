@@ -20,6 +20,7 @@ import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.ViewID;
 import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
@@ -150,12 +151,12 @@ public class PlatformUIBase {
         }
     }
 
-    public static void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
+    public static void getFile(String initialPath, String extension, String TitleText, String ButtonText, IReturnAbstractFile returnListener) {
         if (methods != null)
             methods.getFile(initialPath, extension, TitleText, ButtonText, returnListener);
     }
 
-    public static void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
+    public static void getFolder(String initialPath, String TitleText, String ButtonText, IReturnAbstractFile returnListener) {
         if (methods != null)
             methods.getFolder(initialPath, TitleText, ButtonText, returnListener);
     }
@@ -286,9 +287,9 @@ public class PlatformUIBase {
 
         void freeSQLInstance(SQLiteInterface sqlInstance);
 
-        void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener);
+        void getFile(String initialPath, String extension, String TitleText, String ButtonText, IReturnAbstractFile returnListener);
 
-        void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
+        void getFolder(String initialPath, String TitleText, String ButtonText, IReturnAbstractFile returnListener);
 
         void quit();
 
@@ -297,12 +298,8 @@ public class PlatformUIBase {
         String removeHtmlEntyties(String text);
     }
 
-    public interface IgetFileReturnListener {
-        void returnFile(String pathAndName);
-    }
-
-    public interface IgetFolderReturnListener {
-        void returnFolder(String path);
+    public interface IReturnAbstractFile {
+        void returns(AbstractFile abstractFile);
     }
 
 }

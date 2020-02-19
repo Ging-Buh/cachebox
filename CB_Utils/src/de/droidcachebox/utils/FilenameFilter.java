@@ -24,5 +24,5 @@ public interface FilenameFilter {
      * @return <code>true</code> if and only if the name should be
      * included in the file list; <code>false</code> otherwise.
      */
-    boolean accept(File dir, String name);
+    boolean accept(AbstractFile dir, String name);
 }

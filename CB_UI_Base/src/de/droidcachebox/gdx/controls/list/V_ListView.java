@@ -128,15 +128,16 @@ public class V_ListView extends ListViewBase {
 
         try {
 
-            if (adapter == null)
-                return;
+            if (adapter == null) return;
+            if (isDisposed()) return;
             if (mPosDefault == null)
                 calculateItemPosition();
 
             final float workPos = currentPosition;
 
             synchronized (childs) {
-                for (int i = firstIndex; i < adapter.getCount(); i++) {
+                int ende = adapter.getCount();
+                for (int i = firstIndex; i < ende; i++) {
                     if (!addedIndexList.contains(i)) {
                         if (mPosDefault.size() - 1 < i)
                             return;
@@ -157,9 +158,21 @@ public class V_ListView extends ListViewBase {
 
                             // Log.debug(log, "Add Item " + i);
                             addedIndexList.add(i);
-                        } else if (itemPos + adapter.getItemSize(i) < -(maxItemCount * minimumItemSize)) {
-                            lastIndex = i;
-                            break;
+                        } else {
+                            try {
+                                if (adapter == null) {
+                                    Log.err("V_ListView", new Exception("unexpected adapter = null"));
+                                    return;
+                                }
+                                float itemSize = adapter.getItemSize(i);
+                                if (itemPos + itemSize < -(maxItemCount * minimumItemSize)) {
+                                    lastIndex = i;
+                                    break;
+                                }
+                            } catch (Exception ex) {
+                                Log.err("V_ListView", ex);
+                                break;
+                            }
                         }
 
                     }
@@ -254,7 +267,7 @@ public class V_ListView extends ListViewBase {
                 setUnDraggable();
             }
         } catch (Exception ex) {
-            Log.err("V_ListView", "calculateItemPosition", ex);
+            Log.err("V_ListView", ex);
         }
 
         isInCalculation.set(false);

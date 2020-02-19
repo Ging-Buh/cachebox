@@ -13,23 +13,23 @@ import java.io.IOException;
  */
 public class AndroidFileFactory extends FileFactory {
     @Override
-    protected File createPlatformFile(String path) {
-        return new AndroidFile(path);
+    protected AbstractFile createPlatformFile(String path) {
+        return new AndroidAbstractFile(path);
     }
 
     @Override
-    protected File createPlatformFile(File parent) {
-        return new AndroidFile(parent);
+    protected AbstractFile createPlatformFile(AbstractFile parent) {
+        return new AndroidAbstractFile(parent);
     }
 
     @Override
-    protected File createPlatformFile(File parent, String child) {
-        return new AndroidFile(parent, child);
+    protected AbstractFile createPlatformFile(AbstractFile parent, String child) {
+        return new AndroidAbstractFile(parent, child);
     }
 
     @Override
-    protected File createPlatformFile(String parent, String child) {
-        return new AndroidFile(parent, child);
+    protected AbstractFile createPlatformFile(String parent, String child) {
+        return new AndroidAbstractFile(parent, child);
     }
 
     @Override

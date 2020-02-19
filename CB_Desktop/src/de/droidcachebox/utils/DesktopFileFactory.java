@@ -12,23 +12,23 @@ import java.io.IOException;
  */
 public class DesktopFileFactory extends FileFactory {
     @Override
-    protected File createPlatformFile(String path) {
-        return new DesktopFile(path);
+    protected AbstractFile createPlatformFile(String path) {
+        return new DesktopAbstractFile(path);
     }
 
     @Override
-    protected File createPlatformFile(File parent) {
-        return new DesktopFile(parent);
+    protected AbstractFile createPlatformFile(AbstractFile parent) {
+        return new DesktopAbstractFile(parent);
     }
 
     @Override
-    protected File createPlatformFile(File parent, String child) {
-        return new DesktopFile(parent, child);
+    protected AbstractFile createPlatformFile(AbstractFile parent, String child) {
+        return new DesktopAbstractFile(parent, child);
     }
 
     @Override
-    protected File createPlatformFile(String parent, String child) {
-        return new DesktopFile(parent, child);
+    protected AbstractFile createPlatformFile(String parent, String child) {
+        return new DesktopAbstractFile(parent, child);
     }
 
     @Override

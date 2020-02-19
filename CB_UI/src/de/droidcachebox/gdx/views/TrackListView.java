@@ -16,12 +16,12 @@ import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.log.Log;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -66,9 +66,9 @@ public class TrackListView extends V_ListView {
     }
 
     public void selectTrackFileReadAndAddToTracks() {
-        PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), path -> {
-            if (path != null) {
-                readFromGpxFile(path);
+        PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), abstractFile -> {
+            if (abstractFile != null) {
+                readFromGpxFile(abstractFile);
             }
         });
     }
@@ -109,7 +109,7 @@ public class TrackListView extends V_ListView {
         return null;
     }
 
-    public void readFromGpxFile(String file) {
+    public void readFromGpxFile(AbstractFile abstractFile) {
         // !!! it is possible that a gpx file contains more than 1 <trk> segments
         // they are all added to the tracks (Tracklist)
         ArrayList<Track> tracks = new ArrayList<>();
@@ -122,7 +122,7 @@ public class TrackListView extends V_ListView {
         HSV_Color trackColor = null;
 
         try {
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+            InputStreamReader isr = new InputStreamReader(abstractFile.getFileInputStream(), StandardCharsets.UTF_8);
             reader = new BufferedReader(isr);
             Track track = new Track("");
 
@@ -165,12 +165,12 @@ public class TrackListView extends V_ListView {
                             if (line.contains("<trkseg>")) {
                                 isSeg = true;
                                 track = new Track("");
-                                track.setFileName(file);
+                                track.setFileName(abstractFile.getAbsolutePath());
                                 distance = 0;
                                 altitudeDifference = 0;
                                 anzSegments++;
                                 if (gpxName == null)
-                                    track.setName(FileIO.getFileName(file));
+                                    track.setName(abstractFile.getName()); // FileIO.getFileName(file)
                                 else {
                                     if (anzSegments <= 1)
                                         track.setName(gpxName);
@@ -186,12 +186,12 @@ public class TrackListView extends V_ListView {
                             if (line.contains("<rte>")) {
                                 isRte = true;
                                 track = new Track("");
-                                track.setFileName(file);
+                                track.setFileName(abstractFile.getAbsolutePath());
                                 distance = 0;
                                 altitudeDifference = 0;
                                 anzSegments++;
                                 if (gpxName == null)
-                                    track.setName(FileIO.getFileName(file));
+                                    track.setName(abstractFile.getName()); // FileIO.getFileName(file)
                                 else {
                                     if (anzSegments <= 1)
                                         track.setName(gpxName);
@@ -374,7 +374,7 @@ public class TrackListView extends V_ListView {
         } else {
             absolutPath = trackPath + "/" + file;
         }
-        readFromGpxFile(absolutPath);
+        readFromGpxFile(FileFactory.createFile(absolutPath));
     }
 
     public class TrackListViewAdapter implements Adapter {

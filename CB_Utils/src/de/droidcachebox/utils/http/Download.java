@@ -1,6 +1,6 @@
 package de.droidcachebox.utils.http;
 
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
@@ -11,9 +11,9 @@ public class Download {
 
     public static boolean download(String remote, String local) {
         boolean err = false;
-        File localFile = FileFactory.createFile(local);
+        AbstractFile localAbstractFile = FileFactory.createFile(local);
         /* create parent directories, if necessary */
-        final File parent = localFile.getParentFile();
+        final AbstractFile parent = localAbstractFile.getParentFile();
         if ((parent != null) && !parent.exists()) {
             parent.mkdirs();
         }
@@ -32,7 +32,7 @@ public class Download {
                         .ensureSuccess()
                         .asStream();
                 inStream = response.getBody();
-                outStream = new BufferedOutputStream(localFile.getFileOutputStream());
+                outStream = new BufferedOutputStream(localAbstractFile.getFileOutputStream());
                 WebbUtils.copyStream(inStream, outStream);
             } catch (Exception ex) {
                 if (ex instanceof WebbException) {
@@ -69,13 +69,13 @@ public class Download {
 
         if (err) {
             try {
-                localFile.delete();
+                localAbstractFile.delete();
             } catch (Exception e) {
                 // wie egal
             }
             return false;
         } else {
-            return localFile.exists();
+            return localAbstractFile.exists();
         }
     }
 }

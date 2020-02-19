@@ -82,7 +82,7 @@ public class SelectDBDialog extends AbstractAction {
         Thread thread = new Thread(() -> {
             Database.Data.cacheList.clear();
             Database.Data.sql.close();
-            Database.Data.startUp(Config.mWorkPath + "/" + Config.DatabaseName.getValue());
+            Database.Data.startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
 
             Config.settings.ReadFromDB();
 

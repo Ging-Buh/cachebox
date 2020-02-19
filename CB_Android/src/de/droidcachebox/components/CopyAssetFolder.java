@@ -1,7 +1,7 @@
 package de.droidcachebox.components;
 
 import android.content.res.AssetManager;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 
 import java.io.*;
@@ -16,7 +16,7 @@ public class CopyAssetFolder {
 
         InputStream myInput = assets.open(source);
 
-        File ziel = FileFactory.createFile(target);
+        AbstractFile ziel = FileFactory.createFile(target);
         ziel.getParentFile().mkdirs();
         final OutputStream myOutput = new FileOutputStream(target);
 

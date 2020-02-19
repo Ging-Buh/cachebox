@@ -32,25 +32,25 @@ public abstract class FileFactory {
         }
     }
 
-    public static File createFile(String path) {
+    public static AbstractFile createFile(String path) {
         if (INSTANCE == null)
             throw new RuntimeException("no platform specific FileFactory instance!");
         return INSTANCE.createPlatformFile(path);
     }
 
-    public static File createFile(File parent) {
+    public static AbstractFile createFile(AbstractFile parent) {
         if (INSTANCE == null)
             throw new RuntimeException("no platform specific FileFactory instance!");
         return INSTANCE.createPlatformFile(parent);
     }
 
-    public static File createFile(File parent, String child) {
+    public static AbstractFile createFile(AbstractFile parent, String child) {
         if (INSTANCE == null)
             throw new RuntimeException("no platform specific FileFactory instance!");
         return INSTANCE.createPlatformFile(parent, child);
     }
 
-    public static File createFile(String parent, String child) {
+    public static AbstractFile createFile(String parent, String child) {
         if (INSTANCE == null)
             throw new RuntimeException("no platform specific FileFactory instance!");
         return INSTANCE.createPlatformFile(parent, child);
@@ -66,13 +66,13 @@ public abstract class FileFactory {
         return INSTANCE != null;
     }
 
-    protected abstract File createPlatformFile(String path);
+    protected abstract AbstractFile createPlatformFile(String path);
 
-    protected abstract File createPlatformFile(File parent);
+    protected abstract AbstractFile createPlatformFile(AbstractFile parent);
 
-    protected abstract File createPlatformFile(File parent, String child);
+    protected abstract AbstractFile createPlatformFile(AbstractFile parent, String child);
 
-    protected abstract File createPlatformFile(String parent, String child);
+    protected abstract AbstractFile createPlatformFile(String parent, String child);
 
     protected abstract String createPlatformThumb(String Path, int scaledWidth, String thumbPrefix);
 

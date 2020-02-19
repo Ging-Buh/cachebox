@@ -82,8 +82,8 @@ public class EditFilterSettings extends ActivityBase {
     private TextFilterView textFilterView;
     private int lastViewId;
 
-    public EditFilterSettings(CB_RectF rec, String Name) {
-        super(rec, Name);
+    public EditFilterSettings(String Name) {
+        super(Name);
         itemRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f);
 
         tmpFilterProps = FilterInstances.getLastFilter();

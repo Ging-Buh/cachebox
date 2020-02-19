@@ -353,23 +353,20 @@ public class CacheDetail implements Serializable {
         // Log.trace(log, "LoadSpoilerResourcesFromPath from " + directory);
         if (!FileIO.directoryExists(directory))
             return;
-        File dir = FileFactory.createFile(directory);
-        FilenameFilter filter = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                filename = filename.toLowerCase(Locale.getDefault());
-                if (filename.indexOf(cache.getGeoCacheCode().toLowerCase(Locale.getDefault())) >= 0) {
-                    if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) {
-                        // don't load Thumbs
-                        if (filename.startsWith(FileFactory.THUMB) || filename.startsWith(FileFactory.THUMB_OVERVIEW + FileFactory.THUMB)) {
-                            return false;
-                        } else {
-                            return true;
-                        }
+        AbstractFile dir = FileFactory.createFile(directory);
+        FilenameFilter filter = (dir1, filename) -> {
+            filename = filename.toLowerCase(Locale.getDefault());
+            if (filename.indexOf(cache.getGeoCacheCode().toLowerCase(Locale.getDefault())) >= 0) {
+                if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) {
+                    // don't load Thumbs
+                    if (filename.startsWith(FileFactory.THUMB) || filename.startsWith(FileFactory.THUMB_OVERVIEW + FileFactory.THUMB)) {
+                        return false;
+                    } else {
+                        return true;
                     }
                 }
-                return false;
             }
+            return false;
         };
         String[] files = dir.list(filter);
         if (!(files == null)) {

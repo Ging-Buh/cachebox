@@ -49,10 +49,10 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private IReturnListener mReturnListener;
 
     public EditWaypoint(Waypoint waypoint, IReturnListener listener, boolean showCoordinateDialog, boolean showWaypointViewAfterFinish) {
-        super(activityRec(), "EditWpActivity");
+        super("EditWayPoint");
         this.showWaypointListAfterFinish = showWaypointViewAfterFinish;
 
-        scrollBox = new ScrollBox(activityRec());
+        scrollBox = new ScrollBox(this);
         this.addChild(scrollBox);
         this.waypoint = waypoint;
         this.mReturnListener = listener;

@@ -3,7 +3,7 @@ package de.droidcachebox.gdx.texturepacker;
 import android.graphics.*;
 import android.graphics.Bitmap.Config;
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -37,7 +37,7 @@ public class ImageProcessor implements IImageprozessor {
     private final Array<Rect_Base> rects = new Array<Rect_Base>();
     private String rootPath;
 
-    public ImageProcessor(File rootDir, Settings settings) {
+    public ImageProcessor(AbstractFile rootDir, Settings settings) {
         this.settings = settings;
 
         rootPath = rootDir.getAbsolutePath().replace('\\', '/');
@@ -86,18 +86,18 @@ public class ImageProcessor implements IImageprozessor {
      * @see texturepacker.IImageprozessor#addImage(java.io.File)
      */
     @Override
-    public void addImage(File file) {
+    public void addImage(AbstractFile abstractFile) {
         Bitmap image;
         try {
             // image = ImageIO.read(file);
-            image = BitmapFactory.decodeFile(file.getAbsolutePath());
+            image = BitmapFactory.decodeFile(abstractFile.getAbsolutePath());
             image.prepareToDraw();
         } catch (Exception ex) {
-            throw new RuntimeException("Error reading image: " + file, ex);
+            throw new RuntimeException("Error reading image: " + abstractFile, ex);
         }
 
         // Strip root dir off front of image path.
-        String name = file.getAbsolutePath().replace('\\', '/');
+        String name = abstractFile.getAbsolutePath().replace('\\', '/');
         if (!name.startsWith(rootPath))
             throw new RuntimeException("Path '" + name + "' does not start with root: " + rootPath);
         name = name.substring(rootPath.length());

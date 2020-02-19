@@ -6,8 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
-import de.droidcachebox.PlatformUIBase.IgetFolderReturnListener;
+import de.droidcachebox.PlatformUIBase.IReturnAbstractFile;
 import de.droidcachebox.PlatformUIBase.Methods;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
@@ -33,6 +32,7 @@ import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
 import de.droidcachebox.settings.SettingString;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.Log;
@@ -41,6 +41,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -296,28 +297,32 @@ public class DesktopMain {
             }
 
             @Override
-            public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
+            public void getFile(String initialPath, final String extensions, String titleText, String buttonText, IReturnAbstractFile returnListener) {
 
-                final String ext = extension.replace("*", "");
+                final String possibleExtensions = extensions.replace("*", "");
 
                 JFileChooser chooser = new JFileChooser();
 
                 chooser.setCurrentDirectory(new java.io.File(initialPath));
-                chooser.setDialogTitle(TitleText);
+                chooser.setDialogTitle(titleText);
 
                 FileFilter filter = new FileFilter() {
-
                     @Override
                     public String getDescription() {
-
-                        return extension;
+                        return extensions;
                     }
 
                     @Override
                     public boolean accept(File f) {
-                        if (f.getAbsolutePath().endsWith(ext))
-                            return true;
-                        return false;
+                        if (f.isDirectory()) return true;
+                        if (possibleExtensions.length() > 0) {
+                            String filename = f.getAbsolutePath();
+                            int lastIndex = filename.lastIndexOf('.');
+                            if (lastIndex > -1)
+                                return possibleExtensions.contains(filename.substring(lastIndex).toLowerCase(Locale.US));
+                            return false;
+                        }
+                        return true;
                     }
                 };
 
@@ -326,14 +331,14 @@ public class DesktopMain {
                 int returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     if (returnListener != null)
-                        returnListener.returnFile(chooser.getSelectedFile().getAbsolutePath());
+                        returnListener.returns(FileFactory.createFile(chooser.getSelectedFile().getAbsolutePath()));
                     System.out.println("getFile:" + "You chose to open this file: " + chooser.getSelectedFile().getName());
                 }
 
             }
 
             @Override
-            public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
+            public void getFolder(String initialPath, String TitleText, String ButtonText, IReturnAbstractFile returnListener) {
 
                 JFileChooser chooser = new JFileChooser();
 
@@ -344,7 +349,7 @@ public class DesktopMain {
                 int returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     if (returnListener != null)
-                        returnListener.returnFolder(chooser.getSelectedFile().getAbsolutePath());
+                        returnListener.returns(FileFactory.createFile(chooser.getSelectedFile().getAbsolutePath()));
                     System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
                 }
             }
@@ -368,7 +373,7 @@ public class DesktopMain {
             @Override
             public String removeHtmlEntyties(String text) {
                 // todo Jsoup.parse(s).text();
-                return text.replaceAll("\\<[^>]*>","");
+                return text.replaceAll("\\<[^>]*>", "");
             }
 
         });
@@ -421,13 +426,13 @@ public class DesktopMain {
             forWorkPathTest = new File("");
         String workPath = forWorkPathTest.getAbsolutePath();
         new Config(workPath);
-        if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
+        if (!FileIO.createDirectory(Config.workPath + "/User"))
             return;
         Database.Settings = new DesktopDB(DatabaseType.Settings);
-        Database.Settings.startUp(Config.mWorkPath + "/User/Config.db3");
+        Database.Settings.startUp(Config.workPath + "/User/Config.db3");
         Database.Data = new DesktopDB(DatabaseType.CacheBox);
         Database.Drafts = new DesktopDB(DatabaseType.Drafts);
-        Database.Drafts.startUp(Config.mWorkPath + "/User/FieldNotes.db3");
+        Database.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
     }
 
     /**

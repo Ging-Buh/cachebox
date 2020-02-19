@@ -3,7 +3,6 @@ package de.droidcachebox.gdx.controls;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.activities.EditCoord;
@@ -83,7 +82,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
 
     private void initialEdCo() {
 
-        edCo = new EditCoord(ActivityBase.activityRec(), "EditCoord", mActCoord, new ReturnListener() {
+        edCo = new EditCoord("EditCoord", mActCoord, new ReturnListener() {
 
             @Override
             public void returnCoordinate(Coordinate coordinate) {

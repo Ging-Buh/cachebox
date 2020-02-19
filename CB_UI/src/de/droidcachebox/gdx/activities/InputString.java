@@ -15,7 +15,7 @@ public class InputString extends ActivityBase {
 
     public InputString(String title) {
         // output of a title is not yet implemented in ActivityBase
-        super(ActivityBase.activityRec(), title);
+        super(title);
         this.title = title;
         createControls();
     }

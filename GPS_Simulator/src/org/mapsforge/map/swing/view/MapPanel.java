@@ -4,7 +4,6 @@ import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
 import de.droidcachebox.locator.Location;
 import de.droidcachebox.locator.Location.ProviderType;
 import de.droidcachebox.locator.Locator;
@@ -122,18 +121,14 @@ public class MapPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getActionCommand().equals("Load Map")) {
             // load Map
-            PlatformUIBase.getFile("", "", "Load Map", "Load", new IgetFileReturnListener() {
-                @Override
-                public void returnFile(String pathAndName) {
-                    SimulatorMain.prefs.put("loadedMap", pathAndName);
-                    try {
-                        SimulatorMain.prefs.flush();
-                    } catch (BackingStoreException e) {
-                        e.printStackTrace();
-                    }
-
-                    addLayers(mapView, pathAndName);
+            PlatformUIBase.getFile("", "", "Load Map", "Load", abstractFile -> {
+                SimulatorMain.prefs.put("loadedMap", abstractFile.getAbsolutePath());
+                try {
+                    SimulatorMain.prefs.flush();
+                } catch (BackingStoreException e) {
+                    e.printStackTrace();
                 }
+                addLayers(mapView, abstractFile.getAbsolutePath());
             });
         }
     }

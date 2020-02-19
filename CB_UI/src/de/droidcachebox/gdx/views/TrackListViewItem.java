@@ -7,7 +7,6 @@ import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.RouteOverlay;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.ColorPicker;
@@ -26,7 +25,7 @@ import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
@@ -74,8 +73,8 @@ public class TrackListViewItem extends ListViewItemBackground {
                 if (!this.track.isActualTrack()) {
                     if (this.track.getFileName().length() > 0) {
                         if (!this.track.isActualTrack()) {
-                            File trackFile = FileFactory.createFile(this.track.getFileName());
-                            if (trackFile.exists()) {
+                            AbstractFile trackAbstractFile = FileFactory.createFile(this.track.getFileName());
+                            if (trackAbstractFile.exists()) {
                                 cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> MessageBox.show(Translation.get("DeleteTrack"),
                                         Translation.get("DeleteTrack"),
                                         MessageBoxButton.YesNo,
@@ -83,7 +82,7 @@ public class TrackListViewItem extends ListViewItemBackground {
                                         (which, data) -> {
                                             if (which == BTN_LEFT_POSITIVE) {
                                                 try {
-                                                    trackFile.delete();
+                                                    trackAbstractFile.delete();
                                                     RouteOverlay.getInstance().removeTrack(this.track);
                                                     TrackListView.getInstance().notifyDataSetChanged();
                                                 } catch (Exception ex) {
@@ -199,7 +198,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
     private void colorIconClicked() {
         GL.that.RunOnGL(() -> {
-            ColorPicker clrPick = new ColorPicker(ActivityBase.activityRec(), track.getColor(), color -> {
+            ColorPicker clrPick = new ColorPicker(track.getColor(), color -> {
                 if (color == null) return;
                 track.setColor(color);
                 colorReck = null;
@@ -234,17 +233,18 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (this.track.getName().length() > 0) {
             PlatformUIBase.getFolder(CB_UI_Settings.TrackFolder.getValue(),
                     Translation.get("SaveTrack"),
-                    Translation.get("save"), path -> {
-                        if (path != null) {
+                    Translation.get("save"),
+                    abstractFile -> {
+                        if (abstractFile != null) {
                             String extension = this.track.getName().toLowerCase().endsWith(".gpx") ? "" : ".gpx";
-                            File f = FileFactory.createFile(path + "/" + this.track.getName() + extension);
-                            saveRoute(path + "/" + this.track.getName() + extension, this.track);
+                            AbstractFile f = FileFactory.createFile(abstractFile , this.track.getName() + extension);
+                            saveRoute(f, this.track);
                             if (f.exists()) {
                                 track.setFileName(f.getAbsolutePath());
                                 Log.info(log, f.getAbsolutePath() + " saved.");
                             }
                             else {
-                                Log.err(log, "Error saving " + path + "/" + this.track.getName() + extension);
+                                Log.err(log, "Error saving " + abstractFile + "/" + this.track.getName() + extension);
                             }
                         }
                     }
@@ -254,20 +254,19 @@ public class TrackListViewItem extends ListViewItemBackground {
                     "*.gpx",
                     Translation.get("SaveTrack"),
                     Translation.get("save"),
-                    pathAndName -> {
-                        if (pathAndName != null) {
-                            saveRoute(pathAndName, this.track);
-                            Log.debug("TrackListViewItem", "Load Track :" + pathAndName);
+                    abstractFile -> {
+                        if (abstractFile != null) {
+                            saveRoute(abstractFile, this.track);
+                            Log.debug("TrackListViewItem", "Load Track :" + abstractFile);
                         }
                     });
         }
     }
 
-    private void saveRoute(String Path, Track track) {
+    private void saveRoute(AbstractFile gpxAbstractFile, Track track) {
         FileWriter writer = null;
-        File gpxfile = FileFactory.createFile(Path);
         try {
-            writer = gpxfile.getFileWriter();
+            writer = gpxAbstractFile.getFileWriter();
             try {
                 writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
                 writer.append(

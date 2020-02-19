@@ -25,7 +25,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.Plattform;
 import org.slf4j.LoggerFactory;
@@ -76,26 +76,26 @@ public class CB_SLF4J {
         logFolder = (WORKPATH + "/Logs").replace("\\", "/");
         logBackXmlFile = logFolder + "/logback.xml";
 
-        File logFolderFile = FileFactory.createFile(logFolder);
+        AbstractFile logFolderAbstractFile = FileFactory.createFile(logFolder);
 
-        if (logFolderFile.exists() && logFolderFile.isDirectory()) {// delete all logs are not from today
+        if (logFolderAbstractFile.exists() && logFolderAbstractFile.isDirectory()) {// delete all logs are not from today
 
-            String fileNames[] = logFolderFile.list();
+            String fileNames[] = logFolderAbstractFile.list();
             for (String fileName : fileNames) {
                 if (!fileName.endsWith("logback.xml")) {
-                    File file = FileFactory.createFile(logFolder + "/" + fileName);
+                    AbstractFile abstractFile = FileFactory.createFile(logFolder + "/" + fileName);
 
-                    if (file.isFile() && file.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100)) {
+                    if (abstractFile.isFile() && abstractFile.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100)) {
                         // file is older then 24h, so we delete
                         try {
-                            file.delete();
+                            abstractFile.delete();
                         } catch (IOException ignored) {
                         }
                     }
                 }
             }
         } else {// create folder
-            logFolderFile.mkdirs();
+            logFolderAbstractFile.mkdirs();
         }
 
         initialize();

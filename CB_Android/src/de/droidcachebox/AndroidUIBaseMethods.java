@@ -29,6 +29,7 @@ import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.activities.FZKDownload;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.views.CacheListView;
@@ -39,11 +40,10 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.*;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
-import de.droidcachebox.views.forms.Android_FileExplorer;
 
 import java.util.Date;
 import java.util.Objects;
@@ -168,7 +168,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
             int updateTime = Config.gpsUpdateTime.getValue();
             getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, mainMain);
         } catch (SecurityException ex) {
-            Log.err(sKlasse, "switchToGpsMeasure: ",ex);
+            Log.err(sKlasse, "switchToGpsMeasure: ", ex);
         }
     }
 
@@ -245,20 +245,25 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     }
 
     @Override
-    public void getFile(String initialPath, String extension, String TitleText, String ButtonText, PlatformUIBase.IgetFileReturnListener returnListener) {
-        File mPath = FileFactory.createFile(initialPath);
-        Android_FileExplorer fileDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
-        fileDialog.setFileReturnListener(returnListener);
+    public void getFile(String initialPath, String extension, String titleText, String buttonText, PlatformUIBase.IReturnAbstractFile returnListener) {
+        AbstractFile mPath = FileFactory.createFile(initialPath);
+        /*
+        Android_FileExplorer fileDialog = new Android_FileExplorer(mainActivity, mPath, titleText, buttonText, extension);
+        fileDialog.setFileReturn(returnListener);
         fileDialog.showDialog();
+         */
+        new FileOrFolderPicker(mPath, titleText, buttonText, extension).setFileReturn(returnListener).show();
     }
 
     @Override
-    public void getFolder(String initialPath, String TitleText, String ButtonText, PlatformUIBase.IgetFolderReturnListener returnListener) {
-        File mPath = FileFactory.createFile(initialPath);
-        Android_FileExplorer folderDialog = new Android_FileExplorer(mainActivity, mPath, TitleText, ButtonText);
-        folderDialog.setSelectDirectoryOption();
-        folderDialog.setFolderReturnListener(returnListener);
+    public void getFolder(String initialPath, String titleText, String buttonText, PlatformUIBase.IReturnAbstractFile returnListener) {
+        AbstractFile mPath = FileFactory.createFile(initialPath);
+        /*
+        Android_FileExplorer folderDialog = new Android_FileExplorer(mainActivity, mPath, titleText, buttonText);
+        folderDialog.setFolderReturn(returnListener);
         folderDialog.showDialog();
+         */
+        new FileOrFolderPicker(mPath, titleText, buttonText).setFolderReturn(returnListener).show();
     }
 
     @Override

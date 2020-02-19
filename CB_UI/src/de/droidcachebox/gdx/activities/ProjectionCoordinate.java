@@ -29,8 +29,8 @@ public class ProjectionCoordinate extends ActivityBase {
     private boolean ImperialUnits;
     private NumPad numPad;
 
-    public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate coord2, ICoordReturnListener listener, Type type, String WP_Name) {
-        super(rec, Name);
+    public ProjectionCoordinate(String Name, Coordinate coord2, ICoordReturnListener listener, Type type, String WP_Name) {
+        super(Name);
         coord = coord2;
         wpName = WP_Name;
         radius = (type == Type.circle);

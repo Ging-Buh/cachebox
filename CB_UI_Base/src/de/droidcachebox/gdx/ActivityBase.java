@@ -25,7 +25,7 @@ public class ActivityBase extends CB_View_Base {
     protected float margin = 0;
 
     public ActivityBase(String Name) {
-        this(ActivityBase.activityRec(), Name);
+        this(new CB_RectF(0, 0, Math.min(UiSizes.getInstance().getSmallestWidth(), UiSizes.getInstance().getWindowHeight() * 0.66f), UiSizes.getInstance().getWindowHeight()), Name);
     }
 
     public ActivityBase(CB_RectF rec, String Name) {
@@ -39,12 +39,6 @@ public class ActivityBase extends CB_View_Base {
         this.registerSkinChangedEvent();
     }
 
-    public static CB_RectF activityRec() {
-        float w = Math.min(UiSizes.getInstance().getSmallestWidth(), UiSizes.getInstance().getWindowHeight() * 0.66f);
-
-        return new CB_RectF(0, 0, w, UiSizes.getInstance().getWindowHeight());
-    }
-
     @Override
     protected void skinIsChanged() {
         this.setBackground(Sprites.activityBackground);
@@ -54,11 +48,6 @@ public class ActivityBase extends CB_View_Base {
     public GL_View_Base addChild(GL_View_Base view) {
         this.addChildDirekt(view);
 
-        return view;
-    }
-
-    public GL_View_Base addChildAtLast(GL_View_Base view) {
-        this.addChildDirektLast(view);
         return view;
     }
 

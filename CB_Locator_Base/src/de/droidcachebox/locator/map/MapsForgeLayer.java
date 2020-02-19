@@ -3,7 +3,7 @@ package de.droidcachebox.locator.map;
 import com.badlogic.gdx.graphics.Pixmap;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
@@ -177,7 +177,7 @@ public class MapsForgeLayer extends Layer {
             try {
                 long lastModified = 0;
                 if (FileIO.fileExists(cachedTileFilename)) {
-                    File info = FileFactory.createFile(cachedTileFilename);
+                    AbstractFile info = FileFactory.createFile(cachedTileFilename);
                     lastModified = info.lastModified(); // must compare to date of .map-file (if replaced with newer one)
                     if (lastModified < mapFile.getDataTimestamp(null)) lastModified = 0; // there is a newer mapfile
                 }
@@ -214,22 +214,22 @@ public class MapsForgeLayer extends Layer {
                     // cache to file here
                     byte[]  bytesOfMfTile = mfTile.getBytes();
                     if (bytesOfMfTile != null) {
-                        File outFile = null;
+                        AbstractFile outAbstractFile = null;
                         try {
-                            outFile = FileFactory.createFile(cachedTileFilename);
-                            outFile.delete();
-                            outFile.getParentFile().mkdirs();
-                            outFile.createNewFile();
-                            FileOutputStream stream = outFile.getFileOutputStream();
+                            outAbstractFile = FileFactory.createFile(cachedTileFilename);
+                            outAbstractFile.delete();
+                            outAbstractFile.getParentFile().mkdirs();
+                            outAbstractFile.createNewFile();
+                            FileOutputStream stream = outAbstractFile.getFileOutputStream();
                             stream.write(bytesOfMfTile);
                             stream.close(); // There is no more need for this line since you had created the instance of "stream" inside the try. And this will automatically close the OutputStream
-                            Log.info(log, "cached " + outFile.getName());
-                            outFile.setLastModified(mapFile.getDataTimestamp(null));
+                            Log.info(log, "cached " + outAbstractFile.getName());
+                            outAbstractFile.setLastModified(mapFile.getDataTimestamp(null));
                         }
                         catch (Exception ex) {
                             Log.err(log,"bad write to disk ", ex);;
                             try {
-                                if (outFile != null) outFile.delete();
+                                if (outAbstractFile != null) outAbstractFile.delete();
                             } catch (IOException e) {
                                 Log.err(log,"delete File after bad write to disk ", e);;
                             }
@@ -290,9 +290,9 @@ public class MapsForgeLayer extends Layer {
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         } else {
             try {
-                File file = FileFactory.createFile(mapsforgeTheme);
-                if (file.exists()) {
-                    java.io.File themeFile = new java.io.File(file.getAbsolutePath());
+                AbstractFile abstractFile = FileFactory.createFile(mapsforgeTheme);
+                if (abstractFile.exists()) {
+                    java.io.File themeFile = new java.io.File(abstractFile.getAbsolutePath());
                     renderTheme = new ExternalRenderTheme(themeFile, new Xml_RenderThemeMenuCallback());
                 } else {
                     Log.err(log, mapsforgeTheme + " not found!");

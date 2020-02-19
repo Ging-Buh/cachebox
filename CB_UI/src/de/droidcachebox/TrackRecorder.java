@@ -25,7 +25,7 @@ import de.droidcachebox.locator.Locator.CompassType;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.MathUtils;
@@ -54,7 +54,7 @@ public class TrackRecorder {
     private static String mMediaPath = "";
     private static Location mMediaCoord = null;
     private static String mTimestamp = "";
-    private static File gpxfile = null;
+    private static AbstractFile gpxfile = null;
     private static FileWriter writer = null;
     private static boolean writeAnnotateMedia = false;
     private static int insertPos = 24;

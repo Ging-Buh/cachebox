@@ -9,27 +9,27 @@ import java.util.List;
 /**
  * Created by Longri on 17.02.2016.
  */
-public class DesktopFile extends File {
+public class DesktopAbstractFile extends AbstractFile {
 
     private final java.io.File mFile;
 
-    private DesktopFile(java.io.File file) {
+    private DesktopAbstractFile(java.io.File file) {
         mFile = file;
     }
 
-    DesktopFile(String path) {
+    DesktopAbstractFile(String path) {
         mFile = new java.io.File(path);
     }
 
-    DesktopFile(File parent) {
-        mFile = ((DesktopFile) parent).mFile;
+    DesktopAbstractFile(AbstractFile parent) {
+        mFile = ((DesktopAbstractFile) parent).mFile;
     }
 
-    DesktopFile(File parent, String child) {
-        mFile = new java.io.File(((DesktopFile) parent).mFile, child);
+    DesktopAbstractFile(AbstractFile parent, String child) {
+        mFile = new java.io.File(((DesktopAbstractFile) parent).mFile, child);
     }
 
-    DesktopFile(String parent, String child) {
+    DesktopAbstractFile(String parent, String child) {
         mFile = new java.io.File(parent, child);
     }
 
@@ -44,8 +44,8 @@ public class DesktopFile extends File {
     }
 
     @Override
-    public File getParentFile() {
-        return new DesktopFile(mFile.getParentFile());
+    public AbstractFile getParentFile() {
+        return new DesktopAbstractFile(mFile.getParentFile());
     }
 
     @Override
@@ -75,7 +75,7 @@ public class DesktopFile extends File {
 
     @Override
     public String[] list(final FilenameFilter filenameFilter) {
-        return mFile.list((dir, name) -> filenameFilter.accept(new DesktopFile(dir), name));
+        return mFile.list((dir, name) -> filenameFilter.accept(new DesktopAbstractFile(dir), name));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class DesktopFile extends File {
     }
 
     @Override
-    public File[] listFiles(final FilenameFilter filenameFilter) {
+    public AbstractFile[] listFiles(final FilenameFilter filenameFilter) {
         String[] names = list();
         if (names == null || filenameFilter == null) {
             return null;
@@ -108,10 +108,10 @@ public class DesktopFile extends File {
 
         if (v.isEmpty())
             return null;
-        File[] ret = new File[v.size()];
+        AbstractFile[] ret = new AbstractFile[v.size()];
 
         for (int i = 0; i < v.size(); i++)
-            ret[i] = new DesktopFile(this, v.get(i));
+            ret[i] = new DesktopAbstractFile(this, v.get(i));
 
         return ret;
     }
@@ -147,13 +147,13 @@ public class DesktopFile extends File {
     }
 
     @Override
-    public File[] listFiles() {
+    public AbstractFile[] listFiles() {
         String[] list = mFile.list();
         if (list == null) list = new String[]{};
-        File[] ret = new File[list.length];
+        AbstractFile[] ret = new AbstractFile[list.length];
         int index = 0;
         for (String s : list) {
-            ret[index++] = new DesktopFile(this, s);
+            ret[index++] = new DesktopAbstractFile(this, s);
         }
         return ret;
     }
@@ -164,8 +164,8 @@ public class DesktopFile extends File {
     }
 
     @Override
-    public File getCanonicalPath() throws IOException {
-        return new DesktopFile(mFile.getCanonicalPath());
+    public AbstractFile getCanonicalPath() throws IOException {
+        return new DesktopAbstractFile(mFile.getCanonicalPath());
     }
 
     @Override
@@ -174,8 +174,8 @@ public class DesktopFile extends File {
     }
 
     @Override
-    public boolean renameTo(File file) {
-        return mFile.renameTo(((DesktopFile) file).mFile);
+    public boolean renameTo(AbstractFile abstractFile) {
+        return mFile.renameTo(((DesktopAbstractFile) abstractFile).mFile);
     }
 
     @Override
@@ -185,13 +185,13 @@ public class DesktopFile extends File {
     }
 
     @Override
-    public File getAbsoluteFile() {
-        return new DesktopFile(mFile.getAbsoluteFile());
+    public AbstractFile getAbsoluteFile() {
+        return new DesktopAbstractFile(mFile.getAbsoluteFile());
     }
 
     @Override
-    public int compareTo(File otherFile) {
-        return mFile.compareTo(((DesktopFile) otherFile).mFile);
+    public int compareTo(AbstractFile otherAbstractFile) {
+        return mFile.compareTo(((DesktopAbstractFile) otherAbstractFile).mFile);
     }
 
     @Override

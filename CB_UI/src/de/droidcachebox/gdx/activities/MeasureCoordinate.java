@@ -60,8 +60,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     private AtomicBoolean inRepaint = new AtomicBoolean(false);
     private boolean redraw = true;
 
-    public MeasureCoordinate(CB_RectF rec, String Name, ICoordReturnListener listener) {
-        super(rec, Name);
+    public MeasureCoordinate(String Name, ICoordReturnListener listener) {
+        super(Name);
         mCoordReturnListener = listener;
 
         MeasuredCoordList.MeasuredCoord.Referenz = Locator.getInstance().getMyPosition(ProviderType.GPS);

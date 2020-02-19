@@ -22,8 +22,8 @@ package de.droidcachebox.utils;
  * @author Longri
  */
 public class CopyRule {
-    public File sourcePath;
-    public File targetPath;
+    public AbstractFile sourcePath;
+    public AbstractFile targetPath;
     public String Name;
 
     /**
@@ -32,8 +32,8 @@ public class CopyRule {
      * @param source SourcePath as String
      * @param target TargetPath as String
      */
-    public CopyRule(String source, String target) {
-        sourcePath = FileFactory.createFile(source);
+    public CopyRule(AbstractFile source, String target) {
+        sourcePath = source;
         Name = sourcePath.getName();
         targetPath = FileFactory.createFile(target + "/" + Name);
     }

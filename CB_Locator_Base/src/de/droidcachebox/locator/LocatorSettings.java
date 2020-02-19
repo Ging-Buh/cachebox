@@ -15,12 +15,12 @@ public interface LocatorSettings {
     Integer[] Level = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
     Integer[] CrossLevel = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
 
-    SettingFolder tileCacheFolder = new SettingFolder("TileCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Global, ALL, true);
+    SettingFolder tileCacheFolder = new SettingFolder("TileCacheFolder", Folder, NEVER, Config_Core.workPath + "/repository/cache", Global, ALL, true);
     SettingFolder tileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", Folder, NEVER, "", Local, ALL, true);
 
     SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", Map, EXPERT, 16, Global, ACB, CrossLevel);
-    SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", Map, EXPERT, Config_Core.mWorkPath + "/repository/maps", Global, ALL, false);
-    SettingFolder RenderThemesFolder = new SettingFolder("RenderThemesFolder", Map, EXPERT, Config_Core.mWorkPath + "/RenderThemes", Global, ALL, false);
+    SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", Map, EXPERT, Config_Core.workPath + "/repository/maps", Global, ALL, false);
+    SettingFolder RenderThemesFolder = new SettingFolder("RenderThemesFolder", Map, EXPERT, Config_Core.workPath + "/RenderThemes", Global, ALL, false);
     SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", Map, EXPERT, true, Global, ACB);
     SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", Map, EXPERT, 7, Global, ACB, Level);
     SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", Map, EXPERT, 21, Global, ACB, Level);
@@ -28,7 +28,7 @@ public interface LocatorSettings {
     SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", Map, EXPERT, 21, Global, ACB, Level);
     SettingString UserMap1 = new SettingString("UserMap1", Map, EXPERT, "{JPG}{name:ESRI World_Imagery}http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", Global, ALL);
     SettingString UserMap2 = new SettingString("UserMap2", Map, EXPERT, "", Global, ALL);
-    SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", Map, NEVER, Config_Core.mWorkPath + "/repository/maps", Local, ALL, false);
+    SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", Map, NEVER, Config_Core.workPath + "/repository/maps", Local, ALL, false);
     SettingStringList currentMapLayer = new SettingStringList("CurrentMapLayer", Map, NEVER, new String[]{"Mapnik"}, Global, ACB);
     SettingString CurrentMapOverlayLayerName = new SettingString("CurrentMapOverlayLayer", Map, NEVER, "", Global, ACB);
     SettingInt lastZoomLevel = new SettingInt("lastZoomLevel", Map, NEVER, 14, Global, ALL);

@@ -37,7 +37,7 @@ import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.solver.SolverCacheInterface;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
@@ -76,7 +76,8 @@ public class GlobalCore implements SolverCacheInterface {
     public static boolean switchToCompassCompleted = false;
     public static GlobalLocationReceiver receiver;
     public static boolean RunFromSplash = false;
-    private static GlobalCore mINSTANCE;
+    public static String firstSDCard, secondSDCard;
+    private static GlobalCore globalCore;
     private static Cache selectedCache = null;
     private static boolean autoResort;
     private static Cache nearestCache = null;
@@ -87,15 +88,15 @@ public class GlobalCore implements SolverCacheInterface {
     private GlobalCore() {
         super();
         Solver.solverCacheInterface = this;
-        mINSTANCE = this;
+        globalCore = this;
     }
 
     public static GlobalCore getInstance() {
-        if (mINSTANCE == null) {
-            mINSTANCE = new GlobalCore();
-            mINSTANCE.initVersionInfos();
+        if (globalCore == null) {
+            globalCore = new GlobalCore();
+            globalCore.initVersionInfos();
         }
-        return mINSTANCE;
+        return globalCore;
     }
 
     public static Cache getSelectedCache() {
@@ -269,9 +270,9 @@ public class GlobalCore implements SolverCacheInterface {
             info = fileHandle.readString("utf-8");
         } catch (Exception ex) {
             // but on Desktop class GDX is not loaded yet
-            File file = FileFactory.createFile("build.info");
+            AbstractFile abstractFile = FileFactory.createFile("build.info");
             try {
-                BufferedReader br = new BufferedReader(file.getFileReader());
+                BufferedReader br = new BufferedReader(abstractFile.getFileReader());
                 info = br.readLine();
             } catch (Exception ex1) {
                 // if nothing works

@@ -205,10 +205,10 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     if (savedInstanceState.getBoolean("useSmallSkin"))
                         GlobalCore.displayType = DisplayType.Small;
                     new Config(savedInstanceState.getString("WorkPath"));
-                    if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
+                    if (!FileIO.createDirectory(Config.workPath + "/User"))
                         return;
                     Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-                    Database.Settings.startUp(Config.mWorkPath + "/User/Config.db3");
+                    Database.Settings.startUp(Config.workPath + "/User/Config.db3");
                     Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
                     Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
 
@@ -353,7 +353,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.info(sKlasse, "=> onSaveInstanceState");
         savedInstanceState.putBoolean("useSmallSkin", GlobalCore.displayType == DisplayType.Small);
-        savedInstanceState.putString("WorkPath", Config.mWorkPath);
+        savedInstanceState.putString("WorkPath", Config.workPath);
 
         savedInstanceState.putInt("WindowWidth", UiSizes.getInstance().getWindowWidth());
         savedInstanceState.putInt("WindowHeight", UiSizes.getInstance().getWindowHeight());
@@ -439,7 +439,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         lastState = LastState.onResume;
         // having a protokoll of the program start: but now reset to Config.AktLogLevel but >= LogLevel.ERROR
         if (Config.AktLogLevel.getEnumValue() == LogLevel.OFF) Config.AktLogLevel.setEnumValue(LogLevel.ERROR);
-        CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+        CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
 
         super.onResume();
     }
@@ -679,7 +679,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (pWaitD == null) {
 
-            pWaitD = PleaseWaitMessageBox.Show(Translation.get("waitForGL"), "", MessageBoxButton.NOTHING, MessageBoxIcon.None, null);
+            pWaitD = PleaseWaitMessageBox.show(Translation.get("waitForGL"), "", MessageBoxButton.NOTHING, MessageBoxIcon.None, null);
 
             waitForGL.set(true);
 
@@ -761,7 +761,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
     private void checkTranslationIsLoaded() {
         if (!Translation.isInitialized()) {
-            Translation trans = new Translation(Config.mWorkPath, FileType.Internal);
+            Translation trans = new Translation(Config.workPath, FileType.Internal);
             try {
                 trans.loadTranslation(Config.Sel_LanguagePath.getValue());
             } catch (Exception e) {

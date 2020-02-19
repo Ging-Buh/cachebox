@@ -15,11 +15,11 @@ import ch.fhnw.imvs.gpssimulator.components.*;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.nmea.*;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
-import de.droidcachebox.PlatformUIBase.IgetFolderReturnListener;
+import de.droidcachebox.PlatformUIBase.IReturnAbstractFile;
 import de.droidcachebox.PlatformUIBase.Methods;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.utils.FileFactory;
 import org.apache.log4j.Logger;
 import org.mapsforge.map.swing.view.MapPanel;
 
@@ -191,6 +191,11 @@ public class SimulatorMain {
             }
 
             @Override
+            public String removeHtmlEntyties(String text) {
+                return null;
+            }
+
+            @Override
             public void startPictureApp(String file) {
 
             }
@@ -205,7 +210,7 @@ public class SimulatorMain {
             }
 
             @Override
-            public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
+            public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IReturnAbstractFile returnListener) {
 
                 final String ext = extension.replace("*", "");
 
@@ -235,14 +240,14 @@ public class SimulatorMain {
                 int returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     if (returnListener != null)
-                        returnListener.returnFile(chooser.getSelectedFile().getAbsolutePath());
+                        returnListener.returns(FileFactory.createFile(chooser.getSelectedFile().getAbsolutePath()));
                     System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
                 }
 
             }
 
             @Override
-            public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
+            public void getFolder(String initialPath, String TitleText, String ButtonText, IReturnAbstractFile returnListener) {
 
                 JFileChooser chooser = new JFileChooser();
 
@@ -253,7 +258,7 @@ public class SimulatorMain {
                 int returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     if (returnListener != null)
-                        returnListener.returnFolder(chooser.getSelectedFile().getAbsolutePath());
+                        returnListener.returns(FileFactory.createFile(chooser.getSelectedFile().getAbsolutePath()));
                     System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
                 }
 

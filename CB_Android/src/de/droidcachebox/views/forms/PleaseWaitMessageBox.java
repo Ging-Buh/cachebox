@@ -76,11 +76,11 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                             }
      *                                                        </pre>
      */
-    public static Dialog Show(String msg) {
+    public static Dialog show(String msg) {
         listener = null;
         Bundle b = new Bundle();
         b.putString("msg", msg);
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_1, b);
+        Dialog dialog = CreateDialog(MessageBox.MSG_BOX_1, b);
         dialog.show();
         return dialog;
     }
@@ -130,11 +130,11 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                 }
      *                                                                            </pre>
      */
-    public static Dialog Show(String msg, DialogInterface.OnClickListener Listener) {
+    public static Dialog show(String msg, DialogInterface.OnClickListener Listener) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_1, b);
+        Dialog dialog = CreateDialog(MessageBox.MSG_BOX_1, b);
         dialog.show();
         return dialog;
     }
@@ -185,12 +185,12 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                 }
      *                                                                            </pre>
      */
-    public static Dialog Show(String msg, String title, DialogInterface.OnClickListener Listener) {
+    public static Dialog show(String msg, String title, DialogInterface.OnClickListener Listener) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
         b.putString("title", title);
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_2, b);
+        Dialog dialog = CreateDialog(MessageBox.MSG_BOX_2, b);
         dialog.show();
         return dialog;
     }
@@ -243,18 +243,18 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                            </pre>
      */
 
-    public static Dialog Show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener) {
+    public static Dialog show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener) {
         parent = null;
-        return Show(msg, title, buttons, Listener, null);
+        return show(msg, title, buttons, Listener, null);
     }
 
-    public static Dialog Show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener, Activity act) {
+    public static Dialog show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener, Activity act) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
         b.putString("title", title);
         b.putInt("buttons", buttons.ordinal());
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_3, b);
+        Dialog dialog = CreateDialog(MessageBox.MSG_BOX_3, b);
         dialog.show();
         return dialog;
 
@@ -308,55 +308,49 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                            </pre>
      */
 
-    public static Dialog Show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
+    public static Dialog show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
         parent = null;
-        return Show(msg, title, buttons, icon, Listener, null);
+        return show(msg, title, buttons, icon, Listener, null);
     }
 
-    public static Dialog Show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener, Activity act) {
+    public static Dialog show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener, Activity act) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
         b.putString("title", title);
         b.putInt("buttons", buttons.ordinal());
         b.putInt("icon", icon.ordinal());
-        Dialog dialog = CreateDialog(DialogID.MSG_BOX_4, b);
+        Dialog dialog = CreateDialog(MessageBox.MSG_BOX_4, b);
         dialog.show();
         return dialog;
     }
 
-    public static Dialog Show(String msg, String title, MessageBoxIcon icon) {
-        return Show(msg, title, MessageBoxButton.OK, icon, null);
+    public static Dialog show(String msg, String title, MessageBoxIcon icon) {
+        return show(msg, title, MessageBoxButton.OK, icon, null);
 
     }
 
     public static Dialog CreateDialog(int dialogId, Bundle b) {
-        if (listener == null) // setze standard Listener zu schliessen des
-        // Dialogs, falls kein Listener angegeben wurde
+        if (listener == null)
         {
-            listener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            };
+            listener = (dialog, which) -> dialog.dismiss();
         }
 
         Dialog dialog = null;
         switch (dialogId) {
-            case DialogID.MSG_BOX_1:
+            case MessageBox.MSG_BOX_1:
                 PleaseWaitMessageBox.Builder customBuilder = new PleaseWaitMessageBox.Builder(getActivity());
                 customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
                 dialog = customBuilder.create();
                 break;
 
-            case DialogID.MSG_BOX_2:
+            case MessageBox.MSG_BOX_2:
                 PleaseWaitMessageBox.Builder customBuilder2 = new PleaseWaitMessageBox.Builder(getActivity());
                 customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
                 dialog = customBuilder2.create();
                 break;
 
-            case DialogID.MSG_BOX_3:
+            case MessageBox.MSG_BOX_3:
 
                 setButtonCaptions(b);
                 PleaseWaitMessageBox.Builder customBuilder3 = new PleaseWaitMessageBox.Builder(getActivity());
@@ -364,7 +358,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
                 dialog = customBuilder3.create();
                 break;
 
-            case DialogID.MSG_BOX_4:
+            case MessageBox.MSG_BOX_4:
 
                 setButtonCaptions(b);
                 setIcon(b);
@@ -490,8 +484,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the Dialog message from String
          *
-         * @param title
-         * @return
+         * @param message
+         * @return ?
          */
         public Builder setMessage(String message) {
             this.message = message;
@@ -501,8 +495,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the Dialog message from resource
          *
-         * @param title
-         * @return
+         * @param message ?
+         * @return ?
          */
         public Builder setMessage(int message) {
             this.message = (String) context.getText(message);
@@ -512,8 +506,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the Dialog title from resource
          *
-         * @param title
-         * @return
+         * @param title ?
+         * @return ?
          */
         public Builder setTitle(int title) {
             this.title = (String) context.getText(title);
@@ -523,8 +517,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the Dialog title from String
          *
-         * @param title
-         * @return
+         * @param title ?
+         * @return ?
          */
         public Builder setTitle(String title) {
             this.title = title;
@@ -534,8 +528,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the Dialog icon from Drawable
          *
-         * @param title
-         * @return
+         * @param icon ?
+         * @return ?
          */
         public Builder setIcon(Drawable icon) {
             this.icon = icon;
@@ -545,8 +539,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set a custom content view for the Dialog. If a message is set, the contentView is not added to the Dialog...
          *
-         * @param v
-         * @return
+         * @param v ?
+         * @return ?
          */
         public Builder setContentView(View v) {
             this.contentView = v;
@@ -556,9 +550,9 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the positive button resource and it's listener
          *
-         * @param positiveButtonText
-         * @param listener
-         * @return
+         * @param positiveButtonText ?
+         * @param listener ?
+         * @return ?
          */
         public Builder setPositiveButton(int positiveButtonText, DialogInterface.OnClickListener listener) {
             this.positiveButtonText = (String) context.getText(positiveButtonText);
@@ -569,9 +563,9 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the positive button text and it's listener
          *
-         * @param positiveButtonText
-         * @param listener
-         * @return
+         * @param positiveButtonText ?
+         * @param listener ?
+         * @return ?
          */
         public Builder setPositiveButton(String positiveButtonText, DialogInterface.OnClickListener listener) {
             this.positiveButtonText = positiveButtonText;
@@ -582,9 +576,9 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the positive button resource and it's listener
          *
-         * @param positiveButtonText
-         * @param listener
-         * @return
+         * @param neutralButtonText ?
+         * @param listener ?
+         * @return ?
          */
         public Builder setNeutralButton(int neutralButtonText, DialogInterface.OnClickListener listener) {
             this.neutralButtonText = (String) context.getText(neutralButtonText);
@@ -595,9 +589,9 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the positive button text and it's listener
          *
-         * @param positiveButtonText
-         * @param listener
-         * @return
+         * @param neutralButtonText ?
+         * @param listener ?
+         * @return ?
          */
         public Builder setNeutralButton(String neutralButtonText, DialogInterface.OnClickListener listener) {
             this.neutralButtonText = neutralButtonText;
@@ -608,9 +602,9 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         /**
          * Set the negative button resource and it's listener
          *
-         * @param negativeButtonText
-         * @param listener
-         * @return
+         * @param negativeButtonText ?
+         * @param listener ?
+         * @return ?
          */
         public Builder setNegativeButton(int negativeButtonText, DialogInterface.OnClickListener listener) {
             this.negativeButtonText = (String) context.getText(negativeButtonText);
@@ -653,12 +647,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
             if (positiveButtonText != null && !positiveButtonText.equals("")) {
                 ((Button) layout.findViewById(R.id.positiveButton)).setText(positiveButtonText);
                 if (positiveButtonClickListener != null) {
-                    ((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-                        }
-                    });
+                    ((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener((View.OnClickListener) v -> positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE));
                 }
             } else {
                 // if no confirm button just set the visibility to GONE
@@ -668,12 +657,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
             if (neutralButtonText != null && !neutralButtonText.equals("")) {
                 ((Button) layout.findViewById(R.id.neutralButton)).setText(neutralButtonText);
                 if (neutralButtonClickListener != null) {
-                    ((Button) layout.findViewById(R.id.neutralButton)).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            neutralButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
-                        }
-                    });
+                    ((Button) layout.findViewById(R.id.neutralButton)).setOnClickListener((View.OnClickListener) v -> neutralButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL));
                 }
             } else {
                 // if no confirm button just set the visibility to GONE
@@ -683,12 +667,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
             if (negativeButtonText != null && !negativeButtonText.equals("")) {
                 ((Button) layout.findViewById(R.id.negativeButton)).setText(negativeButtonText);
                 if (negativeButtonClickListener != null) {
-                    ((Button) layout.findViewById(R.id.negativeButton)).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
-                        }
-                    });
+                    ((Button) layout.findViewById(R.id.negativeButton)).setOnClickListener((View.OnClickListener) v -> positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE));
                 }
             } else {
                 // if no confirm button just set the visibility to GONE

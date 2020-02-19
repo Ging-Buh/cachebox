@@ -41,16 +41,11 @@ public class Android_TextInput implements TextInputInterface {
             input.setSingleLine(false);
             input.setLines(Math.min(editTextField.getLineCount(), 10)); // todo replace 10 by max nr of lines
             // builder.setView(input);
-            builder.setContentView(input);
-            // Set up the buttons
-            builder.setPositiveButton(Translation.get("ok"), (dialog, which) -> {
-                        GL.that.RunOnGL(() -> {
-                            editTextField.setText(input.getText().toString());
-                            editTextField.setFocus(false);
-                        });
-                    }
-            );
-            builder.setNegativeButton(Translation.get("cancel"), (dialog, which) -> {
+            builder.setContentView(input).setPositiveButton(Translation.get("ok"), (dialog, which) -> GL.that.RunOnGL(() -> {
+                editTextField.setText(input.getText().toString());
+                editTextField.setFocus(false);
+            })
+            ).setNegativeButton(Translation.get("cancel"), (dialog, which) -> {
                 editTextField.setFocus(false);
                 dialog.cancel();
             });

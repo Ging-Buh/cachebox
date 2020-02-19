@@ -7,8 +7,8 @@ import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.Location.ProviderType;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 
 import java.awt.*;
@@ -80,7 +80,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
         add(sendSpeed);
         sendSpeed.addActionListener(this); // listen for Button press
 
-        File dir = FileFactory.createFile(Config.TrackFolder.getValue());
+        AbstractFile dir = FileFactory.createFile(Config.TrackFolder.getValue());
         String[] files = dir.list();
         if (!(files == null)) {
             if (files.length > 0) {
@@ -190,33 +190,28 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
             filedia.setFile("*.gpx");
             filedia.show();
             String filename = filedia.getDirectory() + filedia.getFile();
-            if (filename != null) {
-                loadSimulateRoute(filename);
-            }
+            loadSimulateRoute(filename);
             filedia.dispose();
         } else if (event.getActionCommand().equals("Send GPS Signal")) {
             // Parse Coordinate
             Coordinate pos = new CoordinateGPS(txt.getText());
-            if (pos != null) {
 
-                Bearing += 5;
+            Bearing += 5;
 
-                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
+            Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
 
-                CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
+            CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
 
-                satList.add(new GpsStrength(true, 120));
-                satList.add(new GpsStrength(true, 100));
-                satList.add(new GpsStrength(true, 75));
-                satList.add(new GpsStrength(true, 50));
-                satList.add(new GpsStrength(true, 30));
-                satList.add(new GpsStrength(true, 10));
-                satList.add(new GpsStrength(false, 0));
-                satList.add(new GpsStrength(false, 10));
-                GPS.setSatList(satList);
-                GpsStateChangeEventList.Call();
-
-            }
+            satList.add(new GpsStrength(true, 120));
+            satList.add(new GpsStrength(true, 100));
+            satList.add(new GpsStrength(true, 75));
+            satList.add(new GpsStrength(true, 50));
+            satList.add(new GpsStrength(true, 30));
+            satList.add(new GpsStrength(true, 10));
+            satList.add(new GpsStrength(false, 0));
+            satList.add(new GpsStrength(false, 10));
+            GPS.setSatList(satList);
+            GpsStateChangeEventList.Call();
 
         } else if (event.getActionCommand().equals("Start simulate")) {
             NetworkSend = false;
@@ -237,9 +232,9 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
     }
 
     @SuppressWarnings("deprecation")
-    private void loadSimulateRoute(String Path) {
+    private void loadSimulateRoute(String path) {
 
-        TrackListView.getInstance().readFromGpxFile(Path);
+        TrackListView.getInstance().readFromGpxFile(FileFactory.createFile(path));
         // !!! one file may have more than one route : get last added
         simulationRoute = RouteOverlay.getInstance().getTrack(RouteOverlay.getInstance().getNumberOfTracks() - 1);
         // Don't display loaded simulate route

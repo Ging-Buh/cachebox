@@ -19,7 +19,7 @@ package de.droidcachebox.gdx.texturepacker;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 
 import javax.imageio.IIOImage;
@@ -37,7 +37,7 @@ import java.util.Iterator;
  */
 public class DesktopTexturePacker extends TexturePacker_Base {
 
-    public DesktopTexturePacker(File rootDir, Settings settings) {
+    public DesktopTexturePacker(AbstractFile rootDir, Settings settings) {
         this.settings = settings;
 
         if (settings.pot) {
@@ -59,11 +59,11 @@ public class DesktopTexturePacker extends TexturePacker_Base {
     }
 
     @Override
-    public TexturePacker_Base getInstanz(File rootDir, Settings settings) {
+    public TexturePacker_Base getInstanz(AbstractFile rootDir, Settings settings) {
         return new DesktopTexturePacker(rootDir, settings);
     }
 
-    public void writeImages(File outputDir, Array<Page> pages, String packFileName) {
+    public void writeImages(AbstractFile outputDir, Array<Page> pages, String packFileName) {
         String imageName = packFileName;
         int dotIndex = imageName.lastIndexOf('.');
         if (dotIndex != -1)
@@ -101,18 +101,18 @@ public class DesktopTexturePacker extends TexturePacker_Base {
                 }
             }
 
-            File outputFile;
+            AbstractFile outputAbstractFile;
             while (true) {
-                outputFile = FileFactory.createFile(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
-                if (!outputFile.exists())
+                outputAbstractFile = FileFactory.createFile(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
+                if (!outputAbstractFile.exists())
                     break;
             }
-            page.imageName = outputFile.getName();
+            page.imageName = outputAbstractFile.getName();
 
             BufferedImage canvas = new BufferedImage(width, height, getBufferedImageType(settings.format));
             Graphics2D g = (Graphics2D) canvas.getGraphics();
 
-            System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
+            System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputAbstractFile);
 
             for (Rect_Base rect : page.outputRects) {
                 int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
@@ -164,13 +164,13 @@ public class DesktopTexturePacker extends TexturePacker_Base {
                     ImageWriteParam param = writer.getDefaultWriteParam();
                     param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
                     param.setCompressionQuality(settings.jpegQuality);
-                    ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
+                    ImageOutputStream ios = ImageIO.createImageOutputStream(outputAbstractFile);
                     writer.setOutput(ios);
                     writer.write(null, new IIOImage(canvas, null, null), param);
                 } else
-                    ImageIO.write(canvas, "png", outputFile.getFileOutputStream());
+                    ImageIO.write(canvas, "png", outputAbstractFile.getFileOutputStream());
             } catch (IOException ex) {
-                throw new RuntimeException("Error writing file: " + outputFile, ex);
+                throw new RuntimeException("Error writing file: " + outputAbstractFile, ex);
             }
         }
     }

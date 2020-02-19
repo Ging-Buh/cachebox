@@ -20,7 +20,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 
@@ -314,11 +314,11 @@ public class Translation {
     }
 
     private void writeMissingStrings() throws IOException {
-        File file = FileFactory.createFile(mWorkPath + "/debug.txt");
+        AbstractFile abstractFile = FileFactory.createFile(mWorkPath + "/debug.txt");
 
-        if (file.exists()) {
+        if (abstractFile.exists()) {
 
-            BufferedReader reader = new BufferedReader(file.getFileReader());
+            BufferedReader reader = new BufferedReader(abstractFile.getFileReader());
             StringBuilder sb = new StringBuilder();
             String line;
 
@@ -344,7 +344,7 @@ public class Translation {
             }
             reader.close();
 
-            PrintWriter writer = new PrintWriter(file.getFileWriter());
+            PrintWriter writer = new PrintWriter(abstractFile.getFileWriter());
 
             writer.write(sb.toString());
             writer.close();

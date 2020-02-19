@@ -44,7 +44,7 @@ public class SettingFolder extends SettingLongString {
 
     private String replacePathSaperator(String rep) {
         if (rep.startsWith("?")) {
-            rep = Config_Core.mWorkPath + System.getProperty("file.separator") + "Repositories" + rep.substring(1);
+            rep = Config_Core.workPath + System.getProperty("file.separator") + "Repositories" + rep.substring(1);
         }
         rep = rep.replace("\\", System.getProperty("file.separator"));
         rep = rep.replace("/", System.getProperty("file.separator"));

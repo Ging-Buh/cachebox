@@ -13,28 +13,28 @@ import java.util.List;
 /**
  * Created by Longri on 17.02.2016.
  */
-public class AndroidFile extends de.droidcachebox.utils.File {
+public class AndroidAbstractFile extends AbstractFile {
     private static final String sKlasse = "AndroidFile";
 
     private java.io.File mFile;
 
-    private AndroidFile(java.io.File file) {
+    private AndroidAbstractFile(java.io.File file) {
         mFile = new java.io.File(file, "");
     }
 
-    public AndroidFile(String path) {
+    public AndroidAbstractFile(String path) {
         mFile = new java.io.File(path);
     }
 
-    public AndroidFile(de.droidcachebox.utils.File file) {
-        mFile = new java.io.File(file.getAbsolutePath());
+    public AndroidAbstractFile(AbstractFile abstractFile) {
+        mFile = new java.io.File(abstractFile.getAbsolutePath());
     }
 
-    public AndroidFile(de.droidcachebox.utils.File file, String child) {
-        mFile = new java.io.File(file.getAbsolutePath(), child);
+    public AndroidAbstractFile(AbstractFile abstractFile, String child) {
+        mFile = new java.io.File(abstractFile.getAbsolutePath(), child);
     }
 
-    public AndroidFile(String parent, String child) {
+    public AndroidAbstractFile(String parent, String child) {
         mFile = new java.io.File(parent, child);
     }
 
@@ -49,8 +49,8 @@ public class AndroidFile extends de.droidcachebox.utils.File {
     }
 
     @Override
-    public de.droidcachebox.utils.File getParentFile() {
-        return new AndroidFile(mFile.getParentFile());
+    public AbstractFile getParentFile() {
+        return new AndroidAbstractFile(mFile.getParentFile());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class AndroidFile extends de.droidcachebox.utils.File {
 
     @Override
     public String[] list(final de.droidcachebox.utils.FilenameFilter filenameFilter) {
-        String[] list = mFile.list((dir, name) -> filenameFilter.accept(new AndroidFile(dir), name));
+        String[] list = mFile.list((dir, name) -> filenameFilter.accept(new AndroidAbstractFile(dir), name));
         return list;
     }
 
@@ -101,7 +101,7 @@ public class AndroidFile extends de.droidcachebox.utils.File {
     }
 
     @Override
-    public de.droidcachebox.utils.File[] listFiles(final de.droidcachebox.utils.FilenameFilter filenameFilter) {
+    public AbstractFile[] listFiles(final de.droidcachebox.utils.FilenameFilter filenameFilter) {
         String names[] = list();
         if (names == null || filenameFilter == null) {
             return null;
@@ -115,10 +115,10 @@ public class AndroidFile extends de.droidcachebox.utils.File {
 
         if (v.isEmpty())
             return null;
-        de.droidcachebox.utils.File[] ret = new de.droidcachebox.utils.File[v.size()];
+        AbstractFile[] ret = new AbstractFile[v.size()];
 
         for (int i = 0; i < v.size(); i++)
-            ret[i] = new AndroidFile(this, v.get(i));
+            ret[i] = new AndroidAbstractFile(this, v.get(i));
 
         return ret;
     }
@@ -154,14 +154,14 @@ public class AndroidFile extends de.droidcachebox.utils.File {
     }
 
     @Override
-    public de.droidcachebox.utils.File[] listFiles() {
+    public AbstractFile[] listFiles() {
         String[] list = mFile.list();
 
-        de.droidcachebox.utils.File[] ret = new de.droidcachebox.utils.File[list.length];
+        AbstractFile[] ret = new AbstractFile[list.length];
 
         int index = 0;
         for (String s : list) {
-            ret[index++] = new AndroidFile(this, s);
+            ret[index++] = new AndroidAbstractFile(this, s);
         }
         return ret;
     }
@@ -172,8 +172,8 @@ public class AndroidFile extends de.droidcachebox.utils.File {
     }
 
     @Override
-    public de.droidcachebox.utils.File getCanonicalPath() throws IOException {
-        return new AndroidFile(mFile.getCanonicalPath());
+    public AbstractFile getCanonicalPath() throws IOException {
+        return new AndroidAbstractFile(mFile.getCanonicalPath());
     }
 
     @Override
@@ -182,12 +182,12 @@ public class AndroidFile extends de.droidcachebox.utils.File {
     }
 
     @Override
-    public boolean renameTo(de.droidcachebox.utils.File file) {
-        boolean ret = mFile.renameTo(((AndroidFile) file).mFile);
+    public boolean renameTo(AbstractFile abstractFile) {
+        boolean ret = mFile.renameTo(((AndroidAbstractFile) abstractFile).mFile);
         if (!ret) {
             try {
                 // log.info("rename has no success. doing copyFile and delete");
-                ret = copyToFile(file);
+                ret = copyToFile(abstractFile);
                 if (ret) {
                     mFile.delete();
                 }
@@ -200,15 +200,15 @@ public class AndroidFile extends de.droidcachebox.utils.File {
         return ret;
     }
 
-    private boolean copyToFile(de.droidcachebox.utils.File dst) throws IOException {
+    private boolean copyToFile(AbstractFile dst) throws IOException {
 
-        de.droidcachebox.utils.File prntFile = dst.getParentFile();
-        if (!prntFile.exists()) {
-            prntFile.mkdirs();
+        AbstractFile prntAbstractFile = dst.getParentFile();
+        if (!prntAbstractFile.exists()) {
+            prntAbstractFile.mkdirs();
         }
 
-        if (!prntFile.canWrite()) {
-            Log.err(sKlasse, "can't write to destination" + prntFile.getAbsolutePath());
+        if (!prntAbstractFile.canWrite()) {
+            Log.err(sKlasse, "can't write to destination" + prntAbstractFile.getAbsolutePath());
             return false;
         }
         FileInputStream inStream = new FileInputStream(mFile);
@@ -234,13 +234,13 @@ public class AndroidFile extends de.droidcachebox.utils.File {
     }
 
     @Override
-    public de.droidcachebox.utils.File getAbsoluteFile() {
-        return new AndroidFile(mFile.getAbsoluteFile());
+    public AbstractFile getAbsoluteFile() {
+        return new AndroidAbstractFile(mFile.getAbsoluteFile());
     }
 
     @Override
-    public int compareTo(de.droidcachebox.utils.File otherFile) {
-        return mFile.compareTo(((AndroidFile) otherFile).mFile);
+    public int compareTo(AbstractFile otherAbstractFile) {
+        return mFile.compareTo(((AndroidAbstractFile) otherAbstractFile).mFile);
     }
 
     @Override

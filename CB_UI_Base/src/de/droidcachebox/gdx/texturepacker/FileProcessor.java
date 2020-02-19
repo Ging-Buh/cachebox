@@ -17,7 +17,7 @@ package de.droidcachebox.gdx.texturepacker;
  ******************************************************************************/
 
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FilenameFilter;
 
@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
  */
 public class FileProcessor {
     FilenameFilter inputFilter;
-    Comparator<File> comparator = new Comparator<File>() {
-        public int compare(File o1, File o2) {
+    Comparator<AbstractFile> comparator = new Comparator<AbstractFile>() {
+        public int compare(AbstractFile o1, AbstractFile o2) {
             return o1.getName().compareTo(o2.getName());
         }
     };
@@ -50,7 +50,7 @@ public class FileProcessor {
 
     Comparator<Entry> entryComparator = new Comparator<Entry>() {
         public int compare(Entry o1, Entry o2) {
-            return comparator.compare(o1.inputFile, o2.inputFile);
+            return comparator.compare(o1.inputAbstractFile, o2.inputAbstractFile);
         }
     };
 
@@ -77,7 +77,7 @@ public class FileProcessor {
     /**
      * Sets the comparator for {@link #processDir(Entry, ArrayList)}. By default the files are sorted by alpha.
      */
-    public FileProcessor setComparator(Comparator<File> comparator) {
+    public FileProcessor setComparator(Comparator<AbstractFile> comparator) {
         this.comparator = comparator;
         return this;
     }
@@ -121,13 +121,13 @@ public class FileProcessor {
      * @param outputRoot May be null if there is no output from processing the files.
      * @return the processed files added with {@link #addProcessedFile(Entry)}.
      */
-    public ArrayList<Entry> process(File inputFile, File outputRoot) throws Exception {
-        if (!inputFile.exists())
-            throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
-        if (inputFile.isFile())
-            return process(new File[]{inputFile}, outputRoot);
+    public ArrayList<Entry> process(AbstractFile inputAbstractFile, AbstractFile outputRoot) throws Exception {
+        if (!inputAbstractFile.exists())
+            throw new IllegalArgumentException("Input file does not exist: " + inputAbstractFile.getAbsolutePath());
+        if (inputAbstractFile.isFile())
+            return process(new AbstractFile[]{inputAbstractFile}, outputRoot);
         else
-            return process(inputFile.listFiles(), outputRoot);
+            return process(inputAbstractFile.listFiles(), outputRoot);
     }
 
     /**
@@ -136,22 +136,22 @@ public class FileProcessor {
      * @param outputRoot May be null if there is no output from processing the files.
      * @return the processed files added with {@link #addProcessedFile(Entry)}.
      */
-    public ArrayList<Entry> process(File[] files, File outputRoot) throws Exception {
+    public ArrayList<Entry> process(AbstractFile[] abstractFiles, AbstractFile outputRoot) throws Exception {
         if (outputRoot == null)
             outputRoot = FileFactory.createFile("");
         outputFiles.clear();
 
-        LinkedHashMap<File, ArrayList<Entry>> dirToEntries = new LinkedHashMap<File, ArrayList<Entry>>();
-        process(files, outputRoot, outputRoot, dirToEntries, 0);
+        LinkedHashMap<AbstractFile, ArrayList<Entry>> dirToEntries = new LinkedHashMap<AbstractFile, ArrayList<Entry>>();
+        process(abstractFiles, outputRoot, outputRoot, dirToEntries, 0);
 
         ArrayList<Entry> allEntries = new ArrayList<Entry>();
-        for (java.util.Map.Entry<File, ArrayList<Entry>> mapEntry : dirToEntries.entrySet()) {
+        for (java.util.Map.Entry<AbstractFile, ArrayList<Entry>> mapEntry : dirToEntries.entrySet()) {
             ArrayList<Entry> dirEntries = mapEntry.getValue();
             if (comparator != null)
                 Collections.sort(dirEntries, entryComparator);
 
-            File inputDir = mapEntry.getKey();
-            File newOutputDir = null;
+            AbstractFile inputDir = mapEntry.getKey();
+            AbstractFile newOutputDir = null;
             if (flattenOutput)
                 newOutputDir = outputRoot;
             else if (!dirEntries.isEmpty()) //
@@ -161,15 +161,15 @@ public class FileProcessor {
                 outputName = outputName.replaceAll("(.*)\\..*", "$1") + outputSuffix;
 
             Entry entry = new Entry();
-            entry.inputFile = mapEntry.getKey();
+            entry.inputAbstractFile = mapEntry.getKey();
             entry.outputDir = newOutputDir;
             if (newOutputDir != null)
-                entry.outputFile = newOutputDir.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(newOutputDir, outputName);
+                entry.outputAbstractFile = newOutputDir.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(newOutputDir, outputName);
 
             try {
                 processDir(entry, dirEntries);
             } catch (Exception ex) {
-                throw new Exception("Error processing directory: " + entry.inputFile.getAbsolutePath(), ex);
+                throw new Exception("Error processing directory: " + entry.inputAbstractFile.getAbsolutePath(), ex);
             }
             allEntries.addAll(dirEntries);
         }
@@ -180,17 +180,17 @@ public class FileProcessor {
             try {
                 processFile(entry);
             } catch (Exception ex) {
-                throw new Exception("Error processing file: " + entry.inputFile.getAbsolutePath(), ex);
+                throw new Exception("Error processing file: " + entry.inputAbstractFile.getAbsolutePath(), ex);
             }
         }
 
         return outputFiles;
     }
 
-    private void process(File[] files, File outputRoot, File outputDir, LinkedHashMap<File, ArrayList<Entry>> dirToEntries, int depth) {
+    private void process(AbstractFile[] abstractFiles, AbstractFile outputRoot, AbstractFile outputDir, LinkedHashMap<AbstractFile, ArrayList<Entry>> dirToEntries, int depth) {
         // Store empty entries for every directory.
-        for (File file : files) {
-            File dir = file.getParentFile();
+        for (AbstractFile abstractFile : abstractFiles) {
+            AbstractFile dir = abstractFile.getParentFile();
             ArrayList<Entry> entries = dirToEntries.get(dir);
             if (entries == null) {
                 entries = new ArrayList<Entry>();
@@ -198,12 +198,12 @@ public class FileProcessor {
             }
         }
 
-        for (File file : files) {
-            if (file.isFile()) {
+        for (AbstractFile abstractFile : abstractFiles) {
+            if (abstractFile.isFile()) {
                 if (inputRegex.size > 0) {
                     boolean found = false;
                     for (Pattern pattern : inputRegex) {
-                        if (pattern.matcher(file.getName()).matches()) {
+                        if (pattern.matcher(abstractFile.getName()).matches()) {
                             found = true;
                             continue;
                         }
@@ -212,30 +212,30 @@ public class FileProcessor {
                         continue;
                 }
 
-                File dir = file.getParentFile();
-                if (inputFilter != null && !inputFilter.accept(dir, file.getName()))
+                AbstractFile dir = abstractFile.getParentFile();
+                if (inputFilter != null && !inputFilter.accept(dir, abstractFile.getName()))
                     continue;
 
-                String outputName = file.getName();
+                String outputName = abstractFile.getName();
                 if (outputSuffix != null)
                     outputName = outputName.replaceAll("(.*)\\..*", "$1") + outputSuffix;
 
                 Entry entry = new Entry();
                 entry.depth = depth;
-                entry.inputFile = file;
+                entry.inputAbstractFile = abstractFile;
                 entry.outputDir = outputDir;
 
                 if (flattenOutput) {
-                    entry.outputFile = outputRoot.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(outputRoot, outputName);
+                    entry.outputAbstractFile = outputRoot.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(outputRoot, outputName);
                 } else {
-                    entry.outputFile = outputDir.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(outputDir, outputName);
+                    entry.outputAbstractFile = outputDir.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(outputDir, outputName);
                 }
 
                 dirToEntries.get(dir).add(entry);
             }
-            if (recursive && file.isDirectory()) {
-                File subdir = outputDir.getPath().length() == 0 ? FileFactory.createFile(file.getName()) : FileFactory.createFile(outputDir, file.getName());
-                process(file.listFiles(inputFilter), outputRoot, subdir, dirToEntries, depth + 1);
+            if (recursive && abstractFile.isDirectory()) {
+                AbstractFile subdir = outputDir.getPath().length() == 0 ? FileFactory.createFile(abstractFile.getName()) : FileFactory.createFile(outputDir, abstractFile.getName());
+                process(abstractFile.listFiles(inputFilter), outputRoot, subdir, dirToEntries, depth + 1);
             }
         }
     }
@@ -254,7 +254,7 @@ public class FileProcessor {
 
     /**
      * This method should be called by {@link #processFile(Entry)} or {@link #processDir(Entry, ArrayList)} if the return value of
-     * {@link #process(File, File)} or {@link #process(File[], File)} should return all the processed files.
+     * {@link #process(AbstractFile, AbstractFile)} or {@link #process(AbstractFile[], AbstractFile)} should return all the processed files.
      */
     protected void addProcessedFile(Entry entry) {
         outputFiles.add(entry);
@@ -264,24 +264,24 @@ public class FileProcessor {
      * @author Nathan Sweet
      */
     static public class Entry {
-        public File inputFile;
+        public AbstractFile inputAbstractFile;
         /**
          * May be null.
          */
-        public File outputDir;
-        public File outputFile;
+        public AbstractFile outputDir;
+        public AbstractFile outputAbstractFile;
         public int depth;
 
         public Entry() {
         }
 
-        public Entry(File inputFile, File outputFile) {
-            this.inputFile = inputFile;
-            this.outputFile = outputFile;
+        public Entry(AbstractFile inputAbstractFile, AbstractFile outputAbstractFile) {
+            this.inputAbstractFile = inputAbstractFile;
+            this.outputAbstractFile = outputAbstractFile;
         }
 
         public String toString() {
-            return inputFile.toString();
+            return inputAbstractFile.toString();
         }
     }
 }

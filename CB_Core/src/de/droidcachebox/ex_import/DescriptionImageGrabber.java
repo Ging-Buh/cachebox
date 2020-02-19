@@ -380,7 +380,7 @@ public class DescriptionImageGrabber {
                             // file enthält nur den Dateinamen, nicht den Pfad. Diesen Dateinamen um den Pfad erweitern, in dem hier die
                             // Spoiler gespeichert wurden
                             String path = getSpoilerPath(gcCode);
-                            File f = FileFactory.createFile(path + '/' + file);
+                            AbstractFile f = FileFactory.createFile(path + '/' + file);
                             try {
                                 f.delete();
                             } catch (Exception ex) {
@@ -401,17 +401,14 @@ public class DescriptionImageGrabber {
         boolean imagePathDirExists = FileIO.directoryExists(imagePath);
 
         if (imagePathDirExists) {
-            File dir = FileFactory.createFile(imagePath);
-            FilenameFilter filter = new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String filename) {
+            AbstractFile dir = FileFactory.createFile(imagePath);
+            FilenameFilter filter = (dir1, filename) -> {
 
-                    filename = filename.toLowerCase();
-                    if (filename.indexOf(GcCode.toLowerCase()) == 0) {
-                        return true;
-                    }
-                    return false;
+                filename = filename.toLowerCase();
+                if (filename.indexOf(GcCode.toLowerCase()) == 0) {
+                    return true;
                 }
+                return false;
             };
             String[] files = dir.list(filter);
             return files;
@@ -454,13 +451,13 @@ public class DescriptionImageGrabber {
 
     private static boolean HandleMissingImages(boolean imageLoadError, String uri, String local) {
         try {
-            File file = FileFactory.createFile(local + "_broken_link.txt");
-            if (!file.exists()) {
-                File file2 = FileFactory.createFile(local + ".1st");
-                if (file2.exists()) {
+            AbstractFile abstractFile = FileFactory.createFile(local + "_broken_link.txt");
+            if (!abstractFile.exists()) {
+                AbstractFile abstractFile2 = FileFactory.createFile(local + ".1st");
+                if (abstractFile2.exists()) {
                     // After first try, we can be sure that the image cannot be loaded.
                     // At this point mark the image as loaded and go ahead.
-                    file2.renameTo(file);
+                    abstractFile2.renameTo(abstractFile);
                 } else {
                     // Crate a local file for marking it that it could not loaded one time.
                     // Maybe the link is broken temporarily. So try it next time once again.
@@ -481,18 +478,18 @@ public class DescriptionImageGrabber {
     }
 
     private static void DeleteMissingImageInformation(String local) {
-        File file = FileFactory.createFile(local + "_broken_link.txt");
-        if (file.exists()) {
+        AbstractFile abstractFile = FileFactory.createFile(local + "_broken_link.txt");
+        if (abstractFile.exists()) {
             try {
-                file.delete();
+                abstractFile.delete();
             } catch (IOException ignored) {
             }
         }
 
-        file = FileFactory.createFile(local + ".1st");
-        if (file.exists()) {
+        abstractFile = FileFactory.createFile(local + ".1st");
+        if (abstractFile.exists()) {
             try {
-                file.delete();
+                abstractFile.delete();
             } catch (IOException ignored) {
             }
         }

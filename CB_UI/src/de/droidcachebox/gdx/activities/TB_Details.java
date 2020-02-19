@@ -43,7 +43,7 @@ public class TB_Details extends ActivityBase {
     private EditTextField TypeName, TbCode, Owner, Birth;
 
     public TB_Details() {
-        super(activityRec(), "TB_Detail_Activity");
+        super("TB_Details");
         createControls();
         that = this;
     }

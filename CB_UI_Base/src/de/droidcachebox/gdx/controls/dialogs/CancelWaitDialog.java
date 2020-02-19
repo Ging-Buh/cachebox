@@ -68,8 +68,8 @@ public class CancelWaitDialog extends WaitDialog {
         wd.mMsgBoxClickListener = (which, data) -> {
             if (wd.mRunnThread != null)
                 wd.mRunnThread.Cancel();
-            wd.button3.disable();
-            wd.button3.setText(Translation.get("waitForCancel"));
+            wd.btnRightNegative.disable();
+            wd.btnRightNegative.setText(Translation.get("waitForCancel"));
             return false;
         };
 

@@ -63,8 +63,8 @@ public class SelectSolverFunction extends ButtonDialog {
 
     private void iniOkCancel() {
 
-        button1.setText(Translation.get("ok"));
-        button1.setClickHandler(new OnClickListener() {
+        btnLeftPositive.setText(Translation.get("ok"));
+        btnLeftPositive.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mResultListener != null) {
@@ -78,8 +78,8 @@ public class SelectSolverFunction extends ButtonDialog {
                 return true;
             }
         });
-        button3.setText(Translation.get("cancel"));
-        button3.setClickHandler(new OnClickListener() {
+        btnRightNegative.setText(Translation.get("cancel"));
+        btnRightNegative.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mResultListener != null)

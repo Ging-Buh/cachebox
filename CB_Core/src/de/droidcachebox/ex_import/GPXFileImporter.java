@@ -24,8 +24,8 @@ import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.*;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.log.Log;
 
 import java.io.FileInputStream;
@@ -48,7 +48,7 @@ public class GPXFileImporter {
         DATE_PATTERN_3.setTimeZone(TimeZone.getTimeZone("EST"));
     }
 
-    private final File mGpxFile;
+    private final AbstractFile mGpxAbstractFile;
     private final String mDisplayFilename;
     private final ImporterProgress mip;
     private final Waypoint waypoint = new Waypoint(true);
@@ -64,11 +64,11 @@ public class GPXFileImporter {
     private String gpxName = "";
     private String gpxAuthor = "";
 
-    GPXFileImporter(File file, ImporterProgress ip) {
+    GPXFileImporter(AbstractFile abstractFile, ImporterProgress ip) {
         super();
-        mGpxFile = file;
+        mGpxAbstractFile = abstractFile;
         mip = ip;
-        mDisplayFilename = file.getName();
+        mDisplayFilename = abstractFile.getName();
     }
 
     private static Date parseDate(String text) throws Exception {
@@ -114,11 +114,11 @@ public class GPXFileImporter {
 
         mImportHandler = importHandler;
 
-        category = mImportHandler.getCategory(mGpxFile.getAbsolutePath());
+        category = mImportHandler.getCategory(mGpxAbstractFile.getAbsolutePath());
         if (category == null)
             return;
 
-        gpxFilename = mImportHandler.NewGpxFilename(category, mGpxFile.getAbsolutePath());
+        gpxFilename = mImportHandler.NewGpxFilename(category, mGpxAbstractFile.getAbsolutePath());
         if (gpxFilename == null)
             return;
 
@@ -141,7 +141,7 @@ public class GPXFileImporter {
         XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
 
         try {
-            FileInputStream fis = mGpxFile.getFileInputStream();
+            FileInputStream fis = mGpxAbstractFile.getFileInputStream();
             parserCache.parse(fis, values);
             fis.close();
         } catch (Exception e) {

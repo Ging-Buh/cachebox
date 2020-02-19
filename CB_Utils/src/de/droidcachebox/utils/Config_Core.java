@@ -7,13 +7,13 @@ import java.io.IOException;
 public abstract class Config_Core {
     public static final String br = System.getProperty("line.separator");
     static final int[] Key = {128, 56, 20, 78, 33, 225};
-    public static String mWorkPath = "";
+    public static String workPath = "";
     public static float displayDensity = 1;
     static Config_Core that;
 
     public Config_Core(String workPath) {
         that = this;
-        mWorkPath = workPath;
+        Config_Core.workPath = workPath;
     }
 
     public static String decrypt(String value) {

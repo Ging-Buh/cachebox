@@ -18,7 +18,7 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.RunnableReadyHandler;
@@ -116,24 +116,26 @@ public class ShowImportMenu extends AbstractShowAction {
         return icm;
     }
 
-    private void ExportgetFolderStep(final String FileName) {
+    private void ExportgetFolderStep(final String fileName) {
         PlatformUIBase.getFolder(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
                 Translation.get("selectExportFolder"),
                 Translation.get("select"),
-                Path -> GL.that.RunOnGL(() -> ausgebenDatei(FileName, Path)));
+                abstractFile -> GL.that.RunOnGL(() -> ShowImportMenu.this.ausgebenDatei(fileName, abstractFile)));
     }
 
-    private void ausgebenDatei(final String FileName, String Path) {
-        String exportPath = Path + "/" + FileName;
+    private void ausgebenDatei(final String fileName, AbstractFile abstractFile) {
+
+        String exportPath = abstractFile.getAbsolutePath() + "/" + fileName;
         PlatformUIBase.addToMediaScannerList(exportPath);
-        File exportFile = FileFactory.createFile(exportPath);
-        Config.gpxExportFileName.setValue(exportFile.getPath());
+
+        AbstractFile exportAbstractFile = FileFactory.createFile(exportPath);
+        Config.gpxExportFileName.setValue(exportAbstractFile.getPath());
         Config.AcceptChanges();
 
         // Delete File if exist
-        if (exportFile.exists())
+        if (exportAbstractFile.exists())
             try {
-                exportFile.delete();
+                exportAbstractFile.delete();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -147,7 +149,7 @@ public class ShowImportMenu extends AbstractShowAction {
 
         final GpxSerializer ser = new GpxSerializer();
         try {
-            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(exportFile.getFileOutputStream(), StandardCharsets.UTF_8));
+            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(exportAbstractFile.getFileOutputStream(), StandardCharsets.UTF_8));
 
             pD = ProgressDialog.Show("export", new RunnableReadyHandler() {
 

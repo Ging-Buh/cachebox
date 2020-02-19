@@ -51,8 +51,8 @@ public class ColorPicker extends ActivityBase {
     private GradiantFill gradiantWhite;
     private GradiantFill gradiantBlack;
 
-    public ColorPicker(CB_RectF rec, Color color, IReturnListener listener) {
-        super(rec, "ColorPicker");
+    public ColorPicker(Color color, IReturnListener listener) {
+        super("ColorPicker");
         actColor = new HSV_Color(color);
         InitialColor = new HSV_Color(color);
 

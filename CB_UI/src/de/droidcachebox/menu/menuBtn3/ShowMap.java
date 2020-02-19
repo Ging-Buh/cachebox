@@ -46,7 +46,7 @@ import de.droidcachebox.maps.Router;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
@@ -427,11 +427,11 @@ public class ShowMap extends AbstractShowAction {
 
     private HashMap<String, String> getDirsRenderThemes(String directory) {
         HashMap<String, String> files = new HashMap<>();
-        File dir = FileFactory.createFile(directory);
+        AbstractFile dir = FileFactory.createFile(directory);
         String[] dirFiles = dir.list();
         if (dirFiles != null && dirFiles.length > 0) {
             for (String tmp : dirFiles) {
-                File f = FileFactory.createFile(directory + "/" + tmp);
+                AbstractFile f = FileFactory.createFile(directory + "/" + tmp);
                 if (f.isDirectory()) {
                     files.putAll(getDirsRenderThemes(f.getAbsolutePath()));
                 } else {

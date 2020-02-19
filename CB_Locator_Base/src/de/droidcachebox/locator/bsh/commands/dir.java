@@ -9,7 +9,7 @@ package de.droidcachebox.locator.bsh.commands;
 
 import de.droidcachebox.locator.bsh.CallStack;
 import de.droidcachebox.locator.bsh.Interpreter;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 
 import java.io.IOException;
@@ -37,27 +37,27 @@ public class dir {
      * Implement dir( String directory ) command.
      */
     public static void invoke(Interpreter env, CallStack callstack, String dir) {
-        File file;
+        AbstractFile abstractFile;
         try {
-            file = env.pathToFile(dir);
+            abstractFile = env.pathToFile(dir);
         } catch (IOException e) {
             env.println("error reading path: " + e);
             return;
         }
 
-        if (!file.exists() || !file.canRead()) {
-            env.println("Can't read " + file);
+        if (!abstractFile.exists() || !abstractFile.canRead()) {
+            env.println("Can't read " + abstractFile);
             return;
         }
-        if (!file.isDirectory()) {
+        if (!abstractFile.isDirectory()) {
             env.println("'" + dir + "' is not a directory");
         }
 
-        String[] files = file.list();
+        String[] files = abstractFile.list();
         Arrays.sort(files);
 
         for (int i = 0; i < files.length; i++) {
-            File f = FileFactory.createFile(dir + File.separator + files[i]);
+            AbstractFile f = FileFactory.createFile(dir + AbstractFile.separator + files[i]);
             StringBuilder sb = new StringBuilder();
             sb.append(f.canRead() ? "r" : "-");
             sb.append(f.canWrite() ? "w" : "-");

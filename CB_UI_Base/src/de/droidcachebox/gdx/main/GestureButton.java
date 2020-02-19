@@ -19,6 +19,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 
@@ -76,16 +77,15 @@ public class GestureButton extends CB_Button {
                     }
                     // then the Long Click menu
                     Menu LongClickMenu = getLongClickMenu();
-                    if (LongClickMenu != null) {
-                        compoundMenu.addItems(LongClickMenu.getItems());
-                        // compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
-                    }
+                    compoundMenu.addItems(LongClickMenu.getItems());
+                    // compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
                     // and show
                     if (compoundMenu.reorganizeIndexes() > 0) {
                         compoundMenu.show();
                     }
                     else {
                         // what a problem on reorganizing
+                        Log.err("GestureButton","Error reorganizing menu index");
                     }
                     return true; // only show the menu
                 }

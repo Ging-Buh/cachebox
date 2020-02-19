@@ -58,7 +58,7 @@ public class TB_Log extends ActivityBase {
     private RadioButton rbOnlyDraft;
 
     private TB_Log() {
-        super(activityRec(), "TB_Log_Activity");
+        super("TB_Log_Activity");
         createControls();
         that = this;
     }
@@ -90,7 +90,7 @@ public class TB_Log extends ActivityBase {
             return true;
         });
 
-        contentBox = new Box(activityRec(), "ContentBox");
+        contentBox = new Box(this, "ContentBox");
         contentBox.setHeight(this.getHeight() - (btnClose.getHeight() - margin) * 2.5f);
         contentBox.setBackground(Sprites.activityBackground);
 

@@ -3,10 +3,9 @@ package de.droidcachebox.views.forms;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Environment;
-import de.droidcachebox.PlatformUIBase.IgetFileReturnListener;
-import de.droidcachebox.PlatformUIBase.IgetFolderReturnListener;
+import de.droidcachebox.PlatformUIBase.IReturnAbstractFile;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FilenameFilter;
 import de.droidcachebox.utils.log.Log;
@@ -20,23 +19,23 @@ public class Android_FileExplorer {
     private static final String log = "Android_FileExplorer";
     private static final String PARENT_DIR = "..";
     private final Activity activity;
-    private final String TitleText;
-    private final String ButtonText;
+    private final String titleText;
+    private final String buttonText;
     private final String firstSDCard;
     private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
     private String[] fileList;
-    private File currentPath;
-    private IgetFileReturnListener fileReturnListener;
-    private IgetFolderReturnListener folderReturnListener;
+    private AbstractFile currentPath;
+    private IReturnAbstractFile fileReturn;
+    private IReturnAbstractFile folderReturn;
     private boolean selectDirectoryOption;
-    private String fileEndsWith;
+    private String possibleExtensions;
     private String secondSDCard;
 
-    public Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText) {
-        this(activity, initialPath, TitleText, ButtonText, null);
+    public Android_FileExplorer(Activity activity, AbstractFile initialPath, String titleText, String buttonText) {
+        this(activity, initialPath, titleText, buttonText, null);
     }
 
-    private Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText, String fileEndsWith) {
+    public Android_FileExplorer(Activity activity, AbstractFile initialPath, String titleText, String buttonText, String possibleExtensions) {
 
         this.activity = activity;
 
@@ -66,7 +65,6 @@ public class Android_FileExplorer {
                 } catch (Exception e) {
                     secondSDCard = "";
                 }
-
             } else {
                 secondSDCard = "";
             }
@@ -83,30 +81,32 @@ public class Android_FileExplorer {
         // Log.info(log, "firstSDCard '" + firstSDCard + "'");
         // Log.info(log, "secondSDCard '" + secondSDCard + "'");
 
-        setFileEndsWith(fileEndsWith);
+        setPossibleExtensions(possibleExtensions);
         try {
             if (!initialPath.exists()) {
                 initialPath = FileFactory.createFile(Environment.getExternalStorageDirectory().getAbsolutePath());
             }
-        } catch (Exception e) {
-            Log.err(log, e.getLocalizedMessage());
+        } catch (Exception ex) {
+            Log.err(log, ex);
             initialPath = FileFactory.createFile(firstSDCard);
         }
         currentPath = initialPath;
-        this.TitleText = TitleText;
-        if (ButtonText == null || ButtonText.length() == 0) {
-            this.ButtonText = Translation.get("ok");
+        this.titleText = titleText;
+        if (buttonText == null || buttonText.length() == 0) {
+            this.buttonText = Translation.get("ok");
         } else {
-            this.ButtonText = ButtonText;
+            this.buttonText = buttonText;
         }
     }
 
-    public void setFileReturnListener(IgetFileReturnListener returnListener) {
-        fileReturnListener = returnListener;
+    public void setFileReturn(IReturnAbstractFile fileReturn) {
+        this.fileReturn = fileReturn;
+        selectDirectoryOption = false;
     }
 
-    public void setFolderReturnListener(IgetFolderReturnListener returnListener) {
-        folderReturnListener = returnListener;
+    public void setFolderReturn(IReturnAbstractFile folderReturn) {
+        this.folderReturn = folderReturn;
+        selectDirectoryOption = true;
     }
 
     /**
@@ -121,28 +121,28 @@ public class Android_FileExplorer {
             if (l > 30) {
                 shownPath = "..." + shownPath.substring(l - 30);
             }
-            if (TitleText == null || TitleText.length() == 0) {
+            if (titleText == null || titleText.length() == 0) {
                 builder.setTitle(shownPath);
             } else {
-                builder.setTitle(TitleText + "\n" + shownPath);
+                builder.setTitle(titleText + "\n" + shownPath);
             }
 
             if (selectDirectoryOption) {
-                builder.setPositiveButton(ButtonText, (dialog12, which) -> folderReturnListener.returnFolder(currentPath.getAbsolutePath()));
+                builder.setPositiveButton(buttonText, (dialog12, which) -> folderReturn.returns(currentPath));
             }
 
             builder.setItems(fileList, (dialog1, which) -> {
-                File chosenFile;
+                AbstractFile chosenAbstractFile;
                 try {
-                    chosenFile = getChosenFile(fileList[which]);
+                    chosenAbstractFile = getChosenFile(fileList[which]);
 
-                    if (chosenFile.isDirectory()) {
-                        loadFileList(chosenFile);
+                    if (chosenAbstractFile.isDirectory()) {
+                        loadFileList(chosenAbstractFile);
                         dialog1.cancel();
                         dialog1.dismiss();
                         showDialog();
                     } else {
-                        fileReturnListener.returnFile(chosenFile.getAbsolutePath());
+                        fileReturn.returns(chosenAbstractFile);
                     }
 
                 } catch (Exception e) {
@@ -158,10 +158,6 @@ public class Android_FileExplorer {
 
     }
 
-    public void setSelectDirectoryOption() {
-        this.selectDirectoryOption = true;
-    }
-
     /**
      * Show file dialog
      */
@@ -173,13 +169,14 @@ public class Android_FileExplorer {
         }
     }
 
-    private void loadFileList(File path) {
+    private void loadFileList(AbstractFile path) {
         ArrayList<String> r = new ArrayList<>();
         currentPath = path;
 
         String absolutePath;
         try {
             absolutePath = currentPath.getAbsolutePath();
+            // add the root, if not yet selected
             if (!absolutePath.equals("/")) {
                 r.add("/");
             }
@@ -200,14 +197,23 @@ public class Android_FileExplorer {
         }
 
         FilenameFilter filter = (dir, filename) -> {
-            File sel = FileFactory.createFile(dir, filename);
-            if (!sel.canRead())
+            AbstractFile f = FileFactory.createFile(dir, filename);
+            if (!f.canRead())
                 return false;
             if (selectDirectoryOption)
-                return sel.isDirectory();
+                return f.isDirectory();
             else {
-                boolean endsWith = (fileEndsWith == null) || filename.toLowerCase(Locale.US).endsWith(fileEndsWith);
-                return endsWith || sel.isDirectory();
+                if (f.isDirectory()) return true;
+                if (possibleExtensions.length() > 0) {
+                    int lastIndex = filename.lastIndexOf('.');
+                    // filename.substring(lastIndex) includes the dot
+                    if (lastIndex > -1)
+                        return possibleExtensions.contains(filename.substring(lastIndex).toLowerCase(Locale.US));
+                    // has no extension
+                    return false;
+                }
+                // no restriction by extensions
+                return true;
             }
         };
 
@@ -232,7 +238,7 @@ public class Android_FileExplorer {
         fileList = r.toArray(new String[]{});
     }
 
-    private File getChosenFile(String fileChosen) {
+    private AbstractFile getChosenFile(String fileChosen) {
         try {
             if (fileChosen.equals(PARENT_DIR))
                 return currentPath.getParentFile();
@@ -248,11 +254,11 @@ public class Android_FileExplorer {
         return currentPath;
     }
 
-    private void setFileEndsWith(String fileEndsWith) {
-        if (fileEndsWith == null) {
-            this.fileEndsWith = null;
+    private void setPossibleExtensions(String possibleExtensions) {
+        if (possibleExtensions == null) {
+            this.possibleExtensions = "";
         } else {
-            this.fileEndsWith = fileEndsWith.toLowerCase();
+            this.possibleExtensions = possibleExtensions.toLowerCase(Locale.US);
         }
     }
 }

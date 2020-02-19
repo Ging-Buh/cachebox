@@ -1,6 +1,6 @@
 package de.droidcachebox.locator.map;
 
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 
@@ -19,8 +19,8 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
 
     MapPackLayer(String file) throws Exception {
         Filename = file;
-        File queryFile = FileFactory.createFile(file);
-        FileInputStream stream = queryFile.getFileInputStream();
+        AbstractFile queryAbstractFile = FileFactory.createFile(file);
+        FileInputStream stream = queryAbstractFile.getFileInputStream();
         DataInputStream reader = new DataInputStream(stream);
 
         name = readString(reader, 32);
@@ -55,8 +55,8 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         writer.close();
 
         if (Cancel) {
-            File file = FileFactory.createFile(Filename);
-            file.delete();
+            AbstractFile abstractFile = FileFactory.createFile(Filename);
+            abstractFile.delete();
         }
     }
 
@@ -134,8 +134,8 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         writer.close();
 
         if (Cancel) {
-            File file = FileFactory.createFile(filename);
-            file.delete();
+            AbstractFile abstractFile = FileFactory.createFile(filename);
+            abstractFile.delete();
         }
     }
 
@@ -175,7 +175,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
                     String local = getLocalFilename(desc);
 
                     if (FileIO.fileExists(local)) {
-                        File info = FileFactory.createFile(local);
+                        AbstractFile info = FileFactory.createFile(local);
                         if (info.lastModified() < maxAge)
                             downloadTile(desc);
                     } else
@@ -185,7 +185,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
                     if (!FileIO.fileExists(local))
                         offset += 0;
                     else {
-                        File info = FileFactory.createFile(local);
+                        AbstractFile info = FileFactory.createFile(local);
                         offset += info.length();
                     }
 
@@ -210,7 +210,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
                     Descriptor desc = new Descriptor(x, y, bbox.Zoom);
 
                     String local = getLocalFilename(desc);
-                    File f = FileFactory.createFile(local);
+                    AbstractFile f = FileFactory.createFile(local);
                     if (!f.exists() || f.lastModified() < maxAge)
                         if (!downloadTile(desc))
                             continue;

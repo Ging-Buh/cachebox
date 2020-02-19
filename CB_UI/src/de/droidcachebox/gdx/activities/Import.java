@@ -156,7 +156,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     public Import(int importType) {
-        super(activityRec(), "importActivity");
+        super("importActivity");
         // um direkt gleich den Import für eine bestimmte API starten zu können
         CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
         IMAGE_LINE_ACTIVE = true;
@@ -181,7 +181,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         CollapseBoxMaxHeight = CollapseBoxHeight = UiSizes.getInstance().getButtonHeight() * 6;
         innerHeight = 1000;
-        scrollBox = new ScrollBox(activityRec());
+        scrollBox = new ScrollBox(this);
         this.addChild(scrollBox);
         createOkCancelBtn();
         createTitleLine();
@@ -422,7 +422,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
 
         btnSelectFile.setClickHandler((v, x, y, pointer, button) -> {
-            PlatformUIBase.getFile("", "", "", "", this::copyGPX2PQ_Folder);
+            PlatformUIBase.getFile(Config.workPath + "/User", "*.gpx|*.zip", "", "", this::copyGPX2PQ_Folder);
             return true;
         });
 
@@ -854,13 +854,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         Config.AcceptChanges();
         String directoryPath = Config.PocketQueryFolder.getValue();
         // chk exist import folder
-        File directory = FileFactory.createFile(directoryPath);
+        AbstractFile directory = FileFactory.createFile(directoryPath);
 
         ImportThread(directoryPath, directory);
 
     }
 
-    private void ImportThread(final String directoryPath, final File directory) {
+    private void ImportThread(final String directoryPath, final AbstractFile directory) {
         importThread = new BreakawayImportThread() {
             @Override
             public void run() {
@@ -985,11 +985,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                         System.gc();
 
                         // delete all files and directories from import folder, normally the PocketQuery subfolder
-                        File[] filelist = directory.listFiles();
-                        for (File tmp : filelist) {
+                        AbstractFile[] filelist = directory.listFiles();
+                        for (AbstractFile tmp : filelist) {
                             if (tmp.isDirectory()) {
-                                ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<>());
-                                for (File tmp2 : ordnerInhalt) {
+                                ArrayList<AbstractFile> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<>());
+                                for (AbstractFile tmp2 : ordnerInhalt) {
                                     try {
                                         tmp2.delete();
                                     } catch (IOException e) {
@@ -1180,7 +1180,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     }
 
-    private void copyGPX2PQ_Folder(final String file) {
+    private void copyGPX2PQ_Folder(final AbstractFile abstractFile) {
         // disable UI
         dis = new ImportAnimation(scrollBox);
         dis.setBackground(getBackground());
@@ -1190,7 +1190,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         dis.setAnimationType(AnimationType.Work);
 
         Thread copyThread = new Thread(() -> {
-            CopyRule rule = new CopyRule(file, Config.PocketQueryFolder.getValue());
+            CopyRule rule = new CopyRule(abstractFile, Config.PocketQueryFolder.getValue());
             Copy copyHelper = new Copy(rule);
             try {
                 copyHelper.Run();
@@ -1239,6 +1239,38 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             this.addChild(chk);
         }
 
+    }
+
+    public static class Import_PqListItem extends ListViewItemBackground {
+
+        Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
+            super(rec, Index, "");
+
+            CB_Label lblName = new CB_Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+            CB_Label lblInfo = new CB_Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+
+            lblName.setFont(Fonts.getSmall());
+            lblInfo.setFont(Fonts.getBubbleSmall());
+
+            lblName.setText(pq.name);
+
+            SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
+            String dateString = Translation.get("PQcreationDate") + ": " + postFormater.format(pq.lastGenerated);
+            //DecimalFormat df = new DecimalFormat("###.##");
+            //String FileSize = df.format(pq.sizeMB) + " MB";
+            String Count = "\n" + Translation.get("Count") + ": " + pq.cacheCount;
+            lblInfo.setText(dateString + Count); // + "  " + FileSize
+
+            CB_CheckBox chk = new CB_CheckBox("");
+            chk.setRec(chk.scaleCenter(0.6f));
+            chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
+            chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
+            chk.setChecked(pq.doDownload);
+            chk.setOnCheckChangedListener((view, isChecked) -> pq.doDownload = isChecked);
+            this.addChild(lblName);
+            this.addChild(lblInfo);
+            this.addChild(chk);
+        }
     }
 
     public class PqListAdapter implements Adapter {
@@ -1311,37 +1343,5 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             return itemHeight;
         }
 
-    }
-
-    public static class Import_PqListItem extends ListViewItemBackground {
-
-        Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
-            super(rec, Index, "");
-
-            CB_Label lblName = new CB_Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
-            CB_Label lblInfo = new CB_Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
-
-            lblName.setFont(Fonts.getSmall());
-            lblInfo.setFont(Fonts.getBubbleSmall());
-
-            lblName.setText(pq.name);
-
-            SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
-            String dateString = Translation.get("PQcreationDate") + ": " + postFormater.format(pq.lastGenerated);
-            //DecimalFormat df = new DecimalFormat("###.##");
-            //String FileSize = df.format(pq.sizeMB) + " MB";
-            String Count = "\n" + Translation.get("Count") + ": " + pq.cacheCount;
-            lblInfo.setText(dateString + Count); // + "  " + FileSize
-
-            CB_CheckBox chk = new CB_CheckBox("");
-            chk.setRec(chk.scaleCenter(0.6f));
-            chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
-            chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
-            chk.setChecked(pq.doDownload);
-            chk.setOnCheckChangedListener((view, isChecked) -> pq.doDownload = isChecked);
-            this.addChild(lblName);
-            this.addChild(lblInfo);
-            this.addChild(chk);
-        }
     }
 }

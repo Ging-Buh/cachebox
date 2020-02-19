@@ -62,7 +62,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     private MultiToggleButton mTglBtnTitle, mTglBtnGc, mTglBtnOwner;
 
     public SearchOverNameOwnerGcCode() {
-        super(activityRec(), "searchOverPosActivity");
+        super("searchOverPosActivity");
 
         lineHeight = UiSizes.getInstance().getButtonHeight();
 
@@ -125,7 +125,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void createBox() {
-        box = new Box(activityRec(), "ScrollBox");
+        box = new Box(this, "ScrollBox");
         addChild(box);
         box.setHeight(getHeight() - lineHeight - btnImport.getMaxY() - margin - margin);
         box.setY(btnImport.getMaxY() + margin);

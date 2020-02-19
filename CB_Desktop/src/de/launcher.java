@@ -19,8 +19,8 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.Size;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.DesktopFileFactory;
-import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.LogLevel;
@@ -43,10 +43,10 @@ class DCB {
         DesktopMain.InitialConfig();
         Config.settings.ReadFromDB();
 
-        CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(Config.mWorkPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
+        CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
 
-        File Dir = FileFactory.createFile("./");
+        AbstractFile Dir = FileFactory.createFile("./");
         final String[] files;
 
         files = Dir.list((dir, filename) -> {
@@ -67,7 +67,7 @@ class DCB {
         }
 
         if (files.length > 0 && !files[0].contains("src")) {
-            File workJar = FileFactory.createFile(files[0]);
+            AbstractFile workJar = FileFactory.createFile(files[0]);
             if (workJar.exists()) {
                 // don't show Launcher
                 final Gui screen = new Gui("Device Launcher");

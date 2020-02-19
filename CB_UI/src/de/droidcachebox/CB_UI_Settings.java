@@ -105,9 +105,9 @@ public interface CB_UI_Settings {
     SettingInt lastSearchRadius = new SettingInt("lastSearchRadius", API, NEVER, 5, Global, ACB);
     SettingInt ImportLimit = new SettingInt("ImportLimit", API, NEVER, 50, Global, ACB);
 
-    SettingFolder TrackFolder = new SettingFolder("TrackFolder", Folder, EXPERT, Config_Core.mWorkPath + "/User/Tracks", Global, ACB, true);
-    SettingFile DraftsGarminPath = new SettingFile("DraftsGarminPath", Folder, DEVELOPER, Config_Core.mWorkPath + "/User/geocache_visits.txt", Global, ACB);
-    SettingFile gpxExportFileName = new SettingFile("gpxExportFileName", Folder, NEVER, Config_Core.mWorkPath + "/User/export.gpx", Global, ACB, "gpx");
+    SettingFolder TrackFolder = new SettingFolder("TrackFolder", Folder, EXPERT, Config_Core.workPath + "/User/Tracks", Global, ACB, true);
+    SettingFile DraftsGarminPath = new SettingFile("DraftsGarminPath", Folder, DEVELOPER, Config_Core.workPath + "/User/geocache_visits.txt", Global, ACB);
+    SettingFile gpxExportFileName = new SettingFile("gpxExportFileName", Folder, NEVER, Config_Core.workPath + "/User/export.gpx", Global, ACB, "gpx");
 
     SettingString FoundTemplate = new SettingLongString("FoundTemplate", Templates, NORMAL, FOUND, Global, ACB);
     SettingString AttendedTemplate = new SettingLongString("AttendedTemplate", Templates, NORMAL, ATTENDED, Global, ACB);

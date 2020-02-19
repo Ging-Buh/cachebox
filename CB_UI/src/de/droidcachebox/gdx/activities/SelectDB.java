@@ -63,7 +63,7 @@ public class SelectDB extends ActivityBase {
     private CB_Button bAutostart;
     private V_ListView lvDBSelection;
     private Scrollbar scrollbar;
-    private File AktFile = null;
+    private AbstractFile aktAbstractFile = null;
     private boolean MustSelect;
     private IReturnListener returnListener;
     private OnMsgBoxClickListener mDialogListenerNewDB = (which, data) -> {
@@ -77,7 +77,7 @@ public class SelectDB extends ActivityBase {
 
                 // initialize Database
 
-                String database = Config.mWorkPath + "/" + NewDB_Name + ".db3";
+                String database = Config.workPath + "/" + NewDB_Name + ".db3";
                 Config.DatabaseName.setValue(NewDB_Name + ".db3");
                 Database.Data.sql.close();
                 Database.Data.startUp(database);
@@ -124,12 +124,12 @@ public class SelectDB extends ActivityBase {
                     GlobalCore.checkSelectedCacheValid();
                 }
 
-                if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
+                if (!FileIO.createDirectory(Config.workPath + "/User"))
                     return true;
-                Database.Drafts.startUp(Config.mWorkPath + "/User/FieldNotes.db3");
+                Database.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
 
                 Config.AcceptChanges();
-                AktFile = FileFactory.createFile(database);
+                aktAbstractFile = FileFactory.createFile(database);
                 selectDB();
 
                 break;
@@ -150,13 +150,13 @@ public class SelectDB extends ActivityBase {
 
         lvDBSelection = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UiSizes.getInstance().getButtonHeight() * 2, innerWidth, getHeight() - (UiSizes.getInstance().getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
                 "DB File ListView");
-        dbFiles = new FileList(Config.mWorkPath, "DB3", true);
+        dbFiles = new FileList(Config.workPath, "DB3", true);
         dbItemAdapter = new DBItemAdapter(lvDBSelection, dbFiles);
 
         String dbFile = Config.DatabaseName.getValue();
-        for (File file : dbFiles) {
-            if (file.getName().equalsIgnoreCase(dbFile)) {
-                AktFile = file;
+        for (AbstractFile abstractFile : dbFiles) {
+            if (abstractFile.getName().equalsIgnoreCase(dbFile)) {
+                aktAbstractFile = abstractFile;
                 break;
             }
         }
@@ -190,7 +190,7 @@ public class SelectDB extends ActivityBase {
         // Select Button
         bSelect.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
-            if (AktFile == null) {
+            if (aktAbstractFile == null) {
                 GL.that.Toast("Please select Database!", Toast.LENGTH_SHORT);
                 return false;
             }
@@ -225,7 +225,7 @@ public class SelectDB extends ActivityBase {
         if (autoStartTime > 0) {
             autoStartCounter = autoStartTime;
             bAutostart.setText(autoStartCounter + " " + Translation.get("confirm"));
-            if ((autoStartTime > 0) && (AktFile != null)) {
+            if ((autoStartTime > 0) && (aktAbstractFile != null)) {
                 updateTimer = new Timer();
                 updateTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
@@ -270,10 +270,10 @@ public class SelectDB extends ActivityBase {
 
                 // Set selected item
                 for (int i = 0; i < dbItemAdapter.getCount(); i++) {
-                    File file = dbFiles.get(i);
+                    AbstractFile abstractFile = dbFiles.get(i);
 
                     try {
-                        if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
+                        if (abstractFile.getAbsoluteFile().compareTo(aktAbstractFile.getAbsoluteFile()) == 0) {
                             lvDBSelection.setSelection(i);
                         }
 
@@ -304,8 +304,8 @@ public class SelectDB extends ActivityBase {
         Point firstAndLast = lvDBSelection.getFirstAndLastVisibleIndex();
 
         try {
-            for (File file : dbFiles) {
-                if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
+            for (AbstractFile abstractFile : dbFiles) {
+                if (abstractFile.getAbsoluteFile().compareTo(aktAbstractFile.getAbsoluteFile()) == 0) {
                     lvDBSelection.setSelection(id);
                     if (lvDBSelection.isDraggable()) {
                         if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
@@ -339,7 +339,7 @@ public class SelectDB extends ActivityBase {
     }
 
     private void selectDB() {
-        if (AktFile == null) {
+        if (aktAbstractFile == null) {
             GL.that.Toast("no DB selected", 200);
             return;
         }
@@ -347,7 +347,7 @@ public class SelectDB extends ActivityBase {
         Config.MultiDBAutoStartTime.setValue(autoStartTime);
         Config.MultiDBAsk.setValue(autoStartTime >= 0);
 
-        Config.DatabaseName.setValue(AktFile.getName());
+        Config.DatabaseName.setValue(aktAbstractFile.getName());
         Config.AcceptChanges();
 
         LayerManager.getInstance().initLayers();
@@ -439,7 +439,7 @@ public class SelectDB extends ActivityBase {
         scrollbar = null;
 
         dbItemAdapter = null;
-        AktFile = null;
+        aktAbstractFile = null;
 
         returnListener = null;
         super.dispose();
@@ -474,7 +474,7 @@ public class SelectDB extends ActivityBase {
             v.setClickHandler((v1, x, y, pointer, button) -> {
                 stopTimer();
                 DBItem selectedItem = (DBItem) v1;
-                AktFile = selectedItem.file;
+                aktAbstractFile = selectedItem.abstractFile;
                 this.lvDBSelection.setSelection(selectedItem.getIndex());
                 return true;
             });
@@ -490,11 +490,11 @@ public class SelectDB extends ActivityBase {
 
     private class DBItem extends ListViewItemBackground {
 
-        File file;
+        AbstractFile abstractFile;
 
-        DBItem(CB_RectF rec, int index, File file) {
-            super(rec, index, file.getName());
-            this.file = file;
+        DBItem(CB_RectF rec, int index, AbstractFile abstractFile) {
+            super(rec, index, abstractFile.getName());
+            this.abstractFile = abstractFile;
 
             float left = 20;
             float mLabelHeight = getHeight() * 0.7f;
@@ -503,7 +503,7 @@ public class SelectDB extends ActivityBase {
             CB_Label lblName = new CB_Label(name + " lblName", left, mLabelYPos, getWidth(), mLabelHeight);
             lblName.setFont(Fonts.getBig());
             lblName.setVAlignment(CB_Label.VAlignment.TOP);
-            lblName.setText(file.getName());
+            lblName.setText(abstractFile.getName());
             addChild(lblName);
 
             CB_Label lblInfo = new CB_Label(name + " lblInfo", left, mLabelYPos, getWidth(), mLabelHeight);
@@ -511,11 +511,11 @@ public class SelectDB extends ActivityBase {
             lblInfo.setVAlignment(CB_Label.VAlignment.BOTTOM);
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-            lblInfo.setText(Database.Data.getCacheCountInDB(file.getAbsolutePath())
+            lblInfo.setText(Database.Data.getCacheCountInDB(abstractFile.getAbsolutePath())
                     + " Caches  "
-                    + file.length() / (1024 * 1024) + "MB"
+                    + abstractFile.length() / (1024 * 1024) + "MB"
                     + "    last use "
-                    + sdf.format(file.lastModified()));
+                    + sdf.format(abstractFile.lastModified()));
             addChild(lblInfo);
 
             setClickable(true);

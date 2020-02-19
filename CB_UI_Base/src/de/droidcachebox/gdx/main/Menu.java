@@ -549,14 +549,14 @@ public class Menu extends ButtonDialog {
     public class CustomAdapter implements Adapter {
 
         @Override
-        public ListViewItemBase getView(int position) {
-            ListViewItemBase v = mItems.get(position);
-            return v;
+        public int getCount() {
+            return mItems.size();
         }
 
         @Override
-        public int getCount() {
-            return mItems.size();
+        public ListViewItemBase getView(int position) {
+            ListViewItemBase v = mItems.get(position);
+            return v;
         }
 
         @Override

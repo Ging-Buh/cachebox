@@ -80,7 +80,7 @@ public class CB_CheckBox extends CB_Button {
 
             GL.that.renderOnce();
         }
-        return dragableButton ? false : true;
+        return draggableButton ? false : true;
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CB_CheckBox extends CB_Button {
     public boolean onTouchUp(int x, int y, int pointer, int button) {
 
         GL.that.renderOnce();
-        return dragableButton ? false : true;
+        return draggableButton ? false : true;
     }
 
     @Override

@@ -94,7 +94,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private CoordinateButton bCoord = null;
 
     public SolverDialog2(Cache aktCache, Solver solver, String solverString, boolean showVariableField, DataType dataType) {
-        super(activityRec(), "solverActivity");
+        super("SolverDialog2");
         this.solver = solver;
         //this.buildFormula = null;
         this.solverString = solverString;
@@ -112,7 +112,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         }
 
         page = pages.Nothing;
-        scrollBox = new ScrollBox(activityRec());
+        scrollBox = new ScrollBox(this);
         this.addChild(scrollBox);
         createOkCancelBtn();
         createTitleLine();

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
@@ -49,20 +49,20 @@ public class SQLiteClass implements SQLiteInterface {
     public boolean create(String databasePath) {
 
         // if exists, delete old database file
-        File file = FileFactory.createFile(databasePath);
-        if (file.exists()) {
+        AbstractFile abstractFile = FileFactory.createFile(databasePath);
+        if (abstractFile.exists()) {
             try {
-                file.delete();
+                abstractFile.delete();
             } catch (IOException ex) {
                 Log.err(log, "createDB: delete", ex);
             }
         }
 
         try {
-            File dbFile = FileIO.createFile(databasePath);
-            if (dbFile == null)
+            AbstractFile dbAbstractFile = FileIO.createFile(databasePath);
+            if (dbAbstractFile == null)
                 return false;
-            myDB = activity.openOrCreateDatabase(dbFile.getAbsolutePath(), 0, null);
+            myDB = activity.openOrCreateDatabase(dbAbstractFile.getAbsolutePath(), 0, null);
             return true;
         } catch (Exception exc) {
             Log.err(log, "createDB: openOrCreateDatabase", exc);

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.RouteOverlay;
-import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate;
@@ -71,7 +70,7 @@ public class TrackCreation extends AbstractShowAction {
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.activityRec(), Translation.get("fromPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("fromPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -97,7 +96,7 @@ public class TrackCreation extends AbstractShowAction {
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.activityRec(), Translation.get("Projection"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("Projection"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -125,7 +124,7 @@ public class TrackCreation extends AbstractShowAction {
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.activityRec(), Translation.get("centerPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("centerPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;

@@ -42,7 +42,7 @@ public class CB_Button extends CB_View_Base {
     protected boolean isPressed = false;
     boolean isDisabled = false;
     CB_Label lblTxt;
-    boolean dragableButton = false;
+    boolean draggableButton = false;
     CB_Label.HAlignment hAlignment = CB_Label.HAlignment.CENTER;
     protected CB_Label.VAlignment vAlignment = CB_Label.VAlignment.CENTER;
 
@@ -97,7 +97,7 @@ public class CB_Button extends CB_View_Base {
      */
     @Override
     protected void render(Batch batch) {
-        if (dragableButton) {
+        if (draggableButton) {
             if (isPressed && !GL_Input.that.getIsTouchDown()) {
                 isPressed = false;
                 GL.that.renderOnce();
@@ -147,7 +147,7 @@ public class CB_Button extends CB_View_Base {
             isPressed = true;
             GL.that.renderOnce();
         }
-        return !dragableButton;
+        return !draggableButton;
     }
 
     @Override
@@ -162,7 +162,7 @@ public class CB_Button extends CB_View_Base {
 
         isPressed = false;
         GL.that.renderOnce();
-        return !dragableButton;
+        return !draggableButton;
     }
 
     public void enable() {
@@ -252,7 +252,7 @@ public class CB_Button extends CB_View_Base {
     }
 
     public void setDraggable(boolean value) {
-        dragableButton = value;
+        draggableButton = value;
     }
 
     @Override

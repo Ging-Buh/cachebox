@@ -8,8 +8,8 @@ import de.droidcachebox.gdx.activities.FZKDownload.MapRepositoryInfo;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.Copy;
-import de.droidcachebox.utils.File;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
@@ -65,16 +65,16 @@ public class MapDownloadItem extends CB_View_Base {
         chkExists();
     }
 
-    private static void deleteDirectory(File directory) {
+    private static void deleteDirectory(AbstractFile directory) {
         if (directory.exists()) {
-            File[] files = directory.listFiles();
-            if (null != files) {
-                for (File file : files) {
-                    if (file.isDirectory()) {
-                        deleteDirectory(file);
+            AbstractFile[] abstractFiles = directory.listFiles();
+            if (null != abstractFiles) {
+                for (AbstractFile abstractFile : abstractFiles) {
+                    if (abstractFile.isDirectory()) {
+                        deleteDirectory(abstractFile);
                     } else {
                         try {
-                            file.delete();
+                            abstractFile.delete();
                         } catch (IOException e) {
                             Log.err(log, e.getLocalizedMessage());
                         }
@@ -94,8 +94,8 @@ public class MapDownloadItem extends CB_View_Base {
 
         String FileString = FileIO.getFileNameWithoutExtension(zipFile);
 
-        File file = FileFactory.createFile(workPath + "/" + FileString);
-        if (file.exists()) {
+        AbstractFile abstractFile = FileFactory.createFile(workPath + "/" + FileString);
+        if (abstractFile.exists()) {
             checkBoxMap.setChecked(true);
             checkBoxMap.disable();
             checkBoxMap.setClickHandler((view, x, y, pointer, button) -> {
@@ -149,8 +149,8 @@ public class MapDownloadItem extends CB_View_Base {
                 Log.info(log, "Unzip " + target + " end.");
 
                 // Copy and Clear ? todo check is this necessary and ok?
-                File folder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(zipFile));
-                File newfolder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(folder.getName()));
+                AbstractFile folder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(zipFile));
+                AbstractFile newfolder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(folder.getName()));
 
                 if (folder.isDirectory()) {
                     folder.renameTo(newfolder);

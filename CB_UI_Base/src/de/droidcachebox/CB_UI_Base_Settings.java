@@ -56,7 +56,7 @@ public interface CB_UI_Base_Settings {
     SettingFloat mapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, displayDensity, Global, ACB);
     SettingFloat mapViewTextFaktor = new SettingFloat("MapViewTextFaktor", Map, EXPERT, 2f, Global, ACB);
 
-    SettingFolder imageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
+    SettingFolder imageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.workPath + "/repository/cache", Local, ACB, true);
 
 
     SettingColor liveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), Global, ACB);

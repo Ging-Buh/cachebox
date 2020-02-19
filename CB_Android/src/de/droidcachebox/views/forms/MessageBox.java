@@ -26,7 +26,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -46,6 +49,10 @@ import static android.view.View.GONE;
  * Zu finden unter http://code.google.com/p/androgames-sample/
  */
 public class MessageBox {
+    public static final int MSG_BOX_1 = 1;
+    public static final int MSG_BOX_2 = 2;
+    public static final int MSG_BOX_3 = 3;
+    public static final int MSG_BOX_4 = 4;
 
     /**
      * Zeigt ein Meldungsfeld mit angegebenem Text an.
@@ -62,9 +69,9 @@ public class MessageBox {
      *                                             </pre>
      */
     public static void show(Activity activity, String msg) {
-        Bundle b = new Bundle();
-        b.putString("msg", msg);
-        Dialog dialog = createDialog(activity, DialogID.MSG_BOX_1, b, null);
+        Bundle bundle = new Bundle();
+        bundle.putString("msg", msg);
+        Dialog dialog = createDialog(activity, MSG_BOX_1, bundle, null);
         dialog.show();
     }
 
@@ -119,7 +126,7 @@ public class MessageBox {
         b.putString("title", title);
         b.putInt("buttons", buttons.ordinal());
         b.putInt("icon", icon.ordinal());
-        Dialog dialog = createDialog(activity, DialogID.MSG_BOX_4, b, listener);
+        Dialog dialog = createDialog(activity, MSG_BOX_4, b, listener);
         try {
             dialog.show();
         } catch (Exception ignored) {
@@ -137,17 +144,17 @@ public class MessageBox {
         }
         MessageBox.Builder customBuilder = new MessageBox.Builder(activity);
         switch (dialogId) {
-            case DialogID.MSG_BOX_1:
+            case MSG_BOX_1:
                 customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
                 break;
-            case DialogID.MSG_BOX_2:
+            case MSG_BOX_2:
                 customBuilder.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.get("ok"), listener);
                 break;
-            case DialogID.MSG_BOX_3:
+            case MSG_BOX_3:
                 setButtonCaptions(b, customBuilder, listener);
                 customBuilder.setTitle(b.getString("title")).setMessage(b.getString("msg"));
                 break;
-            case DialogID.MSG_BOX_4:
+            case MSG_BOX_4:
                 setButtonCaptions(b, customBuilder, listener);
                 customBuilder.setTitle(b.getString("title")).setMessage(b.getString("msg"));
                 customBuilder.setIcon(getIcon(b.getInt("icon")));
@@ -174,9 +181,7 @@ public class MessageBox {
     }
 
     private static void setButtons(MessageBox.Builder customBuilder, String positive, String neutral, String negative, DialogInterface.OnClickListener listener) {
-        customBuilder.setPositiveButton(positive, listener);
-        customBuilder.setNeutralButton(neutral, listener);
-        customBuilder.setNegativeButton(negative, listener);
+        customBuilder.setPositiveButton(positive, listener).setNeutralButton(neutral, listener).setNegativeButton(negative, listener);
     }
 
     private static Drawable getIcon(int which) {
@@ -263,7 +268,6 @@ public class MessageBox {
             return this;
         }
 
-        @SuppressWarnings("deprecation")
         public Dialog create() {
             int winWidth = UiSizes.getInstance().isInitialized() ? UiSizes.getInstance().getWindowWidth() : WindowWidth;
             int winHeight = UiSizes.getInstance().isInitialized() ? UiSizes.getInstance().getWindowHeight() : WindowHeight;
@@ -272,6 +276,7 @@ public class MessageBox {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // instantiate the dialog with the custom Theme
             final Dialog dialog = new Dialog(context, R.style.Dialog);
+            assert inflater != null;
             View layout = inflater.inflate(R.layout.message_box_layout, null);
             dialog.addContentView(layout, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
             // set the dialog title
@@ -285,12 +290,9 @@ public class MessageBox {
             if (positiveButtonText != null && !positiveButtonText.equals("")) {
                 ((Button) layout.findViewById(R.id.positiveButton)).setText(positiveButtonText);
                 if (positiveButtonClickListener != null) {
-                    ((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            positiveButtonClickListener.onClick(dialog, Dialog.BUTTON_POSITIVE);
-                            dialog.dismiss();
-                        }
+                    layout.findViewById(R.id.positiveButton).setOnClickListener(v -> {
+                        positiveButtonClickListener.onClick(dialog, Dialog.BUTTON_POSITIVE);
+                        dialog.dismiss();
                     });
                 }
             } else {
@@ -301,12 +303,9 @@ public class MessageBox {
             if (neutralButtonText != null && !neutralButtonText.equals("")) {
                 ((Button) layout.findViewById(R.id.neutralButton)).setText(neutralButtonText);
                 if (neutralButtonClickListener != null) {
-                    ((Button) layout.findViewById(R.id.neutralButton)).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            neutralButtonClickListener.onClick(dialog, Dialog.BUTTON_NEUTRAL);
-                            dialog.dismiss();
-                        }
+                    layout.findViewById(R.id.neutralButton).setOnClickListener(v -> {
+                        neutralButtonClickListener.onClick(dialog, Dialog.BUTTON_NEUTRAL);
+                        dialog.dismiss();
                     });
                 }
             } else {
@@ -317,12 +316,9 @@ public class MessageBox {
             if (negativeButtonText != null && !negativeButtonText.equals("")) {
                 ((Button) layout.findViewById(R.id.negativeButton)).setText(negativeButtonText);
                 if (negativeButtonClickListener != null) {
-                    ((Button) layout.findViewById(R.id.negativeButton)).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            negativeButtonClickListener.onClick(dialog, Dialog.BUTTON_NEGATIVE);
-                            dialog.dismiss();
-                        }
+                    layout.findViewById(R.id.negativeButton).setOnClickListener(v -> {
+                        negativeButtonClickListener.onClick(dialog, Dialog.BUTTON_NEGATIVE);
+                        dialog.dismiss();
                     });
                 }
             } else {
@@ -335,14 +331,14 @@ public class MessageBox {
                 ((TextView) layout.findViewById(R.id.message)).setText(message);
                 // ((TextView) layout.findViewById(R.id.message)).setTextSize(txtSize);
 
-                ((TextView) layout.findViewById(R.id.message)).measure(winWidth - 100, winHeight - 100);
-                int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
+                layout.findViewById(R.id.message).measure(winWidth - 100, winHeight - 100);
+                int height = layout.findViewById(R.id.message).getMeasuredHeight();
 
-                LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
+                LayoutParams params = layout.findViewById(R.id.ScrollView01).getLayoutParams();
                 if (height > winHeight - (buttonHeight * 4)) {
                     height = winHeight - (buttonHeight * 4);
                     params.height = height;
-                    ((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
+                    layout.findViewById(R.id.ScrollView01).setLayoutParams(params);
                 }
 
             } else if (contentView != null) {
@@ -378,10 +374,10 @@ public class MessageBox {
             Drawable center = res.getDrawable(NightMode ? R.drawable.night_center : R.drawable.center);
             Drawable footer = res.getDrawable(NightMode ? R.drawable.night_footer : R.drawable.footer);
 
-            layout.findViewById(R.id.header).setBackgroundDrawable(header);
-            layout.findViewById(R.id.title).setBackgroundDrawable(title);
-            layout.findViewById(R.id.content).setBackgroundDrawable(center);
-            layout.findViewById(R.id.footer).setBackgroundDrawable(footer);
+            layout.findViewById(R.id.header).setBackground(header);
+            layout.findViewById(R.id.title).setBackground(title);
+            layout.findViewById(R.id.content).setBackground(center);
+            layout.findViewById(R.id.footer).setBackground(footer);
 
             ((TextView) layout.findViewById(R.id.title)).setTextColor(Global.getColor(R.attr.TextColor));
             TextView tvM = layout.findViewById(R.id.message);

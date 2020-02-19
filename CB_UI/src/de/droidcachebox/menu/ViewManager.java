@@ -56,7 +56,7 @@ import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.menu.menuBtn5.*;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.File;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.MathUtils.CalculationType;
@@ -308,7 +308,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     private void autoLoadTrack() {
         String trackPath = Config.TrackFolder.getValue() + "/Autoload";
         if (FileIO.createDirectory(trackPath)) {
-            File dir = FileFactory.createFile(trackPath);
+            AbstractFile dir = FileFactory.createFile(trackPath);
             String[] files = dir.list();
             if (files != null) {
                 for (String file : files) {

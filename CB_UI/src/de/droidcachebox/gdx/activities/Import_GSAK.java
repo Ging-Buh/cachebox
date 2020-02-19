@@ -125,8 +125,8 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         edtDBName.setTextFieldListener(new EditTextFieldBase.TextFieldListener() {
             @Override
             public void keyTyped(EditTextFieldBase textField, char key) {
-                File file = FileFactory.createFile(mDatabasePath + "/" + edtDBName.getText());
-                if (file.exists())
+                AbstractFile abstractFile = FileFactory.createFile(mDatabasePath + "/" + edtDBName.getText());
+                if (abstractFile.exists())
                     bOK.enable();
                 else
                     bOK.disable();
@@ -141,12 +141,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         btnSelectDB.setClickHandler((v, x, y, pointer, button) -> {
             mDatabasePath = Config.GSAKLastUsedDatabasePath.getValue();
             if (mDatabasePath.length() == 0) {
-                mDatabasePath = Config.mWorkPath + "/User";
+                mDatabasePath = Config.workPath + "/User";
             }
-            PlatformUIBase.getFile(mDatabasePath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), PathAndName -> {
-                File file = FileFactory.createFile(PathAndName);
-                mDatabasePath = file.getParent();
-                mDatabaseName = file.getName();
+            PlatformUIBase.getFile(mDatabasePath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
+                mDatabasePath = abstractFile.getParent();
+                mDatabaseName = abstractFile.getName();
                 edtDBName.setText(mDatabaseName);
             });
             return true;
@@ -155,12 +154,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         btnSelectImagesDB.setClickHandler((v, x, y, pointer, button) -> {
             mImageDatabasePath = Config.GSAKLastUsedImageDatabasePath.getValue();
             if (mImageDatabasePath.length() == 0) {
-                mImageDatabasePath = Config.mWorkPath + "/User";
+                mImageDatabasePath = Config.workPath + "/User";
             }
-            PlatformUIBase.getFile(mImageDatabasePath, "*.db3", Translation.get("GSAKTitleSelectImagesDB"), Translation.get("GSAKButtonSelectDB"), PathAndName -> {
-                File file = FileFactory.createFile(PathAndName);
-                mImageDatabasePath = file.getParent();
-                mImageDatabaseName = file.getName();
+            PlatformUIBase.getFile(mImageDatabasePath, "*.db3", Translation.get("GSAKTitleSelectImagesDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
+                mImageDatabasePath = abstractFile.getParent();
+                mImageDatabaseName = abstractFile.getName();
                 edtImagesDBName.setText(mImageDatabaseName);
             });
             return true;
@@ -169,11 +167,10 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         btnSelectImagesPath.setClickHandler(((v, x, y, pointer, button) -> {
             mImagesPath = Config.GSAKLastUsedImagesPath.getValue();
             if (mImagesPath.length() == 0) {
-                mImagesPath = Config.mWorkPath + "/User";
+                mImagesPath = Config.workPath + "/User";
             }
-            PlatformUIBase.getFolder(mImagesPath, Translation.get("GSAKTitleSelectImagesPath"), Translation.get("GSAKButtonSelectImagesPath"), Path -> {
-                File file = FileFactory.createFile(Path);
-                mImagesPath = file.getAbsolutePath();
+            PlatformUIBase.getFolder(mImagesPath, Translation.get("GSAKTitleSelectImagesPath"), Translation.get("GSAKButtonSelectImagesPath"), abstractFile -> {
+                mImagesPath = abstractFile.getAbsolutePath();
                 edtImagesPath.setText(mImagesPath);
             });
             return true;
@@ -183,7 +180,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         mDatabasePath = Config.GSAKLastUsedDatabasePath.getValue();
         if (mDatabasePath == null) mDatabasePath = "";
         if (mDatabasePath.length() == 0) {
-            mDatabasePath = Config.mWorkPath + "/User";
+            mDatabasePath = Config.workPath + "/User";
         }
         mDatabaseName = Config.GSAKLastUsedDatabaseName.getValue();
         if (mDatabaseName == null) mDatabaseName = "";
@@ -195,7 +192,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         mImageDatabasePath = Config.GSAKLastUsedImageDatabasePath.getValue();
         if (mImageDatabasePath == null) mImageDatabasePath = "";
         if (mImageDatabasePath.length() == 0) {
-            mImageDatabasePath = Config.mWorkPath + "/User";
+            mImageDatabasePath = Config.workPath + "/User";
         }
         mImageDatabaseName = Config.GSAKLastUsedImageDatabaseName.getValue();
         if (mImageDatabaseName == null) mImageDatabaseName = "";
@@ -204,7 +201,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         mImagesPath = Config.GSAKLastUsedImagesPath.getValue();
         if (mImagesPath == null) mImagesPath = "";
         if (mImagesPath.length() == 0) {
-            mImagesPath = Config.mWorkPath + "/User";
+            mImagesPath = Config.workPath + "/User";
         }
         edtImagesPath.setText(mImagesPath);
 
@@ -284,12 +281,12 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void doImportImages(String tableName) {
-        File file = FileFactory.createFile(mImageDatabasePath + "/" + mImageDatabaseName);
-        if (file.exists()) {
+        AbstractFile abstractFile = FileFactory.createFile(mImageDatabasePath + "/" + mImageDatabaseName);
+        if (abstractFile.exists()) {
             // sql.execSQL("ATTACH DATABASE " + file.getAbsolutePath() + " AS imagesLink");
             SQLiteInterface sqlImageLink = PlatformUIBase.getSQLInstance();
             if (sqlImageLink == null) return;
-            if (sqlImageLink.openReadOnly(file.getAbsolutePath())) {
+            if (sqlImageLink.openReadOnly(abstractFile.getAbsolutePath())) {
                 Config.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
                 Config.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
                 Config.GSAKLastUsedImagesPath.setValue(mImagesPath);
@@ -331,14 +328,14 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private void copyImage(String source, ImageEntry imageEntry) {
         imageEntry = DescriptionImageGrabber.BuildAdditionalImageFilenameHashNew(imageEntry);
         if (imageEntry != null) {
-            File dst = FileFactory.createFile(imageEntry.getLocalPath());
+            AbstractFile dst = FileFactory.createFile(imageEntry.getLocalPath());
             /* create parent directories, if necessary */
-            final File parent = dst.getParentFile();
+            final AbstractFile parent = dst.getParentFile();
             if ((parent != null) && !parent.exists()) {
                 parent.mkdirs();
             }
             if (!dst.exists()) {
-                File src = FileFactory.createFile(source);
+                AbstractFile src = FileFactory.createFile(source);
                 if (src.exists()) {
                     try {
                         Copy.copyFolder(src, dst);

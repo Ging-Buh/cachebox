@@ -216,7 +216,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                             // if only waypoint changes, the bubble will not be shown. (why not ?)
                             // so we must do the selection here
                             GlobalCore.setSelectedWaypoint(minWpi.cache, minWpi.waypoint);
-                            MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), aktZoom, true);
+                            MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
                             data.hideMyFinds = hideMyFinds;
                             data.showAllWaypoints = showAllWaypoints;
                             data.showAtOriginalPosition = showAtOriginalPosition;
@@ -436,9 +436,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         // calculate icon size
         int iconSize = 0; // 8x8
-        if ((aktZoom >= 13) && (aktZoom <= 14))
+        if ((currentZoom >= 13) && (currentZoom <= 14))
             iconSize = 1; // 13x13
-        else if (aktZoom >= 15)
+        else if (currentZoom >= 15)
             iconSize = 2; // default Images
 
         if (mapMode != MapMode.Compass)
@@ -605,7 +605,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         float nameYMovement = 0;
 
         if (showDistanceCircle) {
-            if (aktZoom >= 15) {
+            if (currentZoom >= 15) {
                 if (wayPointRenderInfo.showDistanceCircle()) {
                     if (distanceCircle == null)
                         distanceCircle = new CircleDrawable(0, 0, pixelsPerMeter * 161, distanceCirclePaint, getMapIntWidth(), getMapIntHeight());
@@ -615,7 +615,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             }
         }
 
-        if ((aktZoom >= zoomCross) && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWayPoint())) {
+        if ((currentZoom >= zoomCross) && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWayPoint())) {
             // Draw Cross and move screen vector
             Sprite cross = getMapOverlay(IconName.cross);
             cross.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight(), wpUnderlay.getWidth(), wpUnderlay.getHeight());
@@ -647,7 +647,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         boolean drawAsWaypoint = wayPointRenderInfo.waypoint != null;
 
         // Rating des Caches darstellen
-        if (wayPointRenderInfo.cache != null && showRating && (!drawAsWaypoint) && (wayPointRenderInfo.cache.gcVoteRating > 0) && (aktZoom >= 15)) {
+        if (wayPointRenderInfo.cache != null && showRating && (!drawAsWaypoint) && (wayPointRenderInfo.cache.gcVoteRating > 0) && (currentZoom >= 15)) {
             Sprite rating = MapStars.get((int) Math.min(wayPointRenderInfo.cache.gcVoteRating * 2, 5 * 2));
             rating.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight() - wpUnderlay.getHeight48(), wpUnderlay.getWidth(), wpUnderlay.getHeight48());
             rating.setOrigin(wpUnderlay.getWidth() / 2, wpUnderlay.getHeight48() / 2);
@@ -657,7 +657,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         }
 
         // Beschriftung
-        if (wayPointRenderInfo.cache != null && showTitles && (aktZoom >= 15)) {
+        if (wayPointRenderInfo.cache != null && showTitles && (currentZoom >= 15)) {
             try {
                 String name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getGeoCacheName();
 
@@ -673,7 +673,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         }
 
         // Show D/T-Rating
-        if (wayPointRenderInfo.cache != null && showDT && (!drawAsWaypoint) && (aktZoom >= 15)) {
+        if (wayPointRenderInfo.cache != null && showDT && (!drawAsWaypoint) && (currentZoom >= 15)) {
             Sprite difficulty = MapStars.get((int) Math.min(wayPointRenderInfo.cache.getDifficulty() * 2, 5 * 2));
             difficulty.setBounds(screen.x - wpUnderlay.getWidth() - GL_UISizes.infoShadowHeight, screen.y - (wpUnderlay.getHeight48() / 2), wpUnderlay.getWidth(), wpUnderlay.getHeight48());
             difficulty.setOrigin(wpUnderlay.getWidth() / 2, wpUnderlay.getHeight48() / 2);
@@ -716,7 +716,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
          */
 
         // mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
-        MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), aktZoom, true);
+        MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
         data.showAtOriginalPosition = showAtOriginalPosition;
@@ -855,7 +855,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             return;
         }
         lastScreenCenter.set(screenCenterWorld);
-        MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), aktZoom, false);
+        MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, false);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
         data.showAtOriginalPosition = showAtOriginalPosition;
@@ -1086,7 +1086,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     protected void skinIsChanged() {
         Log.debug(sKlasse, "skinIsChanged");
         super.skinIsChanged();
-        MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), aktZoom, true);
+        MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
         data.showAtOriginalPosition = showAtOriginalPosition;
@@ -1192,7 +1192,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         if ((InitialFlags & INITIAL_WP_LIST) != 0) {
             if (mapCacheList != null) {
-                MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), aktZoom, true);
+                MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
                 hideMyFinds = Config.hideMyFinds.getValue();
                 data.hideMyFinds = hideMyFinds;
                 showAllWaypoints = mapMode == MapMode.Compass ? false : Config.showAllWaypoints.getValue();
