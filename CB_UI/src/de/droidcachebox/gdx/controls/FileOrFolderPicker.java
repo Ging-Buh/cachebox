@@ -51,7 +51,7 @@ public class FileOrFolderPicker extends ActivityBase {
         this.folderReturn = folderReturn;
     }
 
-    public FileOrFolderPicker(String initialPath, String titleText, String selectFolderText, String possibleExtensions, IReturnAbstractFile fileReturn) {
+    public FileOrFolderPicker(String initialPath, String possibleExtensions, String titleText, String selectFolderText, IReturnAbstractFile fileReturn) {
         // for file selection possibleExtensions must not be null (use "" for no restriction)
         super("FileOrFolderPicker");
         this.titleText = titleText;
