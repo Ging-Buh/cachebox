@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.CB_UI_Settings;
-import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.RouteOverlay;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.ColorPicker;
 import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
@@ -231,26 +231,24 @@ public class TrackListViewItem extends ListViewItemBackground {
 
     private void saveAsFile() {
         if (this.track.getName().length() > 0) {
-            PlatformUIBase.getFolder(CB_UI_Settings.TrackFolder.getValue(),
+            new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(),
                     Translation.get("SaveTrack"),
                     Translation.get("save"),
                     abstractFile -> {
                         if (abstractFile != null) {
                             String extension = this.track.getName().toLowerCase().endsWith(".gpx") ? "" : ".gpx";
-                            AbstractFile f = FileFactory.createFile(abstractFile , this.track.getName() + extension);
+                            AbstractFile f = FileFactory.createFile(abstractFile, this.track.getName() + extension);
                             saveRoute(f, this.track);
                             if (f.exists()) {
                                 track.setFileName(f.getAbsolutePath());
                                 Log.info(log, f.getAbsolutePath() + " saved.");
-                            }
-                            else {
+                            } else {
                                 Log.err(log, "Error saving " + abstractFile + "/" + this.track.getName() + extension);
                             }
                         }
-                    }
-            );
+                    }).show();
         } else {
-            PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(),
+            new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(),
                     "*.gpx",
                     Translation.get("SaveTrack"),
                     Translation.get("save"),
@@ -259,7 +257,7 @@ public class TrackListViewItem extends ListViewItemBackground {
                             saveRoute(abstractFile, this.track);
                             Log.debug("TrackListViewItem", "Load Track :" + abstractFile);
                         }
-                    });
+                    }).show();
         }
     }
 

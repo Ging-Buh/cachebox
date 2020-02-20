@@ -2,7 +2,6 @@ package de.droidcachebox.settings;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import de.droidcachebox.Config;
-import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.SoundCache;
 import de.droidcachebox.SoundCache.Sounds;
 import de.droidcachebox.WrapType;
@@ -769,7 +768,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             final String absolutePath = (abstractFile != null) ? abstractFile.getAbsolutePath() : "";
             Menu icm = new Menu("SelectPathTitle");
             icm.addMenuItem("select_folder", null,
-                    () -> PlatformUIBase.getFolder(absolutePath, Translation.get("select_folder"), Translation.get("select"), abstractFile1 -> {
+                    () -> new FileOrFolderPicker(absolutePath, Translation.get("select_folder"), Translation.get("select"), abstractFile1 -> {
                         // check WriteProtection
                         if (needWritePermission && !abstractFile1.canWrite()) {
                             String WriteProtectionMsg = Translation.get("NoWriteAcces");
@@ -778,7 +777,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                             settingFolder.setValue(abstractFile1.getAbsolutePath());
                             resortList();
                         }
-                    }));
+                    }).show());
             icm.addMenuItem("ClearPath", null, () -> {
                 settingFolder.setValue(settingFolder.getDefaultValue());
                 resortList();
@@ -811,10 +810,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             Menu icm = new Menu("SelectFileTitle");
 
             icm.addMenuItem("select_file", null,
-                    () -> PlatformUIBase.getFile(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), abstractFile1 -> {
+                    () -> new FileOrFolderPicker(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), abstractFile1 -> {
                         settingFile.setValue(abstractFile1.getAbsolutePath());
                         resortList();
-                    }));
+                    }).show());
             icm.addMenuItem("ClearPath", null, () -> {
                 settingFile.setValue(settingFile.getDefaultValue());
                 resortList();

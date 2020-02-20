@@ -29,6 +29,7 @@ dependencies {
     //TODO remove handling of bluecove
     // https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
     compile group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'
+    compile project(path: ':CB_UI')
 
 
 }

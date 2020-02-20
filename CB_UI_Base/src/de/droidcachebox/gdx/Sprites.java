@@ -102,7 +102,6 @@ public class Sprites {
     public static Drawable bar_0;
     public static Drawable barSmall_0;
     public static Drawable[] MapScale;
-    public static Sprite[] Accuracy;
     public static int patch;
     public static FileHandle FileHandleDefaultAtlas;
     public static FileHandle FileHandleCustomAtlas;
@@ -200,12 +199,7 @@ public class Sprites {
     }
 
     public static Sprite getSprite(String name, float scale) {
-        /*
-		if (!loaded) {
-			loadSprites(false);
-		}
-		*/
-        Sprite tmp = null;
+        Sprite tmp;
         if (CB_UI_Base_Settings.nightMode.getValue()) {
             tmp = createSprite(atlasCustomtNight, name);
             if (tmp == null) {
@@ -247,7 +241,7 @@ public class Sprites {
     }
 
     protected static NinePatch getThemedPatch(String name) {
-        NinePatch tmp = null;
+        NinePatch tmp;
         if (CB_UI_Base_Settings.nightMode.getValue()) {
             tmp = createPatch(atlasCustomtNight, name);
             if (tmp == null) {
@@ -277,7 +271,7 @@ public class Sprites {
     }
 
     protected static Sprite setNightColorMatrixSprite(String name, TextureAtlas atlas) {
-        Sprite tmp = null;
+        Sprite tmp;
         tmp = createSprite(atlas, name);
         if (tmp == null)
             return null;
@@ -289,7 +283,7 @@ public class Sprites {
     }
 
     protected static NinePatch setNightColorMatrixPatch(String name, TextureAtlas atlas) {
-        NinePatch tmp = null;
+        NinePatch tmp;
         tmp = createPatch(atlas, name);
         if (tmp == null)
             return null;
@@ -325,172 +319,142 @@ public class Sprites {
             setPath();
 
         if (LogIcons == null)
-            LogIcons = new ArrayList<Sprite>();
-        synchronized (LogIcons) {
-            LogIcons.clear();
-            LogIcons.add(getSprite("log0icon"));
-            LogIcons.add(getSprite("log1icon"));
-            LogIcons.add(getSprite("log2icon"));
-            LogIcons.add(getSprite("log3icon"));
-            LogIcons.add(getSprite("log4icon"));
-            LogIcons.add(getSprite("log5icon"));
-            LogIcons.add(getSprite("log6icon"));
-            LogIcons.add(getSprite("log7icon"));
-            LogIcons.add(getSprite("log8icon"));
-            LogIcons.add(getSprite("log9icon"));
-            LogIcons.add(getSprite("log10icon"));
-            LogIcons.add(getSprite("log11icon"));
-            LogIcons.add(getSprite("log12icon"));
-            LogIcons.add(getSprite("log13icon"));
-            LogIcons.add(getSprite("log14icon"));
-            LogIcons.add(getSprite("log15icon"));
-            LogIcons.add(getSprite("log16icon"));
-            LogIcons.add(getSprite(IconName.TBPICKED.name()));
-            LogIcons.add(getSprite(IconName.TBDROP.name()));
-            LogIcons.add(getSprite(IconName.TBGRAB.name()));
-            LogIcons.add(getSprite(IconName.TBDISCOVER.name()));
-            LogIcons.add(getSprite(IconName.TBVISIT.name()));
-            LogIcons.add(getSprite(IconName.TBNOTE.name()));
-        }
+            LogIcons = new ArrayList<>();
+        LogIcons.clear();
+        LogIcons.add(getSprite("log0icon"));
+        LogIcons.add(getSprite("log1icon"));
+        LogIcons.add(getSprite("log2icon"));
+        LogIcons.add(getSprite("log3icon"));
+        LogIcons.add(getSprite("log4icon"));
+        LogIcons.add(getSprite("log5icon"));
+        LogIcons.add(getSprite("log6icon"));
+        LogIcons.add(getSprite("log7icon"));
+        LogIcons.add(getSprite("log8icon"));
+        LogIcons.add(getSprite("log9icon"));
+        LogIcons.add(getSprite("log10icon"));
+        LogIcons.add(getSprite("log11icon"));
+        LogIcons.add(getSprite("log12icon"));
+        LogIcons.add(getSprite("log13icon"));
+        LogIcons.add(getSprite("log14icon"));
+        LogIcons.add(getSprite("log15icon"));
+        LogIcons.add(getSprite("log16icon"));
+        LogIcons.add(getSprite(IconName.TBPICKED.name()));
+        LogIcons.add(getSprite(IconName.TBDROP.name()));
+        LogIcons.add(getSprite(IconName.TBGRAB.name()));
+        LogIcons.add(getSprite(IconName.TBDISCOVER.name()));
+        LogIcons.add(getSprite(IconName.TBVISIT.name()));
+        LogIcons.add(getSprite(IconName.TBNOTE.name()));
 
         if (Compass == null)
-            Compass = new ArrayList<Drawable>();
-        synchronized (Compass) {
-            Compass.clear();
-            Compass.add(new SpriteDrawable(getSprite("compass-frame")));
-            Compass.add(new SpriteDrawable(getSprite("compass-scale")));
-            Compass.add(new SpriteDrawable(getSprite("compass-frame-small")));
-            Compass.add(new SpriteDrawable(getSprite("compass-scale-small")));
-            Compass.add(new SpriteDrawable(getSprite("compass_arrow")));
-            Compass.add(new SpriteDrawable(getSprite("sonne")));
-            Compass.add(new SpriteDrawable(getSprite("mond")));
-
-        }
+            Compass = new ArrayList<>();
+        Compass.clear();
+        Compass.add(new SpriteDrawable(getSprite("compass-frame")));
+        Compass.add(new SpriteDrawable(getSprite("compass-scale")));
+        Compass.add(new SpriteDrawable(getSprite("compass-frame-small")));
+        Compass.add(new SpriteDrawable(getSprite("compass-scale-small")));
+        Compass.add(new SpriteDrawable(getSprite("compass_arrow")));
+        Compass.add(new SpriteDrawable(getSprite("sonne")));
+        Compass.add(new SpriteDrawable(getSprite("mond")));
 
         if (Arrows == null)
             Arrows = new ArrayList<>();
-        synchronized (Arrows) {
 
-            float scale = UiSizes.getInstance().getScale();
+        float scale = UiSizes.getInstance().getScale();
 
-            Arrows.clear();
-            Arrows.add(getSprite("arrow-Compass")); // 0
-            Arrows.add(getSprite("arrow-Compass-Trans")); // 1
-            Arrows.add(getSprite("arrow-GPS")); // 2
-            Arrows.add(getSprite("arrow-GPS-Trans")); // 3
-            Arrows.add(getSprite("target-arrow")); // 4
-            Arrows.add(getSprite("track-line", scale)); // 5
-            Arrows.add(getSprite("arrow-down")); // 6
-            Arrows.add(getSprite("arrow-up")); // 7
-            Arrows.add(getSprite("arrow-left")); // 8
-            Arrows.add(getSprite("arrow-right")); // 9
-            Arrows.add(getSprite("track-point", scale)); // 10
-            Arrows.add(getSprite("ambilwarna-arrow-right")); // 11
-            Arrows.add(getSprite("ambilwarna-arrow-down")); // 12
-            Arrows.add(getSprite("draw-line", scale)); // 13
-            Arrows.add(getSprite("draw-point", scale)); // 14
-            Arrows.add(getSprite("arrow-Compass-car")); // 15
-
-        }
+        Arrows.clear();
+        Arrows.add(getSprite("arrow-Compass")); // 0
+        Arrows.add(getSprite("arrow-Compass-Trans")); // 1
+        Arrows.add(getSprite("arrow-GPS")); // 2
+        Arrows.add(getSprite("arrow-GPS-Trans")); // 3
+        Arrows.add(getSprite("target-arrow")); // 4
+        Arrows.add(getSprite("track-line", scale)); // 5
+        Arrows.add(getSprite("arrow-down")); // 6
+        Arrows.add(getSprite("arrow-up")); // 7
+        Arrows.add(getSprite("arrow-left")); // 8
+        Arrows.add(getSprite("arrow-right")); // 9
+        Arrows.add(getSprite("track-point", scale)); // 10
+        Arrows.add(getSprite("ambilwarna-arrow-right")); // 11
+        Arrows.add(getSprite("ambilwarna-arrow-down")); // 12
+        Arrows.add(getSprite("draw-line", scale)); // 13
+        Arrows.add(getSprite("draw-point", scale)); // 14
+        Arrows.add(getSprite("arrow-Compass-car")); // 15
 
         if (MapStars == null)
-            MapStars = new ArrayList<Sprite>();
-        synchronized (MapStars) {
-            MapStars.clear();
-            MapStars.add(getSprite("stars0small"));
-            MapStars.add(getSprite("stars0-5small"));
-            MapStars.add(getSprite("stars1small"));
-            MapStars.add(getSprite("stars1-5small"));
-            MapStars.add(getSprite("stars2small"));
-            MapStars.add(getSprite("stars2-5small"));
-            MapStars.add(getSprite("stars3small"));
-            MapStars.add(getSprite("stars3-5small"));
-            MapStars.add(getSprite("stars4small"));
-            MapStars.add(getSprite("stars4-5small"));
-            MapStars.add(getSprite("stars5small"));
-
-        }
+            MapStars = new ArrayList<>();
+        MapStars.clear();
+        MapStars.add(getSprite("stars0small"));
+        MapStars.add(getSprite("stars0-5small"));
+        MapStars.add(getSprite("stars1small"));
+        MapStars.add(getSprite("stars1-5small"));
+        MapStars.add(getSprite("stars2small"));
+        MapStars.add(getSprite("stars2-5small"));
+        MapStars.add(getSprite("stars3small"));
+        MapStars.add(getSprite("stars3-5small"));
+        MapStars.add(getSprite("stars4small"));
+        MapStars.add(getSprite("stars4-5small"));
+        MapStars.add(getSprite("stars5small"));
 
         if (Stars == null)
             Stars = new SpriteList();
-        synchronized (Stars) {
-            Stars.clear();
-            Stars.add(getSprite("stars0icon"));
-            Stars.add(getSprite("stars0-5icon"));
-            Stars.add(getSprite("stars1icon"));
-            Stars.add(getSprite("stars1-5icon"));
-            Stars.add(getSprite("stars2icon"));
-            Stars.add(getSprite("stars2-5icon"));
-            Stars.add(getSprite("stars3icon"));
-            Stars.add(getSprite("stars3-5icon"));
-            Stars.add(getSprite("stars4icon"));
-            Stars.add(getSprite("stars4-5icon"));
-            Stars.add(getSprite("stars5icon"));
-
-        }
+        Stars.clear();
+        Stars.add(getSprite("stars0icon"));
+        Stars.add(getSprite("stars0-5icon"));
+        Stars.add(getSprite("stars1icon"));
+        Stars.add(getSprite("stars1-5icon"));
+        Stars.add(getSprite("stars2icon"));
+        Stars.add(getSprite("stars2-5icon"));
+        Stars.add(getSprite("stars3icon"));
+        Stars.add(getSprite("stars3-5icon"));
+        Stars.add(getSprite("stars4icon"));
+        Stars.add(getSprite("stars4-5icon"));
+        Stars.add(getSprite("stars5icon"));
 
         if (Bubble == null)
-            Bubble = new ArrayList<Sprite>();
-        synchronized (Bubble) {
-            Bubble.clear();
-            Bubble.add(getSprite("Bubble"));
-            Bubble.add(getSprite("Bubble-selected"));
-            Bubble.add(getSprite("BubbleOverlay"));
-            Bubble.add(getSprite("1to4bubble"));
-            Bubble.add(getSprite("5bubble"));
-            Bubble.add(getSprite("1to4bubble-flip"));
-            Bubble.add(getSprite("5bubble-flip"));
-
-        }
+            Bubble = new ArrayList<>();
+        Bubble.clear();
+        Bubble.add(getSprite("Bubble"));
+        Bubble.add(getSprite("Bubble-selected"));
+        Bubble.add(getSprite("BubbleOverlay"));
+        Bubble.add(getSprite("1to4bubble"));
+        Bubble.add(getSprite("5bubble"));
+        Bubble.add(getSprite("1to4bubble-flip"));
+        Bubble.add(getSprite("5bubble-flip"));
 
         if (ChkIcons == null)
-            ChkIcons = new ArrayList<Sprite>();
-        synchronized (ChkIcons) {
-
-            ChkIcons.clear();
-            ChkIcons.add(getSprite("check-off"));
-            ChkIcons.add(getSprite("check-on"));
-
-        }
+            ChkIcons = new ArrayList<>();
+        ChkIcons.clear();
+        ChkIcons.add(getSprite("check-off"));
+        ChkIcons.add(getSprite("check-on"));
 
         if (Dialog == null)
-            Dialog = new ArrayList<Sprite>();
-        synchronized (Dialog) {
-            Dialog.clear();
-            Dialog.add(getSprite("dialog-header"));
-            Dialog.add(getSprite("dialog-center"));
-            Dialog.add(getSprite("dialog-footer"));
-            Dialog.add(getSprite("dialog-title"));
-            Dialog.add(getSprite("menu-divider"));
-
-        }
+            Dialog = new ArrayList<>();
+        Dialog.clear();
+        Dialog.add(getSprite("dialog-header"));
+        Dialog.add(getSprite("dialog-center"));
+        Dialog.add(getSprite("dialog-footer"));
+        Dialog.add(getSprite("dialog-title"));
+        Dialog.add(getSprite("menu-divider"));
 
         if (ToggleBtn == null)
-            ToggleBtn = new ArrayList<Sprite>();
-        synchronized (ToggleBtn) {
-            ToggleBtn.clear();
-            ToggleBtn.add(getSprite(IconName.btnNormal.name()));
-            ToggleBtn.add(getSprite("btn-pressed"));
-            ToggleBtn.add(getSprite("toggle-led-gr"));
-
-        }
+            ToggleBtn = new ArrayList<>();
+        ToggleBtn.clear();
+        ToggleBtn.add(getSprite(IconName.btnNormal.name()));
+        ToggleBtn.add(getSprite("btn-pressed"));
+        ToggleBtn.add(getSprite("toggle-led-gr"));
 
         if (LiveBtn == null)
-            LiveBtn = new ArrayList<Sprite>();
-        synchronized (LiveBtn) {
-            LiveBtn.clear();
-            LiveBtn.add(getSprite("LiveEnabled"));
-            LiveBtn.add(getSprite("LiveDisabled"));
-            LiveBtn.add(getSprite("Live1"));
-            LiveBtn.add(getSprite("Live2"));
-            LiveBtn.add(getSprite("Live3"));
-            LiveBtn.add(getSprite("Live4"));
-            LiveBtn.add(getSprite("Live5"));
-            LiveBtn.add(getSprite("Live6"));
-            LiveBtn.add(getSprite("Live7"));
-            LiveBtn.add(getSprite("Live8"));
-
-        }
+            LiveBtn = new ArrayList<>();
+        LiveBtn.clear();
+        LiveBtn.add(getSprite("LiveEnabled"));
+        LiveBtn.add(getSprite("LiveDisabled"));
+        LiveBtn.add(getSprite("Live1"));
+        LiveBtn.add(getSprite("Live2"));
+        LiveBtn.add(getSprite("Live3"));
+        LiveBtn.add(getSprite("Live4"));
+        LiveBtn.add(getSprite("Live5"));
+        LiveBtn.add(getSprite("Live6"));
+        LiveBtn.add(getSprite("Live7"));
+        LiveBtn.add(getSprite("Live8"));
 
         Progress = getSprite("progress");
         ambilwarna_hue = getSprite("ambilwarna-hue");
@@ -498,31 +462,25 @@ public class Sprites {
         ambilwarna_target = getSprite("ambilwarna-target");
 
         if (ZoomBtn == null)
-            ZoomBtn = new ArrayList<Sprite>();
-        synchronized (ZoomBtn) {
-            ZoomBtn.clear();
-            ZoomBtn.add(getSprite("day-btn-zoom-down-normal"));
-            ZoomBtn.add(getSprite("day-btn-zoom-down-pressed"));
-            ZoomBtn.add(getSprite("day-btn-zoom-down-disabled"));
-            ZoomBtn.add(getSprite("day-btn-zoom-up-normal"));
-            ZoomBtn.add(getSprite("day-btn-zoom-up-pressed"));
-            ZoomBtn.add(getSprite("day-btn-zoom-up-disabled"));
-
-        }
+            ZoomBtn = new ArrayList<>();
+        ZoomBtn.clear();
+        ZoomBtn.add(getSprite("day-btn-zoom-down-normal"));
+        ZoomBtn.add(getSprite("day-btn-zoom-down-pressed"));
+        ZoomBtn.add(getSprite("day-btn-zoom-down-disabled"));
+        ZoomBtn.add(getSprite("day-btn-zoom-up-normal"));
+        ZoomBtn.add(getSprite("day-btn-zoom-up-pressed"));
+        ZoomBtn.add(getSprite("day-btn-zoom-up-disabled"));
 
         ZoomValueBack = getSprite("zoom-back");
 
         if (SizesIcons == null)
             SizesIcons = new SpriteList();
-        synchronized (SizesIcons) {
-            SizesIcons.clear();
-            SizesIcons.add(getSprite("other"));
-            SizesIcons.add(getSprite("micro"));
-            SizesIcons.add(getSprite("small"));
-            SizesIcons.add(getSprite("regular"));
-            SizesIcons.add(getSprite("large"));
-
-        }
+        SizesIcons.clear();
+        SizesIcons.add(getSprite("other"));
+        SizesIcons.add(getSprite("micro"));
+        SizesIcons.add(getSprite("small"));
+        SizesIcons.add(getSprite("regular"));
+        SizesIcons.add(getSprite("large"));
 
         MapScale = new Drawable[3];
 
@@ -749,7 +707,7 @@ public class Sprites {
         share,
     }
 
-    public static enum DialogElement {
+    public enum DialogElement {
         header, // 0
         center, // 1
         footer, // 2

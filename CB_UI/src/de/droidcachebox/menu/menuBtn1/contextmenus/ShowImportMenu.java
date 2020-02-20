@@ -12,6 +12,7 @@ import de.droidcachebox.gdx.activities.Import;
 import de.droidcachebox.gdx.activities.ImportGCPosition;
 import de.droidcachebox.gdx.activities.Import_GSAK;
 import de.droidcachebox.gdx.activities.SearchOverNameOwnerGcCode;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
@@ -117,10 +118,10 @@ public class ShowImportMenu extends AbstractShowAction {
     }
 
     private void ExportgetFolderStep(final String fileName) {
-        PlatformUIBase.getFolder(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
+        new FileOrFolderPicker(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
                 Translation.get("selectExportFolder"),
                 Translation.get("select"),
-                abstractFile -> GL.that.RunOnGL(() -> ShowImportMenu.this.ausgebenDatei(fileName, abstractFile)));
+                abstractFile -> GL.that.RunOnGL(() -> ShowImportMenu.this.ausgebenDatei(fileName, abstractFile))).show();
     }
 
     private void ausgebenDatei(final String fileName, AbstractFile abstractFile) {

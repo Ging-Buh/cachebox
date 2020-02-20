@@ -17,7 +17,10 @@ package de.droidcachebox.gdx.activities;
 
 import android.text.InputType;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.*;
+import de.droidcachebox.Config;
+import de.droidcachebox.KeyboardFocusChangedEventList;
+import de.droidcachebox.TemplateFormatter;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Draft;
@@ -317,7 +320,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 mPath = Config.workPath + "/User";
             }
             mPath = mPath + "/" + Config.TemplateLastUsedName.getValue();
-            PlatformUIBase.getFile(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), abstractFile -> {
+            new FileOrFolderPicker(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), abstractFile -> {
                 BufferedReader br = null;
                 String strLine;
                 StringBuilder text = new StringBuilder();
@@ -336,7 +339,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 } catch (Exception ignored) {
                 }
                 setupLogText(text.toString());
-            });
+            }).show();
             return true;
         });
         scrollBoxContent.addLast(btnFromFile);

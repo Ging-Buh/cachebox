@@ -1,8 +1,9 @@
 package de.droidcachebox.gdx.controls;
 
 import android.os.Environment;
-import de.droidcachebox.PlatformUIBase;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
@@ -21,6 +22,13 @@ import java.util.Locale;
 import static de.droidcachebox.GlobalCore.firstSDCard;
 import static de.droidcachebox.GlobalCore.secondSDCard;
 
+/**
+ * picks a file or folder depending on the used constructor
+ * there is no longer a platform dependant implementation (for getFile or getFolder),
+ * but desktop specifics are not yet implemented (like root selecting, ...), but it is usable
+ * usage: create an instance and call show()
+ * The GlobalCores firstSDCard and secondSDCard must be set (in global initializing) once before
+ */
 public class FileOrFolderPicker extends ActivityBase {
     // private static final String log = "FileOrFolderPicker";
     private static final String PARENT_DIR = "..";
@@ -31,18 +39,19 @@ public class FileOrFolderPicker extends ActivityBase {
     private String titleText;
     private CB_Button btnSelectFolder, btnCancel, btnRoot, btnSD1, btnSD2, btnParent;
     private String possibleExtensions;
-    private PlatformUIBase.IReturnAbstractFile fileReturn;
-    private PlatformUIBase.IReturnAbstractFile folderReturn;
+    private IReturnAbstractFile fileReturn;
+    private IReturnAbstractFile folderReturn;
     private boolean selectFolder;
     private AbstractFile currentFolder;
     private ArrayList<String> containedFoldersAndFiles;
 
-    public FileOrFolderPicker(AbstractFile initialFolder, String titleText, String selectFolderText) {
+    public FileOrFolderPicker(String initialPath, String titleText, String selectFolderText, IReturnAbstractFile folderReturn) {
         // use this for folder selection (possibleExtensions = null)
-        this(initialFolder, titleText, selectFolderText, null);
+        this(initialPath, titleText, selectFolderText, null, null);
+        this.folderReturn = folderReturn;
     }
 
-    public FileOrFolderPicker(AbstractFile initialFolder, String titleText, String selectFolderText, String possibleExtensions) {
+    public FileOrFolderPicker(String initialPath, String titleText, String selectFolderText, String possibleExtensions, IReturnAbstractFile fileReturn) {
         // for file selection possibleExtensions must not be null (use "" for no restriction)
         super("FileOrFolderPicker");
         this.titleText = titleText;
@@ -75,6 +84,7 @@ public class FileOrFolderPicker extends ActivityBase {
         });
         this.possibleExtensions = possibleExtensions;
         selectFolder = possibleExtensions == null;
+        // or selectFolder = fileReturn == null;
         if (selectFolder) {
             btnSelectFolder = new CB_Button(selectFolderText);
             btnSelectFolder.setClickHandler((view, x, y, pointer, button) -> {
@@ -88,6 +98,7 @@ public class FileOrFolderPicker extends ActivityBase {
             finish();
             return true;
         });
+        AbstractFile initialFolder = FileFactory.createFile(initialPath);
         try {
             if (!initialFolder.exists()) {
                 initialFolder = FileFactory.createFile(Environment.getExternalStorageDirectory().getAbsolutePath());
@@ -96,6 +107,7 @@ public class FileOrFolderPicker extends ActivityBase {
             initialFolder = FileFactory.createFile(firstSDCard);
         }
         currentFolder = initialFolder;
+        this.fileReturn = fileReturn;
         layout();
     }
 
@@ -122,48 +134,37 @@ public class FileOrFolderPicker extends ActivityBase {
     }
 
     private void updateLayout() {
-        String shownPath = currentFolder.getAbsolutePath();
-        int l = shownPath.length();
+        String currentPath = currentFolder.getAbsolutePath();
+        int l = currentPath.length();
         if (l > 30) {
-            shownPath = "..." + shownPath.substring(l - 30);
+            currentPath = "..." + currentPath.substring(l - 30);
         }
         if (titleText == null || titleText.length() == 0) {
-            title.setText(shownPath);
+            title.setText(currentPath);
         } else {
-            title.setText(titleText + "\n" + shownPath);
+            title.setText(titleText + "\n" + currentPath);
+        }
+        if (currentPath.equals("/"))
+            btnRoot.disable();
+        else
+            btnRoot.enable();
+
+        if (currentPath.equals(firstSDCard)) {
+            btnSD1.disable();
+        } else {
+            btnSD1.enable();
         }
 
+        if (currentPath.equals(secondSDCard)) {
+            btnSD2.disable();
+        } else {
+            btnSD2.enable();
+        }
 
-        String absolutePath;
-        try {
-            absolutePath = currentFolder.getAbsolutePath();
-            if (absolutePath.equals("/"))
-                btnRoot.disable();
-            else
-                btnRoot.enable();
-
-            if (absolutePath.equals(firstSDCard)) {
-                btnSD1.disable();
-            } else {
-                btnSD1.enable();
-            }
-
-            if (absolutePath.equals(secondSDCard)) {
-                btnSD2.disable();
-            } else {
-                btnSD2.enable();
-            }
-
-            if (absolutePath.equals("/")) {
-                btnParent.disable();
-            } else {
-                btnParent.enable();
-            }
-        } catch (Exception e) {
-            if (firstSDCard.length() > 0)
-                btnSD1.enable();
-            if (secondSDCard.length() > 0)
-                btnSD2.enable();
+        if (currentPath.equals("/")) {
+            btnParent.disable();
+        } else {
+            btnParent.enable();
         }
 
         filesView.notifyDataSetChanged();
@@ -171,6 +172,7 @@ public class FileOrFolderPicker extends ActivityBase {
     }
 
     private void loadFileList(AbstractFile path) {
+        if (path == null) return;
         currentFolder = path;
         containedFoldersAndFiles = new ArrayList<>();
 
@@ -213,16 +215,8 @@ public class FileOrFolderPicker extends ActivityBase {
         }
     }
 
-    public FileOrFolderPicker setFileReturn(PlatformUIBase.IReturnAbstractFile fileReturn) {
-        this.fileReturn = fileReturn;
-        selectFolder = false;
-        return this;
-    }
-
-    public FileOrFolderPicker setFolderReturn(PlatformUIBase.IReturnAbstractFile folderReturn) {
-        this.folderReturn = folderReturn;
-        selectFolder = true;
-        return this;
+    public interface IReturnAbstractFile {
+        void returns(AbstractFile abstractFile);
     }
 
     private class FileAdapter implements Adapter {
@@ -278,7 +272,22 @@ public class FileOrFolderPicker extends ActivityBase {
              */
             public FileItem(CB_RectF rec, int index, String name) {
                 super(rec, index, name);
-                CB_Label fileOrFolderName = new CB_Label(containedFoldersAndFiles.get(index));
+                leftBorder = getLeftWidth();
+                rightBorder = getRightWidth();
+                topBorder = getTopHeight();
+                bottomBorder = getBottomHeight();
+                String mFolderOrFileName = containedFoldersAndFiles.get(index);
+                CB_Label fileOrFolderName;
+                if (mFolderOrFileName.startsWith(DIRICON)) {
+                    mFolderOrFileName = mFolderOrFileName.substring(DIRICON.length());
+                    fileOrFolderName = new CB_Label(mFolderOrFileName);
+                    float mIconSize = fileOrFolderName.getHeight();
+                    Image icon = new Image(0, 0, mIconSize, mIconSize, "", true);
+                    icon.setDrawable(new SpriteDrawable(Sprites.getSprite("file")));
+                    addNext(icon, FIXED);
+                } else {
+                    fileOrFolderName = new CB_Label(mFolderOrFileName);
+                }
                 addLast(fileOrFolderName);
             }
         }

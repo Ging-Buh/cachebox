@@ -2,9 +2,9 @@ package de.droidcachebox.gdx.views;
 
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.RouteOverlay;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
@@ -66,11 +66,11 @@ public class TrackListView extends V_ListView {
     }
 
     public void selectTrackFileReadAndAddToTracks() {
-        PlatformUIBase.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), abstractFile -> {
+        new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), abstractFile -> {
             if (abstractFile != null) {
                 readFromGpxFile(abstractFile);
             }
-        });
+        }).show();
     }
 
     /**

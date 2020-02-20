@@ -3,7 +3,7 @@ package de.droidcachebox.views.forms;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Environment;
-import de.droidcachebox.PlatformUIBase.IReturnAbstractFile;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -25,8 +25,8 @@ public class Android_FileExplorer {
     private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
     private String[] fileList;
     private AbstractFile currentPath;
-    private IReturnAbstractFile fileReturn;
-    private IReturnAbstractFile folderReturn;
+    private FileOrFolderPicker.IReturnAbstractFile fileReturn;
+    private FileOrFolderPicker.IReturnAbstractFile folderReturn;
     private boolean selectDirectoryOption;
     private String possibleExtensions;
     private String secondSDCard;
@@ -99,12 +99,12 @@ public class Android_FileExplorer {
         }
     }
 
-    public void setFileReturn(IReturnAbstractFile fileReturn) {
+    public void setFileReturn(FileOrFolderPicker.IReturnAbstractFile fileReturn) {
         this.fileReturn = fileReturn;
         selectDirectoryOption = false;
     }
 
-    public void setFolderReturn(IReturnAbstractFile folderReturn) {
+    public void setFolderReturn(FileOrFolderPicker.IReturnAbstractFile folderReturn) {
         this.folderReturn = folderReturn;
         selectDirectoryOption = true;
     }

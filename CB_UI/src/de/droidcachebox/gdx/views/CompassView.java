@@ -455,7 +455,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             if (showIcon) {
                 Icon = new Image(attRec, "Compass-CacheIcon", false);
                 if (showName) {
-                    topContentBox.addNext(Icon, CB_View_Base.FIXED);
+                    topContentBox.addNext(Icon, FIXED);
                 } else {
                     topContentBox.addLast(Icon);
                 }
@@ -482,9 +482,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
                 lblCoords.setHeight(lblHeight);
                 lblCoords.setWidth(mesuredCoorWidth);
                 if (showGcCode) {
-                    topContentBox.addNext(lblCoords, CB_View_Base.FIXED);
+                    topContentBox.addNext(lblCoords, FIXED);
                 } else {
-                    topContentBox.addLast(lblCoords, CB_View_Base.FIXED);
+                    topContentBox.addLast(lblCoords, FIXED);
                 }
             }
             if (showGcCode) {
@@ -517,7 +517,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
             float chartWidth = topContentBox.getInnerWidth() - mesuredCoorWidth - margin;
             chart.setWidth(chartWidth);
-            topContentBox.addLast(chart, CB_View_Base.FIXED);
+            topContentBox.addLast(chart, FIXED);
 
             lblOwnCoords = new CB_Label("");
             lblOwnCoords.setHeight(lblHeight);

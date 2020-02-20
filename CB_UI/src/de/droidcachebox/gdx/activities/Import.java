@@ -18,7 +18,6 @@ package de.droidcachebox.gdx.activities;
 import android.text.InputType;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import de.droidcachebox.Config;
-import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
@@ -422,7 +421,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
 
         btnSelectFile.setClickHandler((v, x, y, pointer, button) -> {
-            PlatformUIBase.getFile(Config.workPath + "/User", "*.gpx|*.zip", "", "", this::copyGPX2PQ_Folder);
+            new FileOrFolderPicker(Config.workPath + "/User", "*.gpx|*.zip", "", "", this::copyGPX2PQ_Folder).show();
             return true;
         });
 

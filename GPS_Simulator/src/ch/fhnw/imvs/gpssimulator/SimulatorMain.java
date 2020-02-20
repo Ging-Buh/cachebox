@@ -14,12 +14,11 @@ package ch.fhnw.imvs.gpssimulator;
 import ch.fhnw.imvs.gpssimulator.components.*;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.nmea.*;
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.IReturnAbstractFile;
 import de.droidcachebox.PlatformUIBase.Methods;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.settings.SettingBase;
-import de.droidcachebox.utils.FileFactory;
 import org.apache.log4j.Logger;
 import org.mapsforge.map.swing.view.MapPanel;
 
@@ -30,12 +29,10 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +104,10 @@ public class SimulatorMain {
         f.add(title, BorderLayout.NORTH);
 
         GPSData.start();
+
+        // todo set firstSDCard and secondSDCard somehow
+        GlobalCore.firstSDCard = "C:/";
+        GlobalCore.secondSDCard = "D:/";
 
         PlatformUIBase.setMethods(new Methods() {
 
@@ -207,61 +208,6 @@ public class SimulatorMain {
 
             @Override
             public void freeSQLInstance(SQLiteInterface sqlInstance) {
-            }
-
-            @Override
-            public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IReturnAbstractFile returnListener) {
-
-                final String ext = extension.replace("*", "");
-
-                JFileChooser chooser = new JFileChooser();
-
-                chooser.setCurrentDirectory(new java.io.File(initialPath));
-                chooser.setDialogTitle(TitleText);
-
-                FileFilter filter = new FileFilter() {
-
-                    @Override
-                    public String getDescription() {
-
-                        return extension;
-                    }
-
-                    @Override
-                    public boolean accept(File f) {
-                        if (f.getAbsolutePath().endsWith(ext))
-                            return true;
-                        return false;
-                    }
-                };
-
-                chooser.setFileFilter(filter);
-
-                int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    if (returnListener != null)
-                        returnListener.returns(FileFactory.createFile(chooser.getSelectedFile().getAbsolutePath()));
-                    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-                }
-
-            }
-
-            @Override
-            public void getFolder(String initialPath, String TitleText, String ButtonText, IReturnAbstractFile returnListener) {
-
-                JFileChooser chooser = new JFileChooser();
-
-                chooser.setCurrentDirectory(new java.io.File(initialPath));
-                chooser.setDialogTitle(TitleText);
-
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    if (returnListener != null)
-                        returnListener.returns(FileFactory.createFile(chooser.getSelectedFile().getAbsolutePath()));
-                    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-                }
-
             }
 
             @Override

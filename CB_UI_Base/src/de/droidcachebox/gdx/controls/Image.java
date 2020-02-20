@@ -51,7 +51,6 @@ public class Image extends CB_View_Base {
         if (imageLoader.resizeHeight && imageLoader.getResizeListener() == null) {
             imageLoader.setResizeListener(Image.this::setSize, getWidth());
         }
-
     }
 
     public Image(CB_RectF rec, String Name, boolean resizeHeight) {

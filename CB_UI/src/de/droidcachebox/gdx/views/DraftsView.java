@@ -29,6 +29,7 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditDraft;
 import de.droidcachebox.gdx.activities.InputString;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
@@ -626,7 +627,7 @@ public class DraftsView extends V_ListView {
             if (mPath.length() == 0) {
                 mPath = Config.workPath + "/User/Media/";
             }
-            PlatformUIBase.getFile(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), abstractFile -> {
+            new FileOrFolderPicker(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), abstractFile -> {
                 InputString inputDescription = new InputString("imageDescription") {
                     public void callBack(String description) {
                         GL.that.postAsync(() -> {
@@ -646,7 +647,7 @@ public class DraftsView extends V_ListView {
                     }
                 };
                 inputDescription.show();
-            });
+            }).show();
         }
 
         private void logOnline(final Draft draft, final boolean directLog) {

@@ -29,7 +29,6 @@ import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.activities.FZKDownload;
-import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.views.CacheListView;
@@ -40,8 +39,6 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.*;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
@@ -242,28 +239,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     @Override
     public void freeSQLInstance(SQLiteInterface sqlInstance) {
         // sqlInstance = null;
-    }
-
-    @Override
-    public void getFile(String initialPath, String extension, String titleText, String buttonText, PlatformUIBase.IReturnAbstractFile returnListener) {
-        AbstractFile mPath = FileFactory.createFile(initialPath);
-        /*
-        Android_FileExplorer fileDialog = new Android_FileExplorer(mainActivity, mPath, titleText, buttonText, extension);
-        fileDialog.setFileReturn(returnListener);
-        fileDialog.showDialog();
-         */
-        new FileOrFolderPicker(mPath, titleText, buttonText, extension).setFileReturn(returnListener).show();
-    }
-
-    @Override
-    public void getFolder(String initialPath, String titleText, String buttonText, PlatformUIBase.IReturnAbstractFile returnListener) {
-        AbstractFile mPath = FileFactory.createFile(initialPath);
-        /*
-        Android_FileExplorer folderDialog = new Android_FileExplorer(mainActivity, mPath, titleText, buttonText);
-        folderDialog.setFolderReturn(returnListener);
-        folderDialog.showDialog();
-         */
-        new FileOrFolderPicker(mPath, titleText, buttonText).setFolderReturn(returnListener).show();
     }
 
     @Override

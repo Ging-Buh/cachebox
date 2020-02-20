@@ -43,6 +43,7 @@ import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.Handler;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.DevicesSizes;
@@ -576,7 +577,7 @@ public class Splash extends Activity {
     }
 
     // don't want to implement PlatformConnector for Splash, for only need of getFolder
-    private void getFolder(String TitleText, String ButtonText, PlatformUIBase.IReturnAbstractFile returnListener) {
+    private void getFolder(String TitleText, String ButtonText, FileOrFolderPicker.IReturnAbstractFile returnListener) {
         Android_FileExplorer folderDialog = new Android_FileExplorer(this, FileFactory.createFile(""), TitleText, ButtonText);
         folderDialog.setFolderReturn(returnListener);
         folderDialog.showDialog();

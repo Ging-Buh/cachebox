@@ -143,11 +143,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             if (mDatabasePath.length() == 0) {
                 mDatabasePath = Config.workPath + "/User";
             }
-            PlatformUIBase.getFile(mDatabasePath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
+            new FileOrFolderPicker(mDatabasePath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
                 mDatabasePath = abstractFile.getParent();
                 mDatabaseName = abstractFile.getName();
                 edtDBName.setText(mDatabaseName);
-            });
+            }).show();
             return true;
         });
 
@@ -156,11 +156,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             if (mImageDatabasePath.length() == 0) {
                 mImageDatabasePath = Config.workPath + "/User";
             }
-            PlatformUIBase.getFile(mImageDatabasePath, "*.db3", Translation.get("GSAKTitleSelectImagesDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
+            new FileOrFolderPicker(mImageDatabasePath, "*.db3", Translation.get("GSAKTitleSelectImagesDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
                 mImageDatabasePath = abstractFile.getParent();
                 mImageDatabaseName = abstractFile.getName();
                 edtImagesDBName.setText(mImageDatabaseName);
-            });
+            }).show();
             return true;
         });
 
@@ -169,10 +169,10 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             if (mImagesPath.length() == 0) {
                 mImagesPath = Config.workPath + "/User";
             }
-            PlatformUIBase.getFolder(mImagesPath, Translation.get("GSAKTitleSelectImagesPath"), Translation.get("GSAKButtonSelectImagesPath"), abstractFile -> {
+            new FileOrFolderPicker(mImagesPath, Translation.get("GSAKTitleSelectImagesPath"), Translation.get("GSAKButtonSelectImagesPath"), abstractFile -> {
                 mImagesPath = abstractFile.getAbsolutePath();
                 edtImagesPath.setText(mImagesPath);
-            });
+            }).show();
             return true;
         }));
 
