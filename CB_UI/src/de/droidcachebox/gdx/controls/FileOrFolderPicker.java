@@ -47,7 +47,7 @@ public class FileOrFolderPicker extends ActivityBase {
 
     public FileOrFolderPicker(String initialPath, String titleText, String selectFolderText, IReturnAbstractFile folderReturn) {
         // use this for folder selection (possibleExtensions = null)
-        this(initialPath, titleText, selectFolderText, null, null);
+        this(initialPath, null, titleText, selectFolderText, null);
         this.folderReturn = folderReturn;
     }
 
