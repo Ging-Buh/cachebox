@@ -15,23 +15,25 @@
  */
 package de.droidcachebox.gdx.views;
 
-import de.droidcachebox.GlobalCore;
-import de.droidcachebox.SelectedCacheChangedEventListener;
-import de.droidcachebox.SelectedCacheChangedEventListeners;
-import de.droidcachebox.WaypointListChangedEventList;
+import de.droidcachebox.*;
 import de.droidcachebox.database.*;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.EditWaypoint;
 import de.droidcachebox.gdx.activities.SolverDialog2;
 import de.droidcachebox.gdx.activities.SolverDialog2.ISolverBackStringListener;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.list.Adapter;
+import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.menu.ViewManager;
@@ -52,7 +54,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
 
     private SolverView2() {
         super(ViewManager.leftTab.getContentRec(), "SolverView2");
-        // Log.debug(log, "Create SolverView2 => " + this.toString());
+        // Log.debug(log, "Create SolverView2 => " + toString());
         cache = null;
         neu = false;
         backListener = backString -> {
@@ -111,8 +113,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         if (cache == null) {
             solver = new Solver("", GlobalCore.getInstance());
         } else {
-            this.cache = GlobalCore.getSelectedCache();
-            String s = Database.getSolver(this.cache);
+            cache = GlobalCore.getSelectedCache();
+            String s = Database.getSolver(cache);
             if (s == null)
                 s = "";
             solver = new Solver(s, GlobalCore.getInstance());
@@ -124,37 +126,37 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         }
 
         lvAdapter = new CustomAdapter(solver);
-        this.setAdapter(lvAdapter);
+        setAdapter(lvAdapter);
 
         int itemCount = solver.size();
-        int itemSpace = this.getMaxItemCount();
+        int itemSpace = getMaxItemCount();
 
         if (itemSpace >= itemCount) {
-            this.setUnDraggable();
+            setUnDraggable();
         } else {
-            this.setDraggable();
+            setDraggable();
         }
 
-        this.setSelection(0);
-        this.setListPos(0, false);
+        setSelection(0);
+        setListPos(0, false);
 
-        this.invalidate();
+        invalidate();
         GL.that.renderOnce();
     }
 
     private void reloadList() {
         lvAdapter = new CustomAdapter(solver);
-        this.setAdapter(lvAdapter);
+        setAdapter(lvAdapter);
         int itemCount = solver.size();
-        int itemSpace = this.getMaxItemCount();
+        int itemSpace = getMaxItemCount();
 
         if (itemSpace >= itemCount) {
-            this.setUnDraggable();
+            setUnDraggable();
         } else {
-            this.setDraggable();
+            setDraggable();
         }
 
-        this.invalidate();
+        invalidate();
         GL.that.renderOnce();
     }
 
@@ -170,7 +172,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     public void initialize() {
         super.initialize();
         Log.debug(log, "SolverView2 => Initial()");
-        this.setListPos(0, false);
+        setListPos(0, false);
         chkSlideBack();
         GL.that.renderOnce();
     }
@@ -314,7 +316,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     @Override
     public void dispose() {
 
-        this.setAdapter(null);
+        setAdapter(null);
         lvAdapter = null;
         solver = null;
         cache = null;
@@ -378,5 +380,52 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
             return UiSizes.getInstance().getCacheListItemRec().getHeight();
         }
 
+        private class SolverViewItem extends ListViewItemBackground {
+            protected boolean isPressed = false;
+            protected SolverZeile solverZeile;
+            CB_Label lblSolverZeile;
+
+            public SolverViewItem(CB_RectF rec, int Index, SolverZeile solverZeile) {
+                super(rec, Index, "");
+                this.solverZeile = solverZeile;
+            }
+
+            @Override
+            protected void initialize() {
+                super.initialize();
+                lblSolverZeile = new CB_Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
+                lblSolverZeile.setHeight(getHeight()); // todo ob das immer passt?
+                setBorders(UiSizes.getInstance().getMargin(), UiSizes.getInstance().getMargin());
+                addLast(lblSolverZeile);
+            }
+
+            @Override
+            public void dispose() {
+                lblSolverZeile = null;
+            }
+
+            @Override
+            public boolean onTouchDown(int x, int y, int pointer, int button) {
+
+                isPressed = true;
+
+                return false;
+            }
+
+            @Override
+            public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+                isPressed = false;
+
+                return false;
+            }
+
+            @Override
+            public boolean onTouchUp(int x, int y, int pointer, int button) {
+                isPressed = false;
+
+                return false;
+            }
+
+        }
     }
 }
