@@ -248,8 +248,8 @@ public class FileOrFolderPicker extends ActivityBase {
                     currentFolder = selected;
                     onShow();
                 } else {
-                    fileReturn.returns(selected);
                     finish();
+                    fileReturn.returns(selected);
                 }
                 return true;
             });
