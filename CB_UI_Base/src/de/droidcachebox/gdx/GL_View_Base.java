@@ -1078,7 +1078,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public void setData(Object data) {
-        data = data;
+        this.data = data;
     }
 
     protected ParentInfo getMyInfoForChild() {
