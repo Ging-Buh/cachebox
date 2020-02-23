@@ -218,10 +218,10 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void setTrackName() {
-        StringInputBox.show(WrapType.SINGLELINE, this.track.getName(), Translation.get("RenameTrack"), this.track.getName(), (which, data) -> {
+        StringInputBox.show(WrapType.SINGLELINE, track.getName(), Translation.get("RenameTrack"), track.getName(), (which, data) -> {
             String text = StringInputBox.editText.getText();
             if (which == BTN_LEFT_POSITIVE) {
-                this.track.setName(text);
+                track.setName(text);
                 TrackListView.getInstance().notifyDataSetChanged();
             }
             return true;
@@ -230,31 +230,33 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void saveAsFile() {
-        if (this.track.getName().length() > 0) {
+        if (track.getName().length() > 0) {
             new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(),
                     Translation.get("SaveTrack"),
                     Translation.get("save"),
                     abstractFile -> {
                         if (abstractFile != null) {
-                            String extension = this.track.getName().toLowerCase().endsWith(".gpx") ? "" : ".gpx";
-                            AbstractFile f = FileFactory.createFile(abstractFile, this.track.getName() + extension);
-                            saveRoute(f, this.track);
+                            String trackName = track.getName().replaceAll("[^a-zA-Z0-9_\\.\\-]", "_");
+                            String extension = track.getName().toLowerCase().endsWith(".gpx") ? "" : ".gpx";
+                            AbstractFile f = FileFactory.createFile(abstractFile, trackName + extension);
+                            saveRoute(f, track);
                             if (f.exists()) {
                                 track.setFileName(f.getAbsolutePath());
                                 Log.info(log, f.getAbsolutePath() + " saved.");
                             } else {
-                                Log.err(log, "Error saving " + abstractFile + "/" + this.track.getName() + extension);
+                                Log.err(log, "Error saving " + abstractFile + "/" + track.getName() + extension);
                             }
                         }
                     }).show();
         } else {
+            // existing gpx-file
             new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(),
                     "*.gpx",
                     Translation.get("SaveTrack"),
                     Translation.get("save"),
                     abstractFile -> {
                         if (abstractFile != null) {
-                            saveRoute(abstractFile, this.track);
+                            saveRoute(abstractFile, track);
                             Log.debug("TrackListViewItem", "Load Track :" + abstractFile);
                         }
                     }).show();
@@ -318,7 +320,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void unloadTrack() {
-        if (this.track.isActualTrack()) {
+        if (track.isActualTrack()) {
             MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
         } else {
             RouteOverlay.getInstance().removeTrack(track); // index passt nicht mehr
