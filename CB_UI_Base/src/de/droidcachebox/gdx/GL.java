@@ -100,7 +100,7 @@ public class GL implements ApplicationListener {
     private float lastRenderOnceTime = -1;
     private float lastTouchX = 0;
     private float lastTouchY = 0;
-    private GrayscalShaderProgram shader;
+    private GrayScaleShaderProgram grayScaleShaderProgram;
     private Sprite mDarknessSprite;
     private Pixmap mDarknessPixmap;
     private Texture mDarknessTexture;
@@ -144,8 +144,7 @@ public class GL implements ApplicationListener {
     public void create() {
         // ApplicationListener Implementation create()
         GL_UISizes.initial(width, height);
-
-        Initialize();
+        initialize();
         CB_UI_Base_Settings.nightMode.addSettingChangedListener(() -> {
             mDarknessSprite = null;// for new creation with changed color
         });
@@ -172,8 +171,8 @@ public class GL implements ApplicationListener {
     public void render() {
         // ApplicationListener Implementation render()
         if (Gdx.gl == null) {
-            Gdx.app.error("CB_UI GL", "GL.render() with not initial GDX.gl");
-            Log.err("GL:render()", "GL.render() with not initial GDX.gl");
+            Gdx.app.error("CB_UI GL", "GL.render() without initialization.");
+            Log.err("GL:render()", new Exception("GL.render() without initialization."));
             return;
         }
 
@@ -204,14 +203,6 @@ public class GL implements ApplicationListener {
         }
 
         stateTime += Gdx.graphics.getDeltaTime();
-
-        /*
-        if (renderStartedListener != null) {
-            renderStartedListener.renderIsStartet();
-            renderStartedListener = null;
-            removeRenderView(child);
-        }
-        */
 
         FBO_RunBegin();
 
@@ -293,8 +284,6 @@ public class GL implements ApplicationListener {
         try {
             mPolygonSpriteBatch.begin();
         } catch (java.lang.IllegalStateException e) {
-            // Log.err(log, "IllegalStateException", "mPolygonSpriteBatch.begin() without mPolygonSpriteBatch.end()", e);
-
             mPolygonSpriteBatch.flush();
             mPolygonSpriteBatch.end();
             mPolygonSpriteBatch.begin();
@@ -319,7 +308,6 @@ public class GL implements ApplicationListener {
         if (currentActivity != null && currentActivity.isDisposed()) {
             closeActivity();
         }
-
 
         if (currentActivityIsShown) {
             drawDarknessSprite();
@@ -421,10 +409,10 @@ public class GL implements ApplicationListener {
     }
 
     private void setGrayscale(float value) {
-        if (shader != null) {
-            shader.begin();
-            shader.setUniformf("grayscale", value);
-            shader.end();
+        if (grayScaleShaderProgram != null) {
+            grayScaleShaderProgram.begin();
+            grayScaleShaderProgram.setUniformf("grayscale", value);
+            grayScaleShaderProgram.end();
         }
     }
 
@@ -464,23 +452,17 @@ public class GL implements ApplicationListener {
     }
 
     public void showDialog(final Dialog dialog) {
-        // if (dialog instanceof ActivityBase) throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
-
         showDialog(dialog, false);
     }
 
     public void showDialog(final Dialog dialog, boolean atTop) {
         try {
             setFocusedEditTextField(null);
-
-            //if (dialog instanceof ActivityBase) throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
-
             clearRenderViews();
-
             if (dialog.isDisposed())
                 return;
 
-            // Center Menu on Screen
+            // Center Dialog on Screen
             float x = (width - dialog.getWidth()) / 2;
             float y;
             if (atTop)
@@ -645,7 +627,6 @@ public class GL implements ApplicationListener {
         // Center activity on Screen
         float x = (width - activity.getWidth()) / 2;
         float y = (height - activity.getHeight()) / 2;
-
         activity.setPos(x, y);
 
         if (currentDialog != null) {
@@ -882,13 +863,12 @@ public class GL implements ApplicationListener {
         mPolygonSpriteBatch.setShader(SpriteBatch.createDefaultShader());
     }
 
-    private void setShader(ShaderProgram shader) {
-
-        if (shader == null) {
+    private void setGrayScaleShaderProgram(ShaderProgram grayScaleShaderProgram) {
+        if (grayScaleShaderProgram == null) {
             setDefaultShader();
             return;
         }
-        mPolygonSpriteBatch.setShader(shader);
+        mPolygonSpriteBatch.setShader(grayScaleShaderProgram);
     }
 
     public float getStateTime() {
@@ -946,7 +926,7 @@ public class GL implements ApplicationListener {
 
     }
 
-    private void Initialize() {
+    private void initialize() {
 
         if (Gdx.graphics.getGL20() == null)
             return;// kann nicht initialisiert werden
@@ -980,9 +960,9 @@ public class GL implements ApplicationListener {
             mActivity.setLongClickable(true);
         }
 
-        //initial GrayScale shader
-        shader = new GrayscalShaderProgram();
-        setShader(shader);
+        // initialize GrayScale shader
+        grayScaleShaderProgram = new GrayScaleShaderProgram();
+        setGrayScaleShaderProgram(grayScaleShaderProgram);
         setGrayscale(0.5f);
 
     }
@@ -1007,7 +987,7 @@ public class GL implements ApplicationListener {
 
     public void setGLViewID() {
         if (child == null)
-            Initialize();
+            initialize();
     }
 
     public void addRenderView(GL_View_Base view, int delay) {

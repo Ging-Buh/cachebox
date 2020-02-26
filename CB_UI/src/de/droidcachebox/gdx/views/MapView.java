@@ -69,7 +69,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     private TreeMap<Integer, Integer> distanceZoomLevel;
     private MapMode mapMode;
     private LiveButton liveButton;
-    private MultiToggleButton togBtn;
+    private MultiToggleButton btnMapState;
     private InfoBubble infoBubble;
     private CancelWaitDialog wd = null;
     private int zoomCross = 16;
@@ -77,15 +77,14 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     private boolean showDT;
     private boolean showTitles;
     private boolean hideMyFinds;
-    private boolean showDirectLine;
-    private boolean showAllWaypoints;
+    private boolean showDirectLine, showAllWaypoints, showDistanceCircle;
     private Cache lastSelectedCache = null;
     private Waypoint lastSelectedWaypoint = null;
-    private GlyphLayout layout = null;
+    private GlyphLayout geocacheOrWayPointName = null;
     private CB_RectF targetArrowScreenRec;
     private MapViewCacheList mapCacheList;
     private int lastCompassMapZoom = -1;
-    private MapInfoPanel info;
+    private MapInfoPanel mapInfoPanel;
     private PointL lastScreenCenter;
     private GL_Paint distanceCirclePaint;
     private GL_Paint directLinePaint;
@@ -181,15 +180,15 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     }
 
                     // switch map state to WP
-                    togBtn.setState(2);
+                    btnMapState.setState(2);
                 }
                 return false;
             }
 
-            synchronized (mapCacheList.list) {
+            synchronized (mapCacheList.wayPointsRenderInformation) {
                 double minDist = Double.MAX_VALUE;
-                for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
-                    WayPointRenderInfo wpi = mapCacheList.list.get(i);
+                for (int i = 0, n = mapCacheList.wayPointsRenderInformation.size(); i < n; i++) {
+                    WayPointRenderInfo wpi = mapCacheList.wayPointsRenderInformation.get(i);
                     Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.mapX), Math.round(wpi.mapY)));
                     double aktDist = Math.sqrt(Math.pow(screen.x - x, 2) + Math.pow(screen.y - y, 2));
                     if (aktDist < minDist) {
@@ -233,14 +232,14 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             return false;
         });
 
-        float InfoHeight = 0;
+        float infoHeight = 0;
         if (mapMode == MapMode.Normal) {
-            info = (MapInfoPanel) addChild(new MapInfoPanel(GL_UISizes.info, "InfoPanel", this));
-            InfoHeight = info.getHeight();
+            mapInfoPanel = (MapInfoPanel) addChild(new MapInfoPanel(GL_UISizes.info, "InfoPanel", this));
+            infoHeight = mapInfoPanel.getHeight();
         }
 
         CB_RectF ZoomScaleRec = new CB_RectF();
-        ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.dpi), getHeight() - InfoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+        ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.dpi), getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
         ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
         zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
@@ -274,27 +273,26 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
         Config.disableLiveMap.addSettingChangedListener(this::requestLayout);
 
-        togBtn = new MultiToggleButton(GL_UISizes.toggle, "toggle");
+        btnMapState = new MultiToggleButton(GL_UISizes.toggle, "toggle");
 
-        togBtn.addState("Free", new HSV_Color(Color.GRAY));
-        togBtn.addState("GPS", new HSV_Color(Color.GREEN));
-        togBtn.addState("WP", new HSV_Color(Color.MAGENTA));
-        togBtn.addState("Lock", new HSV_Color(Color.RED));
-        togBtn.addState("Car", new HSV_Color(Color.YELLOW));
-        togBtn.setLastStateWithLongClick(true);
+        btnMapState.addState("Free", new HSV_Color(Color.GRAY));
+        btnMapState.addState("GPS", new HSV_Color(Color.GREEN));
+        btnMapState.addState("WP", new HSV_Color(Color.MAGENTA));
+        btnMapState.addState("Lock", new HSV_Color(Color.RED));
+        btnMapState.addState("Car", new HSV_Color(Color.YELLOW));
+        btnMapState.setLastStateWithLongClick(true);
+        MapState lastUsedMapState = MapState.values()[Config.lastMapToggleBtnState.getValue()];
+        btnMapState.setState(lastUsedMapState.ordinal());
+        btnMapState.setOnStateChangedListener((v, State) -> setMapState(MapState.values()[State]));
 
-        MapState last = MapState.values()[Config.lastMapToggleBtnState.getValue()];
-        togBtn.setState(last.ordinal());
-
-        togBtn.setOnStateChangedListener((v, State) -> setMapState(MapState.values()[State]));
-        togBtn.registerSkinChangedEvent();
+        btnMapState.registerSkinChangedEvent();
 
         switch (mapMode) {
             case Compass:
                 setMapState(MapState.GPS);
                 break;
             case Normal:
-                setMapState(last);
+                setMapState(lastUsedMapState);
                 break;
             case Track:
                 setMapState(MapState.FREE);
@@ -304,21 +302,21 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         if (mapMode == MapMode.Normal) {
             switch (Config.lastMapToggleBtnState.getValue()) {
                 case 0:
-                    info.setCoordType(CoordType.Map);
+                    mapInfoPanel.setCoordType(CoordType.Map);
                     break;
                 case 1:
                 case 3:
                 case 4:
-                    info.setCoordType(CoordType.GPS);
+                    mapInfoPanel.setCoordType(CoordType.GPS);
                     break;
                 case 2:
-                    info.setCoordType(CoordType.Cache);
+                    mapInfoPanel.setCoordType(CoordType.Cache);
                     break;
             }
         }
 
         if (mapMode == MapMode.Normal) {
-            addChild(togBtn);
+            addChild(btnMapState);
             if (Config.disableLiveMap.getValue()) {
                 liveButton.setState(false);
             }
@@ -396,7 +394,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         // Info aktualisieren
         if (mapMode == MapMode.Normal)
-            info.setCoord(center);
+            mapInfoPanel.setCoord(center);
 
         zoomBtn.setZoom(Config.lastZoomLevel.getValue());
         calcPixelsPerMeter();
@@ -443,9 +441,10 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         if (mapMode != MapMode.Compass)
             RouteOverlay.getInstance().renderTracks(batch, this);
-        renderWPs(GL_UISizes.wayPointSizes[iconSize], GL_UISizes.underlaySizes[iconSize], batch);
+        renderWayPoints(GL_UISizes.wayPointSizes[iconSize], GL_UISizes.underlaySizes[iconSize], batch);
         renderPositionMarker(batch);
         renderTargetArrow(batch);
+        if (mapState != MapState.GPS && mapState != MapState.CAR) renderDistanceToCenter(batch);
     }
 
     @Override
@@ -457,7 +456,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         batch.setProjectionMatrix(myParentInfo.Matrix());
 
         if (showMapCenterCross) {
-            if (getMapState() == MapState.FREE) {
+            if (mapState == MapState.FREE) {
                 if (CrossLines == null) {
                     float crossSize = Math.min(getMapIntHeight() / 3.0f, getMapIntWidth() / 3.0f) / 2;
                     float strokeWidth = 2 * UiSizes.getInstance().getScale();
@@ -512,7 +511,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     targetArrowScreenRec.scaleCenter(0.9f);
 
                     if (mapMode == MapMode.Normal) {
-                        targetArrowScreenRec.setHeight(targetArrowScreenRec.getHeight() - (targetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
+                        targetArrowScreenRec.setHeight(targetArrowScreenRec.getHeight() - (targetArrowScreenRec.getHeight() - mapInfoPanel.getY()) - zoomBtn.getHeight());
                         targetArrowScreenRec.setY(zoomBtn.getMaxY());
                     }
                 }
@@ -558,21 +557,15 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         }
     }
 
-    private void renderWPs(SizeF wpUnderlay, SizeF wpSize, Batch batch) {
-
-        if (mapCacheList.list != null) {
-            synchronized (mapCacheList.list) {
-
-                for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
-                    WayPointRenderInfo wpi = mapCacheList.list.get(i);
-                    if (wpi.selected) {
-                        // wenn der Wp selectiert ist, dann immer in der größten Darstellung
-                        renderWPI(batch, GL_UISizes.wayPointSizes[2], GL_UISizes.underlaySizes[2], wpi);
-                    } else if (isCarMode) {
-                        // wenn CarMode dann immer in der größten Darstellung
-                        renderWPI(batch, GL_UISizes.wayPointSizes[2], GL_UISizes.underlaySizes[2], wpi);
+    private void renderWayPoints(SizeF wpUnderlay, SizeF wpSize, Batch batch) {
+        if (mapCacheList.wayPointsRenderInformation != null) {
+            synchronized (mapCacheList.wayPointsRenderInformation) {
+                for (WayPointRenderInfo wayPointRenderInfo : mapCacheList.wayPointsRenderInformation) {
+                    if (wayPointRenderInfo.selected || isCarMode) {
+                        // use largest presentation
+                        renderWayPointInformation(batch, GL_UISizes.wayPointSizes[2], GL_UISizes.underlaySizes[2], wayPointRenderInfo);
                     } else {
-                        renderWPI(batch, wpUnderlay, wpSize, wpi);
+                        renderWayPointInformation(batch, wpUnderlay, wpSize, wayPointRenderInfo);
                     }
                 }
             }
@@ -580,7 +573,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         outScreenDraw = 0;
     }
 
-    public void renderWPI(Batch batch, SizeF wpUnderlay, SizeF wpSize, WayPointRenderInfo wayPointRenderInfo) {
+    public void renderWayPointInformation(Batch batch, SizeF wpUnderlay, SizeF wpSize, WayPointRenderInfo wayPointRenderInfo) {
         Vector2 screen = worldToScreen(new Vector2(wayPointRenderInfo.mapX, wayPointRenderInfo.mapY));
 
         screen.y = screen.y - ySpeedVersatz;
@@ -602,8 +595,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             return;
         }
 
-        float nameYMovement = 0;
-
         if (showDistanceCircle) {
             if (currentZoom >= 15) {
                 if (wayPointRenderInfo.showDistanceCircle()) {
@@ -615,6 +606,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             }
         }
 
+        float nameYMovement = 0;
         if ((currentZoom >= zoomCross) && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWayPoint())) {
             // Draw Cross and move screen vector
             Sprite cross = getMapOverlay(IconName.cross);
@@ -661,13 +653,13 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             try {
                 String name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getGeoCacheName();
 
-                if (layout == null)
-                    layout = new GlyphLayout(Fonts.getNormal(), name);
+                if (geocacheOrWayPointName == null)
+                    geocacheOrWayPointName = new GlyphLayout(Fonts.getNormal(), name);
                 else
-                    layout.setText(Fonts.getNormal(), name);
+                    geocacheOrWayPointName.setText(Fonts.getNormal(), name);
 
-                float halfWidth = layout.width / 2;
-                Fonts.getNormal().draw(batch, layout, screen.x - halfWidth, screen.y - wpUnderlay.getHalfHeight() - nameYMovement);
+                float halfWidth = geocacheOrWayPointName.width / 2;
+                Fonts.getNormal().draw(batch, geocacheOrWayPointName, screen.x - halfWidth, screen.y - wpUnderlay.getHalfHeight() - nameYMovement);
             } catch (Exception ignored) {
             }
         }
@@ -711,25 +703,21 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         lastSelectedCache = cache;
         lastSelectedWaypoint = waypoint;
-        /*
-         * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
-         */
 
-        // mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
         data.hideMyFinds = hideMyFinds;
         data.showAllWaypoints = showAllWaypoints;
         data.showAtOriginalPosition = showAtOriginalPosition;
         mapCacheList.update(data);
 
-        if (getCenterGps()) {
+        if (mapStateIsNotFreeOrWp()) {
             positionChanged();
             return;
         }
 
         positionInitialized = true;
 
-        if (getMapState() != MapState.WP)
+        if (mapState != MapState.WP)
             setMapState(MapState.FREE);
 
         try {
@@ -753,10 +741,10 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void speedChanged() {
-        if (info != null) {
-            info.setSpeed(Locator.getInstance().SpeedString());
+        if (mapInfoPanel != null) {
+            mapInfoPanel.setSpeed(Locator.getInstance().SpeedString());
 
-            if (getMapState() == MapState.CAR && Config.dynamicZoom.getValue()) {
+            if (mapState == MapState.CAR && Config.dynamicZoom.getValue()) {
                 // calculate dynamic Zoom
 
                 double maxSpeed = Config.MoveMapCenterMaxSpeed.getValue();
@@ -894,36 +882,29 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     @Override
     public void setCenter(CoordinateGPS value) {
         if (mapMode == MapMode.Normal)
-            info.setCoord(value);
+            mapInfoPanel.setCoord(value);
         super.setCenter(value);
     }
 
     @Override
     public void orientationChanged() {
         super.orientationChanged();
-        if (info != null) {
+        if (mapInfoPanel != null) {
             try {
                 Coordinate position = Locator.getInstance().getMyPosition();
-
                 if (GlobalCore.isSetSelectedCache()) {
                     Coordinate dest = (GlobalCore.getSelectedWayPoint() != null) ? GlobalCore.getSelectedWayPoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
-
                     if (dest == null)
                         return;
-
                     float heading = Locator.getInstance().getHeading();
 
                     float[] result = new float[2];
-
                     MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
-
                     float bearing = result[1];
-
                     float relativeBearing = bearing - heading;
-                    info.setBearing(relativeBearing, heading);
+                    mapInfoPanel.setBearing(relativeBearing, heading);
                 }
             } catch (Exception ignored) {
-
             }
         }
     }
@@ -947,7 +928,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     protected void calcCenter() {
         super.calcCenter();
         if (mapMode == MapMode.Normal) {
-            info.setCoord(center);
+            mapInfoPanel.setCoord(center);
         }
     }
 
@@ -961,11 +942,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         float infoHeight = 0;
         if (mapMode == MapMode.Normal) {
-            info.setPos(new Vector2(margin, getMapIntHeight() - margin - info.getHeight()));
-            info.setVisible(Config.showInfo.getValue());
-            infoHeight = info.getHeight();
+            mapInfoPanel.setPos(new Vector2(margin, getMapIntHeight() - margin - mapInfoPanel.getHeight()));
+            mapInfoPanel.setVisible(Config.showInfo.getValue());
+            infoHeight = mapInfoPanel.getHeight();
         }
-        togBtn.setPos(new Vector2(getMapIntWidth() - margin - togBtn.getWidth(), getMapIntHeight() - margin - togBtn.getHeight()));
+        btnMapState.setPos(new Vector2(getMapIntWidth() - margin - btnMapState.getWidth(), getMapIntHeight() - margin - btnMapState.getHeight()));
 
         if (Config.disableLiveMap.getValue()) {
             liveButton.setInvisible();
@@ -973,25 +954,22 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             liveButton.setVisible();
         }
 
-        liveButton.setRec(togBtn);
-        liveButton.setY(togBtn.getY() - margin - liveButton.getHeight());
+        liveButton.setRec(btnMapState);
+        liveButton.setY(btnMapState.getY() - margin - liveButton.getHeight());
 
         zoomScale.setSize((float) (44.6666667 * GL_UISizes.dpi), getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
         GL.that.renderOnce();
     }
 
-    @Override
-    public void setMapStateFree() {
-        // setMapState(MapState.FREE);
-        // Go over ToggelButton
-        togBtn.setState(0);
+    public void setBtnMapStateToFree() {
+        btnMapState.setState(0);
     }
 
     @Override
     public void setMapState(MapState state) {
         Log.debug(sKlasse, "setMapState :" + state);
-        if (super.getMapState() == state)
+        if (mapState == state)
             return;
 
         Config.lastMapToggleBtnState.setValue(state.ordinal());
@@ -1000,17 +978,17 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         boolean wasCarMode = isCarMode;
 
         if (mapMode == MapMode.Normal) {
-            info.setCoordType(CoordType.Map);
+            mapInfoPanel.setCoordType(CoordType.Map);
             if (state == MapState.CAR) {
                 if (!wasCarMode) {
-                    info.setCoordType(CoordType.GPS);
+                    mapInfoPanel.setCoordType(CoordType.GPS);
                 }
             } else if (state == MapState.WP) {
-                info.setCoordType(CoordType.Cache);
+                mapInfoPanel.setCoordType(CoordType.Cache);
             } else if (state == MapState.LOCK) {
-                info.setCoordType(CoordType.GPS);
+                mapInfoPanel.setCoordType(CoordType.GPS);
             } else if (state == MapState.GPS) {
-                info.setCoordType(CoordType.GPS);
+                mapInfoPanel.setCoordType(CoordType.GPS);
             }
         }
 
@@ -1028,13 +1006,13 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         super.positionChanged();
 
-        if (info != null) {
+        if (mapInfoPanel != null) {
             if (center != null) {
-                info.setCoord(center);
+                mapInfoPanel.setCoord(center);
             }
 
             if (GlobalCore.getSelectedCoordinate() != null) {
-                info.setDistance(GlobalCore.getSelectedCoordinate().Distance(CalculationType.ACCURATE));
+                mapInfoPanel.setDistance(GlobalCore.getSelectedCoordinate().Distance(CalculationType.ACCURATE));
             }
             orientationChanged();
         }
@@ -1130,14 +1108,15 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             showMapCenterCross = mapMode == MapMode.Compass ? false : Config.showMapCenterCross.getValue();
             showAtOriginalPosition = mapMode == MapMode.Compass ? false : Config.showAtOriginalPosition.getValue();
             showDistanceCircle = mapMode == MapMode.Compass ? false : Config.showDistanceCircle.getValue();
+            showDistanceToCenter = mapMode == MapMode.Compass ? false : Config.showDistanceToCenter.getValue();
 
             if (mapMode == MapMode.Track) {
                 showMapCenterCross = true;
                 setMapState(MapState.FREE);
             }
 
-            if (info != null)
-                info.setVisible(mapMode == MapMode.Compass ? false : Config.showInfo.getValue());
+            if (mapInfoPanel != null)
+                mapInfoPanel.setVisible(mapMode == MapMode.Compass ? false : Config.showInfo.getValue());
 
             if (InitialFlags == INITIAL_ALL) {
 

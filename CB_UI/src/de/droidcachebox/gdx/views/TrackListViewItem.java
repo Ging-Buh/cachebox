@@ -108,7 +108,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             double latitude = trackpoint.y;
             double longitude = trackpoint.x;
             ShowMap.getInstance().execute();
-            ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
+            ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
             ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
             ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(latitude, longitude));
         }

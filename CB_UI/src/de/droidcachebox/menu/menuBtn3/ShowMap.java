@@ -135,7 +135,7 @@ public class ShowMap extends AbstractShowAction {
             searchCoordinates = new SearchCoordinates() {
                 public void callBack(Coordinate coordinate) {
                     if (coordinate != null) {
-                        normalMapView.setMapStateFree(); // btn
+                        normalMapView.setBtnMapStateToFree(); // btn
                         normalMapView.setMapState(MapViewBase.MapState.FREE);
                         normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
                     }
@@ -285,6 +285,7 @@ public class ShowMap extends AbstractShowAction {
         menuMapElements.addCheckableMenuItem("ShowDirectLine", Config.showDirectLine.getValue(), () -> toggleSetting(Config.showDirectLine));
         menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Config.showAccuracyCircle.getValue(), () -> toggleSetting(Config.showAccuracyCircle));
         menuMapElements.addCheckableMenuItem("ShowCenterCross", Config.showMapCenterCross.getValue(), () -> toggleSetting(Config.showMapCenterCross));
+        menuMapElements.addCheckableMenuItem("ShowDistanceToCenter", Config.showDistanceToCenter.getValue(), () -> toggleSetting(Config.showDistanceToCenter));
         menuMapElements.addCheckableMenuItem("ShowDistanceCircle", Config.showDistanceCircle.getValue(), () -> toggleSetting(Config.showDistanceCircle));
         menuMapElements.show();
     }

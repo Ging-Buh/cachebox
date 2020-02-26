@@ -38,7 +38,7 @@ import static de.droidcachebox.gdx.Sprites.*;
  */
 public class MapViewCacheList implements CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "MapViewCacheList";
-    public final CB_List<WayPointRenderInfo> list = new CB_List<>();
+    public final CB_List<WayPointRenderInfo> wayPointsRenderInformation = new CB_List<>();
     private final int maxZoomLevel;
     /**
      * State 0: warten auf neuen Update Befehl <br>
@@ -436,16 +436,16 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                             }
                         }
 
-                        synchronized (list) {
+                        synchronized (wayPointsRenderInformation) {
                             // move selected WPI to last
                             int index = wayPointRenderInfos.indexOf(selectedWPRenderInfo);
                             if (index >= 0 && index <= wayPointRenderInfos.size())
                                 wayPointRenderInfos.MoveItemLast(index);
 
-                            list.clear();
+                            wayPointsRenderInformation.clear();
 
                             for (int i = 0, n = wayPointRenderInfos.size(); i < n; i++) {
-                                list.add(wayPointRenderInfos.get(i));
+                                wayPointsRenderInformation.add(wayPointRenderInfos.get(i));
                             }
                             wayPointRenderInfos.clear();
                         }

@@ -2,7 +2,7 @@ package de.droidcachebox.gdx;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-public class GrayscalShaderProgram extends ShaderProgram {
+public class GrayScaleShaderProgram extends ShaderProgram {
 
     final static String NAME = "GrayScaleShader";
 
@@ -27,7 +27,7 @@ public class GrayscalShaderProgram extends ShaderProgram {
         ShaderProgram.pedantic = false;
     }
 
-    public GrayscalShaderProgram() {
+    public GrayScaleShaderProgram() {
         super(VERT, FRAG);
 
         // shader didn't compile.. handle it somehow

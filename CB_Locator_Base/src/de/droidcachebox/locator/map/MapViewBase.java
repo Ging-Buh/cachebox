@@ -18,13 +18,12 @@ package de.droidcachebox.locator.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.InvalidateTextureEventList;
-import de.droidcachebox.gdx.CB_View_Base;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.ZoomButtons;
 import de.droidcachebox.gdx.graphics.CircleDrawable;
 import de.droidcachebox.gdx.graphics.KineticPan;
@@ -64,7 +63,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected float arrowHeading = 0;
     protected Vector2 myPointOnScreen;
     protected boolean showAccuracyCircle;
-    protected boolean showDistanceCircle;
     protected int currentZoom;
     protected KineticZoom kineticZoom = null;
     protected boolean positionInitialized = false;
@@ -72,7 +70,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected boolean isCarMode = false;
     protected boolean isNorthOriented = true;
     protected float iconFactor = 1.5f;
-    protected boolean showMapCenterCross;
+    protected boolean showMapCenterCross, showDistanceToCenter;
     protected boolean showAtOriginalPosition;
     protected PolygonDrawable CrossLines = null;
     protected IChanged themeChangedEventHandler = this::invalidateTexture;
@@ -83,13 +81,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected boolean isShown, isCreated;
     protected CircleDrawable distanceCircle;
     protected Descriptor lastDescriptorOrdered;
+    protected MapState mapState = MapState.FREE;
     int lastNumberOfTilesToShow;
     private int mapIntWidth;
     private int mapIntHeight;
     private int drawingWidth;
     private int drawingHeight;
     private AccuracyDrawable accuracyDrawable = null;
-    private MapState mapState = MapState.FREE;
+    private GlyphLayout distanceToCenter;
     // protected boolean alignToCompass = false;
     private float mapHeading = 0;
     private KineticPan kineticPan = null;
@@ -111,7 +110,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         PositionChangedListeners.addListener(this);
         positionChanged();
 
-        isCarMode = (getMapState() == MapState.CAR);
+        isCarMode = (mapState == MapState.CAR);
         if (!isCarMode) {
             drawingWidth = mapIntWidth;
             drawingHeight = mapIntHeight;
@@ -292,6 +291,32 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected abstract void renderSynchronOverlay(Batch batch);
 
     protected abstract void renderNonSynchronOverlay(Batch batch);
+
+    protected void renderDistanceToCenter(Batch batch) {
+        if (showDistanceToCenter) {
+            Coordinate position = Locator.getInstance().getMyPosition();
+            CoordinateGPS centerCoordinate = center;
+            // calc distance
+            float[] result = new float[1];
+            MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.FAST, position.getLatitude(), position.getLongitude(), centerCoordinate.getLatitude(), centerCoordinate.getLongitude(), result);
+            // write at center
+            drawText(batch, UnitFormatter.distanceString(result[0]), mapIntWidth / 2f, mapIntHeight / 2f);
+        }
+    }
+
+    private void drawText(Batch batch, String text, float x, float y) {
+        try {
+            Fonts.getSmall().setColor(COLOR.getFontColor());
+            if (distanceToCenter == null)
+                distanceToCenter = new GlyphLayout(Fonts.getSmall(), text);
+            else
+                distanceToCenter.setText(Fonts.getSmall(), text);
+            float halfWidth = distanceToCenter.width / 2;
+            Fonts.getSmall().draw(batch, distanceToCenter, x - halfWidth, y + 3 * distanceToCenter.height);
+        } catch (Exception ex) {
+            Log.err(sKlasse, "drawText", ex);
+        }
+    }
 
     private void renderMapTiles(Batch batch) {
 
@@ -634,9 +659,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     public abstract void setNewSettings(int InitialFlags);
 
-    private void setScreenCenter(Vector2 newCenter) {
+    private void setScreenCenter(PointD pointDouble) {
         synchronized (screenCenterT) {
-            screenCenterT.set((long) newCenter.x, (long) (-newCenter.y));
+            // attention decimals are truncated
+            screenCenterT.set((long) pointDouble.x, (long) (-pointDouble.y));
         }
         if (isShown) isCreated = true;
         renderOnce("setScreenCenter");
@@ -650,7 +676,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             center = value;
             PointD point = Descriptor.toWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, center.getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, center.getLatitude()), MAX_MAP_ZOOM,
                     MAX_MAP_ZOOM);
-            setScreenCenter(new Vector2((float) point.x, (float) point.y));
+            setScreenCenter(point);
         }
     }
 
@@ -709,7 +735,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             if (!Locator.getInstance().isGPSprovided())
                 return;
         }
-        if (getCenterGps())
+        if (mapStateIsNotFreeOrWp())
             setCenter(Locator.getInstance().getMyPosition());
 
         renderOnce("PositionChanged");
@@ -764,16 +790,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         isNorthOriented = !value;
     }
 
-    /**
-     * Returns True, if MapState <br>
-     * MapState.GPS<br>
-     * MapState.LOCK<br>
-     * MapState.CAR<br>
-     *
-     * @return ?
-     */
-    public boolean getCenterGps() {
-        return mapState != MapState.FREE && mapState != MapState.WP;
+    public boolean mapStateIsNotFreeOrWp() {
+        if (mapState == MapState.FREE || mapState == MapState.WP) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public boolean GetAlignToCompass() {
@@ -873,12 +895,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
             if ((inputState == InputState.Pan) && (fingerDown.size() == 1)) {
 
-                if (getMapState() == MapState.CAR || getMapState() == MapState.LOCK) {
-                    // f�r verschieben gesperrt!
+                if (mapState == MapState.CAR || mapState == MapState.LOCK) {
+                    // can't move
                     return false;
                 } else {
                     // auf GPS oder WP ausgerichtet und wird jetzt auf Free gestellt
-                    setMapStateFree();
+                    setMapState(MapState.FREE);
                 }
 
                 // Fadein ZoomButtons!
@@ -978,10 +1000,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             zoom--;
         }
         currentZoom = zoom;
-    }
-
-    protected void setMapStateFree() {
-        setMapState(MapState.FREE);
     }
 
     protected void setZoomScale(int zoom) {
@@ -1089,10 +1107,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     @Override
     public Priority getPriority() {
         return Priority.Normal;
-    }
-
-    public MapState getMapState() {
-        return mapState;
     }
 
     public void setMapState(MapState state) {

@@ -114,8 +114,6 @@ public class MathUtils {
 
         results[0] = (float) ((IntWGS84_MAJOR_AXIS) * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))));
 
-        // results[0] = (float) Distance;
-
         if (results.length > 1) {
 
             double longDiff = Math.toRadians(longitude2 - longitude1);

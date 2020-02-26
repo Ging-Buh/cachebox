@@ -79,8 +79,8 @@ public class CoordinateGPS extends Coordinate implements Serializable {
     }
 
     /**
-     * @return
-     * @uml.property name="accuracy"
+     * @return ?
+     *  name="accuracy"
      */
     public int getAccuracy() {
         return Accuracy;
@@ -91,16 +91,16 @@ public class CoordinateGPS extends Coordinate implements Serializable {
     }
 
     /**
-     * @return
-     * @uml.property name="elevation"
+     * @return ?
+     *  name="elevation"
      */
     public double getElevation() {
         return Elevation;
     }
 
     /**
-     * @param elevation
-     * @uml.property name="elevation"
+     * @param elevation ?
+     *  name="elevation"
      */
     public void setElevation(double elevation) {
         Elevation = elevation;

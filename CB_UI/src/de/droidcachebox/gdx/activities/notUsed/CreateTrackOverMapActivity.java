@@ -225,7 +225,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
         SizeF drawingSize = new SizeF(40, 40);
         for (WayPointRenderInfo wayPointRenderInfo : wayPointRenderInfos) {
-            mTrackMapView.renderWPI(batch, drawingSize, drawingSize, wayPointRenderInfo);
+            mTrackMapView.renderWayPointInformation(batch, drawingSize, drawingSize, wayPointRenderInfo);
         }
 
     }

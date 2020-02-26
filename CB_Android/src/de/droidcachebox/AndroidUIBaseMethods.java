@@ -319,7 +319,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         Log.info(sKlasse, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
         if (coordinate.isValid()) {
             ShowMap.getInstance().execute();
-            ShowMap.getInstance().normalMapView.setMapStateFree(); // btn
+            ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
             ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
             ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
         }

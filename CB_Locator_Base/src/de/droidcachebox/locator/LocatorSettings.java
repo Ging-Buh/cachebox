@@ -42,6 +42,7 @@ public interface LocatorSettings {
     SettingBool showMapCenterCross = new SettingBool("ShowMapCenterCross", Map, NEVER, true, Global, ACB);
     SettingBool showAtOriginalPosition = new SettingBool("ShowAtOriginalPosition", Map, NEVER, false, Global, ACB);
     SettingBool showDistanceCircle = new SettingBool("ShowDistanceCircle", Map, NEVER, true, Global, ACB);
+    SettingBool showDistanceToCenter = new SettingBool("ShowDistanceToCenter", Map, NEVER, false, Global, ACB);
     SettingBool showInfo = new SettingBool("", Map, NEVER, true, Global, ACB);
     SettingBool isMapNorthOriented = new SettingBool("MapNorthOriented", Map, NEVER, true, Global, ACB);
     SettingBool showDirectLine = new SettingBool("ShowDirektLine", Map, NEVER, false, Global, ACB);

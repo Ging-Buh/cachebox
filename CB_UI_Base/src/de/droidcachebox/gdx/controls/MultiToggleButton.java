@@ -133,6 +133,7 @@ public class MultiToggleButton extends CB_Button {
         this.stateId = stateId;
         if (stateId > states.size() - 1)
             this.stateId = 0;
+
         aktState = states.get(stateId);
         setText(aktState.Text);
         led = null;
