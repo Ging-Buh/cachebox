@@ -20,7 +20,6 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.CoordinateGPS;
-import de.droidcachebox.locator.map.MapViewBase;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -109,7 +108,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             double longitude = trackpoint.x;
             ShowMap.getInstance().execute();
             ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
-            ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+            // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
             ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(latitude, longitude));
         }
     }

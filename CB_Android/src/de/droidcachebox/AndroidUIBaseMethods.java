@@ -34,7 +34,6 @@ import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
-import de.droidcachebox.locator.map.MapViewBase;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.*;
@@ -320,7 +319,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         if (coordinate.isValid()) {
             ShowMap.getInstance().execute();
             ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
-            ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+            // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
             ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
         }
     }

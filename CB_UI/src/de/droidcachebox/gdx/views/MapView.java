@@ -118,27 +118,18 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         setBackground(ListBack);
 
         mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.zoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
-
         if (mapMode == MapMode.Normal) {
             addChild(mapScale);
         } else {
             mapScale.setInvisible();
         }
 
-        // initial Zoom Buttons
         zoomBtn = new ZoomButtons(GL_UISizes.zoomBtn, this, "ZoomButtons");
-
         zoomBtn.setX(getWidth() - (zoomBtn.getWidth() + UiSizes.getInstance().getMargin()));
-
         zoomBtn.setOnClickListenerDown((v, x, y, pointer, button) -> {
-            // bei einer Zoom Animation in negativer Richtung muss der setDiffCameraZoom gesetzt werden!
-            // zoomScale.setDiffCameraZoom(-1.9f, true);
-            // zoomScale.setZoom(zoomBtn.getZoom());
             zoomScale.resetFadeOut();
             inputState = InputState.Idle;
-
             lastDynamicZoom = zoomBtn.getZoom();
-
             kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
             GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
             renderOnce("zoomBtn.setOnClickListenerDown");
@@ -149,16 +140,13 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             setZoomScale(zoomBtn.getZoom());
             zoomScale.resetFadeOut();
             inputState = InputState.Idle;
-
             lastDynamicZoom = zoomBtn.getZoom();
-
             kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
             GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
             renderOnce("zoomBtn.setOnClickListenerUp");
             calcPixelsPerMeter();
             return true;
         });
-
         if (mapMode == MapMode.Compass) {
             zoomBtn.setInvisible();
         } else {
@@ -168,7 +156,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         setClickHandler((v, x, y, pointer, button) -> {
             WayPointRenderInfo minWpi = null;
-
             if (targetArrow != null && targetArrow.contains(x, y)) {
                 if (GlobalCore.isSetSelectedCache()) {
                     if (GlobalCore.getSelectedWayPoint() != null) {
@@ -178,9 +165,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                         Coordinate tmp = GlobalCore.getSelectedCache().getCoordinate();
                         setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     }
-
-                    // switch map state to WP
-                    btnMapState.setState(2);
+                    btnMapState.setState(MapState.WP.ordinal());
                 }
                 return false;
             }
@@ -283,8 +268,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         btnMapState.setLastStateWithLongClick(true);
         MapState lastUsedMapState = MapState.values()[Config.lastMapToggleBtnState.getValue()];
         btnMapState.setState(lastUsedMapState.ordinal());
-        btnMapState.setOnStateChangedListener((v, State) -> setMapState(MapState.values()[State]));
-
+        btnMapState.setOnStateChangedListener((v, state) -> setMapState(MapState.values()[state]));
         btnMapState.registerSkinChangedEvent();
 
         switch (mapMode) {
@@ -293,34 +277,28 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                 break;
             case Normal:
                 setMapState(lastUsedMapState);
+                switch (Config.lastMapToggleBtnState.getValue()) {
+                    case 0:
+                        mapInfoPanel.setCoordType(CoordType.Map);
+                        break;
+                    case 1:
+                    case 3:
+                    case 4:
+                        mapInfoPanel.setCoordType(CoordType.GPS);
+                        break;
+                    case 2:
+                        mapInfoPanel.setCoordType(CoordType.Cache);
+                        break;
+                }
+                addChild(btnMapState);
+                if (Config.disableLiveMap.getValue()) {
+                    liveButton.setState(false);
+                }
+                addChild(liveButton);
                 break;
             case Track:
                 setMapState(MapState.FREE);
                 break;
-        }
-
-        if (mapMode == MapMode.Normal) {
-            switch (Config.lastMapToggleBtnState.getValue()) {
-                case 0:
-                    mapInfoPanel.setCoordType(CoordType.Map);
-                    break;
-                case 1:
-                case 3:
-                case 4:
-                    mapInfoPanel.setCoordType(CoordType.GPS);
-                    break;
-                case 2:
-                    mapInfoPanel.setCoordType(CoordType.Cache);
-                    break;
-            }
-        }
-
-        if (mapMode == MapMode.Normal) {
-            addChild(btnMapState);
-            if (Config.disableLiveMap.getValue()) {
-                liveButton.setState(false);
-            }
-            addChild(liveButton);
         }
 
         infoBubble = new InfoBubble(GL_UISizes.bubble, "infoBubble");
@@ -963,14 +941,14 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     public void setBtnMapStateToFree() {
-        btnMapState.setState(0);
+        btnMapState.setState(MapState.FREE.ordinal());
     }
 
     @Override
     public void setMapState(MapState state) {
-        Log.debug(sKlasse, "setMapState :" + state);
         if (mapState == state)
             return;
+        Log.debug(sKlasse, "setMapState :" + state);
 
         Config.lastMapToggleBtnState.setValue(state.ordinal());
         Config.AcceptChanges();
@@ -979,20 +957,27 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         if (mapMode == MapMode.Normal) {
             mapInfoPanel.setCoordType(CoordType.Map);
-            if (state == MapState.CAR) {
-                if (!wasCarMode) {
+            switch (state) {
+                case CAR:
+                    if (!wasCarMode) {
+                        mapInfoPanel.setCoordType(CoordType.GPS);
+                    }
+                    break;
+                case WP:
+                    mapInfoPanel.setCoordType(CoordType.Cache);
+                    break;
+                case LOCK:
+                case GPS:
                     mapInfoPanel.setCoordType(CoordType.GPS);
-                }
-            } else if (state == MapState.WP) {
-                mapInfoPanel.setCoordType(CoordType.Cache);
-            } else if (state == MapState.LOCK) {
-                mapInfoPanel.setCoordType(CoordType.GPS);
-            } else if (state == MapState.GPS) {
-                mapInfoPanel.setCoordType(CoordType.GPS);
+                    break;
             }
         }
 
         super.setMapState(state);
+
+        if (btnMapState.getState() != state.ordinal()) {
+            btnMapState.setState(state.ordinal());
+        }
     }
 
     @Override

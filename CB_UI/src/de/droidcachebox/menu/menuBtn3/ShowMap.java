@@ -67,7 +67,7 @@ import static de.droidcachebox.locator.map.MapsForgeLayer.*;
  */
 public class ShowMap extends AbstractShowAction {
     private static final String log = "ShowMap";
-    private static ShowMap that;
+    private static ShowMap showMap;
     private static Router router;
     public MapView normalMapView;
     private HashMap<String, String> RenderThemes;
@@ -86,8 +86,8 @@ public class ShowMap extends AbstractShowAction {
     }
 
     public static ShowMap getInstance() {
-        if (that == null) that = new ShowMap();
-        return that;
+        if (showMap == null) showMap = new ShowMap();
+        return showMap;
     }
 
     public static void setRouter(Router router) {
@@ -136,7 +136,7 @@ public class ShowMap extends AbstractShowAction {
                 public void callBack(Coordinate coordinate) {
                     if (coordinate != null) {
                         normalMapView.setBtnMapStateToFree(); // btn
-                        normalMapView.setMapState(MapViewBase.MapState.FREE);
+                        // normalMapView.setMapState(MapViewBase.MapState.FREE);
                         normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
                     }
                     searchCoordinates.doFinish();

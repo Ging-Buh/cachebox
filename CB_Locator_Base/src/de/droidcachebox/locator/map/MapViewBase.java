@@ -791,10 +791,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     public boolean mapStateIsNotFreeOrWp() {
-        if (mapState == MapState.FREE || mapState == MapState.WP) {
-            return false;
-        } else {
-            return true;
+        switch (mapState) {
+            case FREE:
+            case WP:
+                return false;
+            default:
+                return true;
         }
     }
 
