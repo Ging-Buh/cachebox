@@ -196,7 +196,7 @@ public class SearchDialog extends PopUp_Base {
         this.addChild(mEingabe);
 
         setLang();
-        switchSearcheMode(SearchMode.Title);
+        switchSearchMode(SearchMode.Title);
 
         mBtnCancel.setClickHandler((v, x, y1, pointer, button) -> {
             close();
@@ -204,17 +204,17 @@ public class SearchDialog extends PopUp_Base {
         });
 
         mTglBtnTitle.setClickHandler((v, x, y12, pointer, button) -> {
-            switchSearcheMode(SearchMode.Title);
+            switchSearchMode(SearchMode.Title);
             return true;
         });
 
         mTglBtnGc.setClickHandler((v, x, y13, pointer, button) -> {
-            switchSearcheMode(SearchMode.GcCode);
+            switchSearchMode(SearchMode.GcCode);
             return true;
         });
 
         mTglBtnOwner.setClickHandler((v, x, y14, pointer, button) -> {
-            switchSearcheMode(SearchMode.Owner);
+            switchSearchMode(SearchMode.Owner);
             return true;
         });
 
@@ -257,7 +257,6 @@ public class SearchDialog extends PopUp_Base {
             mBtnFilter.clearImage();
             mBtnFilter.setText(Translation.get("Filter"));
         } else {
-
             mBtnFilter.setImage(new SpriteDrawable(Sprites.getSprite(IconName.targetDay.name())));
             mBtnFilter.setText("");
         }
@@ -291,7 +290,7 @@ public class SearchDialog extends PopUp_Base {
      *              1 = Gc-Code <br/>
      *              2 = Owner <br/>
      */
-    private void switchSearcheMode(SearchMode state) {
+    private void switchSearchMode(SearchMode state) {
         mSearchState = state;
 
         if (state == SearchMode.Title) {
@@ -587,7 +586,7 @@ public class SearchDialog extends PopUp_Base {
             GL.that.RunOnGL(() -> {
                 mEingabe.setText(searchPattern);
                 GL.that.RunOnGL(() -> {
-                    switchSearcheMode(searchMode);
+                    switchSearchMode(searchMode);
                     GL.that.RunOnGL(() -> {
                         mTglBtnOnline.setState(1);
                         GL.that.RunOnGL(() -> {

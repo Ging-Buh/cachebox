@@ -126,13 +126,13 @@ public class MultiToggleButton extends CB_Button {
         setState(0, true);
     }
 
-    private void setState(int stateId, boolean force) {
-        if (this.stateId == stateId && !force)
+    private void setState(int newStateId, boolean force) {
+        if (stateId == newStateId && !force)
             return;
 
-        this.stateId = stateId;
-        if (stateId > states.size() - 1)
-            this.stateId = 0;
+        stateId = newStateId;
+        if (newStateId > states.size() - 1)
+            stateId = 0;
 
         aktState = states.get(stateId);
         setText(aktState.Text);
@@ -205,15 +205,12 @@ public class MultiToggleButton extends CB_Button {
     @Override
     protected void skinIsChanged() {
         drawableNormal = null;
-
         drawablePressed = null;
-
         drawableDisabled = null;
         mFont = null;
         lblTxt = null;
         removeChilds();
         setState(getState(), true);
-
     }
 
     /**
@@ -233,9 +230,9 @@ public class MultiToggleButton extends CB_Button {
         public String Text;
         public HSV_Color color;
 
-        State(String text, HSV_Color color) {
+        State(String text, HSV_Color newColor) {
             Text = text;
-            this.color = color;
+            color = newColor;
         }
     }
 
