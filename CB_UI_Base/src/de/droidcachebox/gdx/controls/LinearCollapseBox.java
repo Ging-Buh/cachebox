@@ -17,12 +17,7 @@ public class LinearCollapseBox extends CollapseBox {
         linearLayout = new Linearlayout(rec.getWidth(), "LinearLayout-" + Name);
         this.childs.add(linearLayout);
 
-        linearLayout.setLayoutChangedListener(new Linearlayout.LayoutChanged() {
-            @Override
-            public void LayoutIsChanged(Linearlayout linearLayout, float newHeight) {
-                layout();
-            }
-        });
+        linearLayout.setLayoutChangedListener((linearLayout, newHeight) -> layout());
 
     }
 
@@ -78,10 +73,10 @@ public class LinearCollapseBox extends CollapseBox {
     }
 
     /**
-     * Setzt dieses View Clicable mit der �bergabe von True. </br> Wenn Dieses View nicht Clickable ist, werden auch keine Click-Abfragen
-     * an die Childs weitergegeben.
+     * make this view clickable, if true else not.  </br>
+     * if not, no click is transferred to a child
      *
-     * @param value
+     * @param value ?
      */
     public void setClickable(boolean value) {
         linearLayout.setClickable(value);

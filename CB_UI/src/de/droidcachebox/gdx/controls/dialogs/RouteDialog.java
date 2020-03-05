@@ -8,10 +8,9 @@ import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.Size;
-import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
@@ -23,15 +22,15 @@ public class RouteDialog extends ButtonDialog {
     private IReturnListener mReturnListener;
 
     public RouteDialog(IReturnListener listener) {
-        super(Menu.getMenuRec(), "RouteDialog", "", Translation.get("RouteToWaypoit"), MessageBoxButton.OKCancel, null, null);
+        super(GL_UISizes.menuRectangle, "RouteDialog", "", Translation.get("RouteToWaypoit"), MessageBoxButton.OKCancel, null, null);
         mReturnListener = listener;
 
-        SizeF msgBoxContentSize = getContentSize();
+        // SizeF msgBoxContentSize = getContentSize();
         // initial VariableField
         float textFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
-        float innerWidth = msgBoxContentSize.getWidth() + leftBorder + rightBorder;
-        innerWidth = Menu.getMenuRec().getWidth();
+        // float innerWidth = msgBoxContentSize.getWidth() + leftBorder + rightBorder;
+        float innerWidth = getWidth();
 
         Linearlayout layout = new Linearlayout(innerWidth, "layout");
         layout.setX(0);

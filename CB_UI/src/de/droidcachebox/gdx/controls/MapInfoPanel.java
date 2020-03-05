@@ -17,7 +17,6 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.core.LiveMapQue;
@@ -67,7 +66,7 @@ public class MapInfoPanel extends CB_View_Base {
                 } catch (Exception ignored) {
                 }
 
-                if (CB_UI_Settings.LiveMapEnabeld.getValue() && !this.parentMapView.isCarMode())
+                if (CB_UI_Settings.LiveMapEnabeld.getValue() && !parentMapView.isCarMode())
                     LiveMapQue.quePosition(Coord);
 
                 GL.that.renderOnce();
@@ -148,62 +147,62 @@ public class MapInfoPanel extends CB_View_Base {
 
     @Override
     protected void initialize() {
-        this.removeChilds();
+        removeChilds();
 
         setBackground(Sprites.InfoBack);
 
         // initial Image
 
-        CB_RectF CompassRec = new CB_RectF(0, 0, this.getHeight(), this.getHeight());
+        CB_RectF CompassRec = new CB_RectF(0, 0, getHeight(), getHeight());
 
         compass_frame = new Image(CompassRec, "Compass_Frame", false);
         compass_frame.setDrawable(Sprites.Compass.get(2));
         compass_frame.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
         compass_frame.setScale(0.80f);
-        this.addChild(compass_frame);
+        addChild(compass_frame);
 
         compas_scale = new Image(CompassRec, "Compass_Scale", false);
         compas_scale.setDrawable(Sprites.Compass.get(3));
         compas_scale.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
         compas_scale.setScale(0.80f);
-        this.addChild(compas_scale);
+        addChild(compas_scale);
 
         arrow = new Image(CompassRec, "Compass_Arrow", false);
         setArrowDrawable(true);
         arrow.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
         arrow.setScale(0.50f);
-        this.addChild(arrow);
+        addChild(arrow);
 
         float margin = GL_UISizes.margin;
 
         lblSpeed = new CB_Label(scaleCenter(0.4f));
         lblSpeed.setFont(Fonts.getSmall());
-        lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.getHeight() * 0.1f));
+        lblSpeed.setPos(CompassRec.getWidth() + margin, getHeight() * 0.1f);
         lblSpeed.setText("---");
-        this.addChild(lblSpeed);
+        addChild(lblSpeed);
 
         lblDistance = new CB_Label(scaleCenter(0.4f));
         lblDistance.setFont(Fonts.getBig());
-        lblDistance.setPos(new Vector2(CompassRec.getWidth() + margin, CompassRec.getWidth() / 2));
+        lblDistance.setPos(CompassRec.getWidth() + margin, CompassRec.getWidth() / 2);
         lblDistance.setText("---");
-        this.addChild(lblDistance);
+        addChild(lblDistance);
 
         lblLatitude = new CB_Label(scaleCenter(0.4f));
         lblLatitude.setFont(Fonts.getSmall());
-        lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
+        lblLatitude.setPos(getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2);
         lblLatitude.setText("---");
-        this.addChild(lblLatitude);
+        addChild(lblLatitude);
 
         lblLongitude = new CB_Label(scaleCenter(0.4f));
         lblLongitude.setFont(Fonts.getSmall());
-        lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth() - rightBorder, this.getHeight() * 0.1f));
+        lblLongitude.setPos(getWidth() - lblLongitude.getWidth() - rightBorder, getHeight() * 0.1f);
         lblLongitude.setText("---");
-        this.addChild(lblLongitude);
+        addChild(lblLongitude);
 
-        CoordSymbol = new Image((new CB_RectF(0, 0, this.getHeight(), this.getHeight())).scaleCenter(0.62f), "CoordSymbol", false);
-        CoordSymbol.setX(this.getWidth() - CoordSymbol.getWidth() - (rightBorder / 3));
+        CoordSymbol = new Image((new CB_RectF(0, 0, getHeight(), getHeight())).scaleCenter(0.62f), "CoordSymbol", false);
+        CoordSymbol.setX(getWidth() - CoordSymbol.getWidth() - (rightBorder / 3));
         CoordSymbol.setDrawable(new SpriteDrawable(Sprites.getSprite("cache-icon")));
-        this.addChild(CoordSymbol);
+        addChild(CoordSymbol);
         CoordType tmp = lastCoordType;
         lastCoordType = CoordType.NULL;
         setCoordType(tmp);

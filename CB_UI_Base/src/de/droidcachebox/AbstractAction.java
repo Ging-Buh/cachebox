@@ -27,11 +27,6 @@ public abstract class AbstractAction {
         titleExtension = "";
     }
 
-    public AbstractAction(String titleTranlationId, String titleExtension) {
-        this.titleTranlationId = titleTranlationId;
-        this.titleExtension = titleExtension;
-    }
-
     public abstract void execute();
 
     public abstract Sprite getIcon();

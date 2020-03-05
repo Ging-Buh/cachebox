@@ -23,6 +23,7 @@ public class ActivityBase extends CB_View_Base {
     protected float MeasuredLabelHeightBig;
     protected float ButtonHeight;
     protected float margin = 0;
+    protected ActivityBase activityBase;
 
     public ActivityBase(String Name) {
         this(new CB_RectF(0, 0, Math.min(UiSizes.getInstance().getSmallestWidth(), UiSizes.getInstance().getWindowHeight() * 0.66f), UiSizes.getInstance().getWindowHeight()), Name);
@@ -30,30 +31,28 @@ public class ActivityBase extends CB_View_Base {
 
     public ActivityBase(CB_RectF rec, String Name) {
         super(rec, Name);
-        // dontRenderDialogBackground = true;
-        this.setBackground(Sprites.activityBackground);
-
+        setBackground(Sprites.activityBackground);
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
         MeasuredLabelHeightBig = Fonts.measureForBigFont("T").height * 1.5f;
         ButtonHeight = UiSizes.getInstance().getButtonHeight();
-        this.registerSkinChangedEvent();
+        registerSkinChangedEvent();
+        activityBase = this;
     }
 
     @Override
     protected void skinIsChanged() {
-        this.setBackground(Sprites.activityBackground);
+        setBackground(Sprites.activityBackground);
     }
 
     @Override
     public GL_View_Base addChild(GL_View_Base view) {
-        this.addChildDirekt(view);
-
+        addChildDirekt(view);
         return view;
     }
 
     @Override
     public void removeChilds() {
-        this.removeChildsDirekt();
+        removeChildsDirekt();
     }
 
     @Override

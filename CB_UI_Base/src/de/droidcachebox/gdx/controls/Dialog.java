@@ -18,7 +18,6 @@ package de.droidcachebox.gdx.controls;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.Sprites.DialogElement;
@@ -273,7 +272,7 @@ public abstract class Dialog extends CB_View_Base {
         mContent.setHeight((this.getHeight() - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
         float centerversatzX = this.getHalfWidth() - mContent.getHalfWidth();
         float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
-        mContent.setPos(new Vector2(centerversatzX, centerversatzY));
+        mContent.setPos(centerversatzX, centerversatzY);
 
     }
 
@@ -361,7 +360,7 @@ public abstract class Dialog extends CB_View_Base {
         return mContent.getSize();
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return mTitle;
     }
 

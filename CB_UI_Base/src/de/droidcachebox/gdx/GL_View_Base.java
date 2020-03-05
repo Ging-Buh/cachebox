@@ -194,7 +194,6 @@ public abstract class GL_View_Base extends CB_RectF {
 
     /**
      * Returns TRUE if with and height >0, is not disposed and is not set to invisible
-     *
      */
     public boolean isVisible() {
         if (isDisposed)
@@ -367,7 +366,6 @@ public abstract class GL_View_Base extends CB_RectF {
      * Die renderChilds() Methode wird vom GL_Listener bei jedem Render-Vorgang aufgerufen.
      * Hier wird dann zuerst die render() Methode dieser View aufgerufen.
      * Danach werden alle Childs iteriert und deren renderChilds() Methode aufgerufen, wenn die View sichtbar ist (Visibility).
-     *
      */
     public void renderChilds(final Batch batch, ParentInfo parentInfo) {
         if (myParentInfo == null)
@@ -586,7 +584,6 @@ public abstract class GL_View_Base extends CB_RectF {
 
     /**
      * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
-     *
      */
     public void setScale(float value) {
         mScale = value;
@@ -600,7 +597,7 @@ public abstract class GL_View_Base extends CB_RectF {
             innerHeight = height - topBorder - bottomBorder;
             onResized(this);
         } catch (Exception ex) {
-            Log.err(log,"resize", ex);
+            Log.err(log, "resize", ex);
         }
         debugSprite = null;
 
@@ -1007,13 +1004,6 @@ public abstract class GL_View_Base extends CB_RectF {
         if (getX() == i)
             return;
         super.setX(i);
-        invalidate(); // Scissor muss neu berechnet werden
-        GL.that.renderOnce();
-    }
-
-    @Override
-    public void setPos(Vector2 Pos) {
-        super.setPos(Pos);
         invalidate(); // Scissor muss neu berechnet werden
         GL.that.renderOnce();
     }

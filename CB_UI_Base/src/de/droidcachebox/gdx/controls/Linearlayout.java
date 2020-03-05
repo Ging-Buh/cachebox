@@ -11,18 +11,18 @@ import java.util.Iterator;
 
 public class Linearlayout extends CB_View_Base {
 
-    private float margin = 5;
+    private float margin;
     private LayoutChanged mLayoutChangedListener;
     private Hashtable<GL_View_Base, Float> sonderMargins;
 
     /**
-     * H�he wird von den zugef�gten Items bestimmt.
+     * height is calculated from added childs.
      *
-     * @param width
-     * @param Name
+     * @param width ?
+     * @param name  ?
      */
-    public Linearlayout(float width, String Name) {
-        super(new CB_RectF(0, 0, width, 0), Name);
+    public Linearlayout(float width, String name) {
+        super(new CB_RectF(0, 0, width, 0), name);
         margin = (Fonts.Measure("T").height) / 2;
     }
 
@@ -63,13 +63,13 @@ public class Linearlayout extends CB_View_Base {
     }
 
     /**
-     * @param view
+     * @param view   ?
      * @param margin der Abstand zu den Oberen Item
-     * @return
+     * @return ?
      */
     public GL_View_Base addChild(final GL_View_Base view, float margin) {
         if (sonderMargins == null)
-            sonderMargins = new Hashtable<GL_View_Base, Float>();
+            sonderMargins = new Hashtable<>();
         sonderMargins.put(view, margin);
         return addChildDirekt(view);
     }
@@ -118,7 +118,6 @@ public class Linearlayout extends CB_View_Base {
             childs.add(view);
             layout();
         }
-
         return view;
     }
 
@@ -128,7 +127,6 @@ public class Linearlayout extends CB_View_Base {
             childs.add(0, view);
             layout();
         }
-
         return view;
     }
 

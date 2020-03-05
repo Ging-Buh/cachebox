@@ -181,6 +181,6 @@ public class ShowCacheList extends AbstractShowAction {
     }
 
     public void setNameExtension(String newExtension) {
-        this.titleExtension = newExtension;
+        titleExtension = newExtension;
     }
 }

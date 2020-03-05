@@ -94,7 +94,7 @@ public class Coordinate extends LatLong implements Serializable {
     }
 
     public static Coordinate Intersection(Coordinate coord1, Coordinate coord2, Coordinate coord3, Coordinate coord4) {
-        Coordinate result = null;
+        Coordinate result;
 
         double[] x = new double[4];
         double[] y = new double[4];
@@ -148,11 +148,11 @@ public class Coordinate extends LatLong implements Serializable {
                 try {
                     snording = snording.replace(",", ".");
                     seasting = seasting.replace(",", ".");
-                    double nording = Double.valueOf(snording);
-                    double easting = Double.valueOf(seasting);
+                    double nording = Double.parseDouble(snording);
+                    double easting = Double.parseDouble(seasting);
                     UTMConvert convert = new UTMConvert();
-                    double ddlat = 0;
-                    double ddlon = 0;
+                    double ddlat;
+                    double ddlon;
                     convert.iUTM2LatLon(nording, easting, zone);
                     ddlat = convert.dLat;
                     ddlon = convert.dLon;
@@ -163,8 +163,7 @@ public class Coordinate extends LatLong implements Serializable {
                     values[0] = ddlat;
                     values[1] = ddlon;
                     return values;
-                } catch (Exception ex) {
-
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -178,8 +177,8 @@ public class Coordinate extends LatLong implements Serializable {
         // NumberFormatInfo ni = new NumberFormatInfo();
         // text = text.Replace(".", Global.DecimalSeparator);
         text = text.replace(",", ".");
-        double lat = 0;
-        double lon = 0;
+        double lat;
+        double lon;
         int ilat = text.indexOf('N');
         if (ilat < 0)
             ilat = text.indexOf('S');
@@ -192,10 +191,10 @@ public class Coordinate extends LatLong implements Serializable {
             String[] latlon = text.split(" ");
             if (latlon.length == 2) {
                 try {
-                    values[0] = Double.valueOf(latlon[0]);
-                    values[1] = Double.valueOf(latlon[1]);
+                    values[0] = Double.parseDouble(latlon[0]);
+                    values[1] = Double.parseDouble(latlon[1]);
                     values[2] = 1;
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             return values;
@@ -206,11 +205,11 @@ public class Coordinate extends LatLong implements Serializable {
             return values;
         char dlat = text.charAt(ilat);
         char dlon = text.charAt(ilon);
-        String slat = "";
-        String slon = "";
+        String slat;
+        String slon;
         if (ilat < 2) {
             slat = text.substring(ilat + 1, ilon).trim().replace("\u00B0", " ");
-            slon = text.substring(ilon + 1, text.length()).trim().replace("\u00B0", " ");
+            slon = text.substring(ilon + 1).trim().replace("\u00B0", " ");
         } else {
             slat = text.substring(0, ilat).trim().replace("\u00B0", " ");
             slon = text.substring(ilat + 1, text.length() - 1).trim().replace("\u00B0", " ");
@@ -218,8 +217,8 @@ public class Coordinate extends LatLong implements Serializable {
 
         String[] clat = slat.split(" ");
         String[] clon = slon.split(" ");
-        CB_List<String> llat = new CB_List<String>(clat.length);
-        CB_List<String> llon = new CB_List<String>(clon.length);
+        CB_List<String> llat = new CB_List<>(clat.length);
+        CB_List<String> llon = new CB_List<>(clon.length);
         for (String ss : clat) {
             if (!ss.equals("")) {
                 llat.add(ss);
@@ -236,22 +235,22 @@ public class Coordinate extends LatLong implements Serializable {
         try {
             if ((llat.size() == 1) && (llon.size() == 1)) {
                 // Decimal
-                lat = Double.valueOf(llat.get(0));
-                lon = Double.valueOf(llon.get(0));
+                lat = Double.parseDouble(llat.get(0));
+                lon = Double.parseDouble(llon.get(0));
             } else if ((llat.size() == 2) && (llon.size() == 2)) {
                 // Decimal Minute
-                lat = Integer.valueOf(llat.get(0));
-                lat += Double.valueOf(llat.get(1)) / 60;
-                lon = Integer.valueOf(llon.get(0));
-                lon += Double.valueOf(llon.get(1)) / 60;
+                lat = Integer.parseInt(llat.get(0));
+                lat += Double.parseDouble(llat.get(1)) / 60;
+                lon = Integer.parseInt(llon.get(0));
+                lon += Double.parseDouble(llon.get(1)) / 60;
             } else if ((llat.size() == 3) && (llon.size() == 3)) {
                 // Decimal - Minute - Second
-                lat = Integer.valueOf(llat.get(0));
-                lat += Double.valueOf(llat.get(1)) / 60;
-                lat += Double.valueOf(llat.get(2)) / 3600;
-                lon = Integer.valueOf(llon.get(0));
-                lon += Double.valueOf(llon.get(1)) / 60;
-                lon += Double.valueOf(llon.get(2)) / 3600;
+                lat = Integer.parseInt(llat.get(0));
+                lat += Double.parseDouble(llat.get(1)) / 60;
+                lat += Double.parseDouble(llat.get(2)) / 3600;
+                lon = Integer.parseInt(llon.get(0));
+                lon += Double.parseDouble(llon.get(1)) / 60;
+                lon += Double.parseDouble(llon.get(2)) / 3600;
             } else {
                 values[2] = 0;
                 return values;
@@ -301,7 +300,7 @@ public class Coordinate extends LatLong implements Serializable {
      * 54.787767° 5.353422°
      * UTM: 32U E 528797 N 5391292
      *
-     * @return
+     * @return ?
      */
     public String formatCoordinate() {
         if (valid)
@@ -313,7 +312,7 @@ public class Coordinate extends LatLong implements Serializable {
     /**
      * Gibt einen formatierten String dieser Koordinate in zwei Zeilen wieder
      *
-     * @return
+     * @return ?
      */
     public String formatCoordinateLineBreak() {
         if (valid)
@@ -354,10 +353,10 @@ public class Coordinate extends LatLong implements Serializable {
     /**
      * Returns the distance to to refer Coordinate
      *
-     * @param coord
-     * @return
+     * @param coord ?
+     * @return ?
      */
-    public float Distance(Coordinate coord, CalculationType type) {
+    public float distance(Coordinate coord, CalculationType type) {
         // float[] dist = new float[1];
         MathUtils.calculateDistanceAndBearing(type, getLatitude(), getLongitude(), coord.getLatitude(), coord.getLongitude(), mResults);
         return mResults[0];
@@ -366,9 +365,9 @@ public class Coordinate extends LatLong implements Serializable {
     /**
      * Returns the distance to to last valid Position
      *
-     * @return
+     * @return ?
      */
-    public float Distance(CalculationType type) {
+    public float distance(CalculationType type) {
         float[] dist = new float[1];
         MathUtils.calculateDistanceAndBearing(type, getLatitude(), getLongitude(), Locator.getInstance().getLatitude(), Locator.getInstance().getLongitude(), dist);
         return dist[0];
@@ -389,10 +388,7 @@ public class Coordinate extends LatLong implements Serializable {
 
             if (la > TOL)
                 return false;
-            if (lo > TOL)
-                return false;
-
-            return true;
+            return !(lo > TOL);
         }
         return false;
     }

@@ -438,18 +438,18 @@ public class ZoomButtons extends CB_View_Base {
     public void onResized(CB_RectF rec) {
         // rect auf Teilen in zwei gleich gro�e
         HitRecUp = new CB_RectF(rec);
-        HitRecUp.setPos(new Vector2()); // setze auf 0,0
+        HitRecUp.setPos(0, 0); // setze auf 0,0
         HitRecDown = new CB_RectF(rec);
-        HitRecDown.setPos(new Vector2()); // setze auf 0,0
+        HitRecDown.setPos(0, 0); // setze auf 0,0
 
         if (portrait) {
             HitRecUp.setHeight(rec.getHeight() / 2f);
             HitRecDown.setHeight(rec.getHeight() / 2f);
-            HitRecUp.setPos(new Vector2(0, HitRecDown.getHeight()));
+            HitRecUp.setPos(0, HitRecDown.getHeight());
         } else {
             HitRecUp.setWidth(rec.getWidth() / 2f);
             HitRecDown.setWidth(rec.getWidth() / 2f);
-            HitRecUp.setPos(new Vector2(HitRecDown.getWidth(), 0));
+            HitRecUp.setPos(HitRecDown.getWidth(), 0);
         }
 
     }

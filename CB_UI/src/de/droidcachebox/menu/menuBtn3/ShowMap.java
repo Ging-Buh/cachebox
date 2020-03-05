@@ -713,7 +713,7 @@ public class ShowMap extends AbstractShowAction {
 
         menuMapStyleOverlays.mMsgBoxClickListener = (btnNumber, data) -> {
             StringBuilder mapStyleValues = new StringBuilder(mapStyleId);
-            for (MenuItem mi : menuMapStyleOverlays.mItems) {
+            for (MenuItem mi : menuMapStyleOverlays.getItems()) {
                 if (mi.isChecked())
                     mapStyleValues.append("\t").append("+").append(mi.getData());
                 else

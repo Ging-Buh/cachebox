@@ -35,7 +35,7 @@ import java.util.Locale;
 import java.util.zip.ZipException;
 
 public class Importer {
-    private static final String log = "Importer";
+    private static final String sKlasse = "Importer";
 
     /**
      * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
@@ -73,9 +73,9 @@ public class Importer {
                 try {
                     UnZip.extractFolder(tmpZip.getAbsolutePath());
                 } catch (ZipException e) {
-                    Log.err(log, "ZipException", e);
+                    Log.err(sKlasse, "ZipException", e);
                 } catch (IOException e) {
-                    Log.err(log, "IOException", e);
+                    Log.err(sKlasse, "IOException", e);
                 }
             }
 
@@ -119,7 +119,7 @@ public class Importer {
                         countwpt++;
                 }
             } catch (IOException e1) {
-                Log.err(log, e1.getLocalizedMessage(), e1);
+                Log.err(sKlasse, e1.getLocalizedMessage(), e1);
             }
 
             wptCount.put(fAbstractFile.getAbsolutePath(), countwpt);
@@ -151,7 +151,7 @@ public class Importer {
             try {
                 importer.doImport(importHandler, wptCount.get(AbstractFile.getAbsolutePath()));
             } catch (Exception e) {
-                Log.err(log, "importer.doImport => " + AbstractFile.getAbsolutePath(), e);
+                Log.err(sKlasse, "importer.doImport => " + AbstractFile.getAbsolutePath(), e);
                 throw e;
             }
 
@@ -196,9 +196,7 @@ public class Importer {
 
                 ip.ProgressInkrement("sendGcVote", "Sending Votes (" + i + " / " + pendingVotes.size() + ")", false);
 
-                Boolean ret = GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.getVote(), info.getUrl(), info.getGcCode());
-
-                if (ret) {
+                if (GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.getVote(), info.getUrl(), info.getGcCode())) {
                     gcVoteDAO.updatePendingVote(info.getId());
                 }
             }
@@ -338,7 +336,7 @@ public class Importer {
                         if (ret < 0) break;
                     }
                 } catch (Exception e) {
-                    Log.err(log, "importImages", e);
+                    Log.err(sKlasse, "importImages", e);
                 }
                 reader.moveToNext();
             }

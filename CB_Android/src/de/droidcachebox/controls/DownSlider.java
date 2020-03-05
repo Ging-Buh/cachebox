@@ -397,7 +397,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         // draw WP Info
         versatz += WPInfoHeight;
         canvas.translate(0, -versatz);
-        Boolean WPisDraw = drawWPInfo(canvas);
+        boolean WPisDraw = drawWPInfo(canvas);
         canvas.translate(0, +versatz);
         // canvas.clipRect(mBackRec);
 
@@ -408,7 +408,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             if (mCache.getAttributes() != null) {
                 Iterator<Attribute> iterator = mCache.getAttributes().iterator();
 
-                if (iterator != null && iterator.hasNext()) {
+                if (iterator.hasNext()) {
                     if (attHeight == -1)
                         attHeight = (int) (UiSizes.getInstance().getIconSize() * 0.75);
 
@@ -428,7 +428,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
 
             versatz += CacheInfoHeight;
             canvas.translate(5, -versatz);
-            CacheDraw.DrawInfo(mCache, canvas, width - 10, CacheInfoHeight, WPisDraw ? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), CacheDraw.DrawStyle.withOwnerAndName);
+            CacheDraw.drawInfo(mCache, canvas, width - 10, CacheInfoHeight, WPisDraw ? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), CacheDraw.DrawStyle.withOwnerAndName);
 
             // draw Attributes
 

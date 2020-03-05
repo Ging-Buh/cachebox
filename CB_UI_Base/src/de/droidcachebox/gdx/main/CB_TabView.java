@@ -1,6 +1,5 @@
 package de.droidcachebox.gdx.main;
 
-import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -57,7 +56,7 @@ public class CB_TabView extends CB_View_Base {
         if (currentView != null) {
             // set View size and pos
             currentView.setSize(getWidth(), getHeight() - mainButtonListView.getHeight());
-            currentView.setPos(new Vector2(0, mainButtonListView.getHeight()));
+            currentView.setPos(0, mainButtonListView.getHeight());
 
         }
     }
@@ -65,7 +64,7 @@ public class CB_TabView extends CB_View_Base {
     @Override
     protected void initialize() {
         // Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
-        if (mainButtons.size() <= mainButtonListView.getMaxItemCount()) {
+        if (mainButtons.size() <= mainButtonListView.getMaxNumberOfVisibleItems()) {
             float sollDivider = (mainButtonListView.getWidth() - (mainButtonSize.getHeight() * mainButtons.size())) / (mainButtons.size() + 1);
             mainButtonListView.setDividerSize(sollDivider);
         }
@@ -90,7 +89,7 @@ public class CB_TabView extends CB_View_Base {
                 }
                 try {
                     view.setSize(getWidth(), getHeight() - mainButtonListView.getHeight());
-                    view.setPos(new Vector2(0, mainButtonListView.getHeight()));
+                    view.setPos(0, mainButtonListView.getHeight());
                 } catch (Exception ex) {
                     Log.err(sKlasse, "set view size", ex);
                     return;

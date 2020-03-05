@@ -42,21 +42,21 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     private BitmapFontCache mCoordCache;
     private int viewMode;
 
-    public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint) {
+    public WaypointViewItem(CB_RectF rec, int index, Cache cache, Waypoint waypoint) {
         // CB_UI.Slider, WaypointView (geoCache + waypoint) for the waypointentry
-        super(rec, Index, "");
+        super(rec, index, "");
         viewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
-        initial(Index, cache, waypoint);
+        initialize(index, cache, waypoint);
     }
 
-    public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint, int viewMode) {
+    public WaypointViewItem(CB_RectF rec, int index, Cache cache, Waypoint waypoint, int viewMode) {
         // CB_UI.Slider VIEW_MODE_SLIDER for the geoCache entry
-        super(rec, Index, "");
+        super(rec, index, "");
         this.viewMode = viewMode;
-        initial(Index, cache, waypoint);
+        initialize(index, cache, waypoint);
     }
 
-    private void initial(int Index, Cache cache, Waypoint waypoint) {
+    private void initialize(int index, Cache cache, Waypoint waypoint) {
         mCache = cache;
         wayPoint = waypoint;
 
@@ -70,7 +70,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 distance = null;
                 return;
             }
-            cacheInfo = new ExtendedCacheInfo(this, "CacheInfo " + Index + " @" + cache.getGeoCacheCode(), cache);
+            cacheInfo = new ExtendedCacheInfo(this, "CacheInfo " + index + " @" + cache.getGeoCacheCode(), cache);
             cacheInfo.setZeroPos();
             cacheInfo.setViewMode(viewMode);
             addChild(cacheInfo);

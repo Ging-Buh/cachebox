@@ -39,21 +39,21 @@ public class CacheDraw {
     private static Paint dtPaint;
     private static TextPaint namePaint;
 
-    public static void DrawInfo(Cache cache, Canvas canvas, int width, int height, int BackgroundColor, DrawStyle drawStyle) {
+    public static void drawInfo(Cache cache, Canvas canvas, int width, int height, int BackgroundColor, DrawStyle drawStyle) {
         int x = 0;
         int y = 0;
         CB_Rect DrawChangedRect = new CB_Rect(x, y, width, height);
-        DrawInfo(cache, canvas, DrawChangedRect, BackgroundColor, drawStyle, false);
+        drawInfo(cache, canvas, DrawChangedRect, BackgroundColor, drawStyle, false);
     }
 
     /*
-    public static void DrawInfo(Cache cache, int Width, int Height, DrawStyle drawStyle) {
+    public static void drawInfo(Cache cache, int Width, int Height, DrawStyle drawStyle) {
         if (cachedBitmap == null || !(cachedBitmapId == cache.Id)) {
             cachedBitmap = Bitmap.createBitmap(Width, Height, Bitmap.Config.ARGB_8888);
             CB_Rect newRec = new CB_Rect(0, 0, Width, Height);
             Canvas scaledCanvas = new Canvas(cachedBitmap);
             scaledCanvas.drawColor(Color.TRANSPARENT);
-            DrawInfo(cache, scaledCanvas, newRec, Color.TRANSPARENT, Color.TRANSPARENT, drawStyle, false);
+            drawInfo(cache, scaledCanvas, newRec, Color.TRANSPARENT, Color.TRANSPARENT, drawStyle, false);
             cachedBitmapId = cache.Id;
         }
 
@@ -61,13 +61,13 @@ public class CacheDraw {
      */
 
     /*
-    public static void DrawInfo(Cache cache, Canvas canvas, CB_Rect rec, int BackgroundColor, DrawStyle drawStyle, float scale) {
+    public static void drawInfo(Cache cache, Canvas canvas, CB_Rect rec, int BackgroundColor, DrawStyle drawStyle, float scale) {
         if (cachedBitmap == null || !(cachedBitmapId == cache.Id)) {
             cachedBitmap = Bitmap.createBitmap(rec.getWidth(), rec.getHeight(), Bitmap.Config.ARGB_8888);
             CB_Rect newRec = new CB_Rect(0, 0, rec.getWidth(), rec.getHeight());
             Canvas scaledCanvas = new Canvas(cachedBitmap);
             scaledCanvas.drawColor(Color.TRANSPARENT);
-            DrawInfo(cache, scaledCanvas, newRec, BackgroundColor, Color.RED, drawStyle, false);
+            drawInfo(cache, scaledCanvas, newRec, BackgroundColor, Color.RED, drawStyle, false);
             cachedBitmapId = cache.Id;
         }
 
@@ -86,11 +86,11 @@ public class CacheDraw {
     }
      */
 
-    public static void DrawInfo(Cache cache, Canvas canvas, CB_Rect rec, int BackgroundColor, DrawStyle drawStyle, Boolean withoutBearing) {
-        DrawInfo(cache, canvas, rec, BackgroundColor, -1, drawStyle, withoutBearing);
+    public static void drawInfo(Cache cache, Canvas canvas, CB_Rect rec, int BackgroundColor, DrawStyle drawStyle, boolean withoutBearing) {
+        drawInfo(cache, canvas, rec, BackgroundColor, -1, drawStyle, withoutBearing);
     }
 
-    public static void DrawInfo(Cache geoCache, Canvas canvas, CB_Rect rec, int backgroundColor, int borderColor, DrawStyle drawStyle, Boolean withoutBearing) {
+    public static void drawInfo(Cache geoCache, Canvas canvas, CB_Rect rec, int backgroundColor, int borderColor, DrawStyle drawStyle, boolean withoutBearing) {
         try {
             // init
             boolean notAvailable = (!geoCache.isAvailable() || geoCache.isArchived());
@@ -197,7 +197,7 @@ public class CacheDraw {
 
             // Draw owner and Last Found
             if (drawStyle == DrawStyle.withOwnerAndName && geoCache.getOwner() != null) {
-                String drawText = "by " + geoCache.getOwner() + ", " + dateString;
+                String drawText; //  = "by " + geoCache.getOwner() + ", " + dateString;
 
                 // trim Owner Name length
                 int counter = 0;
@@ -261,7 +261,7 @@ public class CacheDraw {
                         (double) getInstance().getScaledFontSize() / getInstance().getTbIconSize());
                 // SDTleft += space;
                 if (numTb > 1)
-                    canvas.drawText("x" + String.valueOf(numTb), sdtleft, sdtLineTop, dtPaint);
+                    canvas.drawText("x" + numTb, sdtleft, sdtLineTop, dtPaint);
             }
 
             // Draw Bearing
@@ -342,7 +342,7 @@ public class CacheDraw {
         withoutBearing, // ohne Richtungs-Pfeil
         withoutSeparator, // ohne unterster trennLinie
         withOwner, // mit Owner statt Name
-        withOwnerAndName; // mit Owner und Name
+        withOwnerAndName // mit Owner und Name
     }
 
 }

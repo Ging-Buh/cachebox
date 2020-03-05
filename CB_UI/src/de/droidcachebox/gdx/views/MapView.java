@@ -225,7 +225,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         CB_RectF ZoomScaleRec = new CB_RectF();
         ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.dpi), getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
-        ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
+        ZoomScaleRec.setPos(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin);
 
         zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
         if (mapMode == MapMode.Normal)
@@ -659,8 +659,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         if (wayPointRenderInfo.cache != null && (wayPointRenderInfo.cache.generatedId == infoBubble.getCacheId()) && infoBubble.isVisible()) {
             if (infoBubble.getWaypoint() == wayPointRenderInfo.waypoint) {
-                Vector2 pos = new Vector2(screen.x - infoBubble.getHalfWidth(), screen.y);
-                infoBubble.setPos(pos);
+                infoBubble.setPos(screen.x - infoBubble.getHalfWidth(), screen.y);
             }
         }
 
@@ -920,11 +919,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
         float infoHeight = 0;
         if (mapMode == MapMode.Normal) {
-            mapInfoPanel.setPos(new Vector2(margin, getMapIntHeight() - margin - mapInfoPanel.getHeight()));
+            mapInfoPanel.setPos(margin, getMapIntHeight() - margin - mapInfoPanel.getHeight());
             mapInfoPanel.setVisible(Config.showInfo.getValue());
             infoHeight = mapInfoPanel.getHeight();
         }
-        btnMapState.setPos(new Vector2(getMapIntWidth() - margin - btnMapState.getWidth(), getMapIntHeight() - margin - btnMapState.getHeight()));
+        btnMapState.setPos(getMapIntWidth() - margin - btnMapState.getWidth(), getMapIntHeight() - margin - btnMapState.getHeight());
 
         if (Config.disableLiveMap.getValue()) {
             liveButton.setInvisible();
@@ -997,7 +996,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             }
 
             if (GlobalCore.getSelectedCoordinate() != null) {
-                mapInfoPanel.setDistance(GlobalCore.getSelectedCoordinate().Distance(CalculationType.ACCURATE));
+                mapInfoPanel.setDistance(GlobalCore.getSelectedCoordinate().distance(CalculationType.ACCURATE));
             }
             orientationChanged();
         }
@@ -1011,9 +1010,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             if (GlobalCore.isSetSelectedCache() && position.isValid()) {
                 try {
                     if (GlobalCore.getSelectedWayPoint() == null)
-                        distance = position.Distance(GlobalCore.getSelectedCache().getCoordinate(), CalculationType.ACCURATE);
+                        distance = position.distance(GlobalCore.getSelectedCache().getCoordinate(), CalculationType.ACCURATE);
                     else
-                        distance = position.Distance(GlobalCore.getSelectedWayPoint().getCoordinate(), CalculationType.ACCURATE);
+                        distance = position.distance(GlobalCore.getSelectedWayPoint().getCoordinate(), CalculationType.ACCURATE);
                 } catch (Exception e) {
                     distance = 10;
                 }

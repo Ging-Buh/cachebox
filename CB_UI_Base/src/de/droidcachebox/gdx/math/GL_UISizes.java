@@ -83,6 +83,7 @@ public class GL_UISizes implements SizeChangedEvent {
      * Die Größe des zur Verfügung stehenden Bereiches von Gdx.graphics
      */
     public static CB_RectF surfaceSize;
+    public static CB_RectF menuRectangle;
     /**
      * Größe des position Markers
      */
@@ -204,15 +205,15 @@ public class GL_UISizes implements SizeChangedEvent {
         float w = uiLeft.getWidth();
         float h = uiLeft.getHeight();
 
-        info.setPos(new Vector2(margin, (h - margin - info.getHeight())));
+        info.setPos(margin, (h - margin - info.getHeight()));
 
         float CompassMargin = (info.getHeight() - compass.getWidth()) / 2;
 
-        compass.setPos(new Vector2(info.getX() + CompassMargin, info.getY() + infoShadowHeight + CompassMargin));
+        compass.setPos(info.getX() + CompassMargin, info.getY() + infoShadowHeight + CompassMargin);
 
-        toggle.setPos(new Vector2((w - margin - toggle.getWidth()), h - margin - toggle.getHeight()));
+        toggle.setPos((w - margin - toggle.getWidth()), h - margin - toggle.getHeight());
 
-        zoomBtn.setPos(new Vector2((w - margin - zoomBtn.getWidth()), margin));
+        zoomBtn.setPos((w - margin - zoomBtn.getWidth()), margin);
 
         infoLine1.x = compass.getMaxX() + margin;
         GlyphLayout bounds;
@@ -239,7 +240,7 @@ public class GL_UISizes implements SizeChangedEvent {
     private static void calcSizes() {
         Log.debug(log, "GL_UISizes.calcSizes()");
         // größe der Frames berechnen
-        int frameLeftwidth = UiSizes.getInstance().RefWidth;
+        int frameLeftwidth = UiSizes.getInstance().getRefWidth();
         // private static int BottomButtonHeight = convertDip2Pix(65);
         int MainButtonSideLength = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
         mainButtonSize = new CB_RectF(0, 0, MainButtonSideLength, MainButtonSideLength);
@@ -250,10 +251,11 @@ public class GL_UISizes implements SizeChangedEvent {
 
         uiLeft = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
         uiRight = new CB_RectF(uiLeft);
+        menuRectangle = new CB_RectF(0,0, frameLeftwidth * 0.83f, 50);
 
 
         infoShadowHeight = (float) (3.333333 * defaultDPI);
-        info.setSize((UiSizes.getInstance().RefWidth - (UiSizes.getInstance().getButtonHeight() * 1.1f) - (margin * 3)), UiSizes.getInstance().getButtonHeight() * 1.1f);
+        info.setSize((UiSizes.getInstance().getRefWidth() - (UiSizes.getInstance().getButtonHeight() * 1.1f) - (margin * 3)), UiSizes.getInstance().getButtonHeight() * 1.1f);
         compass.setSize((float) (44.6666667 * dpi), (float) (44.6666667 * dpi));
         halfCompass = compass.getHeight() / 2;
         toggle.setSize(UiSizes.getInstance().getButtonHeight() * 1.1f, UiSizes.getInstance().getButtonHeight() * 1.1f);

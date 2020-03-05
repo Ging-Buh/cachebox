@@ -140,16 +140,6 @@ public class CB_RectF {
         return true;
     }
 
-    public void setPos(Vector2 Pos) {
-        if (member == null)
-            throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
-        if (member[0] == Pos.x && member[1] == Pos.y)
-            return;
-        member[0] = Pos.x;
-        member[1] = Pos.y;
-        calcCrossCorner();
-    }
-
     public CB_RectF offset(Vector2 Offset) {
         return offset(Offset.x, Offset.y);
     }

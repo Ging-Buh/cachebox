@@ -11,57 +11,55 @@ import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 
+/**
+ * input gui for different ProjectionTypes
+ */
 public class ProjectionCoordinate extends ActivityBase {
-    private final String wpName;
-    private final ICoordReturnListener mCoordReturnListener;
-    private Coordinate coord;
-    private Coordinate projCoord;
-    private double Bearing;
-    private double Distance;
+    private final String coordinateButtonText;
+    private final ICoordReturnListener coordinateReturnListener;
+    private ProjectionType projectionType;
+    private Coordinate fromCoordinate, projectedCoordinate;
+    private double bearing;
+    private double distance;
+    private boolean imperialUnits;
+    private NumPad numPad;
     private EditTextField valueBearing = null;
     private EditTextField valueDistance = null;
     private CB_Label lblDistance = null;
-    private CB_Label Title = null;
-    private CoordinateButton bCoord = null;
-    private CB_Button bOK = null;
-    private Boolean radius;
-    private Boolean p2p;
-    private boolean ImperialUnits;
-    private NumPad numPad;
+    private CB_Label title = null;
+    private CoordinateButton btnCoordinate = null;
+    private CB_Button btnOK = null;
 
-    public ProjectionCoordinate(String Name, Coordinate coord2, ICoordReturnListener listener, Type type, String WP_Name) {
-        super(Name);
-        coord = coord2;
-        wpName = WP_Name;
-        radius = (type == Type.circle);
-        p2p = (type == Type.p2p);
-        mCoordReturnListener = listener;
-        ImperialUnits = CB_UI_Settings.ImperialUnits.getValue();
-
-        if (p2p)
-            projCoord = coord2.copy();
-
+    public ProjectionCoordinate(String name, Coordinate from, ICoordReturnListener theCoordinateReturnListener, ProjectionType wantedProjectionType, String fromText) {
+        super(name);
+        fromCoordinate = from;
+        coordinateButtonText = fromText;
+        projectionType = wantedProjectionType;
+        coordinateReturnListener = theCoordinateReturnListener;
+        imperialUnits = CB_UI_Settings.ImperialUnits.getValue();
+        if (projectionType == ProjectionType.point2point)
+            projectedCoordinate = from.copy();
         iniCacheNameLabel();
         iniCoordButton();
-        if (p2p)
+        if (projectionType == ProjectionType.point2point)
             iniCoordButton2();
-        if (!p2p)
+        else
             iniTextFields();
         iniOkCancel();
-        if (!p2p)
+        if (projectionType != ProjectionType.point2point)
             iniNumPad();
     }
 
     private void iniCacheNameLabel() {
-        CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
-        Title = new CB_Label(rec);
-        this.addChild(Title);
+        CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        title = new CB_Label(rec);
+        addChild(title);
     }
 
     @Override
     public void onShow() {
         if (valueBearing == null) {
-            if (!p2p) {
+            if (projectionType != ProjectionType.point2point) {
                 iniTextFields();
                 valueBearing.setFocus(true);
             }
@@ -72,77 +70,77 @@ public class ProjectionCoordinate extends ActivityBase {
     }
 
     private void iniCoordButton() {
-        CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UiSizes.getInstance().getButtonHeight(), innerWidth, UiSizes.getInstance().getButtonHeight());
-        bCoord = new CoordinateButton(rec, "CoordButton", coord, wpName);
+        CB_RectF rec = new CB_RectF(leftBorder, title.getY() - UiSizes.getInstance().getButtonHeight(), innerWidth, UiSizes.getInstance().getButtonHeight());
+        btnCoordinate = new CoordinateButton(rec, "CoordButton", fromCoordinate, coordinateButtonText);
 
-        bCoord.setCoordinateChangedListener(Coord -> {
-            ProjectionCoordinate.this.show();
-            coord = Coord;
+        btnCoordinate.setCoordinateChangedListener(Coord -> {
+            activityBase.show();
+            fromCoordinate = Coord;
         });
 
-        this.addChild(bCoord);
+        addChild(btnCoordinate);
     }
 
     private void iniCoordButton2() {
 
-        CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth, MeasuredLabelHeight);
+        CB_RectF labelRec = new CB_RectF(leftBorder + margin, btnCoordinate.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth, MeasuredLabelHeight);
 
-        CB_Label lblP2P = new CB_Label(this.name + " lblP2P", labelRec, Translation.get("toPoint"));
-        this.addChild(lblP2P);
+        CB_Label lblP2P = new CB_Label(name + " lblP2P", labelRec, Translation.get("toPoint"));
+        addChild(lblP2P);
 
         CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UiSizes.getInstance().getButtonHeight(), innerWidth, UiSizes.getInstance().getButtonHeight());
-        CoordinateButton bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord, null);
+        CoordinateButton bCoord2 = new CoordinateButton(rec, "CoordButton2", projectedCoordinate, null);
 
         bCoord2.setCoordinateChangedListener(Coord -> {
-            ProjectionCoordinate.this.show();
-            projCoord = Coord;
+            activityBase.show();
+            projectedCoordinate = Coord;
         });
 
-        this.addChild(bCoord2);
+        addChild(bCoord2);
     }
 
     private void iniTextFields() {
         // measure label width
         String sBearing = Translation.get("Bearing");
-        String sDistance = radius ? "Radius" : Translation.get("Distance");
-        String sUnit = ImperialUnits ? "yd" : "m";
+        String sDistance = projectionType == ProjectionType.circle ? "Radius" : Translation.get("Distance");
+        String sUnit = imperialUnits ? "yd" : "m";
 
         float wB = Fonts.Measure(sBearing).width;
         float wD = Fonts.Measure(sDistance).width;
         float wMax = Math.max(wB, wD);
 
-        float y = bCoord.getY() - ButtonHeight;
+        float y = btnCoordinate.getY() - ButtonHeight;
         float eWidth = Fonts.Measure(sUnit).width;
         CB_RectF labelRec = new CB_RectF(leftBorder, y, wMax, ButtonHeight);
         CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2), ButtonHeight);
         CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
-        CB_Label lblBearing = new CB_Label(this.name + " lblBearing", labelRec, sBearing);
+        CB_Label lblBearing = new CB_Label(name + " lblBearing", labelRec, sBearing);
         valueBearing = new EditTextField(textFieldRec, this, "*" + sBearing);
         valueBearing.disableKeyboardPopup();
-        CB_Label lblBearingUnit = new CB_Label(this.name + " lblBearingUnit", UnitRec, "°");
+        CB_Label lblBearingUnit = new CB_Label(name + " lblBearingUnit", UnitRec, "°");
 
         labelRec.setY(lblBearing.getY() - ButtonHeight);
         textFieldRec.setY(lblBearing.getY() - ButtonHeight);
         UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
-        lblDistance = new CB_Label(this.name + " lblDistance", labelRec, sDistance);
+        lblDistance = new CB_Label(name + " lblDistance", labelRec, sDistance);
         valueDistance = new EditTextField(textFieldRec, this, "*" + sDistance);
         valueDistance.disableKeyboardPopup();
-        CB_Label lblDistanceUnit = new CB_Label(this.name + " lblDistanceUnit", UnitRec, sUnit);
+        CB_Label lblDistanceUnit = new CB_Label(name + " lblDistanceUnit", UnitRec, sUnit);
 
         valueDistance.setText("0");
         valueBearing.setText("0");
 
-        if (!radius)
-            this.addChild(lblBearing);
-        this.addChild(lblDistance);
-        this.addChild(valueDistance);
-        if (!radius)
-            this.addChild(valueBearing);
-        if (!radius)
-            this.addChild(lblBearingUnit);
-        this.addChild(lblDistanceUnit);
+        if (projectionType != ProjectionType.circle)
+            addChild(lblBearing);
+        addChild(lblDistance);
+        addChild(valueDistance);
+        if (projectionType != ProjectionType.circle)
+            addChild(valueBearing);
+        if (projectionType != ProjectionType.circle)
+            addChild(lblBearingUnit);
+        addChild(lblDistanceUnit);
 
         valueDistance.setBecomesFocusListener(() -> {
             numPad.registerTextField(valueDistance);
@@ -165,30 +163,30 @@ public class ProjectionCoordinate extends ActivityBase {
     }
 
     private void iniOkCancel() {
-        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UiSizes.getInstance().getButtonHeight());
-        bOK = new CB_Button(btnRec, "OkButton");
+        CB_RectF btnRec = new CB_RectF(leftBorder, getBottomHeight(), innerWidth / 2, UiSizes.getInstance().getButtonHeight());
+        btnOK = new CB_Button(btnRec, "OkButton");
 
-        btnRec.setX(bOK.getMaxX());
+        btnRec.setX(btnOK.getMaxX());
         CB_Button bCancel = new CB_Button(btnRec, "CancelButton");
 
-        bOK.setText(Translation.get("ok"));
+        btnOK.setText(Translation.get("ok"));
         bCancel.setText(Translation.get("cancel"));
 
-        this.addChild(bOK);
-        this.addChild(bCancel);
+        addChild(btnOK);
+        addChild(bCancel);
 
-        bOK.setClickHandler((v, x, y, pointer, button) -> {
-            if (!parseView())
+        btnOK.setClickHandler((v, x, y, pointer, button) -> {
+            if (!parseInput())
                 return true;
-            if (mCoordReturnListener != null)
-                mCoordReturnListener.returnCoord(projCoord, coord, Bearing, Distance);
+            if (coordinateReturnListener != null)
+                coordinateReturnListener.returnCoord(projectedCoordinate, fromCoordinate, bearing, distance);
             finish();
             return true;
         });
 
         bCancel.setClickHandler((v, x, y, pointer, button) -> {
-            if (mCoordReturnListener != null)
-                mCoordReturnListener.returnCoord(null, null, 0, 0);
+            if (coordinateReturnListener != null)
+                coordinateReturnListener.returnCoord(null, null, 0, 0);
             finish();
             return true;
         });
@@ -196,32 +194,32 @@ public class ProjectionCoordinate extends ActivityBase {
     }
 
     private void iniNumPad() {
-        CB_RectF numRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, lblDistance.getY() - bOK.getMaxY());
+        CB_RectF numRec = new CB_RectF(leftBorder, btnOK.getMaxY(), innerWidth, lblDistance.getY() - btnOK.getMaxY());
         numPad = new NumPad(numRec, "numPad", NumPad.NumPadType.withDot);
-        this.addChild(numPad);
+        addChild(numPad);
     }
 
-    private boolean parseView() {
+    private boolean parseInput() {
 
-        if (p2p) {
+        if (projectionType == ProjectionType.point2point) {
             try {
-                Distance = coord.Distance(projCoord, CalculationType.ACCURATE);
-                Bearing = coord.bearingTo(projCoord, CalculationType.ACCURATE);
+                distance = fromCoordinate.distance(projectedCoordinate, CalculationType.ACCURATE);
+                bearing = fromCoordinate.bearingTo(projectedCoordinate, CalculationType.ACCURATE);
                 return true;
             } catch (Exception e) {
                 return false;
             }
         } else {
-            Bearing = Double.parseDouble(valueBearing.getText());
-            Distance = Double.parseDouble(valueDistance.getText());
+            bearing = Double.parseDouble(valueBearing.getText());
+            distance = Double.parseDouble(valueDistance.getText());
 
-            if (ImperialUnits)
-                Distance *= 0.9144f;
+            if (imperialUnits)
+                distance *= 0.9144f;
 
-            Coordinate newCoord = Coordinate.project(coord.getLatitude(), coord.getLongitude(), Bearing, Distance);
+            Coordinate newCoord = Coordinate.project(fromCoordinate.getLatitude(), fromCoordinate.getLongitude(), bearing, distance);
 
             if (newCoord.isValid()) {
-                projCoord = newCoord;
+                projectedCoordinate = newCoord;
                 return true;
             } else
                 return false;
@@ -229,8 +227,8 @@ public class ProjectionCoordinate extends ActivityBase {
 
     }
 
-    public enum Type {
-        projetion, circle, p2p
+    public enum ProjectionType {
+        projection, circle, point2point
     }
 
     public interface ICoordReturnListener {

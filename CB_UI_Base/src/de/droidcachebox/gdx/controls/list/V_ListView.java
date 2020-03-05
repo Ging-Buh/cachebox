@@ -99,7 +99,7 @@ public class V_ListView extends ListViewBase {
         synchronized (addedIndexList) {
             addedIndexList.sort();
             if (addedIndexList.size() > 0) {
-                firstIndex = addedIndexList.get(0) - maxItemCount;
+                firstIndex = addedIndexList.get(0) - maxNumberOfVisibleItems;
                 if (firstIndex < 0)
                     firstIndex = 0;
             } else {
@@ -145,7 +145,7 @@ public class V_ListView extends ListViewBase {
                         float itemPos = mPosDefault.get(i);
                         itemPos -= workPos;
 
-                        if (itemPos < getMaxY() && itemPos + adapter.getItemSize(i) > -(maxItemCount * minimumItemSize)) {
+                        if (itemPos < getMaxY() && itemPos + adapter.getItemSize(i) > -(maxNumberOfVisibleItems * minimumItemSize)) {
                             ListViewItemBase tmp = adapter.getView(i);
                             if (tmp != null) {
                                 tmp.setY(itemPos);
@@ -165,7 +165,7 @@ public class V_ListView extends ListViewBase {
                                     return;
                                 }
                                 float itemSize = adapter.getItemSize(i);
-                                if (itemPos + itemSize < -(maxItemCount * minimumItemSize)) {
+                                if (itemPos + itemSize < -(maxNumberOfVisibleItems * minimumItemSize)) {
                                     lastIndex = i;
                                     break;
                                 }
@@ -257,9 +257,9 @@ public class V_ListView extends ListViewBase {
             }
 
             calculateAllSizeBase = countPos - dividerSize;
-            maxItemCount = (int) (getHeight() / minimumItemSize);
-            if (maxItemCount < 1)
-                maxItemCount = 1;
+            maxNumberOfVisibleItems = (int) (getHeight() / minimumItemSize);
+            if (maxNumberOfVisibleItems < 1)
+                maxNumberOfVisibleItems = 1;
 
             if (allSize > getHeight()) {
                 setDraggable();

@@ -93,7 +93,7 @@ import static de.droidcachebox.core.GroundspeakAPI.getSettingsAccessToken;
 public class Main extends AndroidApplication implements SelectedCacheChangedEventListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
     private static final String sKlasse = "Main";
     public static boolean isCreated = false;
-    private static Boolean isRestart = false;
+    private static boolean isRestart = false; // ???
     private final AtomicBoolean waitForGL = new AtomicBoolean(false);
     private final CB_List<de.droidcachebox.locator.GpsStrength> coreSatList = new CB_List<>(14);
     private SensorEventListener mSensorEventListener;

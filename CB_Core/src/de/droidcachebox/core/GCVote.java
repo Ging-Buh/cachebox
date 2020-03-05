@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class GCVote {
-    private static final String log = "GCVote";
+    private static final String sKlasse = "GCVote";
 
     public static ArrayList<RatingData> getRating(String user, String password, ArrayList<String> wayPoints) {
         ArrayList<RatingData> result = new ArrayList<>();
@@ -65,14 +65,14 @@ public class GCVote {
             }
 
         } catch (Exception e) {
-            Log.err(log, "getRating", e);
+            Log.err(sKlasse, "getRating", e);
             return null;
         }
         return result;
 
     }
 
-    public static Boolean sendVote(String User, String password, int vote, String url, String waypoint) {
+    public static boolean sendVote(String User, String password, int vote, String url, String waypoint) {
         url = url.replace("http:", "https:"); // automatic redirect doesn't work from http to https
         int pos = url.indexOf("guid=");
         String guid = "";
@@ -94,7 +94,7 @@ public class GCVote {
                     guid = page.substring(start, stop);
                 }
             } catch (Exception e) {
-                Log.err(log, "Send GCVotes: Can't get GUID for " + waypoint, e);
+                Log.err(sKlasse, "Send GCVotes: Can't get GUID for " + waypoint, e);
             }
         }
         if (guid.length() == 0) return false;

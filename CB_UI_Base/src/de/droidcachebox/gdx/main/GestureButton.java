@@ -66,18 +66,15 @@ public class GestureButton extends CB_Button {
                         // first the context menu, if exists
                         Menu viewContextMenu = aktActionView.getContextMenu();
                         compoundMenu.setTitle(viewContextMenu.getTitle());
-                        if (viewContextMenu != null) {
-                            compoundMenu.addItems(viewContextMenu.getItems());
-                            // compoundMenu.addOnItemClickListeners(viewContextMenu.getOnItemClickListeners());
-                            // add divider
-                            compoundMenu.addDivider();
-                            // add MoreMenu
-                            compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
-                        }
+                        compoundMenu.addItems(viewContextMenu.getItems());
+                        // compoundMenu.addOnItemClickListeners(viewContextMenu.getOnItemClickListeners());
+                        // add divider
+                        compoundMenu.addDivider();
+                        // add MoreMenu
+                        compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
                     }
                     // then the Long Click menu
-                    Menu LongClickMenu = getLongClickMenu();
-                    compoundMenu.addItems(LongClickMenu.getItems());
+                    compoundMenu.addItems(getLongClickMenu().getItems());
                     // compoundMenu.addOnItemClickListeners(LongClickMenu.getOnItemClickListeners());
                     // and show
                     if (compoundMenu.reorganizeIndexes() > 0) {
@@ -128,17 +125,16 @@ public class GestureButton extends CB_Button {
             if (!actionExecuted) {
                 Menu compoundMenu = new Menu("compoundMenu");
                 // then the Long Click menu
-                Menu LongClickMenu = getLongClickMenu();
-                if (LongClickMenu != null) {
-                    compoundMenu.addItems(LongClickMenu.getItems(),true);
-                }
+                compoundMenu.addItems(getLongClickMenu().getItems(),true);
                 // and show
                 if (compoundMenu.reorganizeIndexes() > 0) {
                     compoundMenu.show();
                 }
+                /*
                 else {
                     // what a problem on reorganizing
                 }
+                 */
                 return true; // only show the menu
 
             }
@@ -147,6 +143,7 @@ public class GestureButton extends CB_Button {
         }
     };
 
+    /*
     private final OnClickListener longClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
@@ -180,6 +177,8 @@ public class GestureButton extends CB_Button {
             return true;
         }
     };
+     */
+
     private boolean isFiltered;
     private boolean GestureIsOn = true;
     private boolean isDragged = false;
@@ -351,7 +350,7 @@ public class GestureButton extends CB_Button {
                 isFocused = false;
                 hasContextMenu = false;
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         super.render(batch);
@@ -390,7 +389,7 @@ public class GestureButton extends CB_Button {
         downPos = new Point(x, y);
         boolean ret = super.onTouchDown(x, y, pointer, button);
 
-        return (GestureIsOn) ? ret : false;
+        return (GestureIsOn) && ret;
     }
 
     @Override
@@ -411,7 +410,7 @@ public class GestureButton extends CB_Button {
         boolean result = super.onTouchUp(x, y, pointer, button);
 
         if (!isDragged)
-            return (GestureIsOn) ? result : true;
+            return (!GestureIsOn) || result;
         int dx = x - downPos.x;
         int dy = y - downPos.y;
         GestureDirection direction;

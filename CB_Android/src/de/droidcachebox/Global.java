@@ -400,11 +400,11 @@ public class Global {
                 R.attr.Compass_TextColor, R.attr.Compass_N_TextColor, R.attr.Map_Compass_TextColor, R.attr.Map_ColorCompassPanel};
 
         try {
-            Boolean NightMode = false;
+            boolean nightMode = false;
             if (Config.settings != null)
-                NightMode = Config.nightMode.getValue();
+                nightMode = Config.nightMode.getValue();
 
-            context.setTheme(NightMode ? R.style.Theme_night : R.style.Theme_day);
+            context.setTheme(nightMode ? R.style.Theme_night : R.style.Theme_day);
 
             Theme t = context.getTheme();
             Arrays.sort(colorAttrs);

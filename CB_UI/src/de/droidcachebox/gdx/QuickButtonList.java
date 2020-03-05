@@ -57,7 +57,7 @@ public class QuickButtonList extends H_ListView {
 
     private void chkIsDraggable() {
         if (quickButtonList != null) {
-            if (this.getMaxItemCount() < quickButtonList.size()) {
+            if (this.getMaxNumberOfVisibleItems() < quickButtonList.size()) {
                 this.setDraggable();
             } else {
                 this.setUnDraggable();

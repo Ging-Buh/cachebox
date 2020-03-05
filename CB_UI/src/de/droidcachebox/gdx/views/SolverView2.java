@@ -129,7 +129,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         setAdapter(lvAdapter);
 
         int itemCount = solver.size();
-        int itemSpace = getMaxItemCount();
+        int itemSpace = getMaxNumberOfVisibleItems();
 
         if (itemSpace >= itemCount) {
             setUnDraggable();
@@ -148,7 +148,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
         lvAdapter = new CustomAdapter(solver);
         setAdapter(lvAdapter);
         int itemCount = solver.size();
-        int itemSpace = getMaxItemCount();
+        int itemSpace = getMaxNumberOfVisibleItems();
 
         if (itemSpace >= itemCount) {
             setUnDraggable();

@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.InvalidateTextureEventList;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -75,7 +74,7 @@ public class ZoomScale extends CB_View_Base implements InvalidateTextureEventLis
         if (ScaleDrawRec == null) {
             ScaleDrawRec = new CB_RectF(this);
             ScaleDrawRec.setHeight(this.getHeight() - valueRecHeight);
-            ScaleDrawRec.setPos(new Vector2(0, valueRecHeight / 2));
+            ScaleDrawRec.setPos(0, valueRecHeight / 2);
         }
 
         if (!isVisible)

@@ -72,7 +72,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     /**
      * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so groß sind wie das kleinste Item in der List.
      */
-    protected int maxItemCount;
+    protected int maxNumberOfVisibleItems;
     protected float minimumItemSize;
     protected float calculateAllSizeBase;
     /**
@@ -120,7 +120,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         currentPosition = 0;
         firstIndex = 0;
         lastIndex = 0;
-        maxItemCount = -1;
+        maxNumberOfVisibleItems = -1;
         minimumItemSize = 0;
         calculateAllSizeBase = 0f;
         allSize = 0f;
@@ -160,7 +160,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         currentPosition = 0;
         firstIndex = 0;
         lastIndex = 0;
-        maxItemCount = -1;
+        maxNumberOfVisibleItems = -1;
         minimumItemSize = 0;
         calculateAllSizeBase = 0f;
         allSize = 0f;
@@ -635,8 +635,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden können, wenn alle Items so groß sind wie das kleinste Item in der
      * List, zurück.
      */
-    public int getMaxItemCount() {
-        return maxItemCount;
+    public int getMaxNumberOfVisibleItems() {
+        return maxNumberOfVisibleItems;
     }
 
     public abstract void notifyDataSetChanged();

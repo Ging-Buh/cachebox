@@ -23,7 +23,8 @@ public abstract class AbstractShowAction extends AbstractAction {
     }
 
     public AbstractShowAction(String translationId, String translationExtension) {
-        super(translationId, translationExtension);
+        this(translationId);
+        titleExtension = translationExtension;
     }
 
     /**

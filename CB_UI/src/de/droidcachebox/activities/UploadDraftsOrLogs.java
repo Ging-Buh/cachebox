@@ -21,10 +21,10 @@ import de.droidcachebox.utils.RunnableReadyHandler;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UploadDraftsOrLogs {
-    private Boolean ThreadCancel = false;
-    private String UploadMeldung = "";
-    private boolean API_Key_error = false;
-    private ProgressDialog PD;
+    private boolean threadCancel = false;
+    private String uploadMeldung = "";
+    private boolean apiKeyError = false;
+    private ProgressDialog progressDialog;
 
     public UploadDraftsOrLogs() {
     }
@@ -51,15 +51,15 @@ public class UploadDraftsOrLogs {
                 boolean sendGCVote = Config.GcVotePassword.getEncryptedValue().length() > 0;
 
                 if (anzahl > 0) {
-                    UploadMeldung = "";
-                    API_Key_error = false;
+                    uploadMeldung = "";
+                    apiKeyError = false;
                     for (Draft draft : drafts) {
                         if (cancel.get())
                             break;
 
                         if (draft.uploaded)
                             continue;
-                        if (ThreadCancel) // wenn im ProgressDialog Cancel gedrückt
+                        if (threadCancel) // wenn im ProgressDialog Cancel gedrückt
                             // wurde.
                             break;
                         // Progress status Melden
@@ -84,7 +84,7 @@ public class UploadDraftsOrLogs {
 
                         if (result == GroundspeakAPI.ERROR) {
                             GL.that.Toast(GroundspeakAPI.LastAPIError);
-                            UploadMeldung = UploadMeldung + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
+                            uploadMeldung = uploadMeldung + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
                             // set draft as uploaded only when upload was working
                             draft.uploaded = true;
@@ -97,7 +97,7 @@ public class UploadDraftsOrLogs {
                         count++;
                     }
                 }
-                PD.close();
+                progressDialog.close();
             }
 
             @Override
@@ -109,9 +109,9 @@ public class UploadDraftsOrLogs {
             public void runnableIsReady(boolean canceld) {
                 if (!canceld) {
 
-                    if (!UploadMeldung.equals("")) {
-                        if (!API_Key_error)
-                            MessageBox.show(UploadMeldung, Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                    if (!uploadMeldung.equals("")) {
+                        if (!apiKeyError)
+                            MessageBox.show(uploadMeldung, Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
                     } else {
                         MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live);
                     }
@@ -123,8 +123,8 @@ public class UploadDraftsOrLogs {
         // ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
 
         GL.that.RunOnGL(() -> {
-            PD = ProgressDialog.Show("uploadDrafts", uploadDrafts);
-            PD.setCancelListener(() -> cancel.set(true));
+            progressDialog = ProgressDialog.Show("uploadDrafts", uploadDrafts);
+            progressDialog.setCancelListener(() -> cancel.set(true));
         });
 
     }
@@ -134,10 +134,10 @@ public class UploadDraftsOrLogs {
         // Stimme abgeben
         try {
             if (!GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
-                UploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
+                uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
             }
         } catch (Exception e) {
-            UploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
+            uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
         }
     }
 

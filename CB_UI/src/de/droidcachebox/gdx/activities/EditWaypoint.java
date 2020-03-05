@@ -42,9 +42,9 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private EditTextField etDescription;
     private CB_Label tvClue;
     private EditTextField etClue;
-    private Boolean firstShow;
+    private boolean firstShow;
     // damit kann festgelegt werden, ob beim Start des WaypointDialogs gleich der Coordinaten-Dialog gezeigt werden soll oder nicht.
-    private Boolean showCoordinateDialog;
+    private boolean showCoordinateDialog;
     private ScrollBox scrollBox;
     private IReturnListener mReturnListener;
 

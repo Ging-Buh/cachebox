@@ -24,7 +24,10 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.SelectedCacheChangedEventListener;
 import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -54,7 +57,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     private Scrollbar scrollBar;
     private GeoCacheListViewAdapter geoCacheListViewAdapter;
     private BitmapFontCache emptyMsg;
-    private Boolean isShown = false;
+    private boolean isShown = false;
     private float searchPlaceholder = 0;
 
     private CacheListView() {
@@ -68,8 +71,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         geoCacheListView.addListPosChangedEventHandler(() -> scrollBar.ScrollPositionChanged());
         scrollBar = new Scrollbar(geoCacheListView);
 
-        this.addChild(geoCacheListView);
-        this.addChild(scrollBar);
+        addChild(geoCacheListView);
+        addChild(scrollBar);
     }
 
     public static CacheListView getInstance() {
@@ -80,7 +83,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     @Override
     public void initialize() {
         // Log.debug(log, "CacheListView => Initial()");
-        // this.setListPos(0, false);
+        // setListPos(0, false);
         geoCacheListView.chkSlideBack();
         GL.that.renderOnce();
     }
@@ -92,8 +95,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
             if (geoCacheListViewAdapter == null || geoCacheListViewAdapter.getCount() == 0) {
                 if (emptyMsg == null) {
                     emptyMsg = new BitmapFontCache(Fonts.getBig());
-                    GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
-                    emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
+                    GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, getWidth(), Align.left, true);
+                    emptyMsg.setPosition(getHalfWidth() - (bounds.width / 2), getHalfHeight() - (bounds.height / 2));
                 }
                 if (emptyMsg != null)
                     emptyMsg.draw(batch, 0.5f);
@@ -103,8 +106,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         } catch (Exception e) {
             if (emptyMsg == null) {
                 emptyMsg = new BitmapFontCache(Fonts.getBig());
-                GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
-                emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
+                GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, getWidth(), Align.left, true);
+                emptyMsg.setPosition(getHalfWidth() - (bounds.width / 2), getHalfHeight() - (bounds.height / 2));
             }
             if (emptyMsg != null)
                 emptyMsg.draw(batch, 0.5f);
@@ -131,13 +134,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
 
         synchronized (Database.Data.cacheList) {
             try {
-                geoCacheListViewAdapter = new GeoCacheListViewAdapter(Database.Data.cacheList);
+                geoCacheListViewAdapter = new GeoCacheListViewAdapter();
                 geoCacheListView.setAdapter(geoCacheListViewAdapter);
-
-                int itemCount = Database.Data.cacheList.size();
-                int itemSpace = geoCacheListView.getMaxItemCount();
-
-                if (itemSpace >= itemCount) {
+                if (geoCacheListView.getMaxNumberOfVisibleItems() >= Database.Data.cacheList.size()) {
                     geoCacheListView.setUnDraggable();
                 } else {
                     geoCacheListView.setDraggable();
@@ -228,13 +227,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     public void cacheListChanged() {
         synchronized (Database.Data.cacheList) {
             geoCacheListView.setAdapter(null);
-            geoCacheListViewAdapter = new GeoCacheListViewAdapter(Database.Data.cacheList);
+            geoCacheListViewAdapter = new GeoCacheListViewAdapter();
             geoCacheListView.setAdapter(geoCacheListViewAdapter);
-
-            int itemCount = Database.Data.cacheList.size();
-            int itemSpace = geoCacheListView.getMaxItemCount();
-
-            if (itemSpace >= itemCount) {
+            if (geoCacheListView.getMaxNumberOfVisibleItems() >= Database.Data.cacheList.size()) {
                 geoCacheListView.setUnDraggable();
             } else {
                 geoCacheListView.setDraggable();
@@ -329,8 +324,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         if (scrollBar != null)
             scrollBar.dispose();
         scrollBar = null;
-        if (geoCacheListViewAdapter != null)
-            geoCacheListViewAdapter.dispose();
         geoCacheListViewAdapter = null;
         if (emptyMsg != null)
             emptyMsg.clear();
@@ -344,33 +337,26 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     }
 
     private class GeoCacheListViewAdapter implements Adapter {
-        private CacheList cacheList;
-        private int Count;
-
-        GeoCacheListViewAdapter(final CacheList cacheList) {
-            synchronized (cacheList) {
-                this.cacheList = cacheList;
-                Count = cacheList.size();
-            }
-        }
 
         @Override
         public int getCount() {
-            if (cacheList == null)
+            if (Database.Data.cacheList == null)
                 return 0;
-
-            return Count;
+            return Database.Data.cacheList.size();
         }
 
         @Override
         public ListViewItemBase getView(int index) {
-            synchronized (cacheList) {
-                if (cacheList == null) return null;
-                if (cacheList.size() <= index) return null;
-                CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, cacheList.get(index));
+            synchronized (Database.Data.cacheList) {
+                if (Database.Data.cacheList == null) return null;
+                if (Database.Data.cacheList.size() <= index) return null;
+
+                CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, Database.Data.cacheList.get(index));
+
                 v.setClickable(true);
 
-                if (cacheList.get(index).getGeoCacheType() == GeoCacheType.Traditional) v.setEnabled(false);
+                if (Database.Data.cacheList.get(index).getGeoCacheType() == GeoCacheType.Traditional)
+                    v.setEnabled(false);
 
                 v.setClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
@@ -423,25 +409,18 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
 
         @Override
         public float getItemSize(int position) {
-            if (cacheList == null)
+            if (Database.Data.cacheList == null)
                 return 0;
-
-            synchronized (cacheList) {
-                if (cacheList.size() == 0)
+            synchronized (Database.Data.cacheList) {
+                if (Database.Data.cacheList.size() == 0)
                     return 0;
-                Cache cache = cacheList.get(position);
+                Cache cache = Database.Data.cacheList.get(position);
                 if (cache == null)
                     return 0;
 
                 // alle Items haben die gleiche Größe (Höhe)
                 return UiSizes.getInstance().getCacheListItemRec().getHeight();
             }
-
         }
-
-        public void dispose() {
-            cacheList = null;
-        }
-
     }
 }

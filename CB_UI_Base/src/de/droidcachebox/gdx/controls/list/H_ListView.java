@@ -75,7 +75,7 @@ public class H_ListView extends ListViewBase {
             addedIndexList.sort();
 
             if (addedIndexList.size() > 0) {
-                firstIndex = addedIndexList.get(0) - maxItemCount;
+                firstIndex = addedIndexList.get(0) - maxNumberOfVisibleItems;
                 if (firstIndex < 0)
                     firstIndex = 0;
             } else {
@@ -173,9 +173,9 @@ public class H_ListView extends ListViewBase {
         }
         calculateAllSizeBase = countPos - dividerSize;
         currentPosition = countPos - dividerSize;
-        maxItemCount = (int) (getWidth() / minimumItemSize);
-        if (maxItemCount < 1)
-            maxItemCount = 1;
+        maxNumberOfVisibleItems = (int) (getWidth() / minimumItemSize);
+        if (maxNumberOfVisibleItems < 1)
+            maxNumberOfVisibleItems = 1;
 
         if (allSize > getWidth()) {
             setDraggable();

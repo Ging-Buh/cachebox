@@ -375,7 +375,7 @@ public class CacheDAO {
 
     }
 
-    public Boolean cacheExists(long CacheID) {
+    public boolean cacheExists(long CacheID) {
 
         CoreCursor reader = Database.Data.sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
 
@@ -392,7 +392,7 @@ public class CacheDAO {
      *
      * @param writeTmp
      */
-    public boolean UpdateDatabaseCacheState(Cache writeTmp) {
+    public boolean updateDatabaseCacheState(Cache writeTmp) {
 
         // chk of changes
         boolean changed = false;

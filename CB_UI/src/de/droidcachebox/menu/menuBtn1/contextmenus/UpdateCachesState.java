@@ -93,7 +93,7 @@ public class UpdateCachesState extends AbstractAction {
                     /* */
                     Database.Data.sql.beginTransaction();
                     for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
-                        if (dao.UpdateDatabaseCacheState(ci.cache))
+                        if (dao.updateDatabaseCacheState(ci.cache))
                             ChangedCount++;
                     }
                     Database.Data.sql.setTransactionSuccessful();

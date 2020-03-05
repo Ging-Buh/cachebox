@@ -19,6 +19,7 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 
@@ -26,25 +27,16 @@ public class Menu extends ButtonDialog {
 
     private static final int ANIMATION_DURATION = 1200;
     private static float mMoreMenuToggleButtonWidth = -1;
-    private static CB_RectF sMenuRec = null;
-    private static boolean MENU_REC_IsInitial = false;
-    public float ItemHeight = -1f;
-    public ArrayList<MenuItem> mItems = new ArrayList<>();
+    public float itemHeight = -1f;
     protected boolean autoClose;
     protected boolean singleSelection; // true: only one option can be selected
-    private V_ListView mListView;
+    private ArrayList<MenuItem> menuItems = new ArrayList<>();
+    private V_ListView menuItemsListView;
     private Menu mMoreMenu = null;
     private boolean mMoreMenuVisible = false;
     private CB_Button mMoreMenuToggleButton;
     private CB_Label mMoreMenuLabel;
-    /**
-     * -1=not initial<br>
-     * 0=left<br>
-     * 1=to left<br>
-     * 2= to right<br>
-     * 3=right
-     */
-    private int mAnimationState = -1;// -1=not initial 0=left 1=to left 2= to right 3=right
+    private int mAnimationState = -1; // -1=not initialized 0=left 1=to left 2=to right 3=right
     private int itemsCount = -1;
     private float animateStartTime;
     private boolean isMoreMenu = false;
@@ -64,31 +56,20 @@ public class Menu extends ButtonDialog {
     private int Level = 0;
 
     public Menu(String titleTranlationId) {
-        super(getMenuRec(), titleTranlationId);
+        super(GL_UISizes.menuRectangle, titleTranlationId);
         setTitle("<= " + Translation.get(titleTranlationId));
         autoClose = true;
         singleSelection = false;
 
-        if (ItemHeight == -1f)
-            ItemHeight = UiSizes.getInstance().getButtonHeight();
-        mListView = new V_ListView(this, "MenuList");
-        mListView.setSize(this.getContentSize());
-        mListView.setZeroPos();
-        mListView.setDisposeFlag(false);
-        this.addChild(mMoreMenu);
+        if (itemHeight == -1f)
+            itemHeight = UiSizes.getInstance().getButtonHeight();
+        menuItemsListView = new V_ListView(this, "MenuList");
+        menuItemsListView.setSize(getContentSize());
+        menuItemsListView.setZeroPos();
+        menuItemsListView.setDisposeFlag(false);
+        addChild(mMoreMenu);
         initialDialog();
         // setClickHandler(...); // auf titel geklickt
-    }
-
-    public static CB_RectF getMenuRec() {
-        if (!MENU_REC_IsInitial) {
-            float sollWidth = GL_UISizes.uiLeft.getWidth();
-
-            sollWidth *= 0.83;
-            sMenuRec = new CB_RectF(new SizeF(sollWidth, 50));
-            MENU_REC_IsInitial = true;
-        }
-        return sMenuRec;
     }
 
     @Override
@@ -96,10 +77,6 @@ public class Menu extends ButtonDialog {
         GL.that.closeDialog(this);
         if (isMoreMenu)
             GL.that.closeDialog(mParentMenu);
-    }
-
-    public void setAutoClose(boolean value) {
-        autoClose = value;
     }
 
     public void addMoreMenu(Menu menu, String TextLeft, String TextRight) {
@@ -115,7 +92,7 @@ public class Menu extends ButtonDialog {
         mMoreMenu.isMoreMenu = true;
         mMoreMenu.setParentMenu(this);
         mMoreMenu.setVisible(false);
-        mMoreMenu.Level = this.Level + 1;
+        mMoreMenu.Level = Level + 1;
         mMoreMenu.setBackground(new ColorDrawable(COLOR.getMenuBackColor()));
     }
 
@@ -143,7 +120,7 @@ public class Menu extends ButtonDialog {
             hideMoreMenu();
         }
         animateStartTime = GL.that.getStateTime();
-        mListView.notifyDataSetChanged();
+        menuItemsListView.notifyDataSetChanged();
     }
 
     private void showMoreMenu() {
@@ -157,7 +134,7 @@ public class Menu extends ButtonDialog {
 
     private void hideMoreMenu() {
         mAnimationState = 2;
-        mMoreMenu.setWidth(this.getWidth());
+        mMoreMenu.setWidth(getWidth());
         layout();
         int index = GL.that.getDialogLayer().getchilds().indexOf(mMoreMenuToggleButton);
         GL.that.getDialogLayer().getchilds().MoveItemLast(index);
@@ -180,19 +157,18 @@ public class Menu extends ButtonDialog {
         if (!isMoreMenu) {
             // Menu level 1
 
-            if (mItems.size() != itemsCount) {
+            if (menuItems.size() != itemsCount) {
                 // new Hight calculation
-                itemsCount = mItems.size();
+                itemsCount = menuItems.size();
                 float higherValue = mTitleHeight + mHeaderHeight + mFooterHeight + (margin * 2);
-                for (MenuItem item : mItems) {
-                    higherValue += item.getHeight() + mListView.getDividerHeight();
+                for (MenuItem item : menuItems) {
+                    higherValue += item.getHeight() + menuItemsListView.getDividerHeight();
                 }
                 float freiraumObenPlusUnten = 0; // 2 * UiSizes.getInstance().getButtonHeight();
                 if (higherValue > UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten) {
                     higherValue = UiSizes.getInstance().getWindowHeight() - freiraumObenPlusUnten;
                 }
-                float MenuWidth = GL_UISizes.uiLeft.getWidth();
-                this.setSize(MenuWidth, higherValue);
+                setSize(GL_UISizes.uiLeft.getWidth(), higherValue);
 
                 // initial more menus
                 if (mMoreMenu != null)
@@ -200,7 +176,7 @@ public class Menu extends ButtonDialog {
 
             }
         } else {
-            this.setSize(mParentMenu.getWidth(), mParentMenu.getHeight());
+            setSize(mParentMenu.getWidth(), mParentMenu.getHeight());
         }
 
         if (mMoreMenuToggleButtonWidth == -1) {
@@ -208,36 +184,31 @@ public class Menu extends ButtonDialog {
             mMoreMenuToggleButtonWidth = Sprites.btn.getLeftWidth() + Sprites.btn.getRightWidth() + (mesuredLblHeigt * 1.5f);
         }
 
-        mListView.setSize(this.getContentSize());
-
-        this.addChild(mListView);
-        mListView.setAdapter(new CustomAdapter());
+        menuItemsListView.setSize(getContentSize());
+        addChild(menuItemsListView);
+        menuItemsListView.setAdapter(new MenuItemsListViewAdapter());
 
         if (mMoreMenu != null && !mMoreMenuIsInitial) {
             mMoreMenu.initialize();
             mMoreMenu.setVisible(false);
             mMoreMenu.setZeroPos();
-            mMoreMenu.setHeight(this.getHeight());
+            mMoreMenu.setHeight(getHeight());
             mMoreMenu.setWidth(0);
             mMoreMenu.setY(0 - mFooterHeight);
 
             mMoreMenu.setBackground(new ColorDrawable(COLOR.getMenuBackColor()));
 
-            this.addChild(mMoreMenu);
+            addChild(mMoreMenu);
 
             mMoreMenuToggleButton = new CB_Button("");
             mMoreMenuToggleButton.setWidth(mMoreMenuToggleButtonWidth);
-            mMoreMenuToggleButton.setHeight(this.getContentSize().getHeight());
-            float MenuY = mParentMenu != null ? mParentMenu.getY() : this.getY();
+            mMoreMenuToggleButton.setHeight(getContentSize().getHeight());
+            float MenuY = mParentMenu != null ? mParentMenu.getY() : getY();
             mMoreMenuToggleButton.setY(MenuY + mFooterHeight);
             GL.that.getDialogLayer().addChild(mMoreMenuToggleButton);
-            mMoreMenuToggleButton.setClickHandler(new OnClickListener() {
-
-                @Override
-                public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                    toggleMoreMenu();
-                    return true;
-                }
+            mMoreMenuToggleButton.setClickHandler((view, x, y, pointer, button) -> {
+                toggleMoreMenu();
+                return true;
             });
 
             mMoreMenuLabel = new CB_Label(mMoreMenuTextRight, Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
@@ -254,9 +225,9 @@ public class Menu extends ButtonDialog {
         }
 
         // set display center pos
-        float cx = (UiSizes.getInstance().getWindowWidth() / 2) - this.getHalfWidth();
-        float cy = (UiSizes.getInstance().getWindowHeight() / 2) - this.getHalfHeight();
-        this.setPos(cx, cy);
+        float cx = (UiSizes.getInstance().getWindowWidth() / 2f) - getHalfWidth();
+        float cy = (UiSizes.getInstance().getWindowHeight() / 2f) - getHalfHeight();
+        setPos(cx, cy);
 
         layout();
     }
@@ -269,34 +240,34 @@ public class Menu extends ButtonDialog {
             return;
 
         if (mAnimationState > -1)
-            mMoreMenuToggleButton.setY(this.getWorldRec().getY() + mFooterHeight);
+            mMoreMenuToggleButton.setY(getWorldRec().getY() + mFooterHeight);
 
         // Animation calculation
         if (mAnimationState == 1 || mAnimationState == 2) {
-            float targetValue = this.getWidth() * 1.5f;
+            float targetValue = getWidth() * 1.5f;
 
             float animateValue = (1 + ((int) ((GL.that.getStateTime() - animateStartTime) * 1000) % ANIMATION_DURATION) / (ANIMATION_DURATION / targetValue));
 
             if (mAnimationState == 1) {
-                if (animateValue >= this.getWidth() - 10) {
-                    animateValue = this.getWidth();
+                if (animateValue >= getWidth() - 10) {
+                    animateValue = getWidth();
                     mAnimationState = 0;
                 }
-                mMoreMenu.setSize(animateValue, this.getHeight());
+                mMoreMenu.setSize(animateValue, getHeight());
             } else {
-                if (animateValue >= this.getWidth() - 10) {
-                    animateValue = this.getWidth();
+                if (animateValue >= getWidth() - 10) {
+                    animateValue = getWidth();
                     mMoreMenu.setVisible(false);
                     mAnimationState = 3;
                 }
-                mMoreMenu.setSize(this.getWidth() - animateValue, this.getHeight());
+                mMoreMenu.setSize(getWidth() - animateValue, getHeight());
             }
 
             layout();
             GL.that.renderOnce();
         } else if (mAnimationState == -1) {
             if (mMoreMenu != null) {
-                mMoreMenuToggleButton.setHeight(this.getContentSize().getHeight());
+                mMoreMenuToggleButton.setHeight(getContentSize().getHeight());
                 mAnimationState = 3;
                 layout();
             }
@@ -309,12 +280,12 @@ public class Menu extends ButtonDialog {
         String title = ((titleTranlationId.length() == 0) ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart;
         if (title.contains("\n")) {
             CB_Label tmp = new CB_Label("");
-            tmp.setWidth(mListView.getWidth());
+            tmp.setWidth(menuItemsListView.getWidth());
             tmp.setMultiLineText(title);
-            ItemHeight = tmp.getTextHeight();
+            itemHeight = tmp.getTextHeight();
             // ItemHeight = (title.split("\n")).length * UI_Size_Base.that.getButtonHeight();
         }
-        MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), titleTranlationId);
+        MenuItem item = new MenuItem(new SizeF(menuItemsListView.getWidth(), itemHeight), menuItems.size(), titleTranlationId);
         item.setTitle(title);
         if (icon != null) {
             if (icon instanceof Sprite) {
@@ -323,8 +294,8 @@ public class Menu extends ButtonDialog {
                 item.setIcon((Drawable) icon);
         }
         item.setClickHandler(onClickListener);
-        mItems.add(item);
-        mListView.notifyDataSetChanged();
+        menuItems.add(item);
+        menuItemsListView.notifyDataSetChanged();
         return item;
     }
 
@@ -334,7 +305,7 @@ public class Menu extends ButtonDialog {
             if (singleSelection) {
                 boolean newCheck = !clickedItem.isChecked();
                 // only one item can be checked : remove all checks
-                for (MenuItem smi : this.mItems) {
+                for (MenuItem smi : menuItems) {
                     if (smi != null) {
                         if (smi.isChecked()) {
                             smi.setChecked(false);
@@ -363,75 +334,74 @@ public class Menu extends ButtonDialog {
         return addMenuItem(titleTranlationId, "", icon, runnable);
     }
 
-    public MenuItem addCheckableMenuItem(String titleTranlationId, boolean checked, Runnable runnable) {
-        return addCheckableMenuItem(titleTranlationId, null, checked, runnable);
+    public void addCheckableMenuItem(String titleTranlationId, boolean checked, Runnable runnable) {
+        addCheckableMenuItem(titleTranlationId, null, checked, runnable);
     }
 
-    public MenuItem addCheckableMenuItem(String titleTranlationId, Sprite icon, boolean checked, Runnable runnable) {
+    public void addCheckableMenuItem(String titleTranlationId, Sprite icon, boolean checked, Runnable runnable) {
         MenuItem item = addMenuItem(titleTranlationId, icon, runnable);
         item.setCheckable(true);
         item.setChecked(checked);
-        return item;
     }
 
     private void layout() {
 
-        if (mListView == null || mListView.isDisposed())
+        if (menuItemsListView == null || menuItemsListView.isDisposed())
             return;
 
         try {
             float WithOffset = isMoreMenu ? mMoreMenuToggleButtonWidth : 0;
+            /*
             if (isMoreMenu && mMoreMenu != null)
                 WithOffset = mMoreMenuToggleButtonWidth;
+             */
             if (!isMoreMenu && mMoreMenu != null)
                 WithOffset = mMoreMenuToggleButtonWidth / 1.1f;
-            if (mListView != null) {
-                mListView.setSize(this.getContentSize().getWidth() - WithOffset, this.getContentSize().getHeight());
-                mListView.setZeroPos();
+            if (menuItemsListView != null) {
+                menuItemsListView.setSize(getContentSize().getWidth() - WithOffset, getContentSize().getHeight());
+                menuItemsListView.setZeroPos();
                 if (isMoreMenu && mMoreMenu != null)
                     WithOffset /= 2;
                 if (!isMoreMenu && mMoreMenu != null)
                     WithOffset = 0;
-                mListView.setX(WithOffset);
+                menuItemsListView.setX(WithOffset);
             }
 
             // Alle Items in der Breite anpassen
-            float w = mListView.getWidth();
-            for (MenuItem item : mItems) {
-                item.setWidth(w);
+            if (menuItemsListView != null) {
+                float w = menuItemsListView.getWidth();
+                for (MenuItem item : menuItems) {
+                    item.setWidth(w);
+                }
             }
 
-            if (mMoreMenuToggleButton != null) {
-
+            if (mMoreMenu != null && mMoreMenuToggleButton != null)
                 switch (mAnimationState) {
                     case 0:
-                        this.setWidth(getLeve0_Width());
+                        setWidth(getLeve0_Width());
                         mMoreMenu.setWidth(getLeve0_Width());
-                        mMoreMenu.setX(-this.getLeftWidth() - this.getRightWidth() - 2.5f);
+                        mMoreMenu.setX(-getLeftWidth() - getRightWidth() - 2.5f);
                         // TODO die -2,5f müssen auf meinem S3 sein,
                         // damit die linke Position passt auf dem desktop sind es 0 auf anderen?
                         // ich habe hier den zusammen hang noch nicht finden können
                         mMoreMenuToggleButton.setX(getLevel0_x() - mMoreMenuToggleButton.getHalfWidth() + (margin * 2));
-
                         mMoreMenuLabel.setText(mMoreMenuTextLeft);
                         break;
                     case 1:
-                        mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
-                        mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - this.getLeftWidth());
+                        mMoreMenu.setX(getWidth() - mMoreMenu.getWidth() - getLeftWidth());
+                        mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - getLeftWidth());
                         break;
                     case 2:
-                        mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
+                        mMoreMenu.setX(getWidth() - mMoreMenu.getWidth() - getLeftWidth());
                         mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - mMoreMenuToggleButton.getHalfWidth());
                         break;
                     case 3:
                         mMoreMenu.setWidth(0);
                         mMoreMenuToggleButton.setX(getLevel0_maxX() - mMoreMenuToggleButton.getHalfWidth() - (margin * 2));
-
                         break;
                 }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.err("Menu layout", ex);
         }
     }
 
@@ -443,8 +413,8 @@ public class Menu extends ButtonDialog {
 
     public void setPrompt(String Prompt) {
         // set Title with full width, add many blanks: that is bad
-        // this.setTitle(Prompt + "                                                       ");
-        this.setTitle(Prompt);
+        // setTitle(Prompt + "                                                       ");
+        setTitle(Prompt);
         layout();
     }
 
@@ -455,7 +425,7 @@ public class Menu extends ButtonDialog {
     }
 
     public ArrayList<MenuItem> getItems() {
-        return mItems;
+        return menuItems;
     }
 
     public void addItems(ArrayList<MenuItem> items) {
@@ -468,45 +438,45 @@ public class Menu extends ButtonDialog {
                 menuItem.setClickHandler(menuItemClickListener);
             if (setEnabled)
                 menuItem.setEnabled(true);
-            mItems.add(menuItem);
-            mListView.notifyDataSetChanged();
+            menuItems.add(menuItem);
+            menuItemsListView.notifyDataSetChanged();
         }
     }
 
     public void addDivider() {
-        MenuItemDivider item = new MenuItemDivider(mItems.size(), "Menu Divider");
-        item.setHeight(ItemHeight / 5);
+        MenuItemDivider item = new MenuItemDivider(menuItems.size(), "Menu Divider");
+        item.setHeight(itemHeight / 5);
         item.setEnabled(false);
-        mItems.add(item);
-        mListView.notifyDataSetChanged();
+        menuItems.add(item);
+        menuItemsListView.notifyDataSetChanged();
     }
 
     /**
      * Die indexes der Items werden neu erstellt.
      */
     public int reorganizeIndexes() {
-        int Index = 0;
-        for (MenuItem item : mItems) {
-            item.setIndex(Index++);
+        int index = 0;
+        for (MenuItem item : menuItems) {
+            item.setIndex(index++);
         }
-        return Index;
+        return index;
     }
 
     private float getLevel0_x() {
         if (mParentMenu == null)
-            return this.getX();
+            return getX();
         return mParentMenu.getLevel0_x();
     }
 
     private float getLevel0_maxX() {
         if (mParentMenu == null)
-            return this.getMaxX();
+            return getMaxX();
         return mParentMenu.getLevel0_maxX();
     }
 
     private float getLeve0_Width() {
         if (mParentMenu == null)
-            return this.getWidth();
+            return getWidth();
         return mParentMenu.getLeve0_Width();
     }
 
@@ -531,39 +501,38 @@ public class Menu extends ButtonDialog {
         }
         mMoreMenuLabel = null;
 
-        if (mItems != null) {
-            for (MenuItem it : mItems) {
+        if (menuItems != null) {
+            for (MenuItem it : menuItems) {
                 it.dispose();
             }
-            mItems.clear();
+            menuItems.clear();
         }
-        mItems = null;
+        menuItems = null;
 
-        if (mListView != null) {
-            mListView.dispose();
+        if (menuItemsListView != null) {
+            menuItemsListView.dispose();
         }
-        mListView = null;
+        menuItemsListView = null;
         super.dispose();
     }
 
-    public class CustomAdapter implements Adapter {
+    private class MenuItemsListViewAdapter implements Adapter {
 
         @Override
         public int getCount() {
-            return mItems.size();
+            return menuItems.size();
         }
 
         @Override
         public ListViewItemBase getView(int position) {
-            ListViewItemBase v = mItems.get(position);
-            return v;
+            return menuItems.get(position);
         }
 
         @Override
         public float getItemSize(int position) {
-            if (mItems == null || mItems.size() == 0 || mItems.size() < position)
+            if (menuItems == null || menuItems.size() == 0 || menuItems.size() < position)
                 return 0;
-            return mItems.get(position).getHeight();
+            return menuItems.get(position).getHeight();
         }
     }
 

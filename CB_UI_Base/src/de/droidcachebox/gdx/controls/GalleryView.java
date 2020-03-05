@@ -62,9 +62,9 @@ public class GalleryView extends H_ListView {
         }
         calculateAllSizeBase = countPos - dividerSize;
         currentPosition = countPos - dividerSize;
-        maxItemCount = (int) (getWidth() / minimumItemSize);
-        if (maxItemCount < 1)
-            maxItemCount = 1;
+        maxNumberOfVisibleItems = (int) (getWidth() / minimumItemSize);
+        if (maxNumberOfVisibleItems < 1)
+            maxNumberOfVisibleItems = 1;
     }
 
     @Override

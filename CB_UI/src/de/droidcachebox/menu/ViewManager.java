@@ -291,15 +291,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn4.addAction(actionRecordVideo, false);
         actionRecordVoice = new PlatformAction("VoiceRec", ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
         mainBtn4.addAction(actionRecordVoice, false);
-        mainBtn4.addAction(ParkingDialog.getInstance(), false);
 
-        mainBtn5.addAction(ShowCredits.getInstance(), false);
+        mainBtn5.addAction(ShowCredits.getInstance(), false, GestureDirection.Up);
         mainBtn5.addAction(Settings.getInstance(), false, GestureDirection.Left);
+        mainBtn5.addAction(ParkingDialog.getInstance(), false, GestureDirection.Right);
         mainBtn5.addAction(SwitchDayNight.getInstance(), false);
         mainBtn5.addAction(HelpOnline.getInstance(), false);
-        mainBtn5.addAction(ContactOwner.getInstance(), false);
         mainBtn5.addAction(SwitchTorch.getInstance(), false);
-        mainBtn5.addAction(ShowAbout.getInstance(), true, GestureDirection.Up);
+        mainBtn5.addAction(ShowAbout.getInstance(), true);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
 
         ShowAbout.getInstance().execute();

@@ -43,7 +43,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.controls.popups.PopUp_Base;
 import de.droidcachebox.gdx.controls.popups.QuickDraftFeedbackPopUp;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
@@ -446,28 +445,17 @@ public class DraftsView extends V_ListView {
         //
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
-        if (cache != null) {
-            cm.addMoreMenu(getSecondMenu(), Translation.get("defaultLogTypes"), Translation.get("ownerLogTypes"));
-        }
+        if (cache != null)
+            if (cache.iAmTheOwner()) {
+                Menu ownerLogTypesTitleMenu = new Menu("OwnerLogTypesTitle");
+                ownerLogTypesTitleMenu.addMenuItem("enabled", Sprites.getSprite("log4icon"), () -> addNewDraft(GeoCacheLogType.enabled));
+                ownerLogTypesTitleMenu.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"), () -> addNewDraft(GeoCacheLogType.temporarily_disabled));
+                ownerLogTypesTitleMenu.addMenuItem("ownerMaintenance", Sprites.getSprite("log7icon"), () -> addNewDraft(GeoCacheLogType.owner_maintenance));
+                cm.addMoreMenu(ownerLogTypesTitleMenu, Translation.get("defaultLogTypes"), Translation.get("ownerLogTypes"));
+            }
 
         return cm;
 
-    }
-
-    private Menu getSecondMenu() {
-        Menu sm = new Menu("OwnerLogTypesTitle");
-        MenuItem mi;
-        boolean IM_owner = GlobalCore.getSelectedCache().iAmTheOwner();
-        mi = sm.addMenuItem("enabled", Sprites.getSprite("log4icon"), () -> addNewDraft(GeoCacheLogType.enabled));
-        mi.setEnabled(IM_owner);
-        mi = sm.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"), () -> addNewDraft(GeoCacheLogType.temporarily_disabled));
-        mi.setEnabled(IM_owner);
-        mi = sm.addMenuItem("ownerMaintenance", Sprites.getSprite("log7icon"), () -> addNewDraft(GeoCacheLogType.owner_maintenance));
-        mi.setEnabled(IM_owner);
-        // addNewDraft(GeoCacheLogType.attended);
-        // addNewDraft(GeoCacheLogType.webcam_photo_taken);
-        // addNewDraft(GeoCacheLogType.reviewer_note);
-        return sm;
     }
 
     private void deleteAllDrafts() {

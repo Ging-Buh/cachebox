@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.gdx.views;
 
-import de.droidcachebox.WaypointListChangedEventList;
+import de.droidcachebox.*;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.GL;
@@ -23,7 +23,6 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.EditWaypoint;
 import de.droidcachebox.gdx.activities.MeasureCoordinate;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate;
-import de.droidcachebox.gdx.activities.ProjectionCoordinate.Type;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
@@ -31,7 +30,6 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
@@ -41,21 +39,21 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
-public class WaypointView extends V_ListView implements de.droidcachebox.SelectedCacheChangedEventListener, de.droidcachebox.WaypointListChangedEvent {
+public class WaypointView extends V_ListView implements SelectedCacheChangedEventListener, WaypointListChangedEvent {
     private static final String log = "WaypointView";
     private static WaypointView that;
-    private Waypoint aktWaypoint = null;
-    private Cache aktCache = null;
-    private CustomAdapter lvAdapter;
+    private Waypoint currentWaypoint = null;
+    private Cache currentCache = null;
+    private WayPointListViewAdapter wayPointListViewAdapter;
     private boolean createNewWaypoint = false;
 
     private WaypointView() {
         super(ViewManager.leftTab.getContentRec(), "WaypointView");
         setBackground(Sprites.ListBack);
-        SetSelectedCache(de.droidcachebox.GlobalCore.getSelectedCache());
-        de.droidcachebox.SelectedCacheChangedEventListeners.getInstance().add(this);
-        de.droidcachebox.WaypointListChangedEventList.Add(this);
-        this.setDisposeFlag(false);
+        setSelectedCache(GlobalCore.getSelectedCache());
+        SelectedCacheChangedEventListeners.getInstance().add(this);
+        WaypointListChangedEventList.Add(this);
+        setDisposeFlag(false);
     }
 
     public static WaypointView getInstance() {
@@ -65,7 +63,7 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
     @Override
     public void onShow() {
-        SetSelectedCache(aktCache);
+        setSelectedCache(currentCache);
         chkSlideBack();
 
     }
@@ -75,48 +73,44 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
     }
 
-    private void SetSelectedCache(Cache cache) {
+    private void setSelectedCache(Cache cache) {
 
-        if (aktCache != cache) {
-            aktCache = de.droidcachebox.GlobalCore.getSelectedCache();
-            this.setAdapter(null);
-            lvAdapter = new CustomAdapter(aktCache);
-            this.setAdapter(lvAdapter);
+        if (currentCache != cache) {
+            currentCache = GlobalCore.getSelectedCache();
+            setAdapter(null);
+            wayPointListViewAdapter = new WayPointListViewAdapter(currentCache);
+            setAdapter(wayPointListViewAdapter);
         }
         // aktuellen Waypoint in der List anzeigen
 
-        Point lastAndFirst = this.getFirstAndLastVisibleIndex();
+        Point lastAndFirst = getFirstAndLastVisibleIndex();
 
-        if (aktCache == null)
+        if (currentCache == null)
             return;
 
-        int itemCount = aktCache.getWayPoints() == null ? 1 : aktCache.getWayPoints().size() + 1;
-        int itemSpace = this.getMaxItemCount();
+        if (getMaxNumberOfVisibleItems() >= (currentCache.getWayPoints() == null ? 1 : currentCache.getWayPoints().size() + 1))
+            setUnDraggable();
+        else
+            setDraggable();
 
-        if (itemSpace >= itemCount) {
-            this.setUnDraggable();
-        } else {
-            this.setDraggable();
-        }
+        if (GlobalCore.getSelectedWayPoint() != null) {
 
-        if (de.droidcachebox.GlobalCore.getSelectedWayPoint() != null) {
-
-            if (aktWaypoint == de.droidcachebox.GlobalCore.getSelectedWayPoint()) {
+            if (currentWaypoint == GlobalCore.getSelectedWayPoint()) {
                 // is selected
                 return;
             }
 
-            aktWaypoint = de.droidcachebox.GlobalCore.getSelectedWayPoint();
+            currentWaypoint = GlobalCore.getSelectedWayPoint();
             int id = 0;
 
-            for (int i = 0, n = aktCache.getWayPoints().size(); i < n; i++) {
-                Waypoint wp = aktCache.getWayPoints().get(i);
+            for (int i = 0, n = currentCache.getWayPoints().size(); i < n; i++) {
+                Waypoint wp = currentCache.getWayPoints().get(i);
                 id++;
-                if (wp == aktWaypoint) {
-                    this.setSelection(id);
-                    if (this.isDraggable()) {
+                if (wp == currentWaypoint) {
+                    setSelection(id);
+                    if (isDraggable()) {
                         if (!(lastAndFirst.x <= id && lastAndFirst.y >= id)) {
-                            this.scrollToItem(id);
+                            scrollToItem(id);
                             Log.debug(log, "Scroll to:" + id);
                         }
                     }
@@ -125,11 +119,11 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
                 }
             }
         } else {
-            aktWaypoint = null;
-            this.setSelection(0);
-            if (this.isDraggable()) {
+            currentWaypoint = null;
+            setSelection(0);
+            if (isDraggable()) {
                 if (!(lastAndFirst.x <= 0 && lastAndFirst.y >= 0)) {
-                    this.scrollToItem(0);
+                    scrollToItem(0);
                     Log.debug(log, "Scroll to:" + 0);
                 }
             }
@@ -141,42 +135,42 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         // cache and aktCache are the same objects so ==, but content has changed, thus setting aktCache to null
-        aktCache = null;
-        SetSelectedCache(cache);
+        currentCache = null;
+        setSelectedCache(cache);
     }
 
     @Override
     public void WaypointListChanged(Cache cache) {
-        if (cache != aktCache)
+        if (cache != currentCache)
             return;
-        aktCache = null;
-        SetSelectedCache(cache);
+        currentCache = null;
+        setSelectedCache(cache);
     }
 
     public Menu getContextMenu() {
         Menu cm = new Menu("WaypointViewContextMenuTitle");
-        if (aktWaypoint != null)
+        if (currentWaypoint != null) {
             cm.addMenuItem("show", null, () -> editWP(false));
-        if (aktWaypoint != null)
             cm.addMenuItem("edit", null, () -> editWP(true));
+            if (currentWaypoint.isUserWaypoint)
+                cm.addMenuItem("delete", null, this::deleteWP);
+        }
         cm.addMenuItem("AddWaypoint", null, this::addWP);
-        if ((aktWaypoint != null) && (aktWaypoint.isUserWaypoint))
-            cm.addMenuItem("delete", null, this::deleteWP);
-        if (aktWaypoint != null || aktCache != null)
-            cm.addMenuItem("Projection", null, this::addProjection);
-        MenuItem mi = cm.addMenuItem("UploadCorrectedCoordinates", null, () -> GL.that.postAsync(() -> {
-            if (aktCache.hasCorrectedCoordinates())
-                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGeoCacheCode(), aktCache.getCoordinate());
-            else if (aktWaypoint.isCorrectedFinal())
-                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGeoCacheCode(), aktWaypoint.getCoordinate());
-            if (GroundspeakAPI.APIError == 0) {
-                MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-            } else {
-                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-            }
-        }));
-        mi.setEnabled(aktCache.hasCorrectedCoordinates() || (aktWaypoint != null && aktWaypoint.isCorrectedFinal()));
+        cm.addMenuItem("Projection", null, this::addProjection);
         cm.addMenuItem("FromGps", null, this::addMeasure);
+        if (currentCache.hasCorrectedCoordinates() || (currentWaypoint != null && currentWaypoint.isCorrectedFinal())) {
+            cm.addMenuItem("UploadCorrectedCoordinates", null, () -> GL.that.postAsync(() -> {
+                if (currentCache.hasCorrectedCoordinates())
+                    GroundspeakAPI.uploadCorrectedCoordinates(currentCache.getGeoCacheCode(), currentCache.getCoordinate());
+                else if (currentWaypoint.isCorrectedFinal())
+                    GroundspeakAPI.uploadCorrectedCoordinates(currentCache.getGeoCacheCode(), currentWaypoint.getCoordinate());
+                if (GroundspeakAPI.APIError == 0) {
+                    MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                } else {
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                }
+            }));
+        }
 
         return cm;
     }
@@ -185,26 +179,26 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
         createNewWaypoint = true;
         String newGcCode;
         try {
-            newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGeoCacheCode());
+            newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
         } catch (Exception e) {
             return;
         }
-        Coordinate coord = de.droidcachebox.GlobalCore.getSelectedCoordinate();
+        Coordinate coord = GlobalCore.getSelectedCoordinate();
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
         if ((coord == null) || (!coord.isValid()))
-            coord = de.droidcachebox.GlobalCore.getSelectedCache().getCoordinate();
+            coord = GlobalCore.getSelectedCache().getCoordinate();
         //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
-        Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().generatedId, "", newGcCode);
+        Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
 
         editWP(newWP, true);
 
     }
 
     private void editWP(boolean showCoordinateDialog) {
-        if (aktWaypoint != null) {
+        if (currentWaypoint != null) {
             createNewWaypoint = false;
-            editWP(aktWaypoint, showCoordinateDialog);
+            editWP(currentWaypoint, showCoordinateDialog);
         }
     }
 
@@ -214,49 +208,49 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
             if (waypoint != null) {
                 if (createNewWaypoint) {
 
-                    de.droidcachebox.GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
-                    lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-                    that.setAdapter(lvAdapter);
-                    aktWaypoint = waypoint;
-                    de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), waypoint);
+                    GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
+                    wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
+                    that.setAdapter(wayPointListViewAdapter);
+                    currentWaypoint = waypoint;
+                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                     if (waypoint.isStartWaypoint) {
                         // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                         // definiert
                         // ist!!!
                         WaypointDAO wpd = new WaypointDAO();
-                        wpd.ResetStartWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), waypoint);
+                        wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
                     }
                     WaypointDAO waypointDAO = new WaypointDAO();
                     waypointDAO.WriteToDatabase(waypoint);
 
-                    aktCache = null;
-                    aktWaypoint = null;
+                    currentCache = null;
+                    currentWaypoint = null;
 
-                    selectedCacheChanged(de.droidcachebox.GlobalCore.getSelectedCache(), waypoint);
+                    selectedCacheChanged(GlobalCore.getSelectedCache(), waypoint);
 
                 } else {
-                    aktWaypoint.setTitle(waypoint.getTitle());
-                    aktWaypoint.waypointType = waypoint.waypointType;
-                    aktWaypoint.setCoordinate(waypoint.getCoordinate());
-                    aktWaypoint.setDescription(waypoint.getDescription());
-                    aktWaypoint.isStartWaypoint = waypoint.isStartWaypoint;
-                    aktWaypoint.setClue(waypoint.getClue());
+                    currentWaypoint.setTitle(waypoint.getTitle());
+                    currentWaypoint.waypointType = waypoint.waypointType;
+                    currentWaypoint.setCoordinate(waypoint.getCoordinate());
+                    currentWaypoint.setDescription(waypoint.getDescription());
+                    currentWaypoint.isStartWaypoint = waypoint.isStartWaypoint;
+                    currentWaypoint.setClue(waypoint.getClue());
 
                     // set waypoint as UserWaypoint, because waypoint is changed by user
-                    aktWaypoint.isUserWaypoint = true;
+                    currentWaypoint.isUserWaypoint = true;
 
                     if (waypoint.isStartWaypoint) {
                         // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                         // definiert
                         // ist!!!
                         WaypointDAO wpd = new WaypointDAO();
-                        wpd.ResetStartWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), aktWaypoint);
+                        wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), currentWaypoint);
                     }
                     WaypointDAO waypointDAO = new WaypointDAO();
-                    waypointDAO.UpdateDatabase(aktWaypoint);
+                    waypointDAO.UpdateDatabase(currentWaypoint);
 
-                    lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-                    that.setAdapter(lvAdapter);
+                    wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
+                    that.setAdapter(wayPointListViewAdapter);
                 }
             }
         }, showCoordinateDialog, false);
@@ -265,19 +259,19 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     }
 
     private void deleteWP() {
-        MessageBox.show(Translation.get("?DelWP") + "\n\n[" + aktWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MessageBox.show(Translation.get("?DelWP") + "\n\n[" + currentWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
             switch (which) {
                 case MessageBox.BTN_LEFT_POSITIVE:
                     // Yes button clicked
-                    Database.deleteFromDatabase(aktWaypoint);
-                    de.droidcachebox.GlobalCore.getSelectedCache().getWayPoints().remove(aktWaypoint);
-                    de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), null);
-                    aktWaypoint = null;
-                    lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-                    that.setAdapter(lvAdapter);
+                    Database.deleteFromDatabase(currentWaypoint);
+                    GlobalCore.getSelectedCache().getWayPoints().remove(currentWaypoint);
+                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
+                    currentWaypoint = null;
+                    wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
+                    that.setAdapter(wayPointListViewAdapter);
 
-                    int itemCount = lvAdapter.getCount();
-                    int itemSpace = that.getMaxItemCount();
+                    int itemCount = wayPointListViewAdapter.getCount();
+                    int itemSpace = that.getMaxNumberOfVisibleItems();
 
                     if (itemSpace >= itemCount) {
                         that.setUnDraggable();
@@ -299,40 +293,49 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     private void addProjection() {
         createNewWaypoint = true;
 
-        final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.getCoordinate() : (aktCache != null) ? aktCache.getCoordinate() : Locator.getInstance().getMyPosition();
-        String ProjName;
+        final Coordinate coord;
+        String projName;
+        if (currentWaypoint == null) {
+            if (currentCache == null) {
+                coord = Locator.getInstance().getMyPosition();
+                projName = Translation.get("FromGps");
+            } else {
+                coord = currentCache.getCoordinate();
+                projName = currentCache.getGeoCacheName();
+            }
+        } else {
+            if (!currentWaypoint.getCoordinate().isValid() || currentWaypoint.getCoordinate().isZero()) {
+                coord = Locator.getInstance().getMyPosition();
+                projName = Translation.get("FromGps");
+            }
+            else {
+                coord = currentWaypoint.getCoordinate();
+                projName = currentWaypoint.getTitle();
+            }
+        }
 
-        ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getGeoCacheName() : null;
-
-        Log.debug(log, "WaypointView.addProjection()");
-        Log.debug(log, "   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
-        Log.debug(log, "   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
-        Log.debug(log, "   using Coord:" + coord.toString());
-
-        ProjectionCoordinate pC = new ProjectionCoordinate("Projection", coord, (targetCoord, startCoord, Bearing, distance) -> {
+        new ProjectionCoordinate("Projection", coord, (targetCoord, startCoord, Bearing, distance) -> {
             if (targetCoord == null || targetCoord.equals(coord))
                 return;
 
             String newGcCode;
             try {
-                newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGeoCacheCode());
+                newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
             } catch (Exception e) {
 
                 return;
             }
             //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
-            Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().generatedId, "", newGcCode);
-            de.droidcachebox.GlobalCore.getSelectedCache().getWayPoints().add(newWP);
-            lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-            that.setAdapter(lvAdapter);
-            aktWaypoint = newWP;
-            de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), newWP);
+            Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
+            GlobalCore.getSelectedCache().getWayPoints().add(newWP);
+            wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
+            that.setAdapter(wayPointListViewAdapter);
+            currentWaypoint = newWP;
+            GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
             WaypointDAO waypointDAO = new WaypointDAO();
             waypointDAO.WriteToDatabase(newWP);
 
-        }, Type.projetion, ProjName);
-
-        pC.show();
+        }, ProjectionCoordinate.ProjectionType.projection, projName).show();
 
     }
 
@@ -345,20 +348,20 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
             String newGcCode;
             try {
-                newGcCode = Database.Data.createFreeGcCode(de.droidcachebox.GlobalCore.getSelectedCache().getGeoCacheCode());
+                newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
             } catch (Exception e) {
 
                 return;
             }
             //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
-            Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), de.droidcachebox.GlobalCore.getSelectedCache().generatedId, "", newGcCode);
-            de.droidcachebox.GlobalCore.getSelectedCache().getWayPoints().add(newWP);
+            Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
+            GlobalCore.getSelectedCache().getWayPoints().add(newWP);
 
-            lvAdapter = new CustomAdapter(de.droidcachebox.GlobalCore.getSelectedCache());
-            that.setAdapter(lvAdapter);
+            wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
+            setAdapter(wayPointListViewAdapter);
 
-            aktWaypoint = newWP;
-            de.droidcachebox.GlobalCore.setSelectedWaypoint(de.droidcachebox.GlobalCore.getSelectedCache(), newWP);
+            currentWaypoint = newWP;
+            GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
             WaypointDAO waypointDAO = new WaypointDAO();
             waypointDAO.WriteToDatabase(newWP);
 
@@ -371,22 +374,22 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
     @Override
     public void dispose() {
         // release all Member
-        lvAdapter = null;
-        aktWaypoint = null;
-        aktCache = null;
+        wayPointListViewAdapter = null;
+        currentWaypoint = null;
+        currentCache = null;
         that = null;
 
         // release all EventHandler
-        de.droidcachebox.SelectedCacheChangedEventListeners.getInstance().remove(this);
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         WaypointListChangedEventList.Remove(this);
         super.dispose();
     }
 
-    public class CustomAdapter implements Adapter {
+    public class WayPointListViewAdapter implements Adapter {
         private Cache cache;
         private CB_List<ListViewItemBase> wayPoints;
 
-        CustomAdapter(Cache cache) {
+        WayPointListViewAdapter(Cache cache) {
             this.cache = cache;
             wayPoints = new CB_List<>();
             wayPoints.ensureCapacity(cache.getWayPoints().size() + 1, true);
@@ -419,12 +422,11 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
                             if (selectionIndex == 0) {
                                 // Cache selected
-                                de.droidcachebox.GlobalCore.setSelectedCache(aktCache);
+                                GlobalCore.setSelectedCache(currentCache);
                             } else {
                                 // waypoint selected
-                                WaypointViewItem wpi = (WaypointViewItem) v;
-                                aktWaypoint = wpi.getWaypoint();
-                                de.droidcachebox.GlobalCore.setSelectedWaypoint(aktCache, aktWaypoint);
+                                currentWaypoint = ((WaypointViewItem) v).getWaypoint();
+                                GlobalCore.setSelectedWaypoint(currentCache, currentWaypoint);
                             }
 
                             setSelection(selectionIndex);
@@ -435,12 +437,12 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
                             if (selectionIndex == 0) {
                                 // Cache selected
-                                de.droidcachebox.GlobalCore.setSelectedCache(aktCache);
+                                GlobalCore.setSelectedCache(currentCache);
                             } else {
                                 // waypoint selected
                                 WaypointViewItem wpi = (WaypointViewItem) v;
-                                aktWaypoint = wpi.getWaypoint();
-                                de.droidcachebox.GlobalCore.setSelectedWaypoint(aktCache, aktWaypoint);
+                                currentWaypoint = wpi.getWaypoint();
+                                GlobalCore.setSelectedWaypoint(currentCache, currentWaypoint);
                             }
 
                             setSelection(selectionIndex);
@@ -466,12 +468,12 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
                             if (selectionIndex == 0) {
                                 // Cache selected
-                                de.droidcachebox.GlobalCore.setSelectedCache(aktCache);
+                                GlobalCore.setSelectedCache(currentCache);
                             } else {
                                 // waypoint selected
                                 WaypointViewItem wpi = (WaypointViewItem) v;
-                                aktWaypoint = wpi.getWaypoint();
-                                de.droidcachebox.GlobalCore.setSelectedWaypoint(aktCache, aktWaypoint);
+                                currentWaypoint = wpi.getWaypoint();
+                                GlobalCore.setSelectedWaypoint(currentCache, currentWaypoint);
                             }
 
                             setSelection(selectionIndex);
@@ -482,12 +484,12 @@ public class WaypointView extends V_ListView implements de.droidcachebox.Selecte
 
                             if (selectionIndex == 0) {
                                 // Cache selected
-                                de.droidcachebox.GlobalCore.setSelectedCache(aktCache);
+                                GlobalCore.setSelectedCache(currentCache);
                             } else {
                                 // waypoint selected
                                 WaypointViewItem wpi = (WaypointViewItem) v;
-                                aktWaypoint = wpi.getWaypoint();
-                                de.droidcachebox.GlobalCore.setSelectedWaypoint(aktCache, aktWaypoint);
+                                currentWaypoint = wpi.getWaypoint();
+                                GlobalCore.setSelectedWaypoint(currentCache, currentWaypoint);
                             }
 
                             setSelection(selectionIndex);

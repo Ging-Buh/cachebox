@@ -256,7 +256,7 @@ public class SelectDB extends ActivityBase {
     @Override
     public void onShow() {
 
-        int itemSpace = lvDBSelection.getMaxItemCount();
+        int itemSpace = lvDBSelection.getMaxNumberOfVisibleItems();
 
         if (itemSpace >= dbItemAdapter.getCount()) {
             lvDBSelection.setUnDraggable();

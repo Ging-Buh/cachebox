@@ -70,7 +70,7 @@ public class TrackCreation extends AbstractShowAction {
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("fromPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("fromPoint"), coord, (targetCoord, startCoord, bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -86,7 +86,7 @@ public class TrackCreation extends AbstractShowAction {
             route.setVisible(true);
             RouteOverlay.getInstance().addTrack(route);
             TrackListView.getInstance().notifyDataSetChanged();
-        }, ProjectionCoordinate.Type.p2p, null);
+        }, ProjectionCoordinate.ProjectionType.point2point, "");
         pC.show();
 
     }
@@ -96,7 +96,7 @@ public class TrackCreation extends AbstractShowAction {
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("Projection"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("Projection"), coord, (targetCoord, startCoord, bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -113,7 +113,7 @@ public class TrackCreation extends AbstractShowAction {
             route.setVisible(true);
             RouteOverlay.getInstance().addTrack(route);
             TrackListView.getInstance().notifyDataSetChanged();
-        }, ProjectionCoordinate.Type.projetion, null);
+        }, ProjectionCoordinate.ProjectionType.projection, "");
 
         pC.show();
 
@@ -124,7 +124,7 @@ public class TrackCreation extends AbstractShowAction {
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("centerPoint"), coord, (targetCoord, startCoord, Bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("centerPoint"), coord, (targetCoord, startCoord, bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -150,7 +150,7 @@ public class TrackCreation extends AbstractShowAction {
                 LastCoord.setValid(true);
             }
             TrackListView.getInstance().notifyDataSetChanged();
-        }, ProjectionCoordinate.Type.circle, null);
+        }, ProjectionCoordinate.ProjectionType.circle, "");
         pC.show();
     }
 }
