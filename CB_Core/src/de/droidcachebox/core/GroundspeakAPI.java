@@ -127,7 +127,7 @@ public class GroundspeakAPI {
                         if (ej != null) {
                             LastAPIError = ej.optString("errorMessage", "" + APIError);
                         } else {
-                            LastAPIError = ex.getLocalizedMessage();
+                            LastAPIError = ex.toString();
                         }
                     } catch (Exception exc) {
                         LastAPIError = ex.getLocalizedMessage();

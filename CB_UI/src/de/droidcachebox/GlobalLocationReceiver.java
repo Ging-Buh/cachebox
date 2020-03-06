@@ -21,7 +21,6 @@ import de.droidcachebox.database.CacheWithWP;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.Location.ProviderType;
 import de.droidcachebox.utils.MathUtils.CalculationType;
@@ -235,7 +234,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
             initialFixSoundCompleted = false;
         }
 
-        GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
+        GL.that.toast("Network-Position");
     }
 
 }

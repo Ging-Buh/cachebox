@@ -1062,7 +1062,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                         int result = importer.importImages(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
                         if (result == ERROR) {
-                            GL.that.Toast(LastAPIError);
+                            GL.that.toast(LastAPIError);
                             ip.ProgressChangeMsg("", "");
                             return;
                         }
@@ -1143,7 +1143,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         FilterProperties props = FilterInstances.getLastFilter();
         EditFilterSettings.applyFilter(props);
 
-        // an der richtigen Stelle ausgeben, kommt auch bei CBServer import: GL.that.Toast(Msg, 3000);
+        // an der richtigen Stelle ausgeben, kommt auch bei CBServer import: GL.that.toast(Msg, 3000);
 
     }
 

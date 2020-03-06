@@ -215,7 +215,7 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
     public String copyToClipboard() {
         if (PlatformUIBase.getClipboard() != null) {
             PlatformUIBase.getClipboard().setContents(logEntry.logText);
-            // GL.that.Toast(Translation.get("CopyToClipboard"));
+            // GL.that.toast(Translation.get("CopyToClipboard"));
             return logEntry.logText;
         }
         return "";

@@ -18,11 +18,13 @@ public interface Adapter {
     ListViewItemBase getView(int position);
 
     /**
-     * Gibt die Größe zur Berechnung der Position eines Items zurück.</br> </br>Für V_ListView => die Höhe </br>Für H_ListView => die Breite
-     * will be called for each position in advance before first call of getView
+     * will be called for each position in advance before first call of getView</br>
+     * !!! so, if the view is created within the getView, there must be a fixed ItemSize </br>
+     * !!! otherwise (if the view is created in advance (!do not dispose)), the use of the real size is possible </br>
+     * !!! creation of view in advance is suitable, if not too much elements. Be aware of memory usage </br>
      *
-     * @param position ?
-     * @return ?
+     * @param position The position of the item within the adapter's data set of the item whose view we want.
+     * @return the height for V_ListView, the width for H_ListView
      */
     float getItemSize(int position);
 

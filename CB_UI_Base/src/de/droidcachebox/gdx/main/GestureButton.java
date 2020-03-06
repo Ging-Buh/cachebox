@@ -170,7 +170,7 @@ public class GestureButton extends CB_Button {
                 CB_RectF rec = GestureButton.this.thisWorldRec;
                 if (rec != null) {
                     help.setPos(rec.getX(), rec.getMaxY());
-                    GL.that.Toast(help, 2000);
+                    GL.that.toast(help, 2000);
                 }
             }
 

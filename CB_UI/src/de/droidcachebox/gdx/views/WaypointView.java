@@ -40,8 +40,8 @@ import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
 public class WaypointView extends V_ListView implements SelectedCacheChangedEventListener, WaypointListChangedEvent {
-    private static final String log = "WaypointView";
-    private static WaypointView that;
+    private static final String sKlasse = "WaypointView";
+    private static WaypointView waypointView;
     private Waypoint currentWaypoint = null;
     private Cache currentCache = null;
     private WayPointListViewAdapter wayPointListViewAdapter;
@@ -50,30 +50,31 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
     private WaypointView() {
         super(ViewManager.leftTab.getContentRec(), "WaypointView");
         setBackground(Sprites.ListBack);
-        setSelectedCache(GlobalCore.getSelectedCache());
-        SelectedCacheChangedEventListeners.getInstance().add(this);
-        WaypointListChangedEventList.Add(this);
         setDisposeFlag(false);
     }
 
     public static WaypointView getInstance() {
-        if (that == null) that = new WaypointView();
-        return that;
+        if (waypointView == null) waypointView = new WaypointView();
+        return waypointView;
     }
 
     @Override
     public void onShow() {
-        setSelectedCache(currentCache);
+        setSelectedCache(GlobalCore.getSelectedCache());
         chkSlideBack();
-
+        SelectedCacheChangedEventListeners.getInstance().add(this);
+        WaypointListChangedEventList.Add(this);
     }
 
     @Override
     public void onHide() {
-
     }
 
     private void setSelectedCache(Cache cache) {
+
+        if (cache != GlobalCore.getSelectedCache()) {
+            Log.err(sKlasse, new Exception("should set current cache not to selected one"));
+        }
 
         if (currentCache != cache) {
             currentCache = GlobalCore.getSelectedCache();
@@ -81,7 +82,6 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
             wayPointListViewAdapter = new WayPointListViewAdapter(currentCache);
             setAdapter(wayPointListViewAdapter);
         }
-        // aktuellen Waypoint in der List anzeigen
 
         Point lastAndFirst = getFirstAndLastVisibleIndex();
 
@@ -111,7 +111,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
                     if (isDraggable()) {
                         if (!(lastAndFirst.x <= id && lastAndFirst.y >= id)) {
                             scrollToItem(id);
-                            Log.debug(log, "Scroll to:" + id);
+                            Log.debug(sKlasse, "Scroll to:" + id);
                         }
                     }
 
@@ -124,7 +124,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
             if (isDraggable()) {
                 if (!(lastAndFirst.x <= 0 && lastAndFirst.y >= 0)) {
                     scrollToItem(0);
-                    Log.debug(log, "Scroll to:" + 0);
+                    Log.debug(sKlasse, "Scroll to:" + 0);
                 }
             }
         }
@@ -134,13 +134,13 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
     @Override
     public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
-        // cache and aktCache are the same objects so ==, but content has changed, thus setting aktCache to null
+        // cache and currentCache are the same objects so ==, but content has changed, thus setting currentCache to null
         currentCache = null;
         setSelectedCache(cache);
     }
 
     @Override
-    public void WaypointListChanged(Cache cache) {
+    public void wayPointListChanged(Cache cache) {
         if (cache != currentCache)
             return;
         currentCache = null;
@@ -210,13 +210,11 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
 
                     GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
                     wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                    that.setAdapter(wayPointListViewAdapter);
+                    waypointView.setAdapter(wayPointListViewAdapter);
                     currentWaypoint = waypoint;
                     GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                     if (waypoint.isStartWaypoint) {
-                        // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
-                        // definiert
-                        // ist!!!
+                        // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt definiert ist!!!
                         WaypointDAO wpd = new WaypointDAO();
                         wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
                     }
@@ -250,7 +248,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
                     waypointDAO.UpdateDatabase(currentWaypoint);
 
                     wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                    that.setAdapter(wayPointListViewAdapter);
+                    waypointView.setAdapter(wayPointListViewAdapter);
                 }
             }
         }, showCoordinateDialog, false);
@@ -260,31 +258,29 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
 
     private void deleteWP() {
         MessageBox.show(Translation.get("?DelWP") + "\n\n[" + currentWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
-            switch (which) {
-                case MessageBox.BTN_LEFT_POSITIVE:
-                    // Yes button clicked
+            if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                try {
                     Database.deleteFromDatabase(currentWaypoint);
                     GlobalCore.getSelectedCache().getWayPoints().remove(currentWaypoint);
-                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
                     currentWaypoint = null;
+                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
+
+                    waypointView.notifyDataSetChanged();
+                    /*
                     wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                    that.setAdapter(wayPointListViewAdapter);
-
+                    waypointView.setAdapter(wayPointListViewAdapter);
                     int itemCount = wayPointListViewAdapter.getCount();
-                    int itemSpace = that.getMaxNumberOfVisibleItems();
-
+                    int itemSpace = waypointView.getMaxNumberOfVisibleItems();
                     if (itemSpace >= itemCount) {
-                        that.setUnDraggable();
+                        waypointView.setUnDraggable();
                     } else {
-                        that.setDraggable();
+                        waypointView.setDraggable();
                     }
-
-                    that.scrollToItem(0);
-
-                    break;
-                case MessageBox.BTN_RIGHT_NEGATIVE:
-                    // No button clicked
-                    break;
+                     */
+                    waypointView.scrollToItem(0);
+                } catch (Exception ex) {
+                    Log.err(sKlasse, ex);
+                }
             }
             return true;
         });
@@ -307,8 +303,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
             if (!currentWaypoint.getCoordinate().isValid() || currentWaypoint.getCoordinate().isZero()) {
                 coord = Locator.getInstance().getMyPosition();
                 projName = Translation.get("FromGps");
-            }
-            else {
+            } else {
                 coord = currentWaypoint.getCoordinate();
                 projName = currentWaypoint.getTitle();
             }
@@ -329,7 +324,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
             Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
             GlobalCore.getSelectedCache().getWayPoints().add(newWP);
             wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-            that.setAdapter(wayPointListViewAdapter);
+            waypointView.setAdapter(wayPointListViewAdapter);
             currentWaypoint = newWP;
             GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
             WaypointDAO waypointDAO = new WaypointDAO();
@@ -377,7 +372,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
         wayPointListViewAdapter = null;
         currentWaypoint = null;
         currentCache = null;
-        that = null;
+        waypointView = null;
 
         // release all EventHandler
         SelectedCacheChangedEventListeners.getInstance().remove(this);
@@ -417,6 +412,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
                     if (wayPoints.get(position) == null || wayPoints.get(position).isDisposed()) {
                         WaypointViewItem waypointViewItem = new WaypointViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, cache, null);
                         waypointViewItem.setClickable(true);
+
                         waypointViewItem.setClickHandler((v, x, y, pointer, button) -> {
                             int selectionIndex = ((ListViewItemBase) v).getIndex();
 

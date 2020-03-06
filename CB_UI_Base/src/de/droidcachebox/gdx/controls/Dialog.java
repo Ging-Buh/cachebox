@@ -28,44 +28,31 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.CB_List;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public abstract class Dialog extends CB_View_Base {
-    static public boolean lastNightMode = false;
-    static protected NinePatch mTitle9patch;
-    static protected NinePatch mHeader9patch;
-    static protected NinePatch mCenter9patch;
-    static protected NinePatch mFooter9patch;
-    static protected float mTitleVersatz = 6;
-    static protected float margin = -1;
-    static private int pW = 0;
-    static private int DialogCount = 0;
-    public final int DialogID;
-    protected String CallerName = "";
+    protected static float margin = -1;
+    private static boolean lastNightMode = false;
+    private static float mTitleVersatz = 6;
+    private static NinePatch mTitle9patch;
+    private static NinePatch mHeader9patch;
+    private static NinePatch mCenter9patch;
+    private static NinePatch mFooter9patch;
+    protected String callerName = "";
     protected boolean dontRenderDialogBackground = false;
     protected float mTitleHeight = 0;
     protected float mTitleWidth = 100;
     protected boolean mHasTitle = false;
-    // TODO das Handling der Marker in den Dialogen überarbeiten!
-    protected float mHeaderHeight = 10f;
-    protected float mFooterHeight = 10f;
-    // protected Object data;
+    protected float mHeaderHeight;
+    protected float mFooterHeight;
     private String mTitle;
     private CB_Label titleLabel;
     private Box mContent;
-    private CB_List<GL_View_Base> contentChilds = new CB_List<GL_View_Base>();
-    /**
-     * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
-     */
-    private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
-    /**
-     * Overlay über alles wird als letztes Gerendert
-     */
+    private CB_List<GL_View_Base> contentChilds = new CB_List<>();
+    private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<>();
     private ArrayList<GL_View_Base> overlay = new ArrayList<>();
 
     public Dialog(CB_RectF rec, String Name) {
         super(rec, Name);
-        DialogID = DialogCount++;
         // ctor without title and footer
         mHeaderHeight = calcHeaderHeight();
         mFooterHeight = mHeaderHeight;
@@ -81,8 +68,7 @@ public abstract class Dialog extends CB_View_Base {
         } // noch nicht initialisiert!
 
         if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null || lastNightMode != CB_UI_Base_Settings.nightMode.getValue()) {
-            // calcBase
-            pW = (int) (Sprites.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
+            int pW = (int) (Sprites.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
             mTitle9patch = new NinePatch(Sprites.Dialog.get(DialogElement.title.ordinal()), pW, (pW * 12 / 8), pW, pW);
             mHeader9patch = new NinePatch(Sprites.Dialog.get(DialogElement.header.ordinal()), pW, pW, pW, 3);
             mCenter9patch = new NinePatch(Sprites.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
@@ -122,7 +108,7 @@ public abstract class Dialog extends CB_View_Base {
 
         float MsgWidth = (Width * 0.95f) - 5 - UiSizes.getInstance().getButtonHeight();
 
-        float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
+        float MeasuredTextHeight = Fonts.measureWrapped(Text, MsgWidth).height + (margin * 4);
 
         int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UiSizes.getInstance().getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
         if (hasTitle) {
@@ -139,8 +125,7 @@ public abstract class Dialog extends CB_View_Base {
         // max Height festlegen
         Height = (int) Math.min(Height, UiSizes.getInstance().getWindowHeight() * 0.95f);
 
-        Size ret = new Size((int) Width, Height);
-        return ret;
+        return new Size((int) Width, Height);
     }
 
     public static float getTitleHeight() {
@@ -217,7 +202,7 @@ public abstract class Dialog extends CB_View_Base {
         }
         super.removeChildsDirekt();
 
-        mContent = new Box(this.scaleCenter(0.95f), "Dialog Content Box");
+        mContent = new Box(scaleCenter(0.95f), "Dialog Content Box");
 
         // debug mContent.setBackground(new ColorDrawable(Color.RED));
 
@@ -244,7 +229,7 @@ public abstract class Dialog extends CB_View_Base {
             margin = UiSizes.getInstance().getMargin();
 
         if (mContent == null) {
-            this.initialDialog();
+            initialDialog();
             return;
         }
 
@@ -260,72 +245,65 @@ public abstract class Dialog extends CB_View_Base {
                 }
             }
             titleLabel.setWidth(titleLabel.getTextWidth() + leftBorder + rightBorder);
-            this.initRow();
-            this.addLast(titleLabel, FIXED);
+            initRow();
+            addLast(titleLabel, FIXED);
 
             mTitleHeight = titleLabel.getHeight();
             mTitleWidth = titleLabel.getWidth();
             mTitleWidth += rightBorder + leftBorder; // sonst sieht es blöd aus
         }
 
-        mContent.setWidth(this.getWidth() * 0.95f);
-        mContent.setHeight((this.getHeight() - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
-        float centerversatzX = this.getHalfWidth() - mContent.getHalfWidth();
-        float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
+        mContent.setWidth(getWidth() * 0.95f);
+        mContent.setHeight((getHeight() - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
+        float centerversatzX = getHalfWidth() - mContent.getHalfWidth();
+        float centerversatzY = mFooterHeight;// halfHeight - mContent.getHalfHeight();
         mContent.setPos(centerversatzX, centerversatzY);
 
     }
 
     @Override
     public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-        if (this.isDisposed())
+        if (isDisposed())
             return;
         batch.flush();
 
         try {
             if (mHeader9patch != null && !dontRenderDialogBackground) {
-                mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mHeaderHeight, this.getWidth(), mHeaderHeight);
+                mHeader9patch.draw(batch, 0, getHeight() - mTitleHeight - mHeaderHeight, getWidth(), mHeaderHeight);
             }
             if (mFooter9patch != null && !dontRenderDialogBackground) {
-                mFooter9patch.draw(batch, 0, 0, this.getWidth(), mFooterHeight + 2);
+                mFooter9patch.draw(batch, 0, 0, getWidth(), mFooterHeight + 2);
             }
             if (mCenter9patch != null && !dontRenderDialogBackground) {
-                mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(), (this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
+                mCenter9patch.draw(batch, 0, mFooterHeight, getWidth(), (getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
             }
 
             if (mHasTitle) {
-                if (mTitleWidth < this.getWidth()) {
+                if (mTitleWidth < getWidth()) {
                     if (mTitle9patch != null && !dontRenderDialogBackground) {
-                        mTitle9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+                        mTitle9patch.draw(batch, 0, getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
                     }
                 } else {
                     if (mHeader9patch != null && !dontRenderDialogBackground) {
-                        mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+                        mHeader9patch.draw(batch, 0, getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
                     }
                 }
             }
 
             batch.flush();
-        } catch (Exception e1) {
+        } catch (Exception ignored) {
         }
 
-        if (this.isDisposed())
+        if (isDisposed())
             return;
 
         super.renderChilds(batch, parentInfo);
 
         try {
             if (overlay != null) {
-                for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext(); ) {
-                    // alle renderChilds() der in dieser GL_View_Base
-                    // enthaltenen Childs auf rufen.
-
-                    GL_View_Base view;
+                for (GL_View_Base view : overlay) {
                     try {
-                        view = iterator.next();
-
-                        // hier nicht view.render(batch) aufrufen, da sonnst die in der
-                        // view enthaldenen Childs nicht aufgerufen werden.
+                        // do not call view.render(batch), else contained childs aren't called
                         if (view != null && view.isVisible()) {
 
                             if (childsInvalidate)
@@ -350,7 +328,7 @@ public abstract class Dialog extends CB_View_Base {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
     }
@@ -373,35 +351,35 @@ public abstract class Dialog extends CB_View_Base {
         overlay.add(view);
     }
 
-    public void RemoveChildsFromOverlay() {
+    public void removeChildsFromOverlay() {
         overlay.clear();
     }
 
-    // always automaticly called on changing size
+    // always automatically called on changing size
     @Override
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
         reziseContentBox();
     }
 
-    public void setFooterHeight(float FooterHeight) {
-        this.mFooterHeight = FooterHeight;
+    public void setFooterHeight(float newFooterHeight) {
+        mFooterHeight = newFooterHeight;
         reziseContentBox();
     }
 
     @Override
     public String toString() {
-        return getName() + " X,Y/Width,Height = " + getX() + "," + getY() + "/" + getWidth() + "," + getHeight() + " DialogID[" + DialogID + "] Created by: " + CallerName;
+        return getName() + " X,Y/Width,Height = " + getX() + "," + getY() + "/" + getWidth() + "," + getHeight() + " created by: " + callerName;
     }
 
-    protected void setCallerName(String callerName) {
-        CallerName = callerName;
+    protected void setCallerName(String newCallerName) {
+        callerName = newCallerName;
     }
 
     @Override
     public void dispose() {
         mTitle = null;
-        CallerName = null;
+        callerName = null;
 
         if (titleLabel != null)
             titleLabel.dispose();
@@ -412,14 +390,11 @@ public abstract class Dialog extends CB_View_Base {
         mContent = null;
 
         if (contentChilds != null) {
-
             for (int i = 0; i < contentChilds.size(); i++) {
                 GL_View_Base v = contentChilds.get(i);
                 if (v != null && !v.isDisposed())
                     v.dispose();
-                v = null;
             }
-
             contentChilds.clear();
         }
         contentChilds = null;
@@ -428,9 +403,7 @@ public abstract class Dialog extends CB_View_Base {
             for (GL_View_Base v : overlayForTextMarker) {
                 if (v != null)
                     v.dispose();
-                v = null;
             }
-
             overlayForTextMarker.clear();
         }
         overlayForTextMarker = null;
@@ -439,9 +412,7 @@ public abstract class Dialog extends CB_View_Base {
             for (GL_View_Base v : overlay) {
                 if (v != null)
                     v.dispose();
-                v = null;
             }
-
             overlay.clear();
         }
         overlay = null;

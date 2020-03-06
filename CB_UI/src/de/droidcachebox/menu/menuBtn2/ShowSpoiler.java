@@ -131,7 +131,7 @@ public class ShowSpoiler extends AbstractShowAction {
                     result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
                 wd.close();
                 if (result != OK) {
-                    GL.that.Toast(LastAPIError);
+                    GL.that.toast(LastAPIError);
                 }
             }
 

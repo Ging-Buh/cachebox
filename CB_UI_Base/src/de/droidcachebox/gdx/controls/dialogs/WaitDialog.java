@@ -18,7 +18,6 @@ import de.droidcachebox.utils.log.Trace;
 public class WaitDialog extends ButtonDialog {
     private static final String log = "WaitDialog";
     AnimationBase animation;
-    boolean canceld = false;
 
     public WaitDialog(Size size, String name) {
         super(size.getBounds().asFloat(), name, "", "", null, null, null);
@@ -88,7 +87,7 @@ public class WaitDialog extends ButtonDialog {
     }
 
     public void dismis() {
-        Log.debug(log, "WaitDialog.Dismis");
+        Log.debug(log, "WaitDialog.dismis");
         GL.that.RunOnGL(() -> {
             GL.that.closeDialog(WaitDialog.this);
             GL.that.renderOnce();
@@ -99,7 +98,7 @@ public class WaitDialog extends ButtonDialog {
     public void dispose() {
         super.dispose();
         String caller = Trace.getCallerName(1);
-        Log.debug(log, "WaitDialog.disposed ID:[" + this.DialogID + "] called:" + caller);
+        Log.debug(log, "WaitDialog.disposed called:" + caller);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class WaitDialog extends ButtonDialog {
 
     @Override
     public String toString() {
-        return getName() + "DialogID[" + DialogID + "] \"" + this.label.getText() + "\" Created by: " + CallerName;
+        return getName() + label.getText() + " created by: " + callerName;
     }
 
 }

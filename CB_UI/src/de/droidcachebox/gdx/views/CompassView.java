@@ -334,7 +334,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         if (showWpDesc) {
             if (currentWaypoint != null) {
                 if (currentWaypoint.getDescription() != null && !currentWaypoint.getDescription().equals("")) {
-                    descHeight = Fonts.MeasureWrapped(currentWaypoint.getDescription(), this.getWidth()).height + margin;
+                    descHeight = Fonts.measureWrapped(currentWaypoint.getDescription(), this.getWidth()).height + margin;
                     contentHeight += descHeight + margin;
                 }
             }

@@ -37,6 +37,9 @@ import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.MapInfoPanel.CoordType;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.messagebox.MessageBox;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.graphics.*;
 import de.droidcachebox.gdx.math.*;
 import de.droidcachebox.gdx.views.MapViewCacheList.MapViewCacheListUpdateData;
@@ -59,6 +62,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.Sprites.*;
 import static de.droidcachebox.utils.Config_Core.displayDensity;
@@ -321,8 +325,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                                 Log.err(sKlasse, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
                             }
                         } else {
-                            String msg = "No Cache loaded: \n remaining Full:" + GroundspeakAPI.fetchMyUserInfos().remaining + "\n remaining Lite:" + GroundspeakAPI.fetchMyUserInfos().remainingLite;
-                            GL.that.Toast(msg);
+                            if (GroundspeakAPI.APIError != OK) {
+                                GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MessageBoxButton.OK, MessageBoxIcon.Information, null));
+                            }
                         }
 
                         // Reload result from DB

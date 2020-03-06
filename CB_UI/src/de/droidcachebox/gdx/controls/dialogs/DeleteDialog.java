@@ -86,7 +86,7 @@ public class DeleteDialog extends ButtonDialog {
                     EditFilterSettings.applyFilter(FilterInstances.getLastFilter());// all Caches
 
                     String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                    GL.that.Toast(msg);
+                    GL.that.toast(msg);
                 }
 
                 @Override
@@ -123,7 +123,7 @@ public class DeleteDialog extends ButtonDialog {
                         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
                         String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                        GL.that.Toast(msg);
+                        GL.that.toast(msg);
                     }
 
                     @Override
@@ -160,7 +160,7 @@ public class DeleteDialog extends ButtonDialog {
                         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
                         String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                        GL.that.Toast(msg);
+                        GL.that.toast(msg);
                     }
 
                     @Override

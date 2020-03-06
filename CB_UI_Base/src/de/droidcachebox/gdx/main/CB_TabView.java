@@ -87,13 +87,8 @@ public class CB_TabView extends CB_View_Base {
                     currentView.onHide();
                     currentView.setInvisible();
                 }
-                try {
-                    view.setSize(getWidth(), getHeight() - mainButtonListView.getHeight());
-                    view.setPos(0, mainButtonListView.getHeight());
-                } catch (Exception ex) {
-                    Log.err(sKlasse, "set view size", ex);
-                    return;
-                }
+                view.setSize(getWidth(), getHeight() - mainButtonListView.getHeight());
+                view.setPos(0, mainButtonListView.getHeight());
                 if (currentView == view)
                     return;
                 currentView = view;
@@ -102,7 +97,7 @@ public class CB_TabView extends CB_View_Base {
                 sendOnShow2CurrentView();
                 GL.that.renderOnce();
             } catch (Exception ex) {
-                Log.err(sKlasse, "", ex);
+                Log.err(sKlasse, ex);
             }
         }).start();
     }

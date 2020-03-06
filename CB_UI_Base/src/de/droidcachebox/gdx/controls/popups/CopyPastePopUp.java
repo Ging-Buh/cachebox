@@ -43,7 +43,7 @@ public class CopyPastePopUp extends PopUp_Base {
             close();
             String Msg = copyPasteControl.pasteFromClipboard();
             if (Msg != null)
-                GL.that.Toast(Translation.get("PasteFromClipboard") + br + Msg);
+                GL.that.toast(Translation.get("PasteFromClipboard") + br + Msg);
             return false;
         });
 
@@ -61,7 +61,7 @@ public class CopyPastePopUp extends PopUp_Base {
                 close();
                 String Msg = copyPasteControl.copyToClipboard();
                 if (Msg != null)
-                    GL.that.Toast(Translation.get("CopyToClipboard") + br + Msg);
+                    GL.that.toast(Translation.get("CopyToClipboard") + br + Msg);
                 return false;
             }
         });
@@ -84,7 +84,7 @@ public class CopyPastePopUp extends PopUp_Base {
                 close();
                 String Msg = copyPasteControl.cutToClipboard();
                 if (Msg != null)
-                    GL.that.Toast(Translation.get("CutToClipboard") + br + Msg);
+                    GL.that.toast(Translation.get("CutToClipboard") + br + Msg);
                 return false;
             }
         });

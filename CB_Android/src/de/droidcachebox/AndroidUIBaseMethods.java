@@ -380,9 +380,9 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                         EditFilterSettings.applyFilter(props);
 
                         long ImportZeit = new Date().getTime() - ImportStart.getTime();
-                        String Msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
-                        Log.info(sKlasse, Msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
-                        GL.that.Toast(Msg, 3000);
+                        String msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
+                        Log.info(sKlasse, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
+                        GL.that.toast(msg);
                     }
 
                     @Override

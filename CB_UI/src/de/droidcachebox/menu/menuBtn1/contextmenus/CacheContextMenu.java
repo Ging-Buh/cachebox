@@ -31,12 +31,11 @@ import de.droidcachebox.utils.log.Log;
 import java.util.ArrayList;
 
 import static de.droidcachebox.PlatformUIBase.callUrl;
-import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
-import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
+import static de.droidcachebox.core.GroundspeakAPI.*;
 import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSITIVE;
 
 public class CacheContextMenu {
-    private static final String ClassName = "CacheContextMenu";
+    private static final String sKlasse = "CacheContextMenu";
     private static CancelWaitDialog wd;
 
     public static Menu getCacheContextMenu(boolean forCacheList) {
@@ -126,7 +125,7 @@ public class CacheContextMenu {
                         try {
                             WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                         } catch (InterruptedException ex) {
-                            Log.err(ClassName, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
+                            Log.err(sKlasse, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
                         }
 
                         // Reload result from DB
@@ -140,6 +139,10 @@ public class CacheContextMenu {
                             ShowDescription.getInstance().updateDescriptionView(true);
                             GL.that.renderOnce();
                         });
+                    } else {
+                        if (GroundspeakAPI.APIError != OK) {
+                            GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MessageBoxButton.OK, MessageBoxIcon.Information, null));
+                        }
                     }
                     wd.close();
                 }
@@ -214,7 +217,7 @@ public class CacheContextMenu {
     private static void addToWatchList() {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
-                if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == GroundspeakAPI.OK) {
+                if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
                     MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
                     MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
@@ -226,7 +229,7 @@ public class CacheContextMenu {
     private static void removeFromWatchList() {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
-                if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == GroundspeakAPI.OK) {
+                if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
                     MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
                     MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);

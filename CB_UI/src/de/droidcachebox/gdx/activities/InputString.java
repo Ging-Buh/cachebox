@@ -60,12 +60,4 @@ public class InputString extends ActivityBase {
     public void callBack(String result) {
     }
 
-    public void doShow() {
-        show();
-    }
-
-    public void doFinish() {
-        finish();
-    }
-
 }

@@ -36,8 +36,7 @@ public class SelectSolverFunction extends ButtonDialog {
         mResultListener = resultListener;
         this.dataType = dataType;
 
-        // Grössen für die CategoryButtons und ItemButtons berechnen!
-        categoryBtnRec = new CB_RectF(leftBorder, 0, innerWidth - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth(), UiSizes.getInstance().getButtonHeight());
+        categoryBtnRec = new CB_RectF(leftBorder, 0, innerWidth - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
 
         itemBtnRec = new CB_RectF(leftBorder, 0, categoryBtnRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
 

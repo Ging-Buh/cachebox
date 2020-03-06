@@ -110,7 +110,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         cbStartPointWidth = UiSizes.getInstance().getButtonHeight() * 1.5f;
         tvTyp = new CB_Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight);
         tvTyp.setFont(Fonts.getBubbleNormal());
-        tvTyp.setText(Translation.get("type"));
+        tvTyp.setText(Translation.get("WayPointType"));
         scrollBox.addChild(tvTyp);
 
         tvStartPoint = new CB_Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth, MeasuredLabelHeight);
@@ -123,7 +123,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTypeSpinner() {
         CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UiSizes.getInstance().getButtonHeight(), innerWidth - cbStartPointWidth, UiSizes.getInstance().getButtonHeight());
-        sType = new Spinner(rec, "WaypointType", getSpinerAdapter(), index -> {
+        sType = new Spinner(rec, "WayPointType", getSpinerAdapter(), index -> {
             EditWaypoint.this.show();
             showCbStartPoint(false);
             switch (index) {

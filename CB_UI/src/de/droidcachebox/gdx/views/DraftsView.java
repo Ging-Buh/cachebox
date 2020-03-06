@@ -616,7 +616,7 @@ public class DraftsView extends V_ListView {
                 mPath = Config.workPath + "/User/Media/";
             }
             new FileOrFolderPicker(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), abstractFile -> {
-                InputString inputDescription = new InputString("imageDescription") {
+                new InputString("imageDescription") {
                     public void callBack(String description) {
                         GL.that.postAsync(() -> {
                             Config.ImageUploadLastUsedPath.setValue(abstractFile.getParent());
@@ -633,8 +633,7 @@ public class DraftsView extends V_ListView {
                             }
                         });
                     }
-                };
-                inputDescription.show();
+                }.show();
             }).show();
         }
 
@@ -837,7 +836,7 @@ public class DraftsView extends V_ListView {
             if (fne != null) {
                 try {
                     if (fne.comment != null && !(fne.comment.length() == 0)) {
-                        mh = Fonts.MeasureWrapped(fne.comment, mesurdWidth).height;
+                        mh = Fonts.measureWrapped(fne.comment, mesurdWidth).height;
                     }
                 } catch (Exception e) {
 

@@ -25,8 +25,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
  * @author Longri
  */
 public class Toast extends Dialog {
-    public static final int LENGTH_SHORT = 1500;
-    public static final int LENGTH_LONG = 3000;
 
     protected CB_Label mTextField;
 
@@ -39,7 +37,7 @@ public class Toast extends Dialog {
 
         mTextField.setZeroPos();
 
-        super.RemoveChildsFromOverlay();
+        super.removeChildsFromOverlay();
         super.addChildToOverlay(mTextField);
 
     }

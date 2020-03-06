@@ -772,7 +772,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         // check WriteProtection
                         if (needWritePermission && !abstractFile1.canWrite()) {
                             String WriteProtectionMsg = Translation.get("NoWriteAcces");
-                            GL.that.Toast(WriteProtectionMsg, 8000);
+                            GL.that.toast(WriteProtectionMsg);
                         } else {
                             settingFolder.setValue(abstractFile1.getAbsolutePath());
                             resortList();

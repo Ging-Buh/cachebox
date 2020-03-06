@@ -592,8 +592,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
             CB_List<ListViewItemBase> visibleList = new CB_List<>();
 
-            for (int j = 0, m = childs.size(); j < m; j++) {
-                GL_View_Base v = childs.get(j);
+            for (GL_View_Base v : childs) {
                 if (v instanceof ListViewItemBase) {
                     visibleList.add(((ListViewItemBase) v));
                 }
@@ -605,16 +604,15 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                 return ret;
             }
 
-            visibleList.sort();
+            visibleList.sort(); // by mIndex
             boolean foundFirstVisible = false;
             int lastFoundedVisible = 0;
-            for (int j = 0, m = visibleList.size(); j < m; j++) {
-                ListViewItemBase lv = visibleList.get(j);
-                if (thisWorldRec.contains(lv.thisWorldRec)) {
+            for (ListViewItemBase visibleItem : visibleList) {
+                if (thisWorldRec.contains(visibleItem.thisWorldRec)) {
                     if (!foundFirstVisible)
-                        ret.x = lv.getIndex();
+                        ret.x = visibleItem.getIndex();
                     foundFirstVisible = true;
-                    lastFoundedVisible = lv.getIndex();
+                    lastFoundedVisible = visibleItem.getIndex();
                 } else {
                     if (!foundFirstVisible) {
                         continue;
@@ -625,8 +623,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             }
 
         }
-
-        // Log.debug(log, "getLastVisiblePosition = " + ret);
 
         return ret;
     }

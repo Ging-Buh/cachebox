@@ -116,8 +116,8 @@ public class GL implements ApplicationListener {
     private SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
     private boolean MarkerIsShown;
     private CB_View_Base mToastOverlay;
-    private Toast toast;
-    private boolean ToastIsShown;
+    private Toast toastView;
+    private boolean toastIsShown;
     private EditTextField focusedEditTextField;
     private ArrayList<Dialog> dialogHistory = new ArrayList<>();
     private ArrayList<ActivityBase> activityHistory = new ArrayList<>();
@@ -129,7 +129,7 @@ public class GL implements ApplicationListener {
         height = _height;
         mSplash = splash;
         mMainView = mainView;
-        ToastIsShown = false;
+        toastIsShown = false;
         renderingIsStopped = false;
         darknessAnimationRuns = false;
         currentDialogIsShown = false;
@@ -320,7 +320,7 @@ public class GL implements ApplicationListener {
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
 
-        if (currentDialogIsShown || ToastIsShown || MarkerIsShown)
+        if (currentDialogIsShown || toastIsShown || MarkerIsShown)
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
 
         if (currentDialogIsShown && mDialog.getCildCount() > 0) {
@@ -331,7 +331,7 @@ public class GL implements ApplicationListener {
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
 
-        if (ToastIsShown) {
+        if (toastIsShown) {
             mToastOverlay.renderChilds(mPolygonSpriteBatch, prjMatrix);
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
@@ -345,7 +345,7 @@ public class GL implements ApplicationListener {
             Point first = GL_Input.that.getTouchDownPos();
             if (first != null) {
                 int x = first.x;
-                int y = this.height - first.y;
+                int y = height - first.y;
                 int pointSize = 20;
                 if (lastTouchX != x || lastTouchY != y) {
                     lastTouchX = x;
@@ -423,7 +423,7 @@ public class GL implements ApplicationListener {
         if (glListener != null)
             glListener.renderContinous();
         child.onStop();
-        toast = null; // regenerate toast control
+        toastView = null; // regenerate toast control
     }
 
     public void onStart() {
@@ -517,8 +517,7 @@ public class GL implements ApplicationListener {
             } catch (Exception ignored) {
             }
             PlatformUIBase.showForDialog();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.err("GL", "ShowDialog", ex);
         }
 
@@ -538,7 +537,7 @@ public class GL implements ApplicationListener {
         closeDialog(dialog, true);
     }
 
-    private void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector) {
+    private void closeDialog(final CB_View_Base dialog, boolean msgToPlatformConector) {
 
         if (!currentDialogIsShown || !mDialog.getchilds().contains((dialog))) {
             Timer timer = new Timer();
@@ -555,7 +554,7 @@ public class GL implements ApplicationListener {
             timer.schedule(task, 50);
         }
 
-        if (MsgToPlatformConector)
+        if (msgToPlatformConector)
             PlatformUIBase.hideForDialog();
         if (currentDialog != null) {
             //check if KeyboardFocus on this Dialog
@@ -828,7 +827,6 @@ public class GL implements ApplicationListener {
     /**
      * Run on GL-Thread!<br>
      * If this Thread the GL_thread, run direct!
-     *
      */
     public void RunOnGLWithThreadCheck(IRunOnGL run) {
         if (isGlThread()) {
@@ -1031,7 +1029,7 @@ public class GL implements ApplicationListener {
      */
     private void requestRender(boolean force) {
 
-        if (!force && lastRenderOnceTime == this.getStateTime())
+        if (!force && lastRenderOnceTime == getStateTime())
             return;
 
         String name = Trace.getCallerName(1);
@@ -1053,7 +1051,7 @@ public class GL implements ApplicationListener {
             caller.put(name, stateTime);
         }
 
-        lastRenderOnceTime = this.getStateTime();
+        lastRenderOnceTime = getStateTime();
 
         if (glListener != null)
             glListener.requestRender();
@@ -1124,21 +1122,15 @@ public class GL implements ApplicationListener {
         currentDialogIsShown = false;
     }
 
-    public void Toast(CB_View_Base view) {
-        Toast(view, 4000);
-    }
-
     public void closeToast() {
         if (mToastOverlay != null) {
-
-            ToastIsShown = false;
+            toastIsShown = false;
             mToastOverlay.removeChilds();
-
             renderOnce();
         }
     }
 
-    public void Toast(CB_View_Base view, int delay) {
+    private void toast(CB_View_Base view) {
         if (mToastOverlay == null) {
             mToastOverlay = new Box(new CB_RectF(0, 0, width, height), "ToastView");
         }
@@ -1146,41 +1138,32 @@ public class GL implements ApplicationListener {
             mToastOverlay.removeChilds();
 
             mToastOverlay.addChild(view);
-            ToastIsShown = true;
+            toastIsShown = true;
 
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    ToastIsShown = false;
+                    toastIsShown = false;
                     renderOnce();
                 }
             };
 
             Timer timer = new Timer();
-            timer.schedule(task, delay);
+            timer.schedule(task, 4000); // a constant delay for toasting of 4000
         }
     }
 
-    public void Toast(String string) {
-        Toast(string, 4000);
-    }
-
-    public void Toast(String string, int length) {
-        if (toast == null) {
-            toast = new Toast(new CB_RectF(0, 0, 100, mainButtonSize.getHeight() / 1.5f), "StringToast");
+    public void toast(String string) {
+        if (toastView == null) {
+            toastView = new Toast(new CB_RectF(0, 0, 100, mainButtonSize.getHeight() / 1.5f), "StringToast");
         }
-        toast.setWrappedText(string);
-
-        GlyphLayout bounds = Fonts.MeasureWrapped(string, UiSizes.getInstance().getWindowWidth());
-
-        // float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
-        float border = +(toast.getLeftWidth() * 2) + (UiSizes.getInstance().getMargin() * 2);
-        toast.setWidth(bounds.width + border);
-        toast.setHeight(bounds.height + border);
-
-        toast.setPos((width >> 1) - (bounds.width / 2), mainButtonSize.getHeight() * 1.3f);
-
-        Toast(toast, length);
+        toastView.setWrappedText(string);
+        GlyphLayout bounds = Fonts.measureWrapped(string, UiSizes.getInstance().getWindowWidth());
+        float border = +(toastView.getLeftWidth() * 2) + (UiSizes.getInstance().getMargin() * 2);
+        toastView.setWidth(bounds.width + border);
+        toastView.setHeight(bounds.height + border);
+        toastView.setPos((width >> 1) - (bounds.width / 2), mainButtonSize.getHeight() * 1.3f);
+        toast(toastView);
     }
 
     /**
@@ -1341,47 +1324,8 @@ public class GL implements ApplicationListener {
         glListener = _GL_Listener_Interface;
     }
 
-    public TextInputInterface getTextInput() {
-        return textInput;
+    public void setTextInput(TextInputInterface textInputInterface) {
+        textInput = textInputInterface;
     }
-
-    public void setTextInput(TextInputInterface textInput) {
-        this.textInput = textInput;
-    }
-
-    /*
-
-    public boolean onTouchDragged(int x, int y, int pointer) {
-        boolean behandelt = false;
-
-        CB_View_Base testingView = currentDialogIsShown ? mDialog : currentActivityIsShown ? mActivity : child;
-
-        behandelt = testingView.touchDragged(x, (int) testingView.getHeight() - y, pointer, false);
-
-        return behandelt;
-    }
-
-    public boolean onTouchUp(int x, int y, int pointer, int button) {
-        boolean behandelt = false;
-
-        CB_View_Base testingView = currentDialogIsShown ? mDialog : currentActivityIsShown ? mActivity : child;
-
-        behandelt = testingView.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
-
-        return behandelt;
-    }
-
-
-    public void registerRenderStartetListener(RenderStarted listener) {
-        renderStartedListener = listener;
-
-        // wenn kein Render Auftrag kommt, wird auch der waitDialog nicht ausgeblendet!
-        addRenderView(child, FRAME_RATE_FAST_ACTION);
-    }
-
-    public interface RenderStarted {
-        void renderIsStartet();
-    }
-    */
 
 }

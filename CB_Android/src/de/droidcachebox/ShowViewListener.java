@@ -892,7 +892,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             shareIntent.putExtra(Intent.EXTRA_TEXT, text);
             mainActivity.startActivity(Intent.createChooser(shareIntent, Translation.get("ShareWith")));
             //} catch (PackageManager.NameNotFoundException e) {
-            //    Toast.makeText(mainActivity, "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
+            //    toast.makeText(mainActivity, "WhatsApp not Installed", toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
             Toast.makeText(mainActivity, "Share App not installed", Toast.LENGTH_SHORT).show();
         }

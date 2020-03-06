@@ -158,7 +158,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
                         fetchMyCacheLimits();
                         if (APIError != 0) {
-                            GL.that.Toast(LastAPIError);
+                            GL.that.toast(LastAPIError);
                             onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                             return;
                         }

@@ -250,7 +250,7 @@ public class NumericInputBox extends CB_View_Base {
                         }
 
                         if (ParseError) {
-                            GL.that.Toast(Translation.get("wrongValue"));
+                            GL.that.toast(Translation.get("wrongValue"));
                         } else {
                             close(msgBox);
                         }

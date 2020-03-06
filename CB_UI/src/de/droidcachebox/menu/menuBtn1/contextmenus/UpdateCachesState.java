@@ -135,7 +135,7 @@ public class UpdateCachesState extends AbstractAction {
 
 
                     if (APIError != OK) {
-                        GL.that.Toast(LastAPIError);
+                        GL.that.toast(LastAPIError);
                         break;
                     }
                 }

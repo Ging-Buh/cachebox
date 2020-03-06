@@ -24,7 +24,6 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextFieldBase;
-import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
@@ -281,7 +280,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
 
         solver = new Solver(edInput.getText(), GlobalCore.getInstance());
         if (!solver.Solve()) {
-            GL.that.Toast("Error", Toast.LENGTH_SHORT);
+            GL.that.toast("Error");
         }
         edResult.setText("");
         StringBuilder result = new StringBuilder();

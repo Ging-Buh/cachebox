@@ -27,7 +27,6 @@ import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
@@ -79,7 +78,7 @@ import static de.droidcachebox.utils.Config_Core.br;
  * @author Longri
  */
 public class ViewManager extends MainViewBase implements PositionChangedEvent {
-    private static final String log = "ViewManager";
+    private static final String sKlasse = "ViewManager";
     public static ViewManager that;
     public static CB_TabView leftTab; // the only one (has been left and right for Tablet)
 
@@ -108,7 +107,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     @Override
     protected void initialize() {
-        Log.debug(log, "Start ViewManager-Initial");
+        Log.debug(sKlasse, "Start ViewManager-Initial");
 
         GlobalCore.receiver = new GlobalLocationReceiver();
 
@@ -190,7 +189,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         Slider slider = new Slider(this, "Slider");
         addChild(slider);
 
-        Log.debug(log, "Ende ViewManager-Initial");
+        Log.debug(sKlasse, "Ende ViewManager-Initial");
 
         autoLoadTrack();
 
@@ -206,7 +205,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                 for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                     Cache c = Database.Data.cacheList.get(i);
                     if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
-                        Log.debug(log, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
+                        Log.debug(sKlasse, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                         GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
                         break;
                     }
@@ -361,7 +360,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             String state = Config.nightMode.getValue() ? "Night" : "Day";
 
-            GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
+            GL.that.toast("Switch to " + state);
 
             PlatformUIBase.dayNightSwitched();
 
@@ -375,7 +374,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             }
             InvalidateTextureEventList.Call();
         } catch (Exception ex) {
-            Log.err(log, "reloadSprites", ex);
+            Log.err(sKlasse, "reloadSprites", ex);
         }
         GL.that.restartRendering();
     }
@@ -431,7 +430,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         try {
             TrackRecorder.recordPosition();
         } catch (Exception ex) {
-            Log.err(log, "PositionChanged()", "TrackRecorder.recordPosition()", ex);
+            Log.err(sKlasse, "PositionChanged()", "TrackRecorder.recordPosition()", ex);
         }
 
         if (GlobalCore.isSetSelectedCache()) {

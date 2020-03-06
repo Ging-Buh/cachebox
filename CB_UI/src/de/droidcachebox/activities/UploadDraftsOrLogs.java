@@ -83,7 +83,7 @@ public class UploadDraftsOrLogs {
                         }
 
                         if (result == GroundspeakAPI.ERROR) {
-                            GL.that.Toast(GroundspeakAPI.LastAPIError);
+                            GL.that.toast(GroundspeakAPI.LastAPIError);
                             uploadMeldung = uploadMeldung + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
                             // set draft as uploaded only when upload was working

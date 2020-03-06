@@ -93,7 +93,7 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
         float margin = UiSizes.getInstance().getMargin();
         float headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + margin;
         float measuredWidth = itemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (margin * 2);
-        float commentHeight = (margin * 4) + Fonts.MeasureWrapped(logEntry.logText, measuredWidth).height;
+        float commentHeight = (margin * 4) + Fonts.measureWrapped(logEntry.logText, measuredWidth).height;
         cbRectF.setHeight(headHeight + commentHeight);
         return cbRectF;
     }

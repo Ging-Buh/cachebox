@@ -105,13 +105,13 @@ public class MessageBox {
      *                                                                     switch (button)
      *                                                                     {
      *                                                                     case -1:
-     *                                                                     Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                                                     toast.makeText(mainActivity, "Click Button 1", toast.LENGTH_SHORT).show();
      *                                                                     break;
      *                                                                     case -2:
-     *                                                                     Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                                                     toast.makeText(mainActivity, "Click Button 2", toast.LENGTH_SHORT).show();
      *                                                                     break;
      *                                                                     case -3:
-     *                                                                     Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                                                     toast.makeText(mainActivity, "Click Button 3", toast.LENGTH_SHORT).show();
      *                                                                     break;
      *                                                                     }
      *                                                                     dialog.dismiss();

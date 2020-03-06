@@ -237,7 +237,7 @@ public class TB_Log extends ActivityBase {
                 int result = uploadTrackableLog(TB, getCache_GcCode(), GeoCacheLogType.CB_LogType2GC(LT), new Date(), edit.getText());
 
                 if (result == ERROR) {
-                    GL.that.Toast(LastAPIError);
+                    GL.that.toast(LastAPIError);
                     if (wd != null)
                         wd.close();
                     MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
@@ -258,7 +258,7 @@ public class TB_Log extends ActivityBase {
                     return;
                 }
                 if (result != OK) {
-                    GL.that.Toast(LastAPIError);
+                    GL.that.toast(LastAPIError);
                     if (wd != null)
                         wd.close();
                     MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question,

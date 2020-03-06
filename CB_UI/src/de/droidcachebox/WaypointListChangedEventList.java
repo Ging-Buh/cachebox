@@ -29,7 +29,7 @@ public class WaypointListChangedEventList {
                 public void run() {
                     synchronized (list) {
                         for (WaypointListChangedEvent event : list) {
-                            event.WaypointListChanged(cache);
+                            event.wayPointListChanged(cache);
                         }
                     }
                 }

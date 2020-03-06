@@ -8,17 +8,13 @@ public class FileList extends ArrayList<AbstractFile> implements Comparator<Abst
     private static final long serialVersionUID = 2454564654L;
 
     public FileList(String path, String extension) {
-        ini(path, extension, false);
+        this(path, extension, false);
     }
 
-    public FileList(String path, String extension, boolean absolutePath) {
-        ini(path, extension, absolutePath);
-    }
-
-    private void ini(String path, String extension, boolean AbsolutePath) {
+    public FileList(String path, String extension, boolean useAbsolutePath) {
         AbstractFile dir = FileFactory.createFile(path);
         String[] fileNames = dir.list();
-        String absolutePath = AbsolutePath ? path + "/" : "";
+        String absolutePath = useAbsolutePath ? path + "/" : "";
         if (!(fileNames == null)) {
             if (fileNames.length > 0) {
                 for (String fileName : fileNames) {
@@ -29,10 +25,6 @@ public class FileList extends ArrayList<AbstractFile> implements Comparator<Abst
                 }
             }
         }
-        Resort();
-    }
-
-    public void Resort() {
         Collections.sort(this, this);
     }
 

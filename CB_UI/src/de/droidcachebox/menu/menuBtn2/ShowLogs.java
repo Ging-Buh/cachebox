@@ -132,7 +132,7 @@ public class ShowLogs extends AbstractShowAction {
                                         Thread.sleep(10);
                                         logList = fetchGeoCacheLogs(GlobalCore.getSelectedCache(), loadAllLogs, this);
                                         if (result == ERROR) {
-                                            GL.that.Toast(LastAPIError);
+                                            GL.that.toast(LastAPIError);
                                         }
                                         if (logList.size() > 0) {
                                             Database.Data.sql.beginTransaction();

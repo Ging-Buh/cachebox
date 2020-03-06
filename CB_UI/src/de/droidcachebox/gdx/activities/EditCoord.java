@@ -141,7 +141,7 @@ public class EditCoord extends ActivityBase {
 
         btnOK.setClickHandler((view, x, y, pointer, button) -> {
             if (!parseView()) {
-                GL.that.Toast("Invalid COORD", 2000);
+                GL.that.toast("Invalid COORD");
                 return true;
             }
 

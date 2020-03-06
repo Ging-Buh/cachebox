@@ -176,9 +176,9 @@ public class Fonts {
         return bounds;
     }
 
-    public static GlyphLayout MeasureWrapped(String txt, float width) {
+    public static GlyphLayout measureWrapped(String txt, float width) {
         if (txt == null || txt.equals(""))
-            txt = "text";
+            txt = "Text";
         if (measureNormalCache == null)
             measureNormalCache = new BitmapFontCache(Fonts.getNormal());
         GlyphLayout bounds = measureNormalCache.setText(txt, 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);
