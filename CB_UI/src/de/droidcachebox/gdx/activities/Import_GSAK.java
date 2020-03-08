@@ -672,7 +672,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
 
 
     @Override
-    protected void finish() {
+    public void finish() {
         super.finish();
         CacheListChangedListeners.getInstance().cacheListChanged();
     }

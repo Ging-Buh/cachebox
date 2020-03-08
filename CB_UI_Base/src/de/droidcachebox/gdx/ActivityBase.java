@@ -60,7 +60,7 @@ public class ActivityBase extends CB_View_Base {
         // do not call super, it wants clear childs
     }
 
-    protected void finish() {
+    public void finish() {
         GL.that.RunOnGL(() -> GL.that.closeActivity());
     }
 

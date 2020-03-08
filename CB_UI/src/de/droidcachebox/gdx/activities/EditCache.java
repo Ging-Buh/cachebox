@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.*;
@@ -13,7 +14,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldStyle;
-import de.droidcachebox.gdx.controls.Spinner.ISelectionChangedListener;
+import de.droidcachebox.gdx.controls.Spinner.ISpinnerSelectionChanged;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
@@ -47,6 +48,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private EditTextField cacheOwner; // SingleLine
     private EditTextField cacheCountry; // SingleLine
     private EditTextField cacheState; // SingleLine
+    private CB_Button noHtml, toTop;
     private EditTextField cacheDescription; // MultiLineWrapped
 
     // ctor
@@ -55,50 +57,83 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         // das übliche
         btnOK = new CB_Button(Translation.get("ok"));
         btnCancel = new CB_Button(Translation.get("cancel"));
-        this.initRow(BOTTOMUP);
-        this.addNext(btnOK);
-        this.addLast(btnCancel);
+        initRow(BOTTOMUP);
+        addNext(btnOK);
+        addLast(btnCancel);
         mainPanel = new ScrollBox(0, getAvailableHeight());
-        mainPanel.setBackground(this.getBackground());
-        this.addLast(mainPanel);
-        Box mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
-        mainPanel.addChild(mainContent);
-
-        cacheTitle = (new EditTextField(this, "cacheTitle")).setWrapType(WrapType.MULTILINE);
-        TextFieldStyle s = cacheTitle.getStyle();
-        s.font = Fonts.getBig();
+        mainPanel.setBackground(getBackground());
+        addLast(mainPanel);
+        TextFieldStyle s;
+        cacheTitle = new EditTextField(this, "cacheTitle").setWrapType(WrapType.WRAPPED);
+        s = cacheTitle.getStyle();
+        s.font = Fonts.getCompass();
         cacheTitle.setStyle(s);
+        cacheTitle.setWidth(mainPanel.getWidth());
         cacheCode = new EditTextField(this, "cacheCode");
+        s = cacheCode.getStyle();
         s.font = Fonts.getCompass();
         cacheCode.setStyle(s);
         cacheDifficulty = new Spinner("EditCacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
         cacheTyp = new Spinner("EditCacheType", cacheTypList(), cacheTypSelection());
-        cacheTerrain = new Spinner("EditCacheTerrain", cacheTerrainList(), cacheTerrainSelection());
-        cacheSize = new Spinner("EditCacheSize", cacheSizeList(), cacheSizeSelection());
+        cacheTerrain = new Spinner("EditCacheTerrain", cacheTerrainList(), index -> {
+            activityBase.show();
+            newValues.setTerrain((index + 2.0f) / 2.0f);
+        });
+        cacheSize = new Spinner("EditCacheSize", cacheSizeList(), index -> {
+            activityBase.show();
+            newValues.geoCacheSize = geoCacheSizeNumbers[index];
+        });
         cacheCoords = new CoordinateButton("cacheCoords");
         cacheOwner = new EditTextField(this, "cacheOwner");
         cacheState = new EditTextField(this, "cacheState");
         cacheCountry = new EditTextField(this, "cacheCountry");
-        // layout
+
+        noHtml = new CB_Button(Translation.get("remove") + " < />");
+        noHtml.setClickHandler((view, x, y, pointer, button) -> {
+            cacheDescription.setText(PlatformUIBase.removeHtmlEntyties(cacheDescription.getText()));
+            layout();
+            return true;
+        });
+        toTop = new CB_Button(" ^ ");
+        toTop.setClickHandler((view, x, y, pointer, button) -> {
+            cacheDescription.setCursorPosition(0);
+            GL.that.setFocusedEditTextField(null);
+            mainPanel.scrollTo(0);
+            return true;
+        });
+        cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
+        cacheDescription.setWidth(mainPanel.getWidth());
+        // cacheDescription.setSize(mainPanel.getWidth(),mainPanel.getHeight() / 2);
+
+        btnOKClickHandler();
+        btnCancelClickHandler();
+        setCacheCoordsChangeListener();
+
+    }
+
+    private void layout() {
+        Box mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
         mainContent.addLast(cacheCode);
         mainContent.addNext(cacheTyp);
         mainContent.addLast(cacheDifficulty, 0.3f);
         mainContent.addNext(cacheSize);
         mainContent.addLast(cacheTerrain, 0.3f);
+        cacheTitle.setHeight(cacheTitle.getTextHeight());
         mainContent.addLast(cacheTitle);
+        cacheTitle.setCursorPosition(0);
         mainContent.addLast(cacheCoords);
         mainContent.addLast(cacheOwner);
         mainContent.addLast(cacheCountry);
         mainContent.addLast(cacheState);
-        cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
-        cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
+        cacheDescription.setHeight(Math.min(mainPanel.getHeight() / 2, cacheDescription.getTextHeight()));
         mainContent.addLast(cacheDescription);
+        mainContent.addNext(toTop);
+        mainContent.addLast(noHtml);
         mainContent.adjustHeight();
-        mainPanel.setVirtualHeight(mainContent.getHeight());
 
-        btnOKClickHandler();
-        btnCancelClickHandler();
-        setCacheCoordsChangeListener();
+        mainPanel.removeChilds();
+        mainPanel.addChild(mainContent);
+        mainPanel.setVirtualHeight(mainContent.getHeight());
 
     }
 
@@ -110,13 +145,13 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         }
     }
 
-    public void update(Cache cache) {
+    public void update(Cache updateCache) {
         newValues = new Cache(true);
-        newValues.copyFrom(cache);
+        newValues.copyFrom(updateCache);
         newValues.setShortDescription("");
-        newValues.setLongDescription(Database.getDescription(cache));
-        cache.setLongDescription(newValues.getLongDescription());
-        this.cache = cache;
+        newValues.setLongDescription(Database.getDescription(updateCache));
+        updateCache.setLongDescription(newValues.getLongDescription());
+        cache = updateCache;
         doShow();
     }
 
@@ -147,7 +182,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.numTravelbugs = 0;
         newValues.setShortDescription("");
         newValues.setLongDescription("");
-        this.cache = newValues;
+        cache = newValues;
         doShow();
     }
 
@@ -176,7 +211,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.setLongDescription("");
         cacheDescription.setText(cache.getLongDescription());
         cacheDescription.setCursorPosition(0);
-        this.show();
+        layout();
+        show();
     }
 
     private void btnOKClickHandler() {
@@ -227,7 +263,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void btnCancelClickHandler() {
-        this.btnCancel.setClickHandler((v, x, y, pointer, button) -> {
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             finish();
             return true;
         });
@@ -253,9 +289,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         };
     }
 
-    private ISelectionChangedListener cacheTypSelection() {
+    private ISpinnerSelectionChanged cacheTypSelection() {
         return index -> {
-            EditCache.this.show();
+            activityBase.show();
             newValues.setGeoCacheType(geoCacheTypNumbers[index]);
         };
     }
@@ -281,16 +317,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         };
     }
 
-    private ISelectionChangedListener cacheSizeSelection() {
-        return index -> {
-            EditCache.this.show();
-            newValues.geoCacheSize = geoCacheSizeNumbers[index];
-        };
-    }
-
     private void setCacheCoordsChangeListener() {
         cacheCoords.setCoordinateChangedListener(coord -> {
-            EditCache.this.show();
+            activityBase.show();
             newValues.setCoordinate(coord); // oder = cacheCoords.getMyPosition()
         });
     }
@@ -314,9 +343,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         };
     }
 
-    private ISelectionChangedListener cacheDifficultySelection() {
+    private ISpinnerSelectionChanged cacheDifficultySelection() {
         return index -> {
-            EditCache.this.show();
+            activityBase.show();
             newValues.setDifficulty((index + 2.0f) / 2.0f);
         };
     }
@@ -340,20 +369,13 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         };
     }
 
-    private ISelectionChangedListener cacheTerrainSelection() {
-        return index -> {
-            EditCache.this.show();
-            newValues.setTerrain((index + 2.0f) / 2.0f);
-        };
-    }
-
     private void scrollToY(final EditTextField editTextField) {
         mainPanel.scrollTo(-mainPanel.getVirtualHeight() + editTextField.getY() + editTextField.getHeight());
     }
 
     @Override
     public void onShow() {
-        KeyboardFocusChangedEventList.Add(this);
+        KeyboardFocusChangedEventList.add(this);
     }
 
     @Override

@@ -1198,7 +1198,7 @@ public class GL implements ApplicationListener {
             return;
         }
         // inform the parent, perhaps to move the editTextField to the top of the screen
-        KeyboardFocusChangedEventList.Call(editTextField);
+        KeyboardFocusChangedEventList.keyboardFocusChanged(editTextField);
         // inform the textfield, that it got the focus
         if (editTextField != null && editTextField != focusedEditTextField) {
             editTextField.becomesFocus();

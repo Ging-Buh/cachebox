@@ -67,7 +67,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
     @Override
     public void onShow() {
         // view must be refilled with values
-        KeyboardFocusChangedEventList.Add(this);
+        KeyboardFocusChangedEventList.add(this);
         if (aktCache != GlobalCore.getSelectedCache()) {
             mustLoadSolver = true;
             aktCache = GlobalCore.getSelectedCache();

@@ -1122,7 +1122,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     @Override
-    protected void finish() {
+    public void finish() {
         super.finish();
 
         // finish close activity and notify changes

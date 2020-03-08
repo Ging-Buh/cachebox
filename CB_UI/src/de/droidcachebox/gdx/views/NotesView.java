@@ -131,7 +131,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
 
     @Override
     public void onShow() {
-        KeyboardFocusChangedEventList.Add(this);
+        KeyboardFocusChangedEventList.add(this);
         if (mustLoadNotes) {
             String text = aktCache != null ? Database.getNote(aktCache) : "";
             if (text == null)

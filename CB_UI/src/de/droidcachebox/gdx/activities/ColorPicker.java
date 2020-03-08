@@ -30,34 +30,32 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
 public class ColorPicker extends ActivityBase {
-    private HSV_Color InitialColor;
-    private HSV_Color actColor;
-    private CB_Button bOK;
-    private CB_Button bCancel;
+    private HSV_Color initialColor;
+    private HSV_Color currentColor;
+    private CB_Button btnOK;
 
-    private IReturnListener mReturnListener;
+    private IColorCallBack colorCallBack;
 
     private ColorDrawable actColorDrawable;
 
     private Box lastColorBox;
     private Box actColorBox;
-    private Image arrow;
     private ColorPickerRec viewSatVal;
 
     private Image viewCursor;
     private Image viewTarget;
 
     private Image viewHue;
-    private GradiantFill gradiantWhite;
-    private GradiantFill gradiantBlack;
+    private GradiantFill gradientWhite;
+    private GradiantFill gradientBlack;
 
-    public ColorPicker(Color color, IReturnListener listener) {
+    public ColorPicker(Color color, IColorCallBack theColorCallBack) {
         super("ColorPicker");
-        actColor = new HSV_Color(color);
-        InitialColor = new HSV_Color(color);
+        currentColor = new HSV_Color(color);
+        initialColor = new HSV_Color(color);
 
-        mReturnListener = listener;
-        this.setClickable(true);
+        colorCallBack = theColorCallBack;
+        setClickable(true);
         createOkCancelBtn();
         createColorPreviewLine();
         createViewHue();
@@ -71,25 +69,25 @@ public class ColorPicker extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
-        bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
+        btnOK = new CB_Button(leftBorder, bottomBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        CB_Button btnCancel = new CB_Button(btnOK.getMaxX(), bottomBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         // Translations
-        bOK.setText(Translation.get("ok"));
-        bCancel.setText(Translation.get("cancel"));
+        btnOK.setText(Translation.get("ok"));
+        btnCancel.setText(Translation.get("cancel"));
 
-        this.addChild(bOK);
-        bOK.setClickHandler((v, x, y, pointer, button) -> {
-            GL.that.RunOnGL(() -> finish());
-            if (mReturnListener != null)
-                mReturnListener.returnColor(actColor);
+        addChild(btnOK);
+        btnOK.setClickHandler((v, x, y, pointer, button) -> {
+            activityBase.finish();
+            if (colorCallBack != null)
+                colorCallBack.returnColor(currentColor);
             return true;
         });
 
-        this.addChild(bCancel);
-        bCancel.setClickHandler((v, x, y, pointer, button) -> {
-            if (mReturnListener != null)
-                mReturnListener.returnColor(null);
+        addChild(btnCancel);
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
+            if (colorCallBack != null)
+                colorCallBack.returnColor(null);
             finish();
             return true;
         });
@@ -98,45 +96,45 @@ public class ColorPicker extends ActivityBase {
 
     @Override
     public void dispose() {
-        gradiantWhite.dispose();
-        gradiantBlack.dispose();
+        gradientWhite.dispose();
+        gradientBlack.dispose();
     }
 
     private void createColorPreviewLine() {
-        CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight());
+        CB_RectF rec = new CB_RectF(0, btnOK.getMaxY() + margin, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight());
         lastColorBox = new Box(rec, "LastColor");
         actColorBox = new Box(rec, "aktColor");
 
         rec.setWidth(rec.getHeight());
-        arrow = new Image(rec, "arrowImage", false);
+        Image arrow = new Image(rec, "arrowImage", false);
         arrow.setDrawable(new SpriteDrawable(Sprites.Arrows.get(11)));
 
         float lineWidth = lastColorBox.getWidth() + margin + arrow.getWidth() + margin + actColorBox.getWidth();
-        float left = this.getHalfWidth() - (lineWidth / 2);
+        float left = getHalfWidth() - (lineWidth / 2);
         lastColorBox.setX(left);
         arrow.setX(lastColorBox.getMaxX() + margin);
         actColorBox.setX(arrow.getMaxX() + margin);
 
-        lastColorBox.setBackground(new ColorDrawable(InitialColor));
-        actColorBox.setBackground(new ColorDrawable(InitialColor));
+        lastColorBox.setBackground(new ColorDrawable(initialColor));
+        actColorBox.setBackground(new ColorDrawable(initialColor));
 
-        this.addChild(lastColorBox);
-        this.addChild(arrow);
-        this.addChild(actColorBox);
+        addChild(lastColorBox);
+        addChild(arrow);
+        addChild(actColorBox);
     }
 
     private void createViewHue() {
-        float vWidth = bOK.getHeight();
+        float vWidth = btnOK.getHeight();
 
-        viewHue = new Image(this.getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.getHeight() - this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue", false);
+        viewHue = new Image(getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, getHeight() - getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue", false);
         viewHue.setDrawable(new SpriteDrawable(Sprites.ambilwarna_hue));
-        this.addChild(viewHue);
+        addChild(viewHue);
 
         float cursorSize = Fonts.Measure("T").height;
 
         viewCursor = new Image(0, 0, cursorSize, cursorSize, "", false);
         viewCursor.setDrawable(new SpriteDrawable(Sprites.ambilwarna_cursor));
-        this.addChild(viewCursor);
+        addChild(viewCursor);
 
     }
 
@@ -144,7 +142,7 @@ public class ColorPicker extends ActivityBase {
         CB_RectF rec = new CB_RectF(leftBorder + margin, viewHue.getY(), viewHue.getX() - margin * 3 - leftBorder, viewHue.getHeight());
 
         viewSatVal = new ColorPickerRec(rec, "");
-        this.addChild(viewSatVal);
+        addChild(viewSatVal);
 
         {
             // Gradiant Test
@@ -152,30 +150,30 @@ public class ColorPicker extends ActivityBase {
             // Color blackTransparent = new Color(1f, 1f, 0f, 0.2f);
             // gradiantBlack = new GradiantFill(Color.BLACK, blackTransparent, -30);
             // rectangle FillRecBlack = new rectangle(rec, gradiantBlack);
-            // this.addChild(FillRecBlack);
+            // addChild(FillRecBlack);
         }
 
         Color whiteTransparent = new Color(1f, 1f, 1f, 0f);
-        gradiantWhite = new GradiantFill(Color.WHITE, whiteTransparent, 0);
-        GradiantFilledRectangle FillRecWhite = new GradiantFilledRectangle(rec, gradiantWhite);
-        this.addChild(FillRecWhite);
+        gradientWhite = new GradiantFill(Color.WHITE, whiteTransparent, 0);
+        GradiantFilledRectangle FillRecWhite = new GradiantFilledRectangle(rec, gradientWhite);
+        addChild(FillRecWhite);
 
         Color blackTransparent = new Color(0f, 0f, 0f, 0f);
-        gradiantBlack = new GradiantFill(Color.BLACK, blackTransparent, 90);
-        GradiantFilledRectangle FillRecBlack = new GradiantFilledRectangle(rec, gradiantBlack);
-        this.addChild(FillRecBlack);
+        gradientBlack = new GradiantFill(Color.BLACK, blackTransparent, 90);
+        GradiantFilledRectangle FillRecBlack = new GradiantFilledRectangle(rec, gradientBlack);
+        addChild(FillRecBlack);
 
         float cursorSize = Fonts.Measure("T").height;
 
         viewTarget = new Image(0, 0, cursorSize, cursorSize, "", false);
         viewTarget.setDrawable(new SpriteDrawable(Sprites.ambilwarna_target));
-        this.addChild(viewTarget);
+        addChild(viewTarget);
 
     }
 
     private void hueChanged() {
         if (viewSatVal != null)
-            viewSatVal.setHue(actColor.getHue());
+            viewSatVal.setHue(currentColor.getHue());
     }
 
     protected void moveCursor() {
@@ -199,27 +197,27 @@ public class ColorPicker extends ActivityBase {
     }
 
     private float getHue() {
-        return actColor.getHue();
+        return currentColor.getHue();
     }
 
     private void setHue(float hue) {
-        actColor.setHue(hue);
+        currentColor.setHue(hue);
     }
 
     private float getSat() {
-        return actColor.getSat();
+        return currentColor.getSat();
     }
 
     private void setSat(float sat) {
-        actColor.setSat(sat);
+        currentColor.setSat(sat);
     }
 
     private float getVal() {
-        return actColor.getVal();
+        return currentColor.getVal();
     }
 
     private void setVal(float val) {
-        actColor.setVal(val);
+        currentColor.setVal(val);
     }
 
     private void onClick_DracgHueView(float y) {
@@ -260,9 +258,9 @@ public class ColorPicker extends ActivityBase {
 
         GL.that.RunOnGL(() -> {
             if (actColorDrawable == null) {
-                actColorDrawable = new ColorDrawable(actColor);
+                actColorDrawable = new ColorDrawable(currentColor);
             } else {
-                actColorDrawable.setColor(actColor);
+                actColorDrawable.setColor(currentColor);
             }
 
             actColorBox.setBackground(actColorDrawable);
@@ -302,21 +300,17 @@ public class ColorPicker extends ActivityBase {
         return false;
     }
 
-    public void setReturnListener(IReturnListener iReturnListener) {
-        mReturnListener = iReturnListener;
-    }
-
     public void setColor(Color color) {
-        actColor = InitialColor = new HSV_Color(color);
+        currentColor = initialColor = new HSV_Color(color);
         hueChanged();
 
         moveCursor();
         moveTarget();
-        lastColorBox.setBackground(new ColorDrawable(InitialColor));
+        lastColorBox.setBackground(new ColorDrawable(initialColor));
     }
 
-    public interface IReturnListener {
-        public void returnColor(Color color);
+    public interface IColorCallBack {
+        void returnColor(Color color);
     }
 
 }

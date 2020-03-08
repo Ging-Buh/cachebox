@@ -4,7 +4,13 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 • Offen = •
-
+Änderungen bis Version 3601:
+    + Cachemenü "Öffne Cache im Browser"
+	~ verschoben "Besitzer kontaktieren" ins Cachemenü
+	- "Karte" und "Beschreibung" aus dem Cachemenü entfernt
+    * Wegaufzeichnung ungültige Zeichen im Dateinamen ersetzen
+	+ Anzeige der Entfernung zum Kartenmittelpunkt
+    + Datei- und Verzeichnisauswahl mit neuer Oberfläche
 Änderungen bis Version 3585:
     ~ Aktualisiere mapsforge Bibliothek 0.13.0
     + "Lösche Verlauf" im Cachelist Kontextmenü

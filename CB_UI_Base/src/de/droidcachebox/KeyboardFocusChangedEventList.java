@@ -20,29 +20,27 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
 public class KeyboardFocusChangedEventList {
-    public final static CB_List<KeyboardFocusChangedEvent> list = new CB_List<>();
+    public final static CB_List<KeyboardFocusChangedEvent> listeners = new CB_List<>();
 
-    // normally is only one item in this list: the active view or activity
-    public static void Add(KeyboardFocusChangedEvent event) {
-        synchronized (list) {
-            if (!list.contains(event))
-                list.add(event);
+    public static void add(KeyboardFocusChangedEvent listener) {
+        synchronized (listeners) {
+            if (!listeners.contains(listener))
+                listeners.add(listener);
         }
     }
 
-    public static void remove(KeyboardFocusChangedEvent event) {
-        synchronized (list) {
-            list.remove(event);
+    public static void remove(KeyboardFocusChangedEvent listener) {
+        synchronized (listeners) {
+            listeners.remove(listener);
         }
     }
 
-    public static void Call(final EditTextField editTextField) {
+    public static void keyboardFocusChanged(final EditTextField editTextField) {
         if (editTextField == null || !editTextField.isKeyboardPopupDisabled()) {
-            synchronized (list) {
-                for (int i = 0, n = list.size(); i < n; i++) {
-                    KeyboardFocusChangedEvent event = list.get(i);
-                    Log.debug("KeyboardFocusChangedEventList", "call event: " + event + " for " + editTextField);
-                    event.keyboardFocusChanged(editTextField);
+            synchronized (listeners) {
+                for (KeyboardFocusChangedEvent listener : listeners) {
+                    Log.debug("KeyboardFocusChangedEventList", "call event: " + listener + " for " + editTextField);
+                    listener.keyboardFocusChanged(editTextField);
                 }
             }
         }

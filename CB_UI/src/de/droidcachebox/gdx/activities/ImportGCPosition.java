@@ -367,7 +367,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     @Override
     public void onShow() {
-        KeyboardFocusChangedEventList.Add(this);
+        KeyboardFocusChangedEventList.add(this);
     }
 
     @Override

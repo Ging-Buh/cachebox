@@ -33,21 +33,21 @@ public class Spinner extends CB_Button {
     private Image icon;
 
     private SpinnerAdapter mAdapter;
-    private ISelectionChangedListener mListener;
+    private ISpinnerSelectionChanged mListener;
 
-    public Spinner(String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+    public Spinner(String TranslationId, SpinnerAdapter adapter, ISpinnerSelectionChanged listener) {
         super(new CB_RectF(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight()), TranslationId);
         mAdapter = adapter;
         mListener = listener;
     }
 
-    public Spinner(float X, float Y, float Width, float Height, String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+    public Spinner(float X, float Y, float Width, float Height, String TranslationId, SpinnerAdapter adapter, ISpinnerSelectionChanged listener) {
         super(X, Y, Width, Height, TranslationId);
         mAdapter = adapter;
         mListener = listener;
     }
 
-    public Spinner(CB_RectF rec, String TranslationId, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+    public Spinner(CB_RectF rec, String TranslationId, SpinnerAdapter adapter, ISpinnerSelectionChanged listener) {
         super(rec, TranslationId);
         mAdapter = adapter;
         mListener = listener;
@@ -161,12 +161,12 @@ public class Spinner extends CB_Button {
         mAdapter = adapter;
     }
 
-    public void setSelectionChangedListener(ISelectionChangedListener selectionChangedListener) {
+    public void setSelectionChangedListener(ISpinnerSelectionChanged selectionChangedListener) {
         mListener = selectionChangedListener;
     }
 
-    public interface ISelectionChangedListener {
-        public void selectionChanged(int index);
+    public interface ISpinnerSelectionChanged {
+        void selectionChanged(int index);
     }
 
 }

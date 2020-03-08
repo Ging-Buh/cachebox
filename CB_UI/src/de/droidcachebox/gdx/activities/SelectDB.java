@@ -359,8 +359,8 @@ public class SelectDB extends ActivityBase {
     }
 
     @Override
-    protected void finish() {
-        GL.that.closeActivity(!MustSelect);
+    public void finish() {
+        GL.that.RunOnGL(() -> GL.that.closeActivity(!MustSelect));
     }
 
     private void setAutoStartText() {

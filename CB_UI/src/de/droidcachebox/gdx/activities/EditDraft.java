@@ -148,11 +148,14 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
             if (mReturnListener != null) {
 
                 // removed the possibility
+                /*
                 if (draft.type.isDirectLogType()) {
-                    draft.isDirectLog = false; // rbDirectLog.isChecked();
+                    draft.isDirectLog = rbDirectLog.isChecked();
                 } else {
                     draft.isDirectLog = false;
                 }
+                 */
+                draft.isDirectLog = false;
 
                 draft.comment = etComment.getText();
 
@@ -432,7 +435,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     @Override
     public void onShow() {
-        KeyboardFocusChangedEventList.Add(this);
+        KeyboardFocusChangedEventList.add(this);
     }
 
     @Override

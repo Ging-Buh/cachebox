@@ -127,7 +127,7 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
 
     @Override
     public void onShow() {
-        KeyboardFocusChangedEventList.Add(this);
+        KeyboardFocusChangedEventList.add(this);
     }
 
     @Override

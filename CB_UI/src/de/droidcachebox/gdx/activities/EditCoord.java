@@ -859,12 +859,12 @@ public class EditCoord extends ActivityBase {
                     sCoord.append(btnUTMZone[i].getText());
                 }
                 sCoord.append(" ");
-                for (int i = 0; i < btnUTMLon.length; i++) {
-                    sCoord.append(btnUTMLon[i].getText());
+                for (CB_Button cb_button : btnUTMLon) {
+                    sCoord.append(cb_button.getText());
                 }
                 sCoord.append(" ");
-                for (int i = 0; i < btnUTMLat.length; i++) {
-                    sCoord.append(btnUTMLat[i].getText());
+                for (CB_Button cb_button : btnUTMLat) {
+                    sCoord.append(cb_button.getText());
                 }
                 sCoord = new StringBuilder(sCoord.toString().replace("null", "")); // warum kommt hier der Text "null" von getText() ?
                 break;

@@ -407,7 +407,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         if (firstShow && showCoordinateDialog)
             bCoord.performClick();
         firstShow = false;
-        KeyboardFocusChangedEventList.Add(this);
+        KeyboardFocusChangedEventList.add(this);
     }
 
     @Override

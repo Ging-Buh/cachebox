@@ -143,7 +143,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     }
 
     @Override
-    protected void finish() {
+    public void finish() {
         if (chart != null)
             chart.dispose();
         chart = null;

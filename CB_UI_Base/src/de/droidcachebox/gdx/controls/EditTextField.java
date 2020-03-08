@@ -460,7 +460,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     @Override
-    public boolean onTouchDragged(int dx, int dy, int pointer, boolean KineticPan) {
+    public boolean onTouchDragged(int dx, int dy, int pointer, boolean kineticPan) {
         boolean bearbeitet = false;
         try {
             if (touchDownPos != null) {
@@ -479,7 +479,7 @@ public class EditTextField extends EditTextFieldBase {
                             topLine = lines.size() - maxLineCount;
                         }
                     }
-                    bearbeitet = true;
+                    bearbeitet = true; // on false no drag of text within
                 }
 
                 // Scrollen Links - Rechts
