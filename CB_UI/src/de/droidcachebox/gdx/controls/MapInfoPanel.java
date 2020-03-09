@@ -149,7 +149,7 @@ public class MapInfoPanel extends CB_View_Base {
     protected void initialize() {
         removeChilds();
 
-        setBackground(Sprites.InfoBack);
+        setBackground(Sprites.infoBack);
 
         // initial Image
 

@@ -103,8 +103,8 @@ public class Scrollbar extends CB_View_Base {
     }
 
     private void LoadSliderImagesNew() {
-        Slider = Sprites.Slider;
-        SliderPushed = Sprites.SliderPushed;
+        Slider = Sprites.slider;
+        SliderPushed = Sprites.sliderPushed;
 
         float minWidth = Slider.getMinWidth();
 

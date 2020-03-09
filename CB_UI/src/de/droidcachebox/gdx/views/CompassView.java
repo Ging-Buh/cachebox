@@ -387,7 +387,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             lblDistance.setHAlignment(HAlignment.CENTER);
 
             distanceBack = new Box(lblDistance, "DistanceBack");
-            distanceBack.setBackground(Sprites.InfoBack);
+            distanceBack.setBackground(Sprites.infoBack);
             rightBox.addChild(distanceBack);
             rightBox.addChild(lblDistance);
         } else {
@@ -397,7 +397,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.LEFT);
             distanceBack = new Box(lblDistance, "DistanceBack");
-            distanceBack.setBackground(Sprites.InfoBack);
+            distanceBack.setBackground(Sprites.infoBack);
             leftBox.addChild(distanceBack);
             lblDistance.setZeroPos();
             lblDistance.setX(margin);

@@ -50,13 +50,13 @@ public class ImporterProgress {
         }
 
         // send Progress Change Msg
-        ProgresssChangedEventList.Call(Name, Msg, Progress);
+        ProgresssChangedEventList.progressChanged(Name, Msg, Progress);
     }
 
     // only change Msg or progress with out changing progress
     public void ProgressChangeMsg(String Name, String Msg) {
         // send Progress Change Msg
-        ProgresssChangedEventList.Call(Name, Msg, getProgress());
+        ProgresssChangedEventList.progressChanged(Name, Msg, getProgress());
     }
 
     public void setJobMax(String Name, int max) {

@@ -232,12 +232,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     @Override
     public void onShow() {
-        ProgresssChangedEventList.Add(this);
+        ProgresssChangedEventList.add(this);
     }
 
     @Override
     public void onHide() {
-        ProgresssChangedEventList.Remove(this);
+        ProgresssChangedEventList.remove(this);
     }
 
     private void createOkCancelBtn() {
@@ -1168,10 +1168,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     @Override
-    public void progressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress) {
+    public void progressChanged(final String Message, final String ProgressMessage, final int Progress) {
 
         GL.that.RunOnGL(() -> {
-            pgBar.setProgress(Progress);
+            pgBar.setPogress(Progress);
             lblProgressMsg.setText(ProgressMessage);
             if (!Message.equals(""))
                 pgBar.setText(Message);

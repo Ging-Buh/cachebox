@@ -26,8 +26,8 @@ public class FloatControl extends CB_View_Base {
     }
 
     public void setProgress(int value) {
-        progressbar.setProgress(value);
-        float ButtonPos = progressbar.progressDrawWidth - slideButton.getHalfWidth();
+        progressbar.setPogress(value);
+        float ButtonPos = progressbar.getProgressDrawWidth() - slideButton.getHalfWidth();
         if (ButtonPos < 0)
             ButtonPos = 0;
         if (ButtonPos > this.getWidth() - slideButton.getWidth())
@@ -39,9 +39,7 @@ public class FloatControl extends CB_View_Base {
 
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
-        if (slideButton.isDisabled())
-            return false;
-        return true;
+        return !slideButton.isDisabled();
     }
 
     @Override
@@ -62,7 +60,7 @@ public class FloatControl extends CB_View_Base {
         if (slideButton.isDisabled())
             return false;
         if (changeListener != null)
-            changeListener.ValueChanged(progressbar.getProgress());
+            changeListener.ValueChanged(progressbar.getCurrentPogress());
         return true;
     }
 
@@ -78,7 +76,7 @@ public class FloatControl extends CB_View_Base {
     }
 
     public interface iValueChanged {
-        public void ValueChanged(int value);
+        void ValueChanged(int value);
     }
 
 }

@@ -36,7 +36,7 @@ public class UploadDraftsOrLogs {
 
             @Override
             public void run() {
-                ProgresssChangedEventList.Call("Upload", "", 0);
+                ProgresssChangedEventList.progressChanged("Upload", "", 0);
 
                 Drafts drafts = new Drafts();
                 drafts.loadDrafts("(Uploaded=0 or Uploaded is null)", Drafts.LoadingType.Loadall);
@@ -63,7 +63,7 @@ public class UploadDraftsOrLogs {
                             // wurde.
                             break;
                         // Progress status Melden
-                        ProgresssChangedEventList.Call(draft.CacheName, (100 * count) / anzahl);
+                        ProgresssChangedEventList.progressChanged(draft.CacheName, (100 * count) / anzahl);
 
                         int result;
 

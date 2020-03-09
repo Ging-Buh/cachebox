@@ -58,7 +58,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().getWidth(), UiSizes.getInstance().getButtonHeight() * 0.75f);
 
         progressBar = new ProgressBar(rec, "");
-        progressBar.setProgress(0);
+        progressBar.setPogress(0);
         this.addChild(progressBar);
 
         messageTextView = new CB_Label(this.name + " messageTextView", leftBorder, progressBar.getMaxY() + margin, innerWidth, measuredLabelHeight);
@@ -125,14 +125,14 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
     }
 
     @Override
-    public void progressChangedEventCalled(String Message, String ProgressMessage, int Progress) {
+    public void progressChanged(String Message, String ProgressMessage, int Progress) {
         setProgress(Message, ProgressMessage, Progress);
     }
 
     @Override
     public void onShow() {
         // Registriere Progress Changed Event
-        ProgresssChangedEventList.Add(this);
+        ProgresssChangedEventList.add(this);
         if (ProgressThread != null) {
             Timer runTimer = new Timer();
             TimerTask task = new TimerTask() {
@@ -152,14 +152,14 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
     @Override
     public void onHide() {
         // l�sche Registrierung Progress Changed Event
-        ProgresssChangedEventList.Remove(this);
+        ProgresssChangedEventList.remove(this);
     }
 
     public void setProgress(final String Msg, final String ProgressMessage, final int value) {
         GL.that.RunOnGL(() -> {
             if (ProgressDialog.this.isDisposed())
                 return;
-            progressBar.setProgress(value);
+            progressBar.setPogress(value);
             progressMessageTextView.setText(ProgressMessage);
             if (!Msg.equals(""))
                 messageTextView.setText(Msg);

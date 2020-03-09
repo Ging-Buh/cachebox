@@ -141,7 +141,7 @@ public class UpdateCachesState extends AbstractAction {
                 }
 
                 progress += ProgressInkrement;
-                ProgresssChangedEventList.Call("", (int) progress);
+                ProgresssChangedEventList.progressChanged("", (int) progress);
 
             } while (skip < chkList.size() && !cancelThread);
 

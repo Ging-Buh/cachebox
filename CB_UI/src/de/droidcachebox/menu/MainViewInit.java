@@ -152,15 +152,12 @@ public class MainViewInit extends MainViewBase {
         descTextView.setHeight(descTextView.getTextHeight());
         this.addLast(descTextView);
 
-        Drawable ProgressBack = new NinePatchDrawable(atlas.createPatch(IconName.btnNormal.name()));
-        Drawable ProgressFill = new NinePatchDrawable(atlas.createPatch("progress"));
-
-        float ProgressHeight = Math.max(ProgressBack.getBottomHeight() + ProgressBack.getTopHeight(), ref / 1.5f);
-
-        progress = new ProgressBar(new CB_RectF(0, 0, this.getWidth(), ProgressHeight), "Splash.ProgressBar");
-
-        progress.setBackground(ProgressBack);
-        progress.setProgressFill(ProgressFill);
+        Drawable progressBack = new NinePatchDrawable(atlas.createPatch(IconName.btnNormal.name()));
+        Drawable progressFill = new NinePatchDrawable(atlas.createPatch("progress"));
+        float progressHeight = Math.max(progressBack.getBottomHeight() + progressBack.getTopHeight(), ref / 1.5f);
+        progress = new ProgressBar(new CB_RectF(0, 0, this.getWidth(), progressHeight), "Splash.ProgressBar");
+        progress.setBackground(progressBack);
+        progress.setProgressFill(progressFill);
         this.addChild(progress);
 
         float logoCalcRef = ref * 1.5f;

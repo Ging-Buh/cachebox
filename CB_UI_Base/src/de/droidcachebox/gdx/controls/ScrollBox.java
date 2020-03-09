@@ -23,7 +23,7 @@ public class ScrollBox extends CB_View_Base {
     protected V_ListView lv;
     protected float virtualHeight;
     protected ListViewItemBase item;
-    protected CustomAdapter thisAdapter;
+    protected ScrollBoxAdapter thisAdapter;
 
     public ScrollBox(CB_RectF rec) {
         super(rec, "ScrollBox");
@@ -48,7 +48,7 @@ public class ScrollBox extends CB_View_Base {
         };
         item.setHeight(virtualHeight);
         item.setClickable(true);
-        thisAdapter = new CustomAdapter();
+        thisAdapter = new ScrollBoxAdapter();
         lv.setDisposeFlag(false);
         lv.setAdapter(thisAdapter);
         layout();
@@ -198,17 +198,8 @@ public class ScrollBox extends CB_View_Base {
 
     @Override
     public void setLongClickable(boolean value) {
-
         lv.setLongClickable(value);
         super.setLongClickable(value);
-    }
-
-    public void setDragable() {
-        lv.setDraggable();
-    }
-
-    public void setUndragable() {
-        lv.setUnDraggable();
     }
 
     public float getScrollY() {
@@ -219,11 +210,7 @@ public class ScrollBox extends CB_View_Base {
         lv.scrollTo(scrollPos);
     }
 
-    public class CustomAdapter implements Adapter {
-
-        public CustomAdapter() {
-        }
-
+    public class ScrollBoxAdapter implements Adapter {
         @Override
         public int getCount() {
             return 1;

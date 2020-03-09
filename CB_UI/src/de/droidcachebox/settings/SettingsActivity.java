@@ -80,7 +80,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private void initial() {
-        this.setLongClickable(true);
+        setLongClickable(true);
         Config.settings.SaveToLastValue();
         ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
 
@@ -94,9 +94,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     @Override
     protected void skinIsChanged() {
         super.skinIsChanged();
-        this.removeChild(btnOk);
-        this.removeChild(btnCancel);
-        this.removeChild(btnMenu);
+        removeChild(btnOk);
+        removeChild(btnCancel);
+        removeChild(btnMenu);
         createButtons();
         fillContent();
         resortList();
@@ -112,7 +112,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btnOk.setText(Translation.get("save"));
         btnCancel.setText(Translation.get("cancel"));
 
-        this.addChild(btnMenu);
+        addChild(btnMenu);
         btnMenu.setText("...");
         btnMenu.setClickHandler((v, x, y, pointer, button) -> {
             Menu icm = new Menu("SettingsLevelTitle");
@@ -138,7 +138,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             return true;
         });
 
-        this.addChild(btnOk);
+        addChild(btnOk);
         btnOk.setClickHandler((v, x, y, pointer, button) -> {
 
             StringBuilder ActionsString = new StringBuilder();
@@ -165,7 +165,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             return true;
         });
 
-        this.addChild(btnCancel);
+        addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             Config.settings.LoadFromLastValue();
 
@@ -264,8 +264,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
                     rec2.setHeight(rec.getHalfHeight());
 
-                    CB_Label lblVolume = new CB_Label(this.name + " lblVolume", itemRec, Translation.get("Volume"));
-                    CB_Label lblMute = new CB_Label(this.name + " lblMute", itemRec, Translation.get("Mute"));
+                    CB_Label lblVolume = new CB_Label(name + " lblVolume", itemRec, Translation.get("Volume"));
+                    CB_Label lblMute = new CB_Label(name + " lblMute", itemRec, Translation.get("Mute"));
 
                     lblVolume.setZeroPos();
                     lblMute.setZeroPos();
@@ -307,12 +307,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             if (entryCount > 0) {
 
-                lay.setBackground(this.getBackground());// Activity Background
+                lay.setBackground(getBackground());// Activity Background
                 if (!expandLayout)
                     lay.setAnimationHeight(0f);
 
                 addControlToLinearLayout(btn, margin);
-                addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
+                addControlToLinearLayout(lay, -(drawableBackground.getBottomHeight()) / 2);
 
                 if (btn != null)
                     btn.setClickHandler((v, x, y, pointer, button) -> {
@@ -330,7 +330,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private void addControlToLinearLayout(CB_View_Base view, float itemMargin) {
         if (LinearLayout == null || scrollBox == null) {
 
-            CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.getWidth(), this.getHeight() - btnOk.getMaxY() - margin);
+            CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, getWidth(), getHeight() - btnOk.getMaxY() - margin);
 
             scrollBox = new ScrollBox(rec);
             scrollBox.setClickable(true);
@@ -341,8 +341,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             LinearLayout.setZeroPos();
             scrollBox.addChild(LinearLayout);
             // LinearLayout.setBackground(new ColorDrawable(Color.RED));
-            scrollBox.setBackground(this.getBackground());
-            this.addChild(scrollBox);
+            scrollBox.setBackground(getBackground());
+            addChild(scrollBox);
         }
 
         view.setZeroPos();
@@ -355,41 +355,41 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     }
 
-    private CB_View_Base getView(SettingBase<?> SB, int BackgroundChanger) {
-        if (SB instanceof SettingBool) {
-            return getBoolView((SettingBool) SB, BackgroundChanger);
-        } else if (SB instanceof SettingIntArray) {
-            return getIntArrayView((SettingIntArray) SB, BackgroundChanger);
-        } else if (SB instanceof SettingStringArray) {
-            return getStringArrayView((SettingStringArray) SB, BackgroundChanger);
-        } else if (SB instanceof SettingTime) {
-            return getTimeView((SettingTime) SB, BackgroundChanger);
-        } else if (SB instanceof SettingInt) {
-            return getIntView((SettingInt) SB, BackgroundChanger);
-        } else if (SB instanceof SettingDouble) {
-            return getDblView((SettingDouble) SB, BackgroundChanger);
-        } else if (SB instanceof SettingFloat) {
-            return getFloatView((SettingFloat) SB, BackgroundChanger);
-        } else if (SB instanceof SettingFolder) {
-            return getFolderView((SettingFolder) SB, BackgroundChanger);
-        } else if (SB instanceof SettingFile) {
-            return getFileView((SettingFile) SB, BackgroundChanger);
-        } else if (SB instanceof SettingEnum) {
-            return getEnumView((SettingEnum<?>) SB, BackgroundChanger);
-        } else if (SB instanceof SettingString) {
-            return getStringView((SettingString) SB, BackgroundChanger);
-        } else if (SB instanceof SettingsListCategoryButton) {
-            return getButtonView((SettingsListCategoryButton<?>) SB);
-        } else if (SB instanceof SettingsListGetApiButton) {
+    private CB_View_Base getView(SettingBase<?> settingBase, int backgroundChanger) {
+        if (settingBase instanceof SettingBool) {
+            return getBoolView((SettingBool) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingIntArray) {
+            return getIntArrayView((SettingIntArray) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingStringArray) {
+            return getStringArrayView((SettingStringArray) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingTime) {
+            return getTimeView((SettingTime) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingInt) {
+            return getIntView((SettingInt) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingDouble) {
+            return getDblView((SettingDouble) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingFloat) {
+            return getFloatView((SettingFloat) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingFolder) {
+            return getFolderView((SettingFolder) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingFile) {
+            return getFileView((SettingFile) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingEnum) {
+            return getEnumView((SettingEnum<?>) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingString) {
+            return getStringView((SettingString) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingsListCategoryButton) {
+            return getButtonView((SettingsListCategoryButton<?>) settingBase);
+        } else if (settingBase instanceof SettingsListGetApiButton) {
             return getApiKeyButtonView();
-        } else if (SB instanceof SettingsListButtonLangSpinner) {
+        } else if (settingBase instanceof SettingsListButtonLangSpinner) {
             return getLangSpinnerView();
-        } else if (SB instanceof SettingsListButtonSkinSpinner) {
+        } else if (settingBase instanceof SettingsListButtonSkinSpinner) {
             return getSkinSpinnerView();
-        } else if (SB instanceof SettingsAudio) {
-            return getAudioView((SettingsAudio) SB, BackgroundChanger);
-        } else if (SB instanceof SettingColor) {
-            return getColorView((SettingColor) SB, BackgroundChanger);
+        } else if (settingBase instanceof SettingsAudio) {
+            return getAudioView((SettingsAudio) settingBase, backgroundChanger);
+        } else if (settingBase instanceof SettingColor) {
+            return getColorView((SettingColor) settingBase, backgroundChanger);
         }
 
         return null;
@@ -469,7 +469,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                             resortList();
                         }
                         // Activity wieder anzeigen
-                        SettingsActivity.this.show();
+                        activityBase.show();
                         return true;
                     });
 
@@ -684,13 +684,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         SetValue.setValue(value);
                     resortList();
                     // Activity wieder anzeigen
-                    SettingsActivity.this.show();
+                    activityBase.show();
                 }
 
                 @Override
                 public void cancelClicked() {
                     // Activity wieder anzeigen
-                    SettingsActivity.this.show();
+                    activityBase.show();
                 }
             });
             return true;
@@ -726,13 +726,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         SetValue.setValue((float) value);
                     resortList();
                     // Activity wieder anzeigen
-                    SettingsActivity.this.show();
+                    activityBase.show();
                 }
 
                 @Override
                 public void cancelClicked() {
                     // Activity wieder anzeigen
-                    SettingsActivity.this.show();
+                    activityBase.show();
                 }
             });
             return true;
@@ -878,47 +878,46 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return apiBtn;
     }
 
-    private CB_View_Base getAudioView(final SettingsAudio SB, int backgroundChanger) {
+    private CB_View_Base getAudioView(final SettingsAudio settingsAudio, int backgroundChanger) {
 
-        boolean full = Config.isExpert.getValue() || Config.isDeveloper.getValue();
-        final String AudioName = SB.getName();
-        final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, value -> {
-            Audio aud = new Audio(SB.getValue());
+        final String audioName = settingsAudio.getName();
+        final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, audioName, value -> {
+            Audio aud = new Audio(settingsAudio.getValue());
             aud.Volume = value / 100f;
-            SB.setValue(aud);
+            settingsAudio.setValue(aud);
 
             // play Audio now
 
-            if (AudioName.equalsIgnoreCase("GlobalVolume"))
+            if (audioName.equalsIgnoreCase("GlobalVolume"))
                 SoundCache.play(Sounds.Global, true);
-            if (AudioName.equalsIgnoreCase("Approach"))
+            if (audioName.equalsIgnoreCase("Approach"))
                 SoundCache.play(Sounds.Approach);
-            if (AudioName.equalsIgnoreCase("GPS_lose"))
+            if (audioName.equalsIgnoreCase("GPS_lose"))
                 SoundCache.play(Sounds.GPS_lose);
-            if (AudioName.equalsIgnoreCase("GPS_fix"))
+            if (audioName.equalsIgnoreCase("GPS_fix"))
                 SoundCache.play(Sounds.GPS_fix);
-            if (AudioName.equalsIgnoreCase("AutoResortSound"))
+            if (audioName.equalsIgnoreCase("AutoResortSound"))
                 SoundCache.play(Sounds.AutoResortSound);
         });
 
-        item.setName(Translation.get(SB.getName()));
-        item.setDefault("default: " + SB.getDefaultValue());
-        item.setVolume((int) (SB.getValue().Volume * 100));
+        item.setName(Translation.get(settingsAudio.getName()));
+        item.setDefault("default: " + settingsAudio.getDefaultValue());
+        item.setVolume((int) (settingsAudio.getValue().Volume * 100));
         CB_CheckBox chk = item.getCheckBox();
 
-        if (!AudioName.contains("Global")) {
+        if (!audioName.contains("Global")) {
             if (audioSettingsList == null)
                 audioSettingsList = new ArrayList<>();
             audioSettingsList.add(item);
         }
 
-        chk.setChecked(SB.getValue().Mute);
+        chk.setChecked(settingsAudio.getValue().Mute);
         chk.setOnCheckChangedListener((view, isChecked) -> {
-            Audio aud = new Audio(SB.getValue());
+            Audio aud = new Audio(settingsAudio.getValue());
             aud.Mute = isChecked;
-            SB.setValue(aud);
+            settingsAudio.setValue(aud);
             item.setMuteDisabeld(isChecked);
-            if (AudioName.contains("Global")) {
+            if (audioName.contains("Global")) {
                 // Enable or disable all other
                 setVolumeState(isChecked);
             }
@@ -929,7 +928,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MessageBox.show(Translation.get("Desc_" + settingsAudio.getName()), msgBoxReturnListener);
 
             return true;
         });
@@ -976,13 +975,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         SetValue.setValue(value);
                     resortList();
                     // Activity wieder anzeigen
-                    SettingsActivity.this.show();
+                    activityBase.show();
                 }
 
                 @Override
                 public void cancelClicked() {
                     // Activity wieder anzeigen
-                    SettingsActivity.this.show();
+                    activityBase.show();
                 }
             });
             return true;

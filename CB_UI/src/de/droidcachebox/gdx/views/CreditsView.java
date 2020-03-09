@@ -43,7 +43,7 @@ public class CreditsView extends CB_View_Base {
     private CreditsView() {
         super(ViewManager.leftTab.getContentRec(), "CreditsView");
         CB_RectF rec = this;
-        this.setBackground(Sprites.AboutBack);
+        this.setBackground(Sprites.aboutback);
         ref = UiSizes.getInstance().getWindowHeight() / 13f;
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 

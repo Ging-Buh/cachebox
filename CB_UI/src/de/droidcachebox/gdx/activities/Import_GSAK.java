@@ -14,7 +14,9 @@ import de.droidcachebox.gdx.main.MenuItemDivider;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.Copy;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
 import java.text.SimpleDateFormat;
@@ -24,7 +26,7 @@ import java.util.Locale;
 
 import static de.droidcachebox.database.Cache.IS_FULL;
 
-public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
+public class Import_GSAK extends ActivityBase {
     private static final String sKlasse = "Import_GSAK";
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
@@ -241,7 +243,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 reader.moveToFirst();
                 while (!reader.isAfterLast() && !isCanceled) {
                     count++;
-                    ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
+                    progressBar.setProgress(count * 100 / anz, count + "/" + anz);
                     String GcCode = "";
                     try {
                         GcCode = reader.getString("Code");
@@ -302,7 +304,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             imagesReader.moveToFirst();
             while (!imagesReader.isAfterLast() && !isCanceled) {
                 count++;
-                ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
+                progressBar.setProgress(count * 100 / anz, count + "/" + anz);
                 String link = imagesReader.getString("iImage");
                 CoreCursor imageLinkReader = sqlImageLink.rawQuery("select Fname from files where link=\"" + link + "\"", null);
                 imageLinkReader.moveToFirst();
@@ -314,7 +316,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                         imageEntry.setDescription(imagesReader.getString("iName"));
                         if (imageEntry.getDescription() == null) imageEntry.setDescription("");
                         imageEntry.setImageUrl(link);
-                        ProgresssChangedEventList.Call(fName, count + "/" + anz, count * 100 / anz);
+                        progressBar.setProgress(count * 100 / anz, count + "/" + anz); // fName
                         copyImage(mImagesPath + "/" + fName, imageEntry);
                     }
                 }
@@ -384,8 +386,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         LogsReader.moveToFirst();
         while (!LogsReader.isAfterLast() && !isCanceled) {
             count++;
-            // ProgresssChangedEventList.Call("" + count + "/" + anz, count * 100 / anz);
-            progressBar.setProgress(count * 100 / anz, "" + count + "/" + anz);
+            progressBar.setProgress(count * 100 / anz, count + "/" + anz);
             LogEntry logEntry = new LogEntry();
             logEntry.cacheId = Cache.generateCacheId(LogsReader.getString("lParent"));
             logEntry.logText = LogsReader.getString("lText");
@@ -675,20 +676,5 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     public void finish() {
         super.finish();
         CacheListChangedListeners.getInstance().cacheListChanged();
-    }
-
-    @Override
-    public void progressChangedEventCalled(String message, String progressMessage, int progress) {
-        progressBar.setProgress(progress, progressMessage);
-    }
-
-    @Override
-    public void onShow() {
-        ProgresssChangedEventList.Add(this);
-    }
-
-    @Override
-    public void onHide() {
-        ProgresssChangedEventList.Remove(this);
     }
 }

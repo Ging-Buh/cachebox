@@ -31,7 +31,7 @@ public class MapDownloadItem extends CB_View_Base {
     private boolean canceld = false;
 
     public MapDownloadItem(MapRepositoryInfo mapInfo, String workPath, float ItemWidth) {
-        super(mapInfo.Name);
+        super(mapInfo.name);
         this.mapInfo = mapInfo;
         this.workPath = workPath;
         margin = UiSizes.getInstance().getMargin();
@@ -47,14 +47,14 @@ public class MapDownloadItem extends CB_View_Base {
         lblName.setFont(Fonts.getNormal());
 
         // Cut "Freizeitkarte"
-        String Name = mapInfo.Description.replace("Freizeitkarte ", "");
+        String Name = mapInfo.description.replace("Freizeitkarte ", "");
         lblName.setText(Name);
 
         lblSize = new CB_Label(this.name + " lblSize", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
         lblSize.setFont(Fonts.getNormal());
 
         // Format Size
-        int s = mapInfo.Size / 1024 / 1024;
+        int s = mapInfo.size / 1024 / 1024;
         lblSize.setHAlignment(HAlignment.RIGHT);
         lblSize.setText(s + " MB");
 
@@ -89,8 +89,8 @@ public class MapDownloadItem extends CB_View_Base {
     }
 
     private void chkExists() {
-        int slashPos = mapInfo.Url.lastIndexOf("/");
-        String zipFile = mapInfo.Url.substring(slashPos);
+        int slashPos = mapInfo.url.lastIndexOf("/");
+        String zipFile = mapInfo.url.substring(slashPos);
 
         String FileString = FileIO.getFileNameWithoutExtension(zipFile);
 
@@ -120,7 +120,7 @@ public class MapDownloadItem extends CB_View_Base {
         }
 
         downloadIsRunning.set(true);
-        float ProgressHeight = (Sprites.ProgressBack.getBottomHeight() + Sprites.ProgressBack.getTopHeight());
+        float ProgressHeight = (Sprites.progressBack.getBottomHeight() + Sprites.progressBack.getTopHeight());
         CB_RectF rec = new CB_RectF(checkBoxMap.getMaxX() + margin, 0, innerWidth - margin * 3 - checkBoxMap.getWidth(), ProgressHeight);
 
         if (progressBar == null) {
@@ -133,13 +133,13 @@ public class MapDownloadItem extends CB_View_Base {
         lastProgress = 0;
 
         new Thread(() -> {
-            int slashPos = mapInfo.Url.lastIndexOf("/");
-            String zipFile = mapInfo.Url.substring(slashPos + 1);
+            int slashPos = mapInfo.url.lastIndexOf("/");
+            String zipFile = mapInfo.url.substring(slashPos + 1);
             String target = workPath + "/" + zipFile;
 
             progressBar.setProgress(lastProgress, lastProgress + " %");
 
-            if (Download.download(mapInfo.Url, target)) {
+            if (Download.download(mapInfo.url, target)) {
                 Log.info(log, "Unzip " + target + " start.");
                 try {
                     UnZip.extractFolder(target);

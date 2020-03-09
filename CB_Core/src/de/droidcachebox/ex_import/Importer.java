@@ -347,7 +347,7 @@ public class Importer {
     }
 
     public void importMaps() {
-        ProgresssChangedEventList.Call("import Map", "", 0);
+        ProgresssChangedEventList.progressChanged("import Map", "", 0);
 
     }
 

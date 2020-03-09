@@ -462,50 +462,51 @@ public class EditTextField extends EditTextFieldBase {
     @Override
     public boolean onTouchDragged(int dx, int dy, int pointer, boolean kineticPan) {
         boolean bearbeitet = false;
-        try {
-            if (touchDownPos != null) {
-                float oldTopLine = topLine;
-                float oldLeftPos = leftPos;
-                if (isMultiLine()) {
-                    // Scrollen Oben - Unten
-                    if (lines.size() < maxLineCount) {
-                        topLine = 0;
-                    } else {
-                        topLine = (int) (topLineAtTouchDown + (dy - touchDownPos.y) / this.style.font.getLineHeight());
-                        if (topLine < 0) {
+        if (GL.that.getFocusedEditTextField() == this) {
+            try {
+                if (touchDownPos != null) {
+                    float oldTopLine = topLine;
+                    float oldLeftPos = leftPos;
+                    if (isMultiLine()) {
+                        // Scrollen Oben - Unten
+                        if (lines.size() < maxLineCount) {
                             topLine = 0;
+                        } else {
+                            topLine = (int) (topLineAtTouchDown + (dy - touchDownPos.y) / this.style.font.getLineHeight());
+                            if (topLine < 0) {
+                                topLine = 0;
+                            }
+                            if (lines.size() - topLine < maxLineCount) {
+                                topLine = lines.size() - maxLineCount;
+                            }
                         }
-                        if (lines.size() - topLine < maxLineCount) {
-                            topLine = lines.size() - maxLineCount;
-                        }
+                        bearbeitet = true; // on false no drag of text within
                     }
-                    bearbeitet = true; // on false no drag of text within
-                }
 
-                // Scrollen Links - Rechts
-                float maxWidth = maxLineWidth();
-                if (maxWidth < textWidth) {
-                    // Text hat auf einmal Platz -> auf Ursprung hin scrollen
-                    leftPos = 0;
-                } else {
-                    // Text hat nicht auf einmal Platz -> Scrollen möglich
-                    leftPos = leftPosAtTouchDown + (touchDownPos.x - dx);
-                    if (leftPos < 0) {
+                    // Scrollen Links - Rechts
+                    float maxWidth = maxLineWidth();
+                    if (maxWidth < textWidth) {
+                        // Text hat auf einmal Platz -> auf Ursprung hin scrollen
                         leftPos = 0;
+                    } else {
+                        // Text hat nicht auf einmal Platz -> Scrollen möglich
+                        leftPos = leftPosAtTouchDown + (touchDownPos.x - dx);
+                        if (leftPos < 0) {
+                            leftPos = 0;
+                        }
+                        if (leftPos > maxWidth - textWidth) {
+                            leftPos = maxWidth - textWidth;
+                        }
                     }
-                    if (leftPos > maxWidth - textWidth) {
-                        leftPos = maxWidth - textWidth;
-                    }
+
+                    moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * this.style.font.getLineHeight());
+                    callListPosChangedEvent();
                 }
-
-                moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * this.style.font.getLineHeight());
-                callListPosChangedEvent();
+                GL.that.renderOnce();
+            } catch (Exception ex) {
+                Log.err(log, "onTouchDragged", ex);
             }
-            GL.that.renderOnce();
-        } catch (Exception ex) {
-            Log.err(log, "onTouchDragged", ex);
         }
-
         // Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
         return bearbeitet;
     }

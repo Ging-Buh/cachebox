@@ -54,11 +54,11 @@ public class Sprites {
     public static ArrayList<Sprite> Dialog = null;
     public static SpriteList SizesIcons = null;
     public static Drawable ListBack = null;
-    public static Drawable ButtonBack = null;
-    public static Drawable AboutBack = null;
-    public static Drawable Slider = null;
-    public static Drawable SliderPushed = null;
-    public static Sprite Progress = null;
+    public static Drawable buttonBack = null;
+    public static Drawable aboutback = null;
+    public static Drawable slider = null;
+    public static Drawable sliderPushed = null;
+    public static Sprite progress = null;
     public static Sprite ambilwarna_hue = null;
     public static Sprite ambilwarna_cursor = null;
     public static Sprite ambilwarna_target = null;
@@ -72,10 +72,10 @@ public class Sprites {
     public static ArrayList<Sprite> LogIcons;
     public static Drawable activityBackground;
     public static Drawable activityBorderMask;
-    public static Drawable InfoBack;
-    public static Drawable ProgressBack;
-    public static Drawable ProgressFill;
-    public static Drawable ProgressDisabled;
+    public static Drawable infoBack;
+    public static Drawable progressBack;
+    public static Drawable progressFill;
+    public static Drawable progressDisabled;
     public static Drawable btn;
     public static Drawable btnPressed;
     public static Drawable btnDisabled;
@@ -456,7 +456,7 @@ public class Sprites {
         LiveBtn.add(getSprite("Live7"));
         LiveBtn.add(getSprite("Live8"));
 
-        Progress = getSprite("progress");
+        progress = getSprite("progress");
         ambilwarna_hue = getSprite("ambilwarna-hue");
         ambilwarna_cursor = getSprite("ambilwarna-cursor");
         ambilwarna_target = getSprite("ambilwarna-target");
@@ -510,24 +510,21 @@ public class Sprites {
         activityBackground = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-back"), patch, patch, patch, patch));
         activityBorderMask = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-border"), patch, patch, patch, patch));
         ListBack = new ColorDrawable(CB_Skin.getInstance().getThemedColor("background"));
-        ButtonBack = new SpriteDrawable(getSprite("button-list-back"));
-        AboutBack = new SpriteDrawable(getSprite("splash-back"));
-        InfoBack = new NinePatchDrawable(new NinePatch(getSprite("InfoPanelBack"), patch, patch, patch, patch));
-        ProgressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
-        ProgressFill = new NinePatchDrawable(new NinePatch(Sprites.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
-        ProgressDisabled = new NinePatchDrawable(new NinePatch(getSprite("progress-disabled"), patch - 1, patch - 1, patch - 1, patch - 1));
+        buttonBack = new SpriteDrawable(getSprite("button-list-back"));
+        aboutback = new SpriteDrawable(getSprite("splash-back"));
+        infoBack = new NinePatchDrawable(new NinePatch(getSprite("InfoPanelBack"), patch, patch, patch, patch));
+        progressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
+        progressFill = new NinePatchDrawable(new NinePatch(Sprites.progress, patch - 1, patch - 1, patch - 1, patch - 1));
+        progressDisabled = new NinePatchDrawable(new NinePatch(getSprite("progress-disabled"), patch - 1, patch - 1, patch - 1, patch - 1));
         btn = new NinePatchDrawable(new NinePatch(Sprites.getSprite(IconName.btnNormal.name()), patch, patch, patch, patch));
         btnPressed = new NinePatchDrawable(new NinePatch(Sprites.getSprite("btn-pressed"), patch, patch, patch, patch));
         btnDisabled = new NinePatchDrawable(new NinePatch(Sprites.getSprite("btn-disabled"), patch, patch, patch, patch));
 
-        SliderPushed = new SpriteDrawable(getSprite("scrollbarPushedSlider"));
-        // SliderBack = new SpriteDrawable(getThemedSprite(????));
+        sliderPushed = new SpriteDrawable(getSprite("scrollbarPushedSlider"));
 
         Sprite tmpSlider = getSprite("scrollbarSlider");
-
         int sliderPatch = (int) (tmpSlider.getWidth() / 4);
-
-        Slider = new NinePatchDrawable(new NinePatch(tmpSlider, sliderPatch, sliderPatch, sliderPatch, sliderPatch));
+        slider = new NinePatchDrawable(new NinePatch(tmpSlider, sliderPatch, sliderPatch, sliderPatch, sliderPatch));
 
         chkOn = new SpriteDrawable(getSprite("check-on"));
         chkOff = new SpriteDrawable(getSprite("check-off"));

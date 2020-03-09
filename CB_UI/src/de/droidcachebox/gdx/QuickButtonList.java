@@ -25,7 +25,7 @@ public class QuickButtonList extends H_ListView {
         super(rec, Name);
         that = this;
         btnHeight = UiSizes.getInstance().getQuickButtonListHeight() * 0.93f;
-        setBackground(Sprites.ButtonBack);
+        setBackground(Sprites.buttonBack);
 
         CB_RectF btnRec = new CB_RectF(0, 0, btnHeight);
 
@@ -189,7 +189,7 @@ public class QuickButtonList extends H_ListView {
     protected void skinIsChanged() {
         quickButtonList = null;
         readQuickButtonItemsList();
-        setBackground(Sprites.ButtonBack);
+        setBackground(Sprites.buttonBack);
         reloadItems();
         ListViewItemBackground.ResetBackground();
     }

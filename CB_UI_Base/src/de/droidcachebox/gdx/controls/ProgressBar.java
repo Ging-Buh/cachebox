@@ -10,8 +10,8 @@ import de.droidcachebox.gdx.math.CB_RectF;
 
 public class ProgressBar extends CB_View_Base {
     private final CB_Label label;
-    protected float progressDrawWidth = 0;
-    private int progress;
+    private float progressDrawWidth = 0;
+    private int currentPogress;
     private Drawable progressFill, progressFillDisabled;
     private String msg = "";
     private boolean isDisabled = false;
@@ -21,7 +21,7 @@ public class ProgressBar extends CB_View_Base {
         label = new CB_Label(this);
         label.setHAlignment(HAlignment.CENTER);
         this.addChild(label);
-        progress = 0;
+        currentPogress = 0;
     }
 
     @Override
@@ -33,45 +33,45 @@ public class ProgressBar extends CB_View_Base {
     @Override
     protected void initialize() {
         if (drawableBackground == null) {
-            setBackground(Sprites.ProgressBack);
+            setBackground(Sprites.progressBack);
         }
 
         if (progressFill == null) {
-            progressFill = Sprites.ProgressFill;
+            progressFill = Sprites.progressFill;
         }
 
         if (progressFillDisabled == null) {
-            progressFillDisabled = Sprites.ProgressDisabled;
+            progressFillDisabled = Sprites.progressDisabled;
         }
 
         GL.that.renderOnce();
     }
 
     /**
-     * @param value
-     * @return the pos of Progress end
+     * @param newProgress ?
+     *  set progressDrawWidth, renders the pos of Progress
      */
-    public void setProgress(int value) {
+    public void setPogress(int newProgress) {
         if (!isDisposed()) {
-            if (value > progress) {
-                progress = value;
-                if (progress > 100)
-                    progress = 100;
-                progressDrawWidth = (getWidth() / 100) * progress;
+            if (newProgress > currentPogress) {
+                currentPogress = newProgress;
+                if (currentPogress > 100)
+                    currentPogress = 100;
+                progressDrawWidth = (getWidth() / 100) * currentPogress;
                 GL.that.renderOnce();
             }
         }
     }
 
     /**
-     * @param value
-     * @param Msg
-     * @return the pos of Progress end
+     * @param newProgress ?
+     * @param Msg ?
+     * renders the pos of Progress
      */
-    public void setProgress(int value, final String Msg) {
+    public void setProgress(int newProgress, final String Msg) {
         if (!isDisposed()) {
-            if (value > progress) {
-                setProgress(value);
+            if (newProgress > currentPogress) {
+                setPogress(newProgress);
                 if (!msg.equals(Msg)) {
                     msg = Msg;
                     GL.that.RunOnGL(() -> label.setText(msg));
@@ -81,16 +81,12 @@ public class ProgressBar extends CB_View_Base {
     }
 
     public void resetProgress(final String Msg) {
-        progress = 0;
+        currentPogress = 0;
         GL.that.RunOnGL(() -> label.setText(Msg));
     }
 
     public void setProgressFill(Drawable drawable) {
         progressFill = drawable;
-    }
-
-    public void setProgressFillDisabled(Drawable drawable) {
-        progressFillDisabled = drawable;
     }
 
     @Override
@@ -125,8 +121,8 @@ public class ProgressBar extends CB_View_Base {
         label.setText(msg);
     }
 
-    public int getProgress() {
-        return progress;
+    public int getCurrentPogress() {
+        return currentPogress;
     }
 
     public void enable() {
@@ -141,4 +137,7 @@ public class ProgressBar extends CB_View_Base {
         return isDisabled;
     }
 
+    public float getProgressDrawWidth() {
+        return progressDrawWidth;
+    }
 }

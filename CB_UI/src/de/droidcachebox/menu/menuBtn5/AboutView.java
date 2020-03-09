@@ -112,7 +112,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
         if (this.isDisposed())
             return;
 
-        this.setBackground(Sprites.AboutBack);
+        this.setBackground(Sprites.aboutback);
         float ref = UiSizes.getInstance().getWindowHeight() / 13f;
         margin = UiSizes.getInstance().getMargin();
         CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);

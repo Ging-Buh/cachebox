@@ -12,16 +12,12 @@ public class SettingsItem_Audio extends SettingsItemBase {
     FloatControl volumeControl;
 
     /**
-     * @param rec
-     * @param Index
-     * @param Name
-     * @param full  boolean /show with Path-Settings
+     * @param rec ?
+     * @param Index ?
+     * @param Name ?
      */
-    public SettingsItem_Audio(CB_RectF rec, int Index, String Name, Boolean full, FloatControl.iValueChanged listener) {
+    public SettingsItem_Audio(CB_RectF rec, int Index, String Name, FloatControl.iValueChanged listener) {
         super(rec, Index, Name);
-
-        // TODO add option for load SoundFile
-        // if (full) this.setHeight(rec.getHeight() * 2);
 
         Check = new CB_CheckBox("");
         Check.setX(this.getWidth() - rightBorder - Check.getWidth());
@@ -35,7 +31,7 @@ public class SettingsItem_Audio extends SettingsItemBase {
         lblDefault = null;
 
         // add volume control
-        float ProgressHeight = (Sprites.ProgressBack.getBottomHeight() + Sprites.ProgressBack.getTopHeight()) * 1.35f;
+        float ProgressHeight = (Sprites.progressBack.getBottomHeight() + Sprites.progressBack.getTopHeight()) * 1.35f;
 
         CB_RectF rec2 = new CB_RectF(rec);
 

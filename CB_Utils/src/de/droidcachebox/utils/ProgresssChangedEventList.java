@@ -1,28 +1,26 @@
 package de.droidcachebox.utils;
 
 public class ProgresssChangedEventList {
-    public static CB_List<ProgressChangedEvent> list = new CB_List<ProgressChangedEvent>();
+    public static CB_List<ProgressChangedEvent> listeners = new CB_List<>();
 
-    public static void Add(ProgressChangedEvent event) {
-        list.add(event);
+    public static void add(ProgressChangedEvent listener) {
+        listeners.add(listener);
     }
 
-    public static void Call(String Msg, String ProgressMessage, int Progress) {
-        for (int i = 0, n = list.size(); i < n; i++) {
-            ProgressChangedEvent event = list.get(i);
-            event.progressChangedEventCalled(Msg, ProgressMessage, Progress);
+    public static void progressChanged(String Msg, String ProgressMessage, int Progress) {
+        for (ProgressChangedEvent listener : listeners) {
+            listener.progressChanged(Msg, ProgressMessage, Progress);
         }
     }
 
-    public static void Call(String ProgressMessage, int Progress) {
-        for (int i = 0, n = list.size(); i < n; i++) {
-            ProgressChangedEvent event = list.get(i);
-            event.progressChangedEventCalled("", ProgressMessage, Progress);
+    public static void progressChanged(String ProgressMessage, int Progress) {
+        for (ProgressChangedEvent listener : listeners) {
+            listener.progressChanged("", ProgressMessage, Progress);
         }
     }
 
-    public static void Remove(ProgressChangedEvent event) {
-        list.remove(event);
+    public static void remove(ProgressChangedEvent listener) {
+        listeners.remove(listener);
     }
 
 }

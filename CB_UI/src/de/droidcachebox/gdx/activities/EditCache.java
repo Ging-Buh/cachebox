@@ -44,12 +44,13 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private Spinner cacheTerrain;
     private CoordinateButton cacheCoords;
     private EditTextField cacheCode; // SingleLine
-    private EditTextField cacheTitle; // MultiLine
+    private EditTextField cacheTitle; // WRAPPED
     private EditTextField cacheOwner; // SingleLine
     private EditTextField cacheCountry; // SingleLine
     private EditTextField cacheState; // SingleLine
     private CB_Button noHtml, toTop;
-    private EditTextField cacheDescription; // MultiLineWrapped
+    private EditTextField cacheDescription; // WRAPPED
+    private Box mainContent;
 
     // ctor
     public EditCache() {
@@ -112,7 +113,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void layout() {
-        Box mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
+        if (mainContent != null)
+            mainPanel.removeChild(mainContent);
+        mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
         mainContent.addLast(cacheCode);
         mainContent.addNext(cacheTyp);
         mainContent.addLast(cacheDifficulty, 0.3f);
@@ -131,9 +134,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         mainContent.addLast(noHtml);
         mainContent.adjustHeight();
 
-        mainPanel.removeChilds();
-        mainPanel.addChild(mainContent);
         mainPanel.setVirtualHeight(mainContent.getHeight());
+        mainPanel.addChild(mainContent);
 
     }
 

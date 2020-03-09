@@ -124,7 +124,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         quickButtonList = new QuickButtonList(new CB_RectF(0, this.getHeight() - QuickButtonMaxHeight, this.getWidth(), QuickButtonMaxHeight), "QuickButtonList");
 
         mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.getInstance().getInfoSliderHeight()), "SlideBox");
-        mSlideBox.setBackground(Sprites.ProgressBack); // topBorder + bottomBorder are ignored, so initRow
+        mSlideBox.setBackground(Sprites.progressBack); // topBorder + bottomBorder are ignored, so initRow
         mSlideBox.initRow(TOPDOWN, mSlideBox.getHeight());
         float w = Fonts.measureForBigFont("G.").width;
         last5Logs = new CB_Label[5];
@@ -241,7 +241,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
                                     last5Logs[i].setBackground(transparent);
                             }
                         } else {
-                            last5Logs[i].setBackground(Sprites.ProgressBack);
+                            last5Logs[i].setBackground(Sprites.progressBack);
                         }
                     }
                     geoCacheType.setBackground(new SpriteDrawable(Sprites.getSprite("map" + cache.getGeoCacheType().name()))); // GeoCacheType.toShortString(cache) +
@@ -388,7 +388,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
 
     @Override
     protected void skinIsChanged() {
-        mSlideBox.setBackground(Sprites.ProgressBack);
+        mSlideBox.setBackground(Sprites.progressBack);
 
     }
 
