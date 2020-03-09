@@ -36,7 +36,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public abstract class GL_View_Base extends CB_RectF {
+public class GL_View_Base extends CB_RectF {
     protected static final int MOUSE_WHEEL_POINTER_UP = -280272;
     protected static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
     private static final String log = "GL_View_Base";
@@ -45,6 +45,7 @@ public abstract class GL_View_Base extends CB_RectF {
     protected static int nDepthCounter = 0;
     private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     private static boolean calling = false;
+    protected boolean isInitialized = false;
     protected final MoveableList<GL_View_Base> childs;
     private final Matrix4 rotateMatrix;
     private final ParentInfo myInfoForChild;
@@ -261,6 +262,76 @@ public abstract class GL_View_Base extends CB_RectF {
             }
             chkChildClickable();
         });
+    }
+
+    public int getChildCount() {
+        if (childs == null)
+            return -1;
+        synchronized (childs) {
+            return childs.size();
+        }
+    }
+
+    public GL_View_Base addChildDirect(final GL_View_Base view) {
+        if (childs == null || view == null)
+            return null;
+        synchronized (childs) {
+            if (!childs.contains(view))
+                childs.add(view);
+        }
+
+        return view;
+    }
+
+    public GL_View_Base addChildDirectLast(final GL_View_Base view) {
+        if (childs == null || view == null)
+            return null;
+        synchronized (childs) {
+            if (!childs.contains(view))
+                childs.add(0, view);
+        }
+        return view;
+    }
+
+    public void removeChildsDirect() {
+        if (childs == null)
+            return;
+        synchronized (childs) {
+            childs.clear();
+        }
+    }
+
+    public void removeChildDirect(GL_View_Base view) {
+        if (childs == null || view == null)
+            return;
+        synchronized (childs) {
+            try {
+                if (childs.contains(view))
+                    childs.remove(view);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    public void removeChildsDirect(MoveableList<GL_View_Base> children) {
+        if (childs == null)
+            return;
+        synchronized (childs) {
+            try {
+                childs.remove(children);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    public GL_View_Base getChild(int i) {
+        if (childs == null)
+            return null;
+        synchronized (childs) {
+            if (childs.size() < i || childs.size() == 0)
+                return null;
+            return childs.get(i);
+        }
     }
 
     /**
@@ -566,7 +637,20 @@ public abstract class GL_View_Base extends CB_RectF {
         thisInvalidate = true;
     }
 
-    protected abstract void render(Batch batch);
+    protected void render(Batch batch) {
+        if (!isInitialized) {
+            isInitialized = true;
+            initialize();
+        }
+    }
+
+    public void resetIsInitialized() {
+        // for not to directly call initialize() in overwritten
+        isInitialized = false;
+    }
+
+    protected void initialize() {
+    }
 
     public void setRotate(float Rotate) {
         mRotate = Rotate;
@@ -616,9 +700,13 @@ public abstract class GL_View_Base extends CB_RectF {
         }
     }
 
-    public abstract void onResized(CB_RectF rec);
+    public void onResized(CB_RectF rec) {
+        thisInvalidate = true;
+    }
 
-    public abstract void onParentResized(CB_RectF rec);
+    public void onParentResized(CB_RectF rec) {
+        thisInvalidate = true;
+    }
 
     public void onShow() {
     }
@@ -859,17 +947,47 @@ public abstract class GL_View_Base extends CB_RectF {
         return behandelt;
     }
 
-    public abstract void onLongClick(int x, int y, int pointer, int button);
+    public void onLongClick(int x, int y, int pointer, int button) {}
 
-    public abstract boolean onTouchDown(int x, int y, int pointer, int button);
+    public boolean onTouchDown(int x, int y, int pointer, int button) {
+        return false;
+    }
 
-    public abstract boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan);
+    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+        return false;
+    }
 
-    public abstract boolean onTouchUp(int x, int y, int pointer, int button);
+    public boolean onTouchUp(int x, int y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return getName() + " X,Y/Width,Height = " + getX() + "," + getY() + "/" + getWidth() + "," + getHeight();
+    }
 
     @Override
     public void dispose() {
         isDisposed = true;
+
+        GL.that.removeRenderView(this); // Remove from RenderViews if registered
+        try {
+            synchronized (childs) {
+                for (int i = 0; i < childs.size(); i++) {
+                    GL_View_Base view;
+                    try {
+                        view = childs.get(i);
+                    } catch (Exception e) {
+                        break;
+                    }
+                    if (view != null && !view.isDisposed())
+                        view.dispose();
+                }
+                childs.clear();
+            }
+        } catch (Exception ignored) {
+        }
+
         debugSprite = null;
         try {
             GL.that.RunOnGLWithThreadCheck(() -> {
@@ -900,13 +1018,6 @@ public abstract class GL_View_Base extends CB_RectF {
             debugRegPixmap.dispose();
         }
         debugRegPixmap = null;
-
-        if (childs != null) {
-            for (int i = 0; i < childs.size(); i++) {
-                childs.get(i).dispose();
-            }
-            childs.clear();
-        }
 
         super.dispose();
     }

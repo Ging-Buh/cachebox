@@ -10,20 +10,20 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.MoveableList;
 
 /**
- * Scrollbox contains a V_ListView with only the item in the List
+ * Scrollbox contains a V_ListView with only the contentItem in the List
  * Height is the visible part
- * virtualHeight is the Height of the item
- * the item holds all Controls of the Scrollbox
- * Prefer to use only one Control (a Box) in the item,
+ * virtualHeight is the Height of the contentItem
+ * the contentItem holds all Controls of the Scrollbox
+ * Prefer to use only one Control (a Box) in the contentItem,
  * so that you can use addNext/addLast (to the box),
  * cause these are not overwritten. (Only addChild() is overwritten)
  * the box should always be at Pos(0,0)
  */
 public class ScrollBox extends CB_View_Base {
-    protected V_ListView lv;
+    protected V_ListView scrollBoxContent;
+    protected ListViewItemBase contentItem;
+    protected ScrollBoxAdapter scrollBoxAdapter;
     protected float virtualHeight;
-    protected ListViewItemBase item;
-    protected ScrollBoxAdapter thisAdapter;
 
     public ScrollBox(CB_RectF rec) {
         super(rec, "ScrollBox");
@@ -31,44 +31,43 @@ public class ScrollBox extends CB_View_Base {
     }
 
     public ScrollBox(float Width, float Height) {
-        super(0, 0, Width, Height, "ScrollBox");
-        initScrollBox();
+        this(new CB_RectF(0, 0, Width, Height));
     }
 
     protected void initScrollBox() {
-        virtualHeight = this.getHeight();
+        virtualHeight = getHeight();
 
-        lv = new V_ListView(this, this, "ListView-" + name);
-        lv.setClickable(true);
-        item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
+        scrollBoxContent = new V_ListView(this, this, "ListView-" + name);
+        scrollBoxContent.setClickable(true);
+        contentItem = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
             @Override
             protected void initialize() {
                 isInitialized = true;
             }
         };
-        item.setHeight(virtualHeight);
-        item.setClickable(true);
-        thisAdapter = new ScrollBoxAdapter();
-        lv.setDisposeFlag(false);
-        lv.setAdapter(thisAdapter);
+        contentItem.setHeight(virtualHeight);
+        contentItem.setClickable(true);
+        scrollBoxAdapter = new ScrollBoxAdapter();
+        scrollBoxContent.setDisposeFlag(false);
+        scrollBoxContent.setAdapter(scrollBoxAdapter);
         layout();
-        this.childs.add(lv);
+        childs.add(scrollBoxContent);
     }
 
     protected void layout() {
-        if (this.isDisposed())
+        if (isDisposed())
             return;
-        if (lv == null) {
+        if (scrollBoxContent == null) {
             initScrollBox();
             return;
-        } else if (lv.isDisposed())
+        } else if (scrollBoxContent.isDisposed())
             return;
 
-        item.setHeight(virtualHeight);
-        lv.setSize(innerWidth, innerHeight);
-        lv.calculateItemPosition();
-        lv.setPos(leftBorder, bottomBorder);
-        lv.scrollTo(lv.getScrollPos());
+        contentItem.setHeight(virtualHeight);
+        scrollBoxContent.setSize(innerWidth, innerHeight);
+        scrollBoxContent.calculateItemPosition();
+        scrollBoxContent.setPos(leftBorder, bottomBorder);
+        scrollBoxContent.scrollTo(scrollBoxContent.getScrollPos());
     }
 
     public float getVirtualHeight() {
@@ -78,52 +77,52 @@ public class ScrollBox extends CB_View_Base {
     /**
      * * virtualHeight->Heigth of the item, that takes all placed objects (scrolls if > height)
      **/
-    public void setVirtualHeight(float virtualHeight) {
-        this.virtualHeight = virtualHeight;
+    public void setVirtualHeight(float newVirtualHeight) {
+        virtualHeight = newVirtualHeight;
         layout();
     }
 
     // ################ overrides of CB_View_Base ############################################
     @Override
     public void onResized(CB_RectF rec) {
-        lv.setSize(innerWidth, innerHeight);
-        item.setWidth(innerWidth);
+        scrollBoxContent.setSize(innerWidth, innerHeight);
+        contentItem.setWidth(innerWidth);
     }
 
     @Override
-    public int getCildCount() {
-        return item.getCildCount();
+    public int getChildCount() {
+        return contentItem.getChildCount();
     }
 
     @Override
-    public GL_View_Base addChildDirekt(final GL_View_Base view) {
-        item.addChildDirekt(view);
-        lv.notifyDataSetChanged();
+    public GL_View_Base addChildDirect(final GL_View_Base view) {
+        contentItem.addChildDirect(view);
+        scrollBoxContent.notifyDataSetChanged();
         return view;
     }
 
     @Override
-    public GL_View_Base addChildDirektLast(final GL_View_Base view) {
-        item.addChildDirektLast(view);
-        lv.notifyDataSetChanged();
+    public GL_View_Base addChildDirectLast(final GL_View_Base view) {
+        contentItem.addChildDirectLast(view);
+        scrollBoxContent.notifyDataSetChanged();
         return view;
     }
 
     @Override
-    public void removeChildsDirekt(final GL_View_Base view) {
-        item.removeChildsDirekt(view);
-        lv.notifyDataSetChanged();
+    public void removeChildDirect(final GL_View_Base view) {
+        contentItem.removeChildDirect(view);
+        scrollBoxContent.notifyDataSetChanged();
     }
 
     @Override
-    public void removeChildsDirekt() {
-        item.removeChildsDirekt();
-        lv.notifyDataSetChanged();
+    public void removeChildsDirect() {
+        contentItem.removeChildsDirect();
+        scrollBoxContent.notifyDataSetChanged();
     }
 
     @Override
     public GL_View_Base getChild(int i) {
-        return item.getChild(i);
+        return contentItem.getChild(i);
     }
 
     @Override
@@ -141,41 +140,40 @@ public class ScrollBox extends CB_View_Base {
         isInitialized = true;
     }
 
-    // ################ overrides of GL_View_Base ############################################
     @Override
     public GL_View_Base addChild(final GL_View_Base view) {
-        item.addChildDirekt(view);
-        lv.notifyDataSetChanged();
+        contentItem.addChildDirect(view);
+        scrollBoxContent.notifyDataSetChanged();
         return view;
     }
 
     @Override
     public GL_View_Base addChild(final GL_View_Base view, final boolean last) {
         if (last) {
-            item.addChildDirektLast(view);
+            contentItem.addChildDirectLast(view);
         } else {
-            item.addChildDirekt(view);
+            contentItem.addChildDirect(view);
         }
-        lv.notifyDataSetChanged();
+        scrollBoxContent.notifyDataSetChanged();
         return view;
     }
 
     @Override
     public void removeChild(final GL_View_Base view) {
-        item.removeChild(view);
-        lv.notifyDataSetChanged();
+        contentItem.removeChild(view);
+        scrollBoxContent.notifyDataSetChanged();
     }
 
     @Override
     public void removeChilds() {
-        item.removeChilds();
-        lv.notifyDataSetChanged();
+        contentItem.removeChilds();
+        scrollBoxContent.notifyDataSetChanged();
     }
 
     @Override
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        item.removeChilds(Childs);
-        lv.notifyDataSetChanged();
+        contentItem.removeChilds(Childs);
+        scrollBoxContent.notifyDataSetChanged();
     }
 
     @Override
@@ -192,22 +190,22 @@ public class ScrollBox extends CB_View_Base {
 
     @Override
     public void setClickable(boolean value) {
-        lv.setClickable(value);
+        scrollBoxContent.setClickable(value);
         super.setClickable(value);
     }
 
     @Override
     public void setLongClickable(boolean value) {
-        lv.setLongClickable(value);
+        scrollBoxContent.setLongClickable(value);
         super.setLongClickable(value);
     }
 
     public float getScrollY() {
-        return lv.getScrollPos();
+        return scrollBoxContent.getScrollPos();
     }
 
     public void scrollTo(float scrollPos) {
-        lv.scrollTo(scrollPos);
+        scrollBoxContent.scrollTo(scrollPos);
     }
 
     public class ScrollBoxAdapter implements Adapter {
@@ -218,12 +216,12 @@ public class ScrollBox extends CB_View_Base {
 
         @Override
         public ListViewItemBase getView(int position) {
-            return item;
+            return contentItem;
         }
 
         @Override
         public float getItemSize(int position) {
-            return item.getHeight();
+            return contentItem.getHeight();
         }
     }
 

@@ -181,7 +181,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 
         listView = new V_ListView(new CB_RectF(rec), "");
         listView.setDisposeFlag(false);
-        boxForListView.addChildDirekt(listView);
+        boxForListView.addChildDirect(listView);
 
         {
             // TODO die Listview wird hier nur angezeigt, wenn ein

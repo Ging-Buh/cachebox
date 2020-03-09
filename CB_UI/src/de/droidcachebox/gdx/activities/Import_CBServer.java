@@ -297,7 +297,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         importStarted = false;
 
         if (dis != null) {
-            this.removeChildsDirekt(dis);
+            this.removeChildDirect(dis);
             dis.dispose();
             dis = null;
         }

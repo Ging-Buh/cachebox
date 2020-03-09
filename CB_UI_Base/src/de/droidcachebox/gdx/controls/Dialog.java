@@ -140,17 +140,17 @@ public abstract class Dialog extends CB_View_Base {
 
         if (view instanceof SelectionMarker) {
             overlayForTextMarker.add(view);
-            mContent.addChildDirekt(view);
+            mContent.addChildDirect(view);
 
             if (mContent != null) {
-                mContent.addChildDirekt(view);
+                mContent.addChildDirect(view);
             } else {
                 childs.add(view);
             }
 
         } else {
             if (mContent != null) {
-                mContent.addChildDirekt(view);
+                mContent.addChildDirect(view);
             } else {
                 if (contentChilds != null)
                     contentChilds.add(view);
@@ -165,14 +165,14 @@ public abstract class Dialog extends CB_View_Base {
         if (view instanceof SelectionMarker) {
             overlayForTextMarker.remove(view);
             if (mContent != null) {
-                mContent.removeChildsDirekt(view);
+                mContent.removeChildDirect(view);
             } else {
                 childs.remove(view);
             }
 
         } else {
             if (mContent != null) {
-                mContent.removeChildsDirekt(view);
+                mContent.removeChildDirect(view);
             } else {
                 if (contentChilds != null)
                     contentChilds.remove(view);
@@ -200,7 +200,7 @@ public abstract class Dialog extends CB_View_Base {
             // InitialDialog wurde schon aufgerufen!!!
             return;
         }
-        super.removeChildsDirekt();
+        super.removeChildsDirect();
 
         mContent = new Box(scaleCenter(0.95f), "Dialog Content Box");
 
@@ -211,14 +211,14 @@ public abstract class Dialog extends CB_View_Base {
         for (int i = 0; i < contentChilds.size(); i++) {
             GL_View_Base view = contentChilds.get(i);
             if (view != null && !view.isDisposed())
-                mContent.addChildDirekt(view);
+                mContent.addChildDirect(view);
         }
 
         super.addChild(mContent);
 
         if (overlayForTextMarker.size() > 0) {
             for (GL_View_Base view : overlayForTextMarker) {
-                mContent.addChildDirekt(view);
+                mContent.addChildDirect(view);
             }
         }
     }

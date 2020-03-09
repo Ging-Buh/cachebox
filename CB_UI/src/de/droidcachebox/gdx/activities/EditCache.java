@@ -113,8 +113,6 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void layout() {
-        if (mainContent != null)
-            mainPanel.removeChild(mainContent);
         mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
         mainContent.addLast(cacheCode);
         mainContent.addNext(cacheTyp);
@@ -134,6 +132,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         mainContent.addLast(noHtml);
         mainContent.adjustHeight();
 
+        mainPanel.removeChildsDirect();
         mainPanel.setVirtualHeight(mainContent.getHeight());
         mainPanel.addChild(mainContent);
 

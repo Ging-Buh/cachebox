@@ -157,22 +157,22 @@ public class DescriptionView extends CB_View_Base {
 
     private void resetUi() {
         if (messageLabel != null) {
-            removeChildsDirekt(messageLabel);
+            removeChildDirect(messageLabel);
             messageLabel.dispose();
             messageLabel = null;
         }
         if (btnDownload != null) {
-            removeChildsDirekt(btnDownload);
+            removeChildDirect(btnDownload);
             btnDownload.dispose();
             btnDownload = null;
         }
         if (liveIcon != null) {
-            removeChildsDirekt(liveIcon);
+            removeChildDirect(liveIcon);
             liveIcon.dispose();
             liveIcon = null;
         }
         if (powerdBy != null) {
-            removeChildsDirekt(powerdBy);
+            removeChildDirect(powerdBy);
             powerdBy.dispose();
             powerdBy = null;
         }

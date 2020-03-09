@@ -49,21 +49,21 @@ public class LinearCollapseBox extends CollapseBox {
         layout();
     }
 
-    public GL_View_Base addChildDirekt(final GL_View_Base view) {
-        linearLayout.addChildDirekt(view);
+    public GL_View_Base addChildDirect(final GL_View_Base view) {
+        linearLayout.addChildDirect(view);
         layout();
         return view;
     }
 
-    public GL_View_Base addChildDirektLast(final GL_View_Base view) {
-        linearLayout.addChildDirektLast(view);
+    public GL_View_Base addChildDirectLast(final GL_View_Base view) {
+        linearLayout.addChildDirectLast(view);
 
         layout();
         return view;
     }
 
-    public void removeChildsDirekt() {
-        linearLayout.removeChildsDirekt();
+    public void removeChildsDirect() {
+        linearLayout.removeChildsDirect();
         layout();
 
     }

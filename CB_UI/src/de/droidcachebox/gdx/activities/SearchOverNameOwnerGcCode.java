@@ -118,7 +118,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             thread.interrupt();
 
         importRuns = false;
-        removeChildsDirekt(importAnimation);
+        removeChildDirect(importAnimation);
         importAnimation.dispose();
         importAnimation = null;
 

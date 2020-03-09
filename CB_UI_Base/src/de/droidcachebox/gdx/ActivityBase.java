@@ -46,13 +46,13 @@ public class ActivityBase extends CB_View_Base {
 
     @Override
     public GL_View_Base addChild(GL_View_Base view) {
-        addChildDirekt(view);
+        addChildDirect(view);
         return view;
     }
 
     @Override
     public void removeChilds() {
-        removeChildsDirekt();
+        removeChildsDirect();
     }
 
     @Override

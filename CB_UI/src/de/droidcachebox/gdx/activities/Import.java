@@ -1156,7 +1156,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         importStarted = false;
 
         if (dis != null) {
-            this.removeChildsDirekt(dis);
+            this.removeChildDirect(dis);
             dis.dispose();
             dis = null;
         }

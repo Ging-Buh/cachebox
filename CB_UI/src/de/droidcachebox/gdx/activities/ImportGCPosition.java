@@ -515,7 +515,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             if (!threadCanceled) {
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 if (dis != null) {
-                    removeChildsDirekt(dis);
+                    removeChildDirect(dis);
                     dis.dispose();
                     dis = null;
                 }
@@ -525,7 +525,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                 // Notify Map
                 ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
                 if (dis != null) {
-                    ImportGCPosition.this.removeChildsDirekt(dis);
+                    ImportGCPosition.this.removeChildDirect(dis);
                     dis.dispose();
                     dis = null;
                 }

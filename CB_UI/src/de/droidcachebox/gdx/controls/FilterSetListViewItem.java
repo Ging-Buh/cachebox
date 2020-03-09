@@ -26,7 +26,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     public static final int NUMERIC_INT_ITEM = 4;
     public static final int SELECT_ALL_ITEM = 5;
     private final FilterSetEntry filterSetEntry;
-    private final ArrayList<FilterSetListViewItem> mChildList = new ArrayList<>();
+    private final ArrayList<FilterSetListViewItem> childList = new ArrayList<>();
     public Vector2 lastItemTouchPos;
     private NinePatch btnBack;
     private NinePatch btnBack_pressed;
@@ -67,7 +67,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     }
 
     public FilterSetListViewItem addChild(FilterSetListViewItem item) {
-        mChildList.add(item);
+        childList.add(item);
         return item;
     }
 
@@ -76,10 +76,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     }
 
     public void toggleChildViewState() {
-        if (mChildList != null && mChildList.size() > 0) {
-            boolean newState = !mChildList.get(0).isVisible();
+        if (childList != null && childList.size() > 0) {
+            boolean newState = !childList.get(0).isVisible();
 
-            for (FilterSetListViewItem tmp : mChildList) {
+            for (FilterSetListViewItem tmp : childList) {
                 tmp.setVisible(newState);
             }
         }
@@ -584,13 +584,17 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         filterSetEntry.setState(b ? 1 : 0);
     }
 
+    public ArrayList<FilterSetListViewItem> getChildList() {
+        return childList;
+    }
+
     @Override
     public FilterSetListViewItem getChild(int i) {
-        return mChildList.get(i);
+        return childList.get(i);
     }
 
     public int getChildLength() {
-        return mChildList.size();
+        return childList.size();
     }
 
     public boolean getBoolean() {

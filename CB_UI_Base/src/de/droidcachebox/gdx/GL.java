@@ -290,12 +290,12 @@ public class GL implements ApplicationListener {
         }
         mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
 
-        if (currentActivityIsShown && mActivity.getCildCount() <= 0) {
+        if (currentActivityIsShown && mActivity.getChildCount() <= 0) {
             currentActivityIsShown = false;
             PlatformUIBase.hideForDialog();
             renderOnce();
         }
-        if (currentDialogIsShown && mDialog.getCildCount() <= 0) {
+        if (currentDialogIsShown && mDialog.getChildCount() <= 0) {
             currentDialogIsShown = false;
             PlatformUIBase.hideForDialog();
             renderOnce();
@@ -323,7 +323,7 @@ public class GL implements ApplicationListener {
         if (currentDialogIsShown || toastIsShown || MarkerIsShown)
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
 
-        if (currentDialogIsShown && mDialog.getCildCount() > 0) {
+        if (currentDialogIsShown && mDialog.getChildCount() > 0) {
             // Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
 
             drawDarknessSprite();
@@ -480,12 +480,12 @@ public class GL implements ApplicationListener {
                 currentDialog.setEnabled(false);
                 // am Anfang der Liste einfügen
                 dialogHistory.add(0, currentDialog);
-                mDialog.removeChildsDirekt(currentDialog);
+                mDialog.removeChildDirect(currentDialog);
             }
 
             currentDialog = dialog;
 
-            mDialog.addChildDirekt(dialog);
+            mDialog.addChildDirect(dialog);
             mDialog.setClickHandler((v, x1, y1, pointer, button) -> {
                 // Sollte bei einem Click neben dem Dialog ausgelöst werden.
                 // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
@@ -576,7 +576,7 @@ public class GL implements ApplicationListener {
             showDialog(currentDialog);
         } else {
             currentDialog = null;
-            mDialog.removeChildsDirekt();
+            mDialog.removeChildsDirect();
             child.setClickable(true);
             // child.invalidate();
             currentDialogIsShown = false;
@@ -637,12 +637,12 @@ public class GL implements ApplicationListener {
             currentActivity.setEnabled(false);
             // am Anfang der Liste einfügen
             activityHistory.add(0, currentActivity);
-            mActivity.removeChildsDirekt(currentActivity);
+            mActivity.removeChildDirect(currentActivity);
         }
 
         currentActivity = activity;
 
-        mActivity.addChildDirekt(activity);
+        mActivity.addChildDirect(activity);
 
         child.setClickable(false);
         currentActivityIsShown = true;
@@ -674,7 +674,7 @@ public class GL implements ApplicationListener {
             currentActivity.setEnabled(true);
             activityHistory.remove(0);
             currentActivityIsShown = true;
-            mActivity.addChildDirekt(currentActivity);
+            mActivity.addChildDirect(currentActivity);
             if (MsgToPlatformConector)
                 PlatformUIBase.showForDialog();
         } else {
@@ -692,7 +692,7 @@ public class GL implements ApplicationListener {
             };
             disposeTimer.schedule(disposeTask, 700);
 
-            mActivity.removeChildsDirekt();
+            mActivity.removeChildsDirect();
             child.setClickable(true);
             // child.invalidate();
             currentActivityIsShown = false;

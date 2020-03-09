@@ -398,7 +398,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
     }
 
     private void fillCacheWpInfo() {
-        mSlideBoxContent.removeChildsDirekt();
+        mSlideBoxContent.removeChildsDirect();
 
         CB_RectF rec = UiSizes.getInstance().getCacheListItemRec().asFloat();
         rec.setWidth(this.getWidth());

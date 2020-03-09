@@ -589,7 +589,31 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             }
         }
 
+
+        boolean drawAsWaypoint = wayPointRenderInfo.waypoint != null;
         float nameYMovement = 0;
+        // Beschriftung
+        if (wayPointRenderInfo.cache != null && showTitles && (currentZoom >= 15)) {
+            try {
+                String name;
+                float wpOffset = 0;
+                if (drawAsWaypoint) {
+                    name = wayPointRenderInfo.waypoint.getTitleForGui();
+                    if (wayPointRenderInfo.cache.getCoordinate().equals(wayPointRenderInfo.waypoint.getCoordinate()))
+                        wpOffset = wpUnderlay.getHeight();
+                } else name = wayPointRenderInfo.cache.getGeoCacheName();
+
+                if (geocacheOrWayPointName == null)
+                    geocacheOrWayPointName = new GlyphLayout(Fonts.getNormal(), name);
+                else
+                    geocacheOrWayPointName.setText(Fonts.getNormal(), name);
+
+                float halfWidth = geocacheOrWayPointName.width / 2;
+                Fonts.getNormal().draw(batch, geocacheOrWayPointName, screen.x - halfWidth, screen.y - wpUnderlay.getHalfHeight() - wpOffset - nameYMovement);
+            } catch (Exception ignored) {
+            }
+        }
+
         if ((currentZoom >= zoomCross) && (wayPointRenderInfo.selected) && (wayPointRenderInfo.waypoint == GlobalCore.getSelectedWayPoint())) {
             // Draw Cross and move screen vector
             Sprite cross = getMapOverlay(IconName.cross);
@@ -619,8 +643,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             wayPointRenderInfo.overlayIcon.draw(batch);
         }
 
-        boolean drawAsWaypoint = wayPointRenderInfo.waypoint != null;
-
         // Rating des Caches darstellen
         if (wayPointRenderInfo.cache != null && showRating && (!drawAsWaypoint) && (wayPointRenderInfo.cache.gcVoteRating > 0) && (currentZoom >= 15)) {
             Sprite rating = MapStars.get((int) Math.min(wayPointRenderInfo.cache.gcVoteRating * 2, 5 * 2));
@@ -629,22 +651,6 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
             rating.setRotation(0);
             rating.draw(batch);
             nameYMovement += wpUnderlay.getHeight48();
-        }
-
-        // Beschriftung
-        if (wayPointRenderInfo.cache != null && showTitles && (currentZoom >= 15)) {
-            try {
-                String name = drawAsWaypoint ? wayPointRenderInfo.waypoint.getTitleForGui() : wayPointRenderInfo.cache.getGeoCacheName();
-
-                if (geocacheOrWayPointName == null)
-                    geocacheOrWayPointName = new GlyphLayout(Fonts.getNormal(), name);
-                else
-                    geocacheOrWayPointName.setText(Fonts.getNormal(), name);
-
-                float halfWidth = geocacheOrWayPointName.width / 2;
-                Fonts.getNormal().draw(batch, geocacheOrWayPointName, screen.x - halfWidth, screen.y - wpUnderlay.getHalfHeight() - nameYMovement);
-            } catch (Exception ignored) {
-            }
         }
 
         // Show D/T-Rating

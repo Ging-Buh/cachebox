@@ -1,6 +1,5 @@
 package de.droidcachebox.gdx;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.utils.MoveableList;
@@ -10,7 +9,6 @@ public class CB_View_Base extends GL_View_Base {
     public static final int FIXED = -1;
     public static final boolean BOTTOMUP = false;
     protected static final boolean TOPDOWN = true;
-    protected boolean isInitialized = false;
     // row handling by arbor95: makes live much easier
     // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
     // the position and width (stretched equally, weighted, fixed or percentual) of the objects is calculated automatically
@@ -21,16 +19,15 @@ public class CB_View_Base extends GL_View_Base {
     private float yMargin = 0;
     private float topYAdd;
     private float bottomYAdd = -1;
-    private boolean isDisposed = false;
 
     // # Constructors
 
-    public CB_View_Base(CB_RectF rec, GL_View_Base Parent, String Name) {
-        super(rec, Parent, Name);
-    }
-
     public CB_View_Base(String name) {
         this(new CB_RectF(), null, name);
+    }
+
+    public CB_View_Base(CB_RectF rec, GL_View_Base Parent, String Name) {
+        super(rec, Parent, Name);
     }
 
     public CB_View_Base(float x, float y, float width, float height, String name) {
@@ -47,163 +44,6 @@ public class CB_View_Base extends GL_View_Base {
 
     public CB_View_Base(SizeF size, String Name) {
         super(size, Name);
-    }
-
-    @Override
-    public boolean isDisposed() {
-        return isDisposed;
-    }
-
-    public void resetIsInitialized() {
-        // for not to directly call initialize() in overwritten
-        isInitialized = false;
-    }
-
-    protected void render(Batch batch) {
-        if (!isInitialized) {
-            isInitialized = true;
-            initialize();
-        }
-    }
-
-    protected void initialize() {
-    }
-
-    @Override
-    public void onResized(CB_RectF rec) {
-        thisInvalidate = true;
-    }
-
-    @Override
-    public void onParentResized(CB_RectF rec) {
-        thisInvalidate = true;
-    }
-
-    @Override
-    public void onLongClick(int x, int y, int pointer, int button) {}
-
-    @Override
-    public boolean onTouchDown(int x, int y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-        return false;
-    }
-
-    @Override
-    public boolean onTouchUp(int x, int y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public void dispose() {
-        GL.that.removeRenderView(this); // Remove from RenderViews if registered
-        try {
-            synchronized (childs) {
-                for (int i = 0; i < childs.size(); i++) {
-                    GL_View_Base view;
-                    try {
-                        view = childs.get(i);
-                    } catch (Exception e) {
-                        break;
-                    }
-                    if (view != null && !view.isDisposed())
-                        view.dispose();
-                }
-                childs.clear();
-            }
-        } catch (Exception ignored) {
-        }
-
-        if (row != null) {
-            for (int i = 0; i < row.size(); i++) {
-                row.get(i).dispose();
-            }
-            row.clear();
-        }
-        row = null;
-
-        isDisposed = true;
-        super.dispose();
-    }
-
-    public int getCildCount() {
-        if (childs == null)
-            return -1;
-        synchronized (childs) {
-            return childs.size();
-        }
-    }
-
-    public GL_View_Base addChildDirekt(final GL_View_Base view) {
-        if (childs == null || view == null)
-            return null;
-        synchronized (childs) {
-            if (!childs.contains(view))
-                childs.add(view);
-        }
-
-        return view;
-    }
-
-    public GL_View_Base addChildDirektLast(final GL_View_Base view) {
-        if (childs == null || view == null)
-            return null;
-        synchronized (childs) {
-            if (!childs.contains(view))
-                childs.add(0, view);
-        }
-        return view;
-    }
-
-    public void removeChildsDirekt() {
-        if (childs == null)
-            return;
-        synchronized (childs) {
-            childs.clear();
-        }
-    }
-
-    public void removeChildsDirekt(GL_View_Base view) {
-        if (childs == null || view == null)
-            return;
-        synchronized (childs) {
-            try {
-                if (childs.contains(view))
-                    childs.remove(view);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void removeChildsDirekt(MoveableList<GL_View_Base> childs) {
-        if (childs == null)
-            return;
-        synchronized (childs) {
-            try {
-                childs.remove(childs);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public GL_View_Base getChild(int i) {
-        if (childs == null)
-            return null;
-        synchronized (childs) {
-            if (childs.size() < i || childs.size() == 0)
-                return null;
-            return childs.get(i);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return getName() + " X,Y/Width,Height = " + getX() + "," + getY() + "/" + getWidth() + "," + getHeight();
     }
 
     /**
@@ -439,7 +279,7 @@ public class CB_View_Base extends GL_View_Base {
                     }
                 }
                 view.setPos(rowXPos, rowYPos);
-                addChildDirekt(view);
+                addChildDirect(view);
                 // next object at x
                 rowXPos = rowXPos + view.getWidth() + xMargin;
             }

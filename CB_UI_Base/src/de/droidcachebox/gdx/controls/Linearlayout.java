@@ -71,12 +71,12 @@ public class Linearlayout extends CB_View_Base {
         if (sonderMargins == null)
             sonderMargins = new Hashtable<>();
         sonderMargins.put(view, margin);
-        return addChildDirekt(view);
+        return addChildDirect(view);
     }
 
     @Override
     public GL_View_Base addChild(final GL_View_Base view) {
-        return addChildDirekt(view);
+        return addChildDirect(view);
     }
 
     @Override
@@ -84,9 +84,9 @@ public class Linearlayout extends CB_View_Base {
         GL_View_Base v;
 
         if (last) {
-            v = addChildDirektLast(view);
+            v = addChildDirectLast(view);
         } else {
-            v = addChildDirekt(view);
+            v = addChildDirect(view);
         }
         layout();
 
@@ -95,25 +95,25 @@ public class Linearlayout extends CB_View_Base {
 
     @Override
     public void removeChild(final GL_View_Base view) {
-        removeChildsDirekt(view);
+        removeChildDirect(view);
         layout();
     }
 
     @Override
     public void removeChilds() {
-        removeChildsDirekt();
+        removeChildsDirect();
         layout();
 
     }
 
     @Override
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        removeChildsDirekt(Childs);
+        removeChildsDirect(Childs);
         layout();
     }
 
     @Override
-    public GL_View_Base addChildDirekt(final GL_View_Base view) {
+    public GL_View_Base addChildDirect(final GL_View_Base view) {
         synchronized (childs) {
             childs.add(view);
             layout();
@@ -122,7 +122,7 @@ public class Linearlayout extends CB_View_Base {
     }
 
     @Override
-    public GL_View_Base addChildDirektLast(final GL_View_Base view) {
+    public GL_View_Base addChildDirectLast(final GL_View_Base view) {
         synchronized (childs) {
             childs.add(0, view);
             layout();
@@ -131,7 +131,7 @@ public class Linearlayout extends CB_View_Base {
     }
 
     @Override
-    public void removeChildsDirekt() {
+    public void removeChildsDirect() {
         synchronized (childs) {
             childs.clear();
             layout();

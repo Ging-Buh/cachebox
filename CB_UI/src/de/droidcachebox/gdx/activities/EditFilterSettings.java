@@ -55,12 +55,12 @@ import static de.droidcachebox.gdx.controls.FilterSetListViewItem.*;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 import static de.droidcachebox.utils.Config_Core.br;
 
-/*
- Defining a Filter for geoCaches to show is done by selection within 4 Tabs (in contentBox):
- first  tab (presets) : combined from settings the predefined filters (in FilterInstances) and the saved filters named by the user can be selected with one click + ok
- second tab (settings): 4 Buttons (general, dt, cacheTypes, attributes) for genaral (common) boolean properties, valued ranges (difficulty, terrain,..), geoCacheTypes and attributes.
- third  tab (CategorieView): buttons for categories and subcategories reflecting the different imports of the actual database
- forth  tab (TextView): string filters by GCCodes, owner and geocache title
+/**
+ * Defining a Filter for geoCaches to show is done by selection within 4 Tabs (in contentBox):
+ * first  tab (presets) : combined from settings the predefined filters (in FilterInstances) and the saved filters named by the user can be selected with one click + ok
+ * second tab (settings): 4 Buttons (general, dt, cacheTypes, attributes) for genaral (common) boolean properties, valued ranges (difficulty, terrain,..), geoCacheTypes and attributes.
+ * third  tab (CategorieView): buttons for categories and subcategories reflecting the different imports of the actual database
+ * forth  tab (TextView): string filters by GCCodes, owner and geocache title
  */
 public class EditFilterSettings extends ActivityBase {
     private static final String log = "EditFilterSettings";
@@ -668,7 +668,7 @@ public class EditFilterSettings extends ActivityBase {
             super(rec, "FilterSetListView");
             setHasInvisibleItems();
             fillFilterSetList();
-            setAdapter(new FilterSetAdapter(filterSetEntries, filterSetListViewItems));
+            setAdapter(new FilterSetAdapter());
             setDisposeFlag(false);
         }
 
@@ -697,8 +697,7 @@ public class EditFilterSettings extends ActivityBase {
 
             filter.cacheTypes = "";
             String sep = "";
-            for (int i = 1; i < cacheTypes.getChildLength(); i++) {
-                FilterSetListViewItem itm = cacheTypes.getChild(i);
+            for (FilterSetListViewItem itm : cacheTypes.getChildList()) {
                 if (itm.getBoolean()) {
                     filter.cacheTypes = String.format(Locale.US, "%s%s%d", filter.cacheTypes, sep, itm.getFilterSetEntry().getCacheType().ordinal());
                     sep = ",";
@@ -934,23 +933,14 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         private class FilterSetAdapter implements Adapter {
-
-            private final ArrayList<FilterSetEntry> filterSetList;
-            private final ArrayList<FilterSetListViewItem> filterSetViewList;
-
-            FilterSetAdapter(ArrayList<FilterSetEntry> filterSetList, ArrayList<FilterSetListViewItem> filterSetViewList) {
-                this.filterSetList = filterSetList;
-                this.filterSetViewList = filterSetViewList;
-            }
-
             @Override
             public int getCount() {
-                return filterSetList.size();
+                return filterSetEntries.size();
             }
 
             @Override
             public ListViewItemBase getView(int position) {
-                FilterSetListViewItem v = filterSetViewList.get(position);
+                FilterSetListViewItem v = filterSetListViewItems.get(position);
                 if (!v.isVisible())
                     return null;
                 return v;
@@ -958,7 +948,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             public float getItemSize(int position) {
-                FilterSetListViewItem v = filterSetViewList.get(position);
+                FilterSetListViewItem v = filterSetListViewItems.get(position);
                 if (!v.isVisible())
                     return 0;
                 return v.getHeight();

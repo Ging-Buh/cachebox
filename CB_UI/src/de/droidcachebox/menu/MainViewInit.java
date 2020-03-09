@@ -408,7 +408,7 @@ public class MainViewInit extends MainViewBase {
 
     @Override
     public void dispose() {
-        this.removeChildsDirekt();
+        this.removeChildsDirect();
 
         if (descTextView != null)
             descTextView.dispose();

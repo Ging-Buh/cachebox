@@ -259,7 +259,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         importStarted = false;
         fillDownloadList();
         if (importAnimation != null) {
-            removeChildsDirekt(importAnimation);
+            removeChildDirect(importAnimation);
             importAnimation.dispose();
             importAnimation = null;
         }
@@ -312,7 +312,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             fillDownloadList();
 
             if (importAnimation != null) {
-                removeChildsDirekt(importAnimation);
+                removeChildDirect(importAnimation);
                 importAnimation.dispose();
                 importAnimation = null;
             }
