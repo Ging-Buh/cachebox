@@ -12,7 +12,7 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
-import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
+import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
@@ -257,12 +257,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         etDescription.setTextFieldListener(new TextFieldListener() {
 
             @Override
-            public void keyTyped(EditTextFieldBase textField, char key) {
+            public void keyTyped(EditTextField textField, char key) {
 
             }
 
             @Override
-            public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
+            public void lineCountChanged(EditTextField textField, int lineCount, float textHeight) {
                 layoutTextFields();
             }
         });
@@ -287,12 +287,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
         etClue.setTextFieldListener(new TextFieldListener() {
             @Override
-            public void keyTyped(EditTextFieldBase textField, char key) {
+            public void keyTyped(EditTextField textField, char key) {
 
             }
 
             @Override
-            public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
+            public void lineCountChanged(EditTextField textField, int lineCount, float textHeight) {
                 layoutTextFields();
             }
         });

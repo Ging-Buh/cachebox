@@ -28,8 +28,11 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.activities.ImportGCPosition;
-import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
+import de.droidcachebox.gdx.controls.ImageButton;
+import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
@@ -151,12 +154,12 @@ public class SearchDialog extends PopUp_Base {
         mEingabe.setTextFieldListener(new TextFieldListener() {
 
             @Override
-            public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
+            public void lineCountChanged(EditTextField textField, int lineCount, float textHeight) {
 
             }
 
             @Override
-            public void keyTyped(EditTextFieldBase textField, char key) {
+            public void keyTyped(EditTextField textField, char key) {
                 textBox_TextChanged();
             }
         });

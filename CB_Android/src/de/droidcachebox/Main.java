@@ -407,7 +407,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
         if (lastState == LastState.onStop) {
             Log.info(sKlasse, "=> Resume from Stop");
             showWaitToRenderStarted();
-            InvalidateTextureEventList.Call();
+            InvalidateTextureListeners.getInstance().invalidateTexture();
         } else {
             Log.info(sKlasse, "=> onResume");
         }

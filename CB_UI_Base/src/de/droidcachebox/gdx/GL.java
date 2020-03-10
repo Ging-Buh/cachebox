@@ -1207,8 +1207,8 @@ public class GL implements ApplicationListener {
         hideMarker();
 
         // show or hide keyboard (what if the user has closed it? : it never comes up todo)
-        boolean isAlreadyOpen = focusedEditTextField != null && !focusedEditTextField.isKeyboardPopupDisabled();
-        boolean shallBeOpened = editTextField != null && !editTextField.isKeyboardPopupDisabled();
+        boolean isAlreadyOpen = focusedEditTextField != null && focusedEditTextField.isKeyboardPopupEnabled();
+        boolean shallBeOpened = editTextField != null && editTextField.isKeyboardPopupEnabled();
         if (isAlreadyOpen) {
             if (!shallBeOpened) {
                 if (!CB_UI_Base_Settings.useAndroidKeyboard.getValue() || Plattform.used != Plattform.Android)
@@ -1225,7 +1225,7 @@ public class GL implements ApplicationListener {
         focusedEditTextField = editTextField;
     }
 
-    public boolean hasFocus(EditTextFieldBase view) {
+    public boolean hasFocus(EditTextField view) {
         return view == focusedEditTextField;
     }
 

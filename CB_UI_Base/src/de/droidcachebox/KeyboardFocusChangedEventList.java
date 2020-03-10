@@ -36,7 +36,7 @@ public class KeyboardFocusChangedEventList {
     }
 
     public static void keyboardFocusChanged(final EditTextField editTextField) {
-        if (editTextField == null || !editTextField.isKeyboardPopupDisabled()) {
+        if (editTextField == null || editTextField.isKeyboardPopupEnabled()) {
             synchronized (listeners) {
                 for (KeyboardFocusChangedEvent listener : listeners) {
                     Log.debug("KeyboardFocusChangedEventList", "call event: " + listener + " for " + editTextField);

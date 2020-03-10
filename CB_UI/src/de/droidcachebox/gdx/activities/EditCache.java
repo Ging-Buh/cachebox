@@ -13,7 +13,7 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldStyle;
+import de.droidcachebox.gdx.controls.EditTextField.TextFieldStyle;
 import de.droidcachebox.gdx.controls.Spinner.ISpinnerSelectionChanged;
 import de.droidcachebox.gdx.views.CacheListView;
 import de.droidcachebox.menu.menuBtn3.ShowMap;

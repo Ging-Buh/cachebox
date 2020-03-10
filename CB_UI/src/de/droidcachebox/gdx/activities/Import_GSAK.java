@@ -124,9 +124,9 @@ public class Import_GSAK extends ActivityBase {
             return true;
         });
 
-        edtDBName.setTextFieldListener(new EditTextFieldBase.TextFieldListener() {
+        edtDBName.setTextFieldListener(new EditTextField.TextFieldListener() {
             @Override
-            public void keyTyped(EditTextFieldBase textField, char key) {
+            public void keyTyped(EditTextField textField, char key) {
                 AbstractFile abstractFile = FileFactory.createFile(mDatabasePath + "/" + edtDBName.getText());
                 if (abstractFile.exists())
                     bOK.enable();
@@ -135,7 +135,7 @@ public class Import_GSAK extends ActivityBase {
             }
 
             @Override
-            public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
+            public void lineCountChanged(EditTextField textField, int lineCount, float textHeight) {
 
             }
         });

@@ -5,7 +5,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
+import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.translation.Translation;
@@ -775,11 +775,11 @@ public class EditCoord extends ActivityBase {
             invisibleTextField.setTextFieldListener(new TextFieldListener() {
 
                 @Override
-                public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
+                public void lineCountChanged(EditTextField textField, int lineCount, float textHeight) {
                 }
 
                 @Override
-                public void keyTyped(EditTextFieldBase textField, char key) {
+                public void keyTyped(EditTextField textField, char key) {
                     String k = String.valueOf(key).toUpperCase();
                     if (utmTest.contains(k)) {
                         btnUTMZone[2].setText(k);

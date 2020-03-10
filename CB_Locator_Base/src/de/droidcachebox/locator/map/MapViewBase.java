@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.InvalidateTextureEventList;
+import de.droidcachebox.InvalidateTextureListeners;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.ZoomButtons;
 import de.droidcachebox.gdx.graphics.CircleDrawable;
@@ -38,7 +38,7 @@ import de.droidcachebox.utils.log.Log;
 
 import java.util.LinkedHashMap;
 
-public abstract class MapViewBase extends CB_View_Base implements PositionChangedEvent, InvalidateTextureEventList.invalidateTextureEvent {
+public abstract class MapViewBase extends CB_View_Base implements PositionChangedEvent, InvalidateTextureListeners.InvalidateTextureListener {
     public static final int MAX_MAP_ZOOM = 22;
     private static final String sKlasse = "MapViewBase";
     public static int INITIAL_SETTINGS = 1;
@@ -99,7 +99,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         isShown = false;
         lastDescriptorOrdered = new Descriptor(0, 0, 10);
         lastNumberOfTilesToShow = 0;
-        InvalidateTextureEventList.addListener(this);
+        InvalidateTextureListeners.getInstance().addListener(this);
     }
 
     protected void setNightMode() {
@@ -139,7 +139,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public void dispose() {
         // remove eventHandler
         PositionChangedListeners.removeListener(this);
-        InvalidateTextureEventList.removeListener(this);
+        InvalidateTextureListeners.getInstance().removeListener(this);
         super.dispose();
     }
 
@@ -1170,14 +1170,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             synchronized (screenCenterT) {
                 screenCenterWorld.set(screenCenterT);
             }
-            /*
-            Descriptor midTile = screenToDescriptor(midVector2, aktZoom);
-            if (lastDescriptorOrdered.getHashCode() != midTile.getHashCode()) {
-                directLoadTiles(midTile, midTile, aktZoom);
-                lastDescriptorOrdered = midTile;
-            }
-             */
-            updateCacheList(debugInfo.contains("oom"));
+            updateCacheList(debugInfo.contains("oom")); // for zooms (didn't check, if still necessary. was a test)
             GL.that.renderOnce();
         } catch (Exception ex) {
             Log.err(sKlasse, debugInfo, ex);

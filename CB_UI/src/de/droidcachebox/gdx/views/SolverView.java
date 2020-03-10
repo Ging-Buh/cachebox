@@ -23,7 +23,6 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.EditTextFieldBase;
 import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
@@ -244,7 +243,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
 
     }
 
-    private void layoutEditFields(EditTextFieldBase focus) {
+    private void layoutEditFields(EditTextField focus) {
 
         float le = this.getHalfWidth();
         float le2 = this.getWidth() * 0.2f;

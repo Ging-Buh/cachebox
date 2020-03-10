@@ -12,7 +12,7 @@ import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.CB_CheckBox.OnCheckChangedListener;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
-import de.droidcachebox.gdx.controls.EditTextFieldBase.TextFieldListener;
+import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
 import de.droidcachebox.gdx.controls.MultiToggleButton.OnStateChangeListener;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -716,11 +716,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         mFormulaField.setZeroPos();
         mFormulaField.setTextFieldListener(new TextFieldListener() {
             @Override
-            public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
+            public void lineCountChanged(EditTextField textField, int lineCount, float textHeight) {
             }
 
             @Override
-            public void keyTyped(EditTextFieldBase textField, char key) {
+            public void keyTyped(EditTextField textField, char key) {
             }
         });
         cbFormulaAsText = new CB_CheckBox("AsText");

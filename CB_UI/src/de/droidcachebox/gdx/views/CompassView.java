@@ -46,7 +46,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, InvalidateTextureEventList.invalidateTextureEvent, CacheListChangedListeners.CacheListChangedListener {
+public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, InvalidateTextureListeners.InvalidateTextureListener, CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "CompassView";
     private static CompassView that;
     private CB_RectF imageRec;
@@ -106,7 +106,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         SelectedCacheChangedEventListeners.getInstance().add(this);
         PositionChangedListeners.addListener(this);
         CacheListChangedListeners.getInstance().addListener(this);
-        InvalidateTextureEventList.addListener(this);
+        InvalidateTextureListeners.getInstance().addListener(this);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             mCompassMapView.onHide();
         }
         CacheListChangedListeners.getInstance().removeListener(this);
-        InvalidateTextureEventList.removeListener(this);
+        InvalidateTextureListeners.getInstance().removeListener(this);
     }
 
     @Override
@@ -910,7 +910,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         SelectedCacheChangedEventListeners.getInstance().remove(this);
         CacheListChangedListeners.getInstance().removeListener(this);
         PositionChangedListeners.removeListener(this);
-        InvalidateTextureEventList.removeListener(this);
+        InvalidateTextureListeners.getInstance().removeListener(this);
 
         super.dispose();
         that = null;

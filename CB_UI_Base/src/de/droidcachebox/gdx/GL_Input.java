@@ -7,7 +7,6 @@ import de.droidcachebox.KeyCodes;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.EditTextFieldBase;
 import de.droidcachebox.gdx.controls.SelectionMarker;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.Point;
@@ -106,7 +105,7 @@ public class GL_Input implements InputProcessor {
             return true;
         }
         if (GL.that.getFocusedEditTextField() != null) {
-            GL.that.getFocusedEditTextField().keyUp(value);
+            // return GL.that.getFocusedEditTextField().keyUp(value);
             return true;
         }
         return false;
@@ -148,7 +147,7 @@ public class GL_Input implements InputProcessor {
 
         // wenn dieser TouchDown ausserhalb einer TextView war, dann reset TextFieldFocus
         if (GL.that.getFocusedEditTextField() != null) {
-            if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !(view instanceof CB_Button) && GL.that.PopUpIsHidden()) {
+            if (!(view instanceof EditTextField) && !(view instanceof SelectionMarker) && !(view instanceof CB_Button) && GL.that.PopUpIsHidden()) {
                 GL.that.setFocusedEditTextField(null);
             }
         }
