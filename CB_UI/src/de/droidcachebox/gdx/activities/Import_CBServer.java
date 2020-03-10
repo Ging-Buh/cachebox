@@ -166,7 +166,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         scrollBox.initRow(TOPDOWN);
         lvExport = new V_ListView(new CB_RectF(0, 0, scrollBox.getWidth(), scrollBox.getHeight()), "");
         scrollBox.addLast(lvExport);
-        lvExport.setEmptyMsgBmpFntCah(Translation.get("EmptyExportList"));
+        lvExport.setEmptyMsgItem(Translation.get("EmptyExportList"));
 
     }
 
@@ -192,7 +192,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
             lvExport.notifyDataSetChanged();
 
             stopTimer();
-            lvExport.setEmptyMsgBmpFntCah(Translation.get("EmptyExportCBServerList"));
+            lvExport.setEmptyMsgItem(Translation.get("EmptyExportCBServerList"));
 
             refreshExportList.enable();
         }).start();
@@ -216,7 +216,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
                     s.append(".");
                 }
 
-                lvExport.setEmptyMsgBmpFntCah(Translation.get("LoadExportCBServerList") + s);
+                lvExport.setEmptyMsgItem(Translation.get("LoadExportCBServerList") + s);
 
             }
 

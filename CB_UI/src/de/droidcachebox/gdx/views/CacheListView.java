@@ -68,7 +68,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         geoCacheListView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
         geoCacheListView.setZeroPos();
 
-        geoCacheListView.addListPosChangedEventHandler(() -> scrollBar.ScrollPositionChanged());
+        geoCacheListView.addListPosChangedEventHandler(() -> scrollBar.scrollPositionChanged());
         scrollBar = new Scrollbar(geoCacheListView);
 
         addChild(geoCacheListView);

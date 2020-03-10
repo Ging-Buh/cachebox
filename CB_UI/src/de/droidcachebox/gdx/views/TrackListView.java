@@ -40,7 +40,7 @@ public class TrackListView extends V_ListView {
         itemRec = new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
         setBackground(Sprites.ListBack);
         // specific initialize
-        setEmptyMsgBmpFntCah(Translation.get("EmptyTrackList"));
+        setEmptyMsgItem(Translation.get("EmptyTrackList"));
         setAdapter(new TrackListViewAdapter());
     }
 

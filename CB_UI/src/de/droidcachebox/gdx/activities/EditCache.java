@@ -50,7 +50,6 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private EditTextField cacheState; // SingleLine
     private CB_Button noHtml, toTop;
     private EditTextField cacheDescription; // WRAPPED
-    private Box mainContent;
 
     // ctor
     public EditCache() {
@@ -113,7 +112,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void layout() {
-        mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
+        Box mainContent = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
         mainContent.addLast(cacheCode);
         mainContent.addNext(cacheTyp);
         mainContent.addLast(cacheDifficulty, 0.3f);

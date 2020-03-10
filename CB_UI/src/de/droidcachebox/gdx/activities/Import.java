@@ -367,7 +367,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         lvPQs = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, PQ_ListCollapseBox.getWidth(), PQ_ListCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
 
-        lvPQs.setEmptyMsgBmpFntCah(Translation.get("EmptyPqList"));
+        lvPQs.setEmptyMsgItem(Translation.get("EmptyPqList"));
 
         PQ_ListCollapseBox.addChild(lvPQs);
         PQ_ListCollapseBox.addChild(refreshPqList);
@@ -393,7 +393,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, CBServerCollapseBox.getWidth(), CBServerCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
 
-        lvCBServer.setEmptyMsgBmpFntCah(Translation.get("EmptyCBServerList"));
+        lvCBServer.setEmptyMsgItem(Translation.get("EmptyCBServerList"));
 
         CBServerCollapseBox.addChild(lvCBServer);
         CBServerCollapseBox.addChild(refreshCBServerList);
@@ -738,7 +738,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             lvPQs.notifyDataSetChanged();
 
             stopAnimationTimer();
-            lvPQs.setEmptyMsgBmpFntCah(Translation.get("EmptyPqList"));
+            lvPQs.setEmptyMsgItem(Translation.get("EmptyPqList"));
 
             refreshPqList.enable();
         }).start();
@@ -761,7 +761,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                     s.append(".");
                 }
 
-                lvPQs.setEmptyMsgBmpFntCah(Translation.get("LoadPqList") + s);
+                lvPQs.setEmptyMsgItem(Translation.get("LoadPqList") + s);
 
             }
 
@@ -794,7 +794,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             lvCBServer.notifyDataSetChanged();
 
             stopAnimationTimer();
-            lvCBServer.setEmptyMsgBmpFntCah(Translation.get("EmptyCBServerList"));
+            lvCBServer.setEmptyMsgItem(Translation.get("EmptyCBServerList"));
 
             refreshCBServerList.enable();
         }).start();
@@ -817,7 +817,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                     s.append(".");
                 }
 
-                lvCBServer.setEmptyMsgBmpFntCah(Translation.get("LoadCBServerList") + s);
+                lvCBServer.setEmptyMsgItem(Translation.get("LoadCBServerList") + s);
 
             }
 

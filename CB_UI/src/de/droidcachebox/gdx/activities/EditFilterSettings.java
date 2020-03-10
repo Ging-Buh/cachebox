@@ -519,9 +519,12 @@ public class EditFilterSettings extends ActivityBase {
                 for (PresetListViewItem item : presetListViewItems) {
                     item.isSelected = false;
                 }
+                /*
                 setAdapter(null);
                 presetsAdapter = new PresetsAdapter(presets);
                 setAdapter(presetsAdapter);
+                 */
+                notifyDataSetChanged();
             }
         }
 

@@ -53,7 +53,7 @@ public class TrackableListView extends V_ListView {
     @Override
     public void initialize() {
         setAdapter(trackableListViewAdapter);
-        setEmptyMsgBmpFntCah(Translation.get("TB_List_Empty"));
+        setEmptyMsgItem(Translation.get("TB_List_Empty"));
     }
 
     public void dispose() {

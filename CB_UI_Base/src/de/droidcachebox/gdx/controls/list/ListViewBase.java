@@ -39,8 +39,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     protected int selectedIndex;
     protected float firstItemSize;
     protected float lastItemSize;
-    boolean hasInvisibleItems;
-    boolean isTouch;
+    protected boolean hasInvisibleItems;
+    protected boolean isTouch;
     private final CB_List<IRunOnGL> runOnGL_List;
     private final CB_List<IRunOnGL> runOnGL_ListWaitpool;
     private AtomicBoolean isWorkOnRunOnGL;
@@ -92,7 +92,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     protected int lastTouchInMoveDirection;
     protected float mLastPos_onTouch;
     private String emptyMsgString;
-    private BitmapFontCache emptyMsgBmpFntCah;
+    private BitmapFontCache emptyMsgItem;
     boolean mReloadItems;
     boolean selectionChanged;
     private float mAnimationTarget;
@@ -222,16 +222,15 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         setListPos(value, false);
     }
 
-    public void setEmptyMsgBmpFntCah(String Msg) {
+    public void setEmptyMsgItem(String Msg) {
         emptyMsgString = Msg;
-        emptyMsgBmpFntCah = null;
+        emptyMsgItem = null;
         GL.that.renderOnce();
     }
 
     /**
-     * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich länger dauert, ist
-     * der Standard auf False gesetzt.
-     *
+     * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat.
+     * Da die Berechnung der Positionen deutlich länger dauert, ist der Standard auf False gesetzt.
      */
     protected void setHasInvisibleItems() {
         hasInvisibleItems = true;
@@ -280,7 +279,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     public void reloadItems() {
         mReloadItems = true;
-
         // Position setzen, damit die items neu geladen werden
         setListPos(currentPosition, false);
         // Log.debug(log, "SetListPos Relod Items");
@@ -345,16 +343,16 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         super.render(batch);
         if (childs.size() == 0 && (adapter == null || adapter.getCount() == 0)) {
             try {
-                if (emptyMsgBmpFntCah == null && emptyMsgString != null) {
-                    emptyMsgBmpFntCah = new BitmapFontCache(Fonts.getBig());
-                    GlyphLayout bounds = emptyMsgBmpFntCah.setText(emptyMsgString, 0f, 0f, getWidth(), Align.left, true);
-                    emptyMsgBmpFntCah.setPosition(getHalfWidth() - (bounds.width / 2), getHalfHeight() - (bounds.height / 2));
+                if (emptyMsgItem == null && emptyMsgString != null) {
+                    emptyMsgItem = new BitmapFontCache(Fonts.getBig());
+                    GlyphLayout bounds = emptyMsgItem.setText(emptyMsgString, 0f, 0f, getWidth(), Align.left, true);
+                    emptyMsgItem.setPosition(getHalfWidth() - (bounds.width / 2), getHalfHeight() - (bounds.height / 2));
                 }
             } catch (Exception ex) {
                 Log.err(log, "render", ex);
             }
-            if (emptyMsgBmpFntCah != null)
-                emptyMsgBmpFntCah.draw(batch, 0.5f);
+            if (emptyMsgItem != null)
+                emptyMsgItem.draw(batch, 0.5f);
         } else {
             try {
                 if (mMustSetPos) {

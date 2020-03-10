@@ -228,7 +228,7 @@ public class Scrollbar extends CB_View_Base {
         this.setHeight(rec.getHeight());
     }
 
-    public void ScrollPositionChanged() {
+    public void scrollPositionChanged() {
         mSliderFader.resetFadeOut();
     }
 

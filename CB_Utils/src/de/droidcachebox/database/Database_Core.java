@@ -5,14 +5,14 @@ import de.droidcachebox.utils.log.Log;
 import java.util.HashMap;
 
 
-public abstract class Database_Core{
+public abstract class Database_Core {
     private static final String log = "Database_Core";
-    protected long DatabaseId = 0; // for Database replication with WinCachebox
     public long MasterDatabaseId = 0;
+    public SQLiteInterface sql;
+    protected long DatabaseId = 0; // for Database replication with WinCachebox
+    protected int latestDatabaseChange = 0;
     private String databasePath;
     private boolean newDB = false;
-    protected int latestDatabaseChange = 0;
-    public SQLiteInterface sql;
 
     public Database_Core() {
     }
@@ -47,6 +47,10 @@ public abstract class Database_Core{
     protected void alterDatabase(int lastDatabaseSchemeVersion) {
     }
 
+    /**
+     *
+     * @return -1 --> must create a new database
+     */
     private int getDatabaseSchemeVersion() {
         int result = -1;
         CoreCursor c;

@@ -34,14 +34,15 @@ public class H_ListView extends ListViewBase {
     protected void renderThreadSetPos(float value, boolean Kinetic) {
         // move all childs
         synchronized (childs) {
-            for (int i = 0, n = childs.size(); i < n; i++) {
+            int n = childs.size();
+            for (int i = 0; i < n; i++) {
                 GL_View_Base tmp = childs.get(i);
 
                 if (mReloadItems) {
                     clearList.add((ListViewItemBase) tmp);
                 } else {
                     float itemPos = mPosDefault.get(((ListViewItemBase) tmp).getIndex());
-                    itemPos -= currentPosition;
+                    itemPos = itemPos - currentPosition;
                     tmp.setX(itemPos);
 
                     if (tmp.getX() > getMaxX() || tmp.getMaxX() < 0) {

@@ -164,8 +164,7 @@ public class SelectDB extends ActivityBase {
 
         scrollbar = new Scrollbar(lvDBSelection);
         addChild(scrollbar);
-
-        lvDBSelection.addListPosChangedEventHandler(() -> scrollbar.ScrollPositionChanged());
+        lvDBSelection.addListPosChangedEventHandler(() -> scrollbar.scrollPositionChanged());
 
         float btWidth = innerWidth / 3;
 
