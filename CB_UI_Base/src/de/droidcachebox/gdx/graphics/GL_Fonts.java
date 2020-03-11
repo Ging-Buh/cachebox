@@ -110,19 +110,19 @@ import java.util.HashMap;
  * @author Longri
  */
 class GL_Fonts {
-    private final HashMap<Integer, BitmapFont> DroidSansMono = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSans_Bold = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSans = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSans_BoldItalic = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSans_Italic = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> Roboto_Regular = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> Roboto_Italic = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> Roboto_Bold = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> Roboto_BoldItalic = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSerif_Bold = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSerif_BoldItalic = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSerif_Italic = new HashMap<Integer, BitmapFont>();
-    private final HashMap<Integer, BitmapFont> DroidSerif_Regular = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSansMono = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSans_Bold = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSans = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSans_BoldItalic = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSans_Italic = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> Roboto_Regular = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> Roboto_Italic = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> Roboto_Bold = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> Roboto_BoldItalic = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_Bold = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_BoldItalic = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_Italic = new HashMap<>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_Regular = new HashMap<>();
 
     private final boolean markUp;
 
@@ -204,8 +204,8 @@ class GL_Fonts {
     /**
      * DroidSerif-Bold.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSerif_Bold(int textSize) {
         if (DroidSerif_Bold.containsKey(textSize))
@@ -219,8 +219,8 @@ class GL_Fonts {
     /**
      * DroidSerif-BoldItalic.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSerif_BoldItalic(int textSize) {
         if (DroidSerif_BoldItalic.containsKey(textSize))
@@ -234,8 +234,8 @@ class GL_Fonts {
     /**
      * DroidSerif-Italic.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSerif_Italic(int textSize) {
         if (DroidSerif_Italic.containsKey(textSize))
@@ -249,8 +249,8 @@ class GL_Fonts {
     /**
      * DroidSerif-Regular.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSerif_Regular(int textSize) {
         if (DroidSerif_Regular.containsKey(textSize))
@@ -264,8 +264,8 @@ class GL_Fonts {
     /**
      * Roboto-Regular.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_Roboto_Regular(int textSize) {
         if (Roboto_Regular.containsKey(textSize))
@@ -279,8 +279,8 @@ class GL_Fonts {
     /**
      * Roboto-Bold.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_Roboto_Bold(int textSize) {
         if (Roboto_Bold.containsKey(textSize))
@@ -294,8 +294,8 @@ class GL_Fonts {
     /**
      * Roboto-Italic.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_Roboto_Italic(int textSize) {
         if (Roboto_Italic.containsKey(textSize))
@@ -309,8 +309,8 @@ class GL_Fonts {
     /**
      * Roboto-BoldItalic.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_Roboto_BoldItalic(int textSize) {
         if (Roboto_BoldItalic.containsKey(textSize))
@@ -324,8 +324,8 @@ class GL_Fonts {
     /**
      * DroidSans.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSans(int textSize) {
         if (DroidSans.containsKey(textSize))
@@ -339,8 +339,8 @@ class GL_Fonts {
     /**
      * DroidSans-BoldItalic.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSans_BoldItalic(int textSize) {
         if (DroidSans_BoldItalic.containsKey(textSize))
@@ -354,8 +354,8 @@ class GL_Fonts {
     /**
      * DroidSans-BoldItalic.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSans_Italic(int textSize) {
         if (DroidSans_Italic.containsKey(textSize))
@@ -369,8 +369,8 @@ class GL_Fonts {
     /**
      * DroidSans-Bold.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSans_Bold(int textSize) {
         if (DroidSans_Bold.containsKey(textSize))
@@ -384,8 +384,8 @@ class GL_Fonts {
     /**
      * DroidSansMono.ttf
      *
-     * @param textSize
-     * @return
+     * @param textSize ?
+     * @return ?
      */
     private BitmapFont get_DroidSansMono(int textSize) {
         if (DroidSansMono.containsKey(textSize))

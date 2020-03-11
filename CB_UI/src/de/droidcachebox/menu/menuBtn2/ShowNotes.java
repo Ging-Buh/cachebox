@@ -10,15 +10,15 @@ import de.droidcachebox.menu.ViewManager;
 
 public class ShowNotes extends AbstractShowAction {
 
-    private static ShowNotes that;
+    private static ShowNotes showNotes;
 
     private ShowNotes() {
         super("Notes");
     }
 
     public static ShowNotes getInstance() {
-        if (that == null) that = new ShowNotes();
-        return that;
+        if (showNotes == null) showNotes = new ShowNotes();
+        return showNotes;
     }
 
     @Override

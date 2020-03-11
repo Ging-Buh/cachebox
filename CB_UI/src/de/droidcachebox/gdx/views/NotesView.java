@@ -33,18 +33,18 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class NotesView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
-    private static NotesView that;
+    private static NotesView notesView;
     private boolean mustLoadNotes;
     private EditTextField notes;
     private float notesDefaultYPos;
     private float notesHeight;
     private CB_Button btnUpload;
-    private Cache aktCache;
+    private Cache currentCache;
 
     private NotesView() {
         super(ViewManager.leftTab.getContentRec(), "NotesView");
 
-        aktCache = GlobalCore.getSelectedCache();
+        currentCache = GlobalCore.getSelectedCache();
         mustLoadNotes = true;
 
         initRow(BOTTOMUP);
@@ -55,7 +55,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
         addLast(btnUpload);
         notesHeight = getAvailableHeight();
         notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
-        this.addLast(notes);
+        addLast(notes);
         notesDefaultYPos = notes.getY();
 
         SelectedCacheChangedEventListeners.getInstance().add(this);
@@ -66,7 +66,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
                 b.setText("Cancel");
                 GL.that.RunOnGL(() -> {
                     String UploadText = notes.getText().replace("<Import from Geocaching.com>", "").replace("</Import from Geocaching.com>", "").trim();
-                    int result = GroundspeakAPI.uploadCacheNote(aktCache.getGeoCacheCode(), UploadText);
+                    int result = GroundspeakAPI.uploadCacheNote(currentCache.getGeoCacheCode(), UploadText);
                     b.disable();
                     if (result == 0) {
                         b.setText(Translation.get("successful"));
@@ -80,8 +80,8 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
 
         getSolverButton.setClickHandler((v, x, y, pointer, button) -> {
             String solver;
-            if (aktCache != null) {
-                solver = Database.getSolver(aktCache);
+            if (currentCache != null) {
+                solver = Database.getSolver(currentCache);
             } else solver = null;
             solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
             String text = notes.getText();
@@ -106,8 +106,8 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
     }
 
     public static NotesView getInstance() {
-        if (that == null) that = new NotesView();
-        return that;
+        if (notesView == null) notesView = new NotesView();
+        return notesView;
     }
 
     @Override
@@ -121,8 +121,8 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
         btnUpload.setText(Translation.get("Upload"));
         btnUpload.enable();
         if (editTextField == notes) {
-            notes.setHeight(this.getHalfHeight());
-            notes.setY(this.getHalfHeight());
+            notes.setHeight(getHalfHeight());
+            notes.setY(getHalfHeight());
         } else {
             notes.setHeight(notesHeight);
             notes.setY(notesDefaultYPos);
@@ -133,7 +133,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
     public void onShow() {
         KeyboardFocusChangedEventList.add(this);
         if (mustLoadNotes) {
-            String text = aktCache != null ? Database.getNote(aktCache) : "";
+            String text = currentCache != null ? Database.getNote(currentCache) : "";
             if (text == null)
                 text = "";
             notes.setText(text);
@@ -151,7 +151,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
         String text = notes.getText();
         if (text != null) {
             try {
-                Database.setNote(aktCache, text);
+                Database.setNote(currentCache, text);
             } catch (Exception e) {
                 String sKlasse = "NotesView";
                 Log.err(sKlasse, "Write note to database", e);
@@ -162,7 +162,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
     @Override
     public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
-        aktCache = cache;
+        currentCache = cache;
         mustLoadNotes = true;
     }
 

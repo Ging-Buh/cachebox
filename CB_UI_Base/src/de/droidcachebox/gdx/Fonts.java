@@ -64,7 +64,7 @@ public class Fonts {
     public static void loadFonts() {
 
         COLOR.loadColors();
-        FreeTypeFontGenerator generator = null;
+        FreeTypeFontGenerator generator;
 
         // get the first found ttf-font
 
@@ -194,14 +194,12 @@ public class Fonts {
         if (CB_Skin.getInstance().getSkinFolder().type() == FileType.Absolute) {
             String FolderPath = CB_Skin.getInstance().getSkinFolder().path();
             String path = FolderPath.replace("/", fs) + fs + "fnts";
-            if (FileIO.directoryExists(path)) {
-                // fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
-                fontPath = path + fs + scale + ".fnt";
-            } else {
+            if (!FileIO.directoryExists(path)) {
                 // fonts-Verzeichnis "global" im cachebox/skins
                 path = FolderPath.replace("/", fs) + fs + ".." + fs + "fnts";
-                fontPath = path + fs + String.valueOf(scale) + ".fnt";
             }
+            // fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
+            fontPath = path + fs + scale + ".fnt";
 
         }
 
@@ -213,8 +211,7 @@ public class Fonts {
             Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
             tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
             TextureRegion region = new TextureRegion(tex);
-            BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath), region, false);
-            return ret;
+            return new BitmapFont(Gdx.files.absolute(fontPath), region, false);
         } else {
             Log.debug(log, "generate font for scale " + scale);
             FreeTypeFontParameter parameter = new FreeTypeFontParameter();
