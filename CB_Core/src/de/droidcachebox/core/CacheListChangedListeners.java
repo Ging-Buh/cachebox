@@ -60,8 +60,8 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
             }
 
             // add all Live Caches
-            for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++) {
-                Cache geoCache = LiveMapQue.LiveCaches.get(i);
+            for (int i = 0; i < LiveMapQue.cacheListLive.getSize(); i++) {
+                Cache geoCache = LiveMapQue.cacheListLive.get(i);
                 if (geoCache == null)
                     continue;
                 if (FilterInstances.isLastFilterSet()) {

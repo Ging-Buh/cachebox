@@ -5,18 +5,12 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 
 public class SettingsItemEnum extends SettingsItemBase {
-
     Spinner spinner;
-
     public SettingsItemEnum(CB_RectF rec, int Index, String Name) {
         super(rec, Index, Name);
-
         spinner = new Spinner(lblDefault, Name, null, null);
-
         spinner.setHeight(UiSizes.getInstance().getButtonHeight());
-
-        this.addChild(spinner);
-
+        addChild(spinner);
     }
 
     public Spinner getSpinner() {
@@ -25,10 +19,10 @@ public class SettingsItemEnum extends SettingsItemBase {
 
     @Override
     protected void layout() {
-        lblDefault.setHeight(spinner.getHeight());
-        super.layout();
-        spinner.setY(lblDefault.getY() + UiSizes.getInstance().getMargin());
-
+        spinner.setY(getBottomHeight() + (lblDefault.getFont().getDescent() * 2));
+        lblDefault.setY(spinner.getMaxY());
+        lblName.setY(lblDefault.getMaxY());
+        setHeight(getHeight() + spinner.getHeight());
     }
 
 }

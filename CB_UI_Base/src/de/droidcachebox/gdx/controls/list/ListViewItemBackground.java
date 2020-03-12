@@ -60,7 +60,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
             isPressed = GL_Input.that.getIsTouchDown();
         }
 
-        if (this.isDisposed() || !this.isVisible())
+        if (isDisposed() || !isVisible())
             return;
 
         super.render(batch);
@@ -70,11 +70,11 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
             initialize();
         }
         if (isSelected) {
-            backGroundColorForSelectedLine.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-        } else if ((getIndex() % 2) == 1) {
-            backGroundColorForEvenLine.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+            backGroundColorForSelectedLine.draw(batch, 0, 0, getWidth(), getHeight());
+        } else if ((mIndex % 2) == 1) {
+            backGroundColorForEvenLine.draw(batch, 0, 0, getWidth(), getHeight());
         } else {
-            backGroundColorForOddLine.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+            backGroundColorForOddLine.draw(batch, 0, 0, getWidth(), getHeight());
         }
 
     }
@@ -101,7 +101,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
             initialize();
         if (isSelected) {
             return backGroundColorForSelectedLine.getLeftWidth();
-        } else if ((this.getIndex() % 2) == 1) {
+        } else if ((mIndex % 2) == 1) {
             return backGroundColorForEvenLine.getLeftWidth();
         } else {
             return backGroundColorForOddLine.getLeftWidth();
@@ -114,7 +114,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
             initialize();
         if (isSelected) {
             return backGroundColorForSelectedLine.getBottomHeight();
-        } else if ((this.getIndex() % 2) == 1) {
+        } else if ((mIndex % 2) == 1) {
             return backGroundColorForEvenLine.getBottomHeight();
         } else {
             return backGroundColorForOddLine.getBottomHeight();
@@ -127,7 +127,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
             initialize();
         if (isSelected) {
             return backGroundColorForSelectedLine.getRightWidth();
-        } else if ((this.getIndex() % 2) == 1) {
+        } else if ((mIndex % 2) == 1) {
             return backGroundColorForEvenLine.getRightWidth();
         } else {
             return backGroundColorForOddLine.getRightWidth();
@@ -140,7 +140,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
             initialize();
         if (isSelected) {
             return backGroundColorForSelectedLine.getTopHeight();
-        } else if ((this.getIndex() % 2) == 1) {
+        } else if ((mIndex % 2) == 1) {
             return backGroundColorForEvenLine.getTopHeight();
         } else {
             return backGroundColorForOddLine.getTopHeight();

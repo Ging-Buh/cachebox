@@ -18,31 +18,31 @@ public class SettingsItemBase extends ListViewItemBackground {
         if (MeasuredLabelHeight == -1)
             MeasuredLabelHeight = Fonts.measureForSmallFont("Tg").height;
 
-        CB_RectF LblRec = new CB_RectF(leftBorder, 0, innerWidth, this.getHalfHeight());
+        CB_RectF LblRec = new CB_RectF(leftBorder, 0, innerWidth, getHalfHeight());
 
         lblDefault = new CB_Label(LblRec);
         lblDefault.setFont(Fonts.getSmall());
-        this.addChild(lblDefault);
+        addChild(lblDefault);
 
         LblRec.setY(MeasuredLabelHeight);
-        LblRec.setHeight(this.getHeight() - MeasuredLabelHeight);
+        LblRec.setHeight(getHeight() - MeasuredLabelHeight);
 
         lblName = new CB_Label(LblRec);
         lblName.setFont(Fonts.getNormal());
-        this.addChild(lblName);
+        addChild(lblName);
 
-        this.setLongClickable(true);
+        setLongClickable(true);
 
     }
 
     public void enable() {
         isDisabled = false;
-        this.clearColorFilter();
+        clearColorFilter();
     }
 
     public void disable() {
         isDisabled = true;
-        this.setColorFilter(COLOR.getDisableFontColor());
+        setColorFilter(COLOR.getDisableFontColor());
     }
 
     public boolean isDisabled() {
@@ -73,20 +73,18 @@ public class SettingsItemBase extends ListViewItemBackground {
     }
 
     protected void layout() {
-        float asc = lblDefault.getFont().getDescent() * 2;
 
-        lblDefault.setY(this.getBottomHeight() + asc);
+        lblDefault.setY(getBottomHeight() + (lblDefault.getFont().getDescent() * 2));
 
-        asc = lblName.getFont().getDescent();
-
+        float asc = lblName.getFont().getDescent();
         float a = 0;
-
-        if (lblName.getLineCount() == 1)
-            a = asc *= 2;
-
+        if (lblName.getLineCount() == 1) {
+            asc = asc * 2;
+            a = asc;
+        }
         lblName.setY(lblDefault.getMaxY() - (asc * 2) + a);
 
-        this.setHeight(this.getBottomHeight() + lblDefault.getHeight() + lblName.getHeight() - asc);
+        setHeight(getBottomHeight() + lblDefault.getHeight() + lblName.getHeight() - asc);
 
     }
 

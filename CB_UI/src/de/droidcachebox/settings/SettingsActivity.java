@@ -400,7 +400,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         final String trans = Translation.get(SB.getName());
 
         item.setName(trans);
-        item.setDefault(String.valueOf(SB.getValue()));
+        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(SB);
@@ -439,11 +439,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         final String trans = Translation.get(SB.getName());
         item.setName(trans);
 
+        String toShow;
         if (SB.isDefault()) {
-            item.setDefault(Translation.get("default"));
+            toShow = Translation.get("default");
         } else {
-            item.setDefault(SB.getValue());
+            toShow = SB.getValue();
         }
+        item.setDefault(toShow + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(SB);
@@ -494,6 +496,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         item.setName(Translation.get(SB.getName()));
 
+        item.setDefault("\n" + Translation.get("Desc_" + SB.getName()) + "\n");
+
         final Spinner spinner = item.getSpinner();
 
         spinner.setDraggable();
@@ -537,6 +541,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
 
         item.setName(Translation.get(SB.getName()));
+
+        item.setDefault("\n" + Translation.get("Desc_" + SB.getName()) + "\n");
 
         final Spinner spinner = item.getSpinner();
 
@@ -583,6 +589,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         item.setName(Translation.get(SB.getName()));
 
+        item.setDefault("\n" + Translation.get("Desc_" + SB.getName()) + "\n");
+
         final Spinner spinner = item.getSpinner();
 
         spinner.setDraggable();
@@ -628,7 +636,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         final String trans = Translation.get(SB.getName());
 
         item.setName(trans);
-        item.setDefault(String.valueOf(SB.getValue()));
+        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(SB);
@@ -670,7 +678,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
         final String trans = Translation.get(SB.getName());
         item.setName(trans);
-        item.setDefault(String.valueOf(SB.getValue()));
+        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(SB);
@@ -712,7 +720,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
         final String trans = Translation.get(SB.getName());
         item.setName(trans);
-        item.setDefault(String.valueOf(SB.getValue()));
+        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(SB);
@@ -757,9 +765,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         item.setName(Translation.get(settingFolder.getName()));
         if (settingFolder.isDefault()) {
-            item.setDefault(Translation.get("default"));
+            item.setDefault(Translation.get("default") + "\n\n" + Translation.get("Desc_" + settingFolder.getName()));
         } else {
-            item.setDefault(settingFolder.getValue());
+            item.setDefault(settingFolder.getValue() + "\n\n" + Translation.get("Desc_" + settingFolder.getName()));
         }
 
         item.setClickHandler((v, x, y, pointer, button) -> {
@@ -799,7 +807,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, settingFile.getName());
 
         item.setName(Translation.get(settingFile.getName()));
-        item.setDefault(settingFile.getValue());
+        item.setDefault(settingFile.getValue() + "\n\n" + Translation.get("Desc_" + settingFile.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(settingFile);
@@ -901,7 +909,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         item.setName(Translation.get(settingsAudio.getName()));
-        item.setDefault("default: " + settingsAudio.getDefaultValue());
+        item.setDefault("default: " + settingsAudio.getDefaultValue() + "\n\n" + Translation.get("Desc_" + settingsAudio.getName()));
         item.setVolume((int) (settingsAudio.getValue().Volume * 100));
         CB_CheckBox chk = item.getCheckBox();
 
@@ -954,7 +962,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
         final String trans = Translation.get(SB.getName());
         item.setName(trans);
-        item.setDefault(intToTime(SB.getValue()));
+        item.setDefault(intToTime(SB.getValue()) + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Config.settings.indexOf(SB);
@@ -1138,7 +1146,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SettingsItem_Bool item = new SettingsItem_Bool(itemRec, backgroundChanger, SB.getName());
 
         item.setName(Translation.get(SB.getName()));
-        item.setDefault("default: " + SB.getDefaultValue());
+        item.setDefault("default: " + SB.getDefaultValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         CB_CheckBox chk = item.getCheckBox();
 

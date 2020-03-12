@@ -54,7 +54,7 @@ public class LiveMapQue {
     public static final int MAX_REQUEST_CACHE_RADIUS_13 = 2120;
 
     public static final int MAX_REQUEST_CACHE_COUNT = 200;
-    public static CacheListLive LiveCaches;
+    public static CacheListLive cacheListLive;
     public static Live_Radius radius = CB_Core_Settings.LiveRadius.getEnumValue();
     public static byte Used_Zoom;
     public static int Used_max_request_radius;
@@ -75,7 +75,7 @@ public class LiveMapQue {
                 synchronized (descStack) {
                     do {
                         desc = descStack.get();
-                    } while (LiveCaches.contains(desc));
+                    } while (cacheListLive.contains(desc));
                 }
 
                 if (desc == null)
@@ -115,7 +115,7 @@ public class LiveMapQue {
                 // todo change LiveCaches CB_List<Cache> to ArrayList<GroundspeakAPI.GeoCacheRelated>
                 CB_List<Cache> tmp = new CB_List<>();
                 for (GroundspeakAPI.GeoCacheRelated c : apiCaches) tmp.add(c.cache);
-                final CB_List<Cache> removedCaches = LiveCaches.add(desc, tmp);
+                final CB_List<Cache> removedCaches = cacheListLive.add(desc, tmp);
 
                 // Log.debug(log, "LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
 
@@ -167,12 +167,12 @@ public class LiveMapQue {
         }
 
         int maxLiveCount = CB_Core_Settings.LiveMaxCount.getValue();
-        LiveCaches = new CacheListLive(maxLiveCount);
+        cacheListLive = new CacheListLive(maxLiveCount);
         CB_Core_Settings.LiveMaxCount.addSettingChangedListener(new IChanged() {
             @Override
             public void handleChange() {
                 int maxLiveCount = CB_Core_Settings.LiveMaxCount.getValue();
-                LiveCaches = new CacheListLive(maxLiveCount);
+                cacheListLive = new CacheListLive(maxLiveCount);
             }
         });
 
@@ -267,7 +267,7 @@ public class LiveMapQue {
         }
 
         // remove all descriptor are ready loaded at LiveCaches
-        descList.removeAll(LiveCaches.getDescriptorList());
+        descList.removeAll(cacheListLive.getDescriptorList());
 
         if (!loop.Alive())
             loop.start();
@@ -299,7 +299,7 @@ public class LiveMapQue {
     }
 
     public static void setCenterDescriptor(CoordinateGPS center) {
-        LiveCaches.setCenterDescriptor(new Descriptor(center, Used_Zoom));
+        cacheListLive.setCenterDescriptor(new Descriptor(center, Used_Zoom));
     }
 
     private static void queDesc(Descriptor desc) {
@@ -308,7 +308,7 @@ public class LiveMapQue {
             return;
         if (!loop.Alive())
             loop.start();
-        if (LiveCaches.contains(desc))
+        if (cacheListLive.contains(desc))
             return; // all ready for this descriptor
         synchronized (descStack) {
             descStack.add(desc);
