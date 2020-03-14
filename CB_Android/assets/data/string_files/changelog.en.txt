@@ -5,13 +5,14 @@
 • Deletions = -
 • Unsolved = •
 
-Changes up to version 3601:
-     + Cache menu "Open cache in browser"
-     ~ moved "Contact owner" to the cache menu
-	 - "Show map" and "Show description" removed from cache menu
-     * Track recording: replace invalid characters in the file name
-     + Display the distance to the center of the map
-     + File and directory selection with a new interface
+Changes up to version 3608:
+    + Help texts for the settings are always displayed (as in CB3)
+    + Cache menu "Open cache in browser"
+    ~ moved "Contact owner" to the cache menu
+	- "Show map" and "Show description" removed from cache menu
+    * Track recording: replace invalid characters in the file name
+    + Display the distance to the center of the map
+    + File and directory selection with a new interface
 Changes up to version 3585:
     ~ update to mapsforge library 0.13.0
     + "Clear history" in cachelist contextmenu

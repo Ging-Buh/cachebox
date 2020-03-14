@@ -44,8 +44,8 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
     private LogEntry logEntry;
     private float secondTab = 0;
 
-    public LogListViewItem(CB_RectF rec, int Index, LogEntry logEntry) {
-        super(rec, Index, "");
+    public LogListViewItem(CB_RectF rec, int index, LogEntry logEntry) {
+        super(rec, index, "");
         setLongClickable(false);
         this.logEntry = logEntry;
         backGroundIsInitialized = false;

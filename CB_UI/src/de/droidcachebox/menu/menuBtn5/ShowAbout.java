@@ -6,6 +6,7 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.gdx.views.AboutView;
 import de.droidcachebox.menu.ViewManager;
 
 public class ShowAbout extends AbstractShowAction {
@@ -24,7 +25,7 @@ public class ShowAbout extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(AboutView.getInstance());
+        ViewManager.leftTab.showView(de.droidcachebox.gdx.views.AboutView.getInstance());
     }
 
     @Override

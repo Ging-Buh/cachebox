@@ -41,8 +41,8 @@ import java.util.Collections;
 public class LogListView extends V_ListView implements SelectedCacheChangedEventListener {
     private static CB_RectF itemRec;
     private static LogListView logListView;
-    CB_List<LogItem> logs;
-    private Cache aktCache;
+    CB_List<LogEntry> logs;
+    private Cache currentCache;
     private LogListViewAdapter logListViewAdapter;
     private ArrayList<String> friendList;
 
@@ -84,7 +84,7 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
 
     @Override
     public void initialize() {
-        aktCache = null;
+        currentCache = null;
         setCache(GlobalCore.getSelectedCache());
     }
 
@@ -105,18 +105,21 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
             setEmptyMsgItem(Translation.get("EmptyLogList"));
             return;
         }
-        if (aktCache != cache) {
-            aktCache = cache;
+        if (currentCache != cache) {
+            currentCache = cache;
             setAdapter(null);
             logs = new CB_List<>();
             setEmptyMsgItem(Translation.get("EmptyLogList"));
-            for (LogEntry logEntry : Database.getLogs(aktCache)) {
+            for (LogEntry logEntry : Database.getLogs(currentCache)) {
                 if (GlobalCore.filterLogsOfFriends) {
                     if (!friendList.contains(logEntry.finder)) {
                         continue;
                     }
                 }
-                logs.add(new LogItem(logEntry));
+                // else height of logitem is not sufficient
+                if (!logEntry.logText.endsWith("\n"))
+                    logEntry.logText = logEntry.logText + "\n";
+                logs.add(logEntry);
             }
             logListViewAdapter = new LogListViewAdapter();
             setAdapter(logListViewAdapter);
@@ -132,23 +135,12 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
     @Override
     public void dispose() {
         setAdapter(null);
-        aktCache = null;
+        currentCache = null;
         logListViewAdapter = null;
         super.dispose();
     }
 
-    private static class LogItem {
-        LogEntry logEntry;
-        LogListViewItem logListViewItem;
-
-        public LogItem(LogEntry logEntry) {
-            this.logEntry = logEntry;
-            logListViewItem = null;
-        }
-    }
-
     private class LogListViewAdapter implements Adapter {
-        int index = 0;
 
         LogListViewAdapter() {
         }
@@ -166,13 +158,10 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
         public ListViewItemBase getView(int position) {
             if (logs != null) {
                 if (logs.size() > 0) {
-                    LogItem logItem = logs.get(position);
-                    if (logItem.logListViewItem == null) {
-                        logItem.logListViewItem = new LogListViewItem(getItemRect_F(logItem.logEntry), index++, logItem.logEntry);
-                    }
-                    // todo for not to get stack or heap overflow handle a list to set a old (no longer visible) logListViewItem to null
+                    LogEntry logEntry = logs.get(position);
+                    // todo for not to get stack or heap overflow handle a list to set an old (no longer visible) logListViewItem to null
                     // reducing the list from database is not handled (like in DraftsView)
-                    return logItem.logListViewItem;
+                    return new LogListViewItem(getItemRect_F(logEntry), position, logEntry);
                 }
             }
             return null;
@@ -182,8 +171,7 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
         public float getItemSize(int position) {
             if (logs != null) {
                 if (logs.size() > 0) {
-                    LogItem logItem = logs.get(position);
-                    return getItemRect_F(logItem.logEntry).getHeight();
+                    return getItemRect_F(logs.get(position)).getHeight();
                 }
             }
             return 0;

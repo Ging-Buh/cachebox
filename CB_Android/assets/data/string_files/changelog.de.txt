@@ -4,7 +4,8 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 • Offen = •
-Änderungen bis Version 3601:
+Änderungen bis Version 3608:
+    + Hilfetexte zu den Einstellungen werden immer mit angezeigt (wie in CB3)
     + Cachemenü "Öffne Cache im Browser"
 	~ verschoben "Besitzer kontaktieren" ins Cachemenü
 	- "Karte" und "Beschreibung" aus dem Cachemenü entfernt

@@ -42,8 +42,8 @@ import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
-import de.droidcachebox.menu.menuBtn1.ParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowCacheList;
+import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
 import de.droidcachebox.menu.menuBtn2.*;
 import de.droidcachebox.menu.menuBtn3.MapDownload;
@@ -258,7 +258,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         // Actions den Buttons zuweisen
         mainBtn1.addAction(ShowCacheList.getInstance(), true, GestureDirection.Up);
-        mainBtn1.addAction(ParkingDialog.getInstance(), false, GestureDirection.Down);
+        mainBtn1.addAction(ShowParkingDialog.getInstance(), false, GestureDirection.Down);
         mainBtn1.addAction(ShowTrackableList.getInstance(), false, GestureDirection.Right);
         actionShare = new PlatformAction("Share", ViewConst.Share, Sprites.getSprite(IconName.share.name()));
         mainBtn1.addAction(actionShare, false, GestureDirection.Left);
@@ -293,7 +293,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         mainBtn5.addAction(ShowCredits.getInstance(), false, GestureDirection.Up);
         mainBtn5.addAction(Settings.getInstance(), false, GestureDirection.Left);
-        mainBtn5.addAction(ParkingDialog.getInstance(), false, GestureDirection.Right);
+        mainBtn5.addAction(ShowParkingDialog.getInstance(), false, GestureDirection.Right);
         mainBtn5.addAction(SwitchDayNight.getInstance(), false);
         mainBtn5.addAction(HelpOnline.getInstance(), false);
         mainBtn5.addAction(SwitchTorch.getInstance(), false);

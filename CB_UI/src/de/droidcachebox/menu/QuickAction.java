@@ -16,8 +16,8 @@
 package de.droidcachebox.menu;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.menu.menuBtn1.ParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowCacheList;
+import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
 import de.droidcachebox.menu.menuBtn2.*;
 import de.droidcachebox.menu.menuBtn3.ShowCompass;
@@ -108,7 +108,7 @@ public enum QuickAction {
             case Hint:
                 return HintDialog.getInstance();
             case Parking:
-                return ParkingDialog.getInstance();
+                return ShowParkingDialog.getInstance();
             case Day_Night:
                 return SwitchDayNight.getInstance();
             case Drafts:
