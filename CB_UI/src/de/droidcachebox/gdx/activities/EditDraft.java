@@ -34,6 +34,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.DraftViewItem;
 import de.droidcachebox.gdx.views.DraftsView;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.log.Log;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -45,9 +46,10 @@ import java.util.*;
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 
 public class EditDraft extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
+    private static final String sKlasse = "EditDraft";
     private FilterSetListViewItem GcVote;
     private CB_Label title;
-    private Draft altfieldNote;
+    private Draft originalDraft;
     private Draft draft;
     private CB_Button btnOK = null;
     private CB_Button btnCancel = null;
@@ -69,7 +71,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         this.isNewDraft = isNewDraft;
         mReturnListener = listener;
         draft = note;
-        altfieldNote = note.copy();
+        originalDraft = new Draft(note);
         initLayoutWithValues();
     }
 
@@ -155,22 +157,27 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     draft.isDirectLog = false;
                 }
                  */
-                draft.isDirectLog = false;
-
-                draft.comment = etComment.getText();
-
-                if (GcVote != null) {
-                    draft.gc_Vote = (int) (GcVote.getValue() * 100);
-                } else draft.gc_Vote = 0;
-
-                // parse Date and Time
-                String date = tvDate.getText();
-                String time = tvTime.getText();
-
-                date = date.replace("-", ".");
-                time = time.replace(":", ".");
-
                 try {
+                    draft.isDirectLog = false;
+
+                    draft.comment = etComment.getText();
+
+                    if (GcVote != null) {
+                        draft.gc_Vote = (int) (GcVote.getValue() * 100);
+                    } else draft.gc_Vote = 0;
+                }
+                catch (Exception ex) {
+                    Log.err(sKlasse, ex);
+                }
+                try {
+
+                    // parse Date and Time
+                    String date = tvDate.getText();
+                    String time = tvTime.getText();
+
+                    date = date.replace("-", ".");
+                    time = time.replace(":", ".");
+
                     Date timestamp;
                     DateFormat formatter;
 
@@ -205,17 +212,14 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 }
 
                 // check of changes
-                if (!altfieldNote.equals(draft)) {
+                if (!originalDraft.equals(draft)) {
                     draft.uploaded = false;
-                    draft.UpdateDatabase();
+                    draft.updateDatabase();
+                    Log.info(sKlasse, "Draft written to database.");
                     DraftsView.createGeoCacheVisits();
+                    Log.info(sKlasse, "GeoCacheVisits written.");
                 }
-
-                boolean dl = false;
-                if (draft.isDirectLog)
-                    dl = true;
-
-                mReturnListener.returnedFieldNote(draft, isNewDraft, dl);
+                mReturnListener.returnedFieldNote(draft, isNewDraft);
             }
             finish();
             return true;
@@ -223,7 +227,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null)
-                mReturnListener.returnedFieldNote(null, false, false);
+                mReturnListener.returnedFieldNote(null, false);
             finish();
             return true;
         });
@@ -458,10 +462,10 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         mReturnListener = listener;
         draft = note;
         setValuesToLayout();
-        altfieldNote = note.copy();
+        originalDraft = new Draft(note);
     }
 
     public interface IReturnListener {
-        void returnedFieldNote(Draft fn, boolean isNewFieldNote, boolean directlog);
+        void returnedFieldNote(Draft fn, boolean isNewFieldNote);
     }
 }

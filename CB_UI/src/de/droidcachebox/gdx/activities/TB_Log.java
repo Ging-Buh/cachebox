@@ -320,7 +320,7 @@ public class TB_Log extends ActivityBase {
         newFieldNote.TravelBugCode = TB.getTbCode();
         newFieldNote.TrackingNumber = TB.getTrackingCode();
         newFieldNote.fillType();
-        newFieldNote.WriteToDatabase();
+        newFieldNote.writeToDatabase();
 
         TB_Log.this.finish();
     }

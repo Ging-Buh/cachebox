@@ -8,10 +8,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Draft implements Serializable {
 
-    private static final String log = "Draft";
+    private static final String sKlasse = "Draft";
     private static final long serialVersionUID = 4110771837489396946L;
 
     public long Id;
@@ -36,33 +37,33 @@ public class Draft implements Serializable {
     public String TrackingNumber = "";
     public boolean isDirectLog = false;
 
-    private Draft(Draft fne) {
-        this.Id = fne.Id;
-        this.CacheId = fne.CacheId;
-        this.gcCode = fne.gcCode;
+    public Draft(Draft fne) {
+        Id = fne.Id;
+        CacheId = fne.CacheId;
+        gcCode = fne.gcCode;
         GcId = fne.GcId;
-        this.timestamp = fne.timestamp;
-        this.typeString = fne.typeString;
-        this.type = fne.type;
-        this.cacheType = fne.cacheType;
-        this.comment = fne.comment;
-        this.foundNumber = fne.foundNumber;
-        this.CacheName = fne.CacheName;
-        this.CacheUrl = fne.CacheUrl;
-        this.typeIcon = fne.typeIcon;
-        this.uploaded = fne.uploaded;
-        this.gc_Vote = fne.gc_Vote;
-        this.isTbDraft = fne.isTbDraft;
-        this.TbName = fne.TbName;
-        this.TbIconUrl = fne.TbIconUrl;
-        this.TravelBugCode = fne.TravelBugCode;
-        this.TrackingNumber = fne.TrackingNumber;
-        this.isDirectLog = fne.isDirectLog;
+        timestamp = fne.timestamp;
+        typeString = fne.typeString;
+        type = fne.type;
+        cacheType = fne.cacheType;
+        comment = fne.comment;
+        foundNumber = fne.foundNumber;
+        CacheName = fne.CacheName;
+        CacheUrl = fne.CacheUrl;
+        typeIcon = fne.typeIcon;
+        uploaded = fne.uploaded;
+        gc_Vote = fne.gc_Vote;
+        isTbDraft = fne.isTbDraft;
+        TbName = fne.TbName;
+        TbIconUrl = fne.TbIconUrl;
+        TravelBugCode = fne.TravelBugCode;
+        TrackingNumber = fne.TrackingNumber;
+        isDirectLog = fne.isDirectLog;
     }
 
-    public Draft(GeoCacheLogType Type) {
+    public Draft(GeoCacheLogType logType) {
         Id = -1;
-        this.type = Type;
+        type = logType;
         fillType();
     }
 
@@ -72,10 +73,10 @@ public class Draft implements Serializable {
         CacheName = reader.getString(2);
         cacheType = reader.getInt(3);
         String sDate = reader.getString(4);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
             timestamp = iso8601Format.parse(sDate);
-        } catch (ParseException e) {
+        } catch (ParseException ignored) {
         }
         if (timestamp == null)
             timestamp = new Date();
@@ -124,14 +125,14 @@ public class Draft implements Serializable {
         }
     }
 
-    public void WriteToDatabase() {
+    public void writeToDatabase() {
         Parameters args = new Parameters();
         args.put("CacheId", CacheId);
         args.put("GcCode", gcCode);
         args.put("GcId", GcId);
         args.put("Name", CacheName);
         args.put("CacheType", cacheType);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
         String stimestamp = iso8601Format.format(timestamp);
         args.put("Timestamp", stimestamp);
         args.put("Type", type.getGcLogTypeId());
@@ -151,7 +152,7 @@ public class Draft implements Serializable {
         try {
             Database.Drafts.sql.insertWithConflictReplace("Fieldnotes", args);
         } catch (Exception exc) {
-            Log.err(log, exc.toString());
+            Log.err(sKlasse, exc.toString());
             return;
         }
         // search FieldNote Id : should be the last entry
@@ -161,19 +162,19 @@ public class Draft implements Serializable {
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
             Draft fne = new Draft(reader);
-            this.Id = fne.Id;
+            Id = fne.Id;
             reader.moveToNext();
         }
         reader.close();
-        if (this.Id == -1) {
+        if (Id == -1) {
             if (isTbDraft)
-                Log.err(log, "TB-Log not saved: " + TravelBugCode + " in " + gcCode + ".");
+                Log.err(sKlasse, "TB-Log not saved: " + TravelBugCode + " in " + gcCode + ".");
             else
-                Log.err(log, "Cache-Log not saved: " + gcCode + "");
+                Log.err(sKlasse, "Cache-Log not saved: " + gcCode + "");
         }
     }
 
-    public void UpdateDatabase() {
+    public void updateDatabase() {
         if (timestamp == null)
             timestamp = new Date();
         Parameters args = new Parameters();
@@ -182,7 +183,7 @@ public class Draft implements Serializable {
         if (GcId == null) GcId = "";
         args.put("GcId", GcId);
         args.put("name", CacheName);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String stimestamp = iso8601Format.format(timestamp);
         args.put("timestamp", stimestamp);
         args.put("type", type.getGcLogTypeId());
@@ -199,19 +200,15 @@ public class Draft implements Serializable {
         args.put("TrackingNumber", TrackingNumber);
         args.put("directLog", isDirectLog);
         try {
-            long count = Database.Drafts.sql.update("FieldNotes", args, "id=" + Id, null);
-            if (count > 0)
-                return;
-        } catch (Exception exc) {
-            return;
+            Database.Drafts.sql.update("FieldNotes", args, "id=" + Id, null);
+        } catch (Exception ignored) {
         }
     }
 
-    public void DeleteFromDatabase() {
+    public void deleteFromDatabase() {
         try {
             Database.Drafts.sql.delete("FieldNotes", "id=" + Id, null);
-        } catch (Exception exc) {
-            return;
+        } catch (Exception ignored) {
         }
     }
 
@@ -221,48 +218,44 @@ public class Draft implements Serializable {
             if (!GcId.equals(fne.GcId))
                 ret = false;
         }
-        if (this.Id != fne.Id)
+        if (Id != fne.Id)
             ret = false;
-        if (this.CacheId != fne.CacheId)
+        if (CacheId != fne.CacheId)
             ret = false;
-        if (this.gcCode != fne.gcCode)
+        if (!gcCode.equals(fne.gcCode))
             ret = false;
-        if (this.timestamp != fne.timestamp)
+        if (timestamp != fne.timestamp)
             ret = false;
-        if (this.typeString != fne.typeString)
+        if (!typeString.equals(fne.typeString))
             ret = false;
-        if (this.type != fne.type)
+        if (type != fne.type)
             ret = false;
-        if (this.cacheType != fne.cacheType)
+        if (cacheType != fne.cacheType)
             ret = false;
-        if (this.comment != fne.comment)
+        if (!comment.equals(fne.comment))
             ret = false;
-        if (this.foundNumber != fne.foundNumber)
+        if (foundNumber != fne.foundNumber)
             ret = false;
-        if (this.CacheName != fne.CacheName)
+        if (!CacheName.equals(fne.CacheName))
             ret = false;
-        if (this.CacheUrl != fne.CacheUrl)
+        if (!CacheUrl.equals(fne.CacheUrl))
             ret = false;
-        if (this.typeIcon != fne.typeIcon)
+        if (typeIcon != fne.typeIcon)
             ret = false;
-        if (this.uploaded != fne.uploaded)
+        if (uploaded != fne.uploaded)
             ret = false;
-        if (this.gc_Vote != fne.gc_Vote)
+        if (gc_Vote != fne.gc_Vote)
             ret = false;
-        if (this.isTbDraft != fne.isTbDraft)
+        if (isTbDraft != fne.isTbDraft)
             ret = false;
-        if (this.TravelBugCode != fne.TravelBugCode)
+        if (!TravelBugCode.equals(fne.TravelBugCode))
             ret = false;
-        if (this.TrackingNumber != fne.TrackingNumber)
+        if (!TrackingNumber.equals(fne.TrackingNumber))
             ret = false;
-        if (this.isDirectLog != fne.isDirectLog)
+        if (isDirectLog != fne.isDirectLog)
             ret = false;
 
         return ret;
-    }
-
-    public Draft copy() {
-        return new Draft(this);
     }
 
 }

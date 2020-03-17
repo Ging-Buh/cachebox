@@ -223,7 +223,7 @@ public class MapsForgeLayer extends Layer {
                             FileOutputStream stream = outAbstractFile.getFileOutputStream();
                             stream.write(bytesOfMfTile);
                             stream.close(); // There is no more need for this line since you had created the instance of "stream" inside the try. And this will automatically close the OutputStream
-                            Log.info(log, "cached " + outAbstractFile.getName());
+                            Log.debug(log, "cached " + outAbstractFile.getName());
                             outAbstractFile.setLastModified(mapFile.getDataTimestamp(null));
                         }
                         catch (Exception ex) {

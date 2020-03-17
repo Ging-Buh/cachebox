@@ -61,7 +61,7 @@ public class Drafts extends ArrayList<Draft> {
                 sql += " where " + where;
             }
             if (order.length() == 0) {
-                sql += " order by FoundNumber DESC, Timestamp DESC";
+                sql += " order by Timestamp DESC"; // FoundNumber DESC,
             } else {
                 sql += " order by " + order;
             }
@@ -118,7 +118,7 @@ public class Drafts extends ArrayList<Draft> {
         }
     }
 
-    public void DeleteDraftByCacheId(long cacheId, GeoCacheLogType type) {
+    public void deleteDraftByCacheId(long cacheId, GeoCacheLogType type) {
         synchronized (this) {
             int foundNumber = 0;
             Draft fne = null;
@@ -132,7 +132,7 @@ public class Drafts extends ArrayList<Draft> {
                 if (fne.type == GeoCacheLogType.found)
                     foundNumber = fne.foundNumber;
                 this.remove(fne);
-                fne.DeleteFromDatabase();
+                fne.deleteFromDatabase();
             }
             decreaseFoundNumber(foundNumber);
         }
@@ -151,7 +151,7 @@ public class Drafts extends ArrayList<Draft> {
                 if (fne.type == GeoCacheLogType.found)
                     foundNumber = fne.foundNumber;
                 this.remove(fne);
-                fne.DeleteFromDatabase();
+                fne.deleteFromDatabase();
             }
             decreaseFoundNumber(foundNumber);
         }
@@ -166,7 +166,7 @@ public class Drafts extends ArrayList<Draft> {
                     fn.foundNumber--;
                     fn.comment = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.foundNumber);
                     fn.fillType();
-                    fn.UpdateDatabase();
+                    fn.updateDatabase();
                 }
             }
         }

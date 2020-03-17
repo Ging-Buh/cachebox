@@ -70,14 +70,13 @@ import static de.droidcachebox.database.Database.Data;
 
 public class DraftsView extends V_ListView {
     private static final String log = "DraftsView";
-    private static DraftsView that;
-    private static Draft aktDraft;
-    private static boolean firstShow = true;
-    private static CB_RectF ItemRec;
-    private static Drafts drafts;
-    private static WaitDialog wd;
-    private static EditDraft.IReturnListener returnListener = DraftsView::addOrChangeDraft;
-    private static EditDraft editDraft;
+    private static DraftsView draftsView;
+    private Draft currentDraft;
+    private boolean firstShow;
+    private CB_RectF ItemRec;
+    private Drafts drafts;
+    private WaitDialog wd;
+    private EditDraft editDraft;
     private DraftsViewAdapter lvAdapter;
 
     private DraftsView() {
@@ -86,19 +85,18 @@ public class DraftsView extends V_ListView {
         setForceHandleTouchEvents();
         ItemRec = new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
         setBackground(Sprites.ListBack);
-        if (drafts == null)
-            drafts = new Drafts();
+        drafts = new Drafts();
         setHasInvisibleItems();
         setAdapter(null);
-        lvAdapter = new DraftsViewAdapter(drafts);
+        lvAdapter = new DraftsViewAdapter();
         setAdapter(lvAdapter);
         setEmptyMsgItem(Translation.get("EmptyDrafts"));
         firstShow = true;
     }
 
     public static DraftsView getInstance() {
-        if (that == null) that = new DraftsView();
-        return that;
+        if (draftsView == null) draftsView = new DraftsView();
+        return draftsView;
     }
 
     public static void createGeoCacheVisits() {
@@ -132,9 +130,9 @@ public class DraftsView extends V_ListView {
         }
     }
 
-    private static void addOrChangeDraft(Draft draft, boolean isNewDraft, boolean directLog) {
+    private void addOrChangeDraft(Draft draft, boolean isNewDraft) {
 
-        DraftsView.firstShow = false;
+        firstShow = false;
 
         if (draft != null) {
 
@@ -147,13 +145,13 @@ public class DraftsView extends V_ListView {
                         || draft.type == GeoCacheLogType.found //
                         || draft.type == GeoCacheLogType.webcam_photo_taken //
                         || draft.type == GeoCacheLogType.didnt_find) {
-                    drafts.DeleteDraftByCacheId(draft.CacheId, GeoCacheLogType.found);
-                    drafts.DeleteDraftByCacheId(draft.CacheId, GeoCacheLogType.didnt_find);
+                    drafts.deleteDraftByCacheId(draft.CacheId, GeoCacheLogType.found);
+                    drafts.deleteDraftByCacheId(draft.CacheId, GeoCacheLogType.didnt_find);
                 }
             }
 
-            draft.WriteToDatabase();
-            aktDraft = draft;
+            draft.writeToDatabase();
+            currentDraft = draft;
 
             if (isNewDraft) {
                 // nur, wenn eine Draft neu angelegt wurde
@@ -167,7 +165,7 @@ public class DraftsView extends V_ListView {
                         GlobalCore.getSelectedCache().setFound(true);
                         CacheDAO cacheDAO = new CacheDAO();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                        Config.FoundOffset.setValue(aktDraft.foundNumber);
+                        Config.FoundOffset.setValue(currentDraft.foundNumber);
                         Config.AcceptChanges();
                     }
 
@@ -179,7 +177,7 @@ public class DraftsView extends V_ListView {
                         Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
                         Config.AcceptChanges();
                     } // und eine evtl. vorhandene Draft FoundIt löschen
-                    drafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
+                    drafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
                 }
             }
             createGeoCacheVisits();
@@ -191,7 +189,7 @@ public class DraftsView extends V_ListView {
                 drafts.loadDrafts("", LoadingType.loadNewLastLength);
             }
         }
-        that.notifyDataSetChanged();
+        draftsView.notifyDataSetChanged();
     }
 
     private void addNewDraft(GeoCacheLogType type) {
@@ -261,9 +259,9 @@ public class DraftsView extends V_ListView {
             for (Draft tmpDraft : tmpDrafts) {
                 if ((tmpDraft.CacheId == cache.generatedId) && (tmpDraft.type == type)) {
                     newDraft = tmpDraft;
-                    newDraft.DeleteFromDatabase();
+                    newDraft.deleteFromDatabase();
                     newDraft.timestamp = new Date();
-                    aktDraft = newDraft;
+                    currentDraft = newDraft;
                 }
             }
         }
@@ -279,7 +277,7 @@ public class DraftsView extends V_ListView {
             newDraft.CacheUrl = cache.getUrl();
             newDraft.cacheType = cache.getGeoCacheType().ordinal();
             newDraft.fillType();
-            aktDraft = newDraft;
+            currentDraft = newDraft;
         } else {
             tmpDrafts.remove(newDraft);
 
@@ -331,19 +329,19 @@ public class DraftsView extends V_ListView {
         if (withoutShowEdit) {
             // neue Draft
             tmpDrafts.add(0, newDraft);
-            newDraft.WriteToDatabase();
-            aktDraft = newDraft;
+            newDraft.writeToDatabase();
+            currentDraft = newDraft;
             if (newDraft.type == GeoCacheLogType.found || newDraft.type == GeoCacheLogType.attended || newDraft.type == GeoCacheLogType.webcam_photo_taken) {
                 // Found it! -> Cache als gefunden markieren
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
                     CacheDAO cacheDAO = new CacheDAO();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                    Config.FoundOffset.setValue(aktDraft.foundNumber);
+                    Config.FoundOffset.setValue(currentDraft.foundNumber);
                     Config.AcceptChanges();
                 }
                 // und eine evtl. vorhandene Draft DNF löschen
-                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.didnt_find);
+                tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.didnt_find);
             } else if (newDraft.type == GeoCacheLogType.didnt_find) {
                 // DidNotFound -> Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
@@ -354,16 +352,16 @@ public class DraftsView extends V_ListView {
                     Config.AcceptChanges();
                 }
                 // und eine evtl. vorhandene Draft FoundIt löschen
-                tmpDrafts.DeleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
+                tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
             }
 
             createGeoCacheVisits();
 
-            if (that != null)
-                that.notifyDataSetChanged();
+            if (draftsView != null)
+                draftsView.notifyDataSetChanged();
 
         } else {
-            editDraft = new EditDraft(newDraft, returnListener, true);
+            editDraft = new EditDraft(newDraft, this::addOrChangeDraft, true);
             editDraft.show();
 
             CacheListChangedListeners.getInstance().cacheListChanged();
@@ -392,12 +390,9 @@ public class DraftsView extends V_ListView {
     }
 
     private void reloadDrafts() {
-        if (drafts == null)
-            drafts = new Drafts();
         drafts.loadDrafts("", LoadingType.loadNewLastLength);
-
         setAdapter(null);
-        lvAdapter = new DraftsViewAdapter(drafts);
+        lvAdapter = new DraftsViewAdapter();
         setAdapter(lvAdapter);
     }
 
@@ -468,16 +463,16 @@ public class DraftsView extends V_ListView {
                     drafts.loadDrafts("", LoadingType.Loadall);
 
                     for (Draft entry : drafts) {
-                        entry.DeleteFromDatabase();
+                        entry.deleteFromDatabase();
 
                     }
 
                     drafts.clear();
-                    aktDraft = null;
+                    currentDraft = null;
 
-                    that.setAdapter(null);
-                    lvAdapter = new DraftsViewAdapter(drafts);
-                    that.setAdapter(lvAdapter);
+                    draftsView.setAdapter(null);
+                    lvAdapter = new DraftsViewAdapter();
+                    draftsView.setAdapter(lvAdapter);
 
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
                     break;
@@ -508,7 +503,7 @@ public class DraftsView extends V_ListView {
         if (lvAdapter != null)
             lvAdapter.dispose();
         lvAdapter = null;
-        that = null;
+        draftsView = null;
         super.dispose();
         Log.debug(log, "DraftsView disposed");
     }
@@ -516,10 +511,8 @@ public class DraftsView extends V_ListView {
     private class DraftsViewAdapter implements Adapter {
 
         private final CB_FixSizeList<DraftViewItem> fixViewList = new CB_FixSizeList<>(20);
-        private Drafts drafts;
 
-        DraftsViewAdapter(Drafts drafts) {
-            this.drafts = drafts;
+        DraftsViewAdapter() {
         }
 
         @Override
@@ -568,25 +561,25 @@ public class DraftsView extends V_ListView {
 
         private boolean onItemClicked(DraftViewItem draftViewItem) {
             int index = draftViewItem.getIndex();
-            aktDraft = DraftsView.drafts.get(index);
+            currentDraft = drafts.get(index);
             draftViewItem.headerClicked = false;
             Menu cm = new Menu("DraftItemMenuTitle");
             cm.addMenuItem("edit", null, this::editDraft);
-            if (aktDraft.GcId != null) {
-                if (aktDraft.GcId.startsWith("GL")) {
+            if (currentDraft.GcId != null) {
+                if (currentDraft.GcId.startsWith("GL")) {
                     cm.addMenuItem("uploadLogImage", Sprites.getSprite(IconName.imagesIcon.name()), this::uploadLogImage);
-                    cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + aktDraft.GcId));
+                    cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + currentDraft.GcId));
                 }
             }
-            cm.addMenuItem("uploadAsDraft", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, false));
+            cm.addMenuItem("uploadAsDraft", UploadDrafts.getInstance().getIcon(), () -> logOnline(currentDraft, false));
             if (CB_Core_Settings.DirectOnlineLog.getValue())
-                cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(aktDraft, true));
+                cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(currentDraft, true));
             Sprite icon;
-            if (aktDraft.isTbDraft) {
+            if (currentDraft.isTbDraft) {
                 // Sprite from url ?  draft.TbIconUrl
                 icon = null;
             } else {
-                icon = Sprites.getSprite("big" + GeoCacheType.values()[aktDraft.cacheType].name());
+                icon = Sprites.getSprite("big" + GeoCacheType.values()[currentDraft.cacheType].name());
             }
             cm.addMenuItem("SelectCache", icon, this::selectCacheFromDraft);
             cm.addMenuItem("delete", Sprites.getSprite(IconName.DELETE.name()), this::deleteDraft);
@@ -603,9 +596,9 @@ public class DraftsView extends V_ListView {
 
         private void editDraft() {
             if (editDraft != null && !editDraft.isDisposed()) {
-                editDraft.setDraft(aktDraft, returnListener, false);
+                editDraft.setDraft(currentDraft, DraftsView.this::addOrChangeDraft, false);
             } else {
-                editDraft = new EditDraft(aktDraft, returnListener, false);
+                editDraft = new EditDraft(currentDraft, DraftsView.this::addOrChangeDraft, false);
             }
             editDraft.show();
         }
@@ -615,26 +608,24 @@ public class DraftsView extends V_ListView {
             if (mPath.length() == 0) {
                 mPath = Config.workPath + "/User/Media/";
             }
-            new FileOrFolderPicker(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), abstractFile -> {
-                new InputString("imageDescription") {
-                    public void callBack(String description) {
-                        GL.that.postAsync(() -> {
-                            Config.ImageUploadLastUsedPath.setValue(abstractFile.getParent());
-                            Config.AcceptChanges();
-                            try {
-                                String image = Base64.encodeBytes(WebbUtils.readBytes(abstractFile.getFileInputStream()));
-                                GroundspeakAPI.uploadLogImage(aktDraft.GcId, image, description);
-                                if (GroundspeakAPI.APIError == OK) {
-                                    MessageBox.show(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                                } else {
-                                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                                }
-                            } catch (Exception ignored) {
+            new FileOrFolderPicker(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), abstractFile -> new InputString("imageDescription") {
+                public void callBack(String description) {
+                    GL.that.postAsync(() -> {
+                        Config.ImageUploadLastUsedPath.setValue(abstractFile.getParent());
+                        Config.AcceptChanges();
+                        try {
+                            String image = Base64.encodeBytes(WebbUtils.readBytes(abstractFile.getFileInputStream()));
+                            GroundspeakAPI.uploadLogImage(currentDraft.GcId, image, description);
+                            if (GroundspeakAPI.APIError == OK) {
+                                MessageBox.show(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                            } else {
+                                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                             }
-                        });
-                    }
-                }.show();
-            }).show();
+                        } catch (Exception ignored) {
+                        }
+                    });
+                }
+            }.show()).show();
         }
 
         private void logOnline(final Draft draft, final boolean directLog) {
@@ -665,7 +656,7 @@ public class DraftsView extends V_ListView {
                             draft.GcId = GroundspeakAPI.logReferenceCode;
                             LogListView.getInstance().resetIsInitialized(); // if own log is written !
                         }
-                        addOrChangeDraft(draft, false, false);
+                        addOrChangeDraft(draft, false);
                     } else {
                         // Error handling
                         MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
@@ -701,31 +692,31 @@ public class DraftsView extends V_ListView {
         }
 
         private void selectCacheFromDraft() {
-            if (aktDraft == null)
+            if (currentDraft == null)
                 return;
 
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + aktDraft.CacheId, false, false, false);
+            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + currentDraft.CacheId, false, false, false);
             Cache tmpCache = null;
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
             Cache cache = tmpCache;
 
             if (cache == null) {
-                String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
+                String message = Translation.get("cacheOtherDb", currentDraft.CacheName);
                 message += "\n" + Translation.get("DraftNoSelect");
                 MessageBox.show(message);
                 return;
             }
 
             synchronized (Data.cacheList) {
-                cache = Data.cacheList.getCacheByGcCodeFromCacheList(aktDraft.gcCode);
+                cache = Data.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
             }
 
             if (cache == null) {
                 Data.cacheList.add(tmpCache);
-                cache = Data.cacheList.getCacheByGcCodeFromCacheList(aktDraft.gcCode);
+                cache = Data.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
             }
 
             Waypoint finalWp;
@@ -740,7 +731,7 @@ public class DraftsView extends V_ListView {
         private void deleteDraft() {
             //  perhaps delete the uploaded draft or log
             // aktuell selectierte draft löschen
-            if (aktDraft == null)
+            if (currentDraft == null)
                 return;
             // final Cache cache =
             // Database.Data.cacheList.GetCacheByGcCode(aktDraft.gcCode);
@@ -748,65 +739,54 @@ public class DraftsView extends V_ListView {
             Cache tmpCache = null;
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + aktDraft.CacheId, false, false, false);
+            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + currentDraft.CacheId, false, false, false);
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
             final Cache cache = tmpCache;
 
-            if (cache == null && !aktDraft.isTbDraft) {
-                String message = Translation.get("cacheOtherDb", aktDraft.CacheName);
+            if (cache == null && !currentDraft.isTbDraft) {
+                String message = Translation.get("cacheOtherDb", currentDraft.CacheName);
                 message += "\n" + Translation.get("draftNoDelete");
                 MessageBox.show(message);
                 return;
             }
 
             String message;
-            if (aktDraft.isTbDraft) {
-                message = Translation.get("confirmDraftDeletionTB", aktDraft.typeString, aktDraft.TbName);
+            if (currentDraft.isTbDraft) {
+                message = Translation.get("confirmDraftDeletionTB", currentDraft.typeString, currentDraft.TbName);
             } else {
-                message = Translation.get("confirmDraftDeletion", aktDraft.typeString, aktDraft.CacheName);
-                if (aktDraft.type == GeoCacheLogType.found || aktDraft.type == GeoCacheLogType.attended || aktDraft.type == GeoCacheLogType.webcam_photo_taken)
+                message = Translation.get("confirmDraftDeletion", currentDraft.typeString, currentDraft.CacheName);
+                if (currentDraft.type == GeoCacheLogType.found || currentDraft.type == GeoCacheLogType.attended || currentDraft.type == GeoCacheLogType.webcam_photo_taken)
                     message += Translation.get("confirmDraftDeletionRst");
             }
 
             MessageBox.show(message, Translation.get("deleteDraft"), MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
-                switch (which) {
-                    case MessageBox.BTN_LEFT_POSITIVE:
-                        // Yes button clicked
-                        // delete aktDraft
-                        if (cache != null) {
-                            if (cache.isFound()) {
-                                cache.setFound(false);
-                                CacheDAO cacheDAO = new CacheDAO();
-                                cacheDAO.WriteToDatabase_Found(cache);
-                                Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
-                                Config.AcceptChanges();
-                                // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
-                                // damit das Smiley Symbol aus der Map und der CacheList verschwindet
-                                synchronized (Data.cacheList) {
-                                    Cache tc = Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
-                                    if (tc != null) {
-                                        tc.setFound(false);
-                                    }
+                if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                    // delete aktDraft
+                    if (cache != null) {
+                        if (cache.isFound()) {
+                            cache.setFound(false);
+                            CacheDAO cacheDAO = new CacheDAO();
+                            cacheDAO.WriteToDatabase_Found(cache);
+                            Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
+                            Config.AcceptChanges();
+                            // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
+                            // damit das Smiley Symbol aus der Map und der CacheList verschwindet
+                            synchronized (Data.cacheList) {
+                                Cache tc = Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
+                                if (tc != null) {
+                                    tc.setFound(false);
                                 }
                             }
                         }
-                        DraftsView.drafts.deleteDraft(aktDraft);
-                        aktDraft = null;
-
-                        DraftsView.drafts.loadDrafts("", LoadingType.loadNewLastLength);
-
-                        that.setAdapter(null);
-                        lvAdapter = new DraftsViewAdapter(DraftsView.drafts);
-                        that.setAdapter(lvAdapter);
-
-                        createGeoCacheVisits();
-
-                        break;
-                    case MessageBox.BTN_RIGHT_NEGATIVE:
-                        // No button clicked
-                        // do nothing
-                        break;
+                    }
+                    drafts.deleteDraft(currentDraft);
+                    currentDraft = null;
+                    drafts.loadDrafts("", LoadingType.loadNewLastLength);
+                    draftsView.setAdapter(null);
+                    lvAdapter = new DraftsViewAdapter();
+                    draftsView.setAdapter(lvAdapter);
+                    createGeoCacheVisits();
                 }
                 return true;
             });

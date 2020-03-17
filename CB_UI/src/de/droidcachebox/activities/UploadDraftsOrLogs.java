@@ -92,7 +92,7 @@ public class UploadDraftsOrLogs {
                                 draft.GcId = GroundspeakAPI.logReferenceCode;
                                 LogListView.getInstance().resetIsInitialized(); // if own log is written !
                             }
-                            draft.UpdateDatabase();
+                            draft.updateDatabase();
                         }
                         count++;
                     }
