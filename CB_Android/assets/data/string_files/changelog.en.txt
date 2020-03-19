@@ -5,7 +5,8 @@
 • Deletions = -
 • Unsolved = •
 
-Changes up to version 3608:
+Changes up to version 3610:
+    * Sorting of local drafts by timestamp only
     + Help texts for the settings are always displayed (as in CB3)
     + Cache menu "Open cache in browser"
     ~ moved "Contact owner" to the cache menu

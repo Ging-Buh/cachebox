@@ -73,23 +73,19 @@ public class DraftsView extends V_ListView {
     private static DraftsView draftsView;
     private Draft currentDraft;
     private boolean firstShow;
-    private CB_RectF ItemRec;
     private Drafts drafts;
+    private DraftsViewAdapter draftsViewAdapter;
     private WaitDialog wd;
     private EditDraft editDraft;
-    private DraftsViewAdapter lvAdapter;
 
     private DraftsView() {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
         mCanDispose = false;
         setForceHandleTouchEvents();
-        ItemRec = new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
         setBackground(Sprites.ListBack);
         drafts = new Drafts();
         setHasInvisibleItems();
         setAdapter(null);
-        lvAdapter = new DraftsViewAdapter();
-        setAdapter(lvAdapter);
         setEmptyMsgItem(Translation.get("EmptyDrafts"));
         firstShow = true;
     }
@@ -392,8 +388,8 @@ public class DraftsView extends V_ListView {
     private void reloadDrafts() {
         drafts.loadDrafts("", LoadingType.loadNewLastLength);
         setAdapter(null);
-        lvAdapter = new DraftsViewAdapter();
-        setAdapter(lvAdapter);
+        draftsViewAdapter = new DraftsViewAdapter();
+        setAdapter(draftsViewAdapter);
     }
 
     public Menu getContextMenu() {
@@ -471,8 +467,8 @@ public class DraftsView extends V_ListView {
                     currentDraft = null;
 
                     draftsView.setAdapter(null);
-                    lvAdapter = new DraftsViewAdapter();
-                    draftsView.setAdapter(lvAdapter);
+                    draftsViewAdapter = new DraftsViewAdapter();
+                    draftsView.setAdapter(draftsViewAdapter);
 
                     // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
                     break;
@@ -500,19 +496,20 @@ public class DraftsView extends V_ListView {
     @Override
     public void dispose() {
         setAdapter(null);
-        if (lvAdapter != null)
-            lvAdapter.dispose();
-        lvAdapter = null;
+        if (draftsViewAdapter != null)
+            draftsViewAdapter.dispose();
+        draftsViewAdapter = null;
         draftsView = null;
         super.dispose();
         Log.debug(log, "DraftsView disposed");
     }
 
     private class DraftsViewAdapter implements Adapter {
-
         private final CB_FixSizeList<DraftViewItem> fixViewList = new CB_FixSizeList<>(20);
+        private CB_RectF itemRec;
 
         DraftsViewAdapter() {
+            itemRec = new CB_RectF(0, 0, draftsView.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
         }
 
         @Override
@@ -533,11 +530,11 @@ public class DraftsView extends V_ListView {
             }
 
             Draft fne = null;
-
             if (position < drafts.size()) {
                 fne = drafts.get(position);
             }
-            CB_RectF rec = new CB_RectF(ItemRec);
+
+            CB_RectF rec = new CB_RectF(itemRec);
             rec.scaleCenter(0.97f);
             rec.setHeight(MeasureItemHeight(fne));
             DraftViewItem v = new DraftViewItem(rec, position, fne);
@@ -584,13 +581,6 @@ public class DraftsView extends V_ListView {
             cm.addMenuItem("SelectCache", icon, this::selectCacheFromDraft);
             cm.addMenuItem("delete", Sprites.getSprite(IconName.DELETE.name()), this::deleteDraft);
             cm.show();
-            /*
-            if (draftViewItem.headerClicked) {
-            } else {
-                draftViewItem.headerClicked = false;
-                editDraft();
-            }
-             */
             return true;
         }
 
@@ -712,11 +702,10 @@ public class DraftsView extends V_ListView {
 
             synchronized (Data.cacheList) {
                 cache = Data.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
-            }
-
-            if (cache == null) {
-                Data.cacheList.add(tmpCache);
-                cache = Data.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
+                if (cache == null) {
+                    Data.cacheList.add(tmpCache);
+                    cache = Data.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
+                }
             }
 
             Waypoint finalWp;
@@ -784,8 +773,8 @@ public class DraftsView extends V_ListView {
                     currentDraft = null;
                     drafts.loadDrafts("", LoadingType.loadNewLastLength);
                     draftsView.setAdapter(null);
-                    lvAdapter = new DraftsViewAdapter();
-                    draftsView.setAdapter(lvAdapter);
+                    draftsViewAdapter = new DraftsViewAdapter();
+                    draftsView.setAdapter(draftsViewAdapter);
                     createGeoCacheVisits();
                 }
                 return true;
@@ -810,7 +799,7 @@ public class DraftsView extends V_ListView {
         private float MeasureItemHeight(Draft fne) {
             float headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
             float cacheIfoHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + UiSizes.getInstance().getMargin() + Fonts.Measure("T").height;
-            float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2);
+            float mesurdWidth = itemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2);
 
             float mh = 0;
             if (fne != null) {

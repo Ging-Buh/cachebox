@@ -4,7 +4,8 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 • Offen = •
-Änderungen bis Version 3608:
+Änderungen bis Version 3610:
+    * Sortierung der lokalen Logentwürfe nur nach Zeitstempel
     + Hilfetexte zu den Einstellungen werden immer mit angezeigt (wie in CB3)
     + Cachemenü "Öffne Cache im Browser"
 	~ verschoben "Besitzer kontaktieren" ins Cachemenü

@@ -22,17 +22,17 @@ import de.droidcachebox.utils.log.Log;
 import java.util.ArrayList;
 
 public class Drafts extends ArrayList<Draft> {
-    private static final String log = "Drafts";
+    private static final String sKlasse = "Drafts";
     private static final long serialVersionUID = 1L;
-    private boolean croppedList = false;
-    private int actCroppedLength = -1;
+    private boolean isCropped = false;
+    private int currentCroppedLength = -1;
 
     public Drafts() {
         IChanged settingsChangedListener = () -> {
             synchronized (Drafts.this) {
                 Drafts.this.clear();
-                croppedList = false;
-                actCroppedLength = -1;
+                isCropped = false;
+                currentCroppedLength = -1;
             }
         };
         CB_Core_Settings.DraftsLoadAll.addSettingChangedListener(settingsChangedListener);
@@ -40,7 +40,7 @@ public class Drafts extends ArrayList<Draft> {
     }
 
     public boolean isCropped() {
-        return croppedList;
+        return isCropped;
     }
 
     public void loadDrafts(String where, LoadingType loadingType) {
@@ -72,17 +72,17 @@ public class Drafts extends ArrayList<Draft> {
             if (maybeCropped) {
                 switch (loadingType) {
                     case LoadNew:
-                        actCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
-                        sql += " LIMIT " + (actCroppedLength + 1);
+                        currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
+                        sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
                     case loadNewLastLength:
-                        if (actCroppedLength == -1)
-                            actCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
-                        sql += " LIMIT " + (actCroppedLength + 1);
+                        if (currentCroppedLength == -1)
+                            currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
+                        sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
                     case loadMore:
-                        int Offset = actCroppedLength;
-                        actCroppedLength += CB_Core_Settings.DraftsLoadLength.getValue();
+                        int Offset = currentCroppedLength;
+                        currentCroppedLength += CB_Core_Settings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (CB_Core_Settings.DraftsLoadLength.getValue() + 1);
                         sql += " OFFSET " + Offset;
                 }
@@ -102,17 +102,17 @@ public class Drafts extends ArrayList<Draft> {
                     reader.close();
                 }
             } catch (Exception exc) {
-                Log.err(log, "Drafts", "loadDrafts", exc);
+                Log.err(sKlasse, "Drafts", "loadDrafts", exc);
             }
 
             // check Cropped
             if (maybeCropped) {
-                if (this.size() > actCroppedLength) {
-                    croppedList = true;
+                if (this.size() > currentCroppedLength) {
+                    isCropped = true;
                     // remove last item
                     this.remove(this.size() - 1);
                 } else {
-                    croppedList = false;
+                    isCropped = false;
                 }
             }
         }
