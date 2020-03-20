@@ -761,10 +761,10 @@ public class GroundspeakAPI {
         }
     }
 
-    public static int AddToWatchList(String gcCode) {
+    public static int addToList(String listCode, String gcCode) {
         if (!isAccessTokenInvalid()) {
             try {
-                getNetz().post(getUrl(1, "lists/" + fetchWatchListCode() + "/geocaches"))
+                getNetz().post(getUrl(1, "lists/" + listCode + "/geocaches"))
                         .body(new JSONObject().put("referenceCode", gcCode))
                         .ensureSuccess()
                         .asVoid()
@@ -778,10 +778,10 @@ public class GroundspeakAPI {
         return ERROR;
     }
 
-    public static int RemoveFromWatchList(String gcCode) {
+    public static int removeFromList(String listCode, String gcCode) {
         if (!isAccessTokenInvalid()) {
             try {
-                getNetz().delete(getUrl(1, "lists/" + fetchWatchListCode() + "/geocaches/" + gcCode)).ensureSuccess().asVoid();
+                getNetz().delete(getUrl(1, "lists/" + listCode + "/geocaches/" + gcCode)).ensureSuccess().asVoid();
             } catch (Exception ex) {
                 retry(ex);
                 return ERROR;

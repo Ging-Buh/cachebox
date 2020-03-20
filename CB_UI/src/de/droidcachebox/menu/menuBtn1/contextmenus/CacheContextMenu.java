@@ -23,7 +23,6 @@ import de.droidcachebox.menu.menuBtn2.*;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
-import de.droidcachebox.menu.menuBtn5.ContactOwner;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
@@ -60,7 +59,7 @@ public class CacheContextMenu {
             cacheContextMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(geoCache));
             if (selectedCacheIsGC) {
                 cacheContextMenu.addMenuItem("contactOwner", ContactOwner.getInstance().getIcon(), () -> ContactOwner.getInstance().execute());
-                cacheContextMenu.addMenuItem("Watchlist", null, CacheContextMenu::watchList);
+                cacheContextMenu.addMenuItem("GroundSpeakLists", null, () -> ListsAtGroundSpeak.getInstance().execute());
             }
             if (!Config.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()))
                 cacheContextMenu.addCheckableMenuItem("rememberGeoCache", Config.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()), CacheContextMenu::rememberGeoCache);
@@ -200,42 +199,6 @@ public class CacheContextMenu {
         // Update View
         ShowDescription.getInstance().updateDescriptionView(true);
         CacheListChangedListeners.getInstance().cacheListChanged();
-    }
-
-    private static void watchList() {
-        MessageBox mb = MessageBox.show(Translation.get("WatchlistMessage"), Translation.get("Watchlist"), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question,
-                (btnNumber, data) -> {
-                    if (btnNumber == BTN_LEFT_POSITIVE)
-                        addToWatchList();
-                    else if (btnNumber == MessageBox.BTN_MIDDLE_NEUTRAL)
-                        removeFromWatchList();
-                    return true;
-                });
-        mb.setButtonText("append", "remove", "cancel");
-    }
-
-    private static void addToWatchList() {
-        if (GlobalCore.isSetSelectedCache()) {
-            GL.that.postAsync(() -> {
-                if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddToWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                }
-            });
-        }
-    }
-
-    private static void removeFromWatchList() {
-        if (GlobalCore.isSetSelectedCache()) {
-            GL.that.postAsync(() -> {
-                if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFromWatchList"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                }
-            });
-        }
     }
 
     private static void deleteGeoCache() {
