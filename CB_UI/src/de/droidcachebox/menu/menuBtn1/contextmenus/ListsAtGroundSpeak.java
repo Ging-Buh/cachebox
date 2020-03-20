@@ -11,6 +11,8 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.translation.Translation;
 
+import java.util.Map;
+
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSITIVE;
 
@@ -32,6 +34,15 @@ public class ListsAtGroundSpeak extends AbstractAction {
         menu.addMenuItem("Watchlist", null, () -> groundspeakList("Watchlist"));
         menu.addMenuItem("Favoriteslist", null, () -> groundspeakList("Favoriteslist"));
         menu.addMenuItem("Ignorelist", null, () -> groundspeakList("Ignorelist"));
+        menu.addMenuItem("Bookmarklists", null, this::getBookmarkLists);
+        menu.show();
+    }
+
+    private void getBookmarkLists() {
+        Menu menu = new Menu("Bookmarklists");
+        for (Map.Entry<String, String> bookmarkList : GroundspeakAPI.fetchBookmarkLists().entrySet()) {
+            menu.addMenuItem("", bookmarkList.getKey(), null, () -> groundspeakList(bookmarkList));
+        }
         menu.show();
     }
 
@@ -40,7 +51,19 @@ public class ListsAtGroundSpeak extends AbstractAction {
         return null;
     }
 
-    private static void groundspeakList(String title) {
+    private void groundspeakList(Map.Entry<String, String> bookmarkList) {
+        MessageBox mb = MessageBox.show(Translation.get("BookmarklistMessage", bookmarkList.getKey()), bookmarkList.getKey(), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question,
+                (btnNumber, data) -> {
+                    if (btnNumber == BTN_LEFT_POSITIVE)
+                        addToList(bookmarkList.getValue());
+                    else if (btnNumber == MessageBox.BTN_MIDDLE_NEUTRAL)
+                        removeFromList(bookmarkList.getValue());
+                    return true;
+                });
+        mb.setButtonText("append", "remove", "cancel");
+    }
+
+    private void groundspeakList(String title) {
         MessageBox mb = MessageBox.show(Translation.get(title + "Message"), Translation.get(title), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question,
                 (btnNumber, data) -> {
                     if (btnNumber == BTN_LEFT_POSITIVE)
@@ -52,10 +75,11 @@ public class ListsAtGroundSpeak extends AbstractAction {
         mb.setButtonText("append", "remove", "cancel");
     }
 
-    private static void addToList(String title) {
+    private void addToList(String title) {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
-                String listCode;
+                String listCode, AddToTitle;
+                AddToTitle = "AddTo" + title;
                 switch (title) {
                     case "Watchlist":
                         listCode = "watch";
@@ -63,22 +87,27 @@ public class ListsAtGroundSpeak extends AbstractAction {
                     case "Favoriteslist":
                         listCode = "favorites";
                         break;
-                    default:
+                    case "Ignorelist":
                         listCode = "ignore";
+                        break;
+                    default:
+                        listCode = title;
+                        AddToTitle = "AddToBookmarklist";
                 }
                 if (GroundspeakAPI.addToList(listCode, GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get("AddTo" + title), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(Translation.get("ok"), Translation.get(AddToTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("AddTo" + title), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get(AddToTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 }
             });
         }
     }
 
-    private static void removeFromList(String title) {
+    private void removeFromList(String title) {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
-                String listCode;
+                String listCode, RemoveFromTitle;
+                RemoveFromTitle = "AddTo" + title;
                 switch (title) {
                     case "Watchlist":
                         listCode = "watch";
@@ -86,13 +115,17 @@ public class ListsAtGroundSpeak extends AbstractAction {
                     case "Favoriteslist":
                         listCode = "favorites";
                         break;
-                    default:
+                    case "Ignorelist":
                         listCode = "ignore";
+                        break;
+                    default:
+                        listCode = title;
+                        RemoveFromTitle = "RemoveFromBookmarklist";
                 }
                 if (GroundspeakAPI.removeFromList(listCode, GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get("RemoveFrom" + title), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(Translation.get("ok"), Translation.get(RemoveFromTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("RemoveFrom" + title), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get(RemoveFromTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                 }
             });
         }

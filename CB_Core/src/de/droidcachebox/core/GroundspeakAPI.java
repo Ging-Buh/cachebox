@@ -45,7 +45,7 @@ import static java.lang.Thread.sleep;
 public class GroundspeakAPI {
     public static final int OK = 0;
     public static final int ERROR = -1;
-    private static final String log = "GroundspeakAPI";
+    private static final String sKlasse = "GroundspeakAPI";
     public static String LastAPIError = "";
     public static int APIError;
     public static String logReferenceCode = "";
@@ -100,7 +100,7 @@ public class GroundspeakAPI {
                 if (APIError == 429) {
                     // 429 is only for nr of calls per minute
                     if (retryCount == 0) {
-                        Log.debug(log, "API-Limit exceeded: " + nrOfApiCalls + " Number of Calls within " + ((System.currentTimeMillis() - startTs) / 1000) + " seconds.");
+                        Log.debug(sKlasse, "API-Limit exceeded: " + nrOfApiCalls + " Number of Calls within " + ((System.currentTimeMillis() - startTs) / 1000) + " seconds.");
                         // Difference 61000 is one second more than one minute. (60000 = one minute gives still 429 Exception)
                         try {
                             long ta = 61000 - (System.currentTimeMillis() - startTs);
@@ -131,20 +131,20 @@ public class GroundspeakAPI {
                         }
                     } catch (Exception exc) {
                         LastAPIError = ex.getLocalizedMessage();
-                        Log.err(log, APIError + ":" + LastAPIError);
+                        Log.err(sKlasse, APIError + ":" + LastAPIError);
                     }
                 }
             } else {
                 // re == null
                 APIError = ERROR;
                 LastAPIError = ex.getLocalizedMessage();
-                Log.err(log, APIError + ":" + LastAPIError);
+                Log.err(sKlasse, APIError + ":" + LastAPIError);
             }
         } else {
             // no WebbException
             APIError = ERROR;
             LastAPIError = ex.getLocalizedMessage();
-            Log.err(log, APIError + ":" + LastAPIError, ex);
+            Log.err(sKlasse, APIError + ":" + LastAPIError, ex);
         }
         return retryCount > 0;
     }
@@ -152,7 +152,7 @@ public class GroundspeakAPI {
     public static ArrayList<GeoCacheRelated> searchGeoCaches(Query query) {
         // fetch/update geocaches consumes a lite or full cache
         ArrayList<GeoCacheRelated> fetchResults = new ArrayList<>();
-        Log.debug(log, "searchGeoCaches start " + query.toString());
+        Log.debug(sKlasse, "searchGeoCaches start " + query.toString());
         try {
 
             ArrayList<String> fields = query.getFields();
@@ -205,7 +205,7 @@ public class GroundspeakAPI {
                     } catch (Exception ex) {
                         doRetry = retry(ex);
                         if (!doRetry) {
-                            Log.debug(log, "searchGeoCaches with exception: " + LastAPIError);
+                            Log.debug(sKlasse, "searchGeoCaches with exception: " + LastAPIError);
                             fetchMyCacheLimits();
                             return fetchResults;
                         }
@@ -217,10 +217,10 @@ public class GroundspeakAPI {
         } catch (Exception e) {
             APIError = ERROR;
             LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "searchGeoCaches", e);
+            Log.err(sKlasse, "searchGeoCaches", e);
             return fetchResults;
         }
-        Log.debug(log, "searchGeoCaches ready with " + fetchResults.size() + " Caches.");
+        Log.debug(sKlasse, "searchGeoCaches ready with " + fetchResults.size() + " Caches.");
         fetchMyCacheLimits();
         return fetchResults;
     }
@@ -343,7 +343,7 @@ public class GroundspeakAPI {
                                 // one bad GCCode (not starting with GC) causes Error 404: will hopefully be changed in an update after 11.26.2018
                                 // a not existing GCCode seems to be ignored, what is ok
                                 doRetry = false;
-                                Log.err(log, "searchGeoCaches - skipped block cause: " + LastAPIError);
+                                Log.err(sKlasse, "searchGeoCaches - skipped block cause: " + LastAPIError);
                             } else {
                                 fetchMyCacheLimits();
                                 return fetchResults;
@@ -357,7 +357,7 @@ public class GroundspeakAPI {
         } catch (Exception e) {
             APIError = ERROR;
             LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "updateGeoCaches", e);
+            Log.err(sKlasse, "updateGeoCaches", e);
             return fetchResults;
         }
         fetchMyCacheLimits();
@@ -424,7 +424,7 @@ public class GroundspeakAPI {
                                     String dateCreated = jPQ.optString("lastUpdatedDateUtc", "");
                                     pq.lastGenerated = DateFromString(dateCreated);
                                 } catch (Exception exc) {
-                                    Log.err(log, "fetchPocketQueryList/lastGenerated", exc);
+                                    Log.err(sKlasse, "fetchPocketQueryList/lastGenerated", exc);
                                     pq.lastGenerated = new Date();
                                 }
                                 pq.cacheCount = jPQ.getInt("count");
@@ -452,7 +452,7 @@ public class GroundspeakAPI {
         } catch (Exception e) {
             APIError = ERROR;
             LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "fetchPocketQueryList", e);
+            Log.err(sKlasse, "fetchPocketQueryList", e);
             return pqList;
         }
     }
@@ -473,7 +473,7 @@ public class GroundspeakAPI {
             WebbUtils.copyStream(inStream, outStream);
             APIError = OK;
         } catch (Exception e) {
-            Log.err(log, "fetchPocketQuery", e);
+            Log.err(sKlasse, "fetchPocketQuery", e);
             APIError = ERROR;
             LastAPIError = e.getLocalizedMessage();
         } finally {
@@ -497,7 +497,7 @@ public class GroundspeakAPI {
                     LastAPIError = Translation.get("emptyLog");
                     return ERROR;
                 }
-                Log.debug(log, "is Log");
+                Log.debug(sKlasse, "is Log");
                 LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
                 params.put("fields", "owner.username,loggedDate,text,type,referenceCode");
                 JSONObject geocacheLog = getNetz()
@@ -518,7 +518,7 @@ public class GroundspeakAPI {
                 // logReferenceCode is return value
                 logReferenceCode = geocacheLog.optString("referenceCode", ""); // as return value
             } else {
-                Log.debug(log, "is draft"); //  + getUTCDate(dateLogged)
+                Log.debug(sKlasse, "is draft"); //  + getUTCDate(dateLogged)
                 getNetz()
                         .post(getUrl(1, "logdrafts"))
                         .body(new JSONObject()
@@ -531,11 +531,11 @@ public class GroundspeakAPI {
                         .asVoid();
             }
             LastAPIError = "";
-            Log.info(log, "UploadDraftOrLog done: " + gcCode);
+            Log.info(sKlasse, "UploadDraftOrLog done: " + gcCode);
             return OK;
         } catch (Exception e) {
             retry(e);
-            Log.err(log, "UploadDraftOrLog geocacheCode: " + gcCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError, e);
+            Log.err(sKlasse, "UploadDraftOrLog geocacheCode: " + gcCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError, e);
             return ERROR;
         }
     }
@@ -596,7 +596,7 @@ public class GroundspeakAPI {
                     if (!doRetry) {
                         return logList;
                     }
-                    Log.err(log, "fetchGeoCacheLogs", e);
+                    Log.err(sKlasse, "fetchGeoCacheLogs", e);
                 }
             }
             while (doRetry);
@@ -667,10 +667,10 @@ public class GroundspeakAPI {
                     JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
                     if (!jTrackable.optBoolean("inHolderCollection", false)) {
                         Trackable tb = createTrackable(jTrackable);
-                        Log.debug(log, "downloadUsersTrackables: add " + tb.getName());
+                        Log.debug(sKlasse, "downloadUsersTrackables: add " + tb.getName());
                         tbList.add(tb);
                     } else {
-                        Log.debug(log, "downloadUsersTrackables: not in HolderCollection" + jTrackable.optString("name", ""));
+                        Log.debug(sKlasse, "downloadUsersTrackables: not in HolderCollection" + jTrackable.optString("name", ""));
                     }
                 }
 
@@ -678,17 +678,17 @@ public class GroundspeakAPI {
                 skip = skip + take;
             }
             while (!ready);
-            Log.info(log, "downloadUsersTrackables done \n");
+            Log.info(sKlasse, "downloadUsersTrackables done \n");
             return tbList;
         } catch (Exception ex) {
             retry(ex);
-            Log.err(log, "downloadUsersTrackables " + LastAPIError, ex);
+            Log.err(sKlasse, "downloadUsersTrackables " + LastAPIError, ex);
             return tbList;
         }
     }
 
     public static Trackable fetchTrackable(String TBCode) {
-        Log.info(log, "fetchTrackable for " + TBCode);
+        Log.info(sKlasse, "fetchTrackable for " + TBCode);
         LastAPIError = "";
         APIError = 0;
         if (isAccessTokenInvalid()) return null;
@@ -715,7 +715,7 @@ public class GroundspeakAPI {
             } else {
                 LastAPIError = ex.getLocalizedMessage();
             }
-            Log.err(log, "fetchTrackable \n"
+            Log.err(sKlasse, "fetchTrackable \n"
                             + LastAPIError
                             + "\n for " + getUrl(1, "trackables/" + TBCode + "?fields=url,description")
                     , ex);
@@ -728,7 +728,7 @@ public class GroundspeakAPI {
     }
 
     public static int uploadTrackableLog(String TBCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note) {
-        Log.info(log, "uploadTrackableLog");
+        Log.info(sKlasse, "uploadTrackableLog");
         if (cacheCode == null) cacheCode = "";
         if (isAccessTokenInvalid()) return ERROR;
         try {
@@ -756,8 +756,69 @@ public class GroundspeakAPI {
             LastAPIError += "\n loggedDate: " + getDate(dateLogged);
             LastAPIError += "\n text: " + prepareNote(note);
             LastAPIError += "\n typeId: " + LogTypeId;
-            Log.err(log, "uploadTrackableLog \n" + LastAPIError, ex);
+            Log.err(sKlasse, "uploadTrackableLog \n" + LastAPIError, ex);
             return ERROR;
+        }
+    }
+
+    public static TreeMap<String, String> fetchBookmarkLists() {
+
+        TreeMap<String, String> bmList = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        try {
+
+            int skip = 0;
+            int take = 50;
+            String fields = "referenceCode,name";
+
+            do {
+                boolean doRetry;
+                do {
+                    doRetry = false;
+                    try {
+                        Response<JSONArray> r = getNetz()
+                                .get(getUrl(1, "users/me/lists"))
+                                .param("types", "bm")
+                                .param("fields", fields)
+                                .param("skip", skip)
+                                .param("take", take)
+                                .ensureSuccess()
+                                .asJsonArray();
+
+                        retryCount = 0;
+                        skip = skip + take;
+
+                        JSONArray response = r.getBody();
+
+                        for (int ii = 0; ii < response.length(); ii++) {
+                            JSONObject jPQ = (JSONObject) response.get(ii);
+                            String bmReferenceCode = jPQ.optString("referenceCode", "");
+                            if (bmReferenceCode.length() > 0) {
+                                String bmName = jPQ.optString("name", "");
+                                bmList.put(bmName, bmReferenceCode);
+                            }
+                        }
+
+                        if (response.length() < take) {
+                            APIError = OK;
+                            return bmList;
+                        }
+                    } catch (Exception ex) {
+                        doRetry = retry(ex);
+                        if (!doRetry) {
+                            // APIError from retry
+                            return bmList;
+                        }
+                    }
+                }
+                while (doRetry);
+            } while (true);
+
+        } catch (Exception ex) {
+            APIError = ERROR;
+            LastAPIError = ex.toString();
+            Log.err(sKlasse, "fetchBookmarkList", ex);
+            return bmList;
         }
     }
 
@@ -789,15 +850,6 @@ public class GroundspeakAPI {
             return OK;
         }
         return ERROR;
-    }
-
-    private static String fetchWatchListCode() {
-        JSONArray wl = getNetz()
-                .get(getUrl(1, "users/me/lists?types=wl&fields=referenceCode"))
-                .ensureSuccess()
-                .asJsonArray()
-                .getBody();
-        return ((JSONObject) wl.get(0)).optString("referenceCode", "");
     }
 
     public static String fetchFriends() {
@@ -889,7 +941,7 @@ public class GroundspeakAPI {
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
-            Log.info(log, "uploadLogImage done");
+            Log.info(sKlasse, "uploadLogImage done");
         } catch (Exception ex) {
             APIError = ERROR;
             LastAPIError = ex.toString() + url.toString();
@@ -912,7 +964,7 @@ public class GroundspeakAPI {
 
     public static UserInfos fetchMyUserInfos() {
         if (me == null || me.memberShipType == MemberShipType.Unknown) {
-            Log.debug(log, "fetchMyUserInfos called. Must fetch. Active now: " + active);
+            Log.debug(sKlasse, "fetchMyUserInfos called. Must fetch. Active now: " + active);
             do {
                 if (active) {
                     // a try to handle quickly following calls (by another thread)
@@ -927,7 +979,7 @@ public class GroundspeakAPI {
                     }
                     while (active || waitedForMillis == 60);
                     if (waitedForMillis == 60) {
-                        Log.debug(log, "avoid endless loop");
+                        Log.debug(sKlasse, "avoid endless loop");
                     }
                 }
                 active = true;
@@ -936,7 +988,7 @@ public class GroundspeakAPI {
                     me.findCount = -1;
                     // we need a new AccessToken
                     // API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
-                    Log.err(log, "fetchMyUserInfos: Need a new Access Token");
+                    Log.err(sKlasse, "fetchMyUserInfos: Need a new Access Token");
                 }
                 active = false;
             }
@@ -1000,7 +1052,7 @@ public class GroundspeakAPI {
             // Log.debug(log, "Access Token = " + act.substring(1, act.length()));
             return act.substring(1);
         } else
-            Log.err(log, "no Access Token");
+            Log.err(sKlasse, "no Access Token");
         return "";
         /* */
     }
@@ -1044,7 +1096,7 @@ public class GroundspeakAPI {
     private static Trackable createTrackable(JSONObject API1Trackable) {
         try {
             Trackable tb = new Trackable();
-            Log.debug(log, API1Trackable.toString());
+            Log.debug(sKlasse, API1Trackable.toString());
             tb.setArchived(false);
             tb.setTbCode(API1Trackable.optString("referenceCode", ""));
             // trackingNumber	string	unique number used to prove discovery of trackable. only returned if user matches the holderCode
@@ -1070,7 +1122,7 @@ public class GroundspeakAPI {
             tb.setTypeName(API1Trackable.optString("type", ""));
             return tb;
         } catch (Exception e) {
-            Log.err(log, "createTrackable(JSONObject API1Trackable)", e);
+            Log.err(sKlasse, "createTrackable(JSONObject API1Trackable)", e);
             return null;
         }
     }
@@ -1104,7 +1156,7 @@ public class GroundspeakAPI {
                     case "referenceCode":
                         cache.setGeoCacheCode(API1Cache.optString(field, ""));
                         if (cache.getGeoCacheCode().length() == 0) {
-                            Log.err(log, "Get no GCCode");
+                            Log.err(sKlasse, "Get no GCCode");
                             return null;
                         }
                         cache.setUrl("https://coord.info/" + cache.getGeoCacheCode());
@@ -1270,13 +1322,13 @@ public class GroundspeakAPI {
                         break;
                     default:
                         // Remind the programmer
-                        Log.err(log, "createGeoCache: " + switchValue + " not handled");
+                        Log.err(sKlasse, "createGeoCache: " + switchValue + " not handled");
                 }
             }
 
             return cache;
         } catch (Exception e) {
-            Log.err(log, "createGeoCache(JSONObject API1Cache)", e);
+            Log.err(sKlasse, "createGeoCache(JSONObject API1Cache)", e);
             return null;
         }
     }
@@ -1568,7 +1620,7 @@ public class GroundspeakAPI {
         try {
             return new SimpleDateFormat(ps, Locale.US).parse(d);
         } catch (Exception e) {
-            Log.err(log, "DateFromString", e);
+            Log.err(sKlasse, "DateFromString", e);
             return new Date();
         }
     }
@@ -1579,7 +1631,7 @@ public class GroundspeakAPI {
 
     private static String getUTCDate(Date date) {
         // check "2001-09-28T00:00:00"
-        Log.debug(log, "getUTCDate In:" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(date));
+        Log.debug(sKlasse, "getUTCDate In:" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(date));
         long utc = date.getTime();
         // TimeZone tzp = TimeZone.getTimeZone("GMT");
         // utc = utc - tzp.getOffset(utc);
@@ -1587,7 +1639,7 @@ public class GroundspeakAPI {
         Date newDate = new Date();
         newDate.setTime(newUtc);
         String ret = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(newDate);
-        Log.debug(log, "getUTCDate Out:" + ret);
+        Log.debug(sKlasse, "getUTCDate Out:" + ret);
         return ret;
     }
 
