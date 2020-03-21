@@ -40,10 +40,12 @@ public class ListsAtGroundSpeak extends AbstractAction {
 
     private void getBookmarkLists() {
         Menu menu = new Menu("Bookmarklists");
-        for (Map.Entry<String, String> bookmarkList : GroundspeakAPI.fetchBookmarkLists().entrySet()) {
-            menu.addMenuItem("", bookmarkList.getKey(), null, () -> groundspeakList(bookmarkList));
-        }
-        menu.show();
+        GL.that.postAsync(() -> {
+            for (Map.Entry<String, String> bookmarkList : GroundspeakAPI.fetchBookmarkLists().entrySet()) {
+                menu.addMenuItem("", bookmarkList.getKey(), null, () -> groundspeakList(bookmarkList));
+            }
+            menu.show();
+        });
     }
 
     @Override
