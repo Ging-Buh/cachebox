@@ -108,12 +108,11 @@ public class UploadDraftsOrLogs {
             @Override
             public void runnableIsReady(boolean canceld) {
                 if (!canceld) {
-
-                    if (!uploadMeldung.equals("")) {
+                    if (uploadMeldung.length() == 0) {
+                        MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live);
+                    } else {
                         if (!apiKeyError)
                             MessageBox.show(uploadMeldung, Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
-                    } else {
-                        MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live);
                     }
                 }
                 DraftsView.getInstance().notifyDataSetChanged();

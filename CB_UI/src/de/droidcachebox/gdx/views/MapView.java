@@ -320,9 +320,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
                         if (geoCacheRelateds.size() > 0) {
                             try {
-                                WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                                WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                             } catch (InterruptedException ex) {
-                                Log.err(sKlasse, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
+                                Log.err(sKlasse, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                             }
                         } else {
                             if (GroundspeakAPI.APIError != OK) {

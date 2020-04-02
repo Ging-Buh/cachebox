@@ -326,9 +326,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             if (geoCacheRelateds.size() > 0) {
                                 try {
                                     importAnimation.setAnimationType(AnimationType.Work);
-                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
+                                    WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
                                 } catch (InterruptedException e) {
-                                    Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                                    Log.err(log, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                                 }
                             }
 

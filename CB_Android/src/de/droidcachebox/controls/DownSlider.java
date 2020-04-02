@@ -95,12 +95,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     private boolean swipeUp = false;
     private boolean swipeDown = false;
     private boolean initialNight = false;
-    private Boolean isVisible = false;
-    private String mLatitude = "";
-    private String mLongitude = "";
-    private String mSats;
-    private String mAccuracy;
-    private String mAlt;
+    private boolean isVisible = false;
     private TextPaint GPSLayoutTextPaint;
     private StaticLayout GPSLayout;
     private boolean AnimationIsRunning = false;
@@ -467,7 +462,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         canvas.translate(0, +versatz);
     }
 
-    private Boolean drawWPInfo(Canvas canvas) {
+    private boolean drawWPInfo(Canvas canvas) {
         if (mWaypoint == null)
             return false;
 
@@ -483,8 +478,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             // draw icon
             if ((mWaypoint.waypointType.ordinal()) < Global.CacheIconsBig.length)
                 iconWidth = ActivityUtils.putImageTargetHeight(canvas, Global.CacheIconsBig[mWaypoint.waypointType.ordinal()], UiSizes.getInstance().getHalfCornerSize(), UiSizes.getInstance().getCornerSize(), imgSize);
-        } catch (Exception e1) {
-
+        } catch (Exception ignored) {
         }
 
         try {
@@ -495,15 +489,15 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             top += ActivityUtils.drawStaticLayout(canvas, WPLayoutCord, left, top);
             if (mWaypoint.getClue() != null)
                 ActivityUtils.drawStaticLayout(canvas, WPLayoutClue, left, top);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         return true;
     }
 
-    private Boolean drawGPSInfo(Canvas canvas) {
+    private void drawGPSInfo(Canvas canvas) {
         if (GPSInfoHeight == 0)
-            return false;
+            return;
 
         int LineColor = Global.getColor(R.attr.ListSeparator);
         CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, GPSInfoHeight - 5);
@@ -529,7 +523,6 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         left += iconWidth;
         top += ActivityUtils.drawStaticLayout(canvas, GPSLayout, left, top);
 
-        return true;
     }
 
     public void setPos_onUI(final int Pos) {
@@ -689,12 +682,12 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
             return;
 
         // mSats = String.valueOf(location.getExtras().getInt("satellites"));
-        mSats = GPS.getSatAndFix();
+        String mSats = GPS.getSatAndFix();
 
-        mAccuracy = String.valueOf(location.getAccuracy());
-        mAlt = Locator.getInstance().getAltStringWithCorection();
-        mLatitude = UnitFormatter.FormatLatitudeDM(location.getLatitude());
-        mLongitude = UnitFormatter.FormatLongitudeDM(location.getLongitude());
+        String mAccuracy = String.valueOf(location.getAccuracy());
+        String mAlt = Locator.getInstance().getAltStringWithCorection();
+        String mLatitude = UnitFormatter.FormatLatitudeDM(location.getLatitude());
+        String mLongitude = UnitFormatter.FormatLongitudeDM(location.getLongitude());
 
         String br = "\n";
         String Text = Translation.get("current") + " " + mLatitude + " " + mLongitude + br + Translation.get("alt") + " " + mAlt + br + Translation.get("accuracy") + "  +/- " + mAccuracy + "m" + br + Translation.get("sats") + " " + mSats;

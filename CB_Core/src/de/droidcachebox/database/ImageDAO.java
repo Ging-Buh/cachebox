@@ -27,7 +27,7 @@ public class ImageDAO {
      * @param image ?
      * @param ignoreExisting ?
      */
-    public void writeToDatabase(ImageEntry image, Boolean ignoreExisting) {
+    public void writeToDatabase(ImageEntry image, boolean ignoreExisting) {
         Parameters args = new Parameters();
         args.put("CacheId", image.getCacheId());
         args.put("GcCode", image.getGcCode());

@@ -16,8 +16,7 @@ public class ImporterProgress {
 
     // Initial Progress at Constructor
     public ImporterProgress() {
-        steps = new ArrayList<Step>();
-
+        steps = new ArrayList<>();
     }
 
     public void addStep(Step step) {
@@ -41,7 +40,7 @@ public class ImporterProgress {
                 if (Done) {
                     job.progress = 1f;
                 } else {
-                    job.progress += job.stepweight;
+                    job.progress += job.stepWeight;
                 }
                 Progress = getProgress();
 
@@ -82,11 +81,11 @@ public class ImporterProgress {
      *
      * @author Longri
      */
-    public class Step {
-        public float weight = 0.0f;
-        public float progress = 0.0f;
+    public static class Step {
+        public float weight;
+        public float progress;
         public String Name;
-        public float stepweight;
+        public float stepWeight;
 
         public Step(String Name, float weight) {
             this.weight = weight;
@@ -96,9 +95,9 @@ public class ImporterProgress {
 
         public void setMaxStep(int max) {
             if (max == 0) {
-                this.stepweight = 1f;
+                this.stepWeight = 1f;
             } else {
-                this.stepweight = 1f / (float) max;
+                this.stepWeight = 1f / (float) max;
             }
 
         }

@@ -19,15 +19,15 @@ import java.net.URLEncoder;
 
 public class ContactOwner extends AbstractAction {
 
-    private static ContactOwner that;
+    private static ContactOwner contactOwner;
 
     private ContactOwner() {
         super("contactOwner");
     }
 
     public static ContactOwner getInstance() {
-        if (that == null) that = new ContactOwner();
-        return that;
+        if (contactOwner == null) contactOwner = new ContactOwner();
+        return contactOwner;
     }
 
     @Override

@@ -34,11 +34,11 @@ public class Cache implements Comparable<Cache>, Serializable {
     public final static byte IS_LITE = 1;
     public final static byte IS_FULL = 2;
     // ########################################################
-    // Boolean Handling
-    // one Boolean use up to 4 Bytes
-    // Boolean data type represents one bit of information, but its "size" isn't something that's precisely defined. (Oracle Docs)
+    // boolean Handling
+    // one boolean use up to 4 Bytes
+    // boolean data type represents one bit of information, but its "size" isn't something that's precisely defined. (Oracle Docs)
     //
-    // so we use one Short for Store all Boolean and Use a BitMask
+    // so we use one Short for Store all boolean and Use a BitMask
     // ########################################################
     final static byte NOT_LIVE = 0;
     private static final String EMPTY_STRING = "";
@@ -302,7 +302,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     /**
      * Returns true has the Cache Spoilers else returns false
      *
-     * @return Boolean
+     * @return boolean
      */
     public boolean hasSpoiler() {
         if (geoCacheDetail != null) {

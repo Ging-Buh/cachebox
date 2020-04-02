@@ -86,9 +86,9 @@ public class Splash extends Activity {
     private Dialog msg;
     private ArrayList<String> AdditionalWorkPathArray;
     private SharedPreferences androidSetting;
-    private Boolean showSandbox;
-    private Bundle bundeledData;
-    private boolean askForWorkpath;
+    private boolean showSandbox;
+    private Bundle bundledData;
+    private boolean askForWorkPath;
     private FrameLayout frame;
     private Activity main;
 
@@ -106,7 +106,7 @@ public class Splash extends Activity {
         }
         Log.info(log, "onCreate called");
 
-        bundeledData = new Bundle();
+        bundledData = new Bundle();
         prepareBundledData();
 
         // settings for this class Activity
@@ -127,7 +127,7 @@ public class Splash extends Activity {
 
         if (main == null) {
             startInitialization();
-            if (askForWorkpath) {
+            if (askForWorkPath) {
                 askForWorkPath(); // does finishInitializationAndStartMain()
             } else {
                 finishInitializationAndStartMain();
@@ -159,7 +159,7 @@ public class Splash extends Activity {
                 Config.mapViewDPIFaktor.setValue(displayDensity);
             }
             Global.Paints.init(this);
-            mainIntent.putExtras(bundeledData); // the prepared Data
+            mainIntent.putExtras(bundledData); // the prepared Data
             startActivity(mainIntent);
             setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
             finish(); // this activity can be closed and back to the calling activity in onActivityResult
@@ -246,17 +246,17 @@ public class Splash extends Activity {
         }
 
         if (GcCode != null)
-            bundeledData.putSerializable("GcCode", GcCode);
+            bundledData.putSerializable("GcCode", GcCode);
         if (name != null)
-            bundeledData.putSerializable("Name", name);
+            bundledData.putSerializable("Name", name);
         if (guid != null)
-            bundeledData.putSerializable("Guid", guid);
+            bundledData.putSerializable("Guid", guid);
         if (GpxPath != null)
-            bundeledData.putSerializable("GpxPath", GpxPath);
+            bundledData.putSerializable("GpxPath", GpxPath);
         if (LatLon != null)
-            bundeledData.putSerializable("LatLon", LatLon);
+            bundledData.putSerializable("LatLon", LatLon);
         if (downloadPath != null)
-            bundeledData.putSerializable("MapDownloadPath", downloadPath);
+            bundledData.putSerializable("MapDownloadPath", downloadPath);
 
     }
 
@@ -313,7 +313,7 @@ public class Splash extends Activity {
         // read some setting from Android Preferences (Platform
         workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
         setWorkPathFromRedirectionFileIfExists();
-        askForWorkpath = androidSetting.getBoolean("AskAgain", false)
+        askForWorkPath = androidSetting.getBoolean("AskAgain", false)
                 || !FileIO.directoryExists((Environment.getExternalStorageDirectory().getPath() + "/CacheBox"))
                 || FileIO.fileExists(workPath + "/askAgain.txt");
         showSandbox = androidSetting.getBoolean("showSandbox", false);

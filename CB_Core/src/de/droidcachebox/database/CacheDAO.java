@@ -502,7 +502,7 @@ public class CacheDAO {
         return GcCodes;
     }
 
-    public Boolean loadBooleanValue(String gcCode, String key) {
+    public boolean loadBooleanValue(String gcCode, String key) {
         CoreCursor reader = Database.Data.sql.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
         try {
             reader.moveToFirst();

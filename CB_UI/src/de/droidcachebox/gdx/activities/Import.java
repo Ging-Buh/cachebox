@@ -871,32 +871,32 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 try {
                     // Set Progress values
                     if (checkImportPQfromGC.isChecked()) {
-                        ip.addStep(ip.new Step("importGC", 4));
+                        ip.addStep(new ImporterProgress.Step("importGC", 4));
                     }
                     if (checkImportFromCBServer.isChecked()) {
-                        ip.addStep(ip.new Step("importCBServer", 4));
+                        ip.addStep(new ImporterProgress.Step("importCBServer", 4));
                     }
                     if (checkBoxImportGPX.isChecked()) {
-                        ip.addStep(ip.new Step("ExtractZip", 1));
-                        ip.addStep(ip.new Step("AnalyseGPX", 1));
-                        ip.addStep(ip.new Step("ImportGPX", 4));
+                        ip.addStep(new ImporterProgress.Step("ExtractZip", 1));
+                        ip.addStep(new ImporterProgress.Step("AnalyseGPX", 1));
+                        ip.addStep(new ImporterProgress.Step("ImportGPX", 4));
                     }
                     if (checkBoxGcVote.isChecked()) {
-                        ip.addStep(ip.new Step("sendGcVote", 1));
-                        ip.addStep(ip.new Step("importGcVote", 4));
+                        ip.addStep(new ImporterProgress.Step("sendGcVote", 1));
+                        ip.addStep(new ImporterProgress.Step("importGcVote", 4));
                     }
 
                     if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
                         // ip.addStep(ip.new Step("importImageUrls", 4));
-                        ip.addStep(ip.new Step("importImages", 4));
+                        ip.addStep(new ImporterProgress.Step("importImages", 4));
                     }
 
                     if (checkBoxCleanLogs.isChecked()) {
-                        ip.addStep(ip.new Step("DeleteLogs", 1));
+                        ip.addStep(new ImporterProgress.Step("DeleteLogs", 1));
                     }
 
                     if (checkBoxCompactDB.isChecked()) {
-                        ip.addStep(ip.new Step("CompactDB", 1));
+                        ip.addStep(new ImporterProgress.Step("CompactDB", 1));
                     }
 
                     // begin import

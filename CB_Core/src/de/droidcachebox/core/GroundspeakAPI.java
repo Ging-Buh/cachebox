@@ -487,18 +487,18 @@ public class GroundspeakAPI {
         }
     }
 
-    public static int UploadDraftOrLog(String gcCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
+    public static int UploadDraftOrLog(String gcCode, int wptLogTypeId, Date dateLogged, String logText, boolean directLog) {
         logReferenceCode = "";
         if (isAccessTokenInvalid()) return ERROR; // should be checked in advance
 
         try {
             if (directLog) {
-                if (note.length() == 0) {
+                if (logText.length() == 0) {
                     LastAPIError = Translation.get("emptyLog");
                     return ERROR;
                 }
                 Log.debug(sKlasse, "is Log");
-                LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+                LinkedHashMap<String, Object> params = new LinkedHashMap<>();
                 params.put("fields", "owner.username,loggedDate,text,type,referenceCode");
                 JSONObject geocacheLog = getNetz()
                         .post(getUrl(1, "geocachelogs") + "?" + WebbUtils.queryString(params))
@@ -506,7 +506,7 @@ public class GroundspeakAPI {
                                 .put("geocacheCode", gcCode)
                                 .put("type", wptLogTypeId)
                                 .put("loggedDate", getDate(dateLogged))
-                                .put("text", prepareNote(note))
+                                .put("text", prepareNote(logText))
                         )
                         .ensureSuccess()
                         .asJsonObject()
@@ -525,7 +525,7 @@ public class GroundspeakAPI {
                                 .put("geocacheCode", gcCode)
                                 .put("logType", wptLogTypeId)
                                 .put("loggedDate", getDate(dateLogged))
-                                .put("note", prepareNote(note))
+                                .put("note", prepareNote(logText))
                         )
                         .ensureSuccess()
                         .asVoid();

@@ -254,7 +254,7 @@ public class Import_GSAK extends ActivityBase {
                             addWayPoints(cache);
                             // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
                             GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
-                            WriteIntoDB.CacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
+                            WriteIntoDB.writeCacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
                         }
                     } catch (Exception ex) {
                         Log.err(sKlasse, "Import " + GcCode, ex);

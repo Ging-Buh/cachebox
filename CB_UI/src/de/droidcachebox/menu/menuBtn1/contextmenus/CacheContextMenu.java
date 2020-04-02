@@ -122,9 +122,9 @@ public class CacheContextMenu {
                     ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                     if (geoCacheRelateds.size() > 0) {
                         try {
-                            WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                            WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                         } catch (InterruptedException ex) {
-                            Log.err(sKlasse, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", ex);
+                            Log.err(sKlasse, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                         }
 
                         // Reload result from DB

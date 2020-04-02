@@ -12,7 +12,7 @@ public class WriteIntoDB {
     static ImageDAO imageDAO = new ImageDAO();
     static WaypointDAO waypointDAO = new WaypointDAO();
 
-    public static void CachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) throws InterruptedException {
+    public static void writeCachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) throws InterruptedException {
 
         if (cacheDAO == null) {
             cacheDAO = new CacheDAO();
@@ -24,7 +24,7 @@ public class WriteIntoDB {
         Database.Data.sql.beginTransaction();
 
         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
-            CacheAndLogsAndImagesIntoDB(geoCacheRelated, forCategory);
+            writeCacheAndLogsAndImagesIntoDB(geoCacheRelated, forCategory);
         }
 
         Database.Data.sql.setTransactionSuccessful();
@@ -34,11 +34,11 @@ public class WriteIntoDB {
 
     }
 
-    public static void CacheAndLogsAndImagesIntoDB(GeoCacheRelated geoCacheRelated, GpxFilename forCategory) throws InterruptedException {
-        CacheAndLogsAndImagesIntoDB(geoCacheRelated, forCategory, true);
+    public static void writeCacheAndLogsAndImagesIntoDB(GeoCacheRelated geoCacheRelated, GpxFilename forCategory) throws InterruptedException {
+        writeCacheAndLogsAndImagesIntoDB(geoCacheRelated, forCategory, true);
     }
 
-    public static void CacheAndLogsAndImagesIntoDB(GeoCacheRelated geoCacheRelated, GpxFilename forCategory, boolean keepOldCacheValues) throws InterruptedException {
+    public static void writeCacheAndLogsAndImagesIntoDB(GeoCacheRelated geoCacheRelated, GpxFilename forCategory, boolean keepOldCacheValues) throws InterruptedException {
 
         // Auf eventuellen Thread Abbruch reagieren
         Thread.sleep(2);

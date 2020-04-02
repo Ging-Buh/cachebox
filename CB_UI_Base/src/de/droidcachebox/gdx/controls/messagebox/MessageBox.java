@@ -31,7 +31,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.StringH;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MessageBox extends Dialog {
     public static final int BTN_LEFT_POSITIVE = 1;
@@ -47,7 +46,7 @@ public class MessageBox extends Dialog {
     private OnClickListener btnMiddleNeutralClickListener;
     private OnClickListener btnRightNegativeClickListener;
     private OnMsgBoxClickListener mMsgBoxClickListener;
-    private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
+    private ArrayList<CB_View_Base> FooterItems = new ArrayList<>();
 
     public MessageBox(Size size, String name) {
         super(size.getBounds().asFloat(), name);
@@ -375,8 +374,8 @@ public class MessageBox extends Dialog {
             return;
         super.initialize();
         synchronized (childs) {
-            for (Iterator<CB_View_Base> iterator = FooterItems.iterator(); iterator.hasNext(); ) {
-                childs.add(iterator.next());
+            for (CB_View_Base footerItem : FooterItems) {
+                childs.add(footerItem);
             }
         }
     }
@@ -388,7 +387,6 @@ public class MessageBox extends Dialog {
         if (FooterItems != null) {
             for (CB_View_Base t : FooterItems) {
                 t.dispose();
-                t = null;
             }
             FooterItems = null;
         }
