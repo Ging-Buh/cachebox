@@ -377,7 +377,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                     setSelectedCacheVisible();
                     invalidate();
                     if (Config.CacheContextMenuShortClickToggle.getValue())
-                        CacheContextMenu.getCacheContextMenu(true).show();
+                        CacheContextMenu.getInstance().getCacheContextMenu(true).show();
                     return true;
                 });
 
@@ -398,7 +398,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
                     geoCacheListView.setSelection(selectionIndex);
                     setSelectedCacheVisible();
                     invalidate();
-                    CacheContextMenu.getCacheContextMenu(true).show();
+                    CacheContextMenu.getInstance().getCacheContextMenu(true).show();
                     return true;
                 });
 

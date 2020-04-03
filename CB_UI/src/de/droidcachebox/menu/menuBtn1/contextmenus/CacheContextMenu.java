@@ -35,60 +35,74 @@ import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSIT
 
 public class CacheContextMenu {
     private static final String sKlasse = "CacheContextMenu";
+    private static CacheContextMenu instance;
+    private boolean forCacheList;
+    private Cache geoCache;
+    private Menu theMenu;
     private static CancelWaitDialog wd;
 
-    public static Menu getCacheContextMenu(boolean forCacheList) {
-
-        Menu cacheContextMenu = new Menu("DescriptionViewTitle");
-        Cache geoCache = GlobalCore.getSelectedCache();
-        boolean selectedCacheIsSet = GlobalCore.isSetSelectedCache();
-        boolean selectedCacheIsGC = false;
-        if (selectedCacheIsSet) {
-            selectedCacheIsGC = geoCache.getGeoCacheCode().startsWith("GC");
+    public static CacheContextMenu getInstance() {
+        if (instance == null) {
+            instance = new CacheContextMenu();
+            instance.geoCache = null;
         }
-        if (forCacheList) {
-            cacheContextMenu.addCheckableMenuItem("CacheContextMenuShortClickToggle", Config.CacheContextMenuShortClickToggle.getValue(), CacheContextMenu::toggleShortClick);
-            if (selectedCacheIsSet)
-                cacheContextMenu.addMoreMenu(ShowDrafts.getInstance().getContextMenu(), Translation.get("DraftsContextMenuTitle"), Translation.get("DraftsContextMenuTitle"));
-        }
-        if (selectedCacheIsSet) {
-            if (selectedCacheIsGC)
-                cacheContextMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), CacheContextMenu::reloadSelectedCache);
-            cacheContextMenu.addMenuItem("Open_Cache_Link", Sprites.getSprite("big" + geoCache.getGeoCacheType().name()), () -> callUrl(geoCache.getUrl()));
-            cacheContextMenu.addCheckableMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), geoCache.isFavorite(), CacheContextMenu::toggleAsFavorite);
-            cacheContextMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(geoCache));
-            if (selectedCacheIsGC) {
-                cacheContextMenu.addMenuItem("contactOwner", ContactOwner.getInstance().getIcon(), () -> ContactOwner.getInstance().execute());
-                cacheContextMenu.addMenuItem("GroundSpeakLists", null, () -> ListsAtGroundSpeak.getInstance().execute());
-            }
-            if (!Config.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()))
-                cacheContextMenu.addCheckableMenuItem("rememberGeoCache", Config.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()), CacheContextMenu::rememberGeoCache);
-            cacheContextMenu.addMenuItem("MI_DELETE_CACHE", Sprites.getSprite(IconName.DELETE.name()), CacheContextMenu::deleteGeoCache);
-        }
-        if (forCacheList) {
-            cacheContextMenu.addDivider();
-            // cacheContextMenu.addMenuItem("Map", Sprites.getSprite(IconName.map.name()), () -> ShowMap.getInstance().execute());
-            // cacheContextMenu.addMenuItem("Description", Sprites.getSprite(IconName.docIcon.name()), () -> ShowDescription.getInstance().execute());
-            cacheContextMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> ShowWaypoint.getInstance().execute());
-            cacheContextMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> HintDialog.getInstance().showHint()).setEnabled(geoCache.hasHint());
-            cacheContextMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().execute());
-            cacheContextMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().execute());
-            cacheContextMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.getInstance().execute());
-            cacheContextMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().execute());
-            cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute());
-            cacheContextMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
-            cacheContextMenu.addMenuItem("descExt", Sprites.getSprite(IconName.docIcon.name()), () -> StartExternalDescription.getInstance().execute());
-        } else {
-            cacheContextMenu.addDivider();
-            cacheContextMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().execute());
-            cacheContextMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute()).setEnabled(selectedCacheIsGC);
-            cacheContextMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
-        }
-
-        return cacheContextMenu;
+        return instance;
     }
 
-    private static void rememberGeoCache() {
+    public Menu getCacheContextMenu(boolean _forCacheList) {
+        if (theMenu == null || theMenu.isDisposed() || forCacheList != _forCacheList || geoCache != GlobalCore.getSelectedCache()) {
+            forCacheList = _forCacheList;
+
+            theMenu = new Menu("DescriptionViewTitle");
+            geoCache = GlobalCore.getSelectedCache();
+            boolean selectedCacheIsSet = GlobalCore.isSetSelectedCache();
+            boolean selectedCacheIsGC = false;
+            if (selectedCacheIsSet) {
+                selectedCacheIsGC = geoCache.getGeoCacheCode().startsWith("GC");
+            }
+            if (forCacheList) {
+                theMenu.addCheckableMenuItem("CacheContextMenuShortClickToggle", Config.CacheContextMenuShortClickToggle.getValue(), this::toggleShortClick);
+                if (selectedCacheIsSet)
+                    theMenu.addMoreMenu(ShowDrafts.getInstance().getContextMenu(), Translation.get("DraftsContextMenuTitle"), Translation.get("DraftsContextMenuTitle"));
+            }
+            if (selectedCacheIsSet) {
+                if (selectedCacheIsGC)
+                    theMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), this::reloadSelectedCache);
+                theMenu.addMenuItem("Open_Cache_Link", Sprites.getSprite("big" + geoCache.getGeoCacheType().name()), () -> callUrl(geoCache.getUrl()));
+                theMenu.addCheckableMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), geoCache.isFavorite(), this::toggleAsFavorite);
+                theMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(geoCache));
+                if (selectedCacheIsGC) {
+                    theMenu.addMenuItem("contactOwner", ContactOwner.getInstance().getIcon(), () -> ContactOwner.getInstance().execute());
+                    theMenu.addMenuItem("GroundSpeakLists", null, () -> ListsAtGroundSpeak.getInstance().execute());
+                }
+                if (!Config.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()))
+                    theMenu.addCheckableMenuItem("rememberGeoCache", Config.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()), this::rememberGeoCache);
+                theMenu.addMenuItem("MI_DELETE_CACHE", Sprites.getSprite(IconName.DELETE.name()), this::deleteGeoCache);
+            }
+            if (forCacheList) {
+                theMenu.addDivider();
+                // cacheContextMenu.addMenuItem("Map", Sprites.getSprite(IconName.map.name()), () -> ShowMap.getInstance().execute());
+                // cacheContextMenu.addMenuItem("Description", Sprites.getSprite(IconName.docIcon.name()), () -> ShowDescription.getInstance().execute());
+                theMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> ShowWaypoint.getInstance().execute());
+                theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> HintDialog.getInstance().showHint()).setEnabled(geoCache.hasHint());
+                theMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().execute());
+                theMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().execute());
+                theMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.getInstance().execute());
+                theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().execute());
+                theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute());
+                theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
+                theMenu.addMenuItem("descExt", Sprites.getSprite(IconName.docIcon.name()), () -> StartExternalDescription.getInstance().execute());
+            } else {
+                theMenu.addDivider();
+                theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().execute());
+                theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute()).setEnabled(selectedCacheIsGC);
+                theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
+            }
+        }
+        return theMenu;
+    }
+
+    private void rememberGeoCache() {
         if (GlobalCore.isSetSelectedCache()) {
             MessageBox mb = MessageBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
@@ -110,7 +124,7 @@ public class CacheContextMenu {
         }
     }
 
-    public static void reloadSelectedCache() {
+    public void reloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
 
             wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
@@ -156,7 +170,7 @@ public class CacheContextMenu {
         }
     }
 
-    private static void deleteSelectedCache() {
+    private void deleteSelectedCache() {
         ArrayList<String> GcCodeList = new ArrayList<>();
         GcCodeList.add(GlobalCore.getSelectedCache().getGeoCacheCode());
         CacheListDAO.getInstance().delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
@@ -178,7 +192,7 @@ public class CacheContextMenu {
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
 
-    private static void toggleShortClick() {
+    private void toggleShortClick() {
         MessageBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MessageBoxButton.YesNo, MessageBoxIcon.Question,
                 (btnNumber, data) -> {
                     if (btnNumber == BTN_LEFT_POSITIVE)
@@ -190,7 +204,7 @@ public class CacheContextMenu {
                 });
     }
 
-    private static void toggleAsFavorite() {
+    private void toggleAsFavorite() {
         GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
         CacheDAO dao = new CacheDAO();
         dao.UpdateDatabase(GlobalCore.getSelectedCache());
@@ -201,7 +215,7 @@ public class CacheContextMenu {
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
 
-    private static void deleteGeoCache() {
+    private void deleteGeoCache() {
         MessageBox.show(Translation.get("sure"), Translation.get("question"), MessageBoxButton.OKCancel, MessageBoxIcon.Question,
                 (which, data) -> {
                     if (which == MessageBox.BTN_LEFT_POSITIVE) {

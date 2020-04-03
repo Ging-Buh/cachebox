@@ -91,7 +91,7 @@ public class DescriptionView extends CB_View_Base {
             boolean dontAsk = isPremiumMember() && me.remaining > 3;
             if (dontAsk) {
                 // simply download, if Premium,..
-                GL.that.RunOnGL(CacheContextMenu::reloadSelectedCache);
+                GL.that.RunOnGL(() -> CacheContextMenu.getInstance().reloadSelectedCache());
             } else {
                 showDownloadButton();
             }
@@ -241,7 +241,7 @@ public class DescriptionView extends CB_View_Base {
         addChild(btnDownload);
 
         btnDownload.setClickHandler((v, x, y, pointer, button) -> {
-            GL.that.RunOnGL(CacheContextMenu::reloadSelectedCache);
+            GL.that.RunOnGL(() -> CacheContextMenu.getInstance().reloadSelectedCache());
             return true;
         });
 

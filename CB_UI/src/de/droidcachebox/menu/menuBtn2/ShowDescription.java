@@ -65,7 +65,7 @@ public class ShowDescription extends AbstractShowAction {
 
     @Override
     public Menu getContextMenu() {
-        return CacheContextMenu.getCacheContextMenu(false);
+        return CacheContextMenu.getInstance().getCacheContextMenu(false);
     }
 
     public void updateDescriptionView(boolean forceReload) {
