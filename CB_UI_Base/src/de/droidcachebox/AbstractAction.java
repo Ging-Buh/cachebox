@@ -19,11 +19,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public abstract class AbstractAction {
 
-    protected String titleTranlationId;
+    protected String titleTranslationId;
     protected String titleExtension;
 
-    public AbstractAction(String titleTranlationId) {
-        this.titleTranlationId = titleTranlationId;
+    public AbstractAction(String titleTranslationId) {
+        this.titleTranslationId = titleTranslationId;
         titleExtension = "";
     }
 
@@ -31,8 +31,8 @@ public abstract class AbstractAction {
 
     public abstract Sprite getIcon();
 
-    public String getTitleTranlationId() {
-        return titleTranlationId;
+    public String getTitleTranslationId() {
+        return titleTranslationId;
     }
 
     public String getTitleExtension() {

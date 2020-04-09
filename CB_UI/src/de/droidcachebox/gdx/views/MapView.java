@@ -370,7 +370,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
         resize(getWidth(), getHeight());
 
         try {
-            center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
+            center = new CoordinateGPS(Config.mapInitLatitude.getValue(), Config.mapInitLongitude.getValue());
         } catch (Exception ex) {
             Log.err(sKlasse, "MapView/CoordinateGPS", ex);
         }

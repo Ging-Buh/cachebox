@@ -40,10 +40,8 @@ import de.droidcachebox.views.DescriptionView;
 import de.droidcachebox.views.ViewGL;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.Build.VERSION_CODES.N;
@@ -51,8 +49,8 @@ import static android.os.Build.VERSION_CODES.O_MR1;
 
 public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private final static String sKlasse = "ShowViewListener";
-    private static final int REQUEST_CAPTURE_IMAGE = 61216516;
-    private static final int REQUEST_CAPTURE_VIDEO = 61216517;
+    private static final int REQUEST_CAPTURE_IMAGE = 6516;
+    private static final int REQUEST_CAPTURE_VIDEO = 6517;
     private static boolean isVoiceRecordingStarted = false;
     private static Location recordingStartCoordinate;
     private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
@@ -63,7 +61,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private AndroidApplicationConfiguration gdxConfig;
     private FrameLayout layoutContent;
     private DownSlider downSlider;
-    private ViewOptionsMenu aktView;
+    private ViewOptionsMenu currentView;
     private ViewID aktViewId;
     private ViewOptionsMenu aktTabView;
     private ViewID aktTabViewId;
@@ -101,8 +99,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         cacheNameView = main.findViewById(R.id.cacheNameView);
         cacheNameView.setVisibility(View.INVISIBLE);
 
-        if (aktView != null)
-            ((View) aktView).setVisibility(View.INVISIBLE);
+        if (currentView != null)
+            ((View) currentView).setVisibility(View.INVISIBLE);
         if (aktTabView != null)
             ((View) aktTabView).setVisibility(View.INVISIBLE);
 
@@ -134,11 +132,11 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
     // all you have to do on Main Destroy
     void onDestroyWithFinishing() {
-        if (aktView != null) {
-            aktView.onHide();
-            aktView.onFree();
+        if (currentView != null) {
+            currentView.onHide();
+            currentView.onFree();
         }
-        aktView = null;
+        currentView = null;
 
         if (aktTabView != null) {
             aktTabView.onHide();
@@ -165,15 +163,15 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
     void onDestroyWithoutFinishing() {
-        if (aktView != null)
-            aktView.onHide();
+        if (currentView != null)
+            currentView.onHide();
         if (aktTabView != null)
             aktTabView.onHide();
     }
 
     public int getAktViewId() {
-        if (aktView != null)
-            return aktView.getMenuId();
+        if (currentView != null)
+            return currentView.getMenuId();
         else
             return 0;
     }
@@ -204,26 +202,17 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 downSlider.setVisibility(View.INVISIBLE);
             }
 
-            if (aktView != null)
-                ((View) aktView).setVisibility(View.VISIBLE);
+            if (currentView != null)
+                ((View) currentView).setVisibility(View.VISIBLE);
             if (aktTabView != null)
                 ((View) aktTabView).setVisibility(View.VISIBLE);
             if (cacheNameView != null)
                 cacheNameView.setVisibility(View.INVISIBLE);
 
-            showView(viewID);
-
-        });
-
-    }
-
-
-    private void showView(ViewID viewID) {
-        if (viewID != null) {
             if (viewID.getType() == ViewID.UI_Type.Activity) {
                 showActivity(viewID);
-            } else if (!(aktView == null) && viewID == aktViewId) {
-                aktView.onShow();
+            } else if (!(currentView == null) && viewID == aktViewId) {
+                currentView.onShow();
             } else {
                 if (viewID.getPos() == ViewID.UI_Pos.Left) {
                     aktViewId = viewID;
@@ -240,21 +229,23 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                     ShowGLView();
                 }
             }
-        }
+
+        });
+
     }
 
     private void showAndroidView(ViewOptionsMenu view, ViewID ID) {
 
-        if (aktView != null) {
-            aktView.onHide();
+        if (currentView != null) {
+            currentView.onHide();
 
             if (ID.getType() == ViewID.UI_Type.OpenGl) {
                 Log.info(sKlasse, "showView OpenGl onPause");
                 mainMain.pause();
             }
 
-            if (aktView.equals(descriptionView)) {
-                aktView = null;
+            if (currentView.equals(descriptionView)) {
+                currentView = null;
                 descriptionView.onHide();
             }
 
@@ -267,23 +258,23 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
         }
 
-        aktView = view;
-        ((View) aktView).setDrawingCacheEnabled(true);
+        currentView = view;
+        ((View) currentView).setDrawingCacheEnabled(true);
 
         layoutContent.removeAllViews();
-        ViewParent parent = ((View) aktView).getParent();
+        ViewParent parent = ((View) currentView).getParent();
         if (parent != null) {
             // aktView ist noch gebunden, also lösen
             ((FrameLayout) parent).removeAllViews();
         }
-        layoutContent.addView((View) aktView);
-        aktView.onShow();
+        layoutContent.addView((View) currentView);
+        currentView.onShow();
 
         downSlider.invalidate();
-        ((View) aktView).forceLayout();
+        ((View) currentView).forceLayout();
 
-        if (aktView != null)
-            ((View) aktView).setVisibility(View.VISIBLE);
+        if (currentView != null)
+            ((View) currentView).setVisibility(View.VISIBLE);
         if (aktTabView != null)
             ((View) aktTabView).setVisibility(View.VISIBLE);
         if (downSlider != null)
@@ -328,7 +319,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
     private void showActivity(ViewID ID) {
         if (ID == ViewConst.NAVIGATE_TO) {
-            NavigateTo();
+            navigate();
         } else if (ID == ViewConst.VOICE_REC) {
             recVoice();
         } else if (ID == ViewConst.TAKE_PHOTO) {
@@ -346,8 +337,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         mainActivity.runOnUiThread(() -> {
             Log.info(sKlasse, "Hide View with ID = " + viewID.getID());
 
-            if (!(aktView == null) && viewID == aktViewId) {
-                aktView.onHide();
+            if (!(currentView == null) && viewID == aktViewId) {
+                currentView.onHide();
             }
 
             if (aktTabViewId != null && aktTabViewId == viewID && aktTabViewId.getPos() == ViewID.UI_Pos.Right) {
@@ -358,7 +349,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             if (aktViewId != null && aktViewId == viewID && aktViewId.getPos() == ViewID.UI_Pos.Left) {
                 layoutContent.setVisibility(View.INVISIBLE);
                 aktViewId = null;
-                aktView = null;
+                currentView = null;
             }
         });
 
@@ -373,8 +364,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             if (GL.that.isNotShownDialogOrActivity())
                 return;
 
-            if (aktView != null)
-                ((View) aktView).setVisibility(View.INVISIBLE);
+            if (currentView != null)
+                ((View) currentView).setVisibility(View.INVISIBLE);
             if (aktTabView != null)
                 ((View) aktTabView).setVisibility(View.INVISIBLE);
             if (downSlider != null)
@@ -395,9 +386,9 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                     // chk for timer conflict (releay set invisible)
                     // only if not showing Dialog or Activity
                     if (GL.that.isNotShownDialogOrActivity()) {
-                        if (aktView != null) {
-                            ((View) aktView).setVisibility(View.VISIBLE);
-                            aktView.onShow();
+                        if (currentView != null) {
+                            ((View) currentView).setVisibility(View.VISIBLE);
+                            currentView.onShow();
                             setContentSize(lastLeft, lastTop, lastRight, lastBottom);
                         }
                         if (aktTabView != null) {
@@ -421,7 +412,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         Global.initTheme(mainActivity);
         if (aktViewId == ViewConst.DESCRIPTION_VIEW || aktTabViewId == ViewConst.DESCRIPTION_VIEW) {
             if (descriptionView.getVisibility() == View.VISIBLE) {
-                if (aktView == descriptionView) {
+                if (currentView == descriptionView) {
                     hideView(ViewConst.DESCRIPTION_VIEW);
                     descriptionView = null;
                 }
@@ -437,7 +428,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         lastBottom = bottom;
         mainActivity.runOnUiThread(() -> {
             Log.info(sKlasse, "Set Android Content Sizeleft/top/right/bottom :" + left + "/" + top + "/" + right + "/" + bottom);
-            if (aktView != null) {
+            if (currentView != null) {
                 RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) layoutContent.getLayoutParams();
                 paramsLeft.setMargins(left, top, right, bottom);
                 layoutContent.setLayoutParams(paramsLeft);
@@ -491,7 +482,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
     }
 
-    private void NavigateTo() {
+    private void navigate() {
         if (GlobalCore.isSetSelectedCache()) {
             double lat;
             double lon;
@@ -599,7 +590,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                     return;
                 }
 
-                mediaFileNameWithoutExtension = Global.GetDateTimeString();
+                mediaFileNameWithoutExtension = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.US).format(new Date());
 
                 String cacheName;
                 if (GlobalCore.isSetSelectedCache()) {
@@ -619,7 +610,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 String TrackFolder = Config.TrackFolder.getValue();
                 String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
                 // Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-                TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(Location.ProviderType.GPS), Global.GetTrackDateTimeString());
+                TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(Location.ProviderType.GPS), getTrackDateTimeString());
                 Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
                 recordVoice(true);
@@ -677,7 +668,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             } else {
                 cacheName = "Image";
             }
-            mediaFileNameWithoutExtension = Global.GetDateTimeString() + " " + cacheName;
+            mediaFileNameWithoutExtension = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.US).format(new Date()) + " " + cacheName;
             tempMediaPath = Objects.requireNonNull(mainActivity.getExternalFilesDir("User/Media")).getAbsolutePath() + "/"; // oder Environment.DIRECTORY_PICTURES
             if (!FileIO.createDirectory(tempMediaPath)) {
                 Log.err(sKlasse, "can't create " + tempMediaPath);
@@ -743,7 +734,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                             }
                                         }
                                         // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-                                        TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
+                                        TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, getTrackDateTimeString());
                                     } catch (Exception e) {
                                         Log.err(sKlasse, e.getLocalizedMessage());
                                     }
@@ -774,7 +765,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 Log.err(sKlasse, "can't create " + directory);
                 return;
             }
-            mediaFileNameWithoutExtension = Global.GetDateTimeString();
+            mediaFileNameWithoutExtension = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.US).format(new Date());
             String cacheName;
             if (GlobalCore.isSetSelectedCache()) {
                 String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheName());
@@ -785,7 +776,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             mediaFileNameWithoutExtension = mediaFileNameWithoutExtension + " " + cacheName;
 
             // Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-            recordingStartTime = Global.GetTrackDateTimeString();
+            recordingStartTime = getTrackDateTimeString();
             recordingStartCoordinate = Locator.getInstance().getLocation(Location.ProviderType.GPS);
 
             ContentValues values = new ContentValues();
@@ -855,6 +846,13 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         } catch (Exception e) {
             Log.err(sKlasse, e.toString());
         }
+    }
+
+    private String getTrackDateTimeString() {
+        Date timestamp = new Date();
+        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return datFormat.format(timestamp).replace(" ", "T") + "Z";
     }
 
     private void shareInfos() {

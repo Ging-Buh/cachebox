@@ -382,8 +382,8 @@ public class DesktopMain {
         // ##########################################################
         // initial Locator with saved Location
         // ##########################################################
-        double latitude = Config.MapInitLatitude.getValue();
-        double longitude = Config.MapInitLongitude.getValue();
+        double latitude = Config.mapInitLatitude.getValue();
+        double longitude = Config.mapInitLongitude.getValue();
         Location.ProviderType provider = (latitude == -1000) ? Location.ProviderType.NULL : Location.ProviderType.Saved;
 
         Location initialLocation;

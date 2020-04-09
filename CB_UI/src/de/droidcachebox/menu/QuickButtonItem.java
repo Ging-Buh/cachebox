@@ -48,7 +48,7 @@ public class QuickButtonItem extends ListViewItemBase {
 
     public QuickButtonItem(CB_RectF rec, int Index, QuickAction type) {
         super(rec, Index, "");
-        name = type.getAction() == null ? "" : type.getAction().getTitleTranlationId();
+        name = type.getAction() == null ? "" : type.getAction().getTitleTranslationId();
         quickAction = type;
         mAction = type.getAction();
         mButtonIcon = new Image(rec.scaleCenter(0.7f), "QuickListItemImage", false);

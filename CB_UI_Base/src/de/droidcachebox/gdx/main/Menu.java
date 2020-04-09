@@ -55,9 +55,9 @@ public class Menu extends ButtonDialog {
     private boolean mMoreMenuIsInitial = false;
     private int Level = 0;
 
-    public Menu(String titleTranlationId) {
-        super(GL_UISizes.menuRectangle, titleTranlationId);
-        setTitle("<= " + Translation.get(titleTranlationId));
+    public Menu(String titleTranslationId) {
+        super(GL_UISizes.menuRectangle, titleTranslationId);
+        setTitle("<= " + Translation.get(titleTranslationId));
         autoClose = true;
         singleSelection = false;
 
@@ -276,8 +276,8 @@ public class Menu extends ButtonDialog {
 
     }
 
-    public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Object icon, OnClickListener onClickListener) {
-        String title = ((titleTranlationId.length() == 0) ? "" : Translation.get(titleTranlationId)) + addUnTranslatedPart;
+    public MenuItem addMenuItem(String titleTranslationId, String addUnTranslatedPart, Object icon, OnClickListener onClickListener) {
+        String title = ((titleTranslationId.length() == 0) ? "" : Translation.get(titleTranslationId)) + addUnTranslatedPart;
         if (title.contains("\n")) {
             CB_Label tmp = new CB_Label("");
             tmp.setWidth(menuItemsListView.getWidth());
@@ -285,7 +285,7 @@ public class Menu extends ButtonDialog {
             itemHeight = tmp.getTextHeight();
             // ItemHeight = (title.split("\n")).length * UI_Size_Base.that.getButtonHeight();
         }
-        MenuItem item = new MenuItem(new SizeF(menuItemsListView.getWidth(), itemHeight), menuItems.size(), titleTranlationId);
+        MenuItem item = new MenuItem(new SizeF(menuItemsListView.getWidth(), itemHeight), menuItems.size(), titleTranslationId);
         item.setTitle(title);
         if (icon != null) {
             if (icon instanceof Sprite) {
@@ -319,8 +319,8 @@ public class Menu extends ButtonDialog {
         }
     }
 
-    public MenuItem addMenuItem(String titleTranlationId, String addUnTranslatedPart, Sprite icon, Runnable runnable) {
-        return addMenuItem(titleTranlationId, addUnTranslatedPart, icon,
+    public MenuItem addMenuItem(String titleTranslationId, String addUnTranslatedPart, Sprite icon, Runnable runnable) {
+        return addMenuItem(titleTranslationId, addUnTranslatedPart, icon,
                 (v, x, y, pointer, button) -> {
                     if (autoClose)
                         close();
@@ -330,16 +330,16 @@ public class Menu extends ButtonDialog {
                 });
     }
 
-    public MenuItem addMenuItem(String titleTranlationId, Sprite icon, Runnable runnable) {
-        return addMenuItem(titleTranlationId, "", icon, runnable);
+    public MenuItem addMenuItem(String titleTranslationId, Sprite icon, Runnable runnable) {
+        return addMenuItem(titleTranslationId, "", icon, runnable);
     }
 
-    public void addCheckableMenuItem(String titleTranlationId, boolean checked, Runnable runnable) {
-        addCheckableMenuItem(titleTranlationId, null, checked, runnable);
+    public void addCheckableMenuItem(String titleTranslationId, boolean checked, Runnable runnable) {
+        addCheckableMenuItem(titleTranslationId, null, checked, runnable);
     }
 
-    public void addCheckableMenuItem(String titleTranlationId, Sprite icon, boolean checked, Runnable runnable) {
-        MenuItem item = addMenuItem(titleTranlationId, icon, runnable);
+    public void addCheckableMenuItem(String titleTranslationId, Sprite icon, boolean checked, Runnable runnable) {
+        MenuItem item = addMenuItem(titleTranslationId, icon, runnable);
         item.setCheckable(true);
         item.setChecked(checked);
     }

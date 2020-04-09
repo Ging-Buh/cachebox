@@ -777,8 +777,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
 
         if (Config.settings != null) {
             try {
-                latitude = Config.MapInitLatitude.getValue();
-                longitude = Config.MapInitLongitude.getValue();
+                latitude = Config.mapInitLatitude.getValue();
+                longitude = Config.mapInitLongitude.getValue();
             } catch (Exception ignored) {
             }
         }

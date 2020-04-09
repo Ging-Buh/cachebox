@@ -12,10 +12,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.utils.MoveableList;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class Global {
 
@@ -232,26 +229,6 @@ public class Global {
 
         return mInvertWhite;
 
-    }
-
-    public static String GetDateTimeString() {
-        Date now = new Date();
-        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String sDate = datFormat.format(now);
-        datFormat = new SimpleDateFormat("HHmmss");
-        sDate += " " + datFormat.format(now);
-        return sDate;
-    }
-
-    public static String GetTrackDateTimeString() {
-        Date timestamp = new Date();
-        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-        datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String sDate = datFormat.format(timestamp);
-        datFormat = new SimpleDateFormat("HH:mm:ss");
-        datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        sDate += "T" + datFormat.format(timestamp) + "Z";
-        return sDate;
     }
 
     public static Drawable getDrawable(int ResId, Resources res) {

@@ -169,8 +169,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     @Override
     public void onStop() {
-        LocatorSettings.MapInitLatitude.setValue(center.getLatitude());
-        LocatorSettings.MapInitLongitude.setValue(center.getLongitude());
+        LocatorSettings.mapInitLatitude.setValue(center.getLatitude());
+        LocatorSettings.mapInitLongitude.setValue(center.getLongitude());
         LocatorSettings.lastZoomLevel.setValue(zoomBtn.getZoom());
         super.onStop();
     }
@@ -629,8 +629,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         zoomBtn.setZoom(LocatorSettings.lastZoomLevel.getValue());
         // Bestimmung der ersten Position auf der Karte
         if (!positionInitialized) {
-            double lat = LocatorSettings.MapInitLatitude.getValue();
-            double lon = LocatorSettings.MapInitLongitude.getValue();
+            double lat = LocatorSettings.mapInitLatitude.getValue();
+            double lon = LocatorSettings.mapInitLongitude.getValue();
 
             // Initialisierungskoordinaten bekannt und k�nnen �bernommen werden
             if (lat != -1000 && lon != -1000) {

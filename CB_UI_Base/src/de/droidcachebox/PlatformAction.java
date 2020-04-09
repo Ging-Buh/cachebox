@@ -7,8 +7,8 @@ public class PlatformAction extends AbstractAction {
     private ViewID viewID;
     private Sprite sprite;
 
-    public PlatformAction(String titleTranlationId, ViewID viewID, Sprite icon) {
-        super(titleTranlationId);
+    public PlatformAction(String titleTranslationId, ViewID viewID, Sprite icon) {
+        super(titleTranslationId);
         this.viewID = viewID;
         this.sprite = icon;
     }

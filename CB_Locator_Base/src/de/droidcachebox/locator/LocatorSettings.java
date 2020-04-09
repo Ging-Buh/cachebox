@@ -62,7 +62,7 @@ public interface LocatorSettings {
     SettingBool MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", CarMode, NORMAL, false, Global, ACB);
     SettingInt MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", CarMode, NORMAL, 60, Global, ACB);
 
-    SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", Positions, NEVER, -1000, Global, ALL);
-    SettingDouble MapInitLongitude = new SettingDouble("MapInitLongitude", Positions, NEVER, -1000, Global, ALL);
+    SettingDouble mapInitLatitude = new SettingDouble("MapInitLatitude", Positions, NEVER, -1000, Global, ALL);
+    SettingDouble mapInitLongitude = new SettingDouble("MapInitLongitude", Positions, NEVER, -1000, Global, ALL);
 
 }

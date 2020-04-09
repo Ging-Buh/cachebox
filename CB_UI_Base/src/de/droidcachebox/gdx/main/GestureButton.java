@@ -79,10 +79,9 @@ public class GestureButton extends CB_Button {
                     // and show
                     if (compoundMenu.reorganizeIndexes() > 0) {
                         compoundMenu.show();
-                    }
-                    else {
+                    } else {
                         // what a problem on reorganizing
-                        Log.err("GestureButton","Error reorganizing menu index");
+                        Log.err("GestureButton", "Error reorganizing menu index");
                     }
                     return true; // only show the menu
                 }
@@ -92,16 +91,15 @@ public class GestureButton extends CB_Button {
             if (aktActionView != null && rememberLastAction) {
                 for (CB_ActionButton ba : cb_actionButtons) {
                     AbstractAction action = ba.getAction();
-                    if (aktActionView.getTitleTranlationId().equals(action.getTitleTranlationId())) {
+                    if (aktActionView.getTitleTranslationId().equals(action.getTitleTranslationId())) {
                         action.execute();
                         aktActionView = (AbstractShowAction) action;
-                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
+                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
                         actionExecuted = true;
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 // if the (last) action of this button is not visible,
                 // the default action is executed
                 for (CB_ActionButton ba : cb_actionButtons) {
@@ -112,7 +110,7 @@ public class GestureButton extends CB_Button {
                             // ?
                             if (action instanceof AbstractShowAction) {
                                 aktActionView = (AbstractShowAction) action;
-                                setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
+                                setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
                             }
                             actionExecuted = true;
                             break;
@@ -125,7 +123,7 @@ public class GestureButton extends CB_Button {
             if (!actionExecuted) {
                 Menu compoundMenu = new Menu("compoundMenu");
                 // then the Long Click menu
-                compoundMenu.addItems(getLongClickMenu().getItems(),true);
+                compoundMenu.addItems(getLongClickMenu().getItems(), true);
                 // and show
                 if (compoundMenu.reorganizeIndexes() > 0) {
                     compoundMenu.show();
@@ -160,7 +158,7 @@ public class GestureButton extends CB_Button {
                 if (action != null) {
                     action.execute();
                     aktActionView = (AbstractShowAction) action;
-                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
+                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
                 }
             }
 
@@ -244,7 +242,7 @@ public class GestureButton extends CB_Button {
                 mButtonImage.setDrawable(new SpriteDrawable(Action.getIcon()));
                 addChild(mButtonImage);
                 if (Action.getAction() instanceof AbstractShowAction) {
-                    setButton(Action.getAction().getIcon(), Action.getAction().getTitleTranlationId());
+                    setButton(Action.getAction().getIcon(), Action.getAction().getTitleTranslationId());
                 }
             }
         }
@@ -291,14 +289,14 @@ public class GestureButton extends CB_Button {
             AbstractAction action = cb_actionButton.getAction();
             if (action == null)
                 continue;
-            MenuItem mi = cm.addMenuItem(action.getTitleTranlationId(), action.getTitleExtension(), null, (v, x, y, pointer, button)->{
+            MenuItem mi = cm.addMenuItem(action.getTitleTranslationId(), action.getTitleExtension(), null, (v, x, y, pointer, button) -> {
                 cm.close();
                 MenuItem clickedItem = (MenuItem) v;
                 AbstractAction btnAction = (AbstractAction) clickedItem.getData();
                 btnAction.execute();
                 if (btnAction instanceof AbstractShowAction) {
                     aktActionView = (AbstractShowAction) btnAction;
-                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
+                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
                 }
                 GL.that.closeToast();
                 return true;
@@ -319,7 +317,7 @@ public class GestureButton extends CB_Button {
                     default:
                         direction = Translation.get("right");
                 }
-                mi.setTitle(mi.getTitle() + " (" + Translation.get("wipe") + " " + direction  + ")");
+                mi.setTitle(mi.getTitle() + " (" + Translation.get("wipe") + " " + direction + ")");
             }
             mi.setDisabled(action.getEnabled() && aktActionView != action);
             // mi.setVisible(aktActionView != action); // there will be a hole
@@ -432,7 +430,7 @@ public class GestureButton extends CB_Button {
                     action.execute();
                     if (action instanceof AbstractShowAction) {
                         aktActionView = (AbstractShowAction) action;
-                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
+                        setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
                     }
                     break;
                 }
@@ -452,7 +450,7 @@ public class GestureButton extends CB_Button {
                     ActionView = (AbstractShowAction) action;
                 if (ActionView != null && ActionView.getView() == View) {
                     aktActionView = ActionView;
-                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranlationId());
+                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
                     break;
                 }
             }
