@@ -315,9 +315,11 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
                     @Override
                     public void run() {
-
-                        String GCCode = infoBubble.getCache().getGeoCacheCode();
-                        ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
+                        Cache bubblesCache = infoBubble.getCache();
+                        if (bubblesCache.getGeoCacheDetail() == null)
+                            bubblesCache.loadDetail();
+                        String GCCode = bubblesCache.getGeoCacheCode();
+                        ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(bubblesCache);
                         if (geoCacheRelateds.size() > 0) {
                             try {
                                 WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
@@ -887,7 +889,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
                     float heading = Locator.getInstance().getHeading();
 
                     float[] result = new float[2];
-                    MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
+                    MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
                     float bearing = result[1];
                     float relativeBearing = bearing - heading;
                     mapInfoPanel.setBearing(relativeBearing, heading);

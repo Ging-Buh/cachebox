@@ -553,7 +553,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
              */
             public float Distance(MathUtils.CalculationType type) {
                 float[] dist = new float[4];
-                MathUtils.calculateDistanceAndBearing(type, this.Latitude, this.Longitude, Referenz.getLatitude(), Referenz.getLongitude(), dist);
+                MathUtils.computeDistanceAndBearing(type, this.Latitude, this.Longitude, Referenz.getLatitude(), Referenz.getLongitude(), dist);
 
                 return dist[0];
             }

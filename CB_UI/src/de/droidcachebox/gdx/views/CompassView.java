@@ -641,7 +641,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         float[] result = new float[4];
 
         try {
-            MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
+            MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
         } catch (Exception e1) {
             Log.info(log, "PositionChanged but error calculating distance and bearing");
             return;
@@ -714,7 +714,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
 
             float[] result = new float[2];
 
-            MathUtils.calculateDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
+            MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
 
             float bearing = result[1];
 

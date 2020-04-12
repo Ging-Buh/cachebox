@@ -45,8 +45,8 @@ public class Track {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileName(String _fileName) {
+        fileName = _fileName;
     }
 
     public ArrayList<TrackPoint> getTrackPoints() {

@@ -130,7 +130,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
             float result[] = new float[4];
 
             try {
-                MathUtils.calculateDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(), Final.getLongitude(), result);
+                MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(), Final.getLongitude(), result);
             } catch (Exception e) {
                 e.printStackTrace();
             }

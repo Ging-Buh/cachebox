@@ -610,7 +610,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 String TrackFolder = Config.TrackFolder.getValue();
                 String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
                 // Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-                TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(Location.ProviderType.GPS), getTrackDateTimeString());
+                TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(Location.ProviderType.GPS), getTrackDateTimeString());
                 Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
                 recordVoice(true);
@@ -734,7 +734,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                             }
                                         }
                                         // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-                                        TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, getTrackDateTimeString());
+                                        TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, getTrackDateTimeString());
                                     } catch (Exception e) {
                                         Log.err(sKlasse, e.getLocalizedMessage());
                                     }
@@ -826,7 +826,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                                 // track annotation
                                                 String TrackFolder = Config.TrackFolder.getValue();
                                                 String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                                                TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
+                                                TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
                                             }
                                         }
                                     } catch (Exception e) {

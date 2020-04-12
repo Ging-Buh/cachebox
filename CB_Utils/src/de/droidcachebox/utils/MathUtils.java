@@ -75,7 +75,7 @@ public class MathUtils {
      * @param results        an array of floats to hold the results
      * @throws IllegalArgumentException if results is null or has length < 1
      */
-    public static void calculateDistanceAndBearing(CalculationType type, double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results) {
+    public static void computeDistanceAndBearing(CalculationType type, double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results) {
         if (results == null || results.length < 1) {
             throw new IllegalArgumentException("results is null or has length < 1");
         }

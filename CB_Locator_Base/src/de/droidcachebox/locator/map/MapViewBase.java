@@ -298,7 +298,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             CoordinateGPS centerCoordinate = center;
             // calc distance
             float[] result = new float[1];
-            MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.FAST, position.getLatitude(), position.getLongitude(), centerCoordinate.getLatitude(), centerCoordinate.getLongitude(), result);
+            MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.FAST, position.getLatitude(), position.getLongitude(), centerCoordinate.getLatitude(), centerCoordinate.getLongitude(), result);
             // write at center
             drawText(batch, UnitFormatter.distanceString(result[0]), mapIntWidth / 2f, mapIntHeight / 2f);
         }

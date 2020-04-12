@@ -336,7 +336,7 @@ public class Cache implements Comparable<Cache>, Serializable {
                 toPos = coordinate;
         }
         float[] dist = new float[4];
-        MathUtils.calculateDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
+        MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
         cachedDistance = dist[0];
         return cachedDistance;
     }

@@ -80,7 +80,7 @@ public class TrackCreation extends AbstractShowAction {
             route.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
             route.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-            MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
+            MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
             route.setTrackLength(dist[0]);
 
             route.setVisible(true);
@@ -107,7 +107,7 @@ public class TrackCreation extends AbstractShowAction {
             route.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
             route.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-            MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
+            MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
             route.setTrackLength(dist[0]);
 
             route.setVisible(true);
@@ -143,7 +143,7 @@ public class TrackCreation extends AbstractShowAction {
                 Projektion = CoordinateGPS.project(startCoord.getLatitude(), startCoord.getLongitude(), i, distance);
                 track.getTrackPoints().add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
                 if (LastCoord.isValid()) {
-                    MathUtils.calculateDistanceAndBearing(MathUtils.CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
+                    MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
                     track.setTrackLength(track.getTrackLength() + dist[0]);
                 }
                 LastCoord = Projektion; // !! LastCoord = new Coordinate(Projektion);

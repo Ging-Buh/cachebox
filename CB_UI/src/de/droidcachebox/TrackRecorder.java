@@ -81,33 +81,17 @@ public class TrackRecorder {
             gpxfile = FileFactory.createFile(directory + "/" + generateTrackFileName());
             try {
                 writer = gpxfile.getFileWriter();
-                try {
-                    writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                            .append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n")
-                            .append("<time>").append(GetDateTimeString()).append("</time>\n")
-                            // set real bounds or basecamp (mapsource) will not import this track
-                            // writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
-                            .append("<trk><trkseg>\n");
-                    writer.flush();
-                } catch (IOException e) {
-                    Log.err(log, "IOException", e);
-                }
-            } catch (IOException e1) {
-                Log.err(log, "IOException", e1);
-            }
-
-            try {
-                writer.append("</trkseg>\n");
-                writer.append("</trk>\n");
-
-                writer.append("</gpx>\n");
-                writer.flush();
+                writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                        .append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n")
+                        .append("<time>").append(getDateTimeString()).append("</time>\n")
+                        // set real bounds or basecamp (mapsource) will not import this track
+                        // writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
+                        .append("<trk><trkseg>\n</trkseg>\n</trk>\n</gpx>\n");
                 writer.close();
             } catch (IOException e) {
                 Log.err(log, "IOException", e);
             }
             writer = null;
-
         }
 
         pauseRecording = false;
@@ -116,7 +100,7 @@ public class TrackRecorder {
         TrackListView.getInstance().notifyDataSetChanged();
     }
 
-    private static String GetDateTimeString() {
+    private static String getDateTimeString() {
         Date timestamp = new Date();
         SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -127,7 +111,7 @@ public class TrackRecorder {
         return sDate;
     }
 
-    public static void AnnotateMedia(final String friendlyName, final String mediaPath, final Location location, final String timestamp) {
+    public static void annotateMedia(final String friendlyName, final String mediaPath, final Location location, final String timestamp) {
         if (location == null)
             return;
         writeAnnotateMedia = true;
@@ -210,7 +194,7 @@ public class TrackRecorder {
             // zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
             float[] dist = new float[1];
 
-            MathUtils.calculateDistanceAndBearing(CalculationType.FAST, lastRecordedPosition.getLatitude(), lastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
+            MathUtils.computeDistanceAndBearing(CalculationType.FAST, lastRecordedPosition.getLatitude(), lastRecordedPosition.getLongitude(), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getLongitude(GPS), dist);
             float cachedDistance = dist[0];
 
             if (cachedDistance > distanceForNextTrackpoint) {
@@ -218,7 +202,7 @@ public class TrackRecorder {
 
                 sb.append("<trkpt lat=\"").append(Locator.getInstance().getLatitude(GPS)).append("\" lon=\"").append(Locator.getInstance().getLongitude(GPS)).append("\">\n")
                         .append("   <ele>").append(Locator.getInstance().getAlt()).append("</ele>\n")
-                        .append("   <time>").append(GetDateTimeString()).append("</time>\n")
+                        .append("   <time>").append(getDateTimeString()).append("</time>\n")
                         .append("   <course>").append(Locator.getInstance().getHeading(_GPS)).append("</course>\n")
                         .append("   <speed>").append(Locator.getInstance().speedOverGround()).append("</speed>\n")
                         .append("</trkpt>\n");
@@ -273,7 +257,7 @@ public class TrackRecorder {
 
                 if (mustWriteMedia) {
                     mustWriteMedia = false;
-                    AnnotateMedia(mFriendlyName, mMediaPath, mMediaCoord, mTimestamp);
+                    annotateMedia(mFriendlyName, mMediaPath, mMediaCoord, mTimestamp);
                 }
             }
         }
