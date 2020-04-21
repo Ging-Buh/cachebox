@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.CB_UI_Settings;
-import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.TrackList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -82,7 +82,7 @@ public class TrackListViewItem extends ListViewItemBackground {
                                             if (which == BTN_LEFT_POSITIVE) {
                                                 try {
                                                     trackAbstractFile.delete();
-                                                    RouteOverlay.getInstance().removeTrack(this.track);
+                                                    TrackList.getInstance().removeTrack(this.track);
                                                     TrackListView.getInstance().notifyDataSetChanged();
                                                 } catch (Exception ex) {
                                                     MessageBox.show(ex.toString(), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
@@ -190,7 +190,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     private void checkBoxIconClicked() {
         GL.that.RunOnGL(() -> {
             track.setVisible(!track.isVisible());
-            RouteOverlay.getInstance().trackListChanged();
+            TrackList.getInstance().trackListChanged();
         });
         GL.that.renderOnce();
     }
@@ -322,7 +322,7 @@ public class TrackListViewItem extends ListViewItemBackground {
         if (track.isActualTrack()) {
             MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
         } else {
-            RouteOverlay.getInstance().removeTrack(track); // index passt nicht mehr
+            TrackList.getInstance().removeTrack(track); // index passt nicht mehr
             TrackListView.getInstance().notifyDataSetChanged();
             dispose();
         }

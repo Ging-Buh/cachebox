@@ -30,7 +30,7 @@ public class CacheList extends MoveableList<Cache> {
 
     private static final long serialVersionUID = -932434844601790958L;
 
-    public boolean ResortAtWork = false;
+    public boolean resortAtWork = false;
 
     public Cache getCacheByGcCodeFromCacheList(String GcCode) {
         for (int i = 0, n = size(); i < n; i++) {
@@ -54,7 +54,7 @@ public class CacheList extends MoveableList<Cache> {
 
         CacheWithWP retValue = null;
 
-        ResortAtWork = true;
+        resortAtWork = true;
         boolean isLocatorValid = Locator.getInstance().isValid();
         // Alle Distanzen aktualisieren
         if (isLocatorValid) {
@@ -69,7 +69,7 @@ public class CacheList extends MoveableList<Cache> {
                 fromPos = selected.getCache().getCoordinate();
             }
             if (fromPos == null) {
-                ResortAtWork = false;
+                resortAtWork = false;
                 return retValue;
             }
             for (int i = 0, n = size(); i < n; i++) {
@@ -81,7 +81,7 @@ public class CacheList extends MoveableList<Cache> {
 
         // Nächsten Cache auswählen
         if (size() > 0) {
-            Cache nextCache = get(0); // or null ...
+            Cache nextCache = null;
             for (int i = 0; i < size(); i++) {
                 nextCache = get(i);
                 if (!nextCache.isArchived()) {
@@ -89,7 +89,7 @@ public class CacheList extends MoveableList<Cache> {
                         if (!nextCache.isFound()) {
                             // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht)
                             if (!nextCache.iAmTheOwner()) {
-                                if ((nextCache.getGeoCacheType() == GeoCacheType.Event) || (nextCache.getGeoCacheType() == GeoCacheType.MegaEvent) || (nextCache.getGeoCacheType() == GeoCacheType.CITO) || (nextCache.getGeoCacheType() == GeoCacheType.Giga)) {
+                                if (nextCache.isEvent()) {
                                     Calendar dateHidden = GregorianCalendar.getInstance();
                                     Calendar today = GregorianCalendar.getInstance();
                                     try {
@@ -119,15 +119,16 @@ public class CacheList extends MoveableList<Cache> {
             // -> gleich den Final Waypoint auswahlen!!!
             // When the next Cache is a mystery with final waypoint
             // -> activate the final waypoint!!!
-            Waypoint waypoint = nextCache.getCorrectedFinal();
-            if (waypoint == null) {
-                // wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat
-                // Wenn ein Cache einen Startpunkt definiert hat dann wird beim Selektieren dieses Caches gleich dieser Startpunkt
-                // selektiert
-                waypoint = nextCache.getStartWaypoint();
+            if (nextCache == null) {
+                Waypoint waypoint = nextCache.getCorrectedFinal();
+                if (waypoint == null) {
+                    // wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat
+                    // Wenn ein Cache einen Startpunkt definiert hat dann wird beim Selektieren dieses Caches gleich dieser Startpunkt
+                    // selektiert
+                    waypoint = nextCache.getStartWaypoint();
+                }
+                retValue = new CacheWithWP(nextCache, waypoint);
             }
-
-            retValue = new CacheWithWP(nextCache, waypoint);
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -139,7 +140,7 @@ public class CacheList extends MoveableList<Cache> {
         }
 
         // Cursor.Current = Cursors.Default;
-        ResortAtWork = false;
+        resortAtWork = false;
         return retValue;
     }
 

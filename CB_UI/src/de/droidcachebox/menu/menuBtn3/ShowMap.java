@@ -324,13 +324,13 @@ public class ShowMap extends AbstractShowAction {
                         if (checked) {
                             setRoutingTrack();
                         } else {
-                            RouteOverlay.getInstance().removeRoutingTrack();
+                            TrackList.getInstance().removeRoutingTrack();
                         }
                         TrackListView.getInstance().notifyDataSetChanged();
                     }
                     return true;
                 });
-                if (RouteOverlay.getInstance().existsRoutingTrack()) mi.setCheckable(true);
+                if (TrackList.getInstance().existsRoutingTrack()) mi.setCheckable(true);
                 else mi.setCheckable(false);
                 mi.setChecked(true);
             } else {
@@ -409,7 +409,7 @@ public class ShowMap extends AbstractShowAction {
                 if (track != null && track.getTrackPoints().size() > 0) {
                     track.setVisible(true);
                     track.setName("Route");
-                    RouteOverlay.getInstance().setRoutingTrack(track);
+                    TrackList.getInstance().setRoutingTrack(track);
                 } else {
                     Log.err(log, "no route generated");
                 }

@@ -119,7 +119,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                 // schau die 50 nächsten Caches durch, wenn einer davon näher ist
                 // als der aktuell nächste -> umsortieren und raus
                 // only when showing Map or cacheList
-                if (!Database.Data.cacheList.ResortAtWork) {
+                if (!Database.Data.cacheList.resortAtWork) {
                     if (GlobalCore.getAutoResort()) {
                         if ((GlobalCore.getNearestCache() == null)) {
                             GlobalCore.setNearestCache(GlobalCore.getSelectedCache());

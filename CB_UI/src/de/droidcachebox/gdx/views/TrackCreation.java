@@ -3,7 +3,7 @@ package de.droidcachebox.gdx.views;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate;
@@ -84,7 +84,7 @@ public class TrackCreation extends AbstractShowAction {
             route.setTrackLength(dist[0]);
 
             route.setVisible(true);
-            RouteOverlay.getInstance().addTrack(route);
+            TrackList.getInstance().addTrack(route);
             TrackListView.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.point2point, "");
         pC.show();
@@ -111,7 +111,7 @@ public class TrackCreation extends AbstractShowAction {
             route.setTrackLength(dist[0]);
 
             route.setVisible(true);
-            RouteOverlay.getInstance().addTrack(route);
+            TrackList.getInstance().addTrack(route);
             TrackListView.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.projection, "");
 
@@ -133,7 +133,7 @@ public class TrackCreation extends AbstractShowAction {
             Track track = new Track("Circle Route");
 
             track.setVisible(true);
-            RouteOverlay.getInstance().addTrack(track);
+            TrackList.getInstance().addTrack(track);
 
             Coordinate Projektion;
             Coordinate LastCoord = new CoordinateGPS(0, 0);

@@ -45,9 +45,9 @@ import java.util.ArrayList;
  * a track is selected for rendering, if its isVisible is set (in addToTracksToDraw with reduced number of trackpoints)
  * further the GlobalCore.currentRoute is addToTracksToDraw for rendering. (if tracking has been switched on)
  */
-public class RouteOverlay {
-    private final static String log = "RouteOverlay";
-    private static RouteOverlay routeOverlay;
+public class TrackList {
+    private final static String log = "TrackList";
+    private static TrackList trackList;
     private boolean aTrackChanged;
     private int thisZoom;
     private ArrayList<Track> tracks;
@@ -56,16 +56,16 @@ public class RouteOverlay {
     private ArrayList<DrawTrack> tracksToDraw;
     private GlyphLayout glyphLayout;
 
-    RouteOverlay() {
+    TrackList() {
         tracks = new ArrayList<>();
         aTrackChanged = false;
         thisZoom = -1;
         tracksToDraw = new ArrayList<>();
     }
 
-    public static RouteOverlay getInstance() {
-        if (routeOverlay == null) routeOverlay = new RouteOverlay();
-        return routeOverlay;
+    public static TrackList getInstance() {
+        if (trackList == null) trackList = new TrackList();
+        return trackList;
     }
 
     public int getNumberOfTracks() {
@@ -246,17 +246,6 @@ public class RouteOverlay {
         Sprite arrow;
         Sprite point;
         float overlap;
-
-        /*
-        public DrawTrack(Color color) {
-            mColor = color;
-            trackPoints = new ArrayList<>();
-            arrow = Sprites.Arrows.get(5); // 5 = track-line
-            point = Sprites.Arrows.get(10); // 10 = track-point
-            overlap = 0.9f;
-            tracklength = 0;
-        }
-         */
 
         public DrawTrack(Color color, boolean isInternalRoutingTrack) {
             if (isInternalRoutingTrack) {

@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.TrackList;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
@@ -166,7 +166,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         }
 
         if (waypoints.size() > 1) {
-            RouteOverlay.getInstance().trackListChanged();
+            TrackList.getInstance().trackListChanged();
         }
     }
 

@@ -44,10 +44,10 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     private Cache mCache;
     private String lastString = "";
 
-    public CacheListViewItem(CB_RectF rec, int Index, Cache cache) {
-        super(rec, Index, cache.getGeoCacheName());
+    public CacheListViewItem(CB_RectF rec, int index, Cache cache) {
+        super(rec, index, cache.getGeoCacheName());
         mCache = cache;
-        cacheInfo = new ExtendedCacheInfo(UiSizes.getInstance().getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGeoCacheCode(), cache);
+        cacheInfo = new ExtendedCacheInfo(UiSizes.getInstance().getCacheListItemRec().asFloat(), "CacheInfo " + index + " @" + cache.getGeoCacheCode(), cache);
         cacheInfo.setZeroPos();
         distance.setColor(COLOR.getFontColor());
         this.addChild(cacheInfo);
@@ -74,6 +74,17 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
     public Cache getCache() {
         return mCache;
+    }
+
+    public void setCache(Cache selectedCache) {
+        mCache = selectedCache;
+        if (mCache.isLive()) {
+            liveCacheIcon = new Sprite(Sprites.LiveBtn.get(0));
+            liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+        }
+        else {
+            liveCacheIcon = null;
+        }
     }
 
     private void setDistanceString(String txt) {

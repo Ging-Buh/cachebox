@@ -1,7 +1,7 @@
 package de.droidcachebox.gdx.activities.notUsed;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.IRunOnGL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
@@ -153,7 +153,7 @@ public class OpenRouteService {
                                             if (IsRoute) {
                                                 final String sDistance = UnitFormatter.distanceString((float) distance);
                                                 route.setTrackLength(distance);
-                                                RouteOverlay.getInstance().setRoutingTrack(route);
+                                                TrackList.getInstance().setRoutingTrack(route);
                                                 TrackListView.getInstance().notifyDataSetChanged();
 
                                                 wd.close();
@@ -208,7 +208,7 @@ public class OpenRouteService {
                                             }
                                         });
                                     }
-                                    RouteOverlay.getInstance().trackListChanged();
+                                    TrackList.getInstance().trackListChanged();
 
                                 }
 

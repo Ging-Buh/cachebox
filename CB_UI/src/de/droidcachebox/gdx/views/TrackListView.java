@@ -2,7 +2,7 @@ package de.droidcachebox.gdx.views;
 
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.list.Adapter;
@@ -33,7 +33,7 @@ public class TrackListView extends V_ListView {
     private final static String log = "TrackListView";
     private static CB_RectF itemRec;
     private static TrackListView trackListView;
-    private TrackListViewItem aktRouteItem;
+    private TrackListViewItem currentRouteItem;
 
     private TrackListView() {
         super(ViewManager.leftTab.getContentRec(), "TrackListView");
@@ -62,7 +62,7 @@ public class TrackListView extends V_ListView {
     }
 
     public TrackListViewItem getAktRouteItem() {
-        return aktRouteItem;
+        return currentRouteItem;
     }
 
     public void selectTrackFileReadAndAddToTracks() {
@@ -360,7 +360,7 @@ public class TrackListView extends V_ListView {
         }
         for (Track track : tracks) {
             if (trackColor != null) track.setColor(trackColor);
-            RouteOverlay.getInstance().addTrack(track);
+            TrackList.getInstance().addTrack(track);
         }
         notifyDataSetChanged();
 
@@ -384,7 +384,7 @@ public class TrackListView extends V_ListView {
 
         @Override
         public int getCount() {
-            int size = RouteOverlay.getInstance().getNumberOfTracks();
+            int size = TrackList.getInstance().getNumberOfTracks();
             if (GlobalCore.currentRoute != null)
                 size++;
             return size;
@@ -396,12 +396,12 @@ public class TrackListView extends V_ListView {
             int tracksIndex = viewPosition;
             if (GlobalCore.currentRoute != null) {
                 if (viewPosition == 0) {
-                    aktRouteItem = new TrackListViewItem(itemRec, viewPosition, GlobalCore.currentRoute);
-                    return aktRouteItem;
+                    currentRouteItem = new TrackListViewItem(itemRec, viewPosition, GlobalCore.currentRoute);
+                    return currentRouteItem;
                 }
                 tracksIndex--; // viewPosition - 1, if tracking is activated
             }
-            return new TrackListViewItem(itemRec, viewPosition, RouteOverlay.getInstance().getTrack(tracksIndex));
+            return new TrackListViewItem(itemRec, viewPosition, TrackList.getInstance().getTrack(tracksIndex));
         }
 
         @Override

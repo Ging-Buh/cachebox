@@ -1,7 +1,7 @@
 package de;
 
 import de.droidcachebox.Config;
-import de.droidcachebox.RouteOverlay;
+import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.*;
 import de.droidcachebox.locator.Location.ProviderType;
@@ -236,7 +236,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
         TrackListView.getInstance().readFromGpxFile(FileFactory.createFile(path));
         // !!! one file may have more than one route : get last added
-        simulationRoute = RouteOverlay.getInstance().getTrack(RouteOverlay.getInstance().getNumberOfTracks() - 1);
+        simulationRoute = TrackList.getInstance().getTrack(TrackList.getInstance().getNumberOfTracks() - 1);
         // Don't display loaded simulate route
         simulationRoute.setVisible(false);
 

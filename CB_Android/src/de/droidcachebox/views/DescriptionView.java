@@ -81,8 +81,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
     }
 
     /**
-     * @param selectedCache
-     * @param waypoint
+     * @param selectedCache ?
+     * @param waypoint ?
      */
     @Override
     public void selectedCacheChanged(Cache selectedCache, Waypoint waypoint) {

@@ -244,7 +244,7 @@ public class TrackRecorder {
                     GL.that.renderOnce();
                 }
 
-                RouteOverlay.getInstance().trackListChanged();
+                TrackList.getInstance().trackListChanged();
                 lastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
                 GlobalCore.currentRoute.setTrackLength(GlobalCore.currentRoute.getTrackLength() + cachedDistance);
 

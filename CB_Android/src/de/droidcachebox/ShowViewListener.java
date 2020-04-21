@@ -231,7 +231,6 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             }
 
         });
-
     }
 
     private void showAndroidView(ViewOptionsMenu view, ViewID ID) {
@@ -248,14 +247,11 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 currentView = null;
                 descriptionView.onHide();
             }
-
         }
 
         if (ID.getType() == ViewID.UI_Type.OpenGl) {
-
             ShowGLView();
             return;
-
         }
 
         currentView = view;

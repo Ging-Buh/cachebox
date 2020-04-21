@@ -19,8 +19,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.SelectedCacheChangedEventListener;
+import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -43,7 +46,7 @@ import static de.droidcachebox.core.GroundspeakAPI.*;
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 import static de.droidcachebox.utils.Config_Core.br;
 
-public class DescriptionView extends CB_View_Base {
+public class DescriptionView extends CB_View_Base implements SelectedCacheChangedEventListener {
     private final static String BASIC = "Basic";
     private final static String PREMIUM = "Premium";
     private final static String BASIC_LIMIT = "3";
@@ -70,6 +73,7 @@ public class DescriptionView extends CB_View_Base {
 
     @Override
     public void onShow() {
+        SelectedCacheChangedEventListeners.getInstance().add(this);
         margin = GL_UISizes.margin;
         selectedCache = GlobalCore.getSelectedCache();
 
@@ -137,6 +141,7 @@ public class DescriptionView extends CB_View_Base {
 
     @Override
     public void onHide() {
+        SelectedCacheChangedEventListeners.getInstance().remove(this);
         PlatformUIBase.hideView(ViewConst.DESCRIPTION_VIEW);
     }
 
@@ -310,4 +315,18 @@ public class DescriptionView extends CB_View_Base {
         }
         cacheListViewItem = null;
     }
+
+    @Override
+    public void selectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
+        if (!cacheListViewItem.getCache().equals(selectedCache)) {
+            //todo  implement more simple by cacheListViewItem.setCache(selectedCache);
+            // next doesn't work
+            CB_RectF oldRectangle = cacheListViewItem;
+            removeChild(cacheListViewItem);
+            getNewCacheInfo();
+            addChild(cacheListViewItem);
+            cacheListViewItem.setRec(oldRectangle);
+        }
+    }
+
 }
