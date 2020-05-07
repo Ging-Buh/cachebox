@@ -5,6 +5,12 @@
 • Deletions = -
 • Unsolved = •
 
+Changes up to version 3620:
+    + add favorits and ignore - lists handling
+	+ add bookmark lists handling
+	* map info bubble save click (for not selected cache)
+	* cancel CacheContextMenu selection (always recreate)
+	* show CacheList item correct, for changed selection
 Changes up to version 3610:
     * Sorting of local drafts by timestamp only
     + Help texts for the settings are always displayed (as in CB3)

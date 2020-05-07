@@ -4,6 +4,12 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 • Offen = •
+Änderungen bis Version 3620:
+    + Favoriten- und Ignorier-Listen hinzugefügt
+    + Lesezeichenlisten hinzugefügt
+    * Für Klick auf Speichern-Schaltfläche bei nicht ausgewähltem Cache
+    * CacheContextMenu wird auch neu erstellt, wenn die Auswahl abgebrochen wird
+    * CacheList-Element wird bei geänderter Cacheauswahl korrekt angezeigt
 Änderungen bis Version 3610:
     * Sortierung der lokalen Logentwürfe nur nach Zeitstempel
     + Hilfetexte zu den Einstellungen werden immer mit angezeigt (wie in CB3)
