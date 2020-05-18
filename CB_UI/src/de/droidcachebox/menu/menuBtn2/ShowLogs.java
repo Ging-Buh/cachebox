@@ -2,9 +2,9 @@ package de.droidcachebox.menu.menuBtn2;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractShowAction;
+import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Database;
@@ -157,7 +157,7 @@ public class ShowLogs extends AbstractShowAction {
                                             // update LogListView
                                             LogListView.getInstance().resetIsInitialized();
                                             // for update slider, ?, ?, ? with latest logs
-                                            SelectedCacheChangedEventListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+                                            CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
                                         }
 
@@ -189,7 +189,7 @@ public class ShowLogs extends AbstractShowAction {
     private void getFriends() {
         GL.that.postAsync(() -> {
             String friends = GroundspeakAPI.fetchFriends();
-            if (GroundspeakAPI.APIError == 0) {
+            if (GroundspeakAPI.APIError == OK) {
                 Config.friends.setValue(friends);
                 Config.AcceptChanges();
                 MessageBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButton.OK, MessageBoxIcon.Information, null);

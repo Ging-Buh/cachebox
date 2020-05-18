@@ -361,7 +361,7 @@ public class DraftsView extends V_ListView {
             editDraft.show();
 
             CacheListChangedListeners.getInstance().cacheListChanged();
-            SelectedCacheChangedEventListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+            CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
         }
     }

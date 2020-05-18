@@ -105,6 +105,7 @@ public class GlobalCore implements SolverCacheInterface {
 
     public static void setSelectedCache(Cache cache) {
         setSelectedWaypoint(cache, null);
+
     }
 
     public static boolean selectedCachehasSpoiler() {
@@ -162,7 +163,7 @@ public class GlobalCore implements SolverCacheInterface {
             selectedCache.loadDetail();
         }
 
-        SelectedCacheChangedEventListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
+        CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
 
         if (changeAutoResort) {
             // switch off auto select

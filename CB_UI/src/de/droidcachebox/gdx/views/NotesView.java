@@ -15,7 +15,10 @@
  */
 package de.droidcachebox.gdx.views;
 
-import de.droidcachebox.*;
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.KeyboardFocusChangedEventList;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
@@ -32,20 +35,17 @@ import de.droidcachebox.utils.log.Log;
 /**
  * @author Longri
  */
-public class NotesView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
+public class NotesView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static NotesView notesView;
-    private boolean mustLoadNotes;
-    private EditTextField notes;
-    private float notesDefaultYPos;
+    private final EditTextField notes;
+    private final float notesDefaultYPos;
+    private final CB_Button btnUpload;
     private float notesHeight;
-    private CB_Button btnUpload;
     private Cache currentCache;
+    private String notesText;
 
     private NotesView() {
         super(ViewManager.leftTab.getContentRec(), "NotesView");
-
-        currentCache = GlobalCore.getSelectedCache();
-        mustLoadNotes = true;
 
         initRow(BOTTOMUP);
         CB_Button getSolverButton = new CB_Button(Translation.get("getSolver"));
@@ -57,8 +57,6 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
         notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
         addLast(notes);
         notesDefaultYPos = notes.getY();
-
-        SelectedCacheChangedEventListeners.getInstance().add(this);
 
         btnUpload.setClickHandler((v, x, y, pointer, button) -> {
             final CB_Button b = (CB_Button) v;
@@ -131,39 +129,53 @@ public class NotesView extends CB_View_Base implements SelectedCacheChangedEvent
 
     @Override
     public void onShow() {
+        CacheSelectionChangedListeners.getInstance().addListener(this);
         KeyboardFocusChangedEventList.add(this);
-        if (mustLoadNotes) {
-            String text = currentCache != null ? Database.getNote(currentCache) : "";
-            if (text == null)
-                text = "";
-            notes.setText(text);
+        loadNotes(GlobalCore.getSelectedCache());
+    }
+
+    @Override
+    public void onHide() {
+        CacheSelectionChangedListeners.getInstance().remove(this);
+        KeyboardFocusChangedEventList.remove(this);
+        saveNotes();
+    }
+
+    private void loadNotes(Cache newCache) {
+        if (currentCache != newCache) {
+            currentCache = newCache;
+            notesText = currentCache != null ? Database.getNote(currentCache) : "";
+            if (notesText == null)
+                notesText = "";
+            notes.setText(notesText);
             notes.showFromLineNo(0);
-            mustLoadNotes = false;
             btnUpload.setText(Translation.get("Upload"));
             btnUpload.enable();
         }
     }
 
-    @Override
-    public void onHide() {
-        KeyboardFocusChangedEventList.remove(this);
+    private void saveNotes() {
         // Save changed Note text to Database
         String text = notes.getText();
-        if (text != null) {
-            try {
-                Database.setNote(currentCache, text);
-            } catch (Exception e) {
-                String sKlasse = "NotesView";
-                Log.err(sKlasse, "Write note to database", e);
+        if (!notesText.equals(text)) {
+            if (text != null) {
+                try {
+                    if (currentCache != null && !currentCache.isDisposed())
+                        Database.setNote(currentCache, text);
+                } catch (Exception e) {
+                    Log.err("NotesView", "Write note to database", e);
+                }
+            }
+            else {
+                Log.err("NotesView", "null text can not be written to database");
             }
         }
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
-        // view must be refilled with values
-        currentCache = cache;
-        mustLoadNotes = true;
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
+        saveNotes();
+        loadNotes(cache);
     }
 
 }

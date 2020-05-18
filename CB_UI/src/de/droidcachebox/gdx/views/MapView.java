@@ -67,7 +67,7 @@ import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.Sprites.*;
 import static de.droidcachebox.utils.Config_Core.displayDensity;
 
-public class MapView extends MapViewBase implements SelectedCacheChangedEventListener, PositionChangedEvent {
+public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String sKlasse = "MapView";
     private CB_RectF targetArrow = new CB_RectF();
     private TreeMap<Integer, Integer> distanceZoomLevel;
@@ -679,7 +679,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         if (cache == null)
             return;
         try {
@@ -807,7 +807,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
 
     @Override
     public void dispose() {
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         super.dispose();
     }
 
@@ -822,7 +822,7 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     @Override
     public void onHide() {
         Log.debug(sKlasse, "Map gets invisible");
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         super.onHide();
     }
 
@@ -1083,9 +1083,9 @@ public class MapView extends MapViewBase implements SelectedCacheChangedEventLis
     public void onShow() {
         Log.debug(sKlasse, "onShow");
         super.onShow();
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
         isNorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
-        selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+        handleCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
     }
 
     /**

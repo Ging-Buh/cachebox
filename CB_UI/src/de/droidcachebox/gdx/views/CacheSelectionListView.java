@@ -19,10 +19,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
+import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.SelectedCacheChangedEventListener;
-import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
@@ -50,9 +49,9 @@ import de.droidcachebox.utils.log.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CacheListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, SelectedCacheChangedEventListener, PositionChangedEvent {
+public class CacheSelectionListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String log = "CacheListView";
-    private static CacheListView that;
+    private static CacheSelectionListView that;
     private V_ListView geoCacheListView;
     private Scrollbar scrollBar;
     private GeoCacheListViewAdapter geoCacheListViewAdapter;
@@ -60,11 +59,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     private boolean isShown = false;
     private float searchPlaceholder = 0;
 
-    private CacheListView() {
+    private CacheSelectionListView() {
         super(ViewManager.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
         CacheListChangedListeners.getInstance().addListener(this);
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
         geoCacheListView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
         geoCacheListView.setZeroPos();
 
@@ -75,8 +74,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         addChild(scrollBar);
     }
 
-    public static CacheListView getInstance() {
-        if (that == null) that = new CacheListView();
+    public static CacheSelectionListView getInstance() {
+        if (that == null) that = new CacheSelectionListView();
         return that;
     }
 
@@ -253,7 +252,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
             CacheListViewItem selItem = (CacheListViewItem) geoCacheListView.getSelectedItem();
@@ -330,7 +329,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedListe
         emptyMsg = null;
 
         CacheListChangedListeners.getInstance().removeListener(this);
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         PositionChangedListeners.removeListener(this);
 
         super.dispose();

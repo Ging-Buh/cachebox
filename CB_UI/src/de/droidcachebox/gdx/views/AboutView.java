@@ -18,7 +18,10 @@ package de.droidcachebox.gdx.views;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import de.droidcachebox.*;
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
@@ -47,7 +50,7 @@ import static de.droidcachebox.PlatformUIBase.callUrl;
 import static de.droidcachebox.PlatformUIBase.hideForDialog;
 import static de.droidcachebox.utils.Config_Core.br;
 
-public class AboutView extends CB_View_Base implements SelectedCacheChangedEventListener, GpsStateChangeEvent, PositionChangedEvent {
+public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
     private static AboutView that;
     private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
     private Image CB_Logo;
@@ -71,7 +74,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
     public void onShow() {
 
         // add Event Handler
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
         GpsStateChangeEventList.Add(this);
         PositionChangedListeners.addListener(this);
 
@@ -90,7 +93,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
     @Override
     public void onHide() {
         // remove Event Handler
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         GpsStateChangeEventList.Remove(this);
         PositionChangedListeners.removeListener(this);
 
@@ -351,7 +354,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         GL.that.RunOnGL(this::refreshText);
     }
 
@@ -428,7 +431,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheChangedEvent
             pd.dispose();
         pd = null;
 
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         GpsStateChangeEventList.Remove(this);
         PositionChangedListeners.removeListener(this);
 

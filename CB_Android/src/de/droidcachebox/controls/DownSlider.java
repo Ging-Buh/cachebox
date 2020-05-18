@@ -49,7 +49,7 @@ import de.droidcachebox.utils.UnitFormatter;
 
 import java.util.Iterator;
 
-public final class DownSlider extends View implements SelectedCacheChangedEventListener, GpsStateChangeEvent {
+public final class DownSlider extends View implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent {
     private static final String log = "downSlider";
     private static boolean isInitialized = false;
     private static int QuickButtonHeight;
@@ -215,7 +215,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
         super(context, attrs);
         if (context instanceof Activity)
             mainActivity = (Activity) context;
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
 
         mGestureDetector = new GestureDetector(context, new LearnGestureListener());
 
@@ -619,7 +619,7 @@ public final class DownSlider extends View implements SelectedCacheChangedEventL
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         setCache_onUI(cache, waypoint);
     }
 

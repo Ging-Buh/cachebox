@@ -15,7 +15,10 @@
  */
 package de.droidcachebox.gdx.views;
 
-import de.droidcachebox.*;
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.WaypointListChangedEventList;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -43,7 +46,7 @@ import de.droidcachebox.solver.Solver;
 import de.droidcachebox.solver.SolverZeile;
 import de.droidcachebox.utils.log.Log;
 
-public class SolverView2 extends V_ListView implements SelectedCacheChangedEventListener {
+public class SolverView2 extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static final String log = "SolverView2";
     private static SolverView2 that;
     private final ISolverBackStringListener backListener;
@@ -96,7 +99,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     @Override
     public void onShow() {
         Log.debug(log, "onShow()");
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
 
         setBackground(Sprites.ListBack);
         // Reload when
@@ -163,7 +166,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     @Override
     public void onHide() {
         Log.debug(log, "onHide()");
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         if (GlobalCore.isSetSelectedCache())
             Database.setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
     }
@@ -199,7 +202,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheChangedEvent
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         if (cache == this.cache)
             return; // Cache hat sich nicht geändert!
         // Solver speichern

@@ -46,7 +46,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class CompassView extends CB_View_Base implements SelectedCacheChangedEventListener, PositionChangedEvent, InvalidateTextureListeners.InvalidateTextureListener, CacheListChangedListeners.CacheListChangedListener {
+public class CompassView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent, InvalidateTextureListeners.InvalidateTextureListener, CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "CompassView";
     private static CompassView that;
     private CB_RectF imageRec;
@@ -103,7 +103,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
             ex.printStackTrace();
         }
         positionChanged();
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
         PositionChangedListeners.addListener(this);
         CacheListChangedListeners.getInstance().addListener(this);
         InvalidateTextureListeners.getInstance().addListener(this);
@@ -113,7 +113,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     public void onHide() {
         if (chart != null)
             chart.onHide();
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         PositionChangedListeners.removeListener(this);
         if (mCompassMapView != null) {
             mCompassMapView.onHide();
@@ -607,7 +607,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         if (currentGeoCache != cache || currentWaypoint != waypoint) {
             currentGeoCache = cache;
             currentWaypoint = waypoint;
@@ -907,7 +907,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheChangedEve
         Config.CompassShowLastFound.removeSettingChangedListener(settingChangedListener);
 
         settingChangedListener = null;
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         CacheListChangedListeners.getInstance().removeListener(this);
         PositionChangedListeners.removeListener(this);
         InvalidateTextureListeners.getInstance().removeListener(this);

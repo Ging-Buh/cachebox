@@ -40,7 +40,7 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.CacheListView;
+import de.droidcachebox.gdx.views.CacheSelectionListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -63,7 +63,7 @@ public class SearchDialog extends PopUp_Base {
 
         @Override
         public void Position(float SliderTop, float SliderBottom) {
-            setY(CacheListView.getInstance().getMaxY() - that.getHeight());
+            setY(CacheSelectionListView.getInstance().getMaxY() - that.getHeight());
         }
     };
 
@@ -608,8 +608,8 @@ public class SearchDialog extends PopUp_Base {
     public void onShow() {
         try {
 
-            setY(CacheListView.getInstance().getMaxY() - this.getHeight());
-            CacheListView.getInstance().setTopPlaceHolder(this.getHeight());
+            setY(CacheSelectionListView.getInstance().getMaxY() - this.getHeight());
+            CacheSelectionListView.getInstance().setTopPlaceHolder(this.getHeight());
 
             if (GL.that.PopUpIsHidden())
                 that.showNotCloseAutomaticly();
@@ -623,7 +623,7 @@ public class SearchDialog extends PopUp_Base {
     @Override
     public void onHide() {
         Slider.that.removePosChangedEvent(listener);
-        CacheListView.getInstance().resetPlaceHolder();
+        CacheSelectionListView.getInstance().resetPlaceHolder();
     }
 
     private void askPremium() {

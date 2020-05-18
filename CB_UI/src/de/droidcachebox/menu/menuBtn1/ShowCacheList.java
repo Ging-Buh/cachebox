@@ -21,7 +21,7 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
-import de.droidcachebox.gdx.views.CacheListView;
+import de.droidcachebox.gdx.views.CacheSelectionListView;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.DeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
@@ -48,12 +48,12 @@ public class ShowCacheList extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(CacheListView.getInstance());
+        ViewManager.leftTab.showView(CacheSelectionListView.getInstance());
     }
 
     @Override
     public CB_View_Base getView() {
-        return CacheListView.getInstance();
+        return CacheSelectionListView.getInstance();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ShowCacheList extends AbstractShowAction {
                 CacheWithWP nearstCacheWp = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
                 if (nearstCacheWp != null)
                     GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
-                CacheListView.getInstance().setSelectedCacheVisible();
+                CacheSelectionListView.getInstance().setSelectedCacheVisible();
             }
         });
         mi = cm.addMenuItem("setOrResetFilter", "", Sprites.getSprite(IconName.filter.name()), (v, x, y, pointer, button) -> {

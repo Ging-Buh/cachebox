@@ -15,7 +15,10 @@
  */
 package de.droidcachebox.gdx.views;
 
-import de.droidcachebox.*;
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.WaypointListChangedEvent;
+import de.droidcachebox.WaypointListChangedEventList;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.GL;
@@ -39,7 +42,7 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
-public class WaypointView extends V_ListView implements SelectedCacheChangedEventListener, WaypointListChangedEvent {
+public class WaypointView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener, WaypointListChangedEvent {
     private static final String sKlasse = "WaypointView";
     private static WaypointView waypointView;
     private Waypoint currentWaypoint = null;
@@ -62,7 +65,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
     public void onShow() {
         setSelectedCache(GlobalCore.getSelectedCache());
         chkSlideBack();
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
         WaypointListChangedEventList.Add(this);
     }
 
@@ -132,7 +135,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         // cache and currentCache are the same objects so ==, but content has changed, thus setting currentCache to null
         currentCache = null;
@@ -224,7 +227,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
                     currentCache = null;
                     currentWaypoint = null;
 
-                    selectedCacheChanged(GlobalCore.getSelectedCache(), waypoint);
+                    handleCacheChanged(GlobalCore.getSelectedCache(), waypoint);
 
                 } else {
                     currentWaypoint.setTitle(waypoint.getTitle());
@@ -375,7 +378,7 @@ public class WaypointView extends V_ListView implements SelectedCacheChangedEven
         waypointView = null;
 
         // release all EventHandler
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         WaypointListChangedEventList.Remove(this);
         super.dispose();
     }

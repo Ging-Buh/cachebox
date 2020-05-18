@@ -90,7 +90,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static de.droidcachebox.core.GroundspeakAPI.getSettingsAccessToken;
 
 @SuppressWarnings("deprecation")
-public class Main extends AndroidApplication implements SelectedCacheChangedEventListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
+public class Main extends AndroidApplication implements CacheSelectionChangedListeners.CacheSelectionChangedListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
     private static final String sKlasse = "Main";
     public static boolean isCreated = false;
     private static boolean isRestart = false; // ???
@@ -314,7 +314,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
             }
 
             // static Event Lists
-            SelectedCacheChangedEventListeners.getInstance().add(this);
+            CacheSelectionChangedListeners.getInstance().addListener(this);
 
             Config.AcceptChanges();
 
@@ -508,7 +508,7 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
                     TrackRecorder.stopRecording();
                     // GPS Verbindung beenden
                     androidUIBaseMethods.getLocationManager().removeUpdates(this);
-                    SelectedCacheChangedEventListeners.getInstance().clear();
+                    CacheSelectionChangedListeners.getInstance().clear();
                     CacheListChangedListeners.getInstance().clear();
                     showViewListener.onDestroyWithFinishing();
 
@@ -553,8 +553,8 @@ public class Main extends AndroidApplication implements SelectedCacheChangedEven
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
-        Log.info(sKlasse, "=> selectedCacheChanged");
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
+        Log.info(sKlasse, "=> handleCacheChanged");
         float distance = cache.recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
         if (waypoint != null) {
             distance = waypoint.getDistance();

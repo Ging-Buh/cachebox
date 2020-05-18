@@ -7,15 +7,14 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.R;
-import de.droidcachebox.SelectedCacheChangedEventListener;
 import de.droidcachebox.ViewOptionsMenu;
 import de.droidcachebox.controls.DescriptionViewControl;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
-//import org.slf4j.LoggerFactory;
 
-public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheChangedEventListener {
+public class DescriptionView extends FrameLayout implements ViewOptionsMenu, CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static DescriptionViewControl mDescriptionViewControl;
     private long aktCacheID;
     private LinearLayout mLinearLayout;
@@ -27,8 +26,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
         this.addView(descriptionLayout);
         mLinearLayout = findViewById(R.id.WebViewLayout);
         mDescriptionViewControl = findViewById(R.id.DescriptionViewControl);
-        // SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-        // mDescriptionViewControl.setCache(GlobalCore.getSelectedCache());
     }
 
     @Override
@@ -85,7 +82,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
      * @param waypoint ?
      */
     @Override
-    public void selectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache selectedCache, Waypoint waypoint) {
         if (selectedCache == null || mDescriptionViewControl == null)
             return;
         if (aktCacheID != selectedCache.generatedId) {

@@ -5,20 +5,20 @@ import de.droidcachebox.database.Waypoint;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SelectedCacheChangedEventListeners extends CopyOnWriteArrayList<SelectedCacheChangedEventListener> {
-    private static SelectedCacheChangedEventListeners selectedCacheChangedEventListeners;
+public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSelectionChangedListeners.CacheSelectionChangedListener> {
+    private static CacheSelectionChangedListeners cacheSelectionChangedListeners;
     private static Thread selectChangeThread;
 
-    private SelectedCacheChangedEventListeners() {
+    private CacheSelectionChangedListeners() {
     }
 
-    public static SelectedCacheChangedEventListeners getInstance() {
-        if (selectedCacheChangedEventListeners == null)
-            selectedCacheChangedEventListeners = new SelectedCacheChangedEventListeners();
-        return selectedCacheChangedEventListeners;
+    public static CacheSelectionChangedListeners getInstance() {
+        if (cacheSelectionChangedListeners == null)
+            cacheSelectionChangedListeners = new CacheSelectionChangedListeners();
+        return cacheSelectionChangedListeners;
     }
 
-    public boolean add(SelectedCacheChangedEventListener listener) {
+    public boolean addListener(CacheSelectionChangedListener listener) {
         if (!contains(listener))
             return super.add(listener);
         else
@@ -37,12 +37,15 @@ public class SelectedCacheChangedEventListeners extends CopyOnWriteArrayList<Sel
             }
 
             selectChangeThread = new Thread(() -> {
-                for (SelectedCacheChangedEventListener listener : this) {
-                    listener.selectedCacheChanged(selectedCache, waypoint);
+                for (CacheSelectionChangedListener listener : this) {
+                    listener.handleCacheChanged(selectedCache, waypoint);
                 }
             });
             selectChangeThread.start();
         }
+    }
 
+    public interface CacheSelectionChangedListener {
+        void handleCacheChanged(Cache selectedCache, Waypoint waypoint);
     }
 }

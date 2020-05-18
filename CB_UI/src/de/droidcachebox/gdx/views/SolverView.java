@@ -15,7 +15,10 @@
  */
 package de.droidcachebox.gdx.views;
 
-import de.droidcachebox.*;
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.KeyboardFocusChangedEventList;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Waypoint;
@@ -37,7 +40,7 @@ import de.droidcachebox.utils.Plattform;
 /**
  * @author Longri
  */
-public class SolverView extends CB_View_Base implements SelectedCacheChangedEventListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
+public class SolverView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
 
     private static SolverView that;
     private WindowState windowState = WindowState.Both;
@@ -75,7 +78,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
         if (aktCache == null)
             return;
 
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
 
         if (mustLoadSolver) {
             String sol = Database.getSolver(aktCache);
@@ -91,7 +94,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
     @Override
     public void onHide() {
         KeyboardFocusChangedEventList.remove(this);
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         if (aktCache != null) {
             Database.setSolver(aktCache, edInput.getText());
             // When Solver 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
@@ -318,7 +321,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheChangedEven
     }
 
     @Override
-    public void selectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache selectedCache, Waypoint waypoint) {
         onShow();
     }
 

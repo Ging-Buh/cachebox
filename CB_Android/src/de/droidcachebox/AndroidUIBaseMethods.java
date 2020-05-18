@@ -31,7 +31,7 @@ import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.activities.FZKDownload;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.gdx.views.CacheListView;
+import de.droidcachebox.gdx.views.CacheSelectionListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.menu.ViewManager;
@@ -336,7 +336,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                         if (mustShowCacheList) {
                             // show cachelist first then search dialog
                             mustShowCacheList = false;
-                            ViewManager.leftTab.showView(CacheListView.getInstance());
+                            ViewManager.leftTab.showView(CacheSelectionListView.getInstance());
                             importCacheByGCCode(externalRequestGCCode); // now the search can start (doSearchOnline)
                         } else {
                             mustShowCacheList = true;

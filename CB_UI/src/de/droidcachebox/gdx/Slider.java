@@ -3,9 +3,8 @@ package de.droidcachebox.gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.CB_UI_Settings;
+import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
-import de.droidcachebox.SelectedCacheChangedEventListener;
-import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -22,7 +21,7 @@ import de.droidcachebox.utils.CB_List;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Slider extends CB_View_Base implements SelectedCacheChangedEventListener {
+public class Slider extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static final int MAX_ANIMATION_COUNT = 1000;
     // private static final ColorDrawable transparent = new ColorDrawable(new HSV_Color(0, 0.1f, 0, 0.8f));
     private static final SpriteDrawable red = new SpriteDrawable(Sprites.getSprite("red"));
@@ -116,7 +115,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
         super(rec, Name);
         that = this;
         registerSkinChangedEvent();
-        SelectedCacheChangedEventListeners.getInstance().add(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
         this.setClickable(true);
 
         QuickButtonMaxHeight = UiSizes.getInstance().getQuickButtonListHeight();
@@ -206,7 +205,7 @@ public class Slider extends CB_View_Base implements SelectedCacheChangedEventLis
     }
 
     @Override
-    public void selectedCacheChanged(final Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(final Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         actCache = cache; // normally these are the same objects
         actWaypoint = waypoint; // normally these are the same objects

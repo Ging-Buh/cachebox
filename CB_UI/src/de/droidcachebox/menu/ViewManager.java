@@ -356,7 +356,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             // add Slider as last
             Slider slider = new Slider(this, "Slider");
             addChild(slider);
-            slider.selectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+            slider.handleCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
             String state = Config.nightMode.getValue() ? "Night" : "Day";
 

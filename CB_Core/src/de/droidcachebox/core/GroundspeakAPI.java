@@ -579,7 +579,8 @@ public class GroundspeakAPI {
                             if (finder.length() == 0 || !friendList.contains(finder.toLowerCase(Locale.US))) {
                                 continue;
                             }
-                            friendList.remove(finder.toLowerCase(Locale.US));
+                            // if only one log of the friend is requested
+                            // friendList.removeValue(finder.toLowerCase(Locale.US), false);
                         }
 
                         logList.add(createLog(geocacheLog, cache.generatedId));

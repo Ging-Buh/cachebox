@@ -15,10 +15,9 @@
  */
 package de.droidcachebox.gdx.views;
 
+import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.SelectedCacheChangedEventListener;
-import de.droidcachebox.SelectedCacheChangedEventListeners;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.LogEntry;
@@ -38,7 +37,7 @@ import de.droidcachebox.utils.CB_List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LogListView extends V_ListView implements SelectedCacheChangedEventListener {
+public class LogListView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static CB_RectF itemRec;
     private static LogListView logListView;
     CB_List<LogEntry> logs;
@@ -79,7 +78,7 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
 
     @Override
     public void onHide() {
-        SelectedCacheChangedEventListeners.getInstance().remove(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
     }
 
     @Override
@@ -128,7 +127,7 @@ public class LogListView extends V_ListView implements SelectedCacheChangedEvent
     }
 
     @Override
-    public void selectedCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         setCache(cache);
     }
 
