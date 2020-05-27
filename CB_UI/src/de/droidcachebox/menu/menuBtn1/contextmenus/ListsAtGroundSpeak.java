@@ -109,7 +109,7 @@ public class ListsAtGroundSpeak extends AbstractAction {
         if (GlobalCore.isSetSelectedCache()) {
             GL.that.postAsync(() -> {
                 String listCode, RemoveFromTitle;
-                RemoveFromTitle = "AddTo" + title;
+                RemoveFromTitle = "RemoveFrom" + title;
                 switch (title) {
                     case "Watchlist":
                         listCode = "watch";

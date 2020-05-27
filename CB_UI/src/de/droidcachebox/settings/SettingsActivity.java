@@ -52,7 +52,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         show();
         return true;
     };
-    private CB_List<SettingCategory> Categorys = new CB_List<>();
+    private CB_List<SettingCategory> Categories = new CB_List<>();
     private CB_Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
     private CB_RectF ButtonRec, itemRec;
@@ -177,14 +177,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private void fillContent() {
 
-        if (Categorys == null) {
-            Categorys = new CB_List<>();
+        if (Categories == null) {
+            Categories = new CB_List<>();
         }
-        Categorys.clear();
+        Categories.clear();
         SettingCategory[] tmp = SettingCategory.values();
         for (SettingCategory item : tmp) {
             if (item != SettingCategory.Button) {
-                Categorys.add(item);
+                Categories.add(item);
             }
         }
 
@@ -203,7 +203,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 }
         }
 
-        for (SettingCategory cat : Categorys) {
+        for (SettingCategory cat : Categories) {
             ArrayList<SettingBase<?>> CatList = new ArrayList<>();
             for (SettingBase<?> settingItem : AllSettingList) {
                 if (settingItem.getCategory().name().equals(cat.name())) {
@@ -1179,9 +1179,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     public void dispose() {
         that = null;
 
-        if (Categorys != null)
-            Categorys.clear();
-        Categorys = null;
+        if (Categories != null)
+            Categories.clear();
+        Categories = null;
 
         if (btnOk != null)
             btnOk.dispose();

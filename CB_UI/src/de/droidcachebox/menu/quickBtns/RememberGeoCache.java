@@ -42,6 +42,7 @@ public class RememberGeoCache extends AbstractAction {
 
     public GL_View_Base.OnClickListener getLongClickListener() {
         GL_View_Base.OnClickListener onClickListener = (view, x, y, pointer, button) -> {
+            // forget remembered
             Config.rememberedGeoCache.setValue("");
             Config.AcceptChanges();
             return true;

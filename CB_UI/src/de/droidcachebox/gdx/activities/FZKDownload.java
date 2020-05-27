@@ -19,12 +19,15 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
+import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.ProgressChangedEvent;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.LatLong;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -337,6 +340,11 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         InputStream stream = new ByteArrayInputStream(repository_freizeitkarte_android.getBytes());
         parserCache.parse(stream, values);
 
+        if (ShowMap.getInstance().normalMapView.center.isValid()) {
+            MapComparer comparer = new MapComparer(ShowMap.getInstance().normalMapView.center);
+            mapInfoList.sort(comparer);
+        }
+
         fillRepositoryList();
 
     }
@@ -345,7 +353,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         // Create possible download List
         float yPos = 0;
         String workPath = getWorkPath();
-        for (int i = 0, n = mapInfoList.size; i < n; i++) {
+        int n = mapInfoList.size - 1;
+        for (int i = n; i > -1; i--) {
             MapRepositoryInfo map = mapInfoList.get(i);
             MapDownloadItem item = new MapDownloadItem(map, workPath, innerWidth);
             item.setY(yPos);
@@ -426,6 +435,34 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             }
         });
 
+        ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMinLat") {
+            @Override
+            public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
+                actMapRepositoryInfo.minLat = Integer.parseInt(text) / 1000000f;
+            }
+        });
+
+        ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMinLon") {
+            @Override
+            public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
+                actMapRepositoryInfo.minLon = Integer.parseInt(text) / 1000000f;
+            }
+        });
+
+        ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMaxLat") {
+            @Override
+            public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
+                actMapRepositoryInfo.maxLat = Integer.parseInt(text) / 1000000f;
+            }
+        });
+
+        ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMaxLon") {
+            @Override
+            public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
+                actMapRepositoryInfo.maxLon = Integer.parseInt(text) / 1000000f;
+            }
+        });
+
         ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/Freizeitkarte/Map") {
             @Override
             public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values) {
@@ -446,7 +483,60 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         public String description;
         public String url;
         public int size;
+        public double minLat;
+        public double minLon;
+        public double maxLat;
+        public double maxLon;
         String md5;
+        BoundingBox bb = null;
+        LatLong mi = null;
+        LatLong ma = null;
+        public BoundingBox getBoundingBox() {
+            if (bb == null) bb = new BoundingBox(minLat, minLon, maxLat, maxLon);
+            return bb;
+        }
+        public LatLong getMin() {
+            if (mi == null) mi = new LatLong(minLat, minLon);
+            return mi;
+        }
+        public LatLong getMax() {
+            if (ma == null) ma = new LatLong(maxLat, maxLon);
+            return ma;
+        }
+    }
+
+    static class MapComparer implements Comparator<MapRepositoryInfo> {
+        LatLong centre;
+
+        public MapComparer(LatLong centre) {
+            this.centre = centre;
+        }
+
+        @Override
+        public int compare(MapRepositoryInfo a, MapRepositoryInfo b) {
+            if ((a == null) || (b == null)) {
+                return 0;
+            } else {
+                boolean aIsIn = a.getBoundingBox().contains(centre);
+                boolean bIsIn = b.getBoundingBox().contains(centre);
+                if (aIsIn && bIsIn) {
+                    // vereinfachend in Relation zur BoundingBox Diagonalen vergleichen.
+                    double ad = a.getBoundingBox().getCenterPoint().distance(centre) / a.getMin().distance(a.getMax());
+                    double bd = b.getBoundingBox().getCenterPoint().distance(centre) / b.getMin().distance(b.getMax());
+                    if (!a.description.startsWith("*")) a.description = "*" + a.description;
+                    if (!b.description.startsWith("*")) b.description = "*" + b.description;
+                    return (int) ((ad - bd) * 1000);
+                } else {
+                    if (aIsIn && !bIsIn) {
+                        return -1;
+                    } else if (!aIsIn && bIsIn) {
+                        return 1;
+                    }
+                    // don't need this map
+                    return 0;
+                }
+            }
+        }
     }
 
 }

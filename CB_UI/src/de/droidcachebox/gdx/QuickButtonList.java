@@ -143,12 +143,11 @@ public class QuickButtonList extends H_ListView {
                     int index = 0;
                     for (String s : configList) {
                         s = s.replace(",", "");
-                        int EnumId = Integer.parseInt(s);
-                        if (EnumId > -1) {
-                            QuickAction quickAction = QuickAction.values()[EnumId];
+                        int ordinal = Integer.parseInt(s);
+                        if (ordinal > -1) {
+                            QuickAction quickAction = QuickAction.values()[ordinal];
                             if (quickAction.getAction() != null) {
-                                QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, btnHeight), index++, quickAction);
-                                quickButtonList.add(tmp);
+                                quickButtonList.add(new QuickButtonItem(new CB_RectF(0, 0, btnHeight), index++, quickAction));
                             } else
                                 invalidEnumId = true;
                         }
@@ -195,10 +194,8 @@ public class QuickButtonList extends H_ListView {
     }
 
     public class CustomAdapter implements Adapter {
-
         CustomAdapter() {
             readQuickButtonItemsList();
-
         }
 
         public ListViewItemBase getView(int position) {
