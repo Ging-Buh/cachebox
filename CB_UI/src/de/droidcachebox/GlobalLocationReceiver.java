@@ -159,12 +159,12 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                             }
                             if (resort || z == 0) {
                                 CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
-
-                                GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-                                GlobalCore.setNearestCache(ret.getCache());
-                                ret.dispose();
-
-                                SoundCache.play(Sounds.AutoResortSound);
+                                if (ret != null && ret.getCache() != null) {
+                                    GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+                                    GlobalCore.setNearestCache(ret.getCache());
+                                    ret.dispose();
+                                    SoundCache.play(Sounds.AutoResortSound);
+                                }
                             }
                         }
                     }

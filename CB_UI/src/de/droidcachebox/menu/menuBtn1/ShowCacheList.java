@@ -87,7 +87,7 @@ public class ShowCacheList extends AbstractShowAction {
         cm.addMenuItem("ResortList", Sprites.getSprite(IconName.sortIcon.name()), () -> {
             synchronized (Database.Data.cacheList) {
                 CacheWithWP nearstCacheWp = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
-                if (nearstCacheWp != null)
+                if (nearstCacheWp != null && nearstCacheWp.getCache() != null)
                     GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
                 CacheSelectionListView.getInstance().setSelectedCacheVisible();
             }

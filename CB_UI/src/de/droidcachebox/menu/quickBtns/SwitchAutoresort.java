@@ -38,9 +38,11 @@ public class SwitchAutoresort extends AbstractAction {
             synchronized (Database.Data.cacheList) {
                 if (GlobalCore.isSetSelectedCache()) {
                     CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
-                    GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-                    GlobalCore.setNearestCache(ret.getCache());
-                    ret.dispose();
+                    if (ret != null && ret.getCache() != null) {
+                        GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+                        GlobalCore.setNearestCache(ret.getCache());
+                        ret.dispose();
+                    }
                 }
             }
         }

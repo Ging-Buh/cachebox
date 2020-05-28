@@ -70,7 +70,7 @@ public class CacheList extends MoveableList<Cache> {
             }
             if (fromPos == null) {
                 resortAtWork = false;
-                return retValue;
+                return null;
             }
             for (int i = 0, n = size(); i < n; i++) {
                 get(i).recalculateAndGetDistance(CalculationType.FAST, true, fromPos);
@@ -115,20 +115,16 @@ public class CacheList extends MoveableList<Cache> {
                     }
                 }
             }
-            // Wenn der nachste Cache ein Mystery mit Final Waypoint ist
-            // -> gleich den Final Waypoint auswahlen!!!
-            // When the next Cache is a mystery with final waypoint
-            // -> activate the final waypoint!!!
             if (nextCache == null) {
-                Waypoint waypoint = nextCache.getCorrectedFinal();
-                if (waypoint == null) {
-                    // wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat
-                    // Wenn ein Cache einen Startpunkt definiert hat dann wird beim Selektieren dieses Caches gleich dieser Startpunkt
-                    // selektiert
-                    waypoint = nextCache.getStartWaypoint();
-                }
-                retValue = new CacheWithWP(nextCache, waypoint);
+                nextCache = get(0);
             }
+            // When the next Cache has a final waypoint -> activate the final waypoint!!!
+            Waypoint waypoint = nextCache.getCorrectedFinal();
+            if (waypoint == null) {
+                // When the next Cache has a start waypoint -> activate the start waypoint!!!
+                waypoint = nextCache.getStartWaypoint();
+            }
+            retValue = new CacheWithWP(nextCache, waypoint);
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -165,7 +161,7 @@ public class CacheList extends MoveableList<Cache> {
     }
 
     public ArrayList<String> getGcCodes() {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0, n = size(); i < n; i++) {
             list.add(get(i).getGeoCacheCode());
         }
