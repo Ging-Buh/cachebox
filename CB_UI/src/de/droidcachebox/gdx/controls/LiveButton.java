@@ -5,57 +5,55 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.core.LiveMapQue;
-import de.droidcachebox.core.LiveMapQue.QueStateChanged;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 
-public class LiveButton extends ImageButton implements QueStateChanged {
+public class LiveButton extends ImageButton {
 
     private static final int Duration = 2000;
     private static final int Frames = 8;
-    private boolean state = false;
+    private boolean isActivated = false;
     private int Animation;
     private int lastAnimation = 0;
 
     public LiveButton() {
         super("");
-        this.name = "LiveButton";
-        this.setClickable(true);
-        this.setImageScale(0.9f);
+        name = "LiveButton";
+        setClickable(true);
+        setImageScale(0.9f);
     }
 
-    public void setState(boolean newState) {
-        state = newState;
+    public void setActivated(boolean newState) {
+        isActivated = newState;
         Config.LiveMapEnabeld.setValue(newState);
         Config.AcceptChanges();
         switchImage();
     }
 
     private void switchImage() {
-        if (state) {
-            if (LiveMapQue.DownloadIsActive.get()) {
+        if (isActivated) {
+            if (LiveMapQue.getInstance().getDownloadIsActive()) {
                 try {
-                    this.setImage(Sprites.LiveBtn.get(1 + Animation));
+                    setImage(Sprites.LiveBtn.get(1 + Animation));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                this.setImage(Sprites.LiveBtn.get(0));
+                setImage(Sprites.LiveBtn.get(0));
             }
         } else {
-            this.setImage(Sprites.LiveBtn.get(1));
+            setImage(Sprites.LiveBtn.get(1));
         }
         GL.that.renderOnce();
     }
 
     @Override
     public void render(Batch batch) {
-        if (state) {
+        if (isActivated) {
             if (GroundspeakAPI.isDownloadLimitExceeded()) {
                 GlobalCore.MsgDownloadLimit();
-                setState(false);
+                setActivated(false);
             }
         }
         Animation = (1 + ((int) (GL.that.getStateTime() * 1000) % Duration) / (Duration / Frames));
@@ -64,30 +62,20 @@ public class LiveButton extends ImageButton implements QueStateChanged {
             switchImage();
         }
         super.render(batch);
-        if (LiveMapQue.DownloadIsActive.get())
+        if (LiveMapQue.getInstance().getDownloadIsActive())
             GL.that.renderOnce(true);
     }
 
     @Override
     public boolean click(int x, int y, int pointer, int button) {
-        setState(!state);
-        if (state) {
-            Coordinate center = ShowMap.getInstance().normalMapView.center;
-            LiveMapQue.quePosition(center);
+        setActivated(!isActivated);
+        if (isActivated) {
+            LiveMapQue.getInstance().quePosition(ShowMap.getInstance().normalMapView.center);
+        }
+        else {
+            LiveMapQue.getInstance().clearDescriptorStack();
         }
         return true;
     }
 
-    @Override
-    public void stateChanged() {
-        switchImage();
-        if (state) {
-            if (LiveMapQue.DownloadIsActive.get()) {
-                GL.that.addRenderView(this, GL.FRAME_RATE_ACTION);
-            } else {
-                GL.that.removeRenderView(this);
-            }
-        }
-        GL.that.renderOnce();
-    }
 }

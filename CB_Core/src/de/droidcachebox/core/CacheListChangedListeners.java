@@ -15,6 +15,7 @@
  */
 package de.droidcachebox.core;
 
+import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.Energy;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
@@ -59,25 +60,24 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
                 Database.Data.cacheList.add(0, cache);
             }
 
-            // add all Live Caches
-            for (int i = 0; i < LiveMapQue.cacheListLive.getSize(); i++) {
-                Cache geoCache = LiveMapQue.cacheListLive.get(i);
-                if (geoCache == null)
-                    continue;
-                if (FilterInstances.isLastFilterSet()) {
-                    if (!Database.Data.cacheList.contains(geoCache)) {
-                        if (FilterInstances.getLastFilter().passed(geoCache)) {
-                            geoCache.setLive(true);
-                            Database.Data.cacheList.add(geoCache);
+            for (Array<Cache> geoCacheList : LiveMapQue.getInstance().getAllCacheLists()) {
+                for (Cache geoCache : geoCacheList) {
+                    if (geoCache != null) {
+                        if (FilterInstances.isLastFilterSet()) {
+                            if (!Database.Data.cacheList.contains(geoCache)) {
+                                if (FilterInstances.getLastFilter().passed(geoCache)) {
+                                    geoCache.setLive(true);
+                                    Database.Data.cacheList.add(geoCache);
+                                }
+                            }
+                        } else {
+                            if (!Database.Data.cacheList.contains(geoCache)) {
+                                geoCache.setLive(true);
+                                Database.Data.cacheList.add(geoCache);
+                            }
                         }
                     }
-                } else {
-                    if (!Database.Data.cacheList.contains(geoCache)) {
-                        geoCache.setLive(true);
-                        Database.Data.cacheList.add(geoCache);
-                    }
                 }
-
             }
         }
 

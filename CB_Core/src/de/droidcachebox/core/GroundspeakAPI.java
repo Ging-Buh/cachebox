@@ -152,7 +152,7 @@ public class GroundspeakAPI {
     public static ArrayList<GeoCacheRelated> searchGeoCaches(Query query) {
         // fetch/update geocaches consumes a lite or full cache
         ArrayList<GeoCacheRelated> fetchResults = new ArrayList<>();
-        Log.debug(sKlasse, "searchGeoCaches start " + query.toString());
+        // Log.debug(sKlasse, "searchGeoCaches start " + query.toString());
         try {
 
             ArrayList<String> fields = query.getFields();
@@ -192,6 +192,8 @@ public class GroundspeakAPI {
                         JSONArray fetchedCaches = r.getBody();
 
                         if (query.descriptor != null) {
+                            // if there are more than 50 caches per descriptor, we run in a problem:
+                            // one file for descriptor but more than 1 JSONArray
                             writeSearchResultsToDisc(fetchedCaches, query.descriptor);
                         }
                         fetchResults.addAll(getGeoCacheRelateds(fetchedCaches, fields, null));
@@ -228,7 +230,7 @@ public class GroundspeakAPI {
     private static void writeSearchResultsToDisc(JSONArray fetchedCaches, Descriptor descriptor) {
         Writer writer = null;
         try {
-            String path = LiveMapQue.getLocalCachePath(descriptor);
+            String path = LiveMapQue.getInstance().getLocalCachePath(descriptor);
             if (FileIO.createDirectory(path)) {
                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8));
                 writer.write(fetchedCaches.toString());
@@ -960,6 +962,7 @@ public class GroundspeakAPI {
     public static boolean isDownloadLimitExceeded() {
         // do'nt want to access Web for this info (GL.that.postAsync)
         if (me == null) return false;
+        if (me.memberShipType == MemberShipType.Unknown) fetchMyUserInfos();
         return me.remaining <= 0 && me.remainingLite <= 0;
     }
 

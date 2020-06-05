@@ -1,83 +1,87 @@
 package de.droidcachebox.utils;
 
+import de.droidcachebox.utils.log.Log;
+
 public abstract class LoopThread {
+    private static final String sKlasse = "LoopThread";
 
     private final long sleepTime;
-    private boolean isAlive;
-    private Thread loop;
-    private Thread lifeCycle;
+    private boolean loopShouldRun;
+    private Thread loopThread;
+    private Thread monitoringThread;
 
     public LoopThread(long LoopBreakTime) {
         super();
         sleepTime = LoopBreakTime;
+        loopShouldRun = false;
     }
 
-    public boolean Alive() {
-        return this.isAlive;
-    }
+    protected abstract void loop();
 
-    protected abstract void Loop();
-
-    protected abstract boolean LoopBreak();
+    protected abstract boolean cancelLoop();
 
     public void start() {
-        if (isAlive)
-            return;
-        if (loop == null) {
-            loop = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    do {
-                        isAlive = true;
-                        if (!LoopBreak())
-                            Loop();
+        if (loopThread == null) {
+
+            loopThread = new Thread(() -> {
+                do {
+                    loopShouldRun = true;
+                    if (cancelLoop()) {
+                        loopShouldRun = false;
+                        loopThread = null;
+                    }
+                    else {
+                        loop();
                         try {
                             Thread.sleep(sleepTime);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        } catch (InterruptedException ignored) {
                         }
-                    } while (isAlive);
-                }
+                    }
+                } while (loopShouldRun);
+                monitoringThread.interrupt();
+                monitoringThread = null;
+                Log.debug(sKlasse, "Stop loopThread");
             });
-        }
-        try {
-            loop.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        if (lifeCycle == null)
-            lifeCycleStart();
-    }
+            try {
+                loopThread.start();
+                // wait until loopThreads runnable is started
+                do {
+                   Thread.sleep(1000);
+                } while (!loopShouldRun);
 
-    private void lifeCycleStart() {
-        if (lifeCycle == null) {
-            lifeCycle = new Thread(new Runnable() {
+                if (monitoringThread == null) {
 
-                @Override
-                public void run() {
-                    do {
-                        if (!loop.isAlive()) {
-                            stop();
-                            start();
-                        }
-                        try {
-                            Thread.sleep(700);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    } while (isAlive);
+                    monitoringThread = new Thread(() -> {
+                        do {
+                            if (loopShouldRun) {
+                                Log.debug(sKlasse, "MonitoringThread is checking!");
+                                if (loopThread.isAlive()) {
+                                    try {
+                                        Thread.sleep(10000); // must not run that often
+                                    } catch (InterruptedException ignored) {
+                                        Log.debug(sKlasse, "Waking up monitoringThread");
+                                    }
+                                } else {
+                                    // both threads will finish
+                                    loopShouldRun = false;
+                                    loopThread = null;
+                                    monitoringThread = null;
+                                    start(); // restarts both (if loop() is hanging
+                                }
+                            }
+                        } while (loopShouldRun);
+                        Log.debug(sKlasse, "Stop monitoringThread");
+                    });
+
+                    monitoringThread.setPriority(Thread.MIN_PRIORITY);
+                    monitoringThread.start();
                 }
-            });
-            lifeCycle.setPriority(Thread.MIN_PRIORITY);
-            lifeCycle.start();
-        }
-    }
+            } catch (Exception ex) {
+                Log.err(sKlasse, "monitoringThread: " + ex);
+            }
 
-    public void stop() {
-        isAlive = false;
-        loop = null;
-        lifeCycle = null;
+        }
     }
 
 }

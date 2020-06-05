@@ -55,11 +55,11 @@ public interface CB_Core_Settings {
     SettingInt DraftsLoadLength = new SettingInt("DraftsLoadLength", Drafts, DEVELOPER, 10, Global, ACB);
 
     SettingBool disableLiveMap = new SettingBool("DisableLiveMap", LiveMap, NEVER, false, Global, ACB);
-    SettingEnum<LiveMapQue.Live_Radius> LiveRadius = new SettingEnum<>("LiveRadius", LiveMap, NORMAL, LiveMapQue.Live_Radius.Zoom_14, Global, ACB, LiveMapQue.Live_Radius.Zoom_14);
-    SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", LiveMap, EXPERT, 350, Global, ACB);
-    SettingBool LiveExcludeFounds = new SettingBool("LiveExcludeFounds", LiveMap, NORMAL, true, Global, ACB);
-    SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", LiveMap, NORMAL, true, Global, ACB);
-    SettingEnum<Live_Cache_Time> LiveCacheTime = new SettingEnum<>("LiveCacheTime", LiveMap, NORMAL, Live_Cache_Time.h_6, Global, ACB, Live_Cache_Time.h_6);
+    SettingEnum<LiveMapQue.Live_Radius> liveRadius = new SettingEnum<>("LiveRadius", LiveMap, NORMAL, LiveMapQue.Live_Radius.Zoom_14, Global, ACB, LiveMapQue.Live_Radius.Zoom_14);
+    SettingInt liveMaxCount = new SettingInt("LiveMaxCount", LiveMap, EXPERT, 350, Global, ACB);
+    SettingBool liveExcludeFounds = new SettingBool("LiveExcludeFounds", LiveMap, NORMAL, true, Global, ACB);
+    SettingBool liveExcludeOwn = new SettingBool("LiveExcludeOwn", LiveMap, NORMAL, true, Global, ACB);
+    SettingEnum<LiveCacheTime> liveCacheTime = new SettingEnum<>("LiveCacheTime", LiveMap, NORMAL, LiveCacheTime.h_6, Global, ACB, LiveCacheTime.h_6);
 
     SettingBool UseCorrectedFinal = new SettingBool("UseCorrectedFinal", Misc, NORMAL, true, Global, ALL);
     SettingBool RunOverLockScreen = new SettingBool("RunOverLockScreen", Misc, NORMAL, true, Global, ACB);
@@ -70,10 +70,10 @@ public interface CB_Core_Settings {
     SettingBool showSandbox = new SettingBool("showSandbox", RememberAsk, NORMAL, false, Platform, ACB);
     SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Folder, NEVER, "data/lang/en-GB/strings.ini", Platform, ALL, "lan");
 
-    enum Live_Cache_Time {
+    enum LiveCacheTime {
         min_10, min_30, min_60, h_6, h_12, h_24;
 
-        public int getMinuten() {
+        public int getLifetime() {
             switch (this) {
                 case h_24:
                     return 1440;

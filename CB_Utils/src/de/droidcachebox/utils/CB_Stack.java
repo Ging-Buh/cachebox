@@ -16,6 +16,8 @@
 
 package de.droidcachebox.utils;
 
+import com.badlogic.gdx.utils.Array;
+
 import java.util.Comparator;
 
 /**
@@ -30,7 +32,7 @@ public class CB_Stack<T> {
     private int maxItemSize = -1;
 
     public CB_Stack() {
-        items = new MoveableList<T>();
+        items = new MoveableList<>();
     }
 
     /**
@@ -38,13 +40,14 @@ public class CB_Stack<T> {
      *
      * @param item
      */
-    public void add(T item) {
+    public boolean addWithoutDuplicates(T item) {
         synchronized (items) {
             if (items.contains(item))
-                return;
+                return false;
             items.add(item);
             // Log.debug(log, "STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
             checkMaxItemSize();
+            return true;
         }
     }
 
@@ -60,7 +63,7 @@ public class CB_Stack<T> {
                 return null;
             }
 
-            T ret = items.remove(0);
+            T ret = items.remove(items.size - 1);
 
             // Log.debug(log, "STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
 
@@ -88,7 +91,7 @@ public class CB_Stack<T> {
      *
      * @return
      */
-    public boolean empty() {
+    public boolean isEmpty() {
         synchronized (items) {
             return items.size <= 0;
         }
@@ -113,10 +116,10 @@ public class CB_Stack<T> {
         }
     }
 
-    public void addAll_removeOther(CB_List<T> descList) {
+    public void addAll_removeOther(Array<T> descList) {
         synchronized (items) {
             items.clear();
-            items.addAll(descList);
+            for (T t : descList) items.add(t);
         }
     }
 
@@ -137,5 +140,11 @@ public class CB_Stack<T> {
             }
         } while (change);
 
+    }
+
+    public void clear() {
+        synchronized (items) {
+            items.clear();
+        }
     }
 }

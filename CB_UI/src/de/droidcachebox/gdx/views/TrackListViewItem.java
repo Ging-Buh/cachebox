@@ -300,11 +300,14 @@ public class TrackListViewItem extends ListViewItemBackground {
                     writer.append("<trkpt lat=\"").append(String.valueOf(track.getTrackPoints().get(i).y)).append("\" lon=\"").append(String.valueOf(track.getTrackPoints().get(i).x)).append("\">\n");
 
                     writer.append("   <ele>").append(String.valueOf(track.getTrackPoints().get(i).elevation)).append("</ele>\n");
-                    SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                    String sDate = datFormat.format(track.getTrackPoints().get(i).date);
-                    datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                    sDate += "T" + datFormat.format(track.getTrackPoints().get(i).date) + "Z";
-                    writer.append("   <time>").append(sDate).append("</time>\n");
+                    Date dtmp = track.getTrackPoints().get(i).date;
+                    if (dtmp != null) {
+                        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                        String sDate = datFormat.format(dtmp);
+                        datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                        sDate += "T" + datFormat.format(track.getTrackPoints().get(i).date) + "Z";
+                        writer.append("   <time>").append(sDate).append("</time>\n");
+                    }
                     writer.append("</trkpt>\n");
                 }
                 writer.append("</trkseg>\n");

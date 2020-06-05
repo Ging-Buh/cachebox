@@ -15,11 +15,13 @@
  */
 package de.droidcachebox.core;
 
+import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.utils.CB_List;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * This list holds the Live loaded Caches with a maximum capacity and the Descriptor for Live request.
@@ -27,175 +29,113 @@ import java.util.HashMap;
  * @author Longri
  */
 public class CacheListLive {
-    HashMap<Descriptor, CB_List<Cache>> map;
-    CB_List<Cache> includedList = null;
-    private int maxCapacity = 100;
-    private CB_List<Descriptor> descriptorList;
-    private Descriptor MapCenterDesc;
+    private final HashMap<Long, Array<Cache>> geoCachesPerDescriptor = new HashMap<>();
+    private final int maxCapacity;
+    private int noOfGeoCaches;
+    private Descriptor mapCenterDesc;
+    private final byte usedZoom;
 
     /**
      * Constructor
      *
-     * @param maxCapacity
+     * @param _maxCapacity ?
      */
-    public CacheListLive(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
-        map = new HashMap<Descriptor, CB_List<Cache>>();
-        descriptorList = new CB_List<Descriptor>();
+    public CacheListLive(int _maxCapacity, byte _usedZoom) {
+        maxCapacity = _maxCapacity;
+        usedZoom = _usedZoom;
+        noOfGeoCaches = 0;
     }
 
-    public CB_List<Cache> add(Descriptor desc, CB_List<Cache> caches) {
-        synchronized (map) {
-            if (getDescriptorList().contains(desc))
+    public Array<Cache> addAndReduce(Descriptor descriptor, Array<Cache> caches) {
+        synchronized (geoCachesPerDescriptor) {
+            if (geoCachesPerDescriptor.containsKey(descriptor.getHashCode())) {
                 return null;
-
-            CB_List<Cache> cleanedCaches = removeExistCaches(caches);
-            if (map.containsKey(desc))
-                return null;
-            includedList = null;
-            map.put(desc, cleanedCaches);
-            getDescriptorList().add(desc);
-            return chkCapacity();
-        }
-    }
-
-    private CB_List<Cache> removeExistCaches(CB_List<Cache> caches) {
-        if (caches == null || caches.size() == 0)
-            return new CB_List<Cache>();
-        CB_List<Cache> returnList = new CB_List<Cache>(caches);
-        for (CB_List<Cache> list : map.values()) {
-
-            for (int i = 0; i < caches.size(); i++) {
-                if (list.contains(caches.get(i)))
-                    returnList.remove(caches.get(i));
+            } else {
+                Array<Cache> cleanedCaches = removeGeoCachesNotInDesctriptorsArea(descriptor, caches);
+                geoCachesPerDescriptor.put(descriptor.getHashCode(), cleanedCaches);
+                noOfGeoCaches = noOfGeoCaches + cleanedCaches.size;
+                return removeGeoCachesForNotToExceedCapacityLimit();
             }
         }
+    }
 
-        // remove double
-
-        CB_List<Cache> clearList = new CB_List<Cache>();
-        for (int i = 0; i < returnList.size(); i++) {
-            Cache ca = returnList.get(i);
-            if (!clearList.contains(ca))
-                clearList.add(ca);
+    private Array<Cache> removeGeoCachesNotInDesctriptorsArea(Descriptor descriptor, Array<Cache> geoCachesToClean) {
+        int zoom = descriptor.getZoom();
+        Array<Cache> cleanedCaches = new Array<>();
+        for (Cache geoCache : geoCachesToClean) {
+            Descriptor descriptorOfGeoCache = new Descriptor(geoCache.getCoordinate(), zoom);
+            if (descriptorOfGeoCache.equals(descriptor)) cleanedCaches.add(geoCache);
         }
-
-        return clearList;
+        return cleanedCaches;
     }
 
-    /**
-     * Returns the max capacity of this CacheList
-     *
-     * @return
-     */
-    public int getCapacity() {
-        return this.maxCapacity;
-    }
-
-    private CB_List<Cache> chkCapacity() {
-        CB_List<Cache> removeList = new CB_List<Cache>();
-        if (getDescriptorList().size() > 1) {
-            if (getSize() > maxCapacity) {
-                // delete the Descriptor-Caches with highest distance to last added Descriptor-Caches
-                Descriptor desc = getFarestDescriptorFromMapCenter();
-                if (desc == null)
-                    return removeList; // can not clear!
-
-                removeList = map.get(desc);
-                for (int i = 0; i < removeList.size(); i++) {
-                    Cache ca = removeList.get(i);
-                    if (ca != null && ca.isDisposed())
-                        ca.dispose();
-                }
-                map.remove(desc);
-                getDescriptorList().remove(desc);
-                includedList = null;
+    private Array<Cache> removeGeoCachesForNotToExceedCapacityLimit() {
+        Array<Cache> removedCaches = new Array<>();
+        while (noOfGeoCaches > maxCapacity && geoCachesPerDescriptor.keySet().size() > 1) {
+            Descriptor descriptor = getFarestDescriptorFromMapCenter();
+            if (descriptor != null) {
+                removedCaches.addAll(geoCachesPerDescriptor.get(descriptor.getHashCode()));
+                geoCachesPerDescriptor.remove(descriptor.getHashCode());
             }
-            if (getSize() > maxCapacity)
-                removeList.addAll(chkCapacity());
         }
-        return removeList;
+        noOfGeoCaches = noOfGeoCaches - removedCaches.size;
+        return removedCaches;
     }
 
     private Descriptor getFarestDescriptorFromMapCenter() {
-        if (MapCenterDesc == null)
+        if (mapCenterDesc == null)
             return null;
 
-        int descX = MapCenterDesc.getX();
-        int descY = MapCenterDesc.getY();
+        int descX = mapCenterDesc.getX();
+        int descY = mapCenterDesc.getY();
 
         int tmpDistance = 0;
         Descriptor tmpDesc = null;
-
-        for (int i = 0; i < getDescriptorList().size() - 1; i++) {
-            Descriptor desc2 = getDescriptorList().get(i);
-
+        for (Long l2 : geoCachesPerDescriptor.keySet()) {
+            Array<Cache> cl2 = geoCachesPerDescriptor.get(l2);
+            Descriptor desc2 = new Descriptor(cl2.get(0).getCoordinate(), usedZoom);
             int distance = Math.abs(descX - desc2.getX()) + Math.abs(descY - desc2.getY());
-
             if (distance > tmpDistance) {
                 tmpDistance = distance;
                 tmpDesc = desc2;
             }
-
         }
         return tmpDesc;
     }
 
     public int getSize() {
-        synchronized (map) {
-            if (includedList != null)
-                return includedList.size();
+        return noOfGeoCaches;
+    }
 
-            int count = 0;
-            for (CB_List<Cache> list : map.values()) {
-                count += list.size();
-            }
-            return count;
+    public void setCenterDescriptor(Descriptor descriptor) {
+        mapCenterDesc = descriptor;
+    }
+
+    public boolean contains(Descriptor descriptor) {
+        return geoCachesPerDescriptor.containsKey(descriptor.getHashCode());
+    }
+
+    public Collection<Array<Cache>> getAllCacheLists() {
+        return geoCachesPerDescriptor.values();
+    }
+
+    public Set<Long> getDescriptorsHashCodes() {
+        return geoCachesPerDescriptor.keySet();
+    }
+
+    /*
+    public Array<Cache> getCachesOfDescriptor(Descriptor descriptor) {
+        return geoCachesPerDescriptor.get(descriptor.getHashCode());
+    }
+     */
+
+    public int getNoOfGeoCachesForDescriptor(Descriptor descriptor) {
+        long hc = descriptor.getHashCode();
+        if (geoCachesPerDescriptor.containsKey(hc)){
+            return geoCachesPerDescriptor.get(hc).size;
+        }
+        else {
+            return 0;
         }
     }
-
-    public boolean contains(Cache ca) {
-        synchronized (map) {
-            if (includedList != null)
-                return includedList.contains(ca);
-
-            for (CB_List<Cache> list : map.values()) {
-                if (list.contains(ca))
-                    return true;
-            }
-            return false;
-        }
-    }
-
-    public Cache get(int i) {
-        synchronized (map) {
-
-            if (includedList == null) {
-                includedList = new CB_List<Cache>();
-
-                for (CB_List<Cache> list : map.values()) {
-                    includedList.addAll(list);
-                }
-            }
-
-            try {
-                return includedList.get(i);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-    }
-
-    public boolean contains(Descriptor desc) {
-        return getDescriptorList().contains(desc);
-    }
-
-    public CB_List<Descriptor> getDescriptorList() {
-        return descriptorList;
-    }
-
-    public void setCenterDescriptor(Descriptor desc) {
-        this.MapCenterDesc = desc;
-    }
-
 }

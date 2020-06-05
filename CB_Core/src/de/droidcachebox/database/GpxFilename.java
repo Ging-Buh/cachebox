@@ -19,7 +19,6 @@ public class GpxFilename implements Comparable<GpxFilename> {
 
     @Override
     public int compareTo(GpxFilename arg0) {
-
         return 0;
     }
 

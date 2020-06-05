@@ -19,20 +19,19 @@ public class Categories extends MoveableList<Category> {
     public Category getCategory(String gpxFilename) {
         // if necessary, adds a new Category entry and then returns the entry from Categories
         gpxFilename = FileFactory.createFile(gpxFilename).getName();
-        for (int i = 0, n = size(); i < n; i++) {
-            Category category = get(i);
+        for (Category category : this) {
             if (gpxFilename.toUpperCase().equals(category.GpxFilename.toUpperCase())) {
                 return category;
             }
         }
+
         Category newCategory = createNewCategory(gpxFilename);
-        this.add(newCategory);
+        add(newCategory);
         return newCategory;
     }
 
     public Category getCategoryByGpxFilenameId(long gpxFilenameId) {
-        for (int i = 0, n = this.size(); i < n; i++) {
-            Category category = this.get(i);
+        for (Category category : this) {
             if (category.containsGpxFilenameId(gpxFilenameId)) {
                 return category;
             }
@@ -71,8 +70,8 @@ public class Categories extends MoveableList<Category> {
     }
 
     private void checkAll() {
-        for (int i = 0, n = this.size(); i < n; i++) {
-            Category cat = this.get(i);
+        for (int i = 0, n = size(); i < n; i++) {
+            Category cat = get(i);
             cat.Checked = false;
             for (GpxFilename gpx : cat) {
                 gpx.Checked = true;
@@ -84,8 +83,8 @@ public class Categories extends MoveableList<Category> {
         checkAll();
         boolean foundOne = false;
         for (long id : filter.categories) {
-            for (int i = 0, n = this.size(); i < n; i++) {
-                Category cat = this.get(i);
+            for (int i = 0, n = size(); i < n; i++) {
+                Category cat = get(i);
                 if (cat.Id == id) {
                     cat.Checked = true;
                     foundOne = true;
@@ -94,14 +93,14 @@ public class Categories extends MoveableList<Category> {
         }
         if (!foundOne) {
             // Wenn gar keine Category aktiv -> alle aktivieren!
-            for (int i = 0, n = this.size(); i < n; i++) {
-                Category cat = this.get(i);
+            for (int i = 0, n = size(); i < n; i++) {
+                Category cat = get(i);
                 cat.Checked = true;
             }
         }
         for (long id : filter.gpxFilenameIds) {
-            for (int i = 0, n = this.size(); i < n; i++) {
-                Category cat = this.get(i);
+            for (int i = 0, n = size(); i < n; i++) {
+                Category cat = get(i);
                 for (GpxFilename gpx : cat) {
                     if (gpx.Id == id) {
                         gpx.Checked = false;
@@ -109,12 +108,11 @@ public class Categories extends MoveableList<Category> {
                 }
             }
         }
-        for (int i = 0, n = this.size(); i < n; i++) {
-            Category cat = this.get(i);
+        for (Category category : this) {
             // wenn Category nicht checked ist -> alle GpxFilenames deaktivieren
-            if (cat.Checked)
+            if (category.Checked)
                 continue;
-            for (GpxFilename gpx : cat) {
+            for (GpxFilename gpx : category) {
                 gpx.Checked = false;
             }
         }
@@ -125,19 +123,17 @@ public class Categories extends MoveableList<Category> {
         filter.gpxFilenameIds.clear();
         if (filter.categories == null) filter.categories = new ArrayList<>();
         filter.categories.clear();
-        int n = this.size();
-        for (int i = 0; i < n; i++) {
-            Category cat = this.get(i);
-            if (cat.Checked) {
+        for (Category category : this) {
+            if (category.Checked) {
                 // GpxFilename Filter nur setzen, wenn die Category aktiv ist!
-                filter.categories.add(cat.Id);
-                for (GpxFilename gpx : cat) {
+                filter.categories.add(category.Id);
+                for (GpxFilename gpx : category) {
                     if (!gpx.Checked)
                         filter.gpxFilenameIds.add(gpx.Id);
                 }
             } else {
                 // Category ist nicht aktiv -> alle GpxFilenames in Filter aktivieren
-                for (GpxFilename gpx : cat)
+                for (GpxFilename gpx : category)
                     filter.gpxFilenameIds.add(gpx.Id);
             }
         }

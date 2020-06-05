@@ -259,7 +259,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         iconFactor = Config.mapViewDPIFaktor.getValue();
 
         liveButton = new LiveButton();
-        liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
+        liveButton.setActivated(Config.LiveMapEnabeld.getDefaultValue());
         Config.disableLiveMap.addSettingChangedListener(this::requestLayout);
 
         btnMapState = new MultiToggleButton(GL_UISizes.toggle, "toggle");
@@ -295,10 +295,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         break;
                 }
                 addChild(btnMapState);
+
                 if (Config.disableLiveMap.getValue()) {
-                    liveButton.setState(false);
+                    liveButton.setActivated(false);
                 }
                 addChild(liveButton);
+
                 break;
             case Track:
                 setMapState(MapState.FREE);
@@ -821,7 +823,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void onHide() {
-        Log.debug(sKlasse, "Map gets invisible");
+        // Log.debug(sKlasse, "Map gets invisible");
         CacheSelectionChangedListeners.getInstance().remove(this);
         super.onHide();
     }
@@ -841,7 +843,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     }
 
     protected void directLoadTiles(Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
-        Log.debug(sKlasse, "directLoadTiles");
+        // Log.debug(sKlasse, "directLoadTiles");
         if (Energy.isDisplayOff()) return;
         if (isCreated) {
 
@@ -860,10 +862,10 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
 
             if (isCarMode && CB_UI_Settings.LiveMapEnabeld.getValue()) {
-                LiveMapQue.setCenterDescriptor(center);
+                LiveMapQue.getInstance().setCenterDescriptor(center);
                 // LiveMap queue complete screen
                 lowerTile.setData(center);
-                LiveMapQue.queScreen(lowerTile, upperTile);
+                LiveMapQue.getInstance().queScreen(lowerTile, upperTile);
             }
 
         }
@@ -901,7 +903,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void initializeMap() {
-        Log.debug(sKlasse, "initializeMap");
+        // Log.debug(sKlasse, "initializeMap");
         zoomCross = Config.ZoomCross.getValue();
         super.initializeMap();
     }
@@ -924,7 +926,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void requestLayout() {
-        Log.debug(sKlasse, "requestLayout");
+        // Log.debug(sKlasse, "requestLayout");
 
         if (isDisposed()) return;
 
@@ -960,7 +962,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     public void setMapState(MapState state) {
         if (mapState == state)
             return;
-        Log.debug(sKlasse, "setMapState :" + state);
+        // Log.debug(sKlasse, "setMapState :" + state);
 
         Config.lastMapToggleBtnState.setValue(state.ordinal());
         Config.AcceptChanges();
@@ -994,7 +996,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void positionChanged() {
-        Log.debug(sKlasse, "positionChanged");
+        // Log.debug(sKlasse, "positionChanged");
         if (isCarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
             if (!Locator.getInstance().isGPSprovided())
@@ -1059,7 +1061,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     protected void skinIsChanged() {
-        Log.debug(sKlasse, "skinIsChanged");
+        // Log.debug(sKlasse, "skinIsChanged");
         super.skinIsChanged();
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
         data.hideMyFinds = hideMyFinds;
@@ -1081,7 +1083,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void onShow() {
-        Log.debug(sKlasse, "onShow");
+        // Log.debug(sKlasse, "onShow");
         super.onShow();
         CacheSelectionChangedListeners.getInstance().addListener(this);
         isNorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
@@ -1093,7 +1095,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
      */
     @Override
     public void setNewSettings(int InitialFlags) {
-        Log.debug(sKlasse, "setNewSettings");
+        // Log.debug(sKlasse, "setNewSettings");
         if ((InitialFlags & INITIAL_SETTINGS) != 0) {
             showRating = mapMode == MapMode.Compass ? false : Config.showRating.getValue();
             showDT = mapMode == MapMode.Compass ? false : Config.showDifficultyTerrain.getValue();
@@ -1182,7 +1184,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     protected void setInitialLocation() {
-        Log.debug(sKlasse, "setInitialLocation");
+        // Log.debug(sKlasse, "setInitialLocation");
         try {
             if (Database.Data != null) {
                 if (Database.Data.cacheList != null) {
@@ -1213,7 +1215,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void mapStateChangedToWP() {
-        Log.debug(sKlasse, "mapStateChangedToWP");
+        // Log.debug(sKlasse, "mapStateChangedToWP");
         if (GlobalCore.isSetSelectedCache()) {
             if (GlobalCore.getSelectedWayPoint() != null) {
                 Coordinate tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
@@ -1227,13 +1229,13 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void setAlignToCompass(boolean value) {
-        Log.debug(sKlasse, "setAlignToCompass");
+        // Log.debug(sKlasse, "setAlignToCompass");
         super.setAlignToCompass(value);
         Config.isMapNorthOriented.setValue(!value);
     }
 
     private void onResume() {
-        Log.debug(sKlasse, "onResume");
+        // Log.debug(sKlasse, "onResume");
         MapView.this.renderOnce("OnResumeListeners");
     }
 

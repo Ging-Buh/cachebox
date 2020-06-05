@@ -67,7 +67,7 @@ public class MapInfoPanel extends CB_View_Base {
                 }
 
                 if (CB_UI_Settings.LiveMapEnabeld.getValue() && !parentMapView.isCarMode())
-                    LiveMapQue.quePosition(Coord);
+                    LiveMapQue.getInstance().quePosition(Coord);
 
                 GL.that.renderOnce();
             }

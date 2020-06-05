@@ -18,9 +18,9 @@
 
 package de.droidcachebox.locator.map;
 
+import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.PointD;
@@ -100,6 +100,10 @@ public class Descriptor implements Comparable<Descriptor> {
         y = 0;
         zoom = 0;
         hashCode = 0;
+    }
+
+    public Descriptor(long hashCode, int zoom) {
+        // x = hashCode - (tileOffset[zoom]) - (long) (tilesPerLine[zoom]) * y;
     }
 
     /**
@@ -187,11 +191,11 @@ public class Descriptor implements Comparable<Descriptor> {
     /**
      * Erzeugt einen neuen Deskriptor mit anderer Zoom-Stufe
      */
-    public CB_List<Descriptor> adjustZoom(int newZoomLevel) {
+    public Array<Descriptor> adjustZoom(int newZoomLevel) {
         int zoomDiff = newZoomLevel - getZoom();
         int pow = (int) Math.pow(2, Math.abs(zoomDiff));
 
-        CB_List<Descriptor> ret = new CB_List<>();
+        Array<Descriptor> ret = new Array<>();
 
         if (zoomDiff > 0) {
 

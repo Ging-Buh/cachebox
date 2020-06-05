@@ -17,6 +17,7 @@
 package de.droidcachebox.core;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.Database;
@@ -25,162 +26,165 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.CB_Stack;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.LoopThread;
 import de.droidcachebox.utils.log.Log;
 import org.json.JSONArray;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static de.droidcachebox.locator.map.Descriptor.tileXToLongitude;
-import static de.droidcachebox.locator.map.Descriptor.tileYToLatitude;
-import static de.droidcachebox.utils.MathUtils.DEG_RAD;
-import static de.droidcachebox.utils.MathUtils.WGS84_MAJOR_AXIS;
 
 /**
  * @author Longri
  */
 public class LiveMapQue {
-    public static final String LIVE_CACHE_NAME = "Live_Request";
-    public static final String LIVE_CACHE_EXTENSION = ".txt";
+    private static final String sKlasse = "LiveMapQue";
+    private static final String LIVE_CACHE_NAME = "Live_Request";
+    private static final String LIVE_CACHE_EXTENSION = ".txt";
+    private static final byte DEFAULT_ZOOM_14 = 14;
+    // private static final int MAX_REQUEST_CACHE_RADIUS_14 = 1060;
+    private static final byte DEFAULT_ZOOM_13 = 13;
+    // private static final int MAX_REQUEST_CACHE_RADIUS_13 = 2120;
+    private static final int MAX_REQUEST_CACHE_COUNT = 50; //
+    private static LiveMapQue liveMapQue;
 
-    public static final byte DEFAULT_ZOOM_14 = 14;
-    public static final int MAX_REQUEST_CACHE_RADIUS_14 = 1060;
+    private final CB_Stack<Descriptor> descriptorStack;
+    private final AtomicBoolean downloadIsActive;
+    private Descriptor lastLo, lastRu;
+    private Byte count = 0;
+    private CacheListLive cacheListLive;
+    private Live_Radius radius;
+    private byte usedZoom;
+    private GpxFilename gpxFilename;
+    private final LoopThread loopThread = new LoopThread(2000) {
 
-    public static final byte DEFAULT_ZOOM_13 = 13;
-    public static final int MAX_REQUEST_CACHE_RADIUS_13 = 2120;
-
-    public static final int MAX_REQUEST_CACHE_COUNT = 200;
-    public static CacheListLive cacheListLive;
-    public static Live_Radius radius = CB_Core_Settings.LiveRadius.getEnumValue();
-    public static byte Used_Zoom;
-    public static int Used_max_request_radius;
-    public static AtomicBoolean DownloadIsActive = new AtomicBoolean(false);
-    public static CB_List<QueStateChanged> eventList = new CB_List<>();
-    public static CB_Stack<Descriptor> descStack = new CB_Stack<>();
-    private static GpxFilename gpxFilename;
-    private static LoopThread loop = new LoopThread(2000) {
-        protected boolean LoopBreak() {
-            return descStack.empty();
+        protected boolean cancelLoop() {
+            boolean cancel = descriptorStack.isEmpty();
+            if (cancel) {
+                Log.debug(sKlasse, "cancel loop thread");
+                new Thread(() -> {
+                    CacheListChangedListeners.getInstance().cacheListChanged();
+                }).start();
+            }
+            return cancel;
         }
 
-        protected void Loop() {
-            Log.debug(LIVE_CACHE_NAME, "Loop start");
+        protected void loop() {
+            if (downloadIsActive.get()) return; // only one download at a time
+            Log.debug(sKlasse, "download for one descriptor per loop");
             GL.that.postAsync(() -> {
 
-                Descriptor desc;
-                synchronized (descStack) {
-                    do {
-                        desc = descStack.get();
-                    } while (cacheListLive.contains(desc));
-                }
+                Descriptor descriptor;
+                do {
+                    // ? only use, if on screen (ShowMap.getInstance().normalMapView.center / descriptor)
+                    // ? perhaps dont' use lastIn but sort on distance
+                    descriptor = descriptorStack.get();
+                } while (descriptor != null && cacheListLive.contains(descriptor));
 
-                if (desc == null)
-                    return;
+                if (descriptor != null) {
+                    Log.debug(sKlasse, "Download caches from " + descriptor);
 
-                for (int i = 0; i < eventList.size(); i++)
-                    eventList.get(i).stateChanged();
-                DownloadIsActive.set(true);
+                    downloadIsActive.set(true);
+                    int request_radius = usedZoom == DEFAULT_ZOOM_14 ? 1300 : 2600;
+                    /*
+                    double lon1 = DEG_RAD * tileXToLongitude(descriptor.getZoom(), descriptor.getX());
+                    double lat1 = DEG_RAD * tileYToLatitude(descriptor.getZoom(), descriptor.getY());
+                    double lon2 = DEG_RAD * tileXToLongitude(descriptor.getZoom(), descriptor.getX() + 1);
+                    double lat2 = DEG_RAD * tileYToLatitude(descriptor.getZoom(), descriptor.getY() + 1);
+                    request_radius = (int) (WGS84_MAJOR_AXIS * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))) / 2 + 0.5); // round
+                    */
 
-                double lon1 = DEG_RAD * tileXToLongitude(desc.getZoom(), desc.getX());
-                double lat1 = DEG_RAD * tileYToLatitude(desc.getZoom(), desc.getY());
-                double lon2 = DEG_RAD * tileXToLongitude(desc.getZoom(), desc.getX() + 1);
-                double lat2 = DEG_RAD * tileYToLatitude(desc.getZoom(), desc.getY() + 1);
-                Used_max_request_radius = (int) (WGS84_MAJOR_AXIS * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))) / 2 + 0.5); // round
-
-                GroundspeakAPI.Query q = new GroundspeakAPI.Query()
-                        .setMaxToFetch(MAX_REQUEST_CACHE_COUNT)
-                        .setDescriptor(desc)
-                        .searchInCircle(desc.getCenterCoordinate(), Used_max_request_radius);
-                if (CB_Core_Settings.LiveExcludeFounds.getValue()) q.excludeFinds();
-                if (CB_Core_Settings.LiveExcludeOwn.getValue()) q.excludeOwn();
-                q.resultWithLiteFields();
-                ArrayList<GroundspeakAPI.GeoCacheRelated> apiCaches = null;
-                if (descExistLiveCache(desc)) {
-                    apiCaches = loadDescLiveFromCache(q);
-                }
-                if (apiCaches == null) {
-
-                    if (gpxFilename == null) {
-                        Category category = CoreData.categories.getCategory("API-Import");
-                        gpxFilename = category.addGpxFilename("API-Import");
+                    GroundspeakAPI.Query q = new GroundspeakAPI.Query()
+                            .setMaxToFetch(MAX_REQUEST_CACHE_COUNT)
+                            .setDescriptor(descriptor)
+                            .searchInCircle(descriptor.getCenterCoordinate(), request_radius);
+                    if (CB_Core_Settings.liveExcludeFounds.getValue()) q.excludeFinds();
+                    if (CB_Core_Settings.liveExcludeOwn.getValue()) q.excludeOwn();
+                    q.resultWithLiteFields();
+                    // todo change to Array<Cache> to make copy from arraylist to array unnecessary
+                    ArrayList<GroundspeakAPI.GeoCacheRelated> apiCaches = null;
+                    if (FileIO.fileExistsMaxAge(getLocalCachePath(descriptor), CB_Core_Settings.liveCacheTime.getEnumValue().getLifetime())) {
+                        apiCaches = loadDescLiveFromCache(q);
                     }
-
-                    apiCaches = GroundspeakAPI.searchGeoCaches(q);
-                }
-
-                // todo change LiveCaches CB_List<Cache> to ArrayList<GroundspeakAPI.GeoCacheRelated>
-                CB_List<Cache> tmp = new CB_List<>();
-                for (GroundspeakAPI.GeoCacheRelated c : apiCaches) tmp.add(c.cache);
-                final CB_List<Cache> removedCaches = cacheListLive.add(desc, tmp);
-
-                // Log.debug(log, "LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
-
-                Thread callThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (Database.Data.cacheList) {
-                            Database.Data.cacheList.removeAll(removedCaches);
+                    if (apiCaches == null) {
+                        if (gpxFilename == null) {
+                            Category category = CoreData.categories.getCategory("API-Import");
+                            gpxFilename = category.addGpxFilename("API-Import");
                         }
-                        CacheListChangedListeners.getInstance().cacheListChanged();
-                        for (int i = 0; i < eventList.size(); i++)
-                            eventList.get(i).stateChanged();
+                        apiCaches = GroundspeakAPI.searchGeoCaches(q);
                     }
-                });
-                callThread.start();
 
-                DownloadIsActive.set(false);
-
+                    Array<Cache> tmp = new Array<>();
+                    for (GroundspeakAPI.GeoCacheRelated c : apiCaches)
+                        tmp.add(c.cache); // todo remove (is only to copy from Arraylist to Array)
+                    final Array<Cache> geoCachesToRemove = cacheListLive.addAndReduce(descriptor, tmp);
+                    if (geoCachesToRemove == null) {
+                        Log.err(sKlasse, "descriptor already in cachelistLive: should not happen here!");
+                    } else {
+                        if (geoCachesToRemove.size > 0) {
+                            new Thread(() -> {
+                                synchronized (Database.Data.cacheList) {
+                                    // todo reuse removeAll
+                                    for (Cache geoCache : geoCachesToRemove) {
+                                        Database.Data.cacheList.remove(geoCache);
+                                    }
+                                }
+                            }).start();
+                        }
+                        if (cacheListLive.getNoOfGeoCachesForDescriptor(descriptor) > 0 || geoCachesToRemove.size > 0) {
+                            new Thread(() -> {
+                                CacheListChangedListeners.getInstance().cacheListChanged();
+                            }).start();
+                        }
+                    }
+                    downloadIsActive.set(false);
+                } else {
+                    Log.debug(sKlasse, "no descriptor for download");
+                }
             });
         }
     };
-    private static Descriptor lastLo, lastRu;
-    private static Byte count = 0;
 
-    static {
-        CB_Core_Settings.LiveRadius.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                radius = CB_Core_Settings.LiveRadius.getEnumValue();
-                if (radius == Live_Radius.Zoom_13) {
-                    Used_Zoom = DEFAULT_ZOOM_13;
-                    Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
-                } else {
-                    Used_Zoom = DEFAULT_ZOOM_14;
-                    Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
-                }
+    private LiveMapQue() {
+        descriptorStack = new CB_Stack<>();
+        downloadIsActive = new AtomicBoolean(false);
+
+        CB_Core_Settings.liveRadius.addSettingChangedListener(() -> {
+            radius = CB_Core_Settings.liveRadius.getEnumValue();
+            if (radius == Live_Radius.Zoom_13) {
+                usedZoom = DEFAULT_ZOOM_13;
+            } else {
+                usedZoom = DEFAULT_ZOOM_14;
             }
-
         });
 
-        radius = CB_Core_Settings.LiveRadius.getEnumValue();
+        radius = CB_Core_Settings.liveRadius.getEnumValue();
 
         if (radius == Live_Radius.Zoom_13) {
-            Used_Zoom = DEFAULT_ZOOM_13;
-            Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
+            usedZoom = DEFAULT_ZOOM_13;
         } else {
-            Used_Zoom = DEFAULT_ZOOM_14;
-            Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
+            usedZoom = DEFAULT_ZOOM_14;
         }
 
-        int maxLiveCount = CB_Core_Settings.LiveMaxCount.getValue();
-        cacheListLive = new CacheListLive(maxLiveCount);
-        CB_Core_Settings.LiveMaxCount.addSettingChangedListener(new IChanged() {
-            @Override
-            public void handleChange() {
-                int maxLiveCount = CB_Core_Settings.LiveMaxCount.getValue();
-                cacheListLive = new CacheListLive(maxLiveCount);
-            }
-        });
+        cacheListLive = new CacheListLive(CB_Core_Settings.liveMaxCount.getValue(), usedZoom);
+        CB_Core_Settings.liveMaxCount.addSettingChangedListener(() -> cacheListLive = new CacheListLive(CB_Core_Settings.liveMaxCount.getValue(), usedZoom));
+
+        Log.debug(sKlasse, "A new LiveMapQue");
 
     }
 
-    private static ArrayList<GroundspeakAPI.GeoCacheRelated> loadDescLiveFromCache(GroundspeakAPI.Query query) {
-        String path = getLocalCachePath(query.getDescriptor());
+    public static LiveMapQue getInstance() {
+        if (liveMapQue == null) liveMapQue = new LiveMapQue();
+        return liveMapQue;
+    }
 
+    private ArrayList<GroundspeakAPI.GeoCacheRelated> loadDescLiveFromCache(GroundspeakAPI.Query query) {
+        String path = getLocalCachePath(query.getDescriptor());
         String result;
         FileHandle fh = new FileHandle(path);
         try {
@@ -205,42 +209,43 @@ public class LiveMapQue {
         } catch (Exception e) {
             Log.err("LiveMapQue", "loadDescLiveFromCache", e);
         }
-
         return null;
     }
 
-    private static boolean descExistLiveCache(Descriptor desc) {
-        String path = getLocalCachePath(desc);
-        return FileIO.fileExistsMaxAge(path, CB_Core_Settings.LiveCacheTime.getEnumValue().getMinuten());
-    }
-
-    static String getLocalCachePath(Descriptor desc) {
+    public String getLocalCachePath(Descriptor desc) {
         if (desc == null)
             return "";
         return Descriptor.getTileCacheFolder() + "/" + LIVE_CACHE_NAME + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + LIVE_CACHE_EXTENSION;
     }
 
-    static public void quePosition(Coordinate coord) {
-        // no request for invalid Coords
-        if (coord == null || !coord.isValid())
-            return;
-
-        // no request if disabled
-        if (CB_Core_Settings.disableLiveMap.getValue())
-            return;
-
-        final Descriptor desc = new Descriptor(coord, Used_Zoom);
-        queDesc(desc);
+    public void quePosition(Coordinate coord) {
+        if (!CB_Core_Settings.disableLiveMap.getValue()) {
+            if (coord != null && coord.isValid()) {
+                final Descriptor descriptor = new Descriptor(coord, usedZoom);
+                if (cacheListLive.contains(descriptor)) {
+                    Log.trace(sKlasse, "Live caches for " + descriptor + " already there.");
+                } else {
+                    if (!GroundspeakAPI.isDownloadLimitExceeded()) {
+                        if (descriptorStack.addWithoutDuplicates(descriptor)) {
+                            Log.debug(sKlasse, "Add " + descriptor + " to download stack. (" + descriptorStack.getSize() + ")");
+                        }
+                        loopThread.start();
+                    }
+                }
+            }
+        }
     }
 
-    public static void queScreen(Descriptor lo, Descriptor ru) {
+    public void queScreen(Descriptor lo, Descriptor ru) {
+        // get geocaches for complete screen, only called if in car-mode
         if (GroundspeakAPI.isDownloadLimitExceeded())
             return;
 
         // check last request don't Double!
         if (lastLo != null && lastRu != null) {
             // all Descriptor are into the last request?
-            if (lastLo.getX() == lo.getX() && lastRu.getX() == ru.getX() && lastLo.getY() == lo.getY() && lastRu.getY() == ru.getY()) {
+            if (lastLo.getX() == lo.getX() && lastRu.getX() == ru.getX() &&
+                    lastLo.getY() == lo.getY() && lastRu.getY() == ru.getY()) {
                 // Still run every 15th!
                 if (count++ < 15)
                     return;
@@ -252,78 +257,61 @@ public class LiveMapQue {
         lastLo = lo;
         lastRu = ru;
 
-        CB_List<Descriptor> descList = new CB_List<>();
+        Array<Descriptor> descList = new Array<>();
         for (int i = lo.getX(); i <= ru.getX(); i++) {
             for (int j = lo.getY(); j <= ru.getY(); j++) {
                 Descriptor desc = new Descriptor(i, j, lo.getZoom());
 
-                CB_List<Descriptor> descAddList = desc.adjustZoom(Used_Zoom);
+                Array<Descriptor> descAddList = desc.adjustZoom(usedZoom);
 
-                for (int k = 0; k < descAddList.size(); k++) {
-                    if (!descList.contains(descAddList.get(k)))
+                for (int k = 0; k < descAddList.size; k++) {
+                    if (!descList.contains(descAddList.get(k), false))
                         descList.add(descAddList.get(k));
                 }
             }
         }
 
-        // remove all descriptor are ready loaded at LiveCaches
-        descList.removeAll(cacheListLive.getDescriptorList());
-
-        if (!loop.Alive())
-            loop.start();
-
-        synchronized (descStack) {
-            descStack.addAll_removeOther(descList);
-
-            // Descriptor MapCenter=MapViewBase.center
-
-            Coordinate center = null;
-            if ((lo.getData() != null) && (lo.getData() instanceof Coordinate))
-                center = (Coordinate) lo.getData();
-            if (center != null) {
-                final Descriptor mapCenterDesc = new Descriptor(center, lo.getZoom());
-                descStack.sort(new Comparator<Descriptor>() {
-                    @Override
-                    public int compare(Descriptor item1, Descriptor item2) {
-                        int distanceFromCenter1 = item1.getDistance(mapCenterDesc);
-                        int distanceFromCenter2 = item2.getDistance(mapCenterDesc);
-                        if (distanceFromCenter1 == distanceFromCenter2)
-                            return 0;
-                        if (distanceFromCenter1 > distanceFromCenter2)
-                            return 1;
-                        return -1;
-                    }
-                });
+        // remove descriptors that are already in cacheListLive
+        Set<Long> alreadyThere = cacheListLive.getDescriptorsHashCodes();
+        for (Descriptor descriptor : descList) {
+            if (alreadyThere.contains(descriptor.getHashCode())) {
+                descList.removeValue(descriptor, false);
+                Log.debug(sKlasse, "removed " + descriptor);
             }
         }
-    }
 
-    public static void setCenterDescriptor(CoordinateGPS center) {
-        cacheListLive.setCenterDescriptor(new Descriptor(center, Used_Zoom));
-    }
-
-    private static void queDesc(Descriptor desc) {
-
-        if (GroundspeakAPI.isDownloadLimitExceeded())
-            return;
-        if (!loop.Alive())
-            loop.start();
-        if (cacheListLive.contains(desc))
-            return; // all ready for this descriptor
-        synchronized (descStack) {
-            descStack.add(desc);
+        synchronized (descriptorStack) {
+            descriptorStack.addAll_removeOther(descList);
+            if ((lo.getData() != null) && (lo.getData() instanceof Coordinate)) {
+                Coordinate center = (Coordinate) lo.getData();
+                if (center != null) {
+                    final Descriptor mapCenterDesc = new Descriptor(center, lo.getZoom());
+                    descriptorStack.sort((item1, item2) -> Integer.compare(item1.getDistance(mapCenterDesc), item2.getDistance(mapCenterDesc)));
+                }
+            }
         }
+
+        loopThread.start();
+
     }
 
-    public void addStateChangedListener(QueStateChanged listener) {
-        eventList.add(listener);
+    public void setCenterDescriptor(CoordinateGPS center) {
+        cacheListLive.setCenterDescriptor(new Descriptor(center, usedZoom));
+    }
+
+    public boolean getDownloadIsActive() {
+        return !descriptorStack.isEmpty();
+    }
+
+    public Collection<Array<Cache>> getAllCacheLists() {
+        return cacheListLive.getAllCacheLists();
+    }
+
+    public void clearDescriptorStack() {
+        descriptorStack.clear();
     }
 
     public enum Live_Radius {
         Zoom_13, Zoom_14
-    }
-
-    public interface QueStateChanged {
-        public void stateChanged();
     }
 }
