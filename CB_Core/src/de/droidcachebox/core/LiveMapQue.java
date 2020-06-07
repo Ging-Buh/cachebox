@@ -25,8 +25,8 @@ import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.LocatorSettings;
 import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.utils.CB_Stack;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.LoopThread;
 import de.droidcachebox.utils.log.Log;
@@ -53,7 +53,7 @@ public class LiveMapQue {
     private static final int MAX_REQUEST_CACHE_COUNT = 50; //
     private static LiveMapQue liveMapQue;
 
-    private final CB_Stack<Descriptor> descriptorStack;
+    private final Array<Descriptor> descriptorStack;
     private final AtomicBoolean downloadIsActive;
     private Descriptor lastLo, lastRu;
     private Byte count = 0;
@@ -66,10 +66,10 @@ public class LiveMapQue {
         protected boolean cancelLoop() {
             boolean cancel = descriptorStack.isEmpty();
             if (cancel) {
-                Log.debug(sKlasse, "cancel loop thread");
                 new Thread(() -> {
                     CacheListChangedListeners.getInstance().cacheListChanged();
                 }).start();
+                Log.debug(sKlasse, "cancel loop thread");
             }
             return cancel;
         }
@@ -83,7 +83,7 @@ public class LiveMapQue {
                 do {
                     // ? only use, if on screen (ShowMap.getInstance().normalMapView.center / descriptor)
                     // ? perhaps dont' use lastIn but sort on distance
-                    descriptor = descriptorStack.get();
+                    descriptor = descriptorStack.pop();
                 } while (descriptor != null && cacheListLive.contains(descriptor));
 
                 if (descriptor != null) {
@@ -151,7 +151,7 @@ public class LiveMapQue {
     };
 
     private LiveMapQue() {
-        descriptorStack = new CB_Stack<>();
+        descriptorStack = new Array<>();
         downloadIsActive = new AtomicBoolean(false);
 
         CB_Core_Settings.liveRadius.addSettingChangedListener(() -> {
@@ -215,7 +215,10 @@ public class LiveMapQue {
     public String getLocalCachePath(Descriptor desc) {
         if (desc == null)
             return "";
-        return Descriptor.getTileCacheFolder() + "/" + LIVE_CACHE_NAME + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + LIVE_CACHE_EXTENSION;
+        String tileCacheFolder = LocatorSettings.tileCacheFolder.getValue();
+        if (LocatorSettings.tileCacheFolderLocal.getValue().length() > 0)
+            tileCacheFolder = LocatorSettings.tileCacheFolderLocal.getValue();
+        return tileCacheFolder + "/" + LIVE_CACHE_NAME + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + LIVE_CACHE_EXTENSION;
     }
 
     public void quePosition(Coordinate coord) {
@@ -226,8 +229,9 @@ public class LiveMapQue {
                     Log.trace(sKlasse, "Live caches for " + descriptor + " already there.");
                 } else {
                     if (!GroundspeakAPI.isDownloadLimitExceeded()) {
-                        if (descriptorStack.addWithoutDuplicates(descriptor)) {
-                            Log.debug(sKlasse, "Add " + descriptor + " to download stack. (" + descriptorStack.getSize() + ")");
+                        if (!descriptorStack.contains(descriptor, false)) {
+                            descriptorStack.add(descriptor);
+                            Log.debug(sKlasse, "Add " + descriptor + " to download stack. (" + descriptorStack.size + ")");
                         }
                         loopThread.start();
                     }
@@ -262,7 +266,7 @@ public class LiveMapQue {
             for (int j = lo.getY(); j <= ru.getY(); j++) {
                 Descriptor desc = new Descriptor(i, j, lo.getZoom());
 
-                Array<Descriptor> descAddList = desc.adjustZoom(usedZoom);
+                Array<Descriptor> descAddList = adjustZoom(desc);
 
                 for (int k = 0; k < descAddList.size; k++) {
                     if (!descList.contains(descAddList.get(k), false))
@@ -281,7 +285,8 @@ public class LiveMapQue {
         }
 
         synchronized (descriptorStack) {
-            descriptorStack.addAll_removeOther(descList);
+            descriptorStack.clear();
+            descriptorStack.addAll(descList);
             if ((lo.getData() != null) && (lo.getData() instanceof Coordinate)) {
                 Coordinate center = (Coordinate) lo.getData();
                 if (center != null) {
@@ -293,6 +298,24 @@ public class LiveMapQue {
 
         loopThread.start();
 
+    }
+
+    private Array<Descriptor> adjustZoom(Descriptor descriptor) {
+        int zoomDiff = usedZoom - descriptor.getZoom();
+        int pow = (int) Math.pow(2, Math.abs(zoomDiff));
+        Array<Descriptor> ret = new Array<>();
+        if (zoomDiff > 0) {
+            Descriptor def = new Descriptor(descriptor.getX() * pow, descriptor.getY() * pow, usedZoom);
+            int count = pow / 2;
+            for (int i = 0; i <= count; i++) {
+                for (int j = 0; j <= count; j++) {
+                    ret.add(new Descriptor(def.getX() + i, def.getY() + j, usedZoom));
+                }
+            }
+        } else {
+            ret.add(new Descriptor(descriptor.getX() / pow, descriptor.getY() / pow, usedZoom));
+        }
+        return ret;
     }
 
     public void setCenterDescriptor(CoordinateGPS center) {

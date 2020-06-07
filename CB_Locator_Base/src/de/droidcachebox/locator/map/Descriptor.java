@@ -18,10 +18,7 @@
 
 package de.droidcachebox.locator.map;
 
-import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.PointD;
 
@@ -30,36 +27,18 @@ import de.droidcachebox.utils.PointD;
  * also a hashCode for quick identification (calculated in getter on the fly)
  */
 public class Descriptor implements Comparable<Descriptor> {
-    private static String tileCacheFolder;
-    private static final IChanged tileCacheFolderSettingChanged = new IChanged() {
-        @Override
-        public void handleChange() {
-            tileCacheFolder = LocatorSettings.tileCacheFolder.getValue();
-            if (LocatorSettings.tileCacheFolderLocal.getValue().length() > 0)
-                tileCacheFolder = LocatorSettings.tileCacheFolderLocal.getValue();
-        }
-    };
-    private static int maxZoom = 25;
-    private static int[] tileOffset = new int[maxZoom];
-    private static int[] tilesPerLine = new int[maxZoom];
-    private static int[] tilesPerColumn = new int[maxZoom];
+    private static final int maxZoom = 25;
+    private static final int[] tileOffset = new int[maxZoom];
+    private static final int[] tilesPerLine = new int[maxZoom];
+    private static final int[] tilesPerColumn = new int[maxZoom];
 
     static {
-
         tileOffset[0] = 0;
-
         for (int i = 0; i < maxZoom - 1; i++) {
             tilesPerLine[i] = (int) (2 * Math.pow(2, i));
             tilesPerColumn[i] = (int) Math.pow(2, i);
             tileOffset[i + 1] = tileOffset[i] + (tilesPerLine[i] * tilesPerColumn[i]);
         }
-
-        tileCacheFolder = LocatorSettings.tileCacheFolder.getValue();
-        if (LocatorSettings.tileCacheFolderLocal.getValue().length() > 0)
-            tileCacheFolder = LocatorSettings.tileCacheFolderLocal.getValue();
-
-        LocatorSettings.tileCacheFolderLocal.addSettingChangedListener(tileCacheFolderSettingChanged);
-        LocatorSettings.tileCacheFolder.addSettingChangedListener(tileCacheFolderSettingChanged);
     }
 
     private Object data = null;
@@ -71,27 +50,27 @@ public class Descriptor implements Comparable<Descriptor> {
     /**
      * Erzeugt einen neuen Descriptor mit den übergebenen Parametern
      *
-     * @param x    X-Koordinate der Kachel
-     * @param y    Y-Koordinate der Kachel
-     * @param zoom Zoom-Stufe
+     * @param _x    X-Koordinate der Kachel
+     * @param _y    Y-Koordinate der Kachel
+     * @param _zoom Zoom-Stufe
      */
-    public Descriptor(int x, int y, int zoom) {
-        this.x = x;
-        this.y = y;
-        this.zoom = zoom;
+    public Descriptor(int _x, int _y, int _zoom) {
+        x = _x;
+        y = _y;
+        zoom = _zoom;
         hashCode = 0;
     }
 
     /**
      * Constructor for given coordinate and zoom-level
      *
-     * @param coordinate  ?
-     * @param zoom ?
+     * @param coordinate ?
+     * @param _zoom      ?
      */
-    public Descriptor(Coordinate coordinate, int zoom) {
+    public Descriptor(Coordinate coordinate, int _zoom) {
         x = (int) longitudeToTileX(zoom, coordinate.getLongitude());
         y = (int) latitudeToTileY(zoom, coordinate.getLatitude());
-        this.zoom = zoom;
+        zoom = _zoom;
         hashCode = 0;
     }
 
@@ -100,22 +79,6 @@ public class Descriptor implements Comparable<Descriptor> {
         y = 0;
         zoom = 0;
         hashCode = 0;
-    }
-
-    public Descriptor(long hashCode, int zoom) {
-        // x = hashCode - (tileOffset[zoom]) - (long) (tilesPerLine[zoom]) * y;
-    }
-
-    /**
-     * Projiziert die übergebene Koordinate in den Tile Space
-     *
-     * @param latitude       Breitengrad
-     * @param longitude      Längengrad
-     * @param projectionZoom zoom
-     * @return PointD
-     */
-    public static PointD projectCoordinate(double latitude, double longitude, int projectionZoom) {
-        return new PointD(longitudeToTileX(projectionZoom, longitude), latitudeToTileY(projectionZoom, latitude));
     }
 
     /**
@@ -183,53 +146,6 @@ public class Descriptor implements Comparable<Descriptor> {
         double adjust = Math.pow(2, (desiredZoom - zoom));
         return new PointD(X / (adjust * 256), Y / (adjust * 256));
     }
-
-    public static String getTileCacheFolder() {
-        return tileCacheFolder;
-    }
-
-    /**
-     * Erzeugt einen neuen Deskriptor mit anderer Zoom-Stufe
-     */
-    public Array<Descriptor> adjustZoom(int newZoomLevel) {
-        int zoomDiff = newZoomLevel - getZoom();
-        int pow = (int) Math.pow(2, Math.abs(zoomDiff));
-
-        Array<Descriptor> ret = new Array<>();
-
-        if (zoomDiff > 0) {
-
-            Descriptor def = new Descriptor(getX() * pow, getY() * pow, newZoomLevel);
-
-            int count = pow / 2;
-
-            for (int i = 0; i <= count; i++) {
-                for (int j = 0; j <= count; j++) {
-                    ret.add(new Descriptor(def.getX() + i, def.getY() + j, newZoomLevel));
-                }
-            }
-
-        } else {
-            ret.add(new Descriptor(getX() / pow, getY() / pow, newZoomLevel));
-        }
-
-        return ret;
-
-    }
-
-    /*
-     * Berechnet die Pixel-Koordinaten auf dem Bildschirm. Es wird auf die Kachelecke oben links noch ein Offset addiert. Will man also die
-     * Koordinaten der Ecke unten links haben, übergibt man xOffset=0,yOffset=1
-     *
-     * @param xOffset ?
-     * @param yOffset ?
-     * @param desiredZoom ?
-     * @return PointD
-    public PointD toWorld(int xOffset, int yOffset, int desiredZoom) {
-        double adjust = Math.pow(2, (desiredZoom - getZoom()));
-        return new PointD((getX() + xOffset) * adjust * 256, (getY() + yOffset) * adjust * 256);
-    }
-     */
 
     public long getHashCode() {
         if (hashCode != 0)
@@ -317,17 +233,6 @@ public class Descriptor implements Comparable<Descriptor> {
         double divLat = (lat1 - lat) / 2;
 
         return new Coordinate(lat + divLat, lon + divLon);
-    }
-
-    /**
-     * Returns the local Cache Path for the given Name and this Descriptor!<br>
-     * .\cachebox\repository\cache\ {NAME} \ {Zoom} \ {X} \ {Y}
-     *
-     * @param Name ?
-     * @return ?
-     */
-    public String getLocalCachePath(String Name) {
-        return tileCacheFolder + "/" + Name + "/" + zoom + "/" + x + "/" + y;
     }
 
     /**

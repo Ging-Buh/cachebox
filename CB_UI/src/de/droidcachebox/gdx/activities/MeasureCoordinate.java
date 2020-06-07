@@ -247,12 +247,12 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
                     for (int i = 1; i < mMeasureList.size(); i++) {
 
-                        PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1).getLongitude(), projectionZoom);
+                        PointD lastDrawEntry = projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1).getLongitude(), projectionZoom);
 
                         int lastX = (int) (centerX + (lastDrawEntry.x - medianX) * factor);
                         int lastY = (int) (centerY - (lastDrawEntry.y - medianY) * factor);
 
-                        PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(), projectionZoom);
+                        PointD thisDrawEntry = projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(), projectionZoom);
 
                         x = (int) (centerX + (thisDrawEntry.x - medianX) * factor);
                         y = (int) (centerY - (thisDrawEntry.y - medianY) * factor);
@@ -291,6 +291,20 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         redraw = false;
 
         GL.that.renderOnce();
+    }
+
+    /**
+     * Projiziert die übergebene Koordinate in den Tile Space
+     *
+     * @param latitude       Breitengrad
+     * @param longitude      Längengrad
+     * @param projectionZoom zoom
+     * @return PointD
+     */
+    private PointD projectCoordinate(double latitude, double longitude, int projectionZoom) {
+        double latRad = latitude * MathUtils.DEG_RAD;
+        return new PointD((longitude + 180.0) / 360.0 * Math.pow(2, projectionZoom),
+                (1 - Math.log(Math.tan(latRad) + (1.0 / Math.cos(latRad))) / Math.PI) / 2 * Math.pow(2, projectionZoom));
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
+import de.droidcachebox.locator.LocatorSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -72,7 +73,10 @@ public class Layer {
     String getLocalFilename(Descriptor desc) {
         if (desc == null)
             return "";
-        return desc.getLocalCachePath(name) + storageType.extension;
+        String tileCacheFolder = LocatorSettings.tileCacheFolder.getValue();
+        if (LocatorSettings.tileCacheFolderLocal.getValue().length() > 0)
+            tileCacheFolder = LocatorSettings.tileCacheFolderLocal.getValue();
+        return tileCacheFolder + "/" + name + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + storageType.extension;
     }
 
     public boolean isOverlay() {
