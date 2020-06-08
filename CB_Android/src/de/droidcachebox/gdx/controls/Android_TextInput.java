@@ -41,10 +41,10 @@ public class Android_TextInput implements TextInputInterface {
                 input.setInputType(editTextField.getInputType());
             input.setSingleLine(false);
             if (editTextField.getWrapType() == WrapType.SINGLELINE) {
-                input.setLines(10); // Math.min(editTextField.getLineCount(), 10)
+                input.setLines(1);
             }
             else {
-                input.setLines(1);
+                input.setLines(10); // Math.min(editTextField.getLineCount(), 10)
             }
             // builder.setView(input);
             builder.setContentView(input).setPositiveButton(Translation.get("ok"), (dialog, which) -> GL.that.RunOnGL(() -> {
