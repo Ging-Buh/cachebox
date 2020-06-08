@@ -68,9 +68,9 @@ public class Descriptor implements Comparable<Descriptor> {
      * @param _zoom      ?
      */
     public Descriptor(Coordinate coordinate, int _zoom) {
+        zoom = _zoom;
         x = (int) longitudeToTileX(zoom, coordinate.getLongitude());
         y = (int) latitudeToTileY(zoom, coordinate.getLatitude());
-        zoom = _zoom;
         hashCode = 0;
     }
 
