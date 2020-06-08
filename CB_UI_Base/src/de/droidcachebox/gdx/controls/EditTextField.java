@@ -256,6 +256,10 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
         }
     }
 
+    public WrapType getWrapType() {
+        return mWrapType;
+    }
+
     public EditTextField setWrapType(WrapType WrapType) {
         if (WrapType != null) {
             if (WrapType != mWrapType) {

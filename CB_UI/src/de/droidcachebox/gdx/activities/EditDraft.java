@@ -115,7 +115,6 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private void setValuesToLayout() {
         // initLogText
         etComment.setText(draft.comment);
-        if (etComment.getLineCount() < 5) etComment.setText(etComment.getText() + "\r\r\r\r\r");
         // Date
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String sDate = iso8601Format.format(draft.timestamp);
@@ -285,7 +284,6 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         etComment.setHeight(getHeight() / 2.5f);
         scrollBoxContent.addLast(etComment);
         etComment.setText(draft.comment);
-        if (etComment.getLineCount() < 5) etComment.setText(etComment.getText() + "\r\r\r\r\r");
         btnHow = new CB_Button("=");
         btnHow.setClickHandler((v, x, y, pointer, button) -> {
             if (btnHow.getText().equals("="))
@@ -371,7 +369,6 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 etComment.setFocus(false);
                 break;
         }
-        if (etComment.getLineCount() < 5) etComment.setText(etComment.getText() + "\r\r\r\r\r");
     }
 
     private void iniOptions() {

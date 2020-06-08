@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -39,7 +40,12 @@ public class Android_TextInput implements TextInputInterface {
             else
                 input.setInputType(editTextField.getInputType());
             input.setSingleLine(false);
-            input.setLines(Math.min(editTextField.getLineCount(), 10)); // todo replace 10 by max nr of lines
+            if (editTextField.getWrapType() == WrapType.SINGLELINE) {
+                input.setLines(10); // Math.min(editTextField.getLineCount(), 10)
+            }
+            else {
+                input.setLines(1);
+            }
             // builder.setView(input);
             builder.setContentView(input).setPositiveButton(Translation.get("ok"), (dialog, which) -> GL.that.RunOnGL(() -> {
                 editTextField.setText(input.getText().toString());
