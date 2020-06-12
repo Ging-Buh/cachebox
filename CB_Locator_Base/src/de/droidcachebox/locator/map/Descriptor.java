@@ -20,7 +20,6 @@ package de.droidcachebox.locator.map;
 
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.utils.MathUtils;
-import de.droidcachebox.utils.PointD;
 
 /**
  * has x,y,zoom for defining a tile
@@ -135,16 +134,6 @@ public class Descriptor implements Comparable<Descriptor> {
         double yDen = Math.exp(-2 * Math.PI * v) + 1;
 
         return Math.atan2(xNom / xDen, yNom / yDen) * MathUtils.RAD_DEG;
-    }
-
-    public static PointD toWorld(double X, double Y, int zoom, int desiredZoom) {
-        double adjust = Math.pow(2, (desiredZoom - zoom));
-        return new PointD(X * adjust * 256, Y * adjust * 256);
-    }
-
-    public static PointD fromWorld(double X, double Y, int zoom, int desiredZoom) {
-        double adjust = Math.pow(2, (desiredZoom - zoom));
-        return new PointD(X / (adjust * 256), Y / (adjust * 256));
     }
 
     public long getHashCode() {

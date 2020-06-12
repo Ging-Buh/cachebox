@@ -54,7 +54,7 @@ public interface CB_UI_Settings {
     SettingString quickButtonList = new SettingString("quickButtonList", QuickList, NEVER, "1,15,14,19,12,23,2,13", Global, ACB);
     SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", QuickList, NEVER, false, Global, ACB);
 
-    SettingBool LiveMapEnabeld = new SettingBool("LiveMapEnabeld", LiveMap, NEVER, false, Global, ACB);
+    SettingBool liveMapEnabled = new SettingBool("LiveMapEnabeld", LiveMap, NEVER, false, Global, ACB);
     SettingInt routeProfile = new SettingInt("routeProfile", Map, NEVER, 0, Global, ACB); // perhaps change to enum
 
     SettingInt HardwareCompassLevel = new SettingInt("HardwareCompassLevel", Gps, NORMAL, 5, Global, ACB);

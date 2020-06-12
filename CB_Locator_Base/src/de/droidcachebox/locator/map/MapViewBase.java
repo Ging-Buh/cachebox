@@ -473,7 +473,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     }
 
     protected void renderPositionMarker(Batch batch) {
-        PointD point = Descriptor.toWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MAX_MAP_ZOOM,
+        PointD point = toWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, Locator.getInstance().getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, Locator.getInstance().getLatitude()), MAX_MAP_ZOOM,
                 MAX_MAP_ZOOM);
 
         Vector2 vPoint = new Vector2((float) point.x, -(float) point.y);
@@ -674,7 +674,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 center = new CoordinateGPS(48.0, 12.0);
             positionInitialized = true;
             center = value;
-            PointD point = Descriptor.toWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, center.getLongitude()), Descriptor.latitudeToTileY(MAX_MAP_ZOOM, center.getLatitude()), MAX_MAP_ZOOM,
+            PointD point = toWorld(Descriptor.longitudeToTileX(MAX_MAP_ZOOM, center.getLongitude()),
+                    Descriptor.latitudeToTileY(MAX_MAP_ZOOM, center.getLatitude()),
+                    MAX_MAP_ZOOM,
                     MAX_MAP_ZOOM);
             setScreenCenter(point);
         }
@@ -1049,9 +1051,19 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     protected void calcCenter() {
         // berechnet anhand des ScreenCenterW die Center-Coordinaten
-        PointD point = Descriptor.fromWorld(screenCenterWorld.getX(), screenCenterWorld.getY(), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
+        PointD point = fromWorld(screenCenterWorld.getX(), screenCenterWorld.getY(), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
 
         center = new CoordinateGPS(Descriptor.tileYToLatitude(MAX_MAP_ZOOM, -point.y), Descriptor.tileXToLongitude(MAX_MAP_ZOOM, point.x));
+    }
+
+    public PointD toWorld(double _X, double _Y, int zoom, int desiredZoom) {
+        double adjust = Math.pow(2, (desiredZoom - zoom));
+        return new PointD(_X * adjust * 256, _Y * adjust * 256);
+    }
+
+    public PointD fromWorld(double _X, double _Y, int zoom, int desiredZoom) {
+        double adjust = Math.pow(2, (desiredZoom - zoom));
+        return new PointD(_X / (adjust * 256), _Y / (adjust * 256));
     }
 
     protected void calcPixelsPerMeter() {

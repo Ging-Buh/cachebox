@@ -26,7 +26,7 @@ public class LiveButton extends ImageButton {
 
     public void setActivated(boolean newState) {
         isActivated = newState;
-        Config.LiveMapEnabeld.setValue(newState);
+        Config.liveMapEnabled.setValue(newState);
         Config.AcceptChanges();
         switchImage();
     }

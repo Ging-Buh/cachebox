@@ -259,7 +259,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         iconFactor = Config.mapViewDPIFaktor.getValue();
 
         liveButton = new LiveButton();
-        liveButton.setActivated(Config.LiveMapEnabeld.getDefaultValue());
+        liveButton.setActivated(Config.liveMapEnabled.getDefaultValue());
         Config.disableLiveMap.addSettingChangedListener(this::requestLayout);
 
         btnMapState = new MultiToggleButton(GL_UISizes.toggle, "toggle");
@@ -861,7 +861,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             MapTileLoader.isWorking.set(false);
 
 
-            if (isCarMode && CB_UI_Settings.LiveMapEnabeld.getValue()) {
+            if (isCarMode && CB_UI_Settings.liveMapEnabled.getValue()) {
                 LiveMapQue.getInstance().setCenterDescriptor(center);
                 // LiveMap queue complete screen
                 lowerTile.setData(center);

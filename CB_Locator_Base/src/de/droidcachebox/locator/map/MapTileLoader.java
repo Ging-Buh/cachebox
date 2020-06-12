@@ -119,7 +119,7 @@ public class MapTileLoader {
             thread.start();
         }
         queueProcessorsAreStarted = true;
-        queueProcessorAliveCheck.start();
+        if (!queueProcessorAliveCheck.isAlive()) queueProcessorAliveCheck.start();
     }
 
     public void stopQueueProzessors() {
@@ -182,8 +182,7 @@ public class MapTileLoader {
                 }
                 if (!loadedTiles.contains(descriptor.getHashCode(), false) && !mapTilesInGeneration.contains(descriptor.getHashCode(), false)) {
                     orders.add(new MultiThreadQueueProcessor.OrderData(descriptor, false, mapView));
-                }
-                else {
+                } else {
                     Log.trace(log, "Descriptor in loadedTiles: " + !loadedTiles.contains(descriptor.getHashCode(), false));
                     Log.trace(log, "Descriptor in Generation : " + !mapTilesInGeneration.contains(descriptor.getHashCode(), false));
                 }
