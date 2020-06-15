@@ -76,14 +76,15 @@ public class LiveMapQue {
 
         protected void loop() {
             if (downloadIsActive.get()) return; // only one download at a time
-            Log.debug(sKlasse, "download for one descriptor per loop");
+            // Log.debug(sKlasse, "download for one descriptor per loop");
             GL.that.postAsync(() -> {
 
                 Descriptor descriptor;
                 do {
                     // ? only use, if on screen (ShowMap.getInstance().normalMapView.center / descriptor)
                     // ? perhaps dont' use lastIn but sort on distance
-                    descriptor = descriptorStack.pop();
+                    if (descriptorStack.notEmpty()) descriptor = descriptorStack.pop();
+                    else descriptor = null;
                 } while (descriptor != null && cacheListLive.contains(descriptor));
 
                 if (descriptor != null) {

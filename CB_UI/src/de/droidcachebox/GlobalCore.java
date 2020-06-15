@@ -213,7 +213,12 @@ public class GlobalCore implements SolverCacheInterface {
     }
 
     public static void MsgDownloadLimit() {
-        GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
+        if (GroundspeakAPI.APIError == 401) {
+            GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("apiKeyInvalid"), Translation.get("chkApiState"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
+        }
+        else {
+            GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
+        }
     }
 
     public static void chkAPiLogInWithWaitDialog(final iChkReadyHandler handler) {

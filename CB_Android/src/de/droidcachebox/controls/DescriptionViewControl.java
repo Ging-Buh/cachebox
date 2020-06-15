@@ -150,7 +150,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 if (pos > 0)
                     MessageBox.show(staticMainActivity, Translation.get(url.substring(25, pos)));
                 return true;
-            } else if (url.contains("fake://fake.de/download")) {
+            } else if (url.contains("fake://fake.de?download")) {
 
                 Thread thread = new Thread() {
                     @Override
@@ -200,7 +200,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 thread.start();
 
                 return true;
-            } else if (url.startsWith("http://")) {
+            } else if (url.startsWith("http")) {
                 // Load Url in ext Browser
                 PlatformUIBase.callUrl(url);
                 return true;
@@ -232,20 +232,20 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         super(context);
         mainActivity = (Activity) context;
         staticMainActivity = mainActivity;
-        this.setDrawingCacheEnabled(false);
+        setDrawingCacheEnabled(false);
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
-            this.setAlwaysDrawnWithCacheEnabled(false);
+            setAlwaysDrawnWithCacheEnabled(false);
         }
 
-        this.getSettings().setLoadWithOverviewMode(true);
-        this.getSettings().setSupportZoom(true);
-        this.getSettings().setBuiltInZoomControls(true);
-        this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        getSettings().setLoadWithOverviewMode(true);
+        getSettings().setSupportZoom(true);
+        getSettings().setBuiltInZoomControls(true);
+        getSettings().setJavaScriptEnabled(true);
+        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
-        this.setWebViewClient(webViewClient);
+        setWebViewClient(webViewClient);
         that = this;
-        this.setFocusable(false);
+        setFocusable(false);
     }
 
     public DescriptionViewControl(Context context, AttributeSet attrs) {
@@ -253,18 +253,18 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         mainActivity = (Activity) context;
         staticMainActivity = mainActivity;
 
-        this.setDrawingCacheEnabled(false);
-        this.setAlwaysDrawnWithCacheEnabled(false);
+        setDrawingCacheEnabled(false);
+        setAlwaysDrawnWithCacheEnabled(false);
 
-        // this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setLightTouchEnabled(false);
-        this.getSettings().setLoadWithOverviewMode(true);
-        this.getSettings().setSupportZoom(true);
-        this.getSettings().setBuiltInZoomControls(true);
-        this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        // getSettings().setJavaScriptEnabled(true);
+        getSettings().setLightTouchEnabled(false);
+        getSettings().setLoadWithOverviewMode(true);
+        getSettings().setSupportZoom(true);
+        getSettings().setBuiltInZoomControls(true);
+        getSettings().setJavaScriptEnabled(true);
+        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
-        this.setWebViewClient(webViewClient);
+        setWebViewClient(webViewClient);
         that = this;
     }
 
@@ -288,14 +288,17 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 html += "</br></br>";
             } else {
                 // a IS_LITE has no description. a NOT_LIVE ?
+                // the action part is (no longer) returned in the url ( in WebViewClientCompat shouldOverrideUrlLoading )
+                // so using the input attribute name (here "download")
+                // what comes as fake://fake.de?download=+Beschreibung+herunterladen+ in shouldOverrideUrlLoading
                 String nodesc = Translation.get("GC_NoDescription");
-                html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.get("GC_DownloadDescription") + " \"></form>";
+                html = "</br>" + nodesc + "</br></br></br><form action=\"/download.html\"><input name=\"download\" type=\"submit\" value=\" " + Translation.get("GC_DownloadDescription") + " \"></form>";
             }
 
-            final String FinalHtml = html;
+            final String finalHtml = html;
             staticMainActivity.runOnUiThread(() -> {
                 try {
-                    DescriptionViewControl.that.loadDataWithBaseURL("fake://fake.de", FinalHtml, "text/html", "utf-8", null);
+                    DescriptionViewControl.that.loadDataWithBaseURL("fake://fake.de", finalHtml, "text/html", "utf-8", null);
                 } catch (Exception ignored) {
                 }
             });
@@ -386,7 +389,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        this.getParent();
+        getParent();
         return super.dispatchTouchEvent(event);
     }
 
@@ -430,7 +433,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     @Override
     public void onFree() {
-        this.destroy();
+        destroy();
     }
 
     @Override
