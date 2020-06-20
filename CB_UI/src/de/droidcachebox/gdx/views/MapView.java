@@ -711,7 +711,6 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
         if (mapState != MapState.WP)
             setMapState(MapState.FREE);
-
         try {
             CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.getLatitude(), waypoint.getLongitude()) : new CoordinateGPS(cache.getCoordinate().getLatitude(), cache.getCoordinate().getLongitude());
             setCenter(target);

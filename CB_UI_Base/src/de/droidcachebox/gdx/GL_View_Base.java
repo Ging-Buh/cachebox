@@ -1067,7 +1067,7 @@ public class GL_View_Base extends CB_RectF {
     boolean isDoubleClickable() {
         if (!isVisible())
             return false;
-        return isDoubleClickable | ChildIsDoubleClickable;
+        return isDoubleClickable || ChildIsDoubleClickable;
     }
 
     protected void setDoubleClickable() {
@@ -1077,7 +1077,7 @@ public class GL_View_Base extends CB_RectF {
     boolean isLongClickable() {
         if (!isVisible())
             return false;
-        return isLongClickable | ChildIsLongClickable;
+        return isLongClickable || ChildIsLongClickable;
     }
 
     public void setLongClickable(boolean value) {
@@ -1087,7 +1087,7 @@ public class GL_View_Base extends CB_RectF {
     protected boolean isClickable() {
         if (!isVisible())
             return false;
-        return isClickable | ChildIsClickable;
+        return isClickable || ChildIsClickable;
     }
 
     /**

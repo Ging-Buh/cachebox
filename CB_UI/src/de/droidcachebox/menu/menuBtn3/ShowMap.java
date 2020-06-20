@@ -369,7 +369,7 @@ public class ShowMap extends AbstractShowAction {
             cm2.addMenuItem("continue", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
         else
             cm2.addMenuItem("pause", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
-        cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
+        cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording || TrackRecorder.pauseRecording);
         cm2.addDivider();
         cm2.addMenuItem("load", null, TrackListView.getInstance()::selectTrackFileReadAndAddToTracks);
         cm2.addMenuItem("generate", null, () -> TrackCreation.getInstance().execute());

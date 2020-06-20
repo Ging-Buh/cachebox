@@ -94,9 +94,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
             try {
                 distance = new BitmapFontCache(Fonts.getSmall());
                 distance.setColor(COLOR.getFontColor());
+                float x = arrowRec.getHalfWidth();
                 GlyphLayout bounds = distance.setText(txt, arrowRec.getX(), arrowRec.getY());
-                float x = arrowRec.getHalfWidth() - (bounds.width / 2f);
-                distance.setPosition(x, 0);
+                distance.setPosition(x - (bounds.width / 2f), 0);
             } catch (Exception ex) {
                 Log.err(log, "setDistanceString: '" + txt + "'", ex);
             }

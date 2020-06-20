@@ -151,7 +151,7 @@ public class CB_Label extends CB_View_Base {
             }
 
             // Draw Underline
-            if (underline | strikeout) {
+            if (underline || strikeout) {
                 if (underlineStrikeoutDrawable == null) {
                     GeometryList lineList = new GeometryList();
                     if (underline)

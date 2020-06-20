@@ -585,7 +585,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
     }
 
     private boolean isaPossibleLineBeak(char c) {
-        return c == ' ' || c == '(' || c == ')' || c == '[' || c == ']' | c == '{' || c == '}' || c == '.' || c == ',' || c == ';' || c == ':';
+        return c == ' ' || c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' || c == '.' || c == ',' || c == ';' || c == ':';
     }
 
     @Override

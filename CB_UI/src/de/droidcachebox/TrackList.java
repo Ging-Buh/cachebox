@@ -17,6 +17,7 @@ package de.droidcachebox;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -200,13 +201,32 @@ public class TrackList {
 
     private void drawText(Batch batch, String text, Vector2 position) {
         try {
-            Fonts.getSmall().setColor(COLOR.getFontColor());
-            if (glyphLayout == null)
-                glyphLayout = new GlyphLayout(Fonts.getSmall(), text);
-            else
-                glyphLayout.setText(Fonts.getSmall(), text);
-            float halfWidth = glyphLayout.width / 2;
-            Fonts.getSmall().draw(batch, glyphLayout, position.x - halfWidth, position.y - 2 * glyphLayout.height);
+            BitmapFont smallFont = Fonts.getSmall();
+            Color fontColor = smallFont.getColor();
+            if (fontColor != null) {
+                Color skinFontColor = COLOR.getFontColor();
+                if (skinFontColor != null) {
+                    // if (!skinFontColor.equals(fontColor))
+                    smallFont.setColor(skinFontColor); // modifies fontColor
+                }
+                else {
+                    Log.err(log, "skinFontColor should never be null");
+                }
+                if (fontColor != null) {
+                    if (glyphLayout == null)
+                        glyphLayout = new GlyphLayout(smallFont, text);
+                    else {
+                        // reuse? of glyphLayout sometimes gives NPE in com.badlogic.gdx.graphics.g2d.GlyphLayout$GlyphRun.color
+                        glyphLayout.setText(smallFont, text);
+                    }
+                    float halfWidth = glyphLayout.width / 2;
+                    smallFont.draw(batch, glyphLayout, position.x - halfWidth, position.y - 2 * glyphLayout.height);
+                } else {
+                    Log.err(log, "fontColor should never be null");
+                }
+            } else {
+                Log.err(log, "fontColor should never be null");
+            }
         } catch (Exception ex) {
             Log.err(log, "drawText", ex);
         }

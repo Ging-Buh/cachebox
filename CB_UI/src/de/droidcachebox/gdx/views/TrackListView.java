@@ -224,7 +224,7 @@ public class TrackListView extends V_ListView {
 
                             if (name_end > name_start) {
                                 // tmpLine, damit Groß-/Kleinschreibung beachtet wird
-                                if (isSeg | isRte)
+                                if (isSeg || isRte)
                                     track.setName(tmpLine.substring(name_start, name_end));
                                 else
                                     gpxName = tmpLine.substring(name_start, name_end);
@@ -258,7 +258,7 @@ public class TrackListView extends V_ListView {
                             break;
                         }
 
-                        if ((line.contains("<trkpt")) | (line.contains("<rtept"))) {
+                        if ((line.contains("<trkpt")) || (line.contains("<rtept"))) {
                             isTrkptOrRtept = true;
                             // Trackpoint lesen
                             int lonIdx = line.indexOf("lon=\"") + 5;
@@ -326,7 +326,7 @@ public class TrackListView extends V_ListView {
                             track.setColor(trackColor);
                         }
 
-                        if ((line.contains("</trkpt>")) | (line.contains("</rtept>")) | ((line.contains("/>")) & isTrkptOrRtept)) {
+                        if ((line.contains("</trkpt>")) || (line.contains("</rtept>")) || ((line.contains("/>")) & isTrkptOrRtept)) {
                             // trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
                             isTrkptOrRtept = false;
                             if (lastAcceptedCoordinate != null) {
