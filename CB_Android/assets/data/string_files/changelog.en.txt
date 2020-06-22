@@ -5,6 +5,15 @@
 • Deletions = -
 • Unsolved = •
 
+Changes up to version 3631:
+    * NotesView if another cache is selected
+	+ Sort FZK - maps
+	* Next geocache selection
+	* Save track that has no date information
+	~ Increase input window of android keyboard
+	* Calc descriptor from coordinate
+	* Maptileloader restart
+    + Download error message for 401	
 Changes up to version 3620:
     + add favorits and ignore - lists handling
 	+ add bookmark lists handling

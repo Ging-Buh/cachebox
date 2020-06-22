@@ -4,6 +4,15 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 • Offen = •
+Änderungen bis Version 3631:
+    * Anzeige Notizen des vorherigen Cache
+	+ Sortierung der FZK - Karten
+	* Auswahl des nächstgelegenen Caches
+	* Tracks, die kein Datum haben, speichern
+	~ Vergrößerung des Eingabefensters der Androidtastatur
+	* Kachel aus Koordinate bestimmen
+	* Maptileloader Neustart
+	+ Download korrekte Fehlermeldung für 401
 Änderungen bis Version 3620:
     + Favoriten- und Ignorier-Listen hinzugefügt
     + Lesezeichenlisten hinzugefügt
