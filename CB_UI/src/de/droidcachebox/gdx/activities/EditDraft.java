@@ -52,6 +52,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private Draft originalDraft;
     private Draft draft;
     private CB_Button btnOK = null;
+    private CB_Button btnLog = null;
+    private CB_Button btnDraft = null;
     private CB_Button btnCancel = null;
     private EditTextField etComment = null;
     private Image ivTyp = null;
@@ -61,97 +63,15 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private ScrollBox scrollBox = null;
     private Box scrollBoxContent;
     private boolean isNewDraft;
-    private RadioButton rbDirectLog;
-    private RadioButton rbOnlyDraft;
-    private IReturnListener mReturnListener;
+    private IDraftsView draftsView;
     private CB_Button btnHow;
-
-    public EditDraft(Draft note, IReturnListener listener, boolean isNewDraft) {
-        super("EditDraft");
-        this.isNewDraft = isNewDraft;
-        mReturnListener = listener;
-        draft = note;
-        originalDraft = new Draft(note);
-        initLayoutWithValues();
-    }
-
-    public GL_View_Base touchDown(int x, int y, int pointer, int button) {
-        if (GcVote != null && GcVote.getWorldRec().contains(x, y)) {
-            GcVote.onTouchDown(x, y, pointer, button);
-            GcVote.lastItemTouchPos = new Vector2(x - GcVote.getWorldRec().getX(), y - GcVote.getWorldRec().getY());
-            return GcVote;
-        } else {
-            return super.touchDown(x, y, pointer, button);
-        }
-    }
-
-    private void initLayoutWithValues() {
-        initRow(BOTTOMUP);
-        btnOK = new CB_Button(Translation.get("ok"));
-        btnCancel = new CB_Button(Translation.get("cancel"));
-        addNext(btnOK);
-        addLast(btnCancel);
-        scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
-        scrollBox.setBackground(this.getBackground());
-
-        scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
-        scrollBoxContent.initRow(BOTTOMUP);
-        iniOptions();
-        iniGC_VoteItem();
-        initLogText();
-        iniDate();
-        iniTitle();
-        scrollBoxContent.adjustHeight();
-
-        scrollBox.setVirtualHeight(scrollBoxContent.getHeight());
-        scrollBox.addChild(scrollBoxContent);
-        addLast(scrollBox);
-
-        setOkAndCancelClickHandlers();
-        etComment.showLastLines();
-    }
-
-    private void setValuesToLayout() {
-        // initLogText
-        etComment.setText(draft.comment);
-        // Date
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        String sDate = iso8601Format.format(draft.timestamp);
-        tvDate.setText(sDate);
-        // Time
-        iso8601Format = new SimpleDateFormat("HH:mm", Locale.US);
-        String sTime = iso8601Format.format(draft.timestamp);
-        tvTime.setText(sTime);
-        // iniOptions();
-        if (isNewDraft) {
-            rbOnlyDraft.setChecked(true);
-        } else {
-            if (draft.isDirectLog) {
-                rbDirectLog.setChecked(true);
-            } else {
-                rbOnlyDraft.setChecked(true);
-            }
-        }
-        rbDirectLog.setChecked(true);
-        tvFounds.setText("#" + draft.foundNumber);
-        if (draft.isTbDraft)
-            tvFounds.setText("");
-        //
-        title.setText(draft.isTbDraft ? draft.TbName : draft.CacheName);
-    }
-
-    private void setOkAndCancelClickHandlers() {
-        btnOK.setClickHandler((v, x, y, pointer, button) -> {
-            if (mReturnListener != null) {
-
-                // removed the possibility
-                /*
-                if (draft.type.isDirectLogType()) {
-                    draft.isDirectLog = rbDirectLog.isChecked();
-                } else {
-                    draft.isDirectLog = false;
-                }
-                 */
+    private OnClickListener saveLog = new OnClickListener() {
+        @Override
+        public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
+            if (draftsView != null) {
+                SaveMode clickedBy = SaveMode.OnlyLocal;
+                if (view == btnLog) clickedBy = SaveMode.Log;
+                else if (view == btnDraft) clickedBy = SaveMode.Draft;
                 try {
                     draft.isDirectLog = false;
 
@@ -213,19 +133,87 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     DraftsView.createGeoCacheVisits();
                     Log.info(sKlasse, "GeoCacheVisits written.");
                 }
-                mReturnListener.returnedFieldNote(draft, isNewDraft);
+                draftsView.addOrChangeDraft(draft, isNewDraft, clickedBy);
             }
             finish();
             return true;
-        });
+        }
+    };
+
+    public EditDraft(Draft note, IDraftsView listener, boolean isNewDraft) {
+        super("EditDraft");
+        this.isNewDraft = isNewDraft;
+        draftsView = listener;
+        draft = note;
+        originalDraft = new Draft(note);
+        initLayoutWithValues();
+    }
+
+    public GL_View_Base touchDown(int x, int y, int pointer, int button) {
+        if (GcVote != null && GcVote.getWorldRec().contains(x, y)) {
+            GcVote.onTouchDown(x, y, pointer, button);
+            GcVote.lastItemTouchPos = new Vector2(x - GcVote.getWorldRec().getX(), y - GcVote.getWorldRec().getY());
+            return GcVote;
+        } else {
+            return super.touchDown(x, y, pointer, button);
+        }
+    }
+
+    private void initLayoutWithValues() {
+        initRow(BOTTOMUP);
+        btnOK = new CB_Button(Translation.get("ok"));
+        btnLog = new CB_Button(Translation.get("GCLog"));
+        btnDraft = new CB_Button(Translation.get("GCDraft"));
+        btnCancel = new CB_Button(Translation.get("cancel"));
+        addNext(btnOK);
+        addNext(btnLog);
+        addNext(btnDraft);
+        addLast(btnCancel);
+        scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
+        scrollBox.setBackground(this.getBackground());
+
+        scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
+        scrollBoxContent.initRow(BOTTOMUP);
+        iniGC_VoteItem();
+        initLogText();
+        iniDate();
+        iniTitle();
+        scrollBoxContent.adjustHeight();
+
+        scrollBox.setVirtualHeight(scrollBoxContent.getHeight());
+        scrollBox.addChild(scrollBoxContent);
+        addLast(scrollBox);
+
+        btnOK.setClickHandler(saveLog);
+        btnLog.setClickHandler(saveLog);
+        btnDraft.setClickHandler(saveLog);
 
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            if (mReturnListener != null)
-                mReturnListener.returnedFieldNote(null, false);
+            if (draftsView != null)
+                draftsView.addOrChangeDraft(null, false, SaveMode.Cancel);
             finish();
             return true;
         });
+        etComment.showLastLines();
+    }
 
+    private void setValuesToLayout() {
+        // initLogText
+        etComment.setText(draft.comment);
+        // Date
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        String sDate = iso8601Format.format(draft.timestamp);
+        tvDate.setText(sDate);
+        // Time
+        iso8601Format = new SimpleDateFormat("HH:mm", Locale.US);
+        String sTime = iso8601Format.format(draft.timestamp);
+        tvTime.setText(sTime);
+        // iniOptions();
+        tvFounds.setText("#" + draft.foundNumber);
+        if (draft.isTbDraft)
+            tvFounds.setText("");
+        //
+        title.setText(draft.isTbDraft ? draft.TbName : draft.CacheName);
     }
 
     private void iniTitle() {
@@ -365,33 +353,6 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         }
     }
 
-    private void iniOptions() {
-        rbDirectLog = new RadioButton("direct_Log");
-        rbOnlyDraft = new RadioButton("only_FieldNote");
-
-        rbDirectLog.setText(Translation.get("directLog"));
-        rbOnlyDraft.setText(Translation.get("onlyDraft"));
-
-        RadioGroup Group = new RadioGroup();
-        Group.add(rbOnlyDraft);
-        Group.add(rbDirectLog);
-
-        //scrollBoxContent.addLast(rbDirectLog);
-        //scrollBoxContent.addLast(rbOnlyDraft);
-
-        if (isNewDraft) {
-            rbOnlyDraft.setChecked(true);
-        } else {
-            if (draft.isDirectLog) {
-                rbDirectLog.setChecked(true);
-            } else {
-                rbOnlyDraft.setChecked(true);
-            }
-        }
-        rbDirectLog.setChecked(true);
-        rbOnlyDraft.setChecked(false);
-    }
-
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
         super.onTouchDown(x, y, pointer, button);
@@ -417,7 +378,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     @Override
     public void dispose() {
         super.dispose();
-        mReturnListener = null;
+        draftsView = null;
         draft = null;
         btnOK = null;
         btnCancel = null;
@@ -450,15 +411,17 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         }
     }
 
-    public void setDraft(Draft note, IReturnListener listener, boolean isNewFieldNote) {
+    public void setDraft(Draft note, IDraftsView _draftsView, boolean isNewFieldNote) {
         this.isNewDraft = isNewFieldNote;
-        mReturnListener = listener;
+        draftsView = _draftsView;
         draft = note;
         setValuesToLayout();
         originalDraft = new Draft(note);
     }
 
-    public interface IReturnListener {
-        void returnedFieldNote(Draft fn, boolean isNewFieldNote);
+    public enum SaveMode {Cancel, OnlyLocal, Draft, Log, LocalUpdate}
+
+    public interface IDraftsView {
+        void addOrChangeDraft(Draft fn, boolean isNewFieldNote, SaveMode saveMode);
     }
 }

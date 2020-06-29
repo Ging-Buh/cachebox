@@ -126,14 +126,10 @@ public class DraftsView extends V_ListView {
         }
     }
 
-    private void addOrChangeDraft(Draft draft, boolean isNewDraft) {
-
+    private void addOrChangeDraft(Draft draft, boolean isNewDraft, EditDraft.SaveMode saveMode) {
         firstShow = false;
-
         if (draft != null) {
-
             if (isNewDraft) {
-
                 drafts.add(0, draft);
 
                 // eine evtl. vorhandene Draft /DNF löschen
@@ -176,7 +172,13 @@ public class DraftsView extends V_ListView {
                     drafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
                 }
             }
+
             createGeoCacheVisits();
+
+            if (saveMode == EditDraft.SaveMode.Log)
+                draftsViewAdapter.logOnline(currentDraft, true);
+            else if (saveMode == EditDraft.SaveMode.Draft)
+                draftsViewAdapter.logOnline(currentDraft, false);
 
             // Reload List
             if (isNewDraft) {
@@ -185,6 +187,7 @@ public class DraftsView extends V_ListView {
                 drafts.loadDrafts("", LoadingType.loadNewLastLength);
             }
         }
+
         draftsView.notifyDataSetChanged();
     }
 
@@ -644,7 +647,7 @@ public class DraftsView extends V_ListView {
                             draft.GcId = GroundspeakAPI.logReferenceCode;
                             LogListView.getInstance().resetIsInitialized(); // if own log is written !
                         }
-                        addOrChangeDraft(draft, false);
+                        addOrChangeDraft(draft, false, EditDraft.SaveMode.LocalUpdate);
                     } else {
                         // Error handling
                         MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
