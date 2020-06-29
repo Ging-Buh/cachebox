@@ -21,8 +21,9 @@ import java.util.zip.ZipFile;
 public class UnZip {
     private static final String log = "UnZip";
 
-    static public String extractFolder(String zipFile) throws IOException {
-        return extractFolder(zipFile, true);
+    static public void extractHere(String zipFile) throws IOException {
+        // extract the content to the path of the zipfile
+        extractFolder(zipFile, true);
     }
 
     /**
@@ -30,10 +31,10 @@ public class UnZip {
      *
      * @param zipFile
      * @return Extracted Folder Path as String
-     * @throws ZipException
-     * @throws IOException
+     * @throws ZipException ?
+     * @throws IOException ?
      */
-    static public String extractFolder(String zipFile, boolean here) throws ZipException, IOException {
+    static public void extractFolder(String zipFile, boolean here) throws ZipException, IOException {
         Log.debug(log, "unzip from " + zipFile);
         int BUFFER = 2048;
         AbstractFile abstractFile = FileFactory.createFile(zipFile);
@@ -45,9 +46,12 @@ public class UnZip {
             zip = new ZipFile(abstractFile.getAbsolutePath());
         }
 
-        String newPath = abstractFile.getParent(); //  zipFile.substring(0, zipFile.length() - 4);
-
-        if (!here) {
+        String newPath;
+        if (here) {
+            // extract the content to the path of the zipfile
+            newPath = abstractFile.getParent();
+        } else {
+            // extract the content to a path including the name of the zipfile (is perhaps a new directory)
             newPath = zipFile.substring(0, zipFile.length() - 4);
             FileFactory.createFile(newPath).mkdir();
         }
@@ -94,12 +98,10 @@ public class UnZip {
 
             if (currentEntry.endsWith(".zip")) {
                 // found a zip file, try to open recursiv
-                extractFolder(destAbstractFile.getAbsolutePath());
+                extractHere(destAbstractFile.getAbsolutePath());
             }
         }
 
         zip.close();
-
-        return newPath;
     }
 }

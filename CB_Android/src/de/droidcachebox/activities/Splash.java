@@ -185,14 +185,19 @@ public class Splash extends Activity {
 
         final Uri uri = getIntent().getData();
         if (uri != null) {
+            Log.info(log, "Intent Data:" + uri.toString());
             String scheme = uri.getScheme();
             if (scheme != null) {
                 scheme = scheme.toLowerCase();
                 switch (scheme) {
                     case "file":
-                        if (uri.getEncodedPath() != null) {
-                            if (uri.getEncodedPath().endsWith(".gpx") || uri.getEncodedPath().endsWith(".zip")) {
-                                GpxPath = uri.getEncodedPath();
+                        // get this if created by the download manager
+                        if (uri.getPath() != null) {
+                            if (uri.getPath().endsWith(".gpx") || uri.getPath().endsWith(".zip")) {
+                                GpxPath = uri.getPath();
+                            }
+                            else if (uri.getPath().endsWith(".map")) {
+                                GpxPath = uri.getPath();
                             }
                         }
                         break;
@@ -228,15 +233,21 @@ public class Splash extends Activity {
                             } else if (uriHost.contains("download.openandromaps.org") || uriHost.contains("download.freizeitkarte-osm.de")) {
                                 downloadPath = uri.toString();
                                 if (!downloadPath.endsWith("zip")) downloadPath = null;
+                            } else if (uri.toString().endsWith("map")) {
+                                // mapsforge + mirror
+                                downloadPath = uri.toString();
                             }
                         }
                         break;
                     case "geo":
                         LatLon = uri.getSchemeSpecificPart(); // will copy to clipboard
                         break;
+                    case "content":
+                        // to do
+                        break;
                     default:
                         // download.openandromaps.org -> orux-map, backcountrynav-action-map, bikecomputer-map
-                        downloadPath = uri.getEncodedSchemeSpecificPart();
+                        downloadPath = uri.getSchemeSpecificPart();
                         if (downloadPath != null) {
                             downloadPath = "http:" + downloadPath;
                             if (!downloadPath.endsWith("zip")) downloadPath = null;

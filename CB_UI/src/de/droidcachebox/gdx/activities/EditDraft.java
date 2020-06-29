@@ -96,8 +96,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
         scrollBoxContent.initRow(BOTTOMUP);
-        if (draft.type.isDirectLogType())
-            iniOptions();
+        iniOptions();
         iniGC_VoteItem();
         initLogText();
         iniDate();
@@ -124,20 +123,16 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         String sTime = iso8601Format.format(draft.timestamp);
         tvTime.setText(sTime);
         // iniOptions();
-        if (draft.type.isDirectLogType()) {
-            if (isNewDraft) {
-                rbOnlyDraft.setChecked(true);
-            } else {
-                if (draft.isDirectLog) {
-                    rbDirectLog.setChecked(true);
-                } else {
-                    rbOnlyDraft.setChecked(true);
-                }
-            }
-            rbDirectLog.setChecked(true);
-        } else {
+        if (isNewDraft) {
             rbOnlyDraft.setChecked(true);
+        } else {
+            if (draft.isDirectLog) {
+                rbDirectLog.setChecked(true);
+            } else {
+                rbOnlyDraft.setChecked(true);
+            }
         }
+        rbDirectLog.setChecked(true);
         tvFounds.setText("#" + draft.foundNumber);
         if (draft.isTbDraft)
             tvFounds.setText("");
@@ -165,8 +160,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     if (GcVote != null) {
                         draft.gc_Vote = (int) (GcVote.getValue() * 100);
                     } else draft.gc_Vote = 0;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Log.err(sKlasse, ex);
                 }
                 try {

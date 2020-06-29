@@ -87,8 +87,8 @@ public class PlatformUIBase {
         }
     }
 
-    public static void setMethods(Methods methods) {
-        PlatformUIBase.methods = methods;
+    public static void setMethods(Methods _methods) {
+        methods = _methods;
     }
 
     public static SettingBase<?> readPlatformSetting(SettingBase<?> setting) {

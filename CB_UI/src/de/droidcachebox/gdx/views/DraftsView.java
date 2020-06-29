@@ -431,8 +431,7 @@ public class DraftsView extends V_ListView {
         cm.addDivider();
 
         cm.addMenuItem("uploadDrafts", UploadDrafts.getInstance().getIcon(), () -> UploadDrafts.getInstance().execute());
-        if (CB_Core_Settings.DirectOnlineLog.getValue())
-            cm.addMenuItem("directLog", UploadLogs.getInstance().getIcon(), () -> UploadLogs.getInstance().execute());
+        cm.addMenuItem("directLog", UploadLogs.getInstance().getIcon(), () -> UploadLogs.getInstance().execute());
         //
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
@@ -569,8 +568,7 @@ public class DraftsView extends V_ListView {
                 }
             }
             cm.addMenuItem("uploadAsDraft", UploadDrafts.getInstance().getIcon(), () -> logOnline(currentDraft, false));
-            if (CB_Core_Settings.DirectOnlineLog.getValue())
-                cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(currentDraft, true));
+            cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(currentDraft, true));
             Sprite icon;
             if (currentDraft.isTbDraft) {
                 // Sprite from url ?  draft.TbIconUrl

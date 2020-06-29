@@ -9,7 +9,6 @@ import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.Copy;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
@@ -24,16 +23,16 @@ public class MapDownloadItem extends CB_View_Base {
     private final CB_CheckBox checkBoxMap;
     private final float margin;
     private final CB_Label lblName, lblSize;
-    private final String workPath;
+    private final String pathForMapFile;
     private final AtomicBoolean downloadIsRunning = new AtomicBoolean(false);
     private int lastProgress = 0;
     private ProgressBar progressBar;
     private boolean canceld = false;
 
-    public MapDownloadItem(MapRepositoryInfo mapInfo, String workPath, float ItemWidth) {
-        super(mapInfo.name);
-        this.mapInfo = mapInfo;
-        this.workPath = workPath;
+    public MapDownloadItem(MapRepositoryInfo _mapInfo, String _pathForMapFile, float ItemWidth) {
+        super(_mapInfo.name);
+        mapInfo = _mapInfo;
+        pathForMapFile = _pathForMapFile;
         margin = UiSizes.getInstance().getMargin();
 
         checkBoxMap = new CB_CheckBox("Image");
@@ -54,9 +53,14 @@ public class MapDownloadItem extends CB_View_Base {
         lblSize.setFont(Fonts.getNormal());
 
         // Format Size
-        int s = mapInfo.size / 1024 / 1024;
+        if (mapInfo.size > 0) {
+            int s = mapInfo.size / 1024 / 1024;
+            lblSize.setText(s + " MB");
+        }
+        else {
+            lblSize.setText("??? MB");
+        }
         lblSize.setHAlignment(HAlignment.RIGHT);
-        lblSize.setText(s + " MB");
 
         this.addChild(checkBoxMap);
         this.addChild(lblName);
@@ -94,7 +98,7 @@ public class MapDownloadItem extends CB_View_Base {
 
         String FileString = FileIO.getFileNameWithoutExtension(zipFile);
 
-        AbstractFile abstractFile = FileFactory.createFile(workPath + "/" + FileString);
+        AbstractFile abstractFile = FileFactory.createFile(pathForMapFile + "/" + FileString);
         if (abstractFile.exists()) {
             checkBoxMap.setChecked(true);
             checkBoxMap.disable();
@@ -105,7 +109,6 @@ public class MapDownloadItem extends CB_View_Base {
                     checkBoxMap.setChecked(true);
                     checkBoxMap.disable();
                 }
-
                 return true;
             });
         }
@@ -135,48 +138,29 @@ public class MapDownloadItem extends CB_View_Base {
         new Thread(() -> {
             int slashPos = mapInfo.url.lastIndexOf("/");
             String zipFile = mapInfo.url.substring(slashPos + 1);
-            String target = workPath + "/" + zipFile;
+            String target = pathForMapFile + "/" + zipFile;
 
             progressBar.setProgress(lastProgress, lastProgress + " %");
 
             if (Download.download(mapInfo.url, target)) {
-                Log.info(log, "Unzip " + target + " start.");
-                try {
-                    UnZip.extractFolder(target);
-                } catch (Exception ex) {
-                    Log.err(log, "Unzip error: " + ex.toString());
-                }
-                Log.info(log, "Unzip " + target + " end.");
-
-                // Copy and Clear ? todo check is this necessary and ok?
-                AbstractFile folder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(zipFile));
-                AbstractFile newfolder = FileFactory.createFile(workPath + "/" + FileIO.getFileNameWithoutExtension(folder.getName()));
-
-                if (folder.isDirectory()) {
-                    folder.renameTo(newfolder);
-
+                if (target.endsWith(".zip")) {
+                    Log.info(log, "Unzip " + target + " start.");
                     try {
-                        Copy.copyFolder(newfolder, FileFactory.createFile(workPath));
-                    } catch (IOException e) {
-                        Log.err(log, e.getLocalizedMessage());
+                        UnZip.extractHere(target);
+                    } catch (Exception ex) {
+                        Log.err(log, "Unzip error: " + ex.toString());
                     }
-
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        Log.err(log, e.getLocalizedMessage());
-                    }
-
-                    deleteDirectory(newfolder);
+                    Log.info(log, "Unzip " + target + " end.");
                 }
-
             }
 
-            try {
-                FileFactory.createFile(target).delete();
-                Log.info(log, "Deleted " + target);
-            } catch (IOException e) {
-                Log.err(log, e.getLocalizedMessage());
+            if (target.endsWith(".zip")) {
+                try {
+                    FileFactory.createFile(target).delete();
+                    Log.info(log, "Deleted " + target);
+                } catch (IOException e) {
+                    Log.err(log, e.getLocalizedMessage());
+                }
             }
 
             lastProgress = canceld ? 0 : 100;
@@ -204,5 +188,10 @@ public class MapDownloadItem extends CB_View_Base {
             checkBoxMap.disable();
         else
             checkBoxMap.enable();
+    }
+
+    public void check() {
+        checkBoxMap.enable();
+        checkBoxMap.setChecked(true);
     }
 }

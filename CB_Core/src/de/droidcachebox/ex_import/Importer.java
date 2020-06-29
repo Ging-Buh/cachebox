@@ -71,7 +71,7 @@ public class Importer {
                 ip.ProgressInkrement("ExtractZip", "", false);
                 // Extract ZIP
                 try {
-                    UnZip.extractFolder(tmpZip.getAbsolutePath());
+                    UnZip.extractHere(tmpZip.getAbsolutePath());
                 } catch (ZipException e) {
                     Log.err(sKlasse, "ZipException", e);
                 } catch (IOException e) {

@@ -34,10 +34,13 @@ import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.views.CacheSelectionListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.*;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
@@ -268,9 +271,19 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                 }
                 String externalRequestGpxPath = extras.getString("GpxPath");
                 if (externalRequestGpxPath != null) {
-                    Log.info(sKlasse, "importGPXFile");
                     mainActivity.getIntent().removeExtra("GpxPath");
-                    importGPXFile(externalRequestGpxPath);
+                    if (externalRequestGpxPath.endsWith(".map")) {
+                        AbstractFile sourceFile = FileFactory.createFile(externalRequestGpxPath);
+                        AbstractFile destinationFile = FileFactory.createFile(FZKDownload.getInstance().getPathForMapFile(), sourceFile.getName());
+                        boolean result = sourceFile.renameTo(destinationFile);
+                        String sResult = result ? " ok!" : " no success!";
+                        Log.info(sKlasse, "Move map-file " + destinationFile.getPath() + sResult);
+                        if (result) LayerManager.getInstance().initLayers();
+                    }
+                    else {
+                        Log.info(sKlasse, "importGPXFile (*.gpx or *.zip)");
+                        importGPXFile(externalRequestGpxPath);
+                    }
                 }
                 String externalRequestGuid = extras.getString("Guid");
                 if (externalRequestGuid != null) {

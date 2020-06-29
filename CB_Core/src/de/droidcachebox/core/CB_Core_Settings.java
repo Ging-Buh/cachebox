@@ -50,7 +50,6 @@ public interface CB_Core_Settings {
     SettingDouble ParkingLatitude = new SettingDouble("ParkingLatitude", Positions, NEVER, 0, Global, ACB);
     SettingDouble ParkingLongitude = new SettingDouble("ParkingLongitude", Positions, NEVER, 0, Global, ACB);
 
-    SettingBool DirectOnlineLog = new SettingBool("DirectOnlineLog", Drafts, NORMAL, true, Global, ACB, false);
     SettingBool DraftsLoadAll = new SettingBool("DraftsLoadAll", Drafts, DEVELOPER, false, Global, ACB, false);
     SettingInt DraftsLoadLength = new SettingInt("DraftsLoadLength", Drafts, DEVELOPER, 10, Global, ACB);
 

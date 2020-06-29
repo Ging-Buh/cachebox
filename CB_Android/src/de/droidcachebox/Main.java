@@ -96,7 +96,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     private static boolean isRestart = false; // ???
     private final AtomicBoolean waitForGL = new AtomicBoolean(false);
     private final CB_List<de.droidcachebox.locator.GpsStrength> coreSatList = new CB_List<>(14);
-    private SensorEventListener mSensorEventListener;
+    private final SensorEventListener mSensorEventListener;
     private ScreenBroadcastReceiver screenBroadcastReceiver;
     private HorizontalListView quickButtonListView;
     private PowerManager.WakeLock wakeLock;
@@ -108,7 +108,9 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     private boolean lostCheck = false;
     private Dialog pWaitD;
     private LastState lastState;
-    private IChanged handleSuppressPowerSavingConfigChanged, handleGpsUpdateTimeConfigChanged, handleImperialUnitsConfigChanged;
+    private final IChanged handleSuppressPowerSavingConfigChanged;
+    private final IChanged handleGpsUpdateTimeConfigChanged;
+    private final IChanged handleImperialUnitsConfigChanged;
     private ShowViewListener showViewListener;
     private AndroidUIBaseMethods androidUIBaseMethods;
 

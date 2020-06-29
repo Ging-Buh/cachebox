@@ -27,6 +27,8 @@ public class MapDownload extends AbstractAction {
                 () -> callMapUrl("https://www.openandromaps.org/downloads/deutschland"));
         downloadMenu.addMenuItem("LoadMapFromFreizeitkarteMenuTitle", Sprites.getSprite(Sprites.IconName.freizeit.name()),
                 () -> callMapUrl("https://www.freizeitkarte-osm.de/android/de/mitteleuropa.html"));
+        downloadMenu.addMenuItem("LoadMapFromMapsforgeMenuTitle", Sprites.getSprite(Sprites.IconName.mapsforge_logo.name()),
+                () -> callMapUrl("https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"));
         downloadMenu.show();
     }
 

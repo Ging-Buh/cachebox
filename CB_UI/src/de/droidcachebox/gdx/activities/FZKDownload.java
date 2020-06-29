@@ -35,8 +35,8 @@ import java.util.*;
 
 public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "MapDownload";
+    private static final String URL_repositoryFREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
     private static FZKDownload fzkDownload;
-    private final String URL_FREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
     private boolean downloadIsCompleted = false;
     private int allProgress = 0;
     private Array<MapRepositoryInfo> mapInfoList = new Array<>();
@@ -165,9 +165,12 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         mapRepositoryInfo.url = url;
         int slashPos = mapRepositoryInfo.url.lastIndexOf("/");
         mapRepositoryInfo.description = mapRepositoryInfo.url.substring(slashPos + 1);
-        mapRepositoryInfo.size = 100; // unknown
+        mapRepositoryInfo.size = -1; // ??? MB
         mapInfoList.add(mapRepositoryInfo);
         fillRepositoryList();
+        for (MapDownloadItem item : mapInfoItemList) {
+            item.check();
+        }
         doImportByUrl = true;
     }
 
@@ -302,10 +305,10 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
 
     private void readRepository() {
         isChkRepository = true;
-        new Thread(() -> {
+        GL.that.postAsync(() -> {
             // Read XML
             repository_freizeitkarte_android = Webb.create()
-                    .get(URL_FREIZEITKARTE)
+                    .get(URL_repositoryFREIZEITKARTE)
                     .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
                     .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
@@ -324,8 +327,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             lblProgressMsg.setText("");
 
             LayerManager.getInstance().initLayers();
-        }).start();
-
+        });
     }
 
     private void fillDownloadList() {
@@ -352,7 +354,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private void fillRepositoryList() {
         // Create possible download List
         float yPos = 0;
-        String workPath = getWorkPath();
+        String workPath = getPathForMapFile();
         int n = mapInfoList.size - 1;
         for (int i = n; i > -1; i--) {
             MapRepositoryInfo map = mapInfoList.get(i);
@@ -366,27 +368,27 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         scrollBox.setVirtualHeight(yPos);
     }
 
-    private String getWorkPath() {
+    public String getPathForMapFile() {
 
         // get and check the target directory (global value)
-        String workPath = Config.MapPackFolder.getValue();
+        String pathForMapFile = Config.MapPackFolder.getValue();
         boolean isWritable;
-        if (workPath.length() > 0)
-            isWritable = FileIO.canWrite(workPath);
+        if (pathForMapFile.length() > 0)
+            isWritable = FileIO.canWrite(pathForMapFile);
         else
             isWritable = false;
         if (isWritable)
-            Log.info(log, "Download to " + workPath);
+            Log.info(log, "Download to " + pathForMapFile);
         else {
-            Log.err(log, "Download to " + workPath + " is not possible!");
+            Log.err(log, "Download to " + pathForMapFile + " is not possible!");
             // don't use Config.MapPackFolder.getDefaultValue()
             // because it doesn't reflect own repository
             // own or global repository is writable by default, but do check again
-            workPath = Config.MapPackFolderLocal.getValue();
-            isWritable = FileIO.canWrite(workPath);
-            Log.info(log, "Download to " + workPath + " is possible? " + isWritable);
+            pathForMapFile = Config.MapPackFolderLocal.getValue();
+            isWritable = FileIO.canWrite(pathForMapFile);
+            Log.info(log, "Download to " + pathForMapFile + " is possible? " + isWritable);
         }
-        return workPath;
+        return pathForMapFile;
     }
 
     private List<IRule<Map<String, String>>> createRepositoryRules(List<IRule<Map<String, String>>> ruleList) {
@@ -491,14 +493,17 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         BoundingBox bb = null;
         LatLong mi = null;
         LatLong ma = null;
+
         public BoundingBox getBoundingBox() {
             if (bb == null) bb = new BoundingBox(minLat, minLon, maxLat, maxLon);
             return bb;
         }
+
         public LatLong getMin() {
             if (mi == null) mi = new LatLong(minLat, minLon);
             return mi;
         }
+
         public LatLong getMax() {
             if (ma == null) ma = new LatLong(maxLat, maxLon);
             return ma;

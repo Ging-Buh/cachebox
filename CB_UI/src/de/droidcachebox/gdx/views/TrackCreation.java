@@ -76,15 +76,15 @@ public class TrackCreation extends AbstractShowAction {
                 return;
 
             float[] dist = new float[4];
-            Track route = new Track("Point 2 Point Route");
-            route.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-            route.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            Track track = new Track("Point 2 Point Route");
+            track.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            track.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
             MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-            route.setTrackLength(dist[0]);
+            track.setTrackLength(dist[0]);
 
-            route.setVisible(true);
-            TrackList.getInstance().addTrack(route);
+            track.setVisible(true);
+            TrackList.getInstance().addTrack(track);
             TrackListView.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.point2point, "");
         pC.show();
@@ -102,16 +102,16 @@ public class TrackCreation extends AbstractShowAction {
                 return;
 
             float[] dist = new float[4];
-            Track route = new Track("Projected Route");
+            Track track = new Track("Projected Route");
 
-            route.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
-            route.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
+            track.getTrackPoints().add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+            track.getTrackPoints().add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
             MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
-            route.setTrackLength(dist[0]);
+            track.setTrackLength(dist[0]);
 
-            route.setVisible(true);
-            TrackList.getInstance().addTrack(route);
+            track.setVisible(true);
+            TrackList.getInstance().addTrack(track);
             TrackListView.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.projection, "");
 

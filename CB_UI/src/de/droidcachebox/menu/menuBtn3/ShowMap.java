@@ -537,7 +537,7 @@ public class ShowMap extends AbstractShowAction {
 
                             Download.download(fzkThemesInfo.Url, target);
                             try {
-                                UnZip.extractFolder(target);
+                                UnZip.extractHere(target);
                             } catch (Exception ex) {
                                 Log.err(log, "Unzip error: " + ex.toString());
                                 MessageBox.show(ex.toString(), "Unzip", MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
