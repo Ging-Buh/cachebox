@@ -363,7 +363,7 @@ public class Import_GSAK extends ActivityBase {
                 logEntry.Comment = LogsReader.getString("lText");
                 logEntry.Finder = LogsReader.getString("lBy");
                 logEntry.Timestamp = dateFromString(LogsReader.getString("lDate"));
-                logEntry.Type = GeoCacheLogType.parseString(LogsReader.getString("lType"));
+                logEntry.Type = LogType.parseString(LogsReader.getString("lType"));
                 logEntry.Id = LogsReader.getInt("lLogId");
                 logList.add(logEntry);
                 LogsReader.moveToNext();
@@ -392,7 +392,7 @@ public class Import_GSAK extends ActivityBase {
             logEntry.logText = LogsReader.getString("lText");
             logEntry.finder = LogsReader.getString("lBy");
             logEntry.logDate = dateFromString(LogsReader.getString("lDate"));
-            logEntry.geoCacheLogType = GeoCacheLogType.parseString(LogsReader.getString("lType"));
+            logEntry.logType = LogType.parseString(LogsReader.getString("lType"));
             logEntry.logId = LogsReader.getInt("lLogId");
 
             WriteIntoDB.logDAO.WriteToDatabase(logEntry);

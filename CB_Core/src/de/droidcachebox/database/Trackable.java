@@ -240,14 +240,14 @@ public class Trackable implements Comparable<Trackable> {
     /**
      * Returns True if a LogType possible <br>
      * <br>
-     * Possible GeoCacheLogType for TB in Cache: <br>
+     * Possible LogType for TB in Cache: <br>
      * 4 - Post Note <br>
      * 13 - Retrieve It from a Cache <br>
      * 14 - Place in a cache <br>
      * 16 - Mark as missing <br>
      * 48 - Discover <br>
      * <br>
-     * Possible GeoCacheLogType for TB at other Person: <br>
+     * Possible LogType for TB at other Person: <br>
      * 4 - Post Note <br>
      * 16 - Mark as missing <br>
      * 19 - Grab <br>
@@ -255,7 +255,7 @@ public class Trackable implements Comparable<Trackable> {
      * 69 - Move to collection <br>
      * 70 - Move to inventory <br>
      * <br>
-     * Possible GeoCacheLogType for TB at my inventory: <br>
+     * Possible LogType for TB at my inventory: <br>
      * 4 - Post Note <br>
      * 14 - Place in a cache <br>
      * 16 - Mark as missing<br>
@@ -267,7 +267,7 @@ public class Trackable implements Comparable<Trackable> {
      * @param userName Config.settings.GcLogin.getValue()
      * @return ?
      */
-    public boolean isLogTypePossible(GeoCacheLogType type, String userName) {
+    public boolean isLogTypePossible(LogType type, String userName) {
         int ID = type.getGcLogTypeId();
 
         if (ID == 4)
@@ -278,7 +278,7 @@ public class Trackable implements Comparable<Trackable> {
             if (ID == 16)
                 return true;
 
-            // the next GeoCacheLogType only possible if User has entered the TrackingCode
+            // the next LogType only possible if User has entered the TrackingCode
             if (!(trackingCode != null && trackingCode.length() > 0))
                 return false;
             // ist es Sinnvoll einen TB aus einem Cache in einen Cache zu packen?? ID 14 ist Laut GS erlaubt!

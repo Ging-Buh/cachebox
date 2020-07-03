@@ -193,7 +193,7 @@ public abstract class Database extends Database_Core {
         } catch (ParseException ignored) {
         }
         retLogEntry.finder = reader.getString(2);
-        retLogEntry.geoCacheLogType = GeoCacheLogType.values()[reader.getInt(3)];
+        retLogEntry.logType = LogType.values()[reader.getInt(3)];
         // retLogEntry.TypeIcon = reader.getInt(3);
         retLogEntry.logText = reader.getString(4);
         retLogEntry.logId = reader.getLong(5);

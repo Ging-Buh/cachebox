@@ -1404,7 +1404,7 @@ public class GroundspeakAPI {
         } catch (Exception e) {
             logEntry.logDate = new Date();
         }
-        logEntry.geoCacheLogType = GeoCacheLogType.parseString(geocacheLog.optString("type", ""));
+        logEntry.logType = LogType.parseString(geocacheLog.optString("type", ""));
         String referenceCode = geocacheLog.optString("referenceCode", "");
         logEntry.logId = generateLogId(referenceCode);
         return logEntry;
@@ -1706,9 +1706,9 @@ public class GroundspeakAPI {
         private static final String LiteFields = "referenceCode,favoritePoints,userData,name,difficulty,terrain,placedDate,geocacheType.id,geocacheSize.id,location,postedCoordinates,status,owner.username,ownerAlias";
         private static final String NotLiteFields = "hints,attributes,longDescription,shortDescription,additionalWaypoints,userWaypoints";
         private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount,userData.foundDate";
-        private StringBuilder qString;
-        private StringBuilder fieldsString;
-        private StringBuilder expandString;
+        private final StringBuilder qString;
+        private final StringBuilder fieldsString;
+        private final StringBuilder expandString;
         private int maxToFetch;
         private Descriptor descriptor;
 

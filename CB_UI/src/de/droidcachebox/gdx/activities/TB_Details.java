@@ -17,7 +17,7 @@ package de.droidcachebox.gdx.activities;
 
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
-import de.droidcachebox.database.GeoCacheLogType;
+import de.droidcachebox.database.LogType;
 import de.droidcachebox.database.Trackable;
 import de.droidcachebox.gdx.*;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -155,17 +155,17 @@ public class TB_Details extends ActivityBase {
 
     private void showLogMenu() {
         final Menu menuLog = new Menu("TB_DetailsLogMenuTitle");
-        menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.note));
-        if (trackable.isLogTypePossible(GeoCacheLogType.discovered, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.discovered));
-        if (trackable.isLogTypePossible(GeoCacheLogType.visited, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.visited));
-        if (trackable.isLogTypePossible(GeoCacheLogType.dropped_off, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.dropped_off));
-        if (trackable.isLogTypePossible(GeoCacheLogType.grab_it, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.grab_it));
-        if (trackable.isLogTypePossible(GeoCacheLogType.retrieve, CB_Core_Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.getInstance().Show(trackable, GeoCacheLogType.retrieve));
+        menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.getInstance().Show(trackable, LogType.note));
+        if (trackable.isLogTypePossible(LogType.discovered, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.getInstance().Show(trackable, LogType.discovered));
+        if (trackable.isLogTypePossible(LogType.visited, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.getInstance().Show(trackable, LogType.visited));
+        if (trackable.isLogTypePossible(LogType.dropped_off, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.getInstance().Show(trackable, LogType.dropped_off));
+        if (trackable.isLogTypePossible(LogType.grab_it, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.getInstance().Show(trackable, LogType.grab_it));
+        if (trackable.isLogTypePossible(LogType.retrieve, CB_Core_Settings.GcLogin.getValue()))
+            menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.getInstance().Show(trackable, LogType.retrieve));
         menuLog.show();
     }
 

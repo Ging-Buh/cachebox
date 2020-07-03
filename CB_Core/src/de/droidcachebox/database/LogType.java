@@ -1,6 +1,6 @@
 package de.droidcachebox.database;
 
-public enum GeoCacheLogType {
+public enum LogType {
     found, // 0
     didnt_find, // 1
     note, // 2
@@ -86,7 +86,7 @@ public enum GeoCacheLogType {
     'Event Announcement',
     'Submit for Review']
      */
-    public static GeoCacheLogType parseString(String text) {
+    public static LogType parseString(String text) {
 
         if (text.equalsIgnoreCase("Found It")) {
             return found;
@@ -172,9 +172,10 @@ public enum GeoCacheLogType {
         return note;
     }
 
-    public static GeoCacheLogType GC2CB_LogType(int value) {
+    public static LogType GC2CB_LogType(int value) {
         switch (value) {
             case 1:
+            case 12:
                 return unarchive;
             case 2:
                 return found;
@@ -192,8 +193,6 @@ public enum GeoCacheLogType {
                 return attended;
             case 11:
                 return webcam_photo_taken;
-            case 12:
-                return unarchive;
             case 13:
                 return retrieve;
             case 14:
@@ -201,6 +200,7 @@ public enum GeoCacheLogType {
             case 16:
                 return mark_missing;
             case 18:
+            case 68:
                 return reviewer_note;
             case 19:
                 return grab_it;
@@ -220,8 +220,6 @@ public enum GeoCacheLogType {
                 return update_coord;
             case 48:
                 return discovered;
-            case 68:
-                return reviewer_note;
             case 69:
                 return move_to_collection;
             case 70:
@@ -240,7 +238,7 @@ public enum GeoCacheLogType {
      * @param value
      * @return
      */
-    public static int CB_LogType2GC(GeoCacheLogType value) {
+    public static int CB_LogType2GC(LogType value) {
         switch (value) {
             case unarchive:
                 return 1;
@@ -335,6 +333,7 @@ public enum GeoCacheLogType {
     }
 
     public int getIconID() {
+        // only for get icons for cacheLogs (not trackableLogs)
         switch (this.ordinal()) {
             case 0:
                 return 0; // Found

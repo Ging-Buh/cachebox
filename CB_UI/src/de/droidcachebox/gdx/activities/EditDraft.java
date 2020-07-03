@@ -50,22 +50,21 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private FilterSetListViewItem GcVote;
     private CB_Label title;
     private Draft originalDraft;
-    private Draft draft;
-    private CB_Button btnOK = null;
-    private CB_Button btnLog = null;
-    private CB_Button btnDraft = null;
-    private CB_Button btnCancel = null;
-    private EditTextField etComment = null;
-    private Image ivTyp = null;
-    private CB_Label tvFounds = null;
-    private EditTextField tvDate = null;
-    private EditTextField tvTime = null;
-    private ScrollBox scrollBox = null;
+    private Draft currentDraft;
+    private CB_Button btnOK;
+    private CB_Button btnLog;
+    private CB_Button btnDraft;
+    private CB_Button btnCancel;
+    private EditTextField etComment;
+    private Image ivTyp;
+    private CB_Label tvFounds;
+    private EditTextField tvDate;
+    private EditTextField tvTime;
+    private ScrollBox scrollBox;
     private Box scrollBoxContent;
     private boolean isNewDraft;
     private IDraftsView draftsView;
-    private CB_Button btnHow;
-    private OnClickListener saveLog = new OnClickListener() {
+    private final OnClickListener saveLog = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             if (draftsView != null) {
@@ -73,13 +72,13 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 if (view == btnLog) clickedBy = SaveMode.Log;
                 else if (view == btnDraft) clickedBy = SaveMode.Draft;
                 try {
-                    draft.isDirectLog = false;
+                    currentDraft.isDirectLog = false;
 
-                    draft.comment = etComment.getText().trim();
+                    currentDraft.comment = etComment.getText().trim();
 
                     if (GcVote != null) {
-                        draft.gc_Vote = (int) (GcVote.getValue() * 100);
-                    } else draft.gc_Vote = 0;
+                        currentDraft.gc_Vote = (int) (GcVote.getValue() * 100);
+                    } else currentDraft.gc_Vote = 0;
                 } catch (Exception ex) {
                     Log.err(sKlasse, ex);
                 }
@@ -98,7 +97,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     formatter = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US);
                     timestamp = formatter.parse(date + "." + time + ".00");
 
-                    draft.timestamp = timestamp;
+                    currentDraft.timestamp = timestamp;
                 } catch (ParseException e) {
                     final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error,
                             (which, data) -> {
@@ -126,26 +125,27 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 }
 
                 // check of changes
-                if (!originalDraft.equals(draft)) {
-                    draft.uploaded = false;
-                    draft.updateDatabase();
+                if (!originalDraft.equals(currentDraft)) {
+                    currentDraft.uploaded = false;
+                    currentDraft.updateDatabase();
                     Log.info(sKlasse, "Draft written to database.");
                     DraftsView.createGeoCacheVisits();
                     Log.info(sKlasse, "GeoCacheVisits written.");
                 }
-                draftsView.addOrChangeDraft(draft, isNewDraft, clickedBy);
+                draftsView.addOrChangeDraft(currentDraft, isNewDraft, clickedBy);
             }
             finish();
             return true;
         }
     };
+    private CB_Button btnHow;
 
-    public EditDraft(Draft note, IDraftsView listener, boolean isNewDraft) {
+    public EditDraft(Draft draft, IDraftsView listener, boolean isNewDraft) {
         super("EditDraft");
         this.isNewDraft = isNewDraft;
         draftsView = listener;
-        draft = note;
-        originalDraft = new Draft(note);
+        currentDraft = draft;
+        originalDraft = new Draft(draft);
         initLayoutWithValues();
     }
 
@@ -199,40 +199,40 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     private void setValuesToLayout() {
         // initLogText
-        etComment.setText(draft.comment);
+        etComment.setText(currentDraft.comment);
         // Date
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        String sDate = iso8601Format.format(draft.timestamp);
+        String sDate = iso8601Format.format(currentDraft.timestamp);
         tvDate.setText(sDate);
         // Time
         iso8601Format = new SimpleDateFormat("HH:mm", Locale.US);
-        String sTime = iso8601Format.format(draft.timestamp);
+        String sTime = iso8601Format.format(currentDraft.timestamp);
         tvTime.setText(sTime);
         // iniOptions();
-        tvFounds.setText("#" + draft.foundNumber);
-        if (draft.isTbDraft)
+        tvFounds.setText("#" + currentDraft.foundNumber);
+        if (currentDraft.isTbDraft)
             tvFounds.setText("");
         //
-        title.setText(draft.isTbDraft ? draft.TbName : draft.CacheName);
+        title.setText(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
     }
 
     private void iniTitle() {
         ivTyp = new Image(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), "", false);
-        if (draft.isTbDraft) {
-            ivTyp.setImageURL(draft.TbIconUrl);
+        if (currentDraft.isTbDraft) {
+            ivTyp.setImageURL(currentDraft.TbIconUrl);
         } else {
-            ivTyp.setDrawable(DraftViewItem.getTypeIcon(draft));
+            ivTyp.setDrawable(DraftViewItem.getTypeIcon(currentDraft));
         }
         scrollBoxContent.addNext(ivTyp, FIXED);
 
-        title = new CB_Label(draft.isTbDraft ? draft.TbName : draft.CacheName);
+        title = new CB_Label(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
         title.setFont(Fonts.getBig());
         scrollBoxContent.addLast(title);
     }
 
     private void iniDate() {
-        tvFounds = new CB_Label("#" + draft.foundNumber);
-        if (draft.isTbDraft)
+        tvFounds = new CB_Label("#" + currentDraft.foundNumber);
+        if (currentDraft.isTbDraft)
             tvFounds.setText("");
         tvFounds.setFont(Fonts.getBig());
         tvFounds.setWidth(tvFounds.getTextWidth());
@@ -242,19 +242,19 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         scrollBoxContent.addNext(tvDate, 0.4f);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        String sDate = iso8601Format.format(draft.timestamp);
+        String sDate = iso8601Format.format(currentDraft.timestamp);
         tvDate.setText(sDate);
         tvTime = new EditTextField(this, "*" + Translation.get("time"));
         tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
         scrollBoxContent.addLast(tvTime, 0.4f);
-        String sTime = new SimpleDateFormat("HH:mm", Locale.US).format(draft.timestamp);
+        String sTime = new SimpleDateFormat("HH:mm", Locale.US).format(currentDraft.timestamp);
         tvTime.setText(sTime);
     }
 
     private void iniGC_VoteItem() {
         if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
-            if (!draft.isTbDraft) {
-                FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, draft.gc_Vote / 100.0, 0.5f);
+            if (!currentDraft.isTbDraft) {
+                FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, currentDraft.gc_Vote / 100.0, 0.5f);
                 GcVote = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, tmp);
                 scrollBoxContent.addLast(GcVote);
             }
@@ -265,7 +265,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         etComment = new EditTextField(this, "etComment").setWrapType(WrapType.WRAPPED);
         etComment.setHeight(getHeight() / 2.5f);
         scrollBoxContent.addLast(etComment);
-        etComment.setText(draft.comment);
+        etComment.setText(currentDraft.comment);
         btnHow = new CB_Button("=");
         btnHow.setClickHandler((v, x, y, pointer, button) -> {
             if (btnHow.getText().equals("="))
@@ -279,7 +279,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         CB_Button btnFromNotes = new CB_Button(Translation.get("fromNotes"));
         btnFromNotes.setClickHandler((v, x, y, pointer, button) -> {
-            String text = Database.getNote(draft.CacheId);
+            String text = Database.getNote(currentDraft.CacheId);
             if (text.length() > 0) {
                 String sBegin = "<Import from Geocaching.com>";
                 String sEnd = "</Import from Geocaching.com>";
@@ -335,7 +335,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     private void setupLogText(String text) {
         // todo for ##owner## the cache must be selected (if not first log)
-        text = TemplateFormatter.ReplaceTemplate(text, draft);
+        text = TemplateFormatter.ReplaceTemplate(text, currentDraft);
         switch (btnHow.getText()) {
             case "=":
                 etComment.setText(text);
@@ -379,7 +379,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     public void dispose() {
         super.dispose();
         draftsView = null;
-        draft = null;
+        currentDraft = null;
         btnOK = null;
         btnCancel = null;
         etComment = null;
@@ -411,17 +411,17 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         }
     }
 
-    public void setDraft(Draft note, IDraftsView _draftsView, boolean isNewFieldNote) {
-        this.isNewDraft = isNewFieldNote;
+    public void setDraft(Draft _draft, IDraftsView _draftsView, boolean _isNewDraft) {
+        isNewDraft = _isNewDraft;
         draftsView = _draftsView;
-        draft = note;
+        currentDraft = _draft;
         setValuesToLayout();
-        originalDraft = new Draft(note);
+        originalDraft = new Draft(currentDraft);
     }
 
     public enum SaveMode {Cancel, OnlyLocal, Draft, Log, LocalUpdate}
 
     public interface IDraftsView {
-        void addOrChangeDraft(Draft fn, boolean isNewFieldNote, SaveMode saveMode);
+        void addOrChangeDraft(Draft fn, boolean isNewDraft, SaveMode saveMode);
     }
 }

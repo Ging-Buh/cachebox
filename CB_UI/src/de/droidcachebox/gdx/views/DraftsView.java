@@ -130,15 +130,15 @@ public class DraftsView extends V_ListView {
         firstShow = false;
         if (draft != null) {
             if (isNewDraft) {
-                drafts.add(0, draft);
+                drafts.insert(0, draft);
 
                 // eine evtl. vorhandene Draft /DNF löschen
-                if (draft.type == GeoCacheLogType.attended //
-                        || draft.type == GeoCacheLogType.found //
-                        || draft.type == GeoCacheLogType.webcam_photo_taken //
-                        || draft.type == GeoCacheLogType.didnt_find) {
-                    drafts.deleteDraftByCacheId(draft.CacheId, GeoCacheLogType.found);
-                    drafts.deleteDraftByCacheId(draft.CacheId, GeoCacheLogType.didnt_find);
+                if (draft.type == LogType.attended //
+                        || draft.type == LogType.found //
+                        || draft.type == LogType.webcam_photo_taken //
+                        || draft.type == LogType.didnt_find) {
+                    drafts.deleteDraftByCacheId(draft.CacheId, LogType.found);
+                    drafts.deleteDraftByCacheId(draft.CacheId, LogType.didnt_find);
                 }
             }
 
@@ -146,22 +146,21 @@ public class DraftsView extends V_ListView {
             currentDraft = draft;
 
             if (isNewDraft) {
-                // nur, wenn eine Draft neu angelegt wurde
-                // wenn eine Draft neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
-                // SelectedCache eine Draft angelegt wird
-                if (draft.type == GeoCacheLogType.found //
-                        || draft.type == GeoCacheLogType.attended //
-                        || draft.type == GeoCacheLogType.webcam_photo_taken) {
+                // if (GlobalCore.getSelectedCache().generatedId == draft.CacheId) would be possible too
+                // nur, wenn eine Draft neu angelegt wurde, ist sie bestimmt für den SelectedCache
+                if (draft.type == LogType.found //
+                        || draft.type == LogType.attended //
+                        || draft.type == LogType.webcam_photo_taken) {
                     // Found it! -> Cache als gefunden markieren
                     if (!GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(true);
                         CacheDAO cacheDAO = new CacheDAO();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                        Config.FoundOffset.setValue(currentDraft.foundNumber);
+                        Config.FoundOffset.setValue(draft.foundNumber);
                         Config.AcceptChanges();
                     }
 
-                } else if (draft.type == GeoCacheLogType.didnt_find) { // DidNotFound -> Cache als nicht gefunden markieren
+                } else if (draft.type == LogType.didnt_find) { // DidNotFound -> Cache als nicht gefunden markieren
                     if (GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(false);
                         CacheDAO cacheDAO = new CacheDAO();
@@ -169,7 +168,7 @@ public class DraftsView extends V_ListView {
                         Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
                         Config.AcceptChanges();
                     } // und eine evtl. vorhandene Draft FoundIt löschen
-                    drafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
+                    drafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.found);
                 }
             }
 
@@ -191,11 +190,11 @@ public class DraftsView extends V_ListView {
         draftsView.notifyDataSetChanged();
     }
 
-    private void addNewDraft(GeoCacheLogType type) {
+    private void addNewDraft(LogType type) {
         addNewDraft(type, "", false);
     }
 
-    public void addNewDraft(GeoCacheLogType type, String templateText, boolean withoutShowEdit) {
+    public void addNewDraft(LogType type, String templateText, boolean withoutShowEdit) {
         Cache cache = GlobalCore.getSelectedCache();
 
         if (cache == null) {
@@ -206,9 +205,9 @@ public class DraftsView extends V_ListView {
         // chk car found?
         if (cache.getGeoCacheCode().equalsIgnoreCase("CBPark")) {
 
-            if (type == GeoCacheLogType.found) {
+            if (type == LogType.found) {
                 MessageBox.show(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-            } else if (type == GeoCacheLogType.didnt_find) {
+            } else if (type == LogType.didnt_find) {
                 MessageBox.show(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
             }
 
@@ -218,7 +217,7 @@ public class DraftsView extends V_ListView {
         // kein GC Cache
         if (!cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
 
-            if (type == GeoCacheLogType.found || type == GeoCacheLogType.attended || type == GeoCacheLogType.webcam_photo_taken) {
+            if (type == LogType.found || type == LogType.attended || type == LogType.webcam_photo_taken) {
                 // Found it! -> fremden Cache als gefunden markieren
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
@@ -228,7 +227,7 @@ public class DraftsView extends V_ListView {
                     pop.show(PopUp_Base.SHOW_TIME_SHORT);
                     PlatformUIBase.vibrate();
                 }
-            } else if (type == GeoCacheLogType.didnt_find) {
+            } else if (type == LogType.didnt_find) {
                 // DidNotFound -> fremden Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
@@ -249,10 +248,10 @@ public class DraftsView extends V_ListView {
         tmpDrafts.loadDrafts("", LoadingType.Loadall);
 
         Draft newDraft = null;
-        if ((type == GeoCacheLogType.found) //
-                || (type == GeoCacheLogType.attended) //
-                || (type == GeoCacheLogType.webcam_photo_taken) //
-                || (type == GeoCacheLogType.didnt_find)) {
+        if ((type == LogType.found) //
+                || (type == LogType.attended) //
+                || (type == LogType.webcam_photo_taken) //
+                || (type == LogType.didnt_find)) {
             // Is there already a Draft of this type for this cache
             // then change else new
             for (Draft tmpDraft : tmpDrafts) {
@@ -275,11 +274,9 @@ public class DraftsView extends V_ListView {
             newDraft.comment = templateText;
             newDraft.CacheUrl = cache.getUrl();
             newDraft.cacheType = cache.getGeoCacheType().ordinal();
-            newDraft.fillType();
             currentDraft = newDraft;
         } else {
-            tmpDrafts.remove(newDraft);
-
+            tmpDrafts.removeValue(newDraft, true);
         }
 
         switch (type) {
@@ -287,14 +284,12 @@ public class DraftsView extends V_ListView {
                 // wenn eine Draft Found erzeugt werden soll und der Cache noch nicht gefunden war -> foundNumber um 1 erhöhen
                 if (!cache.isFound())
                     newDraft.foundNumber++;
-                newDraft.fillType();
                 if (newDraft.comment.length() == 0)
                     newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newDraft);
                 break;
             case attended:
                 if (!cache.isFound())
                     newDraft.foundNumber++; //
-                newDraft.fillType();
                 if (newDraft.comment.length() == 0)
                     newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.AttendedTemplate.getValue(), newDraft);
                 // wenn eine Draft Found erzeugt werden soll und der Cache noch
@@ -303,7 +298,6 @@ public class DraftsView extends V_ListView {
             case webcam_photo_taken:
                 if (!cache.isFound())
                     newDraft.foundNumber++; //
-                newDraft.fillType();
                 if (newDraft.comment.length() == 0)
                     newDraft.comment = TemplateFormatter.ReplaceTemplate(Config.WebcamTemplate.getValue(), newDraft);
                 // wenn eine Draft Found erzeugt werden soll und der Cache noch
@@ -327,10 +321,10 @@ public class DraftsView extends V_ListView {
 
         if (withoutShowEdit) {
             // neue Draft
-            tmpDrafts.add(0, newDraft);
+            tmpDrafts.insert(0, newDraft);
             newDraft.writeToDatabase();
             currentDraft = newDraft;
-            if (newDraft.type == GeoCacheLogType.found || newDraft.type == GeoCacheLogType.attended || newDraft.type == GeoCacheLogType.webcam_photo_taken) {
+            if (newDraft.type == LogType.found || newDraft.type == LogType.attended || newDraft.type == LogType.webcam_photo_taken) {
                 // Found it! -> Cache als gefunden markieren
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
@@ -340,8 +334,8 @@ public class DraftsView extends V_ListView {
                     Config.AcceptChanges();
                 }
                 // und eine evtl. vorhandene Draft DNF löschen
-                tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.didnt_find);
-            } else if (newDraft.type == GeoCacheLogType.didnt_find) {
+                tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.didnt_find);
+            } else if (newDraft.type == LogType.didnt_find) {
                 // DidNotFound -> Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
@@ -351,7 +345,7 @@ public class DraftsView extends V_ListView {
                     Config.AcceptChanges();
                 }
                 // und eine evtl. vorhandene Draft FoundIt löschen
-                tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, GeoCacheLogType.found);
+                tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.found);
             }
 
             createGeoCacheVisits();
@@ -411,24 +405,24 @@ public class DraftsView extends V_ListView {
                 case CITO:
                 case MegaEvent:
                 case Giga:
-                    cm.addMenuItem("will-attended", Sprites.getSprite("log8icon"), () -> addNewDraft(GeoCacheLogType.will_attend));
-                    cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> addNewDraft(GeoCacheLogType.attended));
+                    cm.addMenuItem("will-attended", Sprites.getSprite("log8icon"), () -> addNewDraft(LogType.will_attend));
+                    cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> addNewDraft(LogType.attended));
                     break;
                 case Camera:
-                    cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> addNewDraft(GeoCacheLogType.webcam_photo_taken));
+                    cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> addNewDraft(LogType.webcam_photo_taken));
                     break;
                 default:
-                    cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> addNewDraft(GeoCacheLogType.found));
+                    cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> addNewDraft(LogType.found));
                     break;
             }
 
-            cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> addNewDraft(GeoCacheLogType.didnt_find));
+            cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> addNewDraft(LogType.didnt_find));
         }
 
         // Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
         if (cache != null && cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
-            cm.addMenuItem("maintenance", Sprites.getSprite("log5icon"), () -> addNewDraft(GeoCacheLogType.needs_maintenance));
-            cm.addMenuItem("writenote", Sprites.getSprite("log2icon"), () -> addNewDraft(GeoCacheLogType.note));
+            cm.addMenuItem("maintenance", Sprites.getSprite("log5icon"), () -> addNewDraft(LogType.needs_maintenance));
+            cm.addMenuItem("writenote", Sprites.getSprite("log2icon"), () -> addNewDraft(LogType.note));
         }
 
         cm.addDivider();
@@ -441,9 +435,9 @@ public class DraftsView extends V_ListView {
         if (cache != null)
             if (cache.iAmTheOwner()) {
                 Menu ownerLogTypesTitleMenu = new Menu("OwnerLogTypesTitle");
-                ownerLogTypesTitleMenu.addMenuItem("enabled", Sprites.getSprite("log4icon"), () -> addNewDraft(GeoCacheLogType.enabled));
-                ownerLogTypesTitleMenu.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"), () -> addNewDraft(GeoCacheLogType.temporarily_disabled));
-                ownerLogTypesTitleMenu.addMenuItem("ownerMaintenance", Sprites.getSprite("log7icon"), () -> addNewDraft(GeoCacheLogType.owner_maintenance));
+                ownerLogTypesTitleMenu.addMenuItem("enabled", Sprites.getSprite("log4icon"), () -> addNewDraft(LogType.enabled));
+                ownerLogTypesTitleMenu.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"), () -> addNewDraft(LogType.temporarily_disabled));
+                ownerLogTypesTitleMenu.addMenuItem("ownerMaintenance", Sprites.getSprite("log7icon"), () -> addNewDraft(LogType.owner_maintenance));
                 cm.addMoreMenu(ownerLogTypesTitleMenu, Translation.get("defaultLogTypes"), Translation.get("ownerLogTypes"));
             }
 
@@ -508,7 +502,7 @@ public class DraftsView extends V_ListView {
 
     private class DraftsViewAdapter implements Adapter {
         private final CB_FixSizeList<DraftViewItem> fixViewList = new CB_FixSizeList<>(20);
-        private CB_RectF itemRec;
+        private final CB_RectF itemRec;
 
         DraftsViewAdapter() {
             itemRec = new CB_RectF(0, 0, draftsView.getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
@@ -516,7 +510,7 @@ public class DraftsView extends V_ListView {
 
         @Override
         public int getCount() {
-            int count = drafts.size();
+            int count = drafts.size;
             if (drafts.isCropped())
                 count++;
             return count;
@@ -532,7 +526,7 @@ public class DraftsView extends V_ListView {
             }
 
             Draft fne = null;
-            if (position < drafts.size()) {
+            if (position < drafts.size) {
                 fne = drafts.get(position);
             }
 
@@ -743,10 +737,10 @@ public class DraftsView extends V_ListView {
 
             String message;
             if (currentDraft.isTbDraft) {
-                message = Translation.get("confirmDraftDeletionTB", currentDraft.typeString, currentDraft.TbName);
+                message = Translation.get("confirmDraftDeletionTB", currentDraft.getTypeString(), currentDraft.TbName);
             } else {
-                message = Translation.get("confirmDraftDeletion", currentDraft.typeString, currentDraft.CacheName);
-                if (currentDraft.type == GeoCacheLogType.found || currentDraft.type == GeoCacheLogType.attended || currentDraft.type == GeoCacheLogType.webcam_photo_taken)
+                message = Translation.get("confirmDraftDeletion", currentDraft.getTypeString(), currentDraft.CacheName);
+                if (currentDraft.type == LogType.found || currentDraft.type == LogType.attended || currentDraft.type == LogType.webcam_photo_taken)
                     message += Translation.get("confirmDraftDeletionRst");
             }
 
@@ -770,7 +764,7 @@ public class DraftsView extends V_ListView {
                             }
                         }
                     }
-                    drafts.deleteDraft(currentDraft);
+                    drafts.deleteDraftById(currentDraft);
                     currentDraft = null;
                     drafts.loadDrafts("", LoadingType.loadNewLastLength);
                     draftsView.setAdapter(null);
@@ -785,12 +779,12 @@ public class DraftsView extends V_ListView {
 
         @Override
         public float getItemSize(int position) {
-            if (position > drafts.size() || drafts.size() == 0)
+            if (position > drafts.size || drafts.size == 0)
                 return 0;
 
             Draft fne = null;
 
-            if (position < drafts.size()) {
+            if (position < drafts.size) {
                 fne = drafts.get(position);
             }
 

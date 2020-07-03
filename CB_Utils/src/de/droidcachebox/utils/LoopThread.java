@@ -29,8 +29,7 @@ public abstract class LoopThread {
                     if (cancelLoop()) {
                         loopShouldRun = false;
                         loopThread = null;
-                    }
-                    else {
+                    } else {
                         loop();
                         try {
                             Thread.sleep(sleepTime);
@@ -38,7 +37,7 @@ public abstract class LoopThread {
                         }
                     }
                 } while (loopShouldRun);
-                monitoringThread.interrupt();
+                if (monitoringThread != null) monitoringThread.interrupt();
                 monitoringThread = null;
                 Log.debug(sKlasse, "Stop loopThread");
             });
@@ -47,7 +46,7 @@ public abstract class LoopThread {
                 loopThread.start();
                 // wait until loopThreads runnable is started
                 do {
-                   Thread.sleep(1000);
+                    Thread.sleep(1000);
                 } while (!loopShouldRun);
 
                 if (monitoringThread == null) {

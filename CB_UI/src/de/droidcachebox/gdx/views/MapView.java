@@ -71,8 +71,8 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     private static final String sKlasse = "MapView";
     private CB_RectF targetArrow = new CB_RectF();
     private TreeMap<Integer, Integer> distanceZoomLevel;
-    private MapMode mapMode;
-    private LiveButton liveButton;
+    private final MapMode mapMode;
+    private final LiveButton liveButton;
     private MultiToggleButton btnMapState;
     private InfoBubble infoBubble;
     private CancelWaitDialog wd = null;
@@ -86,12 +86,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     private Waypoint lastSelectedWaypoint = null;
     private GlyphLayout geocacheOrWayPointName = null;
     private CB_RectF targetArrowScreenRec;
-    private MapViewCacheList mapCacheList;
+    private final MapViewCacheList mapCacheList;
     private int lastCompassMapZoom = -1;
     private MapInfoPanel mapInfoPanel;
-    private PointL lastScreenCenter;
-    private GL_Paint distanceCirclePaint;
-    private GL_Paint directLinePaint;
+    private final PointL lastScreenCenter;
+    private final GL_Paint distanceCirclePaint;
+    private final GL_Paint directLinePaint;
     private PolygonDrawable directLine;
 
     public MapView(CB_RectF cb_RectF, MapMode mapMode) {

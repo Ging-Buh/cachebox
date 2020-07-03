@@ -23,8 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.GeoCacheLogType;
 import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.LogType;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -43,7 +43,7 @@ public class DraftViewItem extends ListViewItemBackground {
     private static NinePatch backheader;
     private static float headHeight;
     public boolean headerClicked;
-    private Draft draft;
+    private final Draft draft;
     private Image ivTyp;
     private Image ivCacheType;
 
@@ -139,26 +139,26 @@ public class DraftViewItem extends ListViewItemBackground {
     }
 
     public static Drawable getTypeIcon(Draft fne) {
-        GeoCacheLogType type = fne.type;
+        LogType type = fne.type;
         if (fne.isTbDraft) {
             Sprite spr = null;
-            if (type == GeoCacheLogType.discovered)
+            if (type == LogType.discovered)
                 spr = Sprites.getSprite(IconName.TBDISCOVER.name());
-            if (type == GeoCacheLogType.dropped_off)
+            if (type == LogType.dropped_off)
                 spr = Sprites.getSprite(IconName.TBDROP.name());
-            if (type == GeoCacheLogType.grab_it)
+            if (type == LogType.grab_it)
                 spr = Sprites.getSprite(IconName.TBGRAB.name());
-            if (type == GeoCacheLogType.retrieve)
+            if (type == LogType.retrieve)
                 spr = Sprites.getSprite(IconName.TBPICKED.name());
-            if (type == GeoCacheLogType.visited)
+            if (type == LogType.visited)
                 spr = Sprites.getSprite(IconName.TBVISIT.name());
-            if (type == GeoCacheLogType.note)
+            if (type == LogType.note)
                 spr = Sprites.getSprite(IconName.TBNOTE.name());
             if (spr == null)
                 return null;
             return new SpriteDrawable(spr);
         } else {
-            return new SpriteDrawable(Sprites.LogIcons.get(fne.typeIcon));
+            return new SpriteDrawable(Sprites.LogIcons.get(fne.type.getIconID()));
         }
     }
 

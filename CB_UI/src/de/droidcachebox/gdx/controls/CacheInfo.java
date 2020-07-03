@@ -110,10 +110,10 @@ public class CacheInfo extends CB_View_Base {
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
-            if (logEntry.geoCacheLogType == GeoCacheLogType.owner_maintenance) {
+            if (logEntry.logType == LogType.owner_maintenance) {
                 return false;
             }
-            if (logEntry.geoCacheLogType == GeoCacheLogType.needs_maintenance && lastNeedsMaintenance == null) {
+            if (logEntry.logType == LogType.needs_maintenance && lastNeedsMaintenance == null) {
                 return true;
             }
         }
@@ -128,10 +128,10 @@ public class CacheInfo extends CB_View_Base {
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
-            if (logEntry.geoCacheLogType == GeoCacheLogType.found) {
+            if (logEntry.logType == LogType.found) {
                 return dnfCount;
             }
-            if (logEntry.geoCacheLogType == GeoCacheLogType.didnt_find) {
+            if (logEntry.logType == LogType.didnt_find) {
                 dnfCount++;
             }
         }
@@ -143,7 +143,7 @@ public class CacheInfo extends CB_View_Base {
         CB_List<LogEntry> logEntries = Database.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
-            if (logEntry.geoCacheLogType == GeoCacheLogType.found) {
+            if (logEntry.logType == LogType.found) {
                 return new SimpleDateFormat("dd.MM.yy", Locale.US).format(logEntry.logDate);
             }
         }

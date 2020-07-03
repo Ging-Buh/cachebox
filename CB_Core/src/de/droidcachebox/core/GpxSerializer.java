@@ -409,7 +409,7 @@ public final class GpxSerializer {
             gpx.startTag(PREFIX_GROUNDSPEAK, "log");
             gpx.attribute("", "id", Integer.toString((int) log.logId));
 
-            multipleTexts(gpx, PREFIX_GROUNDSPEAK, "date", dateFormatZ.format(log.logDate), "type", log.geoCacheLogType.toString());
+            multipleTexts(gpx, PREFIX_GROUNDSPEAK, "date", dateFormatZ.format(log.logDate), "type", log.logType.toString());
 
             gpx.startTag(PREFIX_GROUNDSPEAK, "finder");
             gpx.attribute("", "id", "");

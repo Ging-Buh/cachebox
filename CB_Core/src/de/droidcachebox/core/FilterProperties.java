@@ -85,7 +85,6 @@ public class FilterProperties {
     private int hasCorrectedCoordinates; // 17
     private double minFavPoints; // 18
     private double maxFavPoints; // 19
-    // json.optString("UserDefinedSQL");
     private String userDefinedSQL;
 
     /**
@@ -798,6 +797,8 @@ public class FilterProperties {
     }
 
     /**
+     * is the filtercheck for live caches
+     *
      * @param geoCache apply the filter on a single geoCache
      * @return true if geoCache fulfills all properties
      */
@@ -820,7 +821,6 @@ public class FilterProperties {
             return false;
         if (chkFilterBoolean(hasCorrectedCoordinates, geoCache.hasCorrectedCoordinates()))
             return false;
-        // TODO ? the other restrictions?
         return cacheTypes.contains("" + geoCache.getGeoCacheType().ordinal());
     }
 

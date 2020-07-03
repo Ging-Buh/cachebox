@@ -15,22 +15,21 @@
  */
 package de.droidcachebox.database;
 
+import com.badlogic.gdx.utils.Array;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
-import java.util.ArrayList;
-
-public class Drafts extends ArrayList<Draft> {
+public class Drafts extends Array<Draft> {
     private static final String sKlasse = "Drafts";
-    private static final long serialVersionUID = 1L;
+    // private static final long serialVersionUID = 1L;
     private boolean isCropped = false;
     private int currentCroppedLength = -1;
 
     public Drafts() {
         IChanged settingsChangedListener = () -> {
             synchronized (Drafts.this) {
-                Drafts.this.clear();
+                clear();
                 isCropped = false;
                 currentCroppedLength = -1;
             }
@@ -94,8 +93,8 @@ public class Drafts extends ArrayList<Draft> {
                     reader.moveToFirst();
                     while (!reader.isAfterLast()) {
                         Draft fne = new Draft(reader);
-                        if (!this.contains(fne)) {
-                            this.add(fne);
+                        if (!contains(fne, false)) {
+                            add(fne);
                         }
                         reader.moveToNext();
                     }
@@ -107,10 +106,10 @@ public class Drafts extends ArrayList<Draft> {
 
             // check Cropped
             if (maybeCropped) {
-                if (this.size() > currentCroppedLength) {
+                if (size > currentCroppedLength) {
                     isCropped = true;
                     // remove last item
-                    this.remove(this.size() - 1);
+                    removeIndex(size - 1);
                 } else {
                     isCropped = false;
                 }
@@ -118,7 +117,7 @@ public class Drafts extends ArrayList<Draft> {
         }
     }
 
-    public void deleteDraftByCacheId(long cacheId, GeoCacheLogType type) {
+    public void deleteDraftByCacheId(long cacheId, LogType type) {
         synchronized (this) {
             int foundNumber = 0;
             Draft fne = null;
@@ -129,16 +128,16 @@ public class Drafts extends ArrayList<Draft> {
                 }
             }
             if (fne != null) {
-                if (fne.type == GeoCacheLogType.found)
+                if (fne.type == LogType.found)
                     foundNumber = fne.foundNumber;
-                this.remove(fne);
+                removeValue(fne, true); // fne is an object of this (list)
                 fne.deleteFromDatabase();
             }
             decreaseFoundNumber(foundNumber);
         }
     }
 
-    public void deleteDraft(Draft fnToDelete) {
+    public void deleteDraftById(Draft fnToDelete) {
         synchronized (this) {
             int foundNumber = 0;
             Draft fne = null;
@@ -148,9 +147,9 @@ public class Drafts extends ArrayList<Draft> {
                 }
             }
             if (fne != null) {
-                if (fne.type == GeoCacheLogType.found)
+                if (fne.type == LogType.found)
                     foundNumber = fne.foundNumber;
-                this.remove(fne);
+                removeValue(fne, true); // fne is an object of this (list)
                 fne.deleteFromDatabase();
             }
             decreaseFoundNumber(foundNumber);
@@ -161,24 +160,13 @@ public class Drafts extends ArrayList<Draft> {
         if (deletedFoundNumber > 0) {
             // alle FoundNumbers anpassen, die größer sind
             for (Draft fn : this) {
-                if ((fn.type == GeoCacheLogType.found) && (fn.foundNumber > deletedFoundNumber)) {
+                if ((fn.type == LogType.found) && (fn.foundNumber > deletedFoundNumber)) {
                     int oldFoundNumber = fn.foundNumber;
                     fn.foundNumber--;
                     fn.comment = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.foundNumber);
-                    fn.fillType();
                     fn.updateDatabase();
                 }
             }
-        }
-    }
-
-    public boolean contains(Draft fne) {
-        synchronized (this) {
-            for (Draft item : this) {
-                if (fne.equals(item))
-                    return true;
-            }
-            return false;
         }
     }
 

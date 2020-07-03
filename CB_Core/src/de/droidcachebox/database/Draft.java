@@ -20,14 +20,12 @@ public class Draft implements Serializable {
     public String gcCode = "";
     public String GcId = ""; // (mis)used for LogId (or ReferenceCode)
     public Date timestamp;
-    public String typeString = "";
-    public GeoCacheLogType type;
+    public LogType type;
     public int cacheType;
     public String comment = "";
     public int foundNumber;
     public String CacheName = "";
     public String CacheUrl = "";
-    public int typeIcon;
     public boolean uploaded;
     public int gc_Vote;
     public boolean isTbDraft = false;
@@ -35,7 +33,7 @@ public class Draft implements Serializable {
     public String TbIconUrl = "";
     public String TravelBugCode = "";
     public String TrackingNumber = "";
-    public boolean isDirectLog = false;
+    public boolean isDirectLog = false; // obsolete
 
     public Draft(Draft fne) {
         Id = fne.Id;
@@ -43,14 +41,12 @@ public class Draft implements Serializable {
         gcCode = fne.gcCode;
         GcId = fne.GcId;
         timestamp = fne.timestamp;
-        typeString = fne.typeString;
         type = fne.type;
         cacheType = fne.cacheType;
         comment = fne.comment;
         foundNumber = fne.foundNumber;
         CacheName = fne.CacheName;
         CacheUrl = fne.CacheUrl;
-        typeIcon = fne.typeIcon;
         uploaded = fne.uploaded;
         gc_Vote = fne.gc_Vote;
         isTbDraft = fne.isTbDraft;
@@ -61,10 +57,9 @@ public class Draft implements Serializable {
         isDirectLog = fne.isDirectLog;
     }
 
-    public Draft(GeoCacheLogType logType) {
+    public Draft(LogType logType) {
         Id = -1;
         type = logType;
-        fillType();
     }
 
     Draft(CoreCursor reader) {
@@ -80,7 +75,7 @@ public class Draft implements Serializable {
         }
         if (timestamp == null)
             timestamp = new Date();
-        type = GeoCacheLogType.GC2CB_LogType(reader.getInt(5));
+        type = LogType.GC2CB_LogType(reader.getInt(5));
         foundNumber = reader.getInt(6);
         comment = reader.getString(7);
         Id = reader.getLong(8);
@@ -93,36 +88,26 @@ public class Draft implements Serializable {
         TravelBugCode = reader.getString(15);
         TrackingNumber = reader.getString(16);
         isDirectLog = reader.getInt(17) != 0;
-        fillType();
         GcId = reader.getString("GcId");
         if (GcId == null) GcId = "";
     }
 
-    public void fillType() {
-        typeIcon = type.getIconID();
-
-        if (type == GeoCacheLogType.found || type == GeoCacheLogType.attended || type == GeoCacheLogType.webcam_photo_taken) {
-            typeString = "#" + foundNumber + " - Found it!";
-            if (cacheType == GeoCacheType.Event.ordinal() //
-                    || cacheType == GeoCacheType.MegaEvent.ordinal() //
-                    || cacheType == GeoCacheType.Giga.ordinal() //
-                    || cacheType == GeoCacheType.CITO.ordinal())
-                typeString = "Attended";
-            if (cacheType == GeoCacheType.Camera.ordinal())
-                typeString = "Webcam Photo Taken";
+    public String getTypeString() {
+        switch (type) {
+            case found:
+                return "#" + foundNumber + " - Found it!";
+            case attended:
+                return "Attended";
+            case webcam_photo_taken:
+                return "Webcam Photo Taken";
+            case didnt_find:
+                return "Did not find!";
+            case needs_maintenance:
+                return "Needs Maintenance";
+            case note:
+                return "Write Note";
         }
-
-        if (type == GeoCacheLogType.didnt_find) {
-            typeString = "Did not find!";
-        }
-
-        if (type == GeoCacheLogType.needs_maintenance) {
-            typeString = "Needs Maintenance";
-        }
-
-        if (type == GeoCacheLogType.note) {
-            typeString = "Write Note";
-        }
+        return "";
     }
 
     public void writeToDatabase() {
@@ -226,8 +211,6 @@ public class Draft implements Serializable {
             ret = false;
         if (timestamp != fne.timestamp)
             ret = false;
-        if (!typeString.equals(fne.typeString))
-            ret = false;
         if (type != fne.type)
             ret = false;
         if (cacheType != fne.cacheType)
@@ -240,8 +223,6 @@ public class Draft implements Serializable {
             ret = false;
         if (!CacheUrl.equals(fne.CacheUrl))
             ret = false;
-        if (typeIcon != fne.typeIcon)
-            ret = false;
         if (uploaded != fne.uploaded)
             ret = false;
         if (gc_Vote != fne.gc_Vote)
@@ -251,8 +232,6 @@ public class Draft implements Serializable {
         if (!TravelBugCode.equals(fne.TravelBugCode))
             ret = false;
         if (!TrackingNumber.equals(fne.TrackingNumber))
-            ret = false;
-        if (isDirectLog != fne.isDirectLog)
             ret = false;
 
         return ret;

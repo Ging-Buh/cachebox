@@ -224,7 +224,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                     for (int i = 0; i < 5; i++) {
                         last5Logs[i].setText(" ");
                         if (i < logEntries.size()) {
-                            switch (logEntries.get(i).geoCacheLogType) {
+                            switch (logEntries.get(i).logType) {
                                 case found:
                                 case owner_maintenance:
                                     last5Logs[i].setBackground(green);

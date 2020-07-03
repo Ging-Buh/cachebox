@@ -179,17 +179,17 @@ public class TrackableListView extends V_ListView {
         cm.addMenuItem("RefreshInventory", null, this::refreshTbList);
         cm.addMenuItem("all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), GeoCacheLogType.CB_LogType2GC(GeoCacheLogType.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_visit", "", Sprites.getSprite(IconName.TBVISIT.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), GeoCacheLogType.CB_LogType2GC(GeoCacheLogType.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_dropped", "", Sprites.getSprite(IconName.TBDROP.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), GeoCacheLogType.CB_LogType2GC(GeoCacheLogType.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
             refreshTbList();
             return true;
         });

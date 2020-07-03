@@ -1260,7 +1260,7 @@ public class GPXFileImporter {
                     }
 
                     if (values.containsKey("cache_log_" + String.valueOf(i) + "_type")) {
-                        log.geoCacheLogType = GeoCacheLogType.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
+                        log.logType = LogType.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
                     }
 
                     if (log != null) {

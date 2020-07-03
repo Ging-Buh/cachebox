@@ -15,7 +15,7 @@ public class LogEntry implements Serializable {
     /**
      * Logtyp, z.B. "Found it!"
      */
-    public GeoCacheLogType geoCacheLogType;
+    public LogType logType;
 
     /**
      * Geschriebener Text
@@ -39,7 +39,7 @@ public class LogEntry implements Serializable {
 
     public void clear() {
         finder = "";
-        geoCacheLogType = null;
+        logType = null;
         logText = "";
         logDate = new Date(0);
         cacheId = -1;
@@ -48,7 +48,7 @@ public class LogEntry implements Serializable {
 
     public void dispose() {
         finder = null;
-        geoCacheLogType = null;
+        logType = null;
         logText = null;
         logDate = null;
     }
