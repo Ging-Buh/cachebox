@@ -307,7 +307,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         innerLeft = margin;
 
-        checkImportPQfromGC = new CB_CheckBox("PQ");
+        checkImportPQfromGC = new CB_CheckBox();
         checkImportPQfromGC.setX(innerLeft);
         checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
         if (!PQ_LINE_ACTIVE) {
@@ -331,7 +331,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         innerLeft = margin;
 
-        checkImportFromCBServer = new CB_CheckBox("CBServer");
+        checkImportFromCBServer = new CB_CheckBox();
         checkImportFromCBServer.setX(innerLeft);
         checkImportFromCBServer.setY(innerHeight - checkImportFromCBServer.getHeight());
         if (!CBS_LINE_ACTIVE)
@@ -402,7 +402,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createGpxLine() {
-        checkBoxImportGPX = new CB_CheckBox("GPX");
+        checkBoxImportGPX = new CB_CheckBox();
         checkBoxImportGPX.setX(innerLeft);
         checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
 
@@ -433,7 +433,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private void createGcVoteLine() {
         if (Config.GcVotePassword.getValue().length() == 0)
             GCV_LINE_ACTIVE = false;
-        checkBoxGcVote = new CB_CheckBox("GcVote");
+        checkBoxGcVote = new CB_CheckBox();
         checkBoxGcVote.setX(innerLeft);
         checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
         if (!GCV_LINE_ACTIVE) {
@@ -454,7 +454,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     private void createImageLine() {
         // Preload Description Images
-        checkBoxPreloadImages = new CB_CheckBox("Image");
+        checkBoxPreloadImages = new CB_CheckBox();
         checkBoxPreloadImages.setX(innerLeft);
         checkBoxPreloadImages.setY(checkBoxGcVote.getY() - margin - checkBoxPreloadImages.getHeight());
 
@@ -467,7 +467,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             scrollBox.addChild(lblImage);
         }
         // Preload Spoiler Images
-        checkBoxPreloadSpoiler = new CB_CheckBox("Image");
+        checkBoxPreloadSpoiler = new CB_CheckBox();
         checkBoxPreloadSpoiler.setX(innerLeft);
         checkBoxPreloadSpoiler.setY(checkBoxPreloadImages.getY() - margin - checkBoxPreloadSpoiler.getHeight());
 
@@ -486,7 +486,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createMapLine() {
-        checkBoxImportMaps = new CB_CheckBox("Image");
+        checkBoxImportMaps = new CB_CheckBox();
         checkBoxImportMaps.setX(innerLeft);
         checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
 
@@ -500,7 +500,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createLogLine() {
-        checkBoxCleanLogs = new CB_CheckBox("Image");
+        checkBoxCleanLogs = new CB_CheckBox();
         checkBoxCleanLogs.setX(innerLeft);
 
         float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
@@ -599,7 +599,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createCompactDBLine() {
-        checkBoxCompactDB = new CB_CheckBox("Compact");
+        checkBoxCompactDB = new CB_CheckBox();
         checkBoxCompactDB.setX(innerLeft);
         checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
@@ -1227,7 +1227,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
             // lblInfo.setText("---");
 
-            CB_CheckBox chk = new CB_CheckBox("");
+            CB_CheckBox chk = new CB_CheckBox();
             chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
             chk.setY(this.getHalfHeight() - chk.getHalfHeight());
             chk.setChecked(false);
@@ -1260,7 +1260,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             String Count = "\n" + Translation.get("Count") + ": " + pq.cacheCount;
             lblInfo.setText(dateString + Count); // + "  " + FileSize
 
-            CB_CheckBox chk = new CB_CheckBox("");
+            CB_CheckBox chk = new CB_CheckBox();
             chk.setRec(chk.scaleCenter(0.6f));
             chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
             chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());

@@ -97,7 +97,7 @@ public class Import_GSAK extends ActivityBase {
         btnSelectImagesPath = new CB_Button(Translation.get("GSAKButtonSelectImagesPath"));
         box.addLast(btnSelectImagesPath, 0.5f);
 
-        chkLogImages = new CB_CheckBox("GSAKwithLogImages");
+        chkLogImages = new CB_CheckBox();
         box.addNext(chkLogImages, FIXED);
         CB_Label lblLogImages = new CB_Label(Translation.get("GSAKwithLogImages"));
         box.addLast(lblLogImages);

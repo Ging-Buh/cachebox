@@ -10,7 +10,7 @@ public class SettingsItem_Bool extends SettingsItemBase {
     public SettingsItem_Bool(CB_RectF rec, int Index, String Name) {
         super(rec, Index, Name);
 
-        Check = new CB_CheckBox("");
+        Check = new CB_CheckBox();
         Check.setX(this.getWidth() - rightBorder - Check.getWidth());
         Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 

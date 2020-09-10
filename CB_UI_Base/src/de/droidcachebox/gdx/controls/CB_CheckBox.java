@@ -13,13 +13,13 @@ public class CB_CheckBox extends CB_Button {
     protected boolean isChk = false;
     protected OnCheckChangedListener changeListener;
 
-    public CB_CheckBox(String name) {
-        super(new CB_RectF(UiSizes.getInstance().getChkBoxSize()), name);
+    public CB_CheckBox() {
+        super(new CB_RectF(UiSizes.getInstance().getChkBoxSize()), "CB_CheckBox");
         this.setClickable(true);
     }
 
-    public CB_CheckBox(CB_RectF rec, String name) {
-        super(rec, name);
+    public CB_CheckBox(CB_RectF rec) {
+        super(rec, "CB_CheckBox");
         this.setClickable(true);
     }
 
@@ -131,11 +131,11 @@ public class CB_CheckBox extends CB_Button {
     /**
      * Interface definition for a callback to be invoked when the checked state of a compound button changed.
      */
-    public static interface OnCheckChangedListener {
+    public interface OnCheckChangedListener {
         /**
          * Called when the checked state of a compound button has changed.
          *
-         * @param buttonView The compound button view whose state has changed.
+         * @param view The compound button view whose state has changed.
          * @param isChecked  The new checked state of buttonView.
          */
         void onCheckedChanged(CB_CheckBox view, boolean isChecked);

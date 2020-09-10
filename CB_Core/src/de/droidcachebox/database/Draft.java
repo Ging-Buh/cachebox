@@ -18,7 +18,7 @@ public class Draft implements Serializable {
     public long Id;
     public long CacheId;
     public String gcCode = "";
-    public String GcId = ""; // (mis)used for LogId (or ReferenceCode)
+    public String gcLogReference = ""; // (mis)used for LogId (or ReferenceCode)
     public Date timestamp;
     public LogType type;
     public int cacheType;
@@ -34,12 +34,13 @@ public class Draft implements Serializable {
     public String TravelBugCode = "";
     public String TrackingNumber = "";
     public boolean isDirectLog = false; // obsolete
+    public boolean usedFavoritePoint;
 
     public Draft(Draft fne) {
         Id = fne.Id;
         CacheId = fne.CacheId;
         gcCode = fne.gcCode;
-        GcId = fne.GcId;
+        gcLogReference = fne.gcLogReference;
         timestamp = fne.timestamp;
         type = fne.type;
         cacheType = fne.cacheType;
@@ -88,8 +89,8 @@ public class Draft implements Serializable {
         TravelBugCode = reader.getString(15);
         TrackingNumber = reader.getString(16);
         isDirectLog = reader.getInt(17) != 0;
-        GcId = reader.getString("GcId");
-        if (GcId == null) GcId = "";
+        gcLogReference = reader.getString("GcId");
+        if (gcLogReference == null) gcLogReference = "";
     }
 
     public String getTypeString() {
@@ -114,7 +115,7 @@ public class Draft implements Serializable {
         Parameters args = new Parameters();
         args.put("CacheId", CacheId);
         args.put("GcCode", gcCode);
-        args.put("GcId", GcId);
+        args.put("GcId", gcLogReference);
         args.put("Name", CacheName);
         args.put("CacheType", cacheType);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
@@ -165,8 +166,8 @@ public class Draft implements Serializable {
         Parameters args = new Parameters();
         args.put("cacheid", CacheId);
         args.put("gccode", gcCode);
-        if (GcId == null) GcId = "";
-        args.put("GcId", GcId);
+        if (gcLogReference == null) gcLogReference = "";
+        args.put("GcId", gcLogReference);
         args.put("name", CacheName);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String stimestamp = iso8601Format.format(timestamp);
@@ -199,8 +200,8 @@ public class Draft implements Serializable {
 
     public boolean equals(Draft fne) {
         boolean ret = true;
-        if (GcId != null && fne.GcId != null) {
-            if (!GcId.equals(fne.GcId))
+        if (gcLogReference != null && fne.gcLogReference != null) {
+            if (!gcLogReference.equals(fne.gcLogReference))
                 ret = false;
         }
         if (Id != fne.Id)

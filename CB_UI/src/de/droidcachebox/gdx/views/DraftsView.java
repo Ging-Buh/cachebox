@@ -97,7 +97,7 @@ public class DraftsView extends V_ListView {
 
     public static void createGeoCacheVisits() {
         Drafts drafts = new Drafts();
-        drafts.loadDrafts("", "Timestamp ASC", LoadingType.Loadall);
+        drafts.loadDrafts(LoadingType.LoadAscending);
 
         AbstractFile txtAbstractFile = FileFactory.createFile(Config.DraftsGarminPath.getValue());
         FileOutputStream writer;
@@ -175,15 +175,15 @@ public class DraftsView extends V_ListView {
             createGeoCacheVisits();
 
             if (saveMode == EditDraft.SaveMode.Log)
-                draftsViewAdapter.logOnline(currentDraft, true);
+                draftsViewAdapter.uploadDraftOrLog(currentDraft, true);
             else if (saveMode == EditDraft.SaveMode.Draft)
-                draftsViewAdapter.logOnline(currentDraft, false);
+                draftsViewAdapter.uploadDraftOrLog(currentDraft, false);
 
             // Reload List
             if (isNewDraft) {
-                drafts.loadDrafts("", LoadingType.LoadNew);
+                drafts.loadDrafts(LoadingType.LoadNew);
             } else {
-                drafts.loadDrafts("", LoadingType.loadNewLastLength);
+                drafts.loadDrafts(LoadingType.LoadNewLastLength);
             }
         }
 
@@ -223,8 +223,7 @@ public class DraftsView extends V_ListView {
                     GlobalCore.getSelectedCache().setFound(true);
                     CacheDAO cacheDAO = new CacheDAO();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                    QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(true);
-                    pop.show(PopUp_Base.SHOW_TIME_SHORT);
+                    new QuickDraftFeedbackPopUp(true).show(PopUp_Base.SHOW_TIME_SHORT);
                     PlatformUIBase.vibrate();
                 }
             } else if (type == LogType.didnt_find) {
@@ -233,8 +232,7 @@ public class DraftsView extends V_ListView {
                     GlobalCore.getSelectedCache().setFound(false);
                     CacheDAO cacheDAO = new CacheDAO();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-                    QuickDraftFeedbackPopUp pop2 = new QuickDraftFeedbackPopUp(false);
-                    pop2.show(PopUp_Base.SHOW_TIME_SHORT);
+                    new QuickDraftFeedbackPopUp(false).show(PopUp_Base.SHOW_TIME_SHORT);
                     PlatformUIBase.vibrate();
                 }
             }
@@ -245,7 +243,7 @@ public class DraftsView extends V_ListView {
         }
 
         Drafts tmpDrafts = new Drafts();
-        tmpDrafts.loadDrafts("", LoadingType.Loadall);
+        tmpDrafts.loadDrafts(LoadingType.Loadall);
 
         Draft newDraft = null;
         if ((type == LogType.found) //
@@ -365,6 +363,7 @@ public class DraftsView extends V_ListView {
 
     @Override
     public void onShow() {
+        drafts.addSettingsChangedHandler();
         reloadDrafts();
         if (firstShow) {
             firstShow = false;
@@ -380,42 +379,31 @@ public class DraftsView extends V_ListView {
     @Override
     public void onHide() {
         firstShow = true;
+        drafts.removeSettingsChangedHandler();
     }
 
     private void reloadDrafts() {
-        drafts.loadDrafts("", LoadingType.loadNewLastLength);
+        drafts.loadDrafts(LoadingType.LoadNewLastLength);
         setAdapter(null);
         draftsViewAdapter = new DraftsViewAdapter();
         setAdapter(draftsViewAdapter);
     }
 
     public Menu getContextMenu() {
-
-        Cache cache = GlobalCore.getSelectedCache();
-
         final Menu cm = new Menu("DraftsContextMenuTitle");
-
+        Cache cache = GlobalCore.getSelectedCache();
         if (cache != null) {
-
             // Found je nach CacheType
             if (cache.getGeoCacheType() == null)
                 return null;
-            switch (cache.getGeoCacheType()) {
-                case Event:
-                case CITO:
-                case MegaEvent:
-                case Giga:
-                    cm.addMenuItem("will-attended", Sprites.getSprite("log8icon"), () -> addNewDraft(LogType.will_attend));
-                    cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> addNewDraft(LogType.attended));
-                    break;
-                case Camera:
-                    cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> addNewDraft(LogType.webcam_photo_taken));
-                    break;
-                default:
-                    cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> addNewDraft(LogType.found));
-                    break;
+            if (cache.isEvent()) {
+                cm.addMenuItem("will-attended", Sprites.getSprite("log8icon"), () -> addNewDraft(LogType.will_attend));
+                cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> addNewDraft(LogType.attended));
+            } else if (cache.getGeoCacheType() == GeoCacheType.Camera) {
+                cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> addNewDraft(LogType.webcam_photo_taken));
+            } else {
+                cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> addNewDraft(LogType.found));
             }
-
             cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> addNewDraft(LogType.didnt_find));
         }
 
@@ -452,7 +440,7 @@ public class DraftsView extends V_ListView {
                     // Yes button clicked
                     // delete all Drafts
                     // reload all Drafts!
-                    drafts.loadDrafts("", LoadingType.Loadall);
+                    drafts.loadDrafts(LoadingType.Loadall);
 
                     for (Draft entry : drafts) {
                         entry.deleteFromDatabase();
@@ -538,7 +526,7 @@ public class DraftsView extends V_ListView {
             if (fne == null) {
                 v.setClickHandler((v14, x, y, pointer, button) -> {
                     // Load More
-                    drafts.loadDrafts("", LoadingType.loadMore);
+                    drafts.loadDrafts(LoadingType.LoadMore);
                     notifyDataSetChanged();
                     return true;
                 });
@@ -558,14 +546,14 @@ public class DraftsView extends V_ListView {
             draftViewItem.headerClicked = false;
             Menu cm = new Menu("DraftItemMenuTitle");
             cm.addMenuItem("edit", null, this::editDraft);
-            if (currentDraft.GcId != null) {
-                if (currentDraft.GcId.startsWith("GL")) {
+            if (currentDraft.gcLogReference != null) {
+                if (currentDraft.gcLogReference.startsWith("GL")) {
                     cm.addMenuItem("uploadLogImage", Sprites.getSprite(IconName.imagesIcon.name()), this::uploadLogImage);
-                    cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + currentDraft.GcId));
+                    cm.addMenuItem("BrowseLog", null, () -> PlatformUIBase.callUrl("https://coord.info/" + currentDraft.gcLogReference));
                 }
             }
-            cm.addMenuItem("uploadAsDraft", UploadDrafts.getInstance().getIcon(), () -> logOnline(currentDraft, false));
-            cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> logOnline(currentDraft, true));
+            cm.addMenuItem("uploadAsDraft", UploadDrafts.getInstance().getIcon(), () -> uploadDraftOrLog(currentDraft, false));
+            cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> uploadDraftOrLog(currentDraft, true));
             Sprite icon;
             if (currentDraft.isTbDraft) {
                 // Sprite from url ?  draft.TbIconUrl
@@ -600,7 +588,7 @@ public class DraftsView extends V_ListView {
                         Config.AcceptChanges();
                         try {
                             String image = Base64.encodeBytes(WebbUtils.readBytes(abstractFile.getFileInputStream()));
-                            GroundspeakAPI.uploadLogImage(currentDraft.GcId, image, description);
+                            GroundspeakAPI.uploadLogImage(currentDraft.gcLogReference, image, description);
                             if (GroundspeakAPI.APIError == OK) {
                                 MessageBox.show(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
                             } else {
@@ -613,7 +601,7 @@ public class DraftsView extends V_ListView {
             }.show()).show();
         }
 
-        private void logOnline(final Draft draft, final boolean directLog) {
+        private void uploadDraftOrLog(final Draft draft, final boolean isLog) {
             wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
 
             }, new ICancelRunnable() {
@@ -634,11 +622,11 @@ public class DraftsView extends V_ListView {
                         }
                     }
 
-                    if (OK == GroundspeakAPI.UploadDraftOrLog(draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment, directLog)) {
+                    if (OK == GroundspeakAPI.uploadDraftOrLog(draft, isLog)) {
                         // after direct Log change state to uploaded
                         draft.uploaded = true;
-                        if (directLog && !draft.isTbDraft) {
-                            draft.GcId = GroundspeakAPI.logReferenceCode;
+                        if (isLog && !draft.isTbDraft) {
+                            draft.gcLogReference = GroundspeakAPI.logReferenceCode;
                             LogListView.getInstance().resetIsInitialized(); // if own log is written !
                         }
                         addOrChangeDraft(draft, false, EditDraft.SaveMode.LocalUpdate);
@@ -647,7 +635,7 @@ public class DraftsView extends V_ListView {
                         MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
                             switch (which) {
                                 case MessageBox.BTN_RIGHT_NEGATIVE:
-                                    logOnline(draft, true);
+                                    uploadDraftOrLog(draft, true);
                                     // addOrChangeDraft(draft, isNewDraft, true);// try again
                                     break;
                                 case MessageBox.BTN_MIDDLE_NEUTRAL:
@@ -655,7 +643,7 @@ public class DraftsView extends V_ListView {
                                 case MessageBox.BTN_LEFT_POSITIVE:
                                     // is alread in local database
                                     // addOrChangeDraft(draft, isNewDraft, false);// create Draft
-                                    logOnline(draft, false); // or nothing
+                                    uploadDraftOrLog(draft, false); // or nothing
                             }
                             return true;
                         });
@@ -746,7 +734,6 @@ public class DraftsView extends V_ListView {
 
             MessageBox.show(message, Translation.get("deleteDraft"), MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
                 if (which == MessageBox.BTN_LEFT_POSITIVE) {
-                    // delete aktDraft
                     if (cache != null) {
                         if (cache.isFound()) {
                             cache.setFound(false);
@@ -766,7 +753,7 @@ public class DraftsView extends V_ListView {
                     }
                     drafts.deleteDraftById(currentDraft);
                     currentDraft = null;
-                    drafts.loadDrafts("", LoadingType.loadNewLastLength);
+                    drafts.loadDrafts(LoadingType.LoadNewLastLength);
                     draftsView.setAdapter(null);
                     draftsViewAdapter = new DraftsViewAdapter();
                     draftsView.setAdapter(draftsViewAdapter);

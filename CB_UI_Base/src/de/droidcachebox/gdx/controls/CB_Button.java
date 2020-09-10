@@ -288,7 +288,6 @@ public class CB_Button extends CB_View_Base {
 
     public void setEnable(boolean value) {
         isDisabled = !value;
-
     }
 
     @Override

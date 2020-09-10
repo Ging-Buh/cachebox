@@ -723,7 +723,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             public void keyTyped(EditTextField textField, char key) {
             }
         });
-        cbFormulaAsText = new CB_CheckBox("AsText");
+        cbFormulaAsText = new CB_CheckBox();
         // cbFormulaAsText.setText("Als Text in \"\" eintragen");
         cbFormulaAsText.setChecked(asText);
         lFormulaAsText = new CB_Label("Als Text in \"\" eintragen");
@@ -999,7 +999,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         int i = 0;
         for (String variable : solver.Variablen.keySet()) {
             String value = solver.Variablen.get(variable);
-            cbVariables[i] = new CB_CheckBox(variable);
+            cbVariables[i] = new CB_CheckBox();
             cbVariables[i].setData(variable);
             scrollBox.addChild(cbVariables[i]);
             lVariables[i] = new CB_Label(variable + " (" + value + ")");
@@ -1089,7 +1089,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
                 description = "$" + aktCache.getGeoCacheCode() + " - " + aktCache.getGeoCacheName();
             }
 
-            cbWaypoints[i] = new CB_CheckBox(data);
+            cbWaypoints[i] = new CB_CheckBox();
             cbWaypoints[i].setData(data);
             scrollBox.addChild(cbWaypoints[i]);
             lWaypoints[i] = new CB_Label(description);

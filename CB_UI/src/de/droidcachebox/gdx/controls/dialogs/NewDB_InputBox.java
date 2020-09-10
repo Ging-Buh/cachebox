@@ -25,7 +25,7 @@ public class NewDB_InputBox extends MessageBox {
         NewDB_InputBox msgBox = new NewDB_InputBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
-        final CB_CheckBox chk = new CB_CheckBox("");
+        final CB_CheckBox chk = new CB_CheckBox();
         msgBox.setMsgBoxClickListener((which, data) -> {
             Listener.onClick(which, chk.isChecked());
             return true;

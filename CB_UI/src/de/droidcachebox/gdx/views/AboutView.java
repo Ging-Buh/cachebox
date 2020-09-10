@@ -51,7 +51,7 @@ import static de.droidcachebox.PlatformUIBase.hideForDialog;
 import static de.droidcachebox.utils.Config_Core.br;
 
 public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
-    private static AboutView that;
+    private static AboutView aboutView;
     private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
     private Image CB_Logo;
     private float margin;
@@ -66,8 +66,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     }
 
     public static AboutView getInstance() {
-        if (that == null) that = new AboutView();
-        return that;
+        if (aboutView == null) aboutView = new AboutView();
+        return aboutView;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
         positionChanged();
 
-        if (!this.isInitialized)
+        if (!isInitialized)
             initialize();
 
         if (chart != null)
@@ -105,35 +105,35 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     protected void render(Batch batch) {
         super.render(batch);
 
-        if (this.getBackground() == null)
+        if (getBackground() == null)
             initialize();
     }
 
     private void createControls() {
-        this.removeChilds();
+        removeChilds();
 
-        if (this.isDisposed())
+        if (isDisposed())
             return;
 
-        this.setBackground(Sprites.aboutback);
+        setBackground(Sprites.aboutback);
         float ref = UiSizes.getInstance().getWindowHeight() / 13f;
         margin = UiSizes.getInstance().getMargin();
-        CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
+        CB_RectF CB_LogoRec = new CB_RectF(getHalfWidth() - (ref * 2.5f), getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
         //Log.debug(log, "CB_Logo" + CB_LogoRec.toString());
         CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
         CB_Logo.setDrawable(new SpriteDrawable(Sprites.getSpriteDrawable("cachebox-logo")));
-        this.addChild(CB_Logo);
+        addChild(CB_Logo);
 
         String VersionString = GlobalCore.getInstance().getVersionString() + br + br + GlobalCore.aboutMsg;
 
         GlyphLayout layout = new GlyphLayout();
         layout.setText(Fonts.getSmall(), VersionString);
 
-        descTextView = new CB_Label(this.name + " descTextView", 0, CB_Logo.getY() - margin - margin - margin - layout.height, this.getWidth(), layout.height + margin);
+        descTextView = new CB_Label(name + " descTextView", 0, CB_Logo.getY() - margin - margin - margin - layout.height, getWidth(), layout.height + margin);
         descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
         descTextView.setWrappedText(VersionString);
-        this.addChild(descTextView);
+        addChild(descTextView);
 
         CachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
         CachesFoundLabel.setWidth(getWidth());
@@ -189,7 +189,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                 return true;
             }
         });
-        this.addChild(CachesFoundLabel);
+        addChild(CachesFoundLabel);
         createTable();
         refreshText();
     }
@@ -229,16 +229,16 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         lblGPS.setPos(margin, lblAccuracy.getMaxY());
 
         // add to Screen
-        this.addChild(lblGPS);
-        this.addChild(lblAccuracy);
-        this.addChild(lblWP);
-        this.addChild(lblCoord);
-        this.addChild(lblCurrent);
+        addChild(lblGPS);
+        addChild(lblAccuracy);
+        addChild(lblWP);
+        addChild(lblCoord);
+        addChild(lblCurrent);
 
         // ##############################
         // create Value Label
         lblRec.setX(lblGPS.getMaxX() + margin);
-        lblRec.setWidth(this.getWidth() - margin - lblGPS.getMaxX());
+        lblRec.setWidth(getWidth() - margin - lblGPS.getMaxX());
 
         Gps = new CB_Label(lblRec);
         Accuracy = new CB_Label(lblRec);
@@ -264,17 +264,17 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         });
 
         // add to Screen
-        this.addChild(Gps);
-        this.addChild(Accuracy);
-        this.addChild(WaypointLabel);
-        this.addChild(CoordLabel);
-        this.addChild(Current);
+        addChild(Gps);
+        addChild(Accuracy);
+        addChild(WaypointLabel);
+        addChild(CoordLabel);
+        addChild(Current);
 
         // create Sat Chart
         float l = margin * 2;
-        chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, this.getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()), "Sat Chart");
+        chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()), "Sat Chart");
         chart.setDrawWithAlpha(true);
-        this.addChild(chart);
+        addChild(chart);
         setYpositions();
     }
 
@@ -292,7 +292,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
     private void setYpositions() {
         if (CB_Logo != null) {
-            CB_Logo.setY(this.getHeight() - (margin * 2) - CB_Logo.getHeight());
+            CB_Logo.setY(getHeight() - (margin * 2) - CB_Logo.getHeight());
             if (descTextView != null) {
                 descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
                 if (CachesFoundLabel != null) {
@@ -383,7 +383,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
     @Override
     public void dispose() {
-        that = null;
+        aboutView = null;
 
         if (descTextView != null)
             descTextView.dispose();

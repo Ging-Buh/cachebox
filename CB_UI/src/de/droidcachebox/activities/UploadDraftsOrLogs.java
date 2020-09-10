@@ -29,7 +29,7 @@ public class UploadDraftsOrLogs {
     public UploadDraftsOrLogs() {
     }
 
-    public void upload(boolean direct) {
+    public void upload(boolean isLog) {
         final AtomicBoolean cancel = new AtomicBoolean(false);
 
         final RunnableReadyHandler uploadDrafts = new RunnableReadyHandler() {
@@ -39,7 +39,7 @@ public class UploadDraftsOrLogs {
                 ProgresssChangedEventList.progressChanged("Upload", "", 0);
 
                 Drafts drafts = new Drafts();
-                drafts.loadDrafts("(Uploaded=0 or Uploaded is null)", Drafts.LoadingType.Loadall);
+                drafts.loadDrafts(Drafts.LoadingType.CanUpload);
 
                 int count = 0;
                 int anzahl = 0;
@@ -79,7 +79,7 @@ public class UploadDraftsOrLogs {
                                     }
                                 }
                             }
-                            result = GroundspeakAPI.UploadDraftOrLog(draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment, direct);
+                            result = GroundspeakAPI.uploadDraftOrLog(draft, isLog);
                         }
 
                         if (result == GroundspeakAPI.ERROR) {
@@ -88,8 +88,8 @@ public class UploadDraftsOrLogs {
                         } else {
                             // set draft as uploaded only when upload was working
                             draft.uploaded = true;
-                            if (direct && !draft.isTbDraft) {
-                                draft.GcId = GroundspeakAPI.logReferenceCode;
+                            if (isLog && !draft.isTbDraft) {
+                                draft.gcLogReference = GroundspeakAPI.logReferenceCode;
                                 LogListView.getInstance().resetIsInitialized(); // if own log is written !
                             }
                             draft.updateDatabase();

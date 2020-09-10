@@ -107,8 +107,8 @@ public class TB_Log extends ActivityBase {
         edit.setWidth(contentBox.getInnerWidth());
         edit.setHeight(contentBox.getHalfHeight());
 
-        rbDirectLog = new RadioButton("direct_Log");
-        rbOnlyDraft = new RadioButton("onlyDraft");
+        rbDirectLog = new RadioButton();
+        rbOnlyDraft = new RadioButton();
 
         rbDirectLog.setText(Translation.get("directLog"));
         rbOnlyDraft.setText(Translation.get("onlyDraft"));

@@ -49,6 +49,7 @@ public class GroundspeakAPI {
     public static String LastAPIError = "";
     public static int APIError;
     public static String logReferenceCode = "";
+    public static boolean cacheIsFavoritedByMe;
     private static UserInfos me;
     private static Webb netz;
     private static long startTs;
@@ -87,6 +88,7 @@ public class GroundspeakAPI {
     public static void setAuthorization() {
         getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getSettingsAccessToken());
         me = null;
+        Log.debug(sKlasse, "Activate AccessToken");
     }
 
     private static boolean retry(Exception ex) {
@@ -489,13 +491,16 @@ public class GroundspeakAPI {
         }
     }
 
-    public static int UploadDraftOrLog(String gcCode, int wptLogTypeId, Date dateLogged, String logText, boolean directLog) {
+    public static int uploadDraftOrLog(Draft draft, boolean isLog) {
+        // String gcCode, int wptLogTypeId, Date dateLogged, String logText,
+        // draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment
+        // draft.gcCode, draft.type.getGcLogTypeId(), draft.timestamp, draft.comment
         logReferenceCode = "";
         if (isAccessTokenInvalid()) return ERROR; // should be checked in advance
 
         try {
-            if (directLog) {
-                if (logText.length() == 0) {
+            if (isLog) {
+                if (draft.comment.length() == 0) {
                     LastAPIError = Translation.get("emptyLog");
                     return ERROR;
                 }
@@ -505,15 +510,16 @@ public class GroundspeakAPI {
                 JSONObject geocacheLog = getNetz()
                         .post(getUrl(1, "geocachelogs") + "?" + WebbUtils.queryString(params))
                         .body(new JSONObject()
-                                .put("geocacheCode", gcCode)
-                                .put("type", wptLogTypeId)
-                                .put("loggedDate", getDate(dateLogged))
-                                .put("text", prepareNote(logText))
+                                .put("geocacheCode", draft.gcCode)
+                                .put("type", draft.type.getGcLogTypeId())
+                                .put("loggedDate", getDate(draft.timestamp))
+                                .put("text", prepareNote(draft.comment))
+                                .put("usedFavoritePoint", draft.usedFavoritePoint)
                         )
                         .ensureSuccess()
                         .asJsonObject()
                         .getBody();
-                long cacheId = Cache.generateCacheId(gcCode);
+                long cacheId = Cache.generateCacheId(draft.gcCode);
                 // Cache cache = new CacheDAO().getFromDbByCacheId(cacheId);
                 LogEntry logEntry = createLog(geocacheLog, cacheId);
                 new LogDAO().WriteToDatabase(logEntry);
@@ -524,20 +530,21 @@ public class GroundspeakAPI {
                 getNetz()
                         .post(getUrl(1, "logdrafts"))
                         .body(new JSONObject()
-                                .put("geocacheCode", gcCode)
-                                .put("logType", wptLogTypeId)
-                                .put("loggedDate", getDate(dateLogged))
-                                .put("note", prepareNote(logText))
+                                .put("geocacheCode", draft.gcCode)
+                                .put("logType", draft.type.getGcLogTypeId())
+                                .put("loggedDate", getDate(draft.timestamp))
+                                .put("note", prepareNote(draft.comment))
+                                .put("useFavoritePoint", draft.usedFavoritePoint)
                         )
                         .ensureSuccess()
                         .asVoid();
             }
             LastAPIError = "";
-            Log.info(sKlasse, "UploadDraftOrLog done: " + gcCode);
+            Log.info(sKlasse, "uploadDraftOrLog done: " + draft.gcCode);
             return OK;
         } catch (Exception e) {
             retry(e);
-            Log.err(sKlasse, "UploadDraftOrLog geocacheCode: " + gcCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError, e);
+            Log.err(sKlasse, "uploadDraftOrLog geocacheCode: " + draft.gcCode + " logType: " + draft.type.getGcLogTypeId() + ".\n" + LastAPIError, e);
             return ERROR;
         }
     }
@@ -966,6 +973,11 @@ public class GroundspeakAPI {
         return me.remaining <= 0 && me.remainingLite <= 0;
     }
 
+    public static boolean hasBeenOnline() {
+        if (me == null) return false;
+        return me.memberShipType != MemberShipType.Unknown;
+    }
+
     public static UserInfos fetchMyUserInfos() {
         if (me == null || me.memberShipType == MemberShipType.Unknown) {
             Log.debug(sKlasse, "fetchMyUserInfos called. Must fetch. Active now: " + active);
@@ -1003,6 +1015,7 @@ public class GroundspeakAPI {
 
     public static void fetchMyCacheLimits() {
         if (System.currentTimeMillis() - lastTimeLimitFetched > 60000) {
+            Log.err(sKlasse, "fetchMyCacheLimits");
             // update one time per minute may be enough
             me = fetchUserInfos("me");
             lastTimeLimitFetched = System.currentTimeMillis();
@@ -1017,7 +1030,7 @@ public class GroundspeakAPI {
             try {
                 JSONObject response = getNetz()
                         .get(getUrl(1, "/users/" + UserCode))
-                        .param("fields", "username,membershipLevelId,findCount,geocacheLimits")
+                        .param("fields", "username,membershipLevelId,findCount,geocacheLimits,favoritePoints")
                         .ensureSuccess()
                         .asJsonObject()
                         .getBody();
@@ -1032,6 +1045,7 @@ public class GroundspeakAPI {
                     ui.remainingTime = geocacheLimits.optInt("fullCallsSecondsToLive", -1);
                     ui.remainingLiteTime = geocacheLimits.optInt("liteCallsSecondsToLive", -1);
                 }
+                ui.favoritePoints = response.optInt("favoritePoints", -1);
                 return ui;
             } catch (Exception ex) {
                 if (!retry(ex)) {
@@ -1227,6 +1241,7 @@ public class GroundspeakAPI {
                         // handled within userdata
                         break;
                     case "userData":
+                        cacheIsFavoritedByMe = false;
                         JSONObject userData = API1Cache.optJSONObject(switchValue);
                         // switch subValue
                         if (userData != null) {
@@ -1262,6 +1277,7 @@ public class GroundspeakAPI {
                                 }
                             }
                             cache.setTmpNote(userData.optString("note", ""));
+                            cacheIsFavoritedByMe = userData.optBoolean("isFavorited", false);
                         } else {
                             cache.setFound(false);
                             JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
@@ -1677,6 +1693,7 @@ public class GroundspeakAPI {
         public int remainingLite;
         public int remainingTime;
         public int remainingLiteTime;
+        public int favoritePoints;
 
         public UserInfos() {
             username = "";
@@ -1705,7 +1722,7 @@ public class GroundspeakAPI {
     public static class Query {
         private static final String LiteFields = "referenceCode,favoritePoints,userData,name,difficulty,terrain,placedDate,geocacheType.id,geocacheSize.id,location,postedCoordinates,status,owner.username,ownerAlias";
         private static final String NotLiteFields = "hints,attributes,longDescription,shortDescription,additionalWaypoints,userWaypoints";
-        private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount,userData.foundDate";
+        private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount,userData.foundDate,userData.isFavorited";
         private final StringBuilder qString;
         private final StringBuilder fieldsString;
         private final StringBuilder expandString;

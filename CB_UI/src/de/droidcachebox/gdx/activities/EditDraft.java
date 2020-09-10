@@ -22,6 +22,7 @@ import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.gdx.*;
@@ -47,21 +48,22 @@ import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 
 public class EditDraft extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static final String sKlasse = "EditDraft";
-    private FilterSetListViewItem GcVote;
-    private CB_Label title;
-    private Draft originalDraft;
-    private Draft currentDraft;
-    private CB_Button btnOK;
-    private CB_Button btnLog;
-    private CB_Button btnDraft;
-    private CB_Button btnCancel;
-    private EditTextField etComment;
-    private Image ivTyp;
-    private CB_Label tvFounds;
-    private EditTextField tvDate;
-    private EditTextField tvTime;
+    private final CB_Button btnLog;
+    private final CB_Button btnDraft;
+    private final CB_Label title;
+    private final CB_CheckBox giveFavoritePoint;
+    private final CB_Button enableGiveFavoritePoint;
+    private final CB_Button btnOK;
+    private final CB_Button btnCancel;
+    private final EditTextField etComment;
+    private final EditTextField tvDate;
+    private final EditTextField tvTime;
+    private final CB_Label tvFinds;
+    private final FilterSetListViewItem gcVoteItem;
     private ScrollBox scrollBox;
     private Box scrollBoxContent;
+    private Draft originalDraft;
+    private Draft currentDraft;
     private boolean isNewDraft;
     private IDraftsView draftsView;
     private final OnClickListener saveLog = new OnClickListener() {
@@ -76,8 +78,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
                     currentDraft.comment = etComment.getText().trim();
 
-                    if (GcVote != null) {
-                        currentDraft.gc_Vote = (int) (GcVote.getValue() * 100);
+                    if (gcVoteItem != null) {
+                        currentDraft.gc_Vote = (int) (gcVoteItem.getValue() * 100);
                     } else currentDraft.gc_Vote = 0;
                 } catch (Exception ex) {
                     Log.err(sKlasse, ex);
@@ -140,31 +142,44 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     };
     private CB_Button btnHow;
 
-    public EditDraft(Draft draft, IDraftsView listener, boolean isNewDraft) {
+    public EditDraft(Draft _draft, IDraftsView _draftsView, boolean _isNewDraft) {
         super("EditDraft");
-        this.isNewDraft = isNewDraft;
-        draftsView = listener;
-        currentDraft = draft;
-        originalDraft = new Draft(draft);
-        initLayoutWithValues();
+        btnOK = new CB_Button(Translation.get("ok"));
+        btnLog = new CB_Button(Translation.get("GCLog"));
+        btnDraft = new CB_Button(Translation.get("GCDraft"));
+        btnCancel = new CB_Button(Translation.get("cancel"));
+        giveFavoritePoint = new CB_CheckBox(); //favoritePoints
+        enableGiveFavoritePoint = new CB_Button(Translation.get("enableGiveFavoritePoint"));
+        etComment = new EditTextField(this, "").setWrapType(WrapType.WRAPPED);
+        tvDate = new EditTextField(this, "");
+        tvTime = new EditTextField(this, "");
+        tvFinds = new CB_Label("");
+        title = new CB_Label("");
+        if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
+            FilterSetListViewItem.FilterSetEntry gcVoteSelection = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, 0, 0.5f);
+            gcVoteItem = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, gcVoteSelection);
+        }
+        else gcVoteItem = null;
+        // == setDraft
+        isNewDraft = _isNewDraft;
+        draftsView = _draftsView;
+        currentDraft = _draft;
+        originalDraft = new Draft(currentDraft);
+        setValues();
     }
 
     public GL_View_Base touchDown(int x, int y, int pointer, int button) {
-        if (GcVote != null && GcVote.getWorldRec().contains(x, y)) {
-            GcVote.onTouchDown(x, y, pointer, button);
-            GcVote.lastItemTouchPos = new Vector2(x - GcVote.getWorldRec().getX(), y - GcVote.getWorldRec().getY());
-            return GcVote;
+        if (gcVoteItem != null && gcVoteItem.getWorldRec().contains(x, y)) {
+            gcVoteItem.onTouchDown(x, y, pointer, button);
+            gcVoteItem.lastItemTouchPos = new Vector2(x - gcVoteItem.getWorldRec().getX(), y - gcVoteItem.getWorldRec().getY());
+            return gcVoteItem;
         } else {
             return super.touchDown(x, y, pointer, button);
         }
     }
 
-    private void initLayoutWithValues() {
+    private void initLayout() {
         initRow(BOTTOMUP);
-        btnOK = new CB_Button(Translation.get("ok"));
-        btnLog = new CB_Button(Translation.get("GCLog"));
-        btnDraft = new CB_Button(Translation.get("GCDraft"));
-        btnCancel = new CB_Button(Translation.get("cancel"));
         addNext(btnOK);
         addNext(btnLog);
         addNext(btnDraft);
@@ -174,10 +189,79 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
         scrollBoxContent.initRow(BOTTOMUP);
-        iniGC_VoteItem();
+        giveFavoritePoint.setChecked(false);
+        if (GroundspeakAPI.hasBeenOnline()) {
+            if (GroundspeakAPI.isPremiumMember()) {
+                /*
+                // for checking we have to expand the database/cache by a field for isFavoritedByMe
+                // will get online and save that temporarily here
+                // get the geocache from cachelist, from database, from groundspeak
+                Cache geoCache = Database.Data.cacheList.getCacheByIdFromCacheList(currentDraft.CacheId);
+                if (geoCache == null) {
+                    // if filtered try db direct
+                    CacheDAO dao = new CacheDAO();
+                    geoCache = dao.getFromDbByCacheId(currentDraft.CacheId);
+                    if (geoCache == null) {
+                        // if not in DB
+                        // ask groundspeak db (geocaching.com)
+                        // or simply try to write
+                    }
+                }
+                 */
+                if (GroundspeakAPI.fetchMyUserInfos().favoritePoints > 0) {
+                    GroundspeakAPI.cacheIsFavoritedByMe = false;
+                    // ArrayList<GroundspeakAPI.GeoCacheRelated> result =
+                    GroundspeakAPI.fetchGeoCache(new GroundspeakAPI.Query().resultForStatusFields(), currentDraft.gcCode);
+                    if (!GroundspeakAPI.cacheIsFavoritedByMe) {
+                        scrollBoxContent.addNext(giveFavoritePoint, FIXED);
+                        CB_Label lblGiveFavoritePoint = new CB_Label(Translation.get("giveFavoritePoint"));
+                        scrollBoxContent.addLast(lblGiveFavoritePoint);
+                    }
+                }
+            }
+        }
+        if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
+            if (!currentDraft.isTbDraft) {
+                gcVoteItem.setValue(currentDraft.gc_Vote / 100.0);
+                scrollBoxContent.addLast(gcVoteItem);
+            }
+        }
+        // enable Favpoint
+        if (!GroundspeakAPI.hasBeenOnline()) {
+            Log.err(sKlasse, "add enable button GiveFavoritePoint");
+            scrollBoxContent.addLast(enableGiveFavoritePoint);
+        }
         initLogText();
-        iniDate();
-        iniTitle();
+        // no of finds
+        if (currentDraft.isTbDraft)
+            tvFinds.setText("");
+        else
+            tvFinds.setText("#" + currentDraft.foundNumber);
+        tvFinds.setFont(Fonts.getBig());
+        tvFinds.setWidth(tvFinds.getTextWidth());
+        scrollBoxContent.addNext(tvFinds, FIXED);
+        // Date Time
+        tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
+        scrollBoxContent.addNext(tvDate, 0.4f);
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        String sDate = iso8601Format.format(currentDraft.timestamp);
+        tvDate.setText(sDate);
+        tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
+        scrollBoxContent.addLast(tvTime, 0.4f);
+        String sTime = new SimpleDateFormat("HH:mm", Locale.US).format(currentDraft.timestamp);
+        tvTime.setText(sTime);
+        // title
+        Image ivTyp = new Image(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), "", false);
+        if (currentDraft.isTbDraft) {
+            ivTyp.setImageURL(currentDraft.TbIconUrl);
+        } else {
+            ivTyp.setDrawable(DraftViewItem.getTypeIcon(currentDraft));
+        }
+        scrollBoxContent.addNext(ivTyp, FIXED);
+        title.setText(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
+        title.setFont(Fonts.getBig());
+        scrollBoxContent.addLast(title);
+
         scrollBoxContent.adjustHeight();
 
         scrollBox.setVirtualHeight(scrollBoxContent.getHeight());
@@ -194,10 +278,17 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
             finish();
             return true;
         });
+        enableGiveFavoritePoint.setClickHandler((view, x, y, pointer, button) -> {
+            GL.that.postAsync(() -> {
+                GroundspeakAPI.fetchMyUserInfos();
+                initLayout();
+            });
+            return true;
+        });
         etComment.showLastLines();
     }
 
-    private void setValuesToLayout() {
+    private void setValues() {
         // initLogText
         etComment.setText(currentDraft.comment);
         // Date
@@ -209,60 +300,19 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         String sTime = iso8601Format.format(currentDraft.timestamp);
         tvTime.setText(sTime);
         // iniOptions();
-        tvFounds.setText("#" + currentDraft.foundNumber);
+        tvFinds.setText("#" + currentDraft.foundNumber);
         if (currentDraft.isTbDraft)
-            tvFounds.setText("");
+            tvFinds.setText("");
         //
         title.setText(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
-    }
-
-    private void iniTitle() {
-        ivTyp = new Image(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), "", false);
-        if (currentDraft.isTbDraft) {
-            ivTyp.setImageURL(currentDraft.TbIconUrl);
-        } else {
-            ivTyp.setDrawable(DraftViewItem.getTypeIcon(currentDraft));
-        }
-        scrollBoxContent.addNext(ivTyp, FIXED);
-
-        title = new CB_Label(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
-        title.setFont(Fonts.getBig());
-        scrollBoxContent.addLast(title);
-    }
-
-    private void iniDate() {
-        tvFounds = new CB_Label("#" + currentDraft.foundNumber);
-        if (currentDraft.isTbDraft)
-            tvFounds.setText("");
-        tvFounds.setFont(Fonts.getBig());
-        tvFounds.setWidth(tvFounds.getTextWidth());
-        scrollBoxContent.addNext(tvFounds, FIXED);
-
-        tvDate = new EditTextField(this, "*" + Translation.get("date"));
-        tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
-        scrollBoxContent.addNext(tvDate, 0.4f);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        String sDate = iso8601Format.format(currentDraft.timestamp);
-        tvDate.setText(sDate);
-        tvTime = new EditTextField(this, "*" + Translation.get("time"));
-        tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
-        scrollBoxContent.addLast(tvTime, 0.4f);
-        String sTime = new SimpleDateFormat("HH:mm", Locale.US).format(currentDraft.timestamp);
-        tvTime.setText(sTime);
-    }
-
-    private void iniGC_VoteItem() {
         if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             if (!currentDraft.isTbDraft) {
-                FilterSetListViewItem.FilterSetEntry tmp = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, currentDraft.gc_Vote / 100.0, 0.5f);
-                GcVote = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, tmp);
-                scrollBoxContent.addLast(GcVote);
+                gcVoteItem.setValue(currentDraft.gc_Vote / 100.0);
             }
         }
     }
 
     private void initLogText() {
-        etComment = new EditTextField(this, "etComment").setWrapType(WrapType.WRAPPED);
         etComment.setHeight(getHeight() / 2.5f);
         scrollBoxContent.addLast(etComment);
         etComment.setText(currentDraft.comment);
@@ -376,23 +426,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     @Override
-    public void dispose() {
-        super.dispose();
-        draftsView = null;
-        currentDraft = null;
-        btnOK = null;
-        btnCancel = null;
-        etComment = null;
-        ivTyp = null;
-        tvFounds = null;
-        tvDate = null;
-        tvTime = null;
-        scrollBox = null;
-        GcVote = null;
-    }
-
-    @Override
     public void onShow() {
+        initLayout();
         KeyboardFocusChangedEventList.add(this);
     }
 
@@ -415,8 +450,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         isNewDraft = _isNewDraft;
         draftsView = _draftsView;
         currentDraft = _draft;
-        setValuesToLayout();
         originalDraft = new Draft(currentDraft);
+        setValues();
     }
 
     public enum SaveMode {Cancel, OnlyLocal, Draft, Log, LocalUpdate}

@@ -276,7 +276,7 @@ public class MessageBox extends Dialog {
         setButtonListener();
 
         if (rememberSetting != null) {
-            chkRemember = new CB_CheckBox("remember");
+            chkRemember = new CB_CheckBox();
             setBorders(chkRemember.getHeight() / 2f, 0);
             setMargins(chkRemember.getHeight() / 2f, 0);
             addNext(chkRemember, chkRemember.getHeight() * 2f / getWidth());

@@ -19,7 +19,7 @@ public class SettingsItem_Audio extends SettingsItemBase {
     public SettingsItem_Audio(CB_RectF rec, int Index, String Name, FloatControl.iValueChanged listener) {
         super(rec, Index, Name);
 
-        Check = new CB_CheckBox("");
+        Check = new CB_CheckBox();
         Check.setX(this.getWidth() - rightBorder - Check.getWidth());
         Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 

@@ -256,9 +256,7 @@ public class SQLiteClass implements SQLiteInterface {
         }
 
         sql.append(" )");
-        PreparedStatement st = null;
-        try {
-            st = myDB.prepareStatement(sql.toString());
+        try (PreparedStatement st = myDB.prepareStatement(sql.toString())) {
 
             int j = 0;
             for (Map.Entry<String, Object> entry : val.entrySet()) {
@@ -271,12 +269,6 @@ public class SQLiteClass implements SQLiteInterface {
 
         } catch (SQLException e) {
             return 0;
-        } finally {
-            try {
-                if (st != null)
-                    st.close();
-            } catch (SQLException ignored) {
-            }
         }
     }
 

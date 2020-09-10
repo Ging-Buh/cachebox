@@ -94,8 +94,7 @@ public class QuickDraft extends AbstractAction {
         // damit die Icons in der Map aktualisiert werden
         CacheListChangedListeners.getInstance().cacheListChanged();
         CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
-        QuickDraftFeedbackPopUp pop = new QuickDraftFeedbackPopUp(found);
-        pop.show(PopUp_Base.SHOW_TIME_SHORT);
+        new QuickDraftFeedbackPopUp(found).show(PopUp_Base.SHOW_TIME_SHORT);
         PlatformUIBase.vibrate();
     }
 

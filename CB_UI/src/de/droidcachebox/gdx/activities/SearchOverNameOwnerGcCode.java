@@ -148,15 +148,15 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void createChkBoxLines() {
-        checkBoxOnlyAvailable = new CB_CheckBox("");
+        checkBoxOnlyAvailable = new CB_CheckBox();
         checkBoxOnlyAvailable.setPos(margin, box.getHeight() - margin - checkBoxOnlyAvailable.getHeight());
         box.addChild(checkBoxOnlyAvailable);
 
-        checkBoxExcludeHides = new CB_CheckBox("");
+        checkBoxExcludeHides = new CB_CheckBox();
         checkBoxExcludeHides.setPos(margin, checkBoxOnlyAvailable.getY() - margin - checkBoxExcludeHides.getHeight());
         box.addChild(checkBoxExcludeHides);
 
-        checkBoxExcludeFounds = new CB_CheckBox("");
+        checkBoxExcludeFounds = new CB_CheckBox();
         checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
         box.addChild(checkBoxExcludeFounds);
 

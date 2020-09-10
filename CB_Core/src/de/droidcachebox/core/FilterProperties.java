@@ -655,18 +655,18 @@ public class FilterProperties {
 
             for (int i = 1; i < attributes.length; i++) {
                 if (attributes[i] != 0) {
-                    if (i < 62) {
+                    if (i > 62) {
+                        long shift = DLong.UL1 << (i - 63);
+                        if (attributes[i] == 1)
+                            andParts.add("(AttributesPositiveHigh &  " + shift + ") > 0");
+                        else
+                            andParts.add("(AttributesNegativeHigh & " + shift + ") > 0");
+                    } else {
                         long shift = DLong.UL1 << (i);
                         if (attributes[i] == 1)
                             andParts.add("(AttributesPositive & " + shift + ") > 0");
                         else
                             andParts.add("(AttributesNegative &  " + shift + ") > 0");
-                    } else {
-                        long shift = DLong.UL1 << (i - 61);
-                        if (attributes[i] == 1)
-                            andParts.add("(AttributesPositiveHigh &  " + shift + ") > 0");
-                        else
-                            andParts.add("(AttributesNegativeHigh & " + shift + ") > 0");
                     }
                 }
             }

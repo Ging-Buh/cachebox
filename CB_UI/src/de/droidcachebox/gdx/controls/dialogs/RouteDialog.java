@@ -64,7 +64,7 @@ public class RouteDialog extends ButtonDialog {
         btFootWay.initialOn_Off_ToggleStates("", "");
 
         Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight()), "");
-        chkTmc = new CB_CheckBox("TMC");
+        chkTmc = new CB_CheckBox();
         box2.addChild(chkTmc);
 
         CB_Label lblPW = new CB_Label(this.name + " lblPW", chkTmc.getMaxX() + margin, 0, innerWidth - chkTmc.getWidth() - margin, chkTmc.getHeight());

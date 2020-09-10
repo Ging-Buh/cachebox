@@ -398,7 +398,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
             // lblInfo.setText("---");
 
-            chk = new CB_CheckBox("");
+            chk = new CB_CheckBox();
             chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
             chk.setY(this.getHalfHeight() - chk.getHalfHeight());
             chk.setChecked(item.toExport);

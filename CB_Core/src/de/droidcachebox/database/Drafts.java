@@ -23,46 +23,60 @@ import de.droidcachebox.utils.log.Log;
 public class Drafts extends Array<Draft> {
     private static final String sKlasse = "Drafts";
     // private static final long serialVersionUID = 1L;
-    private boolean isCropped = false;
-    private int currentCroppedLength = -1;
+    private boolean isCropped;
+    private int currentCroppedLength;
+    private IChanged settingsChangedListener;
 
     public Drafts() {
-        IChanged settingsChangedListener = () -> {
-            synchronized (Drafts.this) {
-                clear();
-                isCropped = false;
-                currentCroppedLength = -1;
-            }
-        };
+        isCropped = false;
+        currentCroppedLength = -1;
+        settingsChangedListener = null;
+    }
+
+    public void addSettingsChangedHandler() {
+        if (settingsChangedListener == null) {
+            settingsChangedListener = () -> {
+                synchronized (Drafts.this) {
+                    clear();
+                    isCropped = false;
+                    currentCroppedLength = -1;
+                }
+            };
+        }
         CB_Core_Settings.DraftsLoadAll.addSettingChangedListener(settingsChangedListener);
         CB_Core_Settings.DraftsLoadLength.addSettingChangedListener(settingsChangedListener);
+    }
+
+    public void removeSettingsChangedHandler() {
+        if (settingsChangedListener != null) {
+            CB_Core_Settings.DraftsLoadAll.removeSettingChangedListener(settingsChangedListener);
+            CB_Core_Settings.DraftsLoadLength.removeSettingChangedListener(settingsChangedListener);
+        }
     }
 
     public boolean isCropped() {
         return isCropped;
     }
 
-    public void loadDrafts(String where, LoadingType loadingType) {
+    public void loadDrafts(LoadingType loadingType) {
+        String where = "";
         synchronized (this) {
-            loadDrafts(where, "", loadingType);
-        }
-    }
-
-    public void loadDrafts(String where, String order, LoadingType loadingType) {
-        synchronized (this) {
-            // List clear?
-            if (loadingType == LoadingType.Loadall || loadingType == LoadingType.LoadNew || loadingType == LoadingType.loadNewLastLength) {
-                this.clear();
+            if (loadingType != LoadingType.LoadMore) clear();
+            if (loadingType == LoadingType.CanUpload) {
+                where = "(Uploaded=0 or Uploaded is null)";
+                loadingType = LoadingType.Loadall;
             }
 
             String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog, GcId from FieldNotes";
             if (!where.equals("")) {
                 sql += " where " + where;
             }
-            if (order.length() == 0) {
+
+            if (loadingType == LoadingType.LoadAscending) {
+                sql += " order by Timestamp ASC"; // FoundNumber DESC,
+            }
+            else {
                 sql += " order by Timestamp DESC"; // FoundNumber DESC,
-            } else {
-                sql += " order by " + order;
             }
 
             // SQLite Limit ?
@@ -74,12 +88,12 @@ public class Drafts extends Array<Draft> {
                         currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
-                    case loadNewLastLength:
+                    case LoadNewLastLength:
                         if (currentCroppedLength == -1)
                             currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
-                    case loadMore:
+                    case LoadMore:
                         int Offset = currentCroppedLength;
                         currentCroppedLength += CB_Core_Settings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (CB_Core_Settings.DraftsLoadLength.getValue() + 1);
@@ -157,6 +171,7 @@ public class Drafts extends Array<Draft> {
     }
 
     private void decreaseFoundNumber(int deletedFoundNumber) {
+        // todo: make sure all drafts are loaded or at least those not already uploaded
         if (deletedFoundNumber > 0) {
             // alle FoundNumbers anpassen, die größer sind
             for (Draft fn : this) {
@@ -171,6 +186,6 @@ public class Drafts extends Array<Draft> {
     }
 
     public enum LoadingType {
-        Loadall, LoadNew, loadMore, loadNewLastLength
+        Loadall, LoadNew, LoadMore, LoadNewLastLength, CanUpload, LoadAscending
     }
 }

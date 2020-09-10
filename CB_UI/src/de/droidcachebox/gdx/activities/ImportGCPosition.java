@@ -202,17 +202,17 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     private void createChkBoxLines() {
 
-        checkBoxOnlyAvailable = new CB_CheckBox("");
+        checkBoxOnlyAvailable = new CB_CheckBox();
         box.addNext(checkBoxOnlyAvailable, FIXED);
         lblOnlyAvailable = new CB_Label(Translation.get("SearchOnlyAvailable"));
         box.addLast(lblOnlyAvailable);
 
-        checkBoxExcludeHides = new CB_CheckBox("");
+        checkBoxExcludeHides = new CB_CheckBox();
         box.addNext(checkBoxExcludeHides, FIXED);
         lblExcludeHides = new CB_Label(Translation.get("SearchWithoutOwns"));
         box.addLast(lblExcludeHides);
 
-        checkBoxExcludeFounds = new CB_CheckBox("");
+        checkBoxExcludeFounds = new CB_CheckBox();
         box.addNext(checkBoxExcludeFounds, FIXED);
         lblExcludeFounds = new CB_Label(Translation.get("SearchWithoutFounds"));
         box.addLast(lblExcludeFounds);

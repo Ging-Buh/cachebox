@@ -152,7 +152,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
         // CheckBox for the selection whether this WP is the startpoint of the cache
         rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UiSizes.getInstance().getButtonHeight() / 2.0f), tvTyp.getY() - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-        cbStartPoint = new CB_CheckBox(rec, "CheckBoxStartPoint");
+        cbStartPoint = new CB_CheckBox(rec);
         cbStartPoint.setVisible(false);
 
         // Spinner initialisieren

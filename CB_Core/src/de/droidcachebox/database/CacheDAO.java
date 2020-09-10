@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class CacheDAO {
     static final String SQL_BY_ID = "from Caches c where id = ?";
@@ -52,36 +53,17 @@ public class CacheDAO {
             cache.setFound(reader.getInt(10) != 0);
             cache.setGeoCacheType(GeoCacheType.values()[reader.getShort(11)]);
             cache.setOwner(reader.getString(12).trim());
-
             cache.numTravelbugs = reader.getInt(13);
             cache.setGeoCacheId(reader.getString(14));
             cache.gcVoteRating = (reader.getShort(15)) / 100.0f;
-            if (reader.getInt(16) > 0)
-                cache.setFavorite(true);
-            else
-                cache.setFavorite(false);
-
-            if (reader.getInt(17) > 0)
-                cache.setHasUserData(true);
-            else
-                cache.setHasUserData(false);
-
-            if (reader.getInt(18) > 0)
-                cache.setListingChanged(true);
-            else
-                cache.setListingChanged(false);
-
-            if (reader.getInt(19) > 0)
-                cache.setHasCorrectedCoordinates(true);
-            else
-                cache.setHasCorrectedCoordinates(false);
-
+            cache.setFavorite(reader.getInt(16) > 0);
+            cache.setHasUserData(reader.getInt(17) > 0);
+            cache.setListingChanged(reader.getInt(18) > 0);
+            cache.setHasCorrectedCoordinates(reader.getInt(19) > 0);
             cache.favPoints = reader.getInt(20);
-
             if (fullDetails) {
                 readDetailFromCursor(reader, cache.getGeoCacheDetail(), fullDetails, withDescription);
             }
-
             return cache;
         } catch (Exception exc) {
             Log.err(log, "Read Cache", "", exc);
@@ -111,7 +93,6 @@ public class CacheDAO {
         } catch (Exception e) {
             if (reader != null)
                 reader.close();
-            e.printStackTrace();
             return false;
         }
     }
@@ -120,7 +101,7 @@ public class CacheDAO {
         // Reader includes Compleate Cache or Details only
         int readerOffset = withReaderOffset ? 21 : 0;
 
-        detail.PlacedBy = reader.getString(readerOffset + 0).trim();
+        detail.PlacedBy = reader.getString(readerOffset).trim();
 
         if (reader.isNull(readerOffset + 5))
             detail.ApiStatus = Cache.NOT_LIVE;
@@ -128,11 +109,10 @@ public class CacheDAO {
             detail.ApiStatus = (byte) reader.getInt(readerOffset + 5);
 
         String sDate = reader.getString(readerOffset + 1);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
             detail.DateHidden = iso8601Format.parse(sDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (ParseException ignored) {
         }
 
         detail.Url = reader.getString(readerOffset + 2).trim();
@@ -324,9 +304,14 @@ public class CacheDAO {
         }
     }
 
+    /**
+     *
+     * @param CacheID used to query the table Caches
+     * @return the geocache without fullDetails and description<br>
+     *         or null if not in table
+     */
     public Cache getFromDbByCacheId(long CacheID) {
         CoreCursor reader = Database.Data.sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
-
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();

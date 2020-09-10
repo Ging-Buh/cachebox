@@ -25,7 +25,7 @@ public class ShowAbout extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(de.droidcachebox.gdx.views.AboutView.getInstance());
+        ViewManager.leftTab.showView(AboutView.getInstance());
     }
 
     @Override

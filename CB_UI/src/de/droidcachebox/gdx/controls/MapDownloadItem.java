@@ -35,7 +35,7 @@ public class MapDownloadItem extends CB_View_Base {
         pathForMapFile = _pathForMapFile;
         margin = UiSizes.getInstance().getMargin();
 
-        checkBoxMap = new CB_CheckBox("Image");
+        checkBoxMap = new CB_CheckBox();
         this.setHeight(checkBoxMap.getHeight() + (margin * 2));
         this.setWidth(ItemWidth);
         checkBoxMap.setX(margin);

@@ -835,7 +835,6 @@ public class Splash extends Activity {
         // copy AssetFolder only if Rev-Number changed, like at new installation
         try {
             if (Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
-
                 String[] exclude = new String[]{"webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", ""};
                 CopyAssetFolder myCopie = new CopyAssetFolder();
                 myCopie.copyAll(getAssets(), Config.workPath, exclude);

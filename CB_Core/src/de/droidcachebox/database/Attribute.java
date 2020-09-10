@@ -72,7 +72,11 @@ public enum Attribute {
     Tree_Climbing, // 64
     Front_Yard, // 65
     Teamwork_Required, // 66
-    GeoTour // 67
+    GeoTour, // 67
+    Challenge,
+    Bonus,
+    Powertrail,
+    Solutionchecker,
     ;
 
     private static HashMap<Attribute, Integer> attributeLookup;
@@ -224,6 +228,16 @@ public enum Attribute {
                 return Teamwork_Required;
             case 67:
                 return GeoTour;
+            case 68:
+                return Default; // nicht bekannt
+            case 69:
+                return Bonus;
+            case 70:
+                return Powertrail;
+            case 71:
+                return Challenge;
+            case 72:
+                return Solutionchecker;
         }
 
         return Default;
@@ -231,7 +245,7 @@ public enum Attribute {
 
     private static void ini() {
         attributeLookup = new HashMap<>();
-        attributeLookup.put(Default, 0);
+        attributeLookup.put(Default, 0); // 0 == Default.ordinal() and so on
         attributeLookup.put(Dogs, 1);
         attributeLookup.put(Access_or_parking_fee, 2);
         attributeLookup.put(Climbing_gear, 3);
@@ -299,6 +313,11 @@ public enum Attribute {
         attributeLookup.put(Front_Yard, 65);
         attributeLookup.put(Teamwork_Required, 66);
         attributeLookup.put(GeoTour, 67);
+        // no longer == geocaching.com
+        attributeLookup.put(Challenge, 68);
+        attributeLookup.put(Bonus, 69);
+        attributeLookup.put(Powertrail, 70);
+        attributeLookup.put(Solutionchecker, 71);
     }
 
     public static HashMap<Attribute, Integer> getAttributeLookup() {
@@ -429,9 +448,16 @@ public enum Attribute {
                 return "Wheelchair accessible";
             case Wireless_Beacon:
                 return "Wireless Beacon";
+            case Challenge:
+                return "Challenge cache";
+            case Bonus:
+                return "Bonus cache";
+            case Powertrail:
+                return "Power trail";
+            case Solutionchecker:
+                return "Geocaching.com solution checker";
             default:
                 break;
-
         }
         return super.toString();
     }

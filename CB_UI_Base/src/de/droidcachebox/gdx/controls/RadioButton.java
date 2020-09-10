@@ -28,8 +28,8 @@ public class RadioButton extends CB_CheckBox {
     private final Image radioSet;
     private RadioGroup group;
 
-    public RadioButton(String Name) {
-        super(Name);
+    public RadioButton() {
+        super();
         radioBack = new Image(new CB_RectF(UiSizes.getInstance().getChkBoxSize()), name, false);
         radioBack.setDrawable(Sprites.radioBack);
         this.addChild(radioBack);

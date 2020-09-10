@@ -33,7 +33,7 @@ import java.util.*;
 import static de.droidcachebox.core.GroundspeakAPI.*;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
-    private final static String log = "DescriptionViewControl";
+    private final static String sKlasse = "DescriptionViewControl";
     private static final Handler downloadReadyHandler = new Handler();
     private final static LinkedList<String> NonLocalImages = new LinkedList<>();
     private final static LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
@@ -270,10 +270,10 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     public static void setCache(final Cache cache) {
         if (cache != null) {
-            Log.debug(log, "set " + cache.getGeoCacheCode() + " for description");
+            Log.debug(sKlasse, "set " + cache.getGeoCacheCode() + " for description");
             if (aktCache == cache) {
                 // todo check maybe new cache values
-                Log.debug(log, "same Cche " + cache.getGeoCacheCode());
+                Log.debug(sKlasse, "same Cche " + cache.getGeoCacheCode());
                 return;
             }
             aktCache = cache;
@@ -338,7 +338,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                                 anyImagesLoaded = true;
                             }
                         } catch (Exception e) {
-                            Log.err(log, "setCache()", "downloadThread run()", e);
+                            Log.err(sKlasse, "setCache()", "downloadThread run()", e);
                         }
                     }
                     if (anyImagesLoaded && downloadReadyHandler != null)
@@ -355,7 +355,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         }
 
         if (cache != null)
-            Log.debug(log, "set " + cache.getGeoCacheCode() + " finished for description (despite fetching images etc...)");
+            Log.debug(sKlasse, "set " + cache.getGeoCacheCode() + " finished for description (despite fetching images etc...)");
     }
 
     private static String getAttributesHtml(Cache cache) {
@@ -374,8 +374,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             do {
                 Attribute attribute = attrs.next();
                 File result = new File(Config.workPath + "/data/Attributes/" + attribute.getImageName() + ".png");
-                // the url is missing the value, so we give that appended in the name and the blank
-                sb.append("<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
+                if (result.exists()) {
+                    // the url is missing the value, so we give that appended in the name and the blank
+                    sb.append("<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
+                }
+                else {
+                    Log.err(sKlasse,"missing file:<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
+                }
             } while (attrs.hasNext());
             sb.append("</form>");
 
