@@ -65,10 +65,9 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     }
 
     private void setText() {
-        if (mwpName == null)
-            this.setText(mActCoord.formatCoordinate());
-        else
-            this.setText(mwpName);
+        if (mwpName == null) mwpName = "";
+        if (mwpName.length() == 0) mwpName = mActCoord.formatCoordinate();
+        setText(mwpName);
     }
 
     @Override

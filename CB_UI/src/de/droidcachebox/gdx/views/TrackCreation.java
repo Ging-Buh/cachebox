@@ -70,7 +70,7 @@ public class TrackCreation extends AbstractShowAction {
         if (coord == null)
             coord = Locator.getInstance().getMyPosition();
 
-        ProjectionCoordinate pC = new ProjectionCoordinate(Translation.get("fromPoint"), coord, (targetCoord, startCoord, bearing, distance) -> {
+        ProjectionCoordinate pC = new ProjectionCoordinate("projection", coord, (targetCoord, startCoord, bearing, distance) -> {
 
             if (targetCoord == null || startCoord == null)
                 return;
@@ -86,7 +86,7 @@ public class TrackCreation extends AbstractShowAction {
             track.setVisible(true);
             TrackList.getInstance().addTrack(track);
             TrackListView.getInstance().notifyDataSetChanged();
-        }, ProjectionCoordinate.ProjectionType.point2point, "");
+        }, ProjectionCoordinate.ProjectionType.point2point, Translation.get("fromPoint"));
         pC.show();
 
     }
@@ -113,7 +113,7 @@ public class TrackCreation extends AbstractShowAction {
             track.setVisible(true);
             TrackList.getInstance().addTrack(track);
             TrackListView.getInstance().notifyDataSetChanged();
-        }, ProjectionCoordinate.ProjectionType.projection, "");
+        }, ProjectionCoordinate.ProjectionType.projection, Translation.get("fromPoint"));
 
         pC.show();
 
@@ -150,7 +150,7 @@ public class TrackCreation extends AbstractShowAction {
                 LastCoord.setValid(true);
             }
             TrackListView.getInstance().notifyDataSetChanged();
-        }, ProjectionCoordinate.ProjectionType.circle, "");
+        }, ProjectionCoordinate.ProjectionType.circle, Translation.get("centerPoint"));
         pC.show();
     }
 }
