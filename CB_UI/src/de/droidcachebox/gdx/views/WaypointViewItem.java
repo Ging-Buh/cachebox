@@ -98,7 +98,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 GlyphLayout bounds = distance.setText(txt, arrowRec.getX(), arrowRec.getY());
                 distance.setPosition(x - (bounds.width / 2f), 0);
             } catch (Exception ex) {
-                Log.err(log, "setDistanceString: '" + txt + "'", ex);
+                Log.err(log, "setDistanceString: '" + txt + "'");
             }
         }
     }
@@ -147,7 +147,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 }
             } else {
                 arrow = null;
-                setDistanceString("???");
+                setDistanceString("?_?_?");
             }
 
         }

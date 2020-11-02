@@ -70,7 +70,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             WaypointListChangedEventList.Add(this);
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"onShow");
+            Log.err(sKlasse,"onShow", ex);
         }
     }
 
@@ -140,7 +140,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
 
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"setSelectedCache");
+            Log.err(sKlasse,"setSelectedCache", ex);
         }
     }
 
@@ -153,7 +153,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             setSelectedCache(cache);
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"handleCacheChanged");
+            Log.err(sKlasse,"handleCacheChanged", ex);
         }
     }
 
@@ -166,7 +166,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             setSelectedCache(cache);
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"wayPointListChanged");
+            Log.err(sKlasse,"wayPointListChanged", ex);
         }
     }
 
@@ -197,7 +197,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             }
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"getContextMenu");
+            Log.err(sKlasse,"getContextMenu", ex);
         }
         return cm;
     }
@@ -222,7 +222,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             editWP(newWP, true);
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"addWP");
+            Log.err(sKlasse,"addWP", ex);
         }
     }
 
@@ -234,7 +234,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             }
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"editWP(boolean showCoordinateDialog)");
+            Log.err(sKlasse,"editWP(boolean showCoordinateDialog)", ex);
         }
     }
 
@@ -291,7 +291,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
 
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"editWP(Waypoint wp, boolean showCoordinateDialog)");
+            Log.err(sKlasse,"editWP(Waypoint wp, boolean showCoordinateDialog)", ex);
         }
     }
 
@@ -326,7 +326,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             });
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"deleteWP");
+            Log.err(sKlasse,"deleteWP", ex);
         }
     }
 
@@ -379,7 +379,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
 
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"addProjection");
+            Log.err(sKlasse,"addProjection", ex);
         }
     }
 
@@ -416,7 +416,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
 
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"addMeasure");
+            Log.err(sKlasse,"addMeasure", ex);
         }
     }
 
@@ -435,7 +435,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             super.dispose();
         }
         catch (Exception ex) {
-            Log.err(sKlasse,"dispose");
+            Log.err(sKlasse,"dispose", ex);
         }
     }
 
@@ -450,7 +450,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 wayPoints.ensureCapacity(cache.getWayPoints().size() + 1, true);
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"create WayPointListViewAdapter");
+                Log.err(sKlasse,"create WayPointListViewAdapter", ex);
             }
         }
 
@@ -461,7 +461,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 wayPoints.ensureCapacity(cache.getWayPoints().size() + 1, true);
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"setCache wayPoints.ensureCapacity");
+                Log.err(sKlasse,"setCache wayPoints.ensureCapacity", ex);
             }
         }
 
@@ -576,7 +576,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                     return null;
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"");
+                Log.err(sKlasse,"", ex);
                 return null;
             }
         }
@@ -590,7 +590,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 return wayPoints.get(position).getHeight();
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"getItemSize");
+                Log.err(sKlasse,"getItemSize", ex);
                 return 0f;
             }
         }

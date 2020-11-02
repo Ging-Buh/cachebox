@@ -1015,7 +1015,7 @@ public class GroundspeakAPI {
 
     public static void fetchMyCacheLimits() {
         if (System.currentTimeMillis() - lastTimeLimitFetched > 60000) {
-            Log.err(sKlasse, "fetchMyCacheLimits");
+            Log.info(sKlasse, "fetchMyCacheLimits");
             // update one time per minute may be enough
             me = fetchUserInfos("me");
             lastTimeLimitFetched = System.currentTimeMillis();
