@@ -64,32 +64,28 @@ public class Fonts {
     public static void loadFonts() {
 
         COLOR.loadColors();
-        FreeTypeFontGenerator generator;
 
-        // get the first found ttf-font
-
-        FileHandle font = null;
+        FileHandle fontFileHandle = null;
 
         if (CB_Skin.getInstance().getSkinFolder().isDirectory()) {
             FileHandle[] ttfFonts = CB_Skin.getInstance().getSkinFolder().list();
             for (FileHandle file : ttfFonts) {
                 if (file.extension().equalsIgnoreCase("ttf")) {
-                    font = file;
+                    // get the first found ttf-font
+                    fontFileHandle = file;
                     break;
                 }
             }
         }
 
-        if (font == null || !font.exists()) {
+        if (fontFileHandle == null || !fontFileHandle.exists()) {
             // no skin font found, use default font
-            font = FileFactory.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
+            fontFileHandle = FileFactory.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
         }
 
-        Log.debug(log, "Generate scaled Fonts from " + font);
-        generator = new FreeTypeFontGenerator(font);
-
+        Log.debug(log, "Generate scaled Fonts from " + fontFileHandle);
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFileHandle);
         double density = UiSizes.getInstance().getScale();
-
         compass = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeBiggest() * density));
         big = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeBig() * density));
         normal = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeNormal() * density));
@@ -97,22 +93,6 @@ public class Fonts {
         normalBubble = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeNormalBubble() * density));
         smallBubble = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeSmallBubble() * density));
         generator.dispose();
-    }
-
-    public static void dispose() {
-        compass.dispose();
-        big.dispose();
-        normal.dispose();
-        small.dispose();
-        normalBubble.dispose();
-        smallBubble.dispose();
-
-        big = null;
-        normal = null;
-        small = null;
-        normalBubble = null;
-        smallBubble = null;
-
     }
 
     public static BitmapFont getCompass() {

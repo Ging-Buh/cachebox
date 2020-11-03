@@ -229,101 +229,103 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     public void requestLayout() {
+        try {
+            if (this.isDisposed()) return;
 
-        if (viewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
-        {
-            float size = UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight() / 2.3f;
-            arrowRec = new CB_RectF(getWidth() - (size * 1.2f), getHeight() - (size * 1.6f), size, size);
-            arrow.setBounds(arrowRec.getX(), arrowRec.getY(), size, size);
-            arrow.setOrigin(arrowRec.getHalfWidth(), arrowRec.getHalfHeight());
+            if (viewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
+            {
+                float size = UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight() / 2.3f;
+                arrowRec = new CB_RectF(getWidth() - (size * 1.2f), getHeight() - (size * 1.6f), size, size);
+                arrow.setBounds(arrowRec.getX(), arrowRec.getY(), size, size);
+                arrow.setOrigin(arrowRec.getHalfWidth(), arrowRec.getHalfHeight());
 
-            if (Locator.getInstance().isValid()) {
-                arrow.setColor(DISABLE_COLOR);
-                setDistanceString("---");
-            } else {
-                setActLocator();
-            }
-
-        } else {
-            arrow = null;
-            distance = null;
-        }
-
-        if (wayPoint != null) {
-            float scaleFactor = getWidth() / UiSizes.getInstance().getCacheListItemRec().getWidth();
-            float mLeft = 3 * scaleFactor;
-            float mTop = 3 * scaleFactor;
-
-            float mIconSize = Fonts.Measure("T").height * 3.5f * scaleFactor;
-
-            Vector2 mSpriteCachePos = new Vector2(mLeft + mLeft, getHeight() - mTop - mIconSize);
-
-            { // Icon Sprite erstellen
-                // MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
-                if ((wayPoint.waypointType == GeoCacheType.MultiStage) && wayPoint.isStartWaypoint)
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.MultiStage.name() + "StartP"));
-                else
-                    mIconSprite = new Sprite(Sprites.getSprite("big" + wayPoint.waypointType.name()));
-
-                mIconSprite.setSize(mIconSize, mIconSize);
-                mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
-            }
-
-            mNameCache = new BitmapFontCache(Fonts.getNormal());
-            mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
-            mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
-
-            mNameCache.setText("", 0, 0);
-            mDescCache.setText("", 0, 0);
-            mCoordCache.setText("", 0, 0);
-
-            mNameCache.setColor(COLOR.getFontColor());
-            mDescCache.setColor(COLOR.getFontColor());
-            mCoordCache.setColor(COLOR.getFontColor());
-
-            float textYPos = getHeight() - mLeft;
-
-            float allHeight = (mNameCache.setText(wayPoint.getGcCode().substring(0, 2) + ": " + wayPoint.getTitleForGui(), mSpriteCachePos.x + mIconSize + mLeft, textYPos)).height + mLeft + mLeft;
-            textYPos -= allHeight;
-
-            if (viewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
-                mDescCache = null;
-            } else {
-                String wpDescription = wayPoint.getDescription();
-                if (wpDescription.length() > 0) {
-                    float textXPos = mSpriteCachePos.x + mIconSize + mLeft;
-                    GlyphLayout gl = mDescCache.setText(wpDescription, textXPos, textYPos, getWidth() - (textXPos + mIconSize + mLeft), Align.left, true);
-                    float descHeight = gl.height + mLeft + mLeft;
-                    allHeight = allHeight + descHeight;
-                    textYPos = textYPos - descHeight;
+                if (Locator.getInstance().isValid()) {
+                    arrow.setColor(DISABLE_COLOR);
+                    setDistanceString("---");
+                } else {
+                    setActLocator();
                 }
-            }
 
-            String sCoord;
-
-            if (viewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
-                sCoord = wayPoint.getCoordinate().formatCoordinateLineBreak();
             } else {
-                sCoord = wayPoint.getCoordinate().formatCoordinate();
+                arrow = null;
+                distance = null;
             }
 
-            float coordHeight = (mCoordCache.setText(sCoord, mSpriteCachePos.x + mIconSize + mLeft, textYPos)).height + mLeft + mLeft;
-            allHeight += coordHeight;
+            if (wayPoint != null) {
+                float scaleFactor = getWidth() / UiSizes.getInstance().getCacheListItemRec().getWidth();
+                float mLeft = 3 * scaleFactor;
+                float mTop = 3 * scaleFactor;
 
-            if (allHeight > UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight()) {
+                float mIconSize = Fonts.Measure("T").height * 3.5f * scaleFactor;
 
-                if (!inChange && getHeight() != allHeight) {
-                    inChange = true;
-                    setHeight(allHeight);
-                    requestLayout();
-                    inChange = false;
+                Vector2 mSpriteCachePos = new Vector2(mLeft + mLeft, getHeight() - mTop - mIconSize);
+
+                { // Icon Sprite erstellen
+                    // MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
+                    if ((wayPoint.waypointType == GeoCacheType.MultiStage) && wayPoint.isStartWaypoint)
+                        mIconSprite = new Sprite(Sprites.getSprite("big" + GeoCacheType.MultiStage.name() + "StartP"));
+                    else
+                        mIconSprite = new Sprite(Sprites.getSprite("big" + wayPoint.waypointType.name()));
+
+                    mIconSprite.setSize(mIconSize, mIconSize);
+                    mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
                 }
-            }
-        } else {
-            cacheInfo.setSize(this);
-            cacheInfo.requestLayout();
-        }
 
+                float allHeight;
+                float textYPos = getHeight() - mLeft;
+
+                mNameCache = new BitmapFontCache(Fonts.getNormal());
+                String theName = wayPoint.getGcCode().substring(0, 2) + ": " + wayPoint.getTitleForGui();
+                mNameCache.setColor(COLOR.getFontColor());
+                GlyphLayout glName = mNameCache.setText(theName, mSpriteCachePos.x + mIconSize + mLeft, textYPos);
+                allHeight = glName.height + mLeft + mLeft;
+                textYPos = textYPos - allHeight;
+
+                if (viewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
+                    mDescCache = null;
+                } else {
+                    String wpDescription = wayPoint.getDescription();
+                    if (wpDescription.length() > 0) {
+                        float textXPos = mSpriteCachePos.x + mIconSize + mLeft;
+                        mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
+                        mDescCache.setColor(COLOR.getFontColor());
+                        GlyphLayout gl = mDescCache.setText(wpDescription, textXPos, textYPos, getWidth() - (textXPos + mIconSize + mLeft), Align.left, true);
+                        float descHeight = gl.height + mLeft + mLeft;
+                        allHeight = allHeight + descHeight;
+                        textYPos = textYPos - descHeight;
+                    }
+                }
+
+                String sCoord;
+                if (viewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
+                    sCoord = wayPoint.getCoordinate().formatCoordinateLineBreak();
+                } else {
+                    sCoord = wayPoint.getCoordinate().formatCoordinate();
+                }
+                mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
+                mCoordCache.setColor(COLOR.getFontColor());
+                GlyphLayout glCoords = mCoordCache.setText(sCoord, mSpriteCachePos.x + mIconSize + mLeft, textYPos);
+                allHeight = allHeight + glCoords.height + mLeft + mLeft;
+
+                if (allHeight > UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight()) {
+                    if (!inChange && getHeight() != allHeight) {
+                        inChange = true;
+                        setHeight(allHeight);
+                        requestLayout();
+                        inChange = false;
+                    }
+                }
+            } else {
+                cacheInfo.setSize(this);
+                cacheInfo.requestLayout();
+            }
+        }
+        catch (Exception ex) {
+            Log.err("WaypointViewItem", "requestLayout", ex);
+            mNameCache = null;
+            mDescCache = null;
+            mCoordCache = null;
+        }
     }
 
     @Override

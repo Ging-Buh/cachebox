@@ -450,7 +450,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 wayPoints.ensureCapacity(cache.getWayPoints().size() + 1, true);
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"create WayPointListViewAdapter", ex);
+                Log.err(sKlasse,"Adapter: create WayPointListViewAdapter", ex);
             }
         }
 
@@ -461,7 +461,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 wayPoints.ensureCapacity(cache.getWayPoints().size() + 1, true);
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"setCache wayPoints.ensureCapacity", ex);
+                Log.err(sKlasse,"Adapter: setCache wayPoints.ensureCapacity", ex);
             }
         }
 
@@ -523,7 +523,6 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                             });
                             wayPoints.replace(waypointViewItem, position);
                         }
-
                     } else {
                         if (wayPoints.get(position) == null || wayPoints.get(position).isDisposed()) {
                             Waypoint waypoint = cache.getWayPoints().get(position - 1);
@@ -576,7 +575,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                     return null;
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"", ex);
+                Log.err(sKlasse,"Adapter: getView", ex);
                 return null;
             }
         }
@@ -590,7 +589,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 return wayPoints.get(position).getHeight();
             }
             catch (Exception ex) {
-                Log.err(sKlasse,"getItemSize", ex);
+                Log.err(sKlasse,"Adapter: getItemSize", ex);
                 return 0f;
             }
         }
