@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.hardware.Camera;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -67,12 +68,17 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private boolean mustShowCacheList = true;
     private CancelWaitDialog wd;
     private LocationManager locationManager;
+    private String defaultBrowserPackageName;
 
     AndroidUIBaseMethods(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
         OnResumeListeners.getInstance().addListener(AndroidUIBaseMethods.this::handleExternalRequest);
+        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"));
+        final ResolveInfo resolveInfo = mainActivity.getPackageManager()
+                .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        defaultBrowserPackageName = resolveInfo.activityInfo.packageName;
     }
 
     @Override
@@ -210,14 +216,19 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
             }
             Uri uri = Uri.parse(url);
             Intent intent = new Intent(ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addCategory(Intent.CATEGORY_BROWSABLE);
             intent.setDataAndType(uri, "text/html");
+            if (!defaultBrowserPackageName.equals("android")) {
+                intent.setPackage(defaultBrowserPackageName);
+            }
+            else {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            }
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 Log.info(sKlasse, "Start activity for " + uri.toString());
                 mainActivity.startActivity(intent);
             } else {
-                Log.err(sKlasse, "Activity for " + url + " not installed.");
+                Log.err(sKlasse, "Activity for " + url + " not installed. (" + defaultBrowserPackageName + ")");
                 Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
             }
         } catch (Exception ex) {
@@ -279,8 +290,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
                         String sResult = result ? " ok!" : " no success!";
                         Log.info(sKlasse, "Move map-file " + destinationFile.getPath() + sResult);
                         if (result) LayerManager.getInstance().initLayers();
-                    }
-                    else {
+                    } else {
                         Log.info(sKlasse, "importGPXFile (*.gpx or *.zip)");
                         importGPXFile(externalRequestGpxPath);
                     }
