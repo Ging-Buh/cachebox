@@ -427,8 +427,10 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     @Override
     public void onShow() {
-        initLayout();
-        KeyboardFocusChangedEventList.add(this);
+        GL.that.postAsync(() -> {
+            initLayout();
+            KeyboardFocusChangedEventList.add(this);
+        });
     }
 
     @Override

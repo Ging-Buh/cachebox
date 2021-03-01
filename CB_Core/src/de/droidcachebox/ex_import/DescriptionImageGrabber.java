@@ -262,7 +262,6 @@ public class DescriptionImageGrabber {
 
     public static int GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url, boolean withLogImages) {
         boolean imageLoadError = false;
-
         if (!descriptionImagesUpdated) {
             Log.debug(log, "GrabImagesSelectedByCache -> grab description images");
             ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode);
@@ -285,7 +284,7 @@ public class DescriptionImageGrabber {
 
                 // direkt download
                 if (download(uri.toString(), local)) {
-                    // there could be an pseudo image indicating a pprevious error
+                    // there could be an pseudo image indicating a previous error
                     // this file must be deleted
                     DeleteMissingImageInformation(local);
                     break;
@@ -303,7 +302,6 @@ public class DescriptionImageGrabber {
             }
             Log.debug(log, "GrabImagesSelectedByCache done");
         }
-
         if (!additionalImagesUpdated) {
             Log.debug(log, "GrabImagesSelectedByCache -> grab spoiler images");
             // Get additional images (Spoiler)

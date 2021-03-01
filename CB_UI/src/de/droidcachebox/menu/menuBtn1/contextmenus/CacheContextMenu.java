@@ -148,10 +148,14 @@ public class CacheContextMenu {
                             CacheListChangedListeners.getInstance().cacheListChanged();
                             GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         }
+
+                        ShowSpoiler.getInstance().ImportSpoiler(false);
+
                         GL.that.RunOnGL(() -> {
                             ShowDescription.getInstance().updateDescriptionView(true);
                             GL.that.renderOnce();
                         });
+
                     } else {
                         if (GroundspeakAPI.APIError != OK) {
                             GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MessageBoxButton.OK, MessageBoxIcon.Information, null));

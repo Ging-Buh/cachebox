@@ -50,6 +50,7 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.map.MapScale;
 import de.droidcachebox.locator.map.*;
+import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.MathUtils;
@@ -339,12 +340,15 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                             Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                         }
-                        CacheListChangedListeners.getInstance().cacheListChanged();
 
+                        CacheListChangedListeners.getInstance().cacheListChanged();
                         Cache selCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         wd.close();
+
+                        ShowSpoiler.getInstance().ImportSpoiler(false);
+
                     }
 
                     @Override
