@@ -101,5 +101,5 @@ task saveBuildInfo {
 }
 
 tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn saveBuildInfo
+    //compileTask -> compileTask.dependsOn saveBuildInfo
 }

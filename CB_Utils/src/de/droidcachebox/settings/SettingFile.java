@@ -16,10 +16,11 @@
 package de.droidcachebox.settings;
 
 public class SettingFile extends SettingLongString {
-    private String ext = "*";
+    private String ext;
 
     public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
         super(name, category, modus, defaultValue, StoreType, usage);
+        ext = "";
     }
 
     public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, String ext) {

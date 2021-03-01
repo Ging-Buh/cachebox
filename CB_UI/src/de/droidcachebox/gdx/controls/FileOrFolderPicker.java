@@ -52,7 +52,7 @@ public class FileOrFolderPicker extends ActivityBase {
     }
 
     public FileOrFolderPicker(String initialPath, String possibleExtensions, String titleText, String selectFolderText, IReturnAbstractFile fileReturn) {
-        // for file selection possibleExtensions must not be null (use "" for no restriction)
+        // for file selection possibleExtensions must not be null (use "" for no restriction, "*" / placeholders are not handled)
         super("FileOrFolderPicker");
         this.titleText = titleText;
         filesView = new V_ListView(this, "files");
