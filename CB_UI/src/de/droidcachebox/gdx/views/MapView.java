@@ -347,7 +347,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         infoBubble.setCache(selCache, null, true);
                         wd.close();
 
-                        ShowSpoiler.getInstance().ImportSpoiler(false);
+                        ShowSpoiler.getInstance().ImportSpoiler(false).setReadyListener(() -> {
+                            // do after import
+                            if (GlobalCore.isSetSelectedCache()) {
+                                GlobalCore.getSelectedCache().loadSpoilerRessources();
+                            }
+                        });
 
                     }
 

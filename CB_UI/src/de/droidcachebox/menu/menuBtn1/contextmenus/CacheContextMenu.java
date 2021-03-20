@@ -149,7 +149,12 @@ public class CacheContextMenu {
                             GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                         }
 
-                        ShowSpoiler.getInstance().ImportSpoiler(false);
+                        ShowSpoiler.getInstance().ImportSpoiler(false).setReadyListener(() -> {
+                            // do after import
+                            if (GlobalCore.isSetSelectedCache()) {
+                                GlobalCore.getSelectedCache().loadSpoilerRessources();
+                            }
+                        });
 
                         GL.that.RunOnGL(() -> {
                             ShowDescription.getInstance().updateDescriptionView(true);
