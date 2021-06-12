@@ -55,9 +55,8 @@ public class CacheList extends MoveableList<Cache> {
         CacheWithWP retValue = null;
 
         resortAtWork = true;
-        boolean isLocatorValid = Locator.getInstance().isValid();
         // Alle Distanzen aktualisieren
-        if (isLocatorValid) {
+        if (Locator.getInstance().isValid()) {
             for (int i = 0, n = size(); i < n; i++) {
                 get(i).recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
             }
@@ -66,7 +65,10 @@ public class CacheList extends MoveableList<Cache> {
             Coordinate fromPos = selectedCoord;
             // avoid "illegal waypoint"
             if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)) {
-                fromPos = selected.getCache().getCoordinate();
+                if (selected == null)
+                    fromPos = null;
+                else
+                    fromPos = selected.getCache().getCoordinate();
             }
             if (fromPos == null) {
                 resortAtWork = false;

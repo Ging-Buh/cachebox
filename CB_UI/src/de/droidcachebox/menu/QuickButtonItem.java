@@ -99,7 +99,7 @@ public class QuickButtonItem extends ListViewItemBase {
         } else if (quickAction == QuickAction.Spoiler) {
             boolean hasSpoiler = false;
             if (GlobalCore.isSetSelectedCache()) {
-                hasSpoiler = GlobalCore.selectedCachehasSpoiler();
+                hasSpoiler = GlobalCore.selectedCacheHasSpoiler();
             }
 
             if (hasSpoiler && state != 1) {

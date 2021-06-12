@@ -167,6 +167,8 @@ public class CacheSelectionListView extends CB_View_Base implements CacheListCha
         if (GlobalCore.getSelectedCache() == null)
             return;
 
+        Log.debug(log, "start bg-task for making selected Cache visible.");
+
         geoCacheListView.runIfListInitial(() -> {
             int id = 0;
             Point firstAndLast = geoCacheListView.getFirstAndLastVisibleIndex();

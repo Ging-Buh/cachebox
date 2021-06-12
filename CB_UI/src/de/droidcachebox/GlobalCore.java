@@ -105,10 +105,9 @@ public class GlobalCore implements SolverCacheInterface {
 
     public static void setSelectedCache(Cache cache) {
         setSelectedWaypoint(cache, null);
-
     }
 
-    public static boolean selectedCachehasSpoiler() {
+    public static boolean selectedCacheHasSpoiler() {
         if (selectedCache != null) {
             return selectedCache.hasSpoiler();
         } else

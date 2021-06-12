@@ -20,6 +20,7 @@ import de.droidcachebox.Energy;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.utils.log.Log;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -92,6 +93,7 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
             for (CacheListChangedListener listener : this) {
                 if (listener == null)
                     continue;
+                Log.debug("CacheListChanged() for ", listener.toString());
                 listener.cacheListChanged();
             }
         });

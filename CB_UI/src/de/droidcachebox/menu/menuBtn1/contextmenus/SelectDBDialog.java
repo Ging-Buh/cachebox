@@ -23,10 +23,7 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.Categories;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -96,37 +93,58 @@ public class SelectDBDialog extends AbstractAction {
             synchronized (Database.Data.cacheList) {
                 Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
             }
-
-            // set selectedCache from lastselected Cache
             GlobalCore.setSelectedCache(null);
-            String sGc = Config.LastSelectedCache.getValue();
-            if (sGc != null && sGc.length() > 0) {
-                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
-                    Cache c = Database.Data.cacheList.get(i);
 
-                    if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
-                        try {
-                            Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
-                            c.loadDetail();
-                            GlobalCore.setSelectedCache(c);
-                        } catch (Exception ex) {
-                            Log.err(log, "set last selected Cache", ex);
+            if (Database.Data.cacheList.size() > 0) {
+                GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
+                if (GlobalCore.getAutoResort()) {
+                    synchronized (Database.Data.cacheList) {
+                        CacheWithWP ret = Database.Data.cacheList.resort(null, null);
+                        if (ret != null && ret.getCache() != null) {
+                            Log.debug(log, "returnFromSelectDB:Set selectedCache to " + ret.getCache().getGeoCacheCode() + " from valid position.");
+                            ret.getCache().loadDetail();
+                            GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+                            GlobalCore.setNearestCache(ret.getCache());
                         }
-                        break;
                     }
                 }
-            }
-            // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
-            if ((GlobalCore.getSelectedCache() == null) && (Database.Data.cacheList.size() > 0)) {
-                Log.debug(log, "Set selectedCache to " + Database.Data.cacheList.get(0).getGeoCacheCode() + " from firstInDB");
-                GlobalCore.setSelectedCache(Database.Data.cacheList.get(0));
-            }
 
-            GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
+                if (GlobalCore.getSelectedCache() == null) {
+                    // set selectedCache from lastselected Cache
+                    String sGc = Config.LastSelectedCache.getValue();
+                    if (sGc != null && sGc.length() > 0) {
+                        for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
+                            Cache c = Database.Data.cacheList.get(i);
 
-            CacheListChangedListeners.getInstance().cacheListChanged();
+                            if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
+                                try {
+                                    Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
+                                    c.loadDetail();
+                                    GlobalCore.setSelectedCache(c);
+                                    CacheListChangedListeners.getInstance().cacheListChanged(); // may be empty
+                                } catch (Exception ex) {
+                                    Log.err(log, "set last selected Cache", ex);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
+                if (GlobalCore.getSelectedCache() == null) {
+                    Cache c = Database.Data.cacheList.get(0);
+                    Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from firstInDB");
+                    c.loadDetail();
+                    GlobalCore.setSelectedCache(c);
+                    CacheListChangedListeners.getInstance().cacheListChanged(); // may be empty
+                }
+
+                Log.debug(log, "selected cache: " + GlobalCore.getSelectedCache().getGeoCacheName() + " (" + GlobalCore.getSelectedCache().getGeoCacheCode() + ")");
+            }
 
             ViewManager.that.filterSetChanged();
+            Log.debug(log, "filterSetChanged()");
 
             wd.dismis();
         });

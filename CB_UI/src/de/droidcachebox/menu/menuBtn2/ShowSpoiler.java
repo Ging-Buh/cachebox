@@ -52,12 +52,12 @@ public class ShowSpoiler extends AbstractShowAction {
 
     @Override
     public boolean getEnabled() {
-        return true; // GlobalCore.selectedCachehasSpoiler();
+        return true; // GlobalCore.selectedCacheHasSpoiler();
     }
 
     @Override
     public Sprite getIcon() {
-        boolean hasSpoiler = GlobalCore.selectedCachehasSpoiler();
+        boolean hasSpoiler = GlobalCore.selectedCacheHasSpoiler();
         if (hasSpoiler) {
             return SpoilerExistsIcon;
         } else {
