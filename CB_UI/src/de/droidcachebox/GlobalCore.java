@@ -151,14 +151,16 @@ public class GlobalCore implements SolverCacheInterface {
 
         // remove Detail Info from old selectedCache
         if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.getGeoCacheDetail() != null)) {
+            Log.debug(log, "[GlobalCore]setSelectedWaypoint: deleteDetail " + selectedCache.getGeoCacheCode());
             selectedCache.deleteDetail(Config.showAllWaypoints.getValue());
         }
         selectedCache = cache;
-        Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
+        Log.debug(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
         selectedWayPoint = waypoint;
 
         // load Detail Info if not available
         if (selectedCache.getGeoCacheDetail() == null) {
+            Log.debug(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
             selectedCache.loadDetail();
         }
 
@@ -208,7 +210,7 @@ public class GlobalCore implements SolverCacheInterface {
     }
 
     public static void setAutoResort(boolean value) {
-        GlobalCore.autoResort = value;
+        autoResort = value;
     }
 
     public static void MsgDownloadLimit() {

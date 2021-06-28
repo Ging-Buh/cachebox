@@ -4,17 +4,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.controls.dialogs.DeleteDialog;
 
-public class DeleteDialog extends AbstractAction {
+public class ShowDeleteDialog extends AbstractAction {
 
-    private static DeleteDialog that;
+    private static ShowDeleteDialog that;
 
-    private DeleteDialog() {
+    private ShowDeleteDialog() {
         super("DeleteCaches");
     }
 
-    public static DeleteDialog getInstance() {
-        if (that == null) that = new DeleteDialog();
+    public static ShowDeleteDialog getInstance() {
+        if (that == null) that = new ShowDeleteDialog();
         return that;
     }
 
@@ -30,7 +31,7 @@ public class DeleteDialog extends AbstractAction {
 
     @Override
     public void execute() {
-        de.droidcachebox.gdx.controls.dialogs.DeleteDialog d = new de.droidcachebox.gdx.controls.dialogs.DeleteDialog();
+        DeleteDialog d = new DeleteDialog();
         d.show();
     }
 }

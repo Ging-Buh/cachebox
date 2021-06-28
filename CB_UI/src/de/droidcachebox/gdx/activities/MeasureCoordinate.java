@@ -56,8 +56,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     private Pixmap drawingPixmap = null;
     private Texture drawingTexture = null;
     private SatBarChart chart;
-    private ICoordReturnListener mCoordReturnListener;
-    private AtomicBoolean inRepaint = new AtomicBoolean(false);
+    private final ICoordReturnListener mCoordReturnListener;
+    private final AtomicBoolean inRepaint = new AtomicBoolean(false);
     private boolean redraw = true;
 
     public MeasureCoordinate(String Name, ICoordReturnListener listener) {
@@ -94,7 +94,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
             if (mCoordReturnListener != null) {
                 synchronized (mMeasureList) {
                     GL.that.RunOnGL(() -> mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord()));
-
                 }
             }
             finish();

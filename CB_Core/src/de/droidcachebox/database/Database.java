@@ -32,8 +32,8 @@ public abstract class Database extends Database_Core {
     public static Database Settings;
     private static CB_List<LogEntry> cacheLogs;
     private static String lastGeoCache;
+    private final DatabaseType databaseType;
     public CacheList cacheList;
-    private DatabaseType databaseType;
 
     public Database(DatabaseType databaseType) {
         super();
@@ -75,9 +75,8 @@ public abstract class Database extends Database_Core {
         String resultString = "";
         CoreCursor c = Database.Data.sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(cacheId)});
         c.moveToFirst();
-        while (!c.isAfterLast()) {
+        if (!c.isAfterLast()) {
             resultString = c.getString(0);
-            break;
         }
         return resultString;
     }
@@ -85,8 +84,8 @@ public abstract class Database extends Database_Core {
     /**
      * geänderte Note nur in die DB schreiben
      *
-     * @param cacheId
-     * @param value
+     * @param cacheId ?
+     * @param value   ?
      */
     public static void setNote(long cacheId, String value) {
         Parameters args = new Parameters();
@@ -117,9 +116,8 @@ public abstract class Database extends Database_Core {
             String resultString = "";
             CoreCursor c = Database.Data.sql.rawQuery("select Solver from Caches where Id=?", new String[]{String.valueOf(cacheId)});
             c.moveToFirst();
-            while (!c.isAfterLast()) {
+            if (!c.isAfterLast()) {
                 resultString = c.getString(0);
-                break;
             }
             return resultString;
         } catch (Exception ex) {
@@ -249,14 +247,12 @@ public abstract class Database extends Database_Core {
         {
             c.moveToFirst();
             if (!c.isAfterLast()) {
-                do {
-                    try {
-                        c.close();
-                        return true;
-                    } catch (Exception e) {
-                        return false;
-                    }
-                } while (!c.isAfterLast());
+                try {
+                    c.close();
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
             }
             c.close();
             return false;
@@ -270,7 +266,7 @@ public abstract class Database extends Database_Core {
 
         for (int i = 0; i < firstCharCandidates.length(); i++)
             for (int j = 0; j < secondCharCandidates.length(); j++) {
-                String gcCode = firstCharCandidates.substring(i, i + 1) + secondCharCandidates.substring(j, j + 1) + suffix;
+                String gcCode = firstCharCandidates.charAt(i) + secondCharCandidates.substring(j, j + 1) + suffix;
                 if (!Data.waypointExists(gcCode))
                     return gcCode;
             }
@@ -654,13 +650,15 @@ public abstract class Database extends Database_Core {
     public void deleteOldLogs(int minToKeep, int LogMaxMonthAge) {
 
         Log.debug(log, "deleteOldLogs but keep " + minToKeep + " and not older than " + LogMaxMonthAge);
+/*
         if (LogMaxMonthAge == 0) {
             // Setting are 'immediately'
             // Delete all Logs and return
             // TODO implement this
         }
+*/
 
-        ArrayList<Long> oldLogCaches = new ArrayList<Long>();
+        ArrayList<Long> oldLogCaches = new ArrayList<>();
         Calendar now = Calendar.getInstance();
         now.add(Calendar.MONTH, -LogMaxMonthAge);
         // hint:
@@ -673,7 +671,7 @@ public abstract class Database extends Database_Core {
         // #############################################################################
         {
             try {
-                String command = "SELECT cacheid FROM logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + String.valueOf(minToKeep);
+                String command = "SELECT cacheid FROM logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + minToKeep;
                 Log.debug(log, command);
                 CoreCursor reader = Database.Data.sql.rawQuery(command, null);
                 reader.moveToFirst();
@@ -696,8 +694,8 @@ public abstract class Database extends Database_Core {
             try {
                 sql.beginTransaction();
                 for (long oldLogCache : oldLogCaches) {
-                    ArrayList<Long> minLogIds = new ArrayList<Long>();
-                    String command = "select id from logs where cacheid = " + String.valueOf(oldLogCache) + " order by Timestamp desc";
+                    ArrayList<Long> minLogIds = new ArrayList<>();
+                    String command = "select id from logs where cacheid = " + oldLogCache + " order by Timestamp desc";
                     Log.debug(log, command);
                     int count = 0;
                     CoreCursor reader = Database.Data.sql.rawQuery(command, null);
@@ -715,9 +713,9 @@ public abstract class Database extends Database_Core {
                     // now delete all Logs out of Date but keep the ones in minLogIds
                     String delCommand;
                     if (sb.length() > 0)
-                        delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND cacheid = " + String.valueOf(oldLogCache) + " AND id NOT IN (" + sb.toString().substring(0, sb.length() - 1) + ")";
+                        delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND cacheid = " + oldLogCache + " AND id NOT IN (" + sb.substring(0, sb.length() - 1) + ")";
                     else
-                        delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND cacheid = " + String.valueOf(oldLogCache);
+                        delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND cacheid = " + oldLogCache;
                     Log.debug(log, delCommand);
                     Database.Data.sql.execSQL(delCommand);
                 }

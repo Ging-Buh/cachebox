@@ -229,7 +229,9 @@ public class CacheContextMenu {
                 (which, data) -> {
                     if (which == MessageBox.BTN_LEFT_POSITIVE) {
                         deleteSelectedCache();
+                        Log.debug(sKlasse, "deleteSelectedCache");
                         GlobalCore.setSelectedWaypoint(null, null, true);
+                        Log.debug(sKlasse, "GlobalCore.setSelectedWaypoint");
                     }
                     return true;
                 });

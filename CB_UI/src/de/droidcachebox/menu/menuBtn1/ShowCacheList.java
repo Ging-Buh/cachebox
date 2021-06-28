@@ -23,8 +23,8 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.views.CacheSelectionListView;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn1.contextmenus.DeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
+import de.droidcachebox.menu.menuBtn1.contextmenus.ShowDeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
 import de.droidcachebox.translation.Translation;
@@ -162,7 +162,7 @@ public class ShowCacheList extends AbstractShowAction {
             if (editCache.isDisposed()) editCache = new EditCache();
             editCache.create();
         });
-        cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> DeleteDialog.getInstance().execute());
+        cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> ShowDeleteDialog.getInstance().execute());
         cm.addMenuItem("ClearHistory",  Sprites.getSprite("HISTORY"), this::clearHistory);
 
         return cm;

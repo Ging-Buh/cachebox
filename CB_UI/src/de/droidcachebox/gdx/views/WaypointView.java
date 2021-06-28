@@ -386,34 +386,31 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
     private void addMeasure() {
         try {
             createNewWaypoint = true;
-
-            MeasureCoordinate mC = new MeasureCoordinate("Projection", returnCoordinate -> {
+            new MeasureCoordinate("Projection", returnCoordinate -> {
                 if (returnCoordinate == null)
                     return;
-
+                Log.debug(sKlasse, "Got a coordinate");
                 String newGcCode;
                 try {
                     newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
                 } catch (Exception e) {
-
                     return;
                 }
+                Log.debug(sKlasse, "Got new waypoint Code: " + newGcCode);
                 //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
                 Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
                 GlobalCore.getSelectedCache().getWayPoints().add(newWP);
-
+                Log.debug(sKlasse, "add waypoint to cache done");
                 wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
                 setAdapter(wayPointListViewAdapter);
-
+                Log.debug(sKlasse, "updated waypoint view");
                 currentWaypoint = newWP;
                 GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
+                Log.debug(sKlasse, "update global current cache");
                 WaypointDAO waypointDAO = new WaypointDAO();
                 waypointDAO.WriteToDatabase(newWP);
-
-            });
-
-            mC.show();
-
+                Log.debug(sKlasse, "written waypoint to database");
+            }).show();
         }
         catch (Exception ex) {
             Log.err(sKlasse,"addMeasure", ex);
