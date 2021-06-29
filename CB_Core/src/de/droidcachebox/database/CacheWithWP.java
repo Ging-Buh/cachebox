@@ -6,17 +6,12 @@ package de.droidcachebox.database;
  * @author Longri
  */
 public class CacheWithWP {
-    private Cache cache;
-    private Waypoint waypoint;
+    private final Cache cache;
+    private final Waypoint waypoint;
 
     public CacheWithWP(Cache cache, Waypoint waypoint) {
         this.cache = cache;
         this.waypoint = waypoint;
-    }
-
-    public void dispose() {
-        cache = null;
-        waypoint = null;
     }
 
     public Cache getCache() {

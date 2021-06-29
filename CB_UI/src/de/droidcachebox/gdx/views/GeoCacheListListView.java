@@ -49,9 +49,9 @@ import de.droidcachebox.utils.log.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CacheSelectionListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
-    private static final String log = "CacheListView";
-    private static CacheSelectionListView that;
+public class GeoCacheListListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
+    private static final String log = "GeoCacheListListView";
+    private static GeoCacheListListView that;
     private V_ListView geoCacheListView;
     private Scrollbar scrollBar;
     private GeoCacheListViewAdapter geoCacheListViewAdapter;
@@ -59,7 +59,7 @@ public class CacheSelectionListView extends CB_View_Base implements CacheListCha
     private boolean isShown = false;
     private float searchPlaceholder = 0;
 
-    private CacheSelectionListView() {
+    private GeoCacheListListView() {
         super(ViewManager.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
         CacheListChangedListeners.getInstance().addListener(this);
@@ -74,8 +74,8 @@ public class CacheSelectionListView extends CB_View_Base implements CacheListCha
         addChild(scrollBar);
     }
 
-    public static CacheSelectionListView getInstance() {
-        if (that == null) that = new CacheSelectionListView();
+    public static GeoCacheListListView getInstance() {
+        if (that == null) that = new GeoCacheListListView();
         return that;
     }
 
@@ -181,7 +181,6 @@ public class CacheSelectionListView extends CB_View_Base implements CacheListCha
                         if (geoCacheListView.isDraggable()) {
                             if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
                                 geoCacheListView.scrollToItem(id);
-                                Log.debug(log, "Scroll to:" + id);
                             }
                         }
                         break;

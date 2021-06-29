@@ -21,13 +21,15 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
-import de.droidcachebox.gdx.views.CacheSelectionListView;
+import de.droidcachebox.gdx.views.GeoCacheListListView;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowDeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.log.Log;
 
 import static de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter;
 
@@ -48,12 +50,12 @@ public class ShowCacheList extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(CacheSelectionListView.getInstance());
+        ViewManager.leftTab.showView(GeoCacheListListView.getInstance());
     }
 
     @Override
     public CB_View_Base getView() {
-        return CacheSelectionListView.getInstance();
+        return GeoCacheListListView.getInstance();
     }
 
     @Override
@@ -85,11 +87,16 @@ public class ShowCacheList extends AbstractShowAction {
 
         MenuItem mi;
         cm.addMenuItem("ResortList", Sprites.getSprite(IconName.sortIcon.name()), () -> {
-            synchronized (Database.Data.cacheList) {
-                CacheWithWP nearstCacheWp = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
-                if (nearstCacheWp != null && nearstCacheWp.getCache() != null)
-                    GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
-                CacheSelectionListView.getInstance().setSelectedCacheVisible();
+            if (!Database.Data.cacheList.resortAtWork) {
+                synchronized (Database.Data.cacheList) {
+                    Log.debug("ShowCacheList", "sort CacheList by Menu ResortList");
+                    CacheWithWP nearstCacheWp = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    if (nearstCacheWp != null && nearstCacheWp.getCache() != null) {
+                        GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
+                        GlobalCore.setNearestCache(nearstCacheWp.getCache());
+                    }
+                    GeoCacheListListView.getInstance().setSelectedCacheVisible();
+                }
             }
         });
         mi = cm.addMenuItem("setOrResetFilter", "", Sprites.getSprite(IconName.filter.name()), (v, x, y, pointer, button) -> {
@@ -150,8 +157,11 @@ public class ShowCacheList extends AbstractShowAction {
         mi = cm.addMenuItem("AutoResort", null, () -> {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {
-                synchronized (Database.Data.cacheList) {
-                    Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
+                if (!Database.Data.cacheList.resortAtWork) {
+                    synchronized (Database.Data.cacheList) {
+                        Log.debug("ShowCacheList", "sort CacheList by Menu AutoResort");
+                        Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    }
                 }
             }
         });

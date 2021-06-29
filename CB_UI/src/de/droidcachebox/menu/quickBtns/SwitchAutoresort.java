@@ -7,6 +7,8 @@ import de.droidcachebox.database.CacheWithWP;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.utils.log.Log;
 
 public class SwitchAutoresort extends AbstractAction {
 
@@ -35,13 +37,13 @@ public class SwitchAutoresort extends AbstractAction {
     public void execute() {
         GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
         if (GlobalCore.getAutoResort()) {
-            synchronized (Database.Data.cacheList) {
-                if (GlobalCore.isSetSelectedCache()) {
-                    CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
+            if (!Database.Data.cacheList.resortAtWork) {
+                synchronized (Database.Data.cacheList) {
+                    Log.debug("ShowCacheList", "sort CacheList by Quick Action SwitchAutoresort");
+                    CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     if (ret != null && ret.getCache() != null) {
                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                         GlobalCore.setNearestCache(ret.getCache());
-                        ret.dispose();
                     }
                 }
             }

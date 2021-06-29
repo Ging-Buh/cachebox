@@ -266,6 +266,18 @@ public class Locator {
         return getLocation().getProviderType() == ProviderType.GPS || getLocation().getProviderType() == ProviderType.Network;
     }
 
+    public Coordinate getValidPosition(Coordinate defaultValue) {
+        if (isValid()) {
+            CoordinateGPS retValue = getLocation(ProviderType.any).toCordinate();
+            if (retValue == Location.NULL_LOCATION) {
+                return defaultValue;
+            }
+            else return retValue;
+        }
+        else
+            return defaultValue;
+    }
+
     /**
      * Returns the last valid position of the given ProviderType
      *

@@ -22,7 +22,6 @@ import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.locator.*;
-import de.droidcachebox.locator.Location.ProviderType;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.Log;
 
@@ -97,22 +96,20 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
             }
 
             try {
-                if (!initialResortAfterFirstFixCompleted && Locator.getInstance().getProvider() != ProviderType.NULL) {
-                    if (GlobalCore.getSelectedCache() == null) {
+                if (!initialResortAfterFirstFixCompleted) {
+                    if (!Database.Data.cacheList.resortAtWork) {
                         synchronized (Database.Data.cacheList) {
-                            CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
+                            CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
                             if (ret != null && ret.getCache() != null) {
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 GlobalCore.setNearestCache(ret.getCache());
-                                ret.dispose();
+                                initialResortAfterFirstFixCompleted = true;
                             }
-
                         }
                     }
-                    initialResortAfterFirstFixCompleted = true;
                 }
             } catch (Exception ex) {
-                Log.err(sKlasse, "GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.isValid)", ex);
+                Log.err(sKlasse, "GlobalLocationReceiver", "sorting", ex);
             }
 
             try {
@@ -158,12 +155,13 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                 }
                             }
                             if (resort || z == 0) {
-                                CacheWithWP ret = Database.Data.cacheList.resort(GlobalCore.getSelectedCoordinate(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint()));
-                                if (ret != null && ret.getCache() != null) {
-                                    GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-                                    GlobalCore.setNearestCache(ret.getCache());
-                                    ret.dispose();
-                                    SoundCache.play(Sounds.AutoResortSound);
+                                if (!Database.Data.cacheList.resortAtWork) {
+                                    CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
+                                    if (ret != null && ret.getCache() != null) {
+                                        GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+                                        GlobalCore.setNearestCache(ret.getCache());
+                                        SoundCache.play(Sounds.AutoResortSound);
+                                    }
                                 }
                             }
                         }

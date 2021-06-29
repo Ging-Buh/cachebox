@@ -27,7 +27,7 @@ public class RememberGeoCache extends AbstractAction {
     public void execute() {
         if (CB_Core_Settings.rememberedGeoCache.getValue().length() > 0) {
             Cache rememberedCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
-            if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
+            GlobalCore.setSelectedCache(rememberedCache);
         }
         else {
             Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());

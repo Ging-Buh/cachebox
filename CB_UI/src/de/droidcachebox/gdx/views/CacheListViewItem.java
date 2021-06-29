@@ -26,8 +26,10 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.UnitFormatter;
+import de.droidcachebox.utils.log.Log;
 
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent {
+    private static final String log = "CacheListViewItem";
 
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
     protected ExtendedCacheInfo cacheInfo;
@@ -60,10 +62,8 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
         if (!Locator.getInstance().isValid()) {
             arrow.setColor(DISABLE_COLOR);
-            setDistanceString("---");
-        } else {
-            setActLocator();
         }
+        setActLocator(); // setDistanceString("---"); if no gps fix
 
         if (mCache.isLive()) {
             liveCacheIcon = new Sprite(Sprites.LiveBtn.get(0));
@@ -77,6 +77,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     }
 
     public void setCache(Cache selectedCache) {
+        Log.debug(log, "set selected Cache " + selectedCache.getGeoCacheCode());
         mCache = selectedCache;
         if (mCache.isLive()) {
             liveCacheIcon = new Sprite(Sprites.LiveBtn.get(0));
@@ -114,55 +115,53 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
     private void setActLocator() {
 
-        // Log.debug(log, "CacheListItem set ActLocator");
+        if (mCache.getCoordinate() == null) {
+            // mCache was disposed
+            Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.generatedId);
+            if (c == null) {
+                return;
+            }
+            mCache = c;
+        }
+
+        Coordinate position = Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate());
+
+        Waypoint FinalWp = mCache.getCorrectedFinal();
+
+        Coordinate coordinateOfFinal = FinalWp != null ? FinalWp.getCoordinate() : mCache.getCoordinate();
+        CalculationType calcType = CalculationType.FAST;
+        Cache c = GlobalCore.getSelectedCache();
+        if (c != null) {
+            calcType = mCache.generatedId == GlobalCore.getSelectedCache().generatedId ? CalculationType.ACCURATE : CalculationType.FAST;
+        }
+
+        float result[] = new float[4];
+        try {
+            MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), coordinateOfFinal.getLatitude(), coordinateOfFinal.getLongitude(), result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        double cacheBearing = -(result[2] - heading);
+        mCache.cachedDistance = result[0];
+        setDistanceString(UnitFormatter.distanceString(mCache.cachedDistance));
+
+        arrow.setRotation((float) cacheBearing);
+        if (arrow.getColor() == DISABLE_COLOR) {
+            float size = this.getHeight() / 2.3f;
+            arrow = new Sprite(Sprites.Arrows.get(0));
+            arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+            arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+        }
+/*
 
         if (Locator.getInstance().isValid()) {
-
-            if (mCache.getCoordinate() == null) {
-                // mCache was disposed
-                Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.generatedId);
-                if (c == null) {
-                    return;
-                }
-                mCache = c;
-            }
-
-            Coordinate position = Locator.getInstance().getMyPosition();
-
-            Waypoint FinalWp = mCache.getCorrectedFinal();
-
-            Coordinate Final = FinalWp != null ? FinalWp.getCoordinate() : mCache.getCoordinate();
-            CalculationType calcType = CalculationType.FAST;
-            Cache c = GlobalCore.getSelectedCache();
-            if (c != null) {
-                calcType = mCache.generatedId == GlobalCore.getSelectedCache().generatedId ? CalculationType.ACCURATE : CalculationType.FAST;
-            }
-
-            float result[] = new float[4];
-
-            try {
-                MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(), Final.getLongitude(), result);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            double cacheBearing = -(result[2] - heading);
-            mCache.cachedDistance = result[0];
-            setDistanceString(UnitFormatter.distanceString(mCache.cachedDistance));
-
-            arrow.setRotation((float) cacheBearing);
-            if (arrow.getColor() == DISABLE_COLOR) {
-                float size = this.getHeight() / 2.3f;
-                arrow = new Sprite(Sprites.Arrows.get(0));
-                arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-                arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-            }
         } else {
             if (mCache.cachedDistance >= 0) // (mCache.cachedDistance > 0)|| mCache == GlobalCore.getSelectedCache())
             {
                 setDistanceString(UnitFormatter.distanceString(mCache.cachedDistance));
             }
         }
+*/
     }
 
     @Override

@@ -31,7 +31,6 @@ import de.droidcachebox.database.*;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.Sprites.*;
 import de.droidcachebox.gdx.activities.EditWaypoint;
 import de.droidcachebox.gdx.controls.*;
 import de.droidcachebox.gdx.controls.MapInfoPanel.CoordType;
@@ -341,10 +340,10 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                             Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                         }
 
-                        CacheListChangedListeners.getInstance().cacheListChanged();
                         Cache selCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
+                        CacheListChangedListeners.getInstance().cacheListChanged();
                         wd.close();
 
                         ShowSpoiler.getInstance().ImportSpoiler(false).setReadyListener(() -> {

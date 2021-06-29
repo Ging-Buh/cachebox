@@ -82,8 +82,8 @@ public class GlobalCore implements SolverCacheInterface {
     private static boolean autoResort;
     private static Cache nearestCache = null;
     private static Waypoint selectedWayPoint = null;
-    private int CurrentRevision;
-    private String VersionPrefix;
+    private static int CurrentRevision;
+    private static String VersionPrefix;
 
     private GlobalCore() {
         super();
@@ -134,14 +134,7 @@ public class GlobalCore implements SolverCacheInterface {
         }
     }
 
-    /**
-     * if changeAutoResort == false -> do not change state of autoResort Flag
-     *
-     * @param cache            cache
-     * @param waypoint         wapoint
-     * @param changeAutoResort changeAutoResort
-     */
-    public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort) {
+    public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean unsetAutoResort) {
 
         if (cache == null) {
             selectedCache = null;
@@ -154,21 +147,21 @@ public class GlobalCore implements SolverCacheInterface {
             Log.debug(log, "[GlobalCore]setSelectedWaypoint: deleteDetail " + selectedCache.getGeoCacheCode());
             selectedCache.deleteDetail(Config.showAllWaypoints.getValue());
         }
+
         selectedCache = cache;
         Log.debug(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
         selectedWayPoint = waypoint;
 
         // load Detail Info if not available
         if (selectedCache.getGeoCacheDetail() == null) {
-            Log.debug(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
+            Log.debug(log, "[GlobalCore]setSelectedWaypoint: loadDetail of " + cache.getGeoCacheCode());
             selectedCache.loadDetail();
         }
 
         CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
 
-        if (changeAutoResort) {
-            // switch off auto select
-            GlobalCore.setAutoResort(false);
+        if (unsetAutoResort) {
+            setAutoResort(false);
         }
 
         GL.that.renderOnce();

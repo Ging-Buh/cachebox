@@ -18,6 +18,8 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.gdx.views.GeoCacheListListView;
+import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
 import de.droidcachebox.menu.menuBtn2.*;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
@@ -145,8 +147,8 @@ public class CacheContextMenu {
                         synchronized (Database.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                             Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
-                            CacheListChangedListeners.getInstance().cacheListChanged();
                             GlobalCore.setSelectedCache(Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
+                            CacheListChangedListeners.getInstance().cacheListChanged();
                         }
 
                         ShowSpoiler.getInstance().ImportSpoiler(false).setReadyListener(() -> {
@@ -181,6 +183,7 @@ public class CacheContextMenu {
 
     private void deleteSelectedCache() {
         ArrayList<String> GcCodeList = new ArrayList<>();
+        Coordinate referenceCoordinate = GlobalCore.getSelectedCache().getCoordinate();
         GcCodeList.add(GlobalCore.getSelectedCache().getGeoCacheCode());
         CacheListDAO.getInstance().delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
@@ -197,8 +200,9 @@ public class CacheContextMenu {
         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
         GlobalCore.setSelectedCache(null);
-
         CacheListChangedListeners.getInstance().cacheListChanged();
+        GeoCacheListListView.getInstance().setSelectedCacheVisible();
+
     }
 
     private void toggleShortClick() {

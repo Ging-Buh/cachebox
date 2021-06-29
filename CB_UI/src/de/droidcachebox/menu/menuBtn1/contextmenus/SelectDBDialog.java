@@ -30,6 +30,7 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.SelectDB;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.utils.log.Log;
 
@@ -93,13 +94,14 @@ public class SelectDBDialog extends AbstractAction {
             synchronized (Database.Data.cacheList) {
                 Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
             }
-            GlobalCore.setSelectedCache(null);
+            // GlobalCore.setSelectedCache(null);
 
             if (Database.Data.cacheList.size() > 0) {
                 GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
-                if (GlobalCore.getAutoResort()) {
+                if (GlobalCore.getAutoResort() && !Database.Data.cacheList.resortAtWork) {
                     synchronized (Database.Data.cacheList) {
-                        CacheWithWP ret = Database.Data.cacheList.resort(null, null);
+                        Log.debug(log, "sort CacheList by SelectDBDialog");
+                        CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                         if (ret != null && ret.getCache() != null) {
                             Log.debug(log, "returnFromSelectDB:Set selectedCache to " + ret.getCache().getGeoCacheCode() + " from valid position.");
                             ret.getCache().loadDetail();

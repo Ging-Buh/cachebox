@@ -17,7 +17,6 @@ package de.droidcachebox.database;
 
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.locator.Locator;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
@@ -43,45 +42,30 @@ public class CacheList extends MoveableList<Cache> {
 
     public Cache getCacheByIdFromCacheList(long cacheId) {
         for (int i = 0, n = size(); i < n; i++) {
-            Cache cache = get(i);
-            if (cache.generatedId == cacheId)
-                return cache;
+            if (get(i).generatedId == cacheId)
+                return get(i);
         }
         return null;
     }
 
-    public CacheWithWP resort(Coordinate selectedCoord, CacheWithWP selected) {
-
-        CacheWithWP retValue = null;
+    public CacheWithWP resort(Coordinate fromPos) {
 
         resortAtWork = true;
-        // Alle Distanzen aktualisieren
-        if (Locator.getInstance().isValid()) {
-            for (int i = 0, n = size(); i < n; i++) {
-                get(i).recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
-            }
-        } else {
-            // sort after distance from selected Cache
-            Coordinate fromPos = selectedCoord;
-            // avoid "illegal waypoint"
-            if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)) {
-                if (selected == null)
-                    fromPos = null;
-                else
-                    fromPos = selected.getCache().getCoordinate();
-            }
-            if (fromPos == null) {
-                resortAtWork = false;
-                return null;
-            }
-            for (int i = 0, n = size(); i < n; i++) {
-                get(i).recalculateAndGetDistance(CalculationType.FAST, true, fromPos);
-            }
+        // check fromPos
+        if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)) {
+            Log.debug("sort CacheList", "no sort: reference pos is zero.");
+            resortAtWork = false;
+            return null;
         }
-
+        Log.debug("sort CacheList", "" + fromPos);
+        // Alle Distanzen aktualisieren
+        for (int i = 0, n = size(); i < n; i++) {
+            get(i).recalculateAndGetDistance(CalculationType.FAST, true, fromPos);
+        }
+        // sortieren
         sort();
-
         // Nächsten Cache auswählen
+        CacheWithWP retValue = null;
         if (size() > 0) {
             Cache nextCache = null;
             for (int i = 0; i < size(); i++) {
@@ -129,13 +113,13 @@ public class CacheList extends MoveableList<Cache> {
             retValue = new CacheWithWP(nextCache, waypoint);
         }
 
-        CacheListChangedListeners.getInstance().cacheListChanged();
-
         // vorhandenen Parkplatz Cache nach oben schieben
         Cache park = getCacheByGcCodeFromCacheList("CBPark");
         if (park != null) {
             moveItemFirst(indexOf(park));
         }
+
+        CacheListChangedListeners.getInstance().cacheListChanged();
 
         // Cursor.Current = Cursors.Default;
         resortAtWork = false;

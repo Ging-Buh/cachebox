@@ -244,27 +244,10 @@ public class Location extends CoordinateGPS {
      * @author Longri
      */
     public enum ProviderType {
-        /**
-         * @uml.property name="gPS"
-         * @uml.associationEnd
-         */
         GPS,
-        /**
-         * @uml.property name="network"
-         * @uml.associationEnd
-         */
         Network,
-        /**
-         * @uml.property name="saved"
-         * @uml.associationEnd
-         */
         Saved,
-        /**
-         * @uml.property name="nULL"
-         * @uml.associationEnd
-         */
         NULL,
-
         any
     }
 
