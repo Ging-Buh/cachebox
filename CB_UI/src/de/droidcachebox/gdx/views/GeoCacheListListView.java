@@ -223,6 +223,9 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
         geoCacheListView.setAdapter(null);
     }
 
+    /*
+     for CacheListChangedListeners.CacheListChangedListener
+     */
     @Override
     public void cacheListChanged() {
         synchronized (Database.Data.cacheList) {
@@ -237,20 +240,19 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
         }
 
         if (GlobalCore.isSetSelectedCache()) {
-            boolean diverend = true;
-
             try {
-                diverend = GlobalCore.getSelectedCache().generatedId != ((CacheListViewItem) geoCacheListView.getSelectedItem()).getCache().generatedId;
+                if (GlobalCore.getSelectedCache().generatedId != ((CacheListViewItem) geoCacheListView.getSelectedItem()).getCache().generatedId) {
+                    setSelectedCacheVisible();
+                }
             } catch (Exception ignored) {
-            }
-
-            if (diverend) {
-                setSelectedCacheVisible();
             }
         }
 
         geoCacheListView.chkSlideBack();
     }
+    /*
+     end  CacheListChangedListeners.CacheListChangedListener
+     */
 
     @Override
     public void handleCacheChanged(Cache cache, Waypoint waypoint) {

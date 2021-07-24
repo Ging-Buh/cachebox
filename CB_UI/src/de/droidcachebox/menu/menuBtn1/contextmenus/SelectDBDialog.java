@@ -113,17 +113,16 @@ public class SelectDBDialog extends AbstractAction {
 
                 if (GlobalCore.getSelectedCache() == null) {
                     // set selectedCache from lastselected Cache
-                    String sGc = Config.LastSelectedCache.getValue();
-                    if (sGc != null && sGc.length() > 0) {
+                    String lastSelectedCache = Config.LastSelectedCache.getValue();
+                    if (lastSelectedCache != null && lastSelectedCache.length() > 0) {
                         for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
                             Cache c = Database.Data.cacheList.get(i);
 
-                            if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
+                            if (c.getGeoCacheCode().equalsIgnoreCase(lastSelectedCache)) {
                                 try {
                                     Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                                     c.loadDetail();
                                     GlobalCore.setSelectedCache(c);
-                                    CacheListChangedListeners.getInstance().cacheListChanged(); // may be empty
                                 } catch (Exception ex) {
                                     Log.err(log, "set last selected Cache", ex);
                                 }
@@ -139,12 +138,12 @@ public class SelectDBDialog extends AbstractAction {
                     Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from firstInDB");
                     c.loadDetail();
                     GlobalCore.setSelectedCache(c);
-                    CacheListChangedListeners.getInstance().cacheListChanged(); // may be empty
                 }
 
                 Log.debug(log, "selected cache: " + GlobalCore.getSelectedCache().getGeoCacheName() + " (" + GlobalCore.getSelectedCache().getGeoCacheCode() + ")");
             }
 
+            CacheListChangedListeners.getInstance().cacheListChanged(); // may be empty
             ViewManager.that.filterSetChanged();
             Log.debug(log, "filterSetChanged()");
 

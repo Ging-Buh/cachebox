@@ -26,7 +26,6 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.UnitFormatter;
-import de.droidcachebox.utils.log.Log;
 
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent {
     private static final String log = "CacheListViewItem";
@@ -76,6 +75,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         return mCache;
     }
 
+    /*
     public void setCache(Cache selectedCache) {
         Log.debug(log, "set selected Cache " + selectedCache.getGeoCacheCode());
         mCache = selectedCache;
@@ -87,6 +87,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
             liveCacheIcon = null;
         }
     }
+     */
 
     private void setDistanceString(String txt) {
         if (this.isDisposed())
@@ -212,6 +213,9 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         return false;
     }
 
+    /*
+    Overrides for  PositionChangedEvent
+     */
     @Override
     public void positionChanged() {
         setActLocator();
@@ -219,7 +223,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
     @Override
     public void orientationChanged() {
-        this.heading = Locator.getInstance().getHeading();
+        heading = Locator.getInstance().getHeading();
         setActLocator();
     }
 
@@ -236,6 +240,10 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     @Override
     public void speedChanged() {
     }
+
+    /*
+    end Overrides for  PositionChangedEvent
+     */
 
     /**
      * mit ausgeschaltener scissor berechnung
