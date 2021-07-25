@@ -123,13 +123,16 @@ public class GlobalCore implements SolverCacheInterface {
     }
 
     public static void setSelectedWaypoint(Cache cache, Waypoint waypoint) {
-        if (cache == null || cache.isDisposed())
-            return;
+        if (cache != null)
+            if (cache.isDisposed())
+                cache = null;
         setSelectedWaypoint(cache, waypoint, true);
-        if (!CoreData.cacheHistory.startsWith(cache.getGeoCacheCode())) {
-            CoreData.cacheHistory = cache.getGeoCacheCode() + (CoreData.cacheHistory.length() > 0 ? "," : "") + CoreData.cacheHistory.replace("," + cache.getGeoCacheCode(), "");
-            if (CoreData.cacheHistory.length() > 120) {
-                CoreData.cacheHistory = CoreData.cacheHistory.substring(0, CoreData.cacheHistory.lastIndexOf(","));
+        if (cache != null) {
+            if (!CoreData.cacheHistory.startsWith(cache.getGeoCacheCode())) {
+                CoreData.cacheHistory = cache.getGeoCacheCode() + (CoreData.cacheHistory.length() > 0 ? "," : "") + CoreData.cacheHistory.replace("," + cache.getGeoCacheCode(), "");
+                if (CoreData.cacheHistory.length() > 120) {
+                    CoreData.cacheHistory = CoreData.cacheHistory.substring(0, CoreData.cacheHistory.lastIndexOf(","));
+                }
             }
         }
     }
@@ -139,29 +142,30 @@ public class GlobalCore implements SolverCacheInterface {
         if (cache == null) {
             selectedCache = null;
             selectedWayPoint = null;
-            return;
-        }
+            CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
+        } else {
 
-        // remove Detail Info from old selectedCache
-        if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.getGeoCacheDetail() != null)) {
-            Log.debug(log, "[GlobalCore]setSelectedWaypoint: deleteDetail " + selectedCache.getGeoCacheCode());
-            selectedCache.deleteDetail(Config.showAllWaypoints.getValue());
-        }
+            // remove Detail Info from old selectedCache
+            if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.getGeoCacheDetail() != null)) {
+                Log.debug(log, "[GlobalCore]setSelectedWaypoint: deleteDetail " + selectedCache.getGeoCacheCode());
+                selectedCache.deleteDetail(Config.showAllWaypoints.getValue());
+            }
 
-        selectedCache = cache;
-        Log.debug(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
-        selectedWayPoint = waypoint;
+            selectedCache = cache;
+            Log.debug(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
+            selectedWayPoint = waypoint;
 
-        // load Detail Info if not available
-        if (selectedCache.getGeoCacheDetail() == null) {
-            Log.debug(log, "[GlobalCore]setSelectedWaypoint: loadDetail of " + cache.getGeoCacheCode());
-            selectedCache.loadDetail();
-        }
+            // load Detail Info if not available
+            if (selectedCache.getGeoCacheDetail() == null) {
+                Log.debug(log, "[GlobalCore]setSelectedWaypoint: loadDetail of " + cache.getGeoCacheCode());
+                selectedCache.loadDetail();
+            }
 
-        CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
+            CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
 
-        if (unsetAutoResort) {
-            setAutoResort(false);
+            if (unsetAutoResort) {
+                setAutoResort(false);
+            }
         }
 
         GL.that.renderOnce();
@@ -209,8 +213,7 @@ public class GlobalCore implements SolverCacheInterface {
     public static void MsgDownloadLimit() {
         if (GroundspeakAPI.APIError == 401) {
             GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("apiKeyInvalid"), Translation.get("chkApiState"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
-        }
-        else {
+        } else {
             GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
         }
     }

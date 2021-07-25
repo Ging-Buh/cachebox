@@ -74,6 +74,8 @@ public class SelectDBDialog extends AbstractAction {
     }
 
     private void returnFromSelectDB() {
+        GlobalCore.setSelectedCache(null);
+
         wd = WaitDialog.ShowWait("Load DB ...");
 
         Log.debug(log, "\r\nSwitch DB");
@@ -94,7 +96,6 @@ public class SelectDBDialog extends AbstractAction {
             synchronized (Database.Data.cacheList) {
                 Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
             }
-            // GlobalCore.setSelectedCache(null);
 
             if (Database.Data.cacheList.size() > 0) {
                 GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
@@ -139,11 +140,10 @@ public class SelectDBDialog extends AbstractAction {
                     c.loadDetail();
                     GlobalCore.setSelectedCache(c);
                 }
-
                 Log.debug(log, "selected cache: " + GlobalCore.getSelectedCache().getGeoCacheName() + " (" + GlobalCore.getSelectedCache().getGeoCacheCode() + ")");
             }
 
-            CacheListChangedListeners.getInstance().cacheListChanged(); // may be empty
+            CacheListChangedListeners.getInstance().cacheListChanged();
             ViewManager.that.filterSetChanged();
             Log.debug(log, "filterSetChanged()");
 

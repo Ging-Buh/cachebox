@@ -690,6 +690,10 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void handleCacheChanged(Cache cache, Waypoint waypoint) {
+        setSelectedCache(cache, waypoint);
+    }
+
+    public void setSelectedCache(Cache cache, Waypoint waypoint) {
         if (cache == null)
             return;
         try {
@@ -1094,7 +1098,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         super.onShow();
         CacheSelectionChangedListeners.getInstance().addListener(this);
         isNorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
-        handleCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+        setSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
     }
 
     /**

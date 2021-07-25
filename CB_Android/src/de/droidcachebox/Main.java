@@ -556,13 +556,15 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     public void handleCacheChanged(Cache cache, Waypoint waypoint) {
-        Log.info(sKlasse, "=> handleCacheChanged");
-        float distance = cache.recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
-        if (waypoint != null) {
-            distance = waypoint.getDistance();
-        }
-        if (distance > Config.SoundApproachDistance.getValue()) {
-            runOnUiThread(() -> GlobalCore.switchToCompassCompleted = false);
+        if (cache != null) {
+            Log.info(sKlasse, "=> handleCacheChanged");
+            float distance = cache.recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
+            if (waypoint != null) {
+                distance = waypoint.getDistance();
+            }
+            if (distance > Config.SoundApproachDistance.getValue()) {
+                runOnUiThread(() -> GlobalCore.switchToCompassCompleted = false);
+            }
         }
     }
 

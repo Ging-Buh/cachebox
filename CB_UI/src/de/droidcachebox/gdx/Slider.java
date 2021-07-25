@@ -116,7 +116,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         that = this;
         registerSkinChangedEvent();
         CacheSelectionChangedListeners.getInstance().addListener(this);
-        this.setClickable(true);
+        setClickable(true);
 
         QuickButtonMaxHeight = UiSizes.getInstance().getQuickButtonListHeight();
 
@@ -145,9 +145,9 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         mSlideBoxContent = new Box(this, "SlideBoxContent");
 
         mSlideBoxContent.setBackground(transparent);
-        this.addChild(mSlideBoxContent);
-        this.addChild(quickButtonList);
-        this.addChild(mSlideBox);
+        addChild(mSlideBoxContent);
+        addChild(quickButtonList);
+        addChild(mSlideBox);
 
         //register QuickButtonStateChangedEvent
         CB_UI_Settings.quickButtonShow.addSettingChangedListener(() -> {
@@ -206,6 +206,10 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
 
     @Override
     public void handleCacheChanged(final Cache cache, Waypoint waypoint) {
+        setSelectedCache(cache, waypoint);
+    }
+
+    public void setSelectedCache(final Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         actCache = cache; // normally these are the same objects
         actWaypoint = waypoint; // normally these are the same objects
@@ -247,6 +251,13 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                     header = header + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getGeoCacheName();
                 }
                 mLblCacheName.setText(header);
+            } else {
+                mLblCacheName.setText("");
+                geoCacheType.setBackground(this.getBackground());
+                for (int i = 0; i < 5; i++) {
+                    last5Logs[i].setBackground(this.getBackground());
+                }
+                mSlideBoxContent.removeChildsDirect();
             }
         });
     }
@@ -417,9 +428,10 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
             waypointDesc.addListener(onItemSizeChanged);
             mSlideBoxContent.addChild(waypointDesc);
         } else {
-            if (waypointDesc != null)
+            if (waypointDesc != null) {
                 waypointDesc.dispose();
-            waypointDesc = null;
+                waypointDesc = null;
+            }
         }
 
         layout();
