@@ -53,12 +53,12 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
     private boolean neu;
     private CustomAdapter lvAdapter;
     private Solver solver;
-    private Cache cache;
+    private Cache currentCache;
 
     private SolverView2() {
         super(ViewManager.leftTab.getContentRec(), "SolverView2");
         // Log.debug(log, "Create SolverView2 => " + toString());
-        cache = null;
+        currentCache = null;
         neu = false;
         backListener = backString -> {
             SolverZeile zeile;
@@ -105,19 +105,19 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
         // Reload when
         // - cache has changed
         // - Solver 1 has changed
-        if ((GlobalCore.getSelectedCache() != cache) || ((cache != null) && (cache.getSolver1Changed()))) {
-            cache = GlobalCore.getSelectedCache();
+        if ((GlobalCore.getSelectedCache() != currentCache) || ((currentCache != null) && (currentCache.getSolver1Changed()))) {
+            currentCache = GlobalCore.getSelectedCache();
             intiList();
-            cache.setSolver1Changed(false);
+            currentCache.setSolver1Changed(false);
         }
     }
 
     private void intiList() {
-        if (cache == null) {
+        if (currentCache == null) {
             solver = new Solver("", GlobalCore.getInstance());
         } else {
-            cache = GlobalCore.getSelectedCache();
-            String s = Database.getSolver(cache);
+            currentCache = GlobalCore.getSelectedCache();
+            String s = Database.getSolver(currentCache);
             if (s == null)
                 s = "";
             solver = new Solver(s, GlobalCore.getInstance());
@@ -202,26 +202,26 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
     }
 
     @Override
-    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
-        if (cache == this.cache)
+    public void handleCacheChanged(Cache selectedCache, Waypoint waypoint) {
+        if (selectedCache == currentCache)
             return; // Cache hat sich nicht geändert!
         // Solver speichern
-        if (this.cache != null)
-            Database.setSolver(this.cache, solver.getSolverString());
+        if (currentCache != null)
+            Database.setSolver(currentCache, solver.getSolverString());
         // nächsten Cache laden
-        this.cache = cache;
+        currentCache = selectedCache;
         intiList();
     }
 
     private void ChangeLine() {
         if (solver == null || selectedIndex < 0) return;
-        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, solver.get(selectedIndex).getOrgText(), true, DataType.None);
+        SolverDialog2 solverDialog = new SolverDialog2(currentCache, solver, solver.get(selectedIndex).getOrgText(), true, DataType.None);
         neu = false;
         solverDialog.show(backListener);
     }
 
     private void InsertLine() {
-        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, "", true, DataType.None);
+        SolverDialog2 solverDialog = new SolverDialog2(currentCache, solver, "", true, DataType.None);
         neu = true;
         solverDialog.show(backListener);
     }
@@ -322,7 +322,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
         setAdapter(null);
         lvAdapter = null;
         solver = null;
-        cache = null;
+        currentCache = null;
         super.dispose();
         Log.debug(log, "SolverView2 disposed");
     }

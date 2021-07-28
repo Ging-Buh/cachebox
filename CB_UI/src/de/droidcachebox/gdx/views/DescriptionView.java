@@ -95,6 +95,7 @@ public class DescriptionView extends CB_View_Base implements CacheSelectionChang
             if (dontAsk) {
                 // simply download, if Premium,..
                 GL.that.RunOnGL(() -> CacheContextMenu.getInstance().reloadSelectedCache());
+                selectedCache.setApiStatus(Cache.IS_FULL); // hack to prevent endless looping, hopefully does not go into Database
             } else {
                 showDownloadButton();
             }

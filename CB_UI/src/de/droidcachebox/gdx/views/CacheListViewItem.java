@@ -52,7 +52,6 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         cacheInfo.setZeroPos();
         distance.setColor(COLOR.getFontColor());
         this.addChild(cacheInfo);
-        PositionChangedListeners.addListener(this);
 
         float size = this.getHeight() / 2.3f;
         ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
@@ -68,6 +67,8 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
             liveCacheIcon = new Sprite(Sprites.LiveBtn.get(0));
             liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
         }
+
+        PositionChangedListeners.addListener(this);
 
     }
 

@@ -142,7 +142,7 @@ public class GlobalCore implements SolverCacheInterface {
         if (cache == null) {
             selectedCache = null;
             selectedWayPoint = null;
-            CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
+            CacheSelectionChangedListeners.getInstance().fireEvent(null, null);
         } else {
 
             // remove Detail Info from old selectedCache

@@ -258,11 +258,15 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
     public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
+            Log.debug(log,"handle geoCache " + cache.getGeoCacheCode());
             CacheListViewItem selItem = (CacheListViewItem) geoCacheListView.getSelectedItem();
             if (selItem != null && GlobalCore.getSelectedCache().generatedId != selItem.getCache().generatedId) {
                 // TODO Run if ListView Initial and after showing
                 geoCacheListView.runIfListInitial(this::setSelectedCacheVisible);
             }
+        }
+        else {
+            Log.debug(log,"geoCache is nothing");
         }
     }
 

@@ -74,11 +74,10 @@ public class SelectDBDialog extends AbstractAction {
     }
 
     private void returnFromSelectDB() {
-        GlobalCore.setSelectedCache(null);
 
         wd = WaitDialog.ShowWait("Load DB ...");
+        Log.debug(log, "\r\nSwitch DB " + Config.DatabaseName.getValue());
 
-        Log.debug(log, "\r\nSwitch DB");
         Thread thread = new Thread(() -> {
             Database.Data.cacheList.clear();
             Database.Data.sql.close();
@@ -97,12 +96,15 @@ public class SelectDBDialog extends AbstractAction {
                 Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
             }
 
+            GlobalCore.setSelectedCache(null);
+
             if (Database.Data.cacheList.size() > 0) {
                 GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
                 if (GlobalCore.getAutoResort() && !Database.Data.cacheList.resortAtWork) {
                     synchronized (Database.Data.cacheList) {
-                        Log.debug(log, "sort CacheList by SelectDBDialog");
-                        CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                        Log.debug(log, "sort CacheList");
+                        CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
+                        // null -- GlobalCore.getSelectedCache().getCoordinate()
                         if (ret != null && ret.getCache() != null) {
                             Log.debug(log, "returnFromSelectDB:Set selectedCache to " + ret.getCache().getGeoCacheCode() + " from valid position.");
                             ret.getCache().loadDetail();
@@ -145,7 +147,6 @@ public class SelectDBDialog extends AbstractAction {
 
             CacheListChangedListeners.getInstance().cacheListChanged();
             ViewManager.that.filterSetChanged();
-            Log.debug(log, "filterSetChanged()");
 
             wd.dismis();
         });

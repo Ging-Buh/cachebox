@@ -45,8 +45,9 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
         selectChangeThread = new Thread(() -> {
             for (CacheSelectionChangedListener listener : this) {
                 try {
+                    Log.debug("'Selected Cache change' by ", listener.toString());
                     listener.handleCacheChanged(selectedCache, waypoint);
-                    Log.debug("'Selected Cache changed' handled by ", listener.toString());
+                    Log.debug("'Selected Cache changed' done. ", listener.toString());
                 } catch (Exception ex) {
                     Log.err(listener.toString(), selectedCache == null ? "Geocache = null" : ex.toString());
                 }
