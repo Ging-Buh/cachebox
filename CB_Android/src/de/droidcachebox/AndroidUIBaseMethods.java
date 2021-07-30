@@ -13,8 +13,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.text.HtmlCompat;
 import android.widget.Toast;
+import androidx.core.text.HtmlCompat;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
 import de.droidcachebox.activities.GcApiLogin;
@@ -52,7 +52,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.support.v4.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
+import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 
 public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private static final String sKlasse = "PlatformListener";

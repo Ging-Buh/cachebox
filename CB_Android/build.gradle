@@ -48,13 +48,13 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:15.0'
 
-    implementation "com.android.support:support-compat:28.0.0"
+    implementation 'androidx.core:core:1.0.0'
 }
 
 
 android {
     buildToolsVersion "28.0.3"
-    compileSdkVersion 28
+    compileSdkVersion 30
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -74,7 +74,7 @@ android {
     defaultConfig {
         applicationId "de.droidcachebox"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 30
         // versionCode = Integer.decode(buildTime())
         // versionName = buildTime()
         setVersionCode(20200910)
