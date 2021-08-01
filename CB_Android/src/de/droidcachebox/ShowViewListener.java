@@ -44,7 +44,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O_MR1;
 
 public class ShowViewListener implements PlatformUIBase.IShowViewListener {
@@ -681,7 +680,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             Uri uri;
-            if (android.os.Build.VERSION.SDK_INT >= N) {
+            if (android.os.Build.VERSION.SDK_INT >= 24) {
                 uri = FileProvider.getUriForFile(mainActivity, "de.droidcachebox.android.fileprovider", new java.io.File(tempMediaPathAndName));
             } else {
                 uri = Uri.fromFile(new java.io.File(tempMediaPathAndName));

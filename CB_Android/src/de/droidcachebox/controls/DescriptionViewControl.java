@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import androidx.core.content.FileProvider;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
@@ -40,78 +42,76 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private static ProgressDialog pd;
     private static DescriptionViewControl that;
     private static Cache aktCache;
+    private static String message = "";
+    private static Activity staticMainActivity;
     // private static int downloadTryCounter = 0;
     private static final DialogInterface.OnClickListener downloadCacheDialogResult = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int button) {
-            switch (button) {
-                case -1:
-                    Cache newCache;
+            if (button == -1) {
+                Cache newCache;
 
-                    ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(aktCache);
-                    if (geoCacheRelateds.size() > 0) {
-                        GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
-                        newCache = geoCacheRelated.cache;
+                ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(aktCache);
+                if (geoCacheRelateds.size() > 0) {
+                    GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
+                    newCache = geoCacheRelated.cache;
 
-                        synchronized (Database.Data.cacheList) {
-                            Database.Data.sql.beginTransaction();
+                    synchronized (Database.Data.cacheList) {
+                        Database.Data.sql.beginTransaction();
 
-                            Database.Data.cacheList.remove(aktCache);
-                            Database.Data.cacheList.add(newCache);
+                        Database.Data.cacheList.remove(aktCache);
+                        Database.Data.cacheList.add(newCache);
 
-                            new CacheDAO().UpdateDatabase(newCache);
-                            newCache.setLongDescription("");
+                        new CacheDAO().UpdateDatabase(newCache);
+                        newCache.setLongDescription("");
 
-                            LogDAO logDAO = new LogDAO();
-                            for (LogEntry apiLog : geoCacheRelated.logs) logDAO.WriteToDatabase(apiLog);
+                        LogDAO logDAO = new LogDAO();
+                        for (LogEntry apiLog : geoCacheRelated.logs) logDAO.WriteToDatabase(apiLog);
 
-                            WaypointDAO waypointDAO = new WaypointDAO();
-                            for (int i = 0, n = newCache.getWayPoints().size(); i < n; i++) {
-                                Waypoint waypoint = newCache.getWayPoints().get(i);
+                        WaypointDAO waypointDAO = new WaypointDAO();
+                        for (int i = 0, n = newCache.getWayPoints().size(); i < n; i++) {
+                            Waypoint waypoint = newCache.getWayPoints().get(i);
 
-                                boolean update = true;
+                            boolean update = true;
 
-                                // dont refresh wp if aktCache.wp is user changed
-                                for (int j = 0, m = aktCache.getWayPoints().size(); j < m; j++) {
-                                    Waypoint wp = aktCache.getWayPoints().get(j);
-                                    if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
-                                        if (wp.isUserWaypoint)
-                                            update = false;
-                                        break;
-                                    }
+                            // dont refresh wp if aktCache.wp is user changed
+                            for (int j = 0, m = aktCache.getWayPoints().size(); j < m; j++) {
+                                Waypoint wp = aktCache.getWayPoints().get(j);
+                                if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
+                                    if (wp.isUserWaypoint)
+                                        update = false;
+                                    break;
                                 }
-
-                                if (update)
-                                    waypointDAO.WriteToDatabase(waypoint, false);
                             }
 
-                            ImageDAO imageDAO = new ImageDAO();
-                            for (ImageEntry image : geoCacheRelated.images) imageDAO.writeToDatabase(image, false);
-
-                            Database.Data.sql.setTransactionSuccessful();
-                            Database.Data.sql.endTransaction();
-
-                            Database.Data.updateCacheCountForGPXFilenames();
+                            if (update)
+                                waypointDAO.WriteToDatabase(waypoint, false);
                         }
-                        aktCache = newCache;
-                        setCache(newCache);
-                        if (!isPremiumMember()) {
-                            String s = "Download successful!\n";
-                            fetchMyCacheLimits();
-                            s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
-                            s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-                            MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-                        }
+                        ImageDAO imageDAO = new ImageDAO();
+                        for (ImageEntry image : geoCacheRelated.images) imageDAO.writeToDatabase(image, false);
+
+                        Database.Data.sql.setTransactionSuccessful();
+                        Database.Data.sql.endTransaction();
+
+                        Database.Data.updateCacheCountForGPXFilenames();
                     }
+                    aktCache = newCache;
+                    setCache(newCache);
+                    if (!isPremiumMember()) {
+                        String s = "Download successful!\n";
+                        fetchMyCacheLimits();
+                        s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
+                        s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-                    break;
+                        MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                    }
+                }
             }
             if (dialog != null)
                 dialog.dismiss();
         }
     };
-    private static String message = "";
     private final static Handler onlineSearchReadyHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -138,7 +138,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
         }
     };
-
+    private static Activity mainActivity;
     private WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -187,11 +187,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             s += "Full Downloads left: " + fetchMyUserInfos().remaining + "\n";
                             message = s;
                             onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(3));
-                            return;
                         } else {
                             // call the download directly
                             onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(4));
-                            return;
                         }
                     }
                 };
@@ -225,15 +223,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         }
     };
 
-    private Activity mainActivity;
-    private static Activity staticMainActivity;
-
     public DescriptionViewControl(Context context) {
         super(context);
         mainActivity = (Activity) context;
         staticMainActivity = mainActivity;
         setDrawingCacheEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             setAlwaysDrawnWithCacheEnabled(false);
         }
 
@@ -242,7 +237,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         getSettings().setBuiltInZoomControls(true);
         getSettings().setJavaScriptEnabled(true);
         getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-
+        /*
+         getSettings().setDomStorageEnabled(true);
+         getSettings().setLoadsImagesAutomatically(true);
+         if (Build.VERSION.SDK_INT >= 21) {
+         getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+         }
+        */
         setWebViewClient(webViewClient);
         that = this;
         setFocusable(false);
@@ -373,13 +374,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             // In HTML5, the action attribute is no longer required.
             do {
                 Attribute attribute = attrs.next();
-                File result = new File(Config.workPath + "/data/Attributes/" + attribute.getImageName() + ".png");
-                if (result.exists()) {
+                File attributesImageFile = new File(Config.workPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+                if (attributesImageFile.exists()) {
                     // the url is missing the value, so we give that appended in the name and the blank
-                    sb.append("<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
-                }
-                else {
-                    Log.err(sKlasse,"missing file:<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">");
+                    // String toAppend = "<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">";
+                    String contentString = FileProvider.getUriForFile(mainActivity, "de.droidcachebox.android.fileprovider", attributesImageFile).toString();
+                    String toAppend = "<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"" + contentString + "\" value=\"1\">";
+                    sb.append(toAppend);
+                    Log.debug(sKlasse, "Attrib: " + toAppend);
+                } else {
+                    Log.err(sKlasse, "missing file:<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + attributesImageFile.getAbsolutePath() + "\" value=\"1\">");
                 }
             } while (attrs.hasNext());
             sb.append("</form>");
