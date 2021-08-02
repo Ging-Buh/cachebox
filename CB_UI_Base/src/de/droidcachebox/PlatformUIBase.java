@@ -226,6 +226,10 @@ public class PlatformUIBase {
     public static String removeHtmlEntyties(String text) {
         return methods.removeHtmlEntyties(text);
     }
+    
+    public static String getContentUrl(String localFile) {
+        return methods.getContentUrl(localFile);
+    }
 
     public interface IShowViewListener {
         void showView(ViewID viewID, int left, int top, int right, int bottom);
@@ -281,6 +285,8 @@ public class PlatformUIBase {
         void handleExternalRequest();
 
         String removeHtmlEntyties(String text);
+
+        String getContentUrl(String localFile);
     }
 
 }

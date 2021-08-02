@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.widget.Toast;
+import androidx.core.content.FileProvider;
 import androidx.core.text.HtmlCompat;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
@@ -45,6 +46,7 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Timer;
@@ -333,6 +335,11 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         else return text.replaceAll("\\<[^>]*>","");
          */
         return HtmlCompat.fromHtml(text, FROM_HTML_MODE_LEGACY).toString();
+    }
+
+    @Override
+    public String getContentUrl(String localFileName) {
+        return FileProvider.getUriForFile(mainActivity, "de.droidcachebox.android.fileprovider", new File(localFileName)).toString();
     }
 
     private void positionLatLon(String externalRequestLatLon) {

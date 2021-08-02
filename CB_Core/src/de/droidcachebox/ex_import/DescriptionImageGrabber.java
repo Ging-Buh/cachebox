@@ -15,6 +15,7 @@
  */
 package de.droidcachebox.ex_import;
 
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database;
@@ -130,12 +131,12 @@ public class DescriptionImageGrabber {
     }
 
     /**
-     * @param Cache
-     * @param html
-     * @param suppressNonLocalMedia
-     * @param NonLocalImages
-     * @param NonLocalImagesUrl
-     * @return
+     * @param Cache ?
+     * @param html ?
+     * @param suppressNonLocalMedia ?
+     * @param NonLocalImages ?
+     * @param NonLocalImagesUrl ?
+     * @return ?
      */
     public static String resolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages, LinkedList<String> NonLocalImagesUrl) {
         /*
@@ -154,7 +155,7 @@ public class DescriptionImageGrabber {
         }
 
         if (baseUri == null) {
-            Cache.setUrl("http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGeoCacheCode());
+            Cache.setUrl("https://geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGeoCacheCode());
             try {
                 baseUri = URI.create(Cache.getUrl());
             } catch (Exception exc) {
@@ -191,7 +192,8 @@ public class DescriptionImageGrabber {
                             if (idx >= (img.start + delta) && (idx <= img.ende + delta)) {
                                 String head = html.substring(0, img.start + delta);
                                 String tail = html.substring(img.ende + delta);
-                                String uri = "file://" + localFile;
+                                // String uri = "file://" + localFile;
+                                String uri = PlatformUIBase.getContentUrl(localFile);
                                 String body = img.text.replace(src, uri);
 
                                 delta += (uri.length() - src.length());
