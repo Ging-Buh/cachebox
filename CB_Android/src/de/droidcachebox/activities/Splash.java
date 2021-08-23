@@ -33,9 +33,8 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.*;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidFiles;
+import com.badlogic.gdx.backends.android.DefaultAndroidFiles;
 import de.droidcachebox.*;
 import de.droidcachebox.components.CopyAssetFolder;
 import de.droidcachebox.database.AndroidDB;
@@ -60,6 +59,7 @@ import de.droidcachebox.views.forms.MessageBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -195,8 +195,7 @@ public class Splash extends Activity {
                         if (uri.getPath() != null) {
                             if (uri.getPath().endsWith(".gpx") || uri.getPath().endsWith(".zip")) {
                                 GpxPath = uri.getPath();
-                            }
-                            else if (uri.getPath().endsWith(".map")) {
+                            } else if (uri.getPath().endsWith(".map")) {
                                 GpxPath = uri.getPath();
                             }
                         }
@@ -318,16 +317,26 @@ public class Splash extends Activity {
             PermissionCheck.checkNeededPermissions(this);
         }
 
-        String privateFilesDirectory = getFilesDir().getAbsolutePath(); // /data/data/de.droidcachebox/files
-        Gdx.files = new AndroidFiles(getAssets(), privateFilesDirectory); // will be set automatically to this values in init of gdx's AndroidApplication
+        File filesDirectory = this.getFilesDir();// workaround for Android bug #10515463
+        // String privateFilesDirectory = filesDirectory.getAbsolutePath(); // /data/data/de.droidcachebox/files
+        Gdx.files = new DefaultAndroidFiles(this.getAssets(), this, true); // will be set automatically to this values in init of gdx's AndroidApplication
 
         // read some setting from Android Preferences (Platform
-        workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
-        setWorkPathFromRedirectionFileIfExists();
-        askForWorkPath = androidSetting.getBoolean("AskAgain", false)
-                || !FileIO.directoryExists((Environment.getExternalStorageDirectory().getPath() + "/CacheBox"))
-                || FileIO.fileExists(workPath + "/askAgain.txt");
-        showSandbox = androidSetting.getBoolean("showSandbox", false);
+
+        if (android.os.Build.VERSION.SDK_INT < 30) {
+            workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
+            setWorkPathFromRedirectionFileIfExists();
+            askForWorkPath = androidSetting.getBoolean("AskAgain", false)
+                    || !FileIO.directoryExists(Environment.getExternalStorageDirectory().getPath() + "/CacheBox")
+                    || FileIO.fileExists(workPath + "/askAgain.txt");
+            showSandbox = androidSetting.getBoolean("showSandbox", false);
+        } else {
+            workPath = androidSetting.getString("WorkPath", getExternalFilesDir(null).getAbsolutePath());
+            if (workPath.endsWith("CacheBox")) {
+                workPath = getExternalFilesDir(null).getAbsolutePath();
+                saveWorkPath();
+            }
+        }
 
         CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO);
         Log.info(log, "onStart called");
@@ -346,7 +355,7 @@ public class Splash extends Activity {
             languagePath = "data/lang/" + locale + "/strings.ini";
         }
         try {
-            new Translation(workPath, FileType.Internal).loadTranslation(languagePath);
+            new Translation(workPath).loadTranslation(languagePath);
         } catch (Exception ignored) {
         }
     }

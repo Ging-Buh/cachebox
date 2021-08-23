@@ -13,6 +13,17 @@ public class AndroidContentClipboard implements Clipboard {
     }
 
     @Override
+    public boolean hasContents() {
+        if (cm.hasPrimaryClip()) {
+            ClipData cd = cm.getPrimaryClip();
+            if (cd.getItemCount() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String getContents() {
         contents = "";
         if (cm.hasPrimaryClip()) {

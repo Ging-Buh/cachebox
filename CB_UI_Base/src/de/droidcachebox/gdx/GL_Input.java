@@ -60,6 +60,18 @@ public class GL_Input implements InputProcessor {
     }
 
     @Override
+    public boolean scrolled(float amountX, float amountY) {
+        // InputProcessor Implementation scrolled
+        float scrollSizeX = (UiSizes.getInstance().getClickToleranz() + 10) * amountX;
+        float scrollSizeY = (UiSizes.getInstance().getClickToleranz() + 10) * amountY;
+        int Pointer = (scrollSizeX > 0) ? GL_View_Base.MOUSE_WHEEL_POINTER_UP : GL_View_Base.MOUSE_WHEEL_POINTER_DOWN;
+        onTouchDownBase(MouseX, MouseY, Pointer, -1);
+        onTouchDraggedBase((int) (MouseX - scrollSizeX), (int) (MouseY - scrollSizeY), Pointer);
+        onTouchUpBase((int) (MouseX - scrollSizeX), (int) (MouseY - scrollSizeY), Pointer, -1);
+        return true;
+    }
+
+    @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         // InputProcessor Implementation touchUp
         return onTouchUpBase(x, y, pointer, button);
@@ -119,17 +131,6 @@ public class GL_Input implements InputProcessor {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        // InputProcessor Implementation scrolled
-        int scrollSize = (UiSizes.getInstance().getClickToleranz() + 10) * amount;
-        int Pointer = (scrollSize > 0) ? GL_View_Base.MOUSE_WHEEL_POINTER_UP : GL_View_Base.MOUSE_WHEEL_POINTER_DOWN;
-        onTouchDownBase(MouseX, MouseY, Pointer, -1);
-        onTouchDraggedBase(MouseX - scrollSize, MouseY - scrollSize, Pointer);
-        onTouchUpBase(MouseX - scrollSize, MouseY - scrollSize, Pointer, -1);
-        return true;
     }
 
     // TouchEreignisse die von der View gesendet werden

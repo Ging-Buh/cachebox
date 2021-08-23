@@ -40,7 +40,6 @@ import android.os.PowerManager;
 import android.view.Menu;
 import android.view.Window;
 import android.widget.LinearLayout;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import de.droidcachebox.activities.CBForeground;
@@ -764,7 +763,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     private void checkTranslationIsLoaded() {
         if (!Translation.isInitialized()) {
-            Translation trans = new Translation(Config.workPath, FileType.Internal);
+            Translation trans = new Translation(Config.workPath);
             try {
                 trans.loadTranslation(Config.Sel_LanguagePath.getValue());
             } catch (Exception e) {

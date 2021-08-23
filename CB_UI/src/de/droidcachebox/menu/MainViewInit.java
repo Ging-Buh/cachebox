@@ -15,7 +15,6 @@
  */
 package de.droidcachebox.menu;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -249,7 +248,7 @@ public class MainViewInit extends MainViewBase {
                 Config.AcceptChanges();
             }
 
-            Translation trans = new Translation(Config.workPath, FileType.Internal);
+            Translation trans = new Translation(Config.workPath);
             try {
                 trans.loadTranslation(Config.Sel_LanguagePath.getValue());
             } catch (Exception e) {

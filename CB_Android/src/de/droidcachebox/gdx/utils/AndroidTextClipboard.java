@@ -12,6 +12,11 @@ public class AndroidTextClipboard implements Clipboard {
     }
 
     @Override
+    public boolean hasContents() {
+        return cm.getText().length() > 0;
+    }
+
+    @Override
     public String getContents() {
 
         contents = (String) cm.getText();

@@ -80,7 +80,10 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"));
         final ResolveInfo resolveInfo = mainActivity.getPackageManager()
                 .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        defaultBrowserPackageName = resolveInfo.activityInfo.packageName;
+        if (resolveInfo != null)
+            defaultBrowserPackageName = resolveInfo.activityInfo.packageName;
+        else
+            defaultBrowserPackageName = "android";
     }
 
     @Override
@@ -221,8 +224,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
             intent.setDataAndType(uri, "text/html");
             if (!defaultBrowserPackageName.equals("android")) {
                 intent.setPackage(defaultBrowserPackageName);
-            }
-            else {
+            } else {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
             }

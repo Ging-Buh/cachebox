@@ -46,13 +46,12 @@ public class Translation {
      * Constructor
      *
      * @param workPath ?
-     * @param internal true for loading from asset
      */
-    public Translation(String workPath, FileType internal) {
+    public Translation(String workPath) {
         that = this;
         mWorkPath = workPath;
         mMissingStringList = new Array<>();
-        mFiletype = internal;
+        mFiletype = FileType.Internal;
     }
 
     /**
