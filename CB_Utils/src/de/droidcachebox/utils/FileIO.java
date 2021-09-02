@@ -98,7 +98,7 @@ public class FileIO {
         if (extPos > -1)
             ext = folder.substring(extPos);
 
-        if (ext.length() > 0 && ext.contains(".")) {
+        if (ext.contains(".")) {
             folder = folder.replace(ext, "");
         }
 
