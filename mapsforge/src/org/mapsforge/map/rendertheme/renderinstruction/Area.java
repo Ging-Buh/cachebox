@@ -1,7 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2019 devemux86
+ * Copyright 2014-2020 devemux86
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,11 +18,13 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,6 +41,7 @@ public class Area extends RenderInstruction {
     private final Paint fill;
     private final int level;
     private final String relativePathPrefix;
+    private final XmlThemeResourceProvider resourceProvider;
     private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
@@ -46,11 +50,12 @@ public class Area extends RenderInstruction {
     private float strokeWidth;
 
     public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-                XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
+                XmlPullParser pullParser, int level, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
 
         this.level = level;
         this.relativePathPrefix = relativePathPrefix;
+        this.resourceProvider = resourceProvider;
 
         this.fill = graphicFactory.createPaint();
         this.fill.setColor(Color.TRANSPARENT);
@@ -129,7 +134,7 @@ public class Area extends RenderInstruction {
             Paint fillPaint = getFillPaint();
             if (shaderBitmap == null && !bitmapInvalid) {
                 try {
-                    shaderBitmap = createBitmap(relativePathPrefix, src);
+                    shaderBitmap = createBitmap(relativePathPrefix, src, resourceProvider);
                     if (shaderBitmap != null) {
                         fillPaint.setBitmapShader(shaderBitmap);
                         shaderBitmap.decrementRefCount();
@@ -139,7 +144,9 @@ public class Area extends RenderInstruction {
                 }
             }
 
-            fillPaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
+            if (Parameters.NUMBER_OF_THREADS == 1) {
+                fillPaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
+            }
 
             renderCallback.renderArea(renderContext, fillPaint, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, way);
         }

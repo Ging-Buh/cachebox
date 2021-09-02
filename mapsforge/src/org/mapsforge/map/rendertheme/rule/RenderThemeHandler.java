@@ -1,9 +1,10 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2021 devemux86
  * Copyright 2017 usrusr
  * Copyright 2017 MarcelHeckel
+ * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -56,8 +57,7 @@ public final class RenderThemeHandler {
                                              XmlRenderTheme xmlRenderTheme) throws IOException, XmlPullParserException {
         XmlPullParser pullParser = getXmlPullParserFactory().newPullParser();
 
-        RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
-                xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme, pullParser);
+        RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel, xmlRenderTheme, pullParser);
         InputStream inputStream = null;
         try {
             inputStream = xmlRenderTheme.getRenderThemeAsStream();
@@ -88,7 +88,6 @@ public final class RenderThemeHandler {
     private int level;
     private final XmlPullParser pullParser;
     private String qName;
-    private final String relativePathPrefix;
     private RenderTheme renderTheme;
     private final Stack<Rule> ruleStack = new Stack<Rule>();
     private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
@@ -96,13 +95,11 @@ public final class RenderThemeHandler {
     private XmlRenderThemeStyleMenu renderThemeStyleMenu;
     private XmlRenderThemeStyleLayer currentLayer;
 
-    private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix,
-                               XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
+    private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
         super();
         this.pullParser = pullParser;
         this.graphicFactory = graphicFactory;
         this.displayModel = displayModel;
-        this.relativePathPrefix = relativePathPrefix;
         this.xmlRenderTheme = xmlRenderTheme;
     }
 
@@ -179,7 +176,7 @@ public final class RenderThemeHandler {
             } else if ("area".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 Area area = new Area(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
-                        this.relativePathPrefix);
+                        this.xmlRenderTheme.getRelativePathPrefix(), this.xmlRenderTheme.getResourceProvider());
                 if (isVisible(area)) {
                     this.currentRule.addRenderingInstruction(area);
                 }
@@ -225,14 +222,14 @@ public final class RenderThemeHandler {
             } else if ("line".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 Line line = new Line(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
-                        this.relativePathPrefix);
+                        this.xmlRenderTheme.getRelativePathPrefix(), this.xmlRenderTheme.getResourceProvider());
                 if (isVisible(line)) {
                     this.currentRule.addRenderingInstruction(line);
                 }
             } else if ("lineSymbol".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 LineSymbol lineSymbol = new LineSymbol(this.graphicFactory, this.displayModel, qName,
-                        pullParser, this.relativePathPrefix);
+                        pullParser, this.xmlRenderTheme.getRelativePathPrefix(), this.xmlRenderTheme.getResourceProvider());
                 if (isVisible(lineSymbol)) {
                     this.currentRule.addRenderingInstruction(lineSymbol);
                 }
@@ -266,7 +263,7 @@ public final class RenderThemeHandler {
             } else if ("symbol".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 Symbol symbol = new Symbol(this.graphicFactory, this.displayModel, qName, pullParser,
-                        this.relativePathPrefix);
+                        this.xmlRenderTheme.getRelativePathPrefix(), this.xmlRenderTheme.getResourceProvider());
                 if (isVisible(symbol)) {
                     this.currentRule.addRenderingInstruction(symbol);
                 }

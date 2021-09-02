@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
- * Copyright 2016-2017 devemux86
+ * Copyright 2016-2021 devemux86
+ * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,36 +16,47 @@
  */
 package org.mapsforge.map.android.rendertheme;
 
-import android.content.Context;
+import android.content.res.AssetManager;
 import android.text.TextUtils;
 import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
+ * An AssetsRenderTheme allows for customizing the rendering style of the map
+ * via an XML from the Android assets folder.
  */
 public class AssetsRenderTheme implements XmlRenderTheme {
 
-    private final String assetName;
-    private final InputStream inputStream;
+    private final AssetManager assetManager;
+    private final String fileName;
     private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
+    private XmlThemeResourceProvider resourceProvider;
 
-    /*
-     * Creates AssetsRenderTheme without menuCallback for compatibility with version 0.4.x
+    /**
+     * @param assetManager       the Android asset manager.
+     * @param relativePathPrefix the prefix for all relative resource paths.
+     * @param fileName           the path to the XML render theme file.
      */
-    public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
-        this(context, relativePathPrefix, fileName, null);
+    public AssetsRenderTheme(AssetManager assetManager, String relativePathPrefix, String fileName) {
+        this(assetManager, relativePathPrefix, fileName, null);
     }
 
-    public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
-        this.assetName = fileName;
+    /**
+     * @param assetManager       the Android asset manager.
+     * @param relativePathPrefix the prefix for all relative resource paths.
+     * @param fileName           the path to the XML render theme file.
+     * @param menuCallback       the interface callback to create a settings menu on the fly.
+     */
+    public AssetsRenderTheme(AssetManager assetManager, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) {
+        this.assetManager = assetManager;
         this.relativePathPrefix = relativePathPrefix;
-        this.inputStream = context.getAssets().open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.assetName);
+        this.fileName = fileName;
         this.menuCallback = menuCallback;
     }
 
@@ -56,7 +68,12 @@ public class AssetsRenderTheme implements XmlRenderTheme {
             return false;
         }
         AssetsRenderTheme other = (AssetsRenderTheme) obj;
-        if (!Utils.equals(this.assetName, other.assetName)) {
+        try {
+            if (getRenderThemeAsStream() != other.getRenderThemeAsStream()) {
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
         if (!Utils.equals(this.relativePathPrefix, other.relativePathPrefix)) {
@@ -64,7 +81,6 @@ public class AssetsRenderTheme implements XmlRenderTheme {
         }
         return true;
     }
-
 
     @Override
     public XmlRenderThemeMenuCallback getMenuCallback() {
@@ -77,15 +93,26 @@ public class AssetsRenderTheme implements XmlRenderTheme {
     }
 
     @Override
-    public InputStream getRenderThemeAsStream() {
-        return this.inputStream;
+    public InputStream getRenderThemeAsStream() throws IOException {
+        return this.assetManager.open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.fileName);
+    }
+
+    @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        return this.resourceProvider;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
+        InputStream inputStream = null;
+        try {
+            inputStream = getRenderThemeAsStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        result = prime * result + ((inputStream == null) ? 0 : inputStream.hashCode());
         result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
         return result;
     }
@@ -93,5 +120,10 @@ public class AssetsRenderTheme implements XmlRenderTheme {
     @Override
     public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
         this.menuCallback = menuCallback;
+    }
+
+    @Override
+    public void setResourceProvider(XmlThemeResourceProvider resourceProvider) {
+        this.resourceProvider = resourceProvider;
     }
 }

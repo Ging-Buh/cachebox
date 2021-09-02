@@ -1,6 +1,7 @@
 /*
- * Copyright 2017-2019 devemux86
+ * Copyright 2017-2020 devemux86
  * Copyright 2019 Matthew Egeler
+ * Copyright 2020 Lukas Bai
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,15 +20,27 @@ public final class Parameters {
 
     public enum ParentTilesRendering {QUALITY, SPEED, OFF}
 
+    public enum SymbolScaling {ALL, POI}
+
     /**
      * If true will use anti-aliasing in rendering.
      */
     public static boolean ANTI_ALIASING = true;
 
     /**
+     * If true the <code>FrameBufferHA3</code> will be used instead of default <code>FrameBufferHA2}</code>.
+     */
+    public static boolean FRAME_BUFFER_HA3 = true;
+
+    /**
+     * Process layer scroll events.
+     */
+    public static boolean LAYER_SCROLL_EVENT = false;
+
+    /**
      * Maximum buffer size for map files.
      */
-    public static int MAXIMUM_BUFFER_SIZE = 8000000;
+    public static int MAXIMUM_BUFFER_SIZE = 10000000;
 
     /**
      * The default number of threads is one greater than the number of processors, as one thread is
@@ -49,6 +62,11 @@ public final class Parameters {
      * determines when this will be used.
      */
     public static boolean SQUARE_FRAME_BUFFER = true;
+
+    /**
+     * Symbol scaling mode.
+     */
+    public static SymbolScaling SYMBOL_SCALING = SymbolScaling.POI;
 
     private Parameters() {
         throw new IllegalStateException();

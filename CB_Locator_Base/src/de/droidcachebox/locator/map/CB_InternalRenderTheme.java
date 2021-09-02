@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import de.droidcachebox.utils.log.Log;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.InputStream;
 
@@ -44,7 +45,17 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
     }
 
     @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        return null;
+    }
+
+    @Override
     public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
+    }
+
+    @Override
+    public void setResourceProvider(XmlThemeResourceProvider resourceProvider) {
+
     }
 
     @Override

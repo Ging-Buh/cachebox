@@ -1,7 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2020 devemux86
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,11 +19,15 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 
 import java.io.IOException;
@@ -84,13 +89,45 @@ public abstract class RenderInstruction {
         this.graphicFactory = graphicFactory;
     }
 
-    protected Bitmap createBitmap(String relativePathPrefix, String src)
+    protected Rectangle computeBoundary(int width, int height, Position position) {
+        // Center by default
+        double xFactor = -0.5, yFactor = -0.5;
+
+        if (position == Position.ABOVE_LEFT || position == Position.LEFT || position == Position.BELOW_LEFT)
+            xFactor = -1;
+        else if (position == Position.ABOVE_RIGHT || position == Position.RIGHT || position == Position.BELOW_RIGHT)
+            xFactor = 0;
+
+        if (position == Position.ABOVE_LEFT || position == Position.ABOVE || position == Position.ABOVE_RIGHT)
+            yFactor = -1;
+        else if (position == Position.BELOW_LEFT || position == Position.BELOW || position == Position.BELOW_RIGHT)
+            yFactor = 0;
+
+        double left = xFactor * width;
+        double top = yFactor * width;
+        return new Rectangle(left, top, left + width, top + height);
+    }
+
+    protected Bitmap createBitmap(String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider)
             throws IOException {
         if (null == src || src.isEmpty()) {
             return null;
         }
 
-        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, percent);
+        float symbolScale = 1;
+        switch (Parameters.SYMBOL_SCALING) {
+            case ALL:
+                if (this instanceof Symbol || this instanceof LineSymbol) {
+                    symbolScale = DisplayModel.symbolScale;
+                }
+                break;
+            case POI:
+                if (this instanceof Symbol) {
+                    symbolScale = DisplayModel.symbolScale;
+                }
+                break;
+        }
+        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, resourceProvider, (int) width, (int) height, (int) (percent * symbolScale));
     }
 
     public abstract void destroy();

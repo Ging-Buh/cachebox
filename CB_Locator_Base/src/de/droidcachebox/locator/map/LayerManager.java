@@ -211,10 +211,8 @@ public class LayerManager {
                         } else if (lowerCaseFileName.endsWith("bsh")) {
                             layer = new BshLayer(pathAndName);
                         } else continue;
-                        if (layer != null) {
-                            layers.add(layer);
-                            alreadyAdded.add(fileName);
-                        }
+                        layers.add(layer);
+                        alreadyAdded.add(fileName);
                     } catch (Exception ex) {
                         Log.err(log, "addToLayers: " + directoryName + "/" + fileName + ex.toString());
                     }

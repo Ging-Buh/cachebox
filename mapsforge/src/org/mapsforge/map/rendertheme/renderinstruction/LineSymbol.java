@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,11 +20,14 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -39,29 +43,33 @@ public class LineSymbol extends RenderInstruction {
     private static final float REPEAT_GAP_DEFAULT = 200f;
     private static final float REPEAT_START_DEFAULT = 30f;
 
-    private boolean alignCenter;
     private Bitmap bitmap;
     private boolean bitmapInvalid;
     private Display display;
     private float dy;
     private final Map<Byte, Float> dyScaled;
+    private Position position;
     private int priority;
     private final String relativePathPrefix;
     private boolean repeat;
     private float repeatGap;
     private float repeatStart;
+    private final XmlThemeResourceProvider resourceProvider;
     private boolean rotate;
     private Scale scale = Scale.STROKE;
     private String src;
 
     public LineSymbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-                      XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
+                      XmlPullParser pullParser, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
 
         this.display = Display.IFSPACE;
         this.rotate = true;
         this.relativePathPrefix = relativePathPrefix;
+        this.resourceProvider = resourceProvider;
         this.dyScaled = new HashMap<>();
+        // Probably not a good default, but backwards compatible
+        this.position = Position.BELOW_RIGHT;
 
         extractValues(elementName, pullParser);
     }
@@ -84,7 +92,11 @@ public class LineSymbol extends RenderInstruction {
             if (SRC.equals(name)) {
                 this.src = value;
             } else if (ALIGN_CENTER.equals(name)) {
-                this.alignCenter = Boolean.parseBoolean(value);
+                // Deprecated way to say position="center"
+                boolean alignCenter = Boolean.parseBoolean(value);
+                if (alignCenter) {
+                    this.position = Position.CENTER;
+                }
             } else if (CAT.equals(name)) {
                 this.category = value;
             } else if (DISPLAY.equals(name)) {
@@ -111,6 +123,8 @@ public class LineSymbol extends RenderInstruction {
                 // no-op
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (POSITION.equals(name)) {
+                this.position = Position.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -130,7 +144,7 @@ public class LineSymbol extends RenderInstruction {
 
         if (this.bitmap == null && !this.bitmapInvalid) {
             try {
-                this.bitmap = createBitmap(relativePathPrefix, src);
+                this.bitmap = createBitmap(relativePathPrefix, src, resourceProvider);
             } catch (IOException ioException) {
                 this.bitmapInvalid = true;
             }
@@ -142,7 +156,8 @@ public class LineSymbol extends RenderInstruction {
         }
 
         if (this.bitmap != null) {
-            renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, this.alignCenter,
+            Rectangle boundary = computeBoundary(this.bitmap.getWidth(), this.bitmap.getHeight(), this.position);
+            renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, boundary,
                     this.repeat, this.repeatGap, this.repeatStart, this.rotate, way);
         }
     }

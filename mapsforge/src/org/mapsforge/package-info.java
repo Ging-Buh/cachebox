@@ -1,8 +1,9 @@
 /**
- * Copy of source from Mapsforge! Version 12
+ * Copy of source from Mapsforge! Version 0.16 + updates until 29.7.20121
+ * copied subdirs from:
  * project <core> mapsforge-core
- * project <reader> mapsforge-map-reader
  * project <map> mapsforge-map
+ * project <reader> mapsforge-map-reader
  */
 
 package org.mapsforge;
