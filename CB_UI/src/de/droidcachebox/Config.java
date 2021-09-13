@@ -20,12 +20,11 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBox;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.rpc.CB_Rpc_Settings;
 import de.droidcachebox.settings.SettingsClass;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Config_Core;
 
-public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings {
+public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, LocatorSettings {
     public static SettingsClass settings;
     private static Config that;
 

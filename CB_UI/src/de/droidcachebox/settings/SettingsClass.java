@@ -7,9 +7,8 @@ import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.rpc.CB_Rpc_Settings;
 
-public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings {
+public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, LocatorSettings {
 
     private static final long serialVersionUID = 7330937438116889415L;
 

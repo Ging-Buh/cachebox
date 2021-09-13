@@ -15,24 +15,60 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.core.GroundspeakAPI.APIError;
+import static de.droidcachebox.core.GroundspeakAPI.ERROR;
+import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.fetchPocketQuery;
+import static de.droidcachebox.core.GroundspeakAPI.fetchPocketQueryList;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+import static de.droidcachebox.core.GroundspeakAPI.isPremiumMember;
+import static de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_CBS;
+import static de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_GCV;
+
 import android.text.InputType;
+
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
-import de.droidcachebox.core.GroundspeakAPI.*;
+import de.droidcachebox.core.GroundspeakAPI.PQ;
 import de.droidcachebox.database.Database;
-import de.droidcachebox.ex_import.*;
+import de.droidcachebox.ex_import.BreakawayImportThread;
+import de.droidcachebox.ex_import.GPXFileImporter;
+import de.droidcachebox.ex_import.Importer;
+import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_CheckBox.OnCheckChangedListener;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
+import de.droidcachebox.gdx.controls.CollapseBox;
 import de.droidcachebox.gdx.controls.CollapseBox.IAnimatedHeightChangedListener;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.ImportAnimation;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
+import de.droidcachebox.gdx.controls.ProgressBar;
+import de.droidcachebox.gdx.controls.ScrollBox;
+import de.droidcachebox.gdx.controls.Spinner;
+import de.droidcachebox.gdx.controls.SpinnerAdapter;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
 import de.droidcachebox.gdx.controls.list.Adapter;
@@ -45,20 +81,15 @@ import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.rpc.RpcAnswer;
-import de.droidcachebox.rpc.RpcAnswer_GetExportList;
-import de.droidcachebox.rpc.RpcClientCB;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.Copy;
+import de.droidcachebox.utils.CopyRule;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.ProgressChangedEvent;
+import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_CBS;
-import static de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu.MI_IMPORT_GCV;
 
 public class Import extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "Import";
@@ -132,18 +163,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
         }
     };
-    private ArrayList<RpcAnswer_GetExportList.ListItem> cbServerExportList;
-    private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
-        @Override
-        public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
-            if (checkImportFromCBServer.isChecked()) {
-                refreshCBServerList();
-                CBServerCollapseBox.expand();
-            } else {
-                CBServerCollapseBox.collapse();
-            }
-        }
-    };
+
     private CB_RectF itemRec;
     private CB_RectF itemRecCBServer;
     private float itemHeight = -1;
@@ -157,7 +177,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     public Import(int importType) {
         super("importActivity");
         // um direkt gleich den Import für eine bestimmte API starten zu können
-        CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
+        CBS_LINE_ACTIVE = false;
         IMAGE_LINE_ACTIVE = true;
         switch (importType) {
             case MI_IMPORT_CBS:
@@ -216,7 +236,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         if (importType == MI_IMPORT_CBS) {
             checkImportFromCBServer.setChecked(true);
             checkImportFromCBServer.setVisible(true);
-            refreshCBServerList();
             CBServerCollapseBox.expand();
         } else if (importType == MI_IMPORT_GCV) {
             checkBoxGcVote.setChecked(true);
@@ -387,7 +406,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         refreshCBServerList.setY(margin);
         refreshCBServerList.setText(Translation.get("refreshCBServerList"));
         refreshCBServerList.setClickHandler((v, x, y, pointer, button) -> {
-            refreshCBServerList();
             return true;
         });
 
@@ -670,7 +688,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         checkBoxPreloadSpoiler.setChecked(Config.CacheSpoilerData.getValue());
         checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? Config.ImportGpx.getValue() : false);
         checkImportPQfromGC.setOnCheckChangedListener(checkImportPQfromGC_CheckStateChanged);
-        checkImportFromCBServer.setOnCheckChangedListener(checkImportFromCBServer_CheckStateChanged);
         checkBoxGcVote.setChecked(GCV_LINE_ACTIVE ? Config.ImportRatings.getValue() : false);
 
         checkImportPQfromGC.setChecked(PQ_LINE_ACTIVE ? Config.ImportPQsFromGeocachingCom.getValue() : false);
@@ -762,62 +779,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 }
 
                 lvPQs.setEmptyMsgItem(Translation.get("LoadPqList") + s);
-
-            }
-
-        }, 0, ANIMATION_TICK);
-
-    }
-
-    private void refreshCBServerList() {
-
-        lvCBServer.setAdapter(null);
-        lvCBServer.notifyDataSetChanged();
-        refreshCBServerList.disable();
-
-        new Thread(() -> {
-            RpcClientCB rpc = new RpcClientCB();
-            RpcAnswer answer = rpc.getExportList();
-
-            if (answer != null) {
-                if (answer instanceof RpcAnswer_GetExportList) {
-                    cbServerExportList = ((RpcAnswer_GetExportList) answer).getList();
-                    // MessageBox.Show("RpcAntwort: " + answer.toString());
-                } else {
-                    cbServerExportList = null;
-                }
-            } else {
-                cbServerExportList = null;
-            }
-
-            lvCBServer.setAdapter(new CustomAdapterCBServer());
-            lvCBServer.notifyDataSetChanged();
-
-            stopAnimationTimer();
-            lvCBServer.setEmptyMsgItem(Translation.get("EmptyCBServerList"));
-
-            refreshCBServerList.enable();
-        }).start();
-
-        mAnimationTimer = new Timer();
-        mAnimationTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                TimerMethod();
-            }
-
-            private void TimerMethod() {
-                animationValue++;
-
-                if (animationValue > 5)
-                    animationValue = 0;
-
-                StringBuilder s = new StringBuilder();
-                for (int i = 0; i < animationValue; i++) {
-                    s.append(".");
-                }
-
-                lvCBServer.setEmptyMsgItem(Translation.get("LoadCBServerList") + s);
 
             }
 
@@ -1009,35 +970,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                     }
 
-                    if (checkImportFromCBServer.isChecked()) {
-                        // Import from CBServer
-                        System.gc();
-                        ImportCBServer importCBServer = new ImportCBServer();
-
-                        long startTime = System.currentTimeMillis();
-
-                        Database.Data.sql.beginTransaction();
-                        try {
-
-                            importCBServer.importCBServer(cbServerExportList, ip, true);
-
-                            Database.Data.sql.setTransactionSuccessful();
-                        } catch (Exception exc) {
-                            exc.printStackTrace();
-                        }
-                        Database.Data.sql.endTransaction();
-
-                        if (BreakawayImportThread.isCanceled()) {
-                            cancelImport();
-                            ip.ProgressChangeMsg("", "");
-                            return;
-                        }
-
-                        Log.debug(log, "Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
-
-                        System.gc();
-                    }
-
                     if (checkBoxGcVote.isChecked()) {
                         dis.setAnimationType(AnimationType.Download);
                         Database.Data.sql.beginTransaction();
@@ -1205,41 +1137,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         Layout();
     }
 
-    static class ImportAPIListItem extends ListViewItemBackground {
-
-        ImportAPIListItem(CB_RectF rec, int Index, final RpcAnswer_GetExportList.ListItem item) {
-            super(rec, Index, "");
-
-            CB_Label lblName = new CB_Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
-            CB_Label lblInfo = new CB_Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
-
-            lblName.setFont(Fonts.getNormal());
-            lblInfo.setFont(Fonts.getSmall());
-
-            lblName.setText(item.getDescription());
-
-            // SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-            // String dateString = postFormater.format(pq.lastGenerated);
-            // DecimalFormat df = new DecimalFormat("###.##");
-            // String FileSize = df.format(pq.sizeMB) + " MB";
-            String Count = "   Count=" + item.getCacheCount();
-            lblInfo.setText(Count);
-
-            // lblInfo.setText("---");
-
-            CB_CheckBox chk = new CB_CheckBox();
-            chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UiSizes.getInstance().getMargin());
-            chk.setY(this.getHalfHeight() - chk.getHalfHeight());
-            chk.setChecked(false);
-            chk.setOnCheckChangedListener((view, isChecked) -> item.setDownload(isChecked));
-
-            this.addChild(lblName);
-            this.addChild(lblInfo);
-            this.addChild(chk);
-        }
-
-    }
-
     public static class Import_PqListItem extends ListViewItemBackground {
 
         Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
@@ -1296,42 +1193,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
 
             return new Import_PqListItem(itemRec, position, pq);
-
-        }
-
-        @Override
-        public float getItemSize(int position) {
-            if (itemHeight == -1)
-                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
-            return itemHeight;
-        }
-
-    }
-
-    public class CustomAdapterCBServer implements Adapter {
-
-        CustomAdapterCBServer() {
-        }
-
-        @Override
-        public int getCount() {
-            if (cbServerExportList != null)
-                return cbServerExportList.size();
-            else
-                return 0;
-        }
-
-        @Override
-        public ListViewItemBase getView(int position) {
-            final RpcAnswer_GetExportList.ListItem it = cbServerExportList.get(position);
-            if (itemRecCBServer == null) {
-                itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
-                float itemWidth = CBServerCollapseBox.getInnerWidth();
-
-                itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
-            }
-
-            return new ImportAPIListItem(itemRecCBServer, position, it);
 
         }
 
