@@ -13,7 +13,7 @@ def static buildTime() {
 dependencies {
 
     implementation project(path: ':CB_Utils', transitive: false)
-    implementation project(transitive: false, path: ':mapsforge')
+    implementation project(path: ':mapsforge', transitive: false)
     implementation project(path: ':CB_UI_Base', transitive: false)
     implementation project(path: ':CB_Locator_Base', transitive: false)
     implementation project(path: ':CB_Core', transitive: false)
@@ -75,8 +75,8 @@ android {
         targetSdkVersion 30
         // versionCode = Integer.decode(buildTime())
         // versionName = buildTime()
-        setVersionCode(20210730)
-        setVersionName("20210730REL")
+        setVersionCode(20210913)
+        setVersionName("20210913REL")
         multiDexEnabled true
     }
 

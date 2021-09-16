@@ -16,15 +16,42 @@
 
 package de.droidcachebox;
 
-import de.droidcachebox.settings.*;
-import de.droidcachebox.utils.Config_Core;
-
-import static de.droidcachebox.settings.SettingCategory.*;
-import static de.droidcachebox.settings.SettingModus.*;
+import static de.droidcachebox.settings.SettingCategory.API;
+import static de.droidcachebox.settings.SettingCategory.CarMode;
+import static de.droidcachebox.settings.SettingCategory.Compass;
+import static de.droidcachebox.settings.SettingCategory.Folder;
+import static de.droidcachebox.settings.SettingCategory.Gps;
+import static de.droidcachebox.settings.SettingCategory.Internal;
+import static de.droidcachebox.settings.SettingCategory.LiveMap;
+import static de.droidcachebox.settings.SettingCategory.Login;
+import static de.droidcachebox.settings.SettingCategory.Map;
+import static de.droidcachebox.settings.SettingCategory.Misc;
+import static de.droidcachebox.settings.SettingCategory.QuickList;
+import static de.droidcachebox.settings.SettingCategory.RememberAsk;
+import static de.droidcachebox.settings.SettingCategory.Skin;
+import static de.droidcachebox.settings.SettingCategory.Sounds;
+import static de.droidcachebox.settings.SettingCategory.Templates;
+import static de.droidcachebox.settings.SettingModus.DEVELOPER;
+import static de.droidcachebox.settings.SettingModus.EXPERT;
+import static de.droidcachebox.settings.SettingModus.NEVER;
+import static de.droidcachebox.settings.SettingModus.NORMAL;
 import static de.droidcachebox.settings.SettingStoreType.Global;
 import static de.droidcachebox.settings.SettingStoreType.Platform;
 import static de.droidcachebox.settings.SettingUsage.ACB;
 import static de.droidcachebox.settings.SettingUsage.ALL;
+
+import de.droidcachebox.settings.Audio;
+import de.droidcachebox.settings.SettingBool;
+import de.droidcachebox.settings.SettingFile;
+import de.droidcachebox.settings.SettingFolder;
+import de.droidcachebox.settings.SettingInt;
+import de.droidcachebox.settings.SettingIntArray;
+import de.droidcachebox.settings.SettingLongString;
+import de.droidcachebox.settings.SettingStoreType;
+import de.droidcachebox.settings.SettingString;
+import de.droidcachebox.settings.SettingStringArray;
+import de.droidcachebox.settings.SettingsAudio;
+import de.droidcachebox.utils.Config_Core;
 
 /**
  * @author Longri
@@ -95,6 +122,7 @@ public interface CB_UI_Settings {
     SettingsAudio GPS_lose = new SettingsAudio("GPS_lose", Sounds, EXPERT, new Audio("data/sound/GPS_lose.ogg", false, false, 1.0f), Global, ACB);
     SettingsAudio GPS_fix = new SettingsAudio("GPS_fix", Sounds, EXPERT, new Audio("data/sound/GPS_Fix.ogg", false, false, 1.0f), Global, ACB);
     SettingsAudio AutoResortSound = new SettingsAudio("AutoResortSound", Sounds, EXPERT, new Audio("data/sound/AutoResort.ogg", false, false, 1.0f), Global, ACB);
+    SettingBool allowLocationService = new SettingBool("AllowLocationService", Gps, NORMAL, false, Global, ACB);
 
     SettingBool ImportGpx = new SettingBool("ImportGpx", API, NEVER, false, Global, ACB);
     SettingBool SearchWithoutFounds = new SettingBool("SearchWithoutFounds", API, NEVER, true, Global, ACB);

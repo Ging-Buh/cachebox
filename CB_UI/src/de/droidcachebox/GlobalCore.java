@@ -15,8 +15,22 @@
  */
 package de.droidcachebox;
 
+import static de.droidcachebox.core.API_ErrorEventHandlerList.handleApiKeyError;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+import static de.droidcachebox.utils.Config_Core.br;
+
+import android.net.Uri;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
+import java.io.BufferedReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
@@ -41,17 +55,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.BufferedReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static de.droidcachebox.core.API_ErrorEventHandlerList.handleApiKeyError;
-import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
-import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * @author ging-buh
@@ -84,6 +87,7 @@ public class GlobalCore implements SolverCacheInterface {
     private static Waypoint selectedWayPoint = null;
     private static int CurrentRevision;
     private static String VersionPrefix;
+    public static Uri selectedUri = null;
 
     private GlobalCore() {
         super();

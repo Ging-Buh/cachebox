@@ -1,5 +1,8 @@
 package de.droidcachebox;
 
+import static android.content.Intent.ACTION_VIEW;
+import static android.os.Build.VERSION_CODES.O_MR1;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,15 +12,33 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewParent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import androidx.core.content.FileProvider;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.components.CacheNameView;
 import de.droidcachebox.controls.DownSlider;
 import de.droidcachebox.controls.MicrophoneView;
@@ -38,13 +59,6 @@ import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.views.DescriptionView;
 import de.droidcachebox.views.ViewGL;
-
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static android.content.Intent.ACTION_VIEW;
-import static android.os.Build.VERSION_CODES.O_MR1;
 
 public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private final static String sKlasse = "ShowViewListener";
@@ -209,7 +223,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 cacheNameView.setVisibility(View.INVISIBLE);
 
             if (viewID.getType() == ViewID.UI_Type.Activity) {
-                showActivity(viewID);
+                showActivity(viewID.getID());
             } else if (!(currentView == null) && viewID == aktViewId) {
                 currentView.onShow();
             } else {
@@ -295,13 +309,13 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
     }
 
-    private ViewOptionsMenu getView(ViewID ID) {
+    private ViewOptionsMenu getView(ViewID id) {
         // first check if view on List
-        if (ID.getID() < ViewList.size()) {
-            return ViewList.get(ID.getID());
+        if (id.getID() < ViewList.size()) {
+            return ViewList.get(id.getID());
         }
 
-        if (ID == ViewConst.DESCRIPTION_VIEW) {
+        if (id == ViewConst.DESCRIPTION_VIEW) {
             if (descriptionView != null) {
                 return descriptionView;
             } else {
@@ -312,16 +326,16 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         return null;
     }
 
-    private void showActivity(ViewID ID) {
-        if (ID == ViewConst.NAVIGATE_TO) {
+    private void showActivity(int id) {
+        if (id == ViewID.NAVIGATE_TO) {
             navigate();
-        } else if (ID == ViewConst.VOICE_REC) {
+        } else if (id == ViewID.VOICE_REC) {
             recVoice();
-        } else if (ID == ViewConst.TAKE_PHOTO) {
+        } else if (id == ViewID.TAKE_PHOTO) {
             takePhoto();
-        } else if (ID == ViewConst.VIDEO_REC) {
+        } else if (id == ViewID.VIDEO_REC) {
             recVideo();
-        } else if (ID == ViewConst.Share) {
+        } else if (id == ViewID.WhatsApp) {
             shareInfos();
         }
     }

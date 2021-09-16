@@ -1,5 +1,8 @@
 package de.droidcachebox;
 
+import static android.content.Intent.ACTION_VIEW;
+import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +14,26 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.DocumentsContract;
 import android.widget.Toast;
+
 import androidx.core.content.FileProvider;
 import androidx.core.text.HtmlCompat;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
+
+import java.io.File;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.droidcachebox.activities.CBForeground;
 import de.droidcachebox.activities.GcApiLogin;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
@@ -39,26 +55,22 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.settings.*;
+import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.settings.SettingBool;
+import de.droidcachebox.settings.SettingInt;
+import de.droidcachebox.settings.SettingString;
+import de.droidcachebox.settings.SettingsActivity;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.File;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static android.content.Intent.ACTION_VIEW;
-import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 
 public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private static final String sKlasse = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
+    private static final int ACTION_OPEN_DOCUMENT_TREE = 6518;
     private AndroidApplication androidApplication;
     private Activity mainActivity;
     private Main mainMain;
@@ -71,6 +83,9 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private CancelWaitDialog wd;
     private LocationManager locationManager;
     private String defaultBrowserPackageName;
+    private IChanged handleAllowLocationServiceConfigChanged;
+    private AndroidEventListener handlingGetDirectoryAccess;
+    private Intent locationServiceIntent;
 
     AndroidUIBaseMethods(Main main) {
         androidApplication = main;
@@ -84,6 +99,10 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
             defaultBrowserPackageName = resolveInfo.activityInfo.packageName;
         else
             defaultBrowserPackageName = "android";
+
+        handleAllowLocationServiceConfigChanged = () -> changeLocationService();
+        Config.allowLocationService.addSettingChangedListener(handleAllowLocationServiceConfigChanged);
+
     }
 
     @Override
@@ -340,8 +359,69 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     }
 
     @Override
-    public String getContentUrl(String localFileName) {
+    public String getFileProviderContentUrl(String localFileName) {
         return FileProvider.getUriForFile(mainActivity, "de.droidcachebox.android.fileprovider", new File(localFileName)).toString();
+    }
+
+    @Override
+    public void startService() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Config.allowLocationService.getValue()) {
+                locationServiceIntent = new Intent(androidApplication, CBForeground.class);
+                androidApplication.startForegroundService(locationServiceIntent);
+            }
+        }
+        /*
+        // not necessary
+        else {
+            // startService(new Intent(this, CBForeground.class));
+        }
+         */
+    }
+
+    public void stopService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!Config.allowLocationService.getValue()) {
+                androidApplication.stopService(locationServiceIntent);
+            }
+        }
+    }
+
+    private void changeLocationService() {
+        if (Config.allowLocationService.getValue()) {
+            startService();
+        }
+        else {
+            stopService();
+        }
+    }
+
+    @Override
+    public void getDirectoryAccess(String _DirectoryToAccess) {
+        // Choose a directory using the system's file picker.
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
+        intent.putExtra(DocumentsContract.EXTRA_INFO, _DirectoryToAccess);
+        if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
+            if (handlingGetDirectoryAccess == null)
+                handlingGetDirectoryAccess = (requestCode, resultCode, resultData) -> {
+                    androidApplication.removeAndroidEventListener(handlingGetDirectoryAccess);
+                    // Intent Result Record Video
+                    if (requestCode == ACTION_OPEN_DOCUMENT_TREE) {
+                        if (resultCode == Activity.RESULT_OK) {
+                            // The result data contains a URI for the document or directory that the user selected.
+                            GlobalCore.selectedUri = null;
+                            if (resultData != null) {
+                                GlobalCore.selectedUri = resultData.getData();
+                                // Perform actions using its URI.
+                            }
+                        }
+                    }
+                };
+        }
+        androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
+        mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
     }
 
     private void positionLatLon(String externalRequestLatLon) {

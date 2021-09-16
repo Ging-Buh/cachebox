@@ -15,15 +15,11 @@
  */
 package de.droidcachebox.ex_import;
 
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.core.CB_Core_Settings;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.Database_Core.Parameters;
-import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.*;
-import de.droidcachebox.utils.log.Log;
+import static de.droidcachebox.core.GroundspeakAPI.APIError;
+import static de.droidcachebox.core.GroundspeakAPI.ERROR;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.downloadImageListForGeocache;
+import static de.droidcachebox.utils.http.Download.download;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -32,8 +28,20 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.utils.http.Download.download;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.FilenameFilter;
+import de.droidcachebox.utils.SDBM_Hash;
+import de.droidcachebox.utils.log.Log;
 
 public class DescriptionImageGrabber {
     private static final String log = "DescriptionImageGrabber";
@@ -193,7 +201,7 @@ public class DescriptionImageGrabber {
                                 String head = html.substring(0, img.start + delta);
                                 String tail = html.substring(img.ende + delta);
                                 // String uri = "file://" + localFile;
-                                String uri = PlatformUIBase.getContentUrl(localFile);
+                                String uri = PlatformUIBase.getFileProviderContentUrl(localFile);
                                 String body = img.text.replace(src, uri);
 
                                 delta += (uri.length() - src.length());

@@ -15,6 +15,8 @@
  */
 package de.droidcachebox;
 
+import static de.droidcachebox.core.GroundspeakAPI.getSettingsAccessToken;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -31,7 +33,8 @@ import android.hardware.SensorManager;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
-import android.location.*;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -40,9 +43,16 @@ import android.os.PowerManager;
 import android.view.Menu;
 import android.view.Window;
 import android.widget.LinearLayout;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import de.droidcachebox.activities.CBForeground;
+
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.activities.Splash;
 import de.droidcachebox.controls.HorizontalListView;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -64,29 +74,30 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.AndroidTexturePacker;
 import de.droidcachebox.gdx.utils.AndroidContentClipboard;
 import de.droidcachebox.gdx.utils.AndroidTextClipboard;
-import de.droidcachebox.locator.*;
+import de.droidcachebox.locator.AndroidLocatorBaseMethods;
+import de.droidcachebox.locator.GPS;
+import de.droidcachebox.locator.GpsStateChangeEventList;
+import de.droidcachebox.locator.GpsStrength;
 import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.Locator.CompassType;
+import de.droidcachebox.locator.LocatorBasePlatFormMethods;
 import de.droidcachebox.maps.BRouter;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.ActivityUtils;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.MathUtils.CalculationType;
+import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
 import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.views.forms.PleaseWaitMessageBox;
-
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static de.droidcachebox.core.GroundspeakAPI.getSettingsAccessToken;
 
 @SuppressWarnings("deprecation")
 public class Main extends AndroidApplication implements CacheSelectionChangedListeners.CacheSelectionChangedListener, LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
@@ -335,16 +346,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         }
 
         initializeLocatorBaseMethods();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(new Intent(this, CBForeground.class));
-        }
-        /*
-        // not necessary
-        else {
-            // startService(new Intent(this, CBForeground.class));
-        }
-         */
+        PlatformUIBase.startService();
 
         isCreated = true;
         Log.info(sKlasse, "onCreate <=");

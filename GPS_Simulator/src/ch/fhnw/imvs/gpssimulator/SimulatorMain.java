@@ -11,25 +11,11 @@
 
 package ch.fhnw.imvs.gpssimulator;
 
-import ch.fhnw.imvs.gpssimulator.components.*;
-import ch.fhnw.imvs.gpssimulator.data.GPSData;
-import ch.fhnw.imvs.gpssimulator.nmea.*;
-import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.Methods;
-import de.droidcachebox.database.SQLiteInterface;
-import de.droidcachebox.settings.SettingBase;
 import org.apache.log4j.Logger;
 import org.mapsforge.map.swing.view.MapPanel;
 
-import javax.bluetooth.BluetoothStateException;
-import javax.bluetooth.LocalDevice;
-import javax.bluetooth.UUID;
-import javax.microedition.io.Connector;
-import javax.microedition.io.StreamConnection;
-import javax.microedition.io.StreamConnectionNotifier;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.DataOutputStream;
@@ -37,6 +23,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+
+import javax.bluetooth.BluetoothStateException;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.UUID;
+import javax.microedition.io.Connector;
+import javax.microedition.io.StreamConnection;
+import javax.microedition.io.StreamConnectionNotifier;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import ch.fhnw.imvs.gpssimulator.components.BluetoothPanel;
+import ch.fhnw.imvs.gpssimulator.components.CoursePanel;
+import ch.fhnw.imvs.gpssimulator.components.GeneralPanel;
+import ch.fhnw.imvs.gpssimulator.components.LocationPanel;
+import ch.fhnw.imvs.gpssimulator.components.QualityPanel;
+import ch.fhnw.imvs.gpssimulator.components.XMLPanel;
+import ch.fhnw.imvs.gpssimulator.data.GPSData;
+import ch.fhnw.imvs.gpssimulator.nmea.GGA;
+import ch.fhnw.imvs.gpssimulator.nmea.GLL;
+import ch.fhnw.imvs.gpssimulator.nmea.GSA;
+import ch.fhnw.imvs.gpssimulator.nmea.NMEASentence;
+import ch.fhnw.imvs.gpssimulator.nmea.RMC;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.PlatformUIBase.Methods;
+import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.settings.SettingBase;
 
 public class SimulatorMain {
 
@@ -212,6 +227,21 @@ public class SimulatorMain {
 
             @Override
             public void quit() {
+            }
+
+            @Override
+            public String getFileProviderContentUrl(String localFile) {
+                return localFile;
+            }
+
+            @Override
+            public void startService() {
+
+            }
+
+            @Override
+            public void getDirectoryAccess(String _DirectoryToAccess) {
+
             }
 
         });

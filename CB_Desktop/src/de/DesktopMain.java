@@ -3,6 +3,15 @@ package de;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+
+import java.awt.Frame;
+import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
@@ -34,14 +43,6 @@ import de.droidcachebox.settings.SettingString;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.Log;
-
-import java.awt.*;
-import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 //import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 
@@ -311,6 +312,21 @@ public class DesktopMain {
             public String removeHtmlEntyties(String text) {
                 // todo Jsoup.parse(s).text();
                 return text.replaceAll("\\<[^>]*>", "");
+            }
+
+            @Override
+            public String getFileProviderContentUrl(String localFile) {
+                return localFile;
+            }
+
+            @Override
+            public void startService() {
+
+            }
+
+            @Override
+            public void getDirectoryAccess(String _DirectoryToAccess) {
+
             }
 
         });

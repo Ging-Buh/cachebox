@@ -1,7 +1,17 @@
 package de.droidcachebox.gdx.controls;
 
+import static de.droidcachebox.GlobalCore.firstSDCard;
+import static de.droidcachebox.GlobalCore.secondSDCard;
+
 import android.os.Environment;
+
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Locale;
+
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.list.Adapter;
@@ -13,14 +23,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FilenameFilter;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
-
-import static de.droidcachebox.GlobalCore.firstSDCard;
-import static de.droidcachebox.GlobalCore.secondSDCard;
 
 /**
  * picks a file or folder depending on the used constructor
@@ -108,6 +110,7 @@ public class FileOrFolderPicker extends ActivityBase {
         }
         currentFolder = initialFolder;
         this.fileReturn = fileReturn;
+        // PlatformUIBase.getDirectoryAccess(currentFolder.getAbsolutePath());
         layout();
     }
 

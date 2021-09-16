@@ -16,13 +16,14 @@
 package de.droidcachebox;
 
 import com.badlogic.gdx.utils.Clipboard;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.ViewID;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
 
 /**
  * This is the possibility of static access to functions that are specific to the platform the app is running on
@@ -226,10 +227,18 @@ public class PlatformUIBase {
     public static String removeHtmlEntyties(String text) {
         return methods.removeHtmlEntyties(text);
     }
-    
-    public static String getContentUrl(String localFile) {
-        return methods.getContentUrl(localFile);
+
+    public static String getFileProviderContentUrl(String localFile) {
+        return methods.getFileProviderContentUrl(localFile);
     }
+
+    public static void startService() {
+        methods.startService();
+    }
+
+    public static void getDirectoryAccess(String directory) {
+        methods.getDirectoryAccess(directory);
+    };
 
     public interface IShowViewListener {
         void showView(ViewID viewID, int left, int top, int right, int bottom);
@@ -286,7 +295,11 @@ public class PlatformUIBase {
 
         String removeHtmlEntyties(String text);
 
-        String getContentUrl(String localFile);
+        String getFileProviderContentUrl(String localFile);
+
+        void startService();
+
+        void getDirectoryAccess(String directory);
     }
 
 }
