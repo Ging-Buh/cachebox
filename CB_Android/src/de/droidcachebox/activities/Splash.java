@@ -15,6 +15,9 @@
  */
 package de.droidcachebox.activities;
 
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static de.droidcachebox.utils.Config_Core.displayDensity;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,11 +34,40 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.view.*;
-import android.widget.*;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.DefaultAndroidFiles;
-import de.droidcachebox.*;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import de.droidcachebox.Config;
+import de.droidcachebox.Global;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.Main;
+import de.droidcachebox.PermissionCheck;
+import de.droidcachebox.R;
 import de.droidcachebox.components.CopyAssetFolder;
 import de.droidcachebox.database.AndroidDB;
 import de.droidcachebox.database.Database;
@@ -50,25 +82,16 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.AndroidFileFactory;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.StringH;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
 import de.droidcachebox.views.forms.Android_FileExplorer;
 import de.droidcachebox.views.forms.MessageBox;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import static android.os.Build.VERSION_CODES.KITKAT;
-import static de.droidcachebox.utils.Config_Core.displayDensity;
 
 /**
  * what is this good for:
@@ -80,13 +103,13 @@ import static de.droidcachebox.utils.Config_Core.displayDensity;
 public class Splash extends Activity {
     private static final String log = "CB2 Splash";
     private Bitmap bitmap;
-    private AlertDialog pleaseWaitDialog;
+    private AlertDialog gpsDisclosureDialog, pleaseWaitDialog;
     private String workPath;
     private int AdditionalWorkPathCount;
     private Dialog msg;
     private ArrayList<String> AdditionalWorkPathArray;
     private SharedPreferences androidSetting;
-    private boolean showSandbox;
+    private boolean showSandbox, showGPSDisclosureDialog;
     private Bundle bundledData;
     private boolean askForWorkPath;
     private FrameLayout frame;
@@ -126,12 +149,7 @@ public class Splash extends Activity {
         main = Main.getInstance();
 
         if (main == null) {
-            startInitialization();
-            if (askForWorkPath) {
-                askForWorkPath(); // does finishInitializationAndStartMain()
-            } else {
-                finishInitializationAndStartMain();
-            }
+            initializationStep1();
         } else {
             startMain();
         }
@@ -311,11 +329,7 @@ public class Splash extends Activity {
         }
     }
 
-    private void startInitialization() {
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            PermissionCheck.checkNeededPermissions(this);
-        }
+    private void initializationStep1() {
 
         File filesDirectory = this.getFilesDir();// workaround for Android bug #10515463
         // String privateFilesDirectory = filesDirectory.getAbsolutePath(); // /data/data/de.droidcachebox/files
@@ -323,6 +337,7 @@ public class Splash extends Activity {
 
         // read some setting from Android Preferences (Platform
 
+        showGPSDisclosureDialog = androidSetting.getBoolean("ShowGPSDisclosure", true);
         if (android.os.Build.VERSION.SDK_INT < 30) {
             workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
             setWorkPathFromRedirectionFileIfExists();
@@ -356,7 +371,35 @@ public class Splash extends Activity {
         }
         try {
             new Translation(workPath).loadTranslation(languagePath);
+            gpsDisclosureDialog = null;
+            if (showGPSDisclosureDialog) {
+                showDisclosure(); // and after dialog do initializationStep2
+            } else {
+                initializationStep2();
+            }
         } catch (Exception ignored) {
+        }
+    }
+
+    private void showDisclosure() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(Translation.get("GPSDisclosureTitle"));
+        alert.setMessage(Translation.get("GPSDisclosureText"));
+        alert.setPositiveButton(Translation.get("ok"), (dialogInterface, i) -> initializationStep2());
+        gpsDisclosureDialog = alert.create();
+        gpsDisclosureDialog.setCancelable(false);
+        gpsDisclosureDialog.show();
+    }
+
+    private void initializationStep2() {
+        if (gpsDisclosureDialog != null) gpsDisclosureDialog.dismiss();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            PermissionCheck.checkNeededPermissions(this);
+        }
+        if (askForWorkPath) {
+            askForWorkPath(); // does finishInitializationAndStartMain()
+        } else {
+            finishInitializationAndStartMain();
         }
     }
 
