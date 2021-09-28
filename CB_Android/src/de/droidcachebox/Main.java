@@ -101,6 +101,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     private static final String sKlasse = "Main";
     public static boolean isCreated = false;
     public static int Request_ForLocationManager = 11052016;
+    public static int Request_ServiceOption = 11052017;
     public static int Request_takePhoto = 11052018;
     public static int Request_recordVideo = 11052019;
     public static int Request_recordVoice = 11052020;
@@ -520,43 +521,36 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
-        if (requestCode == Request_ForLocationManager) {
-            if (permissions.length > 0) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, int[] grantResults) {
+        if (permissions.length > 0) {
+            if (requestCode == Request_ForLocationManager) {
                 if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) && grantResults[0] == PERMISSION_GRANTED) {
                     androidUIBaseMethods.getLocationManager(true); // now the onLocationChanged is called (LocationListener)
                 }
-                else {
-                    // locationManager will not be initialized to get location data
-                }
-            }
-        } else if (requestCode == Request_takePhoto) {
-            if (permissions.length > 0) {
+            } else if (requestCode == Request_takePhoto) {
                 if (permissions[0].equals(Manifest.permission.CAMERA) && grantResults[0] == PERMISSION_GRANTED) {
                     PlatformUIBase.showView(ViewConst.TAKE_PHOTO, 0, 0, 0, 0, 0, 0);
                 }
-            }
-        } else if (requestCode == Request_recordVideo) {
-            if (permissions.length > 0) {
+            } else if (requestCode == Request_recordVideo) {
                 if (permissions[0].equals(Manifest.permission.CAMERA) && grantResults[0] == PERMISSION_GRANTED) {
                     PlatformUIBase.showView(ViewConst.VIDEO_REC, 0, 0, 0, 0, 0, 0);
                 }
                 if (permissions[0].equals(Manifest.permission.RECORD_AUDIO) && grantResults[0] == PERMISSION_GRANTED) {
                     PlatformUIBase.showView(ViewConst.VIDEO_REC, 0, 0, 0, 0, 0, 0);
                 }
-            }
-        } else if (requestCode == Request_recordVoice) {
-            if (permissions.length > 0) {
+            } else if (requestCode == Request_recordVoice) {
                 if (permissions[0].equals(Manifest.permission.RECORD_AUDIO) && grantResults[0] == PERMISSION_GRANTED) {
                     PlatformUIBase.showView(ViewConst.VOICE_REC, 0, 0, 0, 0, 0, 0);
                 }
-            }
-        } else if (requestCode == Request_getLocationIfInBackground) {
-            // result is only when requested (API level 29)
-            if (permissions.length > 0) {
+            } else if (requestCode == Request_getLocationIfInBackground) {
+                // result is only when requested (API level 29)
                 if (permissions[0].equals(Manifest.permission.ACCESS_BACKGROUND_LOCATION) && grantResults[0] == PERMISSION_GRANTED) {
                     Log.debug(sKlasse, "onRequestPermissionsResult granted " + Manifest.permission.ACCESS_BACKGROUND_LOCATION);
                     // TrackRecorder and others are started anyhow
+                }
+            } else if (requestCode == Request_ServiceOption) {
+                if (permissions[0].equals(Manifest.permission.FOREGROUND_SERVICE) && grantResults[0] == PERMISSION_GRANTED) {
+                    androidUIBaseMethods.serviceCanBeStarted();
                 }
             }
         }

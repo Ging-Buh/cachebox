@@ -2,10 +2,18 @@ package de.droidcachebox.gdx;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheSize;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
@@ -17,9 +25,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.WaypointViewItem;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.utils.CB_List;
-
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
+import de.droidcachebox.utils.log.Log;
 
 public class Slider extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static final int MAX_ANIMATION_COUNT = 1000;
@@ -251,6 +257,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                     header = header + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getGeoCacheName();
                 }
                 mLblCacheName.setText(header);
+                Log.debug("Slider", "ready setSelectedCache: " + cache.getGeoCacheCode());
             } else {
                 mLblCacheName.setText("");
                 geoCacheType.setBackground(this.getBackground());

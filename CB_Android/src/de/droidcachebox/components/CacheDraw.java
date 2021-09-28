@@ -1,5 +1,7 @@
 package de.droidcachebox.components;
 
+import static de.droidcachebox.gdx.math.UiSizes.getInstance;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,6 +10,10 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.R;
@@ -23,11 +29,7 @@ import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.UnitFormatter;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-import static de.droidcachebox.gdx.math.UiSizes.getInstance;
+import de.droidcachebox.utils.log.Log;
 
 public class CacheDraw {
 
@@ -333,6 +335,7 @@ public class CacheDraw {
                 break;
             }
         }
+        Log.debug("CacheDraw", "ready getLastFoundLogDate");
         return foundDate;
     }
 

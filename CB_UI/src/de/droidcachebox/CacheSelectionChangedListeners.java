@@ -1,10 +1,10 @@
 package de.droidcachebox;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSelectionChangedListeners.CacheSelectionChangedListener> {
     private static CacheSelectionChangedListeners cacheSelectionChangedListeners;
@@ -52,6 +52,7 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
                     Log.err(listener.toString(), selectedCache == null ? "Geocache = null" : ex.toString());
                 }
             }
+            Log.debug("CacheSelectionChangedListeners", "handle Cache changed for all listeners called.");
         });
         selectChangeThread.start();
 

@@ -162,7 +162,7 @@ public abstract class Database extends Database_Core {
         if (cache.getGeoCacheCode().equals(lastGeoCache)) return cacheLogs;
         lastGeoCache = cache.getGeoCacheCode();
         cacheLogs.clear();
-        Log.info(log, "getLogs for cache: " + cache.getGeoCacheCode());
+        Log.info(log, "Start getLogs for cache: " + cache.getGeoCacheCode());
         CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]{Long.toString(cache.generatedId)});
         if (reader != null) {
             reader.moveToFirst();
@@ -176,6 +176,7 @@ public abstract class Database extends Database_Core {
         } else {
             lastGeoCache = "";
         }
+        Log.info(log, "Ready getLogs for cache: " + cache.getGeoCacheCode());
         return cacheLogs;
     }
 

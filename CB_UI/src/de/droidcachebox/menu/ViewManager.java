@@ -323,6 +323,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn5.addAction(ShowAbout.getInstance(), true);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
 
+        Log.info(sKlasse, "jetzt gehts los (about view)");
         ShowAbout.getInstance().execute(); // activated as first view
     }
 

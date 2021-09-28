@@ -15,6 +15,17 @@
  */
 package de.droidcachebox.utils.log;
 
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -28,11 +39,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.Plattform;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Class for initialization of slf4j {@link # Logger} inside of all CB projects. <br>
@@ -79,17 +85,18 @@ public class CB_SLF4J {
         AbstractFile logFolderAbstractFile = FileFactory.createFile(logFolder);
 
         if (logFolderAbstractFile.exists() && logFolderAbstractFile.isDirectory()) {// delete all logs are not from today
-
             String fileNames[] = logFolderAbstractFile.list();
-            for (String fileName : fileNames) {
-                if (!fileName.endsWith("logback.xml")) {
-                    AbstractFile abstractFile = FileFactory.createFile(logFolder + "/" + fileName);
+            if (fileNames != null) {
+                for (String fileName : fileNames) {
+                    if (!fileName.endsWith("logback.xml")) {
+                        AbstractFile abstractFile = FileFactory.createFile(logFolder + "/" + fileName);
 
-                    if (abstractFile.isFile() && abstractFile.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100)) {
-                        // file is older then 24h, so we delete
-                        try {
-                            abstractFile.delete();
-                        } catch (IOException ignored) {
+                        if (abstractFile.isFile() && abstractFile.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100)) {
+                            // file is older then 24h, so we delete
+                            try {
+                                abstractFile.delete();
+                            } catch (IOException ignored) {
+                            }
                         }
                     }
                 }

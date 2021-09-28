@@ -17,6 +17,7 @@ package de.droidcachebox.activities;
 
 import static de.droidcachebox.utils.Config_Core.displayDensity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,6 +29,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
@@ -45,6 +47,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.DefaultAndroidFiles;
 
@@ -55,6 +59,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 import de.droidcachebox.Config;
@@ -116,9 +121,10 @@ public class Splash extends Activity {
         if (!FileFactory.isInitialized()) {
             // so Main has not been started
             new AndroidFileFactory(); // used by CB_SLF4J
-            // read workpath from Android Preferences
-            workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
-            CB_SLF4J.getInstance(workPath).setLogLevel(LogLevel.INFO); // perhaps put this into androidSetting,setting: a "startLogLevel"
+            // read workpath from Android Preferences or defValue
+            workPath = androidSetting.getString("WorkPath", getExternalFilesDir(null).getAbsolutePath() + "/CacheBox");
+            CB_SLF4J l = CB_SLF4J.getInstance(workPath);
+            l.setLogLevel(LogLevel.INFO); // perhaps put this into androidSetting,setting: a "startLogLevel"
             Log.info(log, "Logging initialized");
         }
         Log.info(log, "onCreate called");
@@ -370,6 +376,27 @@ public class Splash extends Activity {
             new Translation(workPath).loadTranslation(languagePath);
         } catch (Exception ignored) {
         }
+        initializationStep2();
+    }
+
+    private void initializationStep2() {
+        ArrayList<String> neededPermissions = new ArrayList<>(
+                Arrays.asList(
+                        Manifest.permission.WAKE_LOCK,
+                        Manifest.permission.VIBRATE,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            neededPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            neededPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            neededPermissions.add(Manifest.permission.CAMERA);
+            neededPermissions.add(Manifest.permission.RECORD_AUDIO);
+        }
+
+        ActivityCompat.requestPermissions(this, neededPermissions.toArray(new String[0]), 170421);
         initializationStep3();
     }
 
@@ -764,6 +791,12 @@ public class Splash extends Activity {
 
         Log.info(log, "mediaInfo");
         mediaInfo();
+
+        boolean workPathFolderExists = FileIO.createDirectory(workPath);
+        if (!workPathFolderExists) {
+            Log.err(log, "workPath not writable");
+            return;
+        }
 
         new Config(workPath);
         Log.info(log, "start Settings Database " + workPath + "/User/Config.db3");

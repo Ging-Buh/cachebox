@@ -60,8 +60,10 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.UnitFormatter;
+import de.droidcachebox.utils.log.Log;
 
 public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
+    private static final String sKlasse = "AboutView";
     private static AboutView aboutView;
     private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
     private Image CB_Logo;
@@ -72,10 +74,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     private boolean mustShowNewInstallInfo;
 
     private AboutView() {
-        super(ViewManager.leftTab.getContentRec(), "AboutView");
+        super(ViewManager.leftTab.getContentRec(), sKlasse);
         registerSkinChangedEvent();
         createControls();
         mustShowNewInstallInfo = true;
+        Log.debug(sKlasse, " created.");
     }
 
     public static AboutView getInstance() {

@@ -28,6 +28,7 @@ import android.os.Vibrator;
 import android.provider.DocumentsContract;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.text.HtmlCompat;
@@ -90,6 +91,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     private static final String sKlasse = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
     private static final int ACTION_OPEN_DOCUMENT_TREE = 6518;
+    private static final int useGNSS = Build.VERSION_CODES.N;
     private final AndroidApplication androidApplication;
     private final Activity mainActivity;
     private final Main mainMain;
@@ -135,11 +137,12 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         };
         Config.gpsUpdateTime.addSettingChangedListener(handleGpsUpdateTimeConfigChanged);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= useGNSS) {
             gnssStatusCallback = new GnssStatus.Callback() {
 
                 @Override
                 public void onSatelliteStatusChanged(final GnssStatus status) {
+                    Log.debug(sKlasse, "start onSatelliteStatusChanged");
                     final int satellites = status.getSatelliteCount();
                     int fixed = 0;
                     coreSatList.clear();
@@ -170,25 +173,19 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                             timer.schedule(task, 1000);
                         }
                     }
-
-                    /*
-                    if (satellites == latest.satellitesVisible && fixed == latest.satellitesFixed) {
-                        return;
-                    }
-                    latest = new Status(true, visible, fixed);
-                    subscriber.onNext(latest);
-
-                     */
+                    Log.debug(sKlasse, "handled onSatelliteStatusChanged");
                 }
 
                 @Override
                 public void onStarted() {
                     // GPS has startet
+                    Log.debug(sKlasse, "Gnss started");
                 }
 
                 @Override
                 public void onStopped() {
                     // GPS has stopped
+                    Log.debug(sKlasse, "Gnss stopped");
                 }
             };
         } else {
@@ -701,7 +698,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                 locationManager.requestLocationUpdates(NETWORK_PROVIDER, 10000, 300, this);
                 locationManager.addNmeaListener(mainMain); // for altitude correction: removed after first achieve (onNmeaReceived in main)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= useGNSS) {
                     locationManager.registerGnssStatusCallback(gnssStatusCallback);
                 } else {
                     locationManager.addGpsStatusListener(gpsStatusListener);
@@ -715,7 +712,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     }
 
     void removeFromGPS() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= useGNSS) {
             locationManager.unregisterGnssStatusCallback(gnssStatusCallback);
         } else {
             locationManager.removeGpsStatusListener(gpsStatusListener);
@@ -731,19 +728,24 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     }
 
     public void startService() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (Config.allowLocationService.getValue()) {
-                locationServiceIntent = new Intent(androidApplication, CBForeground.class);
-                androidApplication.startForegroundService(locationServiceIntent);
+                if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
+                    final String[] requestedPermissions = new String[]{Manifest.permission.FOREGROUND_SERVICE};
+                    ActivityCompat.requestPermissions(mainActivity, requestedPermissions, Main.Request_ServiceOption);
+                }
+                else {
+                    serviceCanBeStarted();
+                }
             }
         }
-        /*
-        // not necessary
-        else {
-            // startService(new Intent(this, CBForeground.class));
+    }
+
+    public void serviceCanBeStarted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            locationServiceIntent = new Intent(androidApplication, CBForeground.class);
+            androidApplication.startForegroundService(locationServiceIntent);
         }
-         */
     }
 
     public void stopService() {
@@ -785,4 +787,18 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                 provider));
     }
 
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
 }
