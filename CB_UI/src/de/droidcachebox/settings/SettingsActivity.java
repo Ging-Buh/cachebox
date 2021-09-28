@@ -1,6 +1,13 @@
 package de.droidcachebox.settings;
 
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.SoundCache;
 import de.droidcachebox.SoundCache.Sounds;
@@ -10,15 +17,24 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.QuickButtonList;
 import de.droidcachebox.gdx.activities.ColorPicker;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.LinearCollapseBox;
+import de.droidcachebox.gdx.controls.Linearlayout;
+import de.droidcachebox.gdx.controls.ScrollBox;
+import de.droidcachebox.gdx.controls.Spinner;
+import de.droidcachebox.gdx.controls.SpinnerAdapter;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListenerDouble;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListenerTime;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox.OnMsgBoxClickListener;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
@@ -35,12 +51,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.Config_Core;
 import de.droidcachebox.utils.FileFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
@@ -426,7 +436,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -457,7 +467,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             StringInputBox.show(type, "default:" + br + SB.getDefaultValue(), trans, SB.getValue(),
                     (which, data) -> {
                         String text = StringInputBox.editText.getText();
-                        if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                        if (which == MsgBox.BTN_LEFT_POSITIVE) {
                             SettingString value = (SettingString) Config.settings.get(EditKey);
 
                             // api ohne lineBreak
@@ -481,7 +491,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return true;
         });
@@ -528,7 +538,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -574,7 +584,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -621,7 +631,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -666,7 +676,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -707,7 +717,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -749,7 +759,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -795,7 +805,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MessageBox.show(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener);
             return false;
         });
 
@@ -831,7 +841,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         });
 
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MessageBox.show(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener);
             return false;
         });
 
@@ -860,7 +870,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     info += "GPS min pos Time= " + PositionChangedListeners.minPosEventTime + br;
                     info += "GPS min Orientation Time= " + PositionChangedListeners.minOrientationEventTime + br;
 
-                    MessageBox.show(info, msgBoxReturnListener);
+                    MsgBox.show(info, msgBoxReturnListener);
 
                     return true;
                 }
@@ -872,7 +882,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btn.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -936,7 +946,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + settingsAudio.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + settingsAudio.getName()), msgBoxReturnListener);
 
             return true;
         });
@@ -998,7 +1008,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return false;
         });
@@ -1161,7 +1171,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setOnLongClickListener((v, x, y, pointer, button) -> {
             // zeige Beschreibung der Einstellung
 
-            MessageBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
+            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
 
             return true;
         });

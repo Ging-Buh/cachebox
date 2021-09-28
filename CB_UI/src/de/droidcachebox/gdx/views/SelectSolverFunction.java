@@ -1,14 +1,22 @@
 package de.droidcachebox.gdx.views;
 
 import com.badlogic.gdx.graphics.Color;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CollapseBox.IAnimatedHeightChangedListener;
+import de.droidcachebox.gdx.controls.LinearCollapseBox;
+import de.droidcachebox.gdx.controls.Linearlayout;
 import de.droidcachebox.gdx.controls.Linearlayout.LayoutChanged;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.solver.DataType;
@@ -16,9 +24,6 @@ import de.droidcachebox.solver.Function;
 import de.droidcachebox.solver.Functions;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.translation.Translation;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class SelectSolverFunction extends ButtonDialog {
     private final IFunctionResult mResultListener;
@@ -31,7 +36,7 @@ public class SelectSolverFunction extends ButtonDialog {
     private Function selectedFunction;
 
     public SelectSolverFunction(Solver solver, DataType dataType, IFunctionResult resultListener) {
-        super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MessageBoxButton.OKCancel, MessageBoxIcon.None, null);
+        super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MsgBoxButton.OKCancel, MsgBoxIcon.None, null);
         this.solver = solver;
         mResultListener = resultListener;
         this.dataType = dataType;

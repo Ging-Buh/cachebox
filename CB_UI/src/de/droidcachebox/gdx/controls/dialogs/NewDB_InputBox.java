@@ -5,13 +5,13 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.translation.Translation;
 
-public class NewDB_InputBox extends MessageBox {
+public class NewDB_InputBox extends MsgBox {
     public static EditTextField editText;
 
     public NewDB_InputBox(Size size, String name) {
@@ -71,7 +71,7 @@ public class NewDB_InputBox extends MessageBox {
         msgBox.addChild(chk);
         msgBox.addChild(lbl);
 
-        msgBox.addButtons(MessageBoxButton.OKCancel);
+        msgBox.addButtons(MsgBoxButton.OKCancel);
 
         GL.that.showDialog(msgBox, true);
 

@@ -15,14 +15,14 @@
  */
 package de.droidcachebox.gdx.controls.dialogs;
 
+import static de.droidcachebox.utils.Config_Core.br;
+
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.Dialog;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class ConnectionError extends Toast {
     public static ConnectionError INSTANCE = new ConnectionError();
@@ -55,7 +55,7 @@ public class ConnectionError extends Toast {
 
         this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon", false);
         this.mIcon.setSprite(Sprites.getSprite("connection-error"));
-        float top = 300; // TODO set on the Top of Screen
+        float top = 300; // set on the Top of Screen
         this.setY(top - this.getHeight());
         super.addChildToOverlay(mIcon);
     }

@@ -1,13 +1,16 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.ProgressBar;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -16,10 +19,7 @@ import de.droidcachebox.utils.ProgressChangedEvent;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.RunnableReadyHandler;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
+public class ProgressDialog extends MsgBox implements ProgressChangedEvent {
     private static RunnableReadyHandler ProgressThread;
     private static String titleText;
     private static ProgressDialog that;
@@ -36,7 +36,7 @@ public class ProgressDialog extends MessageBox implements ProgressChangedEvent {
         that = this;
         isCanceld = false;
 
-        addButtons(MessageBoxButton.Cancel);
+        addButtons(MsgBoxButton.Cancel);
         btnRightNegative.setClickHandler(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {

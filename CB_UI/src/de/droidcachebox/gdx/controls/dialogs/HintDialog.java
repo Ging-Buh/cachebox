@@ -3,13 +3,13 @@ package de.droidcachebox.gdx.controls.dialogs;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.ScrollBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.UnitFormatter;
 
-public class HintDialog extends MessageBox {
+public class HintDialog extends MsgBox {
 
     ScrollBox scrollBox;
 
@@ -39,7 +39,7 @@ public class HintDialog extends MessageBox {
         // nur der Label ist auf der Scrollbox
         scrollBox.setVirtualHeight(lblHeight);
         addChild(scrollBox);
-        getButton(MessageBox.BTN_LEFT_POSITIVE).setClickHandler((v, x, y, pointer, button) -> {
+        getButton(MsgBox.BTN_LEFT_POSITIVE).setClickHandler((v, x, y, pointer, button) -> {
             setMessage(UnitFormatter.Rot13(label.getText()));
             return true;
         });

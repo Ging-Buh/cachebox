@@ -1,5 +1,7 @@
 package de.droidcachebox.activities;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GCVote;
@@ -9,16 +11,14 @@ import de.droidcachebox.database.Drafts;
 import de.droidcachebox.database.LogType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.views.DraftsView;
 import de.droidcachebox.gdx.views.LogListView;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.RunnableReadyHandler;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UploadDraftsOrLogs {
     private boolean threadCancel = false;
@@ -109,10 +109,10 @@ public class UploadDraftsOrLogs {
             public void runnableIsReady(boolean canceld) {
                 if (!canceld) {
                     if (uploadMeldung.length() == 0) {
-                        MessageBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MessageBoxIcon.GC_Live);
+                        MsgBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MsgBoxIcon.GC_Live);
                     } else {
                         if (!apiKeyError)
-                            MessageBox.show(uploadMeldung, Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                            MsgBox.show(uploadMeldung, Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
                     }
                 }
                 DraftsView.getInstance().notifyDataSetChanged();

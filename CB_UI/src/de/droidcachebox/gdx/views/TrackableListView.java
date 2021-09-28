@@ -1,11 +1,24 @@
 package de.droidcachebox.gdx.views;
 
+import static de.droidcachebox.core.GroundspeakAPI.APIError;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.downloadUsersTrackables;
+import static de.droidcachebox.core.GroundspeakAPI.fetchTrackable;
+import static de.droidcachebox.core.GroundspeakAPI.uploadTrackableLog;
+
+import java.util.Date;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.TBList;
+import de.droidcachebox.database.Trackable;
+import de.droidcachebox.database.TrackableListDAO;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.TB_Details;
@@ -15,9 +28,9 @@ import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -25,10 +38,6 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.Date;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
 
 public class TrackableListView extends V_ListView {
     private static final String log = "TrackableListView";
@@ -97,9 +106,9 @@ public class TrackableListView extends V_ListView {
                             wd.close();
                             if (tb == null) {
                                 if (APIError == 404) {
-                                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("NoTbFound"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                                    MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("NoTbFound"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
                                 } else {
-                                    MessageBox.show(GroundspeakAPI.LastAPIError, "", MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                                    MsgBox.show(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information, null);
                                 }
                                 return;
                             }
@@ -148,7 +157,7 @@ public class TrackableListView extends V_ListView {
             public void run() {
                 for (Trackable tb : trackableList) {
                     if (uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGeoCacheCode(), LogTypeId, new Date(), LogText) != OK) {
-                        MessageBox.show(GroundspeakAPI.LastAPIError, "", MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                        MsgBox.show(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information, null);
                     }
                 }
                 wd.close();

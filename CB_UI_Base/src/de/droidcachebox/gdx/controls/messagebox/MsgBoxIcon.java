@@ -1,6 +1,6 @@
 package de.droidcachebox.gdx.controls.messagebox;
 
-public enum MessageBoxIcon {
+public enum MsgBoxIcon {
     Asterisk,    //	Kleinbuchstabe i in einem Kreis
     Error,       //	weißes X in einem Kreis mit rotem Hintergrund
     Exclamation, //	Ausrufezeichen in einem Dreieck mit gelbem Hintergrund besteht.

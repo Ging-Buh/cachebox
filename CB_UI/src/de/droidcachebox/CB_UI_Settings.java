@@ -123,7 +123,7 @@ public interface CB_UI_Settings {
     SettingsAudio GPS_fix = new SettingsAudio("GPS_fix", Sounds, EXPERT, new Audio("data/sound/GPS_Fix.ogg", false, false, 1.0f), Global, ACB);
     SettingsAudio AutoResortSound = new SettingsAudio("AutoResortSound", Sounds, EXPERT, new Audio("data/sound/AutoResort.ogg", false, false, 1.0f), Global, ACB);
     SettingBool allowLocationService = new SettingBool("AllowLocationService", Gps, NORMAL, true, Global, ACB);
-    SettingBool showGPSDisclosure = new SettingBool("ShowGPSDisclosure", Gps, NORMAL, true, Platform, ACB);
+    SettingBool showGPSDisclosure = new SettingBool("ShowGPSDisclosure", Gps, NORMAL, true, Platform, ACB); // used in Splash
 
     SettingBool ImportGpx = new SettingBool("ImportGpx", API, NEVER, false, Global, ACB);
     SettingBool SearchWithoutFounds = new SettingBool("SearchWithoutFounds", API, NEVER, true, Global, ACB);

@@ -43,9 +43,9 @@ import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.solver.Solver;
@@ -216,9 +216,9 @@ public class GlobalCore implements SolverCacheInterface {
 
     public static void MsgDownloadLimit() {
         if (GroundspeakAPI.APIError == 401) {
-            GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("apiKeyInvalid"), Translation.get("chkApiState"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
+            GL.that.RunOnGLWithThreadCheck(() -> MsgBox.show(Translation.get("apiKeyInvalid"), Translation.get("chkApiState"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null));
         } else {
-            GL.that.RunOnGLWithThreadCheck(() -> MessageBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null));
+            GL.that.RunOnGLWithThreadCheck(() -> MsgBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null));
         }
     }
 

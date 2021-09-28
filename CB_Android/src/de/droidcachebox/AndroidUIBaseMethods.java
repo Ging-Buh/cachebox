@@ -1,8 +1,11 @@
 package de.droidcachebox;
 
 import static android.content.Intent.ACTION_VIEW;
+import static android.location.LocationManager.GPS_PROVIDER;
+import static android.location.LocationManager.NETWORK_PROVIDER;
 import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +13,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.hardware.Camera;
+import android.location.GnssStatus;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,6 +28,7 @@ import android.os.Vibrator;
 import android.provider.DocumentsContract;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.text.HtmlCompat;
 
@@ -28,6 +37,7 @@ import com.badlogic.gdx.backends.android.AndroidEventListener;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,10 +58,18 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.activities.FZKDownload;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.views.GeoCacheListListView;
+import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.GPS;
+import de.droidcachebox.locator.GpsStateChangeEventList;
+import de.droidcachebox.locator.GpsStrength;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -62,18 +80,21 @@ import de.droidcachebox.settings.SettingString;
 import de.droidcachebox.settings.SettingsActivity;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
-public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
+public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationListener {
     private static final String sKlasse = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
     private static final int ACTION_OPEN_DOCUMENT_TREE = 6518;
-    private AndroidApplication androidApplication;
-    private Activity mainActivity;
-    private Main mainMain;
+    private final AndroidApplication androidApplication;
+    private final Activity mainActivity;
+    private final Main mainMain;
+    private final String defaultBrowserPackageName;
+    private final CB_List<GpsStrength> coreSatList = new CB_List<>(14);
     private AtomicBoolean torchAvailable = null;
     private Camera deviceCamera;
     private SharedPreferences androidSetting;
@@ -82,10 +103,12 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private boolean mustShowCacheList = true;
     private CancelWaitDialog wd;
     private LocationManager locationManager;
-    private String defaultBrowserPackageName;
-    private IChanged handleAllowLocationServiceConfigChanged;
     private AndroidEventListener handlingGetDirectoryAccess;
     private Intent locationServiceIntent;
+    private GnssStatus.Callback gnssStatusCallback;
+    private android.location.GpsStatus.Listener gpsStatusListener;
+    private boolean lostCheck = false;
+    private boolean askForLocationPermission;
 
     AndroidUIBaseMethods(Main main) {
         androidApplication = main;
@@ -100,8 +123,121 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         else
             defaultBrowserPackageName = "android";
 
-        handleAllowLocationServiceConfigChanged = () -> changeLocationService();
+        IChanged handleAllowLocationServiceConfigChanged = this::changeLocationService;
         Config.allowLocationService.addSettingChangedListener(handleAllowLocationServiceConfigChanged);
+        IChanged handleGpsUpdateTimeConfigChanged = () -> {
+            int updateTime1 = Config.gpsUpdateTime.getValue();
+            try {
+                getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime1, 1, this);
+            } catch (SecurityException sex) {
+                Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
+            }
+        };
+        Config.gpsUpdateTime.addSettingChangedListener(handleGpsUpdateTimeConfigChanged);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            gnssStatusCallback = new GnssStatus.Callback() {
+
+                @Override
+                public void onSatelliteStatusChanged(final GnssStatus status) {
+                    final int satellites = status.getSatelliteCount();
+                    int fixed = 0;
+                    coreSatList.clear();
+                    for (int satelliteNr = 0; satelliteNr < satellites; satelliteNr++) {
+                        if (status.usedInFix(satelliteNr)) {
+                            fixed++;
+                            coreSatList.add(new GpsStrength(true, satelliteNr));
+                        } else {
+                            coreSatList.add(new GpsStrength(false, satelliteNr));
+                        }
+                    }
+                    coreSatList.sort();
+                    GPS.setSatFixes(fixed);
+                    GPS.setSatVisible(satellites);
+                    GPS.setSatList(coreSatList);
+                    GpsStateChangeEventList.Call();
+                    if (fixed < 1 && (Locator.getInstance().isFixed())) {
+                        if (!lostCheck) {
+                            Timer timer = new Timer();
+                            TimerTask task = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    if (GPS.getFixedSats() < 1)
+                                        Locator.getInstance().FallBack2Network();
+                                    lostCheck = false;
+                                }
+                            };
+                            timer.schedule(task, 1000);
+                        }
+                    }
+
+                    /*
+                    if (satellites == latest.satellitesVisible && fixed == latest.satellitesFixed) {
+                        return;
+                    }
+                    latest = new Status(true, visible, fixed);
+                    subscriber.onNext(latest);
+
+                     */
+                }
+
+                @Override
+                public void onStarted() {
+                    // GPS has startet
+                }
+
+                @Override
+                public void onStopped() {
+                    // GPS has stopped
+                }
+            };
+        } else {
+            gpsStatusListener = new GpsStatus.Listener() {
+                @Override
+                public void onGpsStatusChanged(int event) {
+
+                    if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS || event == GpsStatus.GPS_EVENT_FIRST_FIX) {
+                        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        final GpsStatus status = getLocationManager().getGpsStatus(null);
+
+                        int satellites = 0;
+                        int fixed = 0;
+                        coreSatList.clear();
+                        for (final GpsSatellite satellite : status.getSatellites()) {
+                            satellites++;
+                            if (satellite.usedInFix()) {
+                                fixed++;
+                                coreSatList.add(new GpsStrength(true, satellite.getSnr()));
+                            } else {
+                                coreSatList.add(new GpsStrength(false, satellite.getSnr()));
+                            }
+                        }
+
+                        coreSatList.sort();
+                        GPS.setSatFixes(fixed);
+                        GPS.setSatVisible(satellites);
+                        GPS.setSatList(coreSatList);
+                        GpsStateChangeEventList.Call();
+                        if (fixed < 1 && (Locator.getInstance().isFixed())) {
+                            if (!lostCheck) {
+                                Timer timer = new Timer();
+                                TimerTask task = new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        if (GPS.getFixedSats() < 1)
+                                            Locator.getInstance().FallBack2Network();
+                                        lostCheck = false;
+                                    }
+                                };
+                                timer.schedule(task, 1000);
+                            }
+                        }
+                    }
+                }
+            };
+        }
 
     }
 
@@ -152,7 +288,10 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
 
     @Override
     public boolean isGPSon() {
-        return getLocationManager().isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean ret = getLocationManager().isProviderEnabled(GPS_PROVIDER);
+        if (!ret)
+            mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // dialog gps ein
+        return ret;
     }
 
     @Override
@@ -195,18 +334,18 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
         try {
             Log.info(sKlasse, "switchToGpsMeasure()");
             int updateTime = Config.gpsUpdateTime.getValue();
-            getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, mainMain);
+            getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 0, this);
         } catch (SecurityException ex) {
             Log.err(sKlasse, "switchToGpsMeasure: ", ex);
         }
     }
 
     @Override
-    public void switchtoGpsDefault() {
+    public void switchToGpsDefault() {
         Log.info(sKlasse, "switchtoGpsDefault()");
         int updateTime = Config.gpsUpdateTime.getValue();
         try {
-            getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, mainMain);
+            getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 1, this);
         } catch (SecurityException sex) {
             Log.err(sKlasse, "switchtoGpsDefault: " + sex.getLocalizedMessage());
         }
@@ -364,64 +503,81 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     }
 
     @Override
-    public void startService() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (Config.allowLocationService.getValue()) {
-                locationServiceIntent = new Intent(androidApplication, CBForeground.class);
-                androidApplication.startForegroundService(locationServiceIntent);
+    public void getDirectoryAccess(String _DirectoryToAccess) {
+        // Choose a directory using the system's file picker.
+        final Intent intent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
+            intent.putExtra(DocumentsContract.EXTRA_INFO, _DirectoryToAccess);
+            if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
+                if (handlingGetDirectoryAccess == null)
+                    handlingGetDirectoryAccess = (requestCode, resultCode, resultData) -> {
+                        androidApplication.removeAndroidEventListener(handlingGetDirectoryAccess);
+                        // Intent Result Record Video
+                        if (requestCode == ACTION_OPEN_DOCUMENT_TREE) {
+                            if (resultCode == Activity.RESULT_OK) {
+                                // The result data contains a URI for the document or directory that the user selected.
+                                GlobalCore.selectedUri = null;
+                                if (resultData != null) {
+                                    GlobalCore.selectedUri = resultData.getData();
+                                    // Perform actions using its URI.
+                                }
+                            }
+                        }
+                    };
             }
-        }
-        /*
-        // not necessary
-        else {
-            // startService(new Intent(this, CBForeground.class));
-        }
-         */
-    }
-
-    public void stopService() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!Config.allowLocationService.getValue()) {
-                androidApplication.stopService(locationServiceIntent);
-            }
-        }
-    }
-
-    private void changeLocationService() {
-        if (Config.allowLocationService.getValue()) {
-            startService();
-        }
-        else {
-            stopService();
+            androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
+            mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
         }
     }
 
     @Override
-    public void getDirectoryAccess(String _DirectoryToAccess) {
-        // Choose a directory using the system's file picker.
-        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
-        intent.putExtra(DocumentsContract.EXTRA_INFO, _DirectoryToAccess);
-        if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
-            if (handlingGetDirectoryAccess == null)
-                handlingGetDirectoryAccess = (requestCode, resultCode, resultData) -> {
-                    androidApplication.removeAndroidEventListener(handlingGetDirectoryAccess);
-                    // Intent Result Record Video
-                    if (requestCode == ACTION_OPEN_DOCUMENT_TREE) {
-                        if (resultCode == Activity.RESULT_OK) {
-                            // The result data contains a URI for the document or directory that the user selected.
-                            GlobalCore.selectedUri = null;
-                            if (resultData != null) {
-                                GlobalCore.selectedUri = resultData.getData();
-                                // Perform actions using its URI.
+    public void startRecordTrack() {
+        request_getLocationIfInBackground();
+        // if permission is not granted, recording must be done with cb always in foreground
+        TrackRecorder.startRecording();
+    }
+
+    @Override
+    public boolean request_getLocationIfInBackground() {
+        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && Config.showGPSDisclosure.getValue()) {
+                String permissionlabel = "";
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                    permissionlabel = mainActivity.getPackageManager().getBackgroundPermissionOptionLabel().toString();
+                }
+
+                // hint & explanation
+                MsgBox.show(
+                        Translation.get("PleaseConfirm") + "\n\n" + permissionlabel + "\n\n" + Translation.get("GPSDisclosureText"),
+                        Translation.get("GPSDisclosureTitle"),
+                        MsgBoxButton.YesNo,
+                        MsgBoxIcon.Information,
+                        new MsgBox.OnMsgBoxClickListener() {
+                            @Override
+                            public boolean onClick(int btnNumber, Object data) {
+                                if (btnNumber == MsgBox.BTN_LEFT_POSITIVE) {
+                                    if (ActivityCompat.shouldShowRequestPermissionRationale(mainActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                                        final String[] requestedPermissions = new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION};
+                                        ActivityCompat.requestPermissions(mainActivity, requestedPermissions, Main.Request_getLocationIfInBackground);
+                                    }
+                                    else {
+                                        // frage trotzdem, aber es popt nicht mehr auf. Daher
+                                        mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // dialog gps ein
+                                    }
+                                } else {
+                                    // if you don't want, never ask again
+                                    Config.showGPSDisclosure.setValue(false);
+                                }
+                                return true; // click is handled
                             }
                         }
-                    }
-                };
+                );
+                return false;
+            }
         }
-        androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
-        mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
+        return true;
     }
 
     private void positionLatLon(String externalRequestLatLon) {
@@ -512,53 +668,121 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods {
     private void importCacheByName() {
     }
 
-
     LocationManager getLocationManager() {
+        return getLocationManager(false);
+    }
 
-        try {
-            if (locationManager != null) {
-                return locationManager;
-            }
-
-            // GPS
-            // Get the location manager
+    LocationManager getLocationManager(boolean forceInitialization) {
+        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
-            // // Define the criteria how to select the locatioin provider ->
-            // use
-            // // default
-            // Criteria criteria = new Criteria(); // noch nötig ???
-            // criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            // criteria.setAltitudeRequired(false);
-            // criteria.setBearingRequired(false);
-            // criteria.setCostAllowed(true);
-            // criteria.setPowerRequirement(Criteria.POWER_LOW);
+            askForLocationPermission = true;
+            return locationManager;
+        }
+        askForLocationPermission = false;
+        if (locationManager == null || forceInitialization) {
+            Log.info(sKlasse, "Initialise  location manager");
+
+            // Get the (gps) location manager
+            locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
 
             /*
-             * Longri: Ich habe die Zeiten und Distanzen der Location Updates
-             * angepasst. Der Network Provider hat eine schlechte genauigkeit,
-             * darher reicht es wenn er alle 10sec einen wert liefert, wenn der
-             * alte um 500m abweicht. Beim GPS Provider habe ich die
-             * Aktualiesierungszeit verkürzt, damit bei deaktiviertem Hardware
-             * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis
-             * zwichen Performance und Stromverbrauch, geliefert werden. Andere
-             * apps haben hier 0.
+            Longri: Ich habe die Zeiten und Distanzen der Locationupdates angepasst.
+            Der Network Provider hat eine schlechte Genauigkeit,
+            daher reicht es wenn er alle 10sec einen wert liefert und der alte um 300m abweicht.
+            Beim GPS Provider habe ich die Aktualisierungszeit verkürzt.
+            Bei deaktiviertem Hardware Kompass bleiben trotzdem die Werte noch in einem gesunden Verhältnis zwischen Performance und Stromverbrauch.
+            Andere apps haben hier 0.
              */
 
             int updateTime = Config.gpsUpdateTime.getValue();
 
             try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, mainMain);
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 300, mainMain);
-                locationManager.addNmeaListener(mainMain); //
-                locationManager.addGpsStatusListener(mainMain);
-            } catch (SecurityException sex) {
-                Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
-            }
+                locationManager.requestLocationUpdates(GPS_PROVIDER, updateTime, 1, this);
+                locationManager.requestLocationUpdates(NETWORK_PROVIDER, 10000, 300, this);
+                locationManager.addNmeaListener(mainMain); // for altitude correction: removed after first achieve (onNmeaReceived in main)
 
-        } catch (Exception e) {
-            Log.err(sKlasse, "getLocationManager()", "", e);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    locationManager.registerGnssStatusCallback(gnssStatusCallback);
+                } else {
+                    locationManager.addGpsStatusListener(gpsStatusListener);
+                }
+
+            } catch (SecurityException ex) {
+                Log.err(sKlasse, "Config.gpsUpdateTime changed: ", ex);
+            }
         }
         return locationManager;
+    }
+
+    void removeFromGPS() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locationManager.unregisterGnssStatusCallback(gnssStatusCallback);
+        } else {
+            locationManager.removeGpsStatusListener(gpsStatusListener);
+        }
+    }
+
+    public boolean askForLocationPermission() {
+        return askForLocationPermission;
+    }
+
+    public void resetAskForLocationPermission() {
+        askForLocationPermission = false;
+    }
+
+    public void startService() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Config.allowLocationService.getValue()) {
+                locationServiceIntent = new Intent(androidApplication, CBForeground.class);
+                androidApplication.startForegroundService(locationServiceIntent);
+            }
+        }
+        /*
+        // not necessary
+        else {
+            // startService(new Intent(this, CBForeground.class));
+        }
+         */
+    }
+
+    public void stopService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!Config.allowLocationService.getValue()) {
+                androidApplication.stopService(locationServiceIntent);
+            }
+        }
+    }
+
+    private void changeLocationService() {
+        if (Config.allowLocationService.getValue()) {
+            startService();
+        } else {
+            stopService();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location receivedLocation) {
+        // is fired from Android LocationListener: see getLocationManager in AndroidUIBaseMethods
+        CBLocation.ProviderType provider;
+        if (receivedLocation.getProvider().toLowerCase(new Locale("en")).contains("gps"))
+            provider = CBLocation.ProviderType.GPS;
+        else if (receivedLocation.getProvider().toLowerCase(new Locale("en")).contains("network"))
+            provider = CBLocation.ProviderType.Network;
+        else {
+            provider = CBLocation.ProviderType.NULL;
+        }
+        Locator.getInstance().setNewLocation(new CBLocation(
+                receivedLocation.getLatitude(),
+                receivedLocation.getLongitude(),
+                receivedLocation.getAccuracy(),
+                receivedLocation.hasSpeed(),
+                receivedLocation.getSpeed(),
+                receivedLocation.hasBearing(),
+                receivedLocation.getBearing(),
+                receivedLocation.getAltitude(),
+                provider));
     }
 
 }

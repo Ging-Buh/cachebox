@@ -15,15 +15,19 @@
  */
 package de.droidcachebox.database;
 
-import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.SDBM_Hash;
-import de.droidcachebox.utils.log.Log;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
+
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.SDBM_Hash;
+import de.droidcachebox.utils.log.Log;
 
 public abstract class Database extends Database_Core {
     private static final String log = "Database";
@@ -242,7 +246,7 @@ public abstract class Database extends Database_Core {
         return description;
     }
 
-    private boolean waypointExists(String gcCode) {
+    private static boolean waypointExists(String gcCode) {
         CoreCursor c = Database.Data.sql.rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[]{gcCode});
         {
             c.moveToFirst();
@@ -259,7 +263,7 @@ public abstract class Database extends Database_Core {
         }
     }
 
-    public String createFreeGcCode(String cacheGcCode) throws Exception {
+    public static String createFreeGcCode(String cacheGcCode) throws Exception {
         String suffix = cacheGcCode.substring(2);
         String firstCharCandidates = "CBXADEFGHIJKLMNOPQRSTUVWYZ0123456789";
         String secondCharCandidates = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -267,7 +271,7 @@ public abstract class Database extends Database_Core {
         for (int i = 0; i < firstCharCandidates.length(); i++)
             for (int j = 0; j < secondCharCandidates.length(); j++) {
                 String gcCode = firstCharCandidates.charAt(i) + secondCharCandidates.substring(j, j + 1) + suffix;
-                if (!Data.waypointExists(gcCode))
+                if (!Database.Data.waypointExists(gcCode))
                     return gcCode;
             }
         throw new Exception("Alle GcCodes sind bereits vergeben! Dies sollte eigentlich nie vorkommen!");
@@ -650,13 +654,6 @@ public abstract class Database extends Database_Core {
     public void deleteOldLogs(int minToKeep, int LogMaxMonthAge) {
 
         Log.debug(log, "deleteOldLogs but keep " + minToKeep + " and not older than " + LogMaxMonthAge);
-/*
-        if (LogMaxMonthAge == 0) {
-            // Setting are 'immediately'
-            // Delete all Logs and return
-            // TODO implement this
-        }
-*/
 
         ArrayList<Long> oldLogCaches = new ArrayList<>();
         Calendar now = Calendar.getInstance();

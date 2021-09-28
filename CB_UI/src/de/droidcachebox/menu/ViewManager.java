@@ -15,21 +15,40 @@
  */
 package de.droidcachebox.menu;
 
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
-import de.droidcachebox.*;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import de.droidcachebox.AppRater;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.GlobalLocationReceiver;
+import de.droidcachebox.InvalidateTextureListeners;
+import de.droidcachebox.PlatformAction;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.core.API_ErrorEventHandler;
 import de.droidcachebox.core.API_ErrorEventHandlerList;
-import de.droidcachebox.core.API_ErrorEventHandlerList.API_ERROR;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.Database;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.ParentInfo;
+import de.droidcachebox.gdx.Slider;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.ViewConst;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
 import de.droidcachebox.gdx.main.CB_TabView;
 import de.droidcachebox.gdx.main.GestureButton;
@@ -45,7 +64,13 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.menuBtn1.ShowCacheList;
 import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
-import de.droidcachebox.menu.menuBtn2.*;
+import de.droidcachebox.menu.menuBtn2.HintDialog;
+import de.droidcachebox.menu.menuBtn2.ShowDescription;
+import de.droidcachebox.menu.menuBtn2.ShowLogs;
+import de.droidcachebox.menu.menuBtn2.ShowNotes;
+import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
+import de.droidcachebox.menu.menuBtn2.ShowWaypoint;
+import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
 import de.droidcachebox.menu.menuBtn3.MapDownload;
 import de.droidcachebox.menu.menuBtn3.ShowCompass;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -53,7 +78,13 @@ import de.droidcachebox.menu.menuBtn3.ShowTracks;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
-import de.droidcachebox.menu.menuBtn5.*;
+import de.droidcachebox.menu.menuBtn5.HelpOnline;
+import de.droidcachebox.menu.menuBtn5.Settings;
+import de.droidcachebox.menu.menuBtn5.ShowAbout;
+import de.droidcachebox.menu.menuBtn5.ShowCredits;
+import de.droidcachebox.menu.menuBtn5.ShowQuit;
+import de.droidcachebox.menu.menuBtn5.SwitchDayNight;
+import de.droidcachebox.menu.menuBtn5.SwitchTorch;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -61,13 +92,6 @@ import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
-import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
-import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * the ViewManager has one tab (leftTab) on the phone<br>
@@ -107,7 +131,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     @Override
     protected void initialize() {
-        Log.debug(sKlasse, "Start ViewManager-Initial");
+        Log.debug(sKlasse, "initialize ViewManager");
 
         GlobalCore.receiver = new GlobalLocationReceiver();
 
@@ -130,8 +154,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyInvalid") + br + br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == MessageBox.BTN_LEFT_POSITIVE)
+                        MsgBox.show(Msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live, (which, data) -> {
+                            if (which == MsgBox.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
                         });
@@ -150,8 +174,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyExpired") + br + br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live, (which, data) -> {
-                            if (which == MessageBox.BTN_LEFT_POSITIVE)
+                        MsgBox.show(Msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live, (which, data) -> {
+                            if (which == MsgBox.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
                         });
@@ -171,9 +195,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         String Msg = Translation.get("apiKeyNeeded") + br + br;
                         Msg += Translation.get("wantApi");
 
-                        MessageBox.show(Msg, Translation.get("errorAPI"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live,
+                        MsgBox.show(Msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
                                 (which, data) -> {
-                                    if (which == MessageBox.BTN_LEFT_POSITIVE)
+                                    if (which == MsgBox.BTN_LEFT_POSITIVE)
                                         PlatformUIBase.getApiKey();
                                     return true;
                                 }, Config.RememberAsk_Get_API_Key);
@@ -193,8 +217,10 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         autoLoadTrack();
 
-        if (Config.TrackRecorderStartup.getValue() && PlatformUIBase.isGPSon()) {
-            TrackRecorder.startRecording();
+        if (Config.TrackRecorderStartup.getValue()) {
+            if (PlatformUIBase.isGPSon()) {
+                PlatformUIBase.startRecordTrack();
+            }
         }
         Config.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Config.TrackDistance.getValue());
 
@@ -218,9 +244,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         GL.that.removeRenderView(this);
 
         AppRater.app_launched();
-
-        if (Config.AccessToken.getValue().equals(""))
-            API_ErrorEventHandlerList.handleApiKeyError(API_ERROR.NO);
 
         isInitial = true;
 
@@ -300,7 +323,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn5.addAction(ShowAbout.getInstance(), true);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
 
-        ShowAbout.getInstance().execute();
+        ShowAbout.getInstance().execute(); // activated as first view
     }
 
     private void autoLoadTrack() {

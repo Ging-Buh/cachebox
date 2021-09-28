@@ -15,15 +15,16 @@
  */
 package de.droidcachebox.menu.menuBtn2;
 
+import static de.droidcachebox.gdx.controls.messagebox.MsgBox.calcMsgBoxSize;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.utils.UnitFormatter;
-
-import static de.droidcachebox.gdx.controls.messagebox.MessageBox.calcMsgBoxSize;
 
 public class HintDialog extends AbstractAction {
 

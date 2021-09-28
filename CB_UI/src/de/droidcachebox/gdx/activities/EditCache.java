@@ -1,28 +1,39 @@
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.Date;
+import java.util.Locale;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheSize;
+import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CoordinateButton;
+import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextField.TextFieldStyle;
+import de.droidcachebox.gdx.controls.ScrollBox;
+import de.droidcachebox.gdx.controls.Spinner;
 import de.droidcachebox.gdx.controls.Spinner.ISpinnerSelectionChanged;
+import de.droidcachebox.gdx.controls.SpinnerAdapter;
 import de.droidcachebox.gdx.views.GeoCacheListListView;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
-
-import java.util.Date;
-import java.util.Locale;
-
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     // Allgemein
@@ -35,20 +46,21 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     };
     private Cache cache;
     private Cache newValues;
-    private ScrollBox mainPanel;
-    private CB_Button btnOK;
-    private CB_Button btnCancel;
-    private Spinner cacheTyp;
-    private Spinner cacheSize;
-    private Spinner cacheDifficulty;
-    private Spinner cacheTerrain;
-    private CoordinateButton cacheCoords;
-    private EditTextField cacheCode; // SingleLine
-    private EditTextField cacheTitle; // WRAPPED
-    private EditTextField cacheOwner; // SingleLine
-    private EditTextField cacheCountry; // SingleLine
-    private EditTextField cacheState; // SingleLine
-    private CB_Button noHtml, toTop;
+    private final ScrollBox mainPanel;
+    private final CB_Button btnOK;
+    private final CB_Button btnCancel;
+    private final Spinner cacheTyp;
+    private final Spinner cacheSize;
+    private final Spinner cacheDifficulty;
+    private final Spinner cacheTerrain;
+    private final CoordinateButton cacheCoords;
+    private final EditTextField cacheCode; // SingleLine
+    private final EditTextField cacheTitle; // WRAPPED
+    private final EditTextField cacheOwner; // SingleLine
+    private final EditTextField cacheCountry; // SingleLine
+    private final EditTextField cacheState; // SingleLine
+    private final CB_Button noHtml;
+    private final CB_Button toTop;
     private EditTextField cacheDescription; // WRAPPED
 
     // ctor

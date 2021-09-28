@@ -16,10 +16,20 @@
 package de.droidcachebox;
 
 import com.badlogic.gdx.graphics.Color;
+
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.views.TrackListView;
-import de.droidcachebox.locator.Location;
-import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.CBLocation;
+import de.droidcachebox.locator.CBLocation.ProviderType;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.Locator.CompassType;
 import de.droidcachebox.locator.map.Track;
@@ -32,15 +42,6 @@ import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.Log;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
 public class TrackRecorder {
     private static final String log = "TrackRecorder";
     private final static ProviderType GPS = ProviderType.GPS;
@@ -49,13 +50,12 @@ public class TrackRecorder {
     public static boolean recording = false;
     public static int distanceForNextTrackpoint;
     private static double savedAltitude = 0;
-    private static Location lastRecordedPosition = Location.NULL_LOCATION;
+    private static CBLocation lastRecordedPosition = CBLocation.NULL_LOCATION;
     private static String mFriendlyName = "";
     private static String mMediaPath = "";
-    private static Location mMediaCoord = null;
+    private static CBLocation mMediaCoord = null;
     private static String mTimestamp = "";
     private static AbstractFile gpxfile = null;
-    private static FileWriter writer = null;
     private static boolean writeAnnotateMedia = false;
     private static int insertPos = 24;
     private static boolean mustWriteMedia = false;
@@ -63,6 +63,7 @@ public class TrackRecorder {
     private static boolean writePos = false;
 
     public static void startRecording() {
+
         distanceForNextTrackpoint = Config.TrackDistance.getValue();
 
         GlobalCore.currentRoute = new Track(Translation.get("actualTrack"));
@@ -79,6 +80,7 @@ public class TrackRecorder {
 
         if (gpxfile == null) {
             gpxfile = FileFactory.createFile(directory + "/" + generateTrackFileName());
+            FileWriter writer;
             try {
                 writer = gpxfile.getFileWriter();
                 writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
@@ -91,7 +93,6 @@ public class TrackRecorder {
             } catch (IOException e) {
                 Log.err(log, "IOException", e);
             }
-            writer = null;
         }
 
         pauseRecording = false;
@@ -111,7 +112,7 @@ public class TrackRecorder {
         return sDate;
     }
 
-    public static void annotateMedia(final String friendlyName, final String mediaPath, final Location location, final String timestamp) {
+    public static void annotateMedia(final String friendlyName, final String mediaPath, final CBLocation location, final String timestamp) {
         if (location == null)
             return;
         writeAnnotateMedia = true;

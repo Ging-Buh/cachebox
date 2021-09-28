@@ -1,23 +1,35 @@
 package de;
 
-import de.droidcachebox.Config;
-import de.droidcachebox.TrackList;
-import de.droidcachebox.gdx.views.TrackListView;
-import de.droidcachebox.locator.*;
-import de.droidcachebox.locator.Location.ProviderType;
-import de.droidcachebox.locator.map.Track;
-import de.droidcachebox.locator.map.TrackPoint;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.FileFactory;
-
-import java.awt.*;
+import java.awt.Button;
+import java.awt.Checkbox;
+import java.awt.FileDialog;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Label;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.droidcachebox.Config;
+import de.droidcachebox.TrackList;
+import de.droidcachebox.gdx.views.TrackListView;
+import de.droidcachebox.locator.CBLocation;
+import de.droidcachebox.locator.CBLocation.ProviderType;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.GPS;
+import de.droidcachebox.locator.GpsStateChangeEventList;
+import de.droidcachebox.locator.GpsStrength;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.map.Track;
+import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.FileFactory;
 
 public class simulateForm extends Frame implements ActionListener, WindowListener {
 
@@ -136,7 +148,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
             public void run() {
                 TrackPoint trk = simulationRoute.getTrackPoints().get(trackPointIndex);
                 Coordinate pos = new CoordinateGPS(trk.y, trk.x);
-                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.direction, 95, ProviderType.GPS));
+                Locator.getInstance().setNewLocation(new CBLocation(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.direction, 95, ProviderType.GPS));
 
                 DesktopMain.compassheading = (float) trk.direction;
 
@@ -198,7 +210,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
             Bearing += 5;
 
-            Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
+            Locator.getInstance().setNewLocation(new CBLocation(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
 
             CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
 
@@ -240,7 +252,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
         // Don't display loaded simulate route
         simulationRoute.setVisible(false);
 
-        // TODO set GPX File Name to lblGPX
+        // set GPX File Name to lblGPX
         if (simulationRoute != null && simulationRoute.getName() != null) {
             trackPointIndex = 0;
             int idx = simulationRoute.getFileName().lastIndexOf("\\");

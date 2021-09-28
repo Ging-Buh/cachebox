@@ -1,23 +1,25 @@
 package de.droidcachebox.maps;
 
+import static de.droidcachebox.utils.MathUtils.DEG_RAD;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Xml;
-import de.droidcachebox.Config;
-import de.droidcachebox.Main;
-import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.locator.map.Track;
-import de.droidcachebox.locator.map.TrackPoint;
-import de.droidcachebox.utils.log.Log;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Date;
 
-import static de.droidcachebox.utils.MathUtils.DEG_RAD;
+import de.droidcachebox.Config;
+import de.droidcachebox.Main;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.map.Track;
+import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.utils.log.Log;
 
 public class BRouter implements Router {
     private final static String sKlasse = "BRouter";
@@ -139,7 +141,7 @@ public class BRouter implements Router {
         }
 
         // Use cached route if current position has not changed more than 5m and we had a route
-        // TODO: Maybe adjust this to current zoomlevel
+        // Maybe adjust this to current zoomlevel
         if (lastDirectionUpdatePoint != null && destination == lastDestination && start.distanceTo(lastDirectionUpdatePoint) < UPDATE_MIN_DISTANCE_KILOMETERS && lastRoutingPoints != null) {
             return lastRoutingPoints;
         }

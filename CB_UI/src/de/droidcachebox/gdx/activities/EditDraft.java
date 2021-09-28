@@ -15,8 +15,23 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
+
 import android.text.InputType;
+
 import com.badlogic.gdx.math.Vector2;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.TemplateFormatter;
@@ -25,26 +40,29 @@ import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Draft;
-import de.droidcachebox.gdx.*;
-import de.droidcachebox.gdx.controls.*;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.FilterSetListViewItem;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.ScrollBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.DraftViewItem;
 import de.droidcachebox.gdx.views.DraftsView;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 
 public class EditDraft extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static final String sKlasse = "EditDraft";
@@ -101,7 +119,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
                     currentDraft.timestamp = timestamp;
                 } catch (ParseException e) {
-                    final MessageBox msg = MessageBox.show(Translation.get("wrongDate"), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error,
+                    final MsgBox msg = MsgBox.show(Translation.get("wrongDate"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error,
                             (which, data) -> {
                                 Timer runTimer = new Timer();
                                 TimerTask task = new TimerTask() {

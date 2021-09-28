@@ -16,6 +16,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.PlatformUIBase.Methods;
+import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database.DatabaseType;
 import de.droidcachebox.database.DesktopDB;
@@ -30,8 +31,8 @@ import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.DesktopTexturePacker;
 import de.droidcachebox.gdx.utils.DesktopClipboard;
+import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.DesktopLocatorBaseMethods;
-import de.droidcachebox.locator.Location;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
 import de.droidcachebox.menu.MainViewInit;
@@ -242,7 +243,7 @@ public class DesktopMain {
             }
 
             @Override
-            public void switchtoGpsDefault() {
+            public void switchToGpsDefault() {
             }
 
             @Override
@@ -320,13 +321,18 @@ public class DesktopMain {
             }
 
             @Override
-            public void startService() {
+            public void getDirectoryAccess(String _DirectoryToAccess) {
 
             }
 
             @Override
-            public void getDirectoryAccess(String _DirectoryToAccess) {
+            public void startRecordTrack() {
+                TrackRecorder.startRecording();
+            }
 
+            @Override
+            public boolean request_getLocationIfInBackground() {
+                return true;
             }
 
         });
@@ -400,14 +406,14 @@ public class DesktopMain {
         // ##########################################################
         double latitude = Config.mapInitLatitude.getValue();
         double longitude = Config.mapInitLongitude.getValue();
-        Location.ProviderType provider = (latitude == -1000) ? Location.ProviderType.NULL : Location.ProviderType.Saved;
+        CBLocation.ProviderType provider = (latitude == -1000) ? CBLocation.ProviderType.NULL : CBLocation.ProviderType.Saved;
 
-        Location initialLocation;
+        CBLocation initialLocation;
 
-        if (provider == Location.ProviderType.Saved) {
-            initialLocation = new Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
+        if (provider == CBLocation.ProviderType.Saved) {
+            initialLocation = new CBLocation(latitude, longitude, 0, false, 0, false, 0, 0, provider);
         } else {
-            initialLocation = Location.NULL_LOCATION;
+            initialLocation = CBLocation.NULL_LOCATION;
         }
 
         Locator.getInstance().setNewLocation(initialLocation);

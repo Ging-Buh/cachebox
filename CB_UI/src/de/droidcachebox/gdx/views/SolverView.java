@@ -26,9 +26,9 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.solver.DataType;
@@ -304,7 +304,7 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
                 message.append(s);
             }
 
-            MessageBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MessageBoxButton.YesNo, MessageBoxIcon.Asterisk,
+            MsgBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MsgBoxButton.YesNo, MsgBoxIcon.Asterisk,
                     (which, data) -> {
                         // Behandle das ergebniss
                         if (which == 1) {/* User clicked OK so do some stuff */

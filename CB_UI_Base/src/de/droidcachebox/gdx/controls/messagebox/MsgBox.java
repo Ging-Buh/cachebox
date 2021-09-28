@@ -17,11 +17,19 @@ package de.droidcachebox.gdx.controls.messagebox;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.Dialog;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
@@ -30,9 +38,7 @@ import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.StringH;
 
-import java.util.ArrayList;
-
-public class MessageBox extends Dialog {
+public class MsgBox extends Dialog {
     public static final int BTN_LEFT_POSITIVE = 1;
     public static final int BTN_MIDDLE_NEUTRAL = 2;
     public static final int BTN_RIGHT_NEGATIVE = 3;
@@ -48,13 +54,13 @@ public class MessageBox extends Dialog {
     private OnMsgBoxClickListener mMsgBoxClickListener;
     private ArrayList<CB_View_Base> FooterItems = new ArrayList<>();
 
-    public MessageBox(Size size, String name) {
+    public MsgBox(Size size, String name) {
         super(size.getBounds().asFloat(), name);
     }
 
-    public static MessageBox show(String msg) {
-        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
-        msgBox.addButtons(MessageBoxButton.OK);
+    public static MsgBox show(String msg) {
+        MsgBox msgBox = new MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
+        msgBox.addButtons(MsgBoxButton.OK);
         msgBox.label = new CB_Label(msgBox.getContentSize().getBounds());
         msgBox.label.setZeroPos(); // .getTextHeight()
         msgBox.label.setWrappedText(msg);
@@ -63,23 +69,23 @@ public class MessageBox extends Dialog {
         return msgBox;
     }
 
-    public static MessageBox show(String msg, OnMsgBoxClickListener Listener) {
+    public static MsgBox show(String msg, OnMsgBoxClickListener Listener) {
         return show(msg, "", Listener);
     }
 
-    public static MessageBox show(String msg, String title, OnMsgBoxClickListener Listener) {
-        return show(msg, title, MessageBoxButton.OK, Listener, null);
+    public static MsgBox show(String msg, String title, OnMsgBoxClickListener Listener) {
+        return show(msg, title, MsgBoxButton.OK, Listener, null);
     }
 
-    public static MessageBox show(String msg, String title, MessageBoxIcon icon) {
-        return show(msg, title, MessageBoxButton.OK, icon, null, null);
+    public static MsgBox show(String msg, String title, MsgBoxIcon icon) {
+        return show(msg, title, MsgBoxButton.OK, icon, null, null);
     }
 
-    public static MessageBox show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
+    public static MsgBox show(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, OnMsgBoxClickListener Listener) {
         return show(msg, title, buttons, icon, Listener, null);
     }
 
-    public static MessageBox show(String msg, String title, MessageBoxButton buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
+    public static MsgBox show(String msg, String title, MsgBoxButton buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
             // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
@@ -90,7 +96,7 @@ public class MessageBox extends Dialog {
             return null;
         }
 
-        MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButton.NOTHING), false, (remember != null)), "MsgBox" + title);
+        MsgBox msgBox = new MsgBox(calcMsgBoxSize(msg, true, (buttons != MsgBoxButton.NOTHING), false, (remember != null)), "MsgBox" + title);
         msgBox.rememberSetting = remember;
         msgBox.mMsgBoxClickListener = Listener;
         msgBox.addButtons(buttons);
@@ -101,7 +107,8 @@ public class MessageBox extends Dialog {
         float labelHeight = msgBox.label.getTextHeight();
         msgBox.label.setHeight(labelHeight);
 
-        ScrollBox scrollBox = new ScrollBox(msgBox.getContentSize().getBounds());
+        CB_RectF contentSize = msgBox.getContentSize().getBounds();
+        ScrollBox scrollBox = new ScrollBox(contentSize);
         scrollBox.initRow(BOTTOMUP);
         scrollBox.setVirtualHeight(labelHeight);
         scrollBox.addLast(msgBox.label);
@@ -113,7 +120,7 @@ public class MessageBox extends Dialog {
         return msgBox;
     }
 
-    public static MessageBox show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
+    public static MsgBox show(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
             // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
@@ -127,7 +134,7 @@ public class MessageBox extends Dialog {
         // nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
         // !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
         Dialog.margin = 5;
-        final MessageBox msgBox = new MessageBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButton.NOTHING), true, (remember != null)), "MsgBox" + title);
+        final MsgBox msgBox = new MsgBox(calcMsgBoxSize(msg, true, (buttons != MsgBoxButton.NOTHING), true, (remember != null)), "MsgBox" + title);
 
         msgBox.rememberSetting = remember;
         msgBox.mMsgBoxClickListener = Listener;
@@ -140,15 +147,23 @@ public class MessageBox extends Dialog {
         CB_RectF imageRec = new CB_RectF(0, contentSize.getHeight() - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
 
         Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
-        if (icon != MessageBoxIcon.None)
+        if (icon != MsgBoxIcon.None)
             iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
         msgBox.addChild(iconImage);
 
-        msgBox.label = new CB_Label(contentSize.getBounds());
-        msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getInstance().getButtonHeight());
-        msgBox.label.setPos(imageRec.getMaxX() + 5, 0);
+        msgBox.label = new CB_Label();
         msgBox.label.setWrappedText(msg);
-        msgBox.addChild(msgBox.label);
+        float labelHeight = msgBox.label.getTextHeight();
+        msgBox.label.setHeight(labelHeight);
+
+        ScrollBox scrollBox = new ScrollBox(msgBox.getContentSize().getBounds());
+        scrollBox.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getInstance().getButtonHeight());
+        scrollBox.setPos(imageRec.getMaxX() + 5, 0);
+        scrollBox.initRow(BOTTOMUP);
+        scrollBox.setVirtualHeight(labelHeight);
+        scrollBox.addLast(msgBox.label);
+
+        msgBox.addChild(scrollBox);
 
         GL.that.RunOnGL(() -> GL.that.showDialog(msgBox));
 
@@ -159,7 +174,7 @@ public class MessageBox extends Dialog {
         return calcMsgBoxSize(Text, hasTitle, hasButtons, hasIcon, false);
     }
 
-    private static Sprite getIcon(MessageBoxIcon msgIcon) {
+    private static Sprite getIcon(MsgBoxIcon msgIcon) {
 
         Sprite icon = null;
 
@@ -195,7 +210,7 @@ public class MessageBox extends Dialog {
         return icon;
     }
 
-    protected void addButtons(MessageBoxButton buttons) {
+    protected void addButtons(MsgBoxButton buttons) {
         switch (buttons) {
             case OK:
                 createButtons(1, "ok", null, null);
@@ -293,17 +308,17 @@ public class MessageBox extends Dialog {
     private void setButtonListener() {
         if (btnLeftPositive != null) {
             if (btnLeftPositiveClickListener == null)
-                btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BTN_LEFT_POSITIVE);
+                btnLeftPositiveClickListener = (v, x, y, pointer, button) -> handleButtonClick(MsgBox.BTN_LEFT_POSITIVE);
             btnLeftPositive.setClickHandler(btnLeftPositiveClickListener);
         }
         if (btnMiddleNeutral != null) {
             if (btnMiddleNeutralClickListener == null)
-                btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BTN_MIDDLE_NEUTRAL);
+                btnMiddleNeutralClickListener = (v, x, y, pointer, button) -> handleButtonClick(MsgBox.BTN_MIDDLE_NEUTRAL);
             btnMiddleNeutral.setClickHandler(btnMiddleNeutralClickListener);
         }
         if (btnRightNegative != null) {
             if (btnRightNegativeClickListener == null)
-                btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(MessageBox.BTN_RIGHT_NEGATIVE);
+                btnRightNegativeClickListener = (v, x, y, pointer, button) -> handleButtonClick(MsgBox.BTN_RIGHT_NEGATIVE);
             btnRightNegative.setClickHandler(btnRightNegativeClickListener);
         }
     }

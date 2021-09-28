@@ -1,20 +1,21 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.gdx.controls.messagebox.MsgBox.BTN_LEFT_POSITIVE;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.util.Map;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.translation.Translation;
-
-import java.util.Map;
-
-import static de.droidcachebox.core.GroundspeakAPI.OK;
-import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSITIVE;
 
 public class ListsAtGroundSpeak extends AbstractAction {
     private static ListsAtGroundSpeak listsAtGroundSpeak;
@@ -54,11 +55,11 @@ public class ListsAtGroundSpeak extends AbstractAction {
     }
 
     private void groundspeakList(Map.Entry<String, String> bookmarkList) {
-        MessageBox mb = MessageBox.show(Translation.get("BookmarklistMessage", bookmarkList.getKey()), bookmarkList.getKey(), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question,
+        MsgBox mb = MsgBox.show(Translation.get("BookmarklistMessage", bookmarkList.getKey()), bookmarkList.getKey(), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question,
                 (btnNumber, data) -> {
                     if (btnNumber == BTN_LEFT_POSITIVE)
                         addToList(bookmarkList.getValue());
-                    else if (btnNumber == MessageBox.BTN_MIDDLE_NEUTRAL)
+                    else if (btnNumber == MsgBox.BTN_MIDDLE_NEUTRAL)
                         removeFromList(bookmarkList.getValue());
                     return true;
                 });
@@ -66,11 +67,11 @@ public class ListsAtGroundSpeak extends AbstractAction {
     }
 
     private void groundspeakList(String title) {
-        MessageBox mb = MessageBox.show(Translation.get(title + "Message"), Translation.get(title), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question,
+        MsgBox mb = MsgBox.show(Translation.get(title + "Message"), Translation.get(title), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question,
                 (btnNumber, data) -> {
                     if (btnNumber == BTN_LEFT_POSITIVE)
                         addToList(title);
-                    else if (btnNumber == MessageBox.BTN_MIDDLE_NEUTRAL)
+                    else if (btnNumber == MsgBox.BTN_MIDDLE_NEUTRAL)
                         removeFromList(title);
                     return true;
                 });
@@ -97,9 +98,9 @@ public class ListsAtGroundSpeak extends AbstractAction {
                         AddToTitle = "AddToBookmarklist";
                 }
                 if (GroundspeakAPI.addToList(listCode, GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get(AddToTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MsgBox.show(Translation.get("ok"), Translation.get(AddToTitle), MsgBoxButton.OK, MsgBoxIcon.Information, null);
                 } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get(AddToTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get(AddToTitle), MsgBoxButton.OK, MsgBoxIcon.Information, null);
                 }
             });
         }
@@ -125,9 +126,9 @@ public class ListsAtGroundSpeak extends AbstractAction {
                         RemoveFromTitle = "RemoveFromBookmarklist";
                 }
                 if (GroundspeakAPI.removeFromList(listCode, GlobalCore.getSelectedCache().getGeoCacheCode()) == OK) {
-                    MessageBox.show(Translation.get("ok"), Translation.get(RemoveFromTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MsgBox.show(Translation.get("ok"), Translation.get(RemoveFromTitle), MsgBoxButton.OK, MsgBoxIcon.Information, null);
                 } else {
-                    MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get(RemoveFromTitle), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                    MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get(RemoveFromTitle), MsgBoxButton.OK, MsgBoxIcon.Information, null);
                 }
             });
         }

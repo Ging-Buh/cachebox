@@ -15,8 +15,49 @@
  */
 package de.droidcachebox.core;
 
+import static java.lang.Thread.sleep;
+import static de.droidcachebox.database.Cache.IS_FULL;
+import static de.droidcachebox.database.Cache.IS_LITE;
+import static de.droidcachebox.ex_import.DescriptionImageGrabber.Segmentize;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.io.Writer;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Draft;
+import de.droidcachebox.database.GeoCacheSize;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.database.LogDAO;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.TBList;
+import de.droidcachebox.database.Trackable;
+import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Descriptor;
@@ -25,22 +66,12 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.ICancelRunnable;
-import de.droidcachebox.utils.http.*;
+import de.droidcachebox.utils.http.Request;
+import de.droidcachebox.utils.http.Response;
+import de.droidcachebox.utils.http.Webb;
+import de.droidcachebox.utils.http.WebbException;
+import de.droidcachebox.utils.http.WebbUtils;
 import de.droidcachebox.utils.log.Log;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.*;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static de.droidcachebox.database.Cache.IS_FULL;
-import static de.droidcachebox.database.Cache.IS_LITE;
-import static de.droidcachebox.ex_import.DescriptionImageGrabber.Segmentize;
-import static java.lang.Thread.sleep;
 
 public class GroundspeakAPI {
     public static final int OK = 0;
@@ -1003,7 +1034,7 @@ public class GroundspeakAPI {
                 if (me.memberShipType == MemberShipType.Unknown) {
                     me.findCount = -1;
                     // we need a new AccessToken
-                    // API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                    API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
                     Log.err(sKlasse, "fetchMyUserInfos: Need a new Access Token");
                 }
                 active = false;
@@ -1069,10 +1100,13 @@ public class GroundspeakAPI {
         if ((act.startsWith("A"))) {
             // Log.debug(log, "Access Token = " + act.substring(1, act.length()));
             return act.substring(1);
-        } else
+        } else {
             Log.err(sKlasse, "no Access Token");
-        return "";
-        /* */
+            // todo Message to try again ?
+            // get the AccessToken
+            API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.NO);
+            return "";
+        }
     }
 
     public static String getUrl(int version, String command) {

@@ -1,13 +1,18 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
+import de.droidcachebox.gdx.controls.ImageMultiToggleButton;
+import de.droidcachebox.gdx.controls.Linearlayout;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.Size;
@@ -22,7 +27,7 @@ public class RouteDialog extends ButtonDialog {
     private IReturnListener mReturnListener;
 
     public RouteDialog(IReturnListener listener) {
-        super(GL_UISizes.menuRectangle, "RouteDialog", "", Translation.get("RouteToWaypoit"), MessageBoxButton.OKCancel, null, null);
+        super(GL_UISizes.menuRectangle, "RouteDialog", "", Translation.get("RouteToWaypoit"), MsgBoxButton.OKCancel, null, null);
         mReturnListener = listener;
 
         // SizeF msgBoxContentSize = getContentSize();
@@ -76,12 +81,12 @@ public class RouteDialog extends ButtonDialog {
 
         this.addChild(layout);
 
-        Size msgBoxSize = MessageBox.calcMsgBoxSize("teste", true, true, false);
+        Size msgBoxSize = MsgBox.calcMsgBoxSize("teste", true, true, false);
         msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (textFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 
         mMsgBoxClickListener = (which, data) -> {
-            if (which == MessageBox.BTN_LEFT_POSITIVE) {
+            if (which == MsgBox.BTN_LEFT_POSITIVE) {
                 if (mReturnListener != null)
                     mReturnListener.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
             } else {

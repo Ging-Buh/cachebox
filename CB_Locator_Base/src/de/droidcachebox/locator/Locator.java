@@ -15,12 +15,12 @@
  */
 package de.droidcachebox.locator;
 
+import java.util.Date;
+
 import de.droidcachebox.Energy;
-import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.CBLocation.ProviderType;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.Date;
 
 /**
  * @author Longri
@@ -36,10 +36,10 @@ public class Locator {
     private int mMagneticCompassLevel = 5;
     private boolean isDisplayOff = false;
     private boolean hasSpeed = false;
-    private Location mFineLocation;
-    private Location mLastSavedFineLocation;
-    private Location mNetworkLocation;
-    private Location mSaveLocation;
+    private CBLocation mFineLocation;
+    private CBLocation mLastSavedFineLocation;
+    private CBLocation mNetworkLocation;
+    private CBLocation mSaveLocation;
     private float speed = 0;
     private float mlastMagneticHeading = 0;
     private float mlastGPSHeading = -1;
@@ -124,9 +124,9 @@ public class Locator {
      * (Fall back to Network or saved Location)
      *
      */
-    public void setNewLocation(Location location) {
+    public void setNewLocation(CBLocation location) {
         if (location == null)
-            location = Location.NULL_LOCATION;
+            location = CBLocation.NULL_LOCATION;
 
         synchronized (locator) {
             switch (location.getProviderType()) {
@@ -177,7 +177,7 @@ public class Locator {
      * Returns the last saved fine location (from GPS) or null !
      *
      */
-    public Location getLastSavedFineLocation() {
+    public CBLocation getLastSavedFineLocation() {
         synchronized (locator) {
             return locator.mLastSavedFineLocation;
         }
@@ -221,14 +221,14 @@ public class Locator {
      * Returns the last valid position.</br> 1. Gps</br> 2. Network</br> 3. Saved</br>
      *
      */
-    public Location getLocation() {
+    public CBLocation getLocation() {
         return getLocation(ProviderType.any);
     }
 
     /**
      * Returns the last valid position of the given ProviderType
      */
-    public Location getLocation(ProviderType type) {
+    public CBLocation getLocation(ProviderType type) {
         synchronized (locator) {
 
             if (type == ProviderType.any) {
@@ -238,7 +238,7 @@ public class Locator {
                     return locator.mNetworkLocation;
                 if (locator.mSaveLocation != null)
                     return locator.mSaveLocation;
-                return Location.NULL_LOCATION;
+                return CBLocation.NULL_LOCATION;
             } else if (type == ProviderType.GPS) {
                 return locator.mLastSavedFineLocation;
             } else if (type == ProviderType.Network) {
@@ -246,7 +246,7 @@ public class Locator {
             } else if (type == ProviderType.Saved) {
                 return locator.mSaveLocation;
             }
-            return Location.NULL_LOCATION;
+            return CBLocation.NULL_LOCATION;
         }
     }
 
@@ -269,7 +269,7 @@ public class Locator {
     public Coordinate getValidPosition(Coordinate defaultValue) {
         if (isValid()) {
             CoordinateGPS retValue = getLocation(ProviderType.any).toCordinate();
-            if (retValue == Location.NULL_LOCATION) {
+            if (retValue == CBLocation.NULL_LOCATION) {
                 return defaultValue;
             }
             else return retValue;
@@ -283,7 +283,7 @@ public class Locator {
      *
      */
     public Coordinate getMyPosition(ProviderType type) {
-        Location loc = getLocation(type);
+        CBLocation loc = getLocation(type);
         if (loc == null)
             return null;
         return loc.toCordinate();

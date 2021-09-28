@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.log.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.log.Log;
 
 public class SQLiteClass implements SQLiteInterface {
     private static final String log = "SQLiteClass";
@@ -36,7 +37,6 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public boolean openReadOnly(String databasePath) {
         try {
-            // todo Handle exists, but can't be opened
             myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READONLY);
             return true;
         } catch (Exception ex) {

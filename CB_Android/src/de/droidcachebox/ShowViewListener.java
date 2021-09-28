@@ -3,10 +3,12 @@ package de.droidcachebox;
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.Build.VERSION_CODES.O_MR1;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
@@ -22,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -48,8 +51,8 @@ import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.ViewConst;
 import de.droidcachebox.gdx.ViewID;
 import de.droidcachebox.gdx.views.SpoilerView;
+import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Formatter;
-import de.droidcachebox.locator.Location;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
@@ -65,7 +68,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private static final int REQUEST_CAPTURE_IMAGE = 6516;
     private static final int REQUEST_CAPTURE_VIDEO = 6517;
     private static boolean isVoiceRecordingStarted = false;
-    private static Location recordingStartCoordinate;
+    private static CBLocation recordingStartCoordinate;
     private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
     private int lastLeft, lastTop, lastRight, lastBottom;
     private AndroidApplication androidApplication;
@@ -589,6 +592,12 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
     private void recVoice() {
+        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            final String[] recordAudioPermissions = {Manifest.permission.RECORD_AUDIO};
+            ActivityCompat.requestPermissions(mainActivity, recordAudioPermissions, Main.Request_recordVoice);
+            return ;
+        }
+
         try {
             if (!isVoiceRecordingStarted()) // Voice Recorder starten
             {
@@ -619,7 +628,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 String TrackFolder = Config.TrackFolder.getValue();
                 String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
                 // Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-                TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(Location.ProviderType.GPS), getTrackDateTimeString());
+                TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(CBLocation.ProviderType.GPS), getTrackDateTimeString());
                 Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
                 recordVoice(true);
@@ -662,6 +671,11 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
     private void takePhoto() {
+        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            final String[] takePhotoPermissions = {Manifest.permission.CAMERA};
+            ActivityCompat.requestPermissions(mainActivity, takePhotoPermissions, Main.Request_takePhoto);
+            return ;
+        }
         Log.info(sKlasse, "takePhoto start " + GlobalCore.getSelectedCache());
         try {
             // define the file-name to save photo taken by Camera activity
@@ -734,9 +748,9 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                         // track annotation
                                         String TrackFolder = Config.TrackFolder.getValue();
                                         String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
-                                        Location lastLocation = Locator.getInstance().getLastSavedFineLocation();
+                                        CBLocation lastLocation = Locator.getInstance().getLastSavedFineLocation();
                                         if (lastLocation == null) {
-                                            lastLocation = Locator.getInstance().getLocation(Location.ProviderType.any);
+                                            lastLocation = Locator.getInstance().getLocation(CBLocation.ProviderType.any);
                                             if (lastLocation == null) {
                                                 Log.info(sKlasse, "No (GPS)-Location for Trackrecording.");
                                                 return;
@@ -765,6 +779,16 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     }
 
     private void recVideo() {
+        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            final String[] takePhotoPermissions = {Manifest.permission.CAMERA};
+            ActivityCompat.requestPermissions(mainActivity, takePhotoPermissions, Main.Request_recordVideo);
+            return ;
+        }
+        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            final String[] recordAudioPermissions = {Manifest.permission.RECORD_AUDIO};
+            ActivityCompat.requestPermissions(mainActivity, recordAudioPermissions, Main.Request_recordVideo);
+            return ;
+        }
 
         try {
             Log.info(sKlasse, "recVideo start " + GlobalCore.getSelectedCache());
@@ -786,7 +810,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
 
             // Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
             recordingStartTime = getTrackDateTimeString();
-            recordingStartCoordinate = Locator.getInstance().getLocation(Location.ProviderType.GPS);
+            recordingStartCoordinate = Locator.getInstance().getLocation(CBLocation.ProviderType.GPS);
 
             ContentValues values = new ContentValues();
             values.put(MediaStore.Video.Media.TITLE, "");

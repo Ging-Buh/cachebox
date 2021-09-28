@@ -15,12 +15,35 @@
  */
 package de.droidcachebox.gdx.controls.popups;
 
+import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
+import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCache;
+import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCaches;
+import static de.droidcachebox.core.GroundspeakAPI.isPremiumMember;
+import static de.droidcachebox.core.GroundspeakAPI.searchGeoCaches;
+
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.core.*;
-import de.droidcachebox.database.*;
+import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.core.CoreData;
+import de.droidcachebox.core.FilterInstances;
+import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.Category;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.database.ImageDAO;
+import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.database.LogDAO;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Slider;
 import de.droidcachebox.gdx.Slider.YPositionChanged;
@@ -35,9 +58,9 @@ import de.droidcachebox.gdx.controls.ImageButton;
 import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.GeoCacheListListView;
@@ -47,10 +70,6 @@ import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
 
 /**
  * @author Longri
@@ -68,7 +87,7 @@ public class SearchDialog extends PopUp_Base {
     };
 
     private CancelWaitDialog wd = null;
-    private MessageBox messageBox;
+    private MsgBox msgBox;
     /**
      * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
      */
@@ -377,7 +396,7 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchAktive = false;
-                    MessageBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MessageBoxButton.OK, MessageBoxIcon.Asterisk, null);
+                    MsgBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MsgBoxButton.OK, MsgBoxIcon.Asterisk, null);
                 } else {
                     Waypoint finalWp = tmp.getCorrectedFinal();
                     if (finalWp == null)
@@ -405,7 +424,7 @@ public class SearchDialog extends PopUp_Base {
         GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
 
             if (invalidAccessToken) {
-                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null));
+                GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
             } else {
 
                 wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new ICancelRunnable() {
@@ -415,9 +434,9 @@ public class SearchDialog extends PopUp_Base {
                         if (isPremiumMember()) {
                             searchOnlineNow();
                         } else {
-                            MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                            MsgBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live,
                                     (which, data) -> {
-                                        if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                                        if (which == MsgBox.BTN_LEFT_POSITIVE) {
                                             searchOnlineNow();
                                         } else
                                             closeWaitDialog();
@@ -631,17 +650,17 @@ public class SearchDialog extends PopUp_Base {
         // First check API-Key with visual Feedback
         GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
             if (invalidAccessToken) {
-                GL.that.RunOnGL(() -> MessageBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null));
+                GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
             } else {
                 closeWD();
                 GL.that.RunOnGL(() -> {
                     if (isPremiumMember()) {
                         showTargetApiDialog();
                     } else {
-                        messageBox = MessageBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                        msgBox = MsgBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live,
                                 (which, data) -> {
                                     closeMsgBox();
-                                    if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                                    if (which == MsgBox.BTN_LEFT_POSITIVE) {
                                         showTargetApiDialog();
                                     }
                                     return true;
@@ -653,7 +672,7 @@ public class SearchDialog extends PopUp_Base {
     }
 
     private void closeMsgBox() {
-        messageBox.close();
+        msgBox.close();
     }
 
     private void closeWD() {

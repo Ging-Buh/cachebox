@@ -16,6 +16,12 @@
 
 package de.droidcachebox.menu.menuBtn3;
 
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
+import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_CAR;
+import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_DEFAULT;
+import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_OSMARENDER;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -23,16 +29,37 @@ import com.badlogic.gdx.utils.Array;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
-import de.droidcachebox.*;
+
+import org.mapsforge.map.rendertheme.ExternalRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import de.droidcachebox.AbstractShowAction;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.TrackList;
+import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.SearchCoordinates;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.main.OptionMenu;
@@ -40,8 +67,17 @@ import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.gdx.views.MapView.MapMode;
 import de.droidcachebox.gdx.views.TrackCreation;
 import de.droidcachebox.gdx.views.TrackListView;
-import de.droidcachebox.locator.*;
-import de.droidcachebox.locator.map.*;
+import de.droidcachebox.locator.CBLocation;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.LocatorSettings;
+import de.droidcachebox.locator.map.CB_InternalRenderTheme;
+import de.droidcachebox.locator.map.Layer;
+import de.droidcachebox.locator.map.LayerManager;
+import de.droidcachebox.locator.map.MapTileLoader;
+import de.droidcachebox.locator.map.MapsForgeLayer;
+import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.maps.Router;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.SettingBool;
@@ -52,15 +88,6 @@ import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
-import org.mapsforge.map.rendertheme.*;
-import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
-
-import java.io.ByteArrayInputStream;
-import java.util.*;
-
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
-import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
-import static de.droidcachebox.locator.map.MapsForgeLayer.*;
 
 /**
  * @author Longri
@@ -96,6 +123,9 @@ public class ShowMap extends AbstractShowAction {
 
     @Override
     public void execute() {
+        if (PlatformUIBase.isGPSon()) {
+            PlatformUIBase.request_getLocationIfInBackground();
+        }
         ViewManager.leftTab.showView(normalMapView);
     }
 
@@ -197,19 +227,19 @@ public class ShowMap extends AbstractShowAction {
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapTileLoader.getInstance().getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-                MessageBox msgBox = MessageBox.show(
+                MsgBox msgBox = MsgBox.show(
                         Translation.get("AddOrChangeMap"),
                         Translation.get("Layer"),
-                        MessageBoxButton.YesNoCancel,
-                        MessageBoxIcon.Question,
+                        MsgBoxButton.YesNoCancel,
+                        MsgBoxIcon.Question,
                         (which, data) -> {
                             Layer layer1 = (Layer) data;
                             switch (which) {
-                                case MessageBox.BTN_LEFT_POSITIVE:
+                                case MsgBox.BTN_LEFT_POSITIVE:
                                     // add the selected map to the curent layer
                                     normalMapView.addAdditionalLayer(layer1);
                                     break;
-                                case MessageBox.BTN_MIDDLE_NEUTRAL:
+                                case MsgBox.BTN_MIDDLE_NEUTRAL:
                                     // switch curent layer to selected
                                     normalMapView.setCurrentLayer(layer1);
                                     break;
@@ -396,7 +426,7 @@ public class ShowMap extends AbstractShowAction {
     }
 
     public void setRoutingTrack() {
-        Coordinate start = Locator.getInstance().getMyPosition(Location.ProviderType.GPS);
+        Coordinate start = Locator.getInstance().getMyPosition(CBLocation.ProviderType.GPS);
         if (start == null || !start.isValid()) {
             // from center map
             Coordinate mapCenter = ShowMap.getInstance().normalMapView.center;
@@ -473,7 +503,7 @@ public class ShowMap extends AbstractShowAction {
                                     UnZip.extractFolder(target, false);
                                 } catch (Exception ex) {
                                     Log.err(log, "Unzip error: " + ex.toString());
-                                    MessageBox.show(ex.toString(), "Unzip", MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
+                                    MsgBox.show(ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
                                 }
                                 Gdx.files.absolute(target).delete();
                                 ((MenuItem) v).setDisabled(true);
@@ -488,7 +518,7 @@ public class ShowMap extends AbstractShowAction {
                 mapViewThemeMenu.addDivider();
                 mapViewThemeMenu.addMenuItem("Download", null, () -> {
                     // MakeRenderThemePathWritable
-                    MessageBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MessageBoxButton.YesNo, MessageBoxIcon.Hand,
+                    MsgBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MsgBoxButton.YesNo, MsgBoxIcon.Hand,
                             (btnNumber, data) -> {
                                 if (btnNumber == 1) { // change path
                                     Config.RenderThemesFolder.setValue(Config.RenderThemesFolder.getDefaultValue());
@@ -540,7 +570,7 @@ public class ShowMap extends AbstractShowAction {
                                 UnZip.extractHere(target);
                             } catch (Exception ex) {
                                 Log.err(log, "Unzip error: " + ex.toString());
-                                MessageBox.show(ex.toString(), "Unzip", MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
+                                MsgBox.show(ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
                             }
                             Gdx.files.absolute(target).delete();
                             ((MenuItem) v).setDisabled(true);

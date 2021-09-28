@@ -15,32 +15,46 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.core.GroundspeakAPI.ERROR;
+import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.uploadTrackableLog;
+import static de.droidcachebox.utils.Config_Core.br;
+
+import java.util.Date;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Draft;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.Trackable;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.ImageButton;
+import de.droidcachebox.gdx.controls.RadioButton;
+import de.droidcachebox.gdx.controls.RadioGroup;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.TrackableListView;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
-
-import java.util.Date;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class TB_Log extends ActivityBase {
     private static WaitDialog wd;
@@ -145,7 +159,7 @@ public class TB_Log extends ActivityBase {
                 final String errorMsg = Translation.get("NoCacheSelect");
                 this.finish();
 
-                GL.that.RunOnGL(() -> MessageBox.show(errorMsg, "", MessageBoxIcon.Error));
+                GL.that.RunOnGL(() -> MsgBox.show(errorMsg, "", MsgBoxIcon.Error));
                 return;
             }
 
@@ -240,16 +254,16 @@ public class TB_Log extends ActivityBase {
                     GL.that.toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question, (which, data) -> {
+                    MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question, (which, data) -> {
                         switch (which) {
-                            case MessageBox.BTN_RIGHT_NEGATIVE:
+                            case MsgBox.BTN_RIGHT_NEGATIVE:
                                 logOnline();
                                 return true;
 
-                            case MessageBox.BTN_MIDDLE_NEUTRAL:
+                            case MsgBox.BTN_MIDDLE_NEUTRAL:
                                 return true;
 
-                            case MessageBox.BTN_LEFT_POSITIVE:
+                            case MsgBox.BTN_LEFT_POSITIVE:
                                 createTBDraft();
                                 return true;
                         }
@@ -261,17 +275,17 @@ public class TB_Log extends ActivityBase {
                     GL.that.toast(LastAPIError);
                     if (wd != null)
                         wd.close();
-                    MessageBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MessageBoxButton.YesNoRetry, MessageBoxIcon.Question,
+                    MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question,
                             (which, data) -> {
                                 switch (which) {
-                                    case MessageBox.BTN_RIGHT_NEGATIVE:
+                                    case MsgBox.BTN_RIGHT_NEGATIVE:
                                         logOnline();
                                         return true;
 
-                                    case MessageBox.BTN_MIDDLE_NEUTRAL:
+                                    case MsgBox.BTN_MIDDLE_NEUTRAL:
                                         return true;
 
-                                    case MessageBox.BTN_LEFT_POSITIVE:
+                                    case MsgBox.BTN_LEFT_POSITIVE:
                                         createTBDraft();
                                         return true;
                                 }
@@ -281,7 +295,7 @@ public class TB_Log extends ActivityBase {
                 }
 
                 if (LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(() -> MessageBox.show(LastAPIError, Translation.get("Error"), MessageBoxIcon.Error));
+                    GL.that.RunOnGL(() -> MsgBox.show(LastAPIError, Translation.get("Error"), MsgBoxIcon.Error));
                 }
 
                 if (wd != null)

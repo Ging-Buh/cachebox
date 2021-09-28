@@ -92,108 +92,100 @@ public class PlatformUIBase {
         methods = _methods;
     }
 
-    public static SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
-        if (methods != null)
-            setting = methods.readPlatformSetting(setting);
-        return setting;
-    }
-
-    public static <T> void writePlatformSetting(SettingBase<T> setting) {
-        if (methods != null)
-            methods.writePlatformSetting(setting);
-    }
-
     public static boolean canUsePlatformSettings() {
         return (methods != null);
     }
 
+    public static SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
+        setting = methods.readPlatformSetting(setting);
+        return setting;
+    }
+
+    public static <T> void writePlatformSetting(SettingBase<T> setting) {
+        methods.writePlatformSetting(setting);
+    }
+
     public static void vibrate() {
-        if (methods != null) {
-            if (threadVibrate == null) {
-                threadVibrate = new Thread(() -> methods.vibrate());
-            }
-            threadVibrate.run(); // do not replace with start()
+        if (threadVibrate == null) {
+            threadVibrate = new Thread(() -> methods.vibrate());
         }
+        threadVibrate.run(); // do not replace with start()
     }
 
     public static boolean isOnline() {
-        if (methods != null) {
-            return methods.isOnline();
-        }
-        return false;
+        return methods.isOnline();
     }
 
     public static boolean isGPSon() {
-        if (methods != null) {
-            return methods.isGPSon();
-        }
-
-        return false;
+        return methods.isGPSon();
     }
 
     public static boolean isTorchAvailable() {
-        if (methods != null) {
-            return methods.isTorchAvailable();
-        }
-        return false;
+        return methods.isTorchAvailable();
     }
 
     public static boolean isTorchOn() {
-        if (methods != null) {
-            return methods.isTorchOn();
-        }
-        return false;
+        return methods.isTorchOn();
     }
 
     public static void switchTorch() {
-        if (methods != null) {
-            methods.switchTorch();
-        }
+        methods.switchTorch();
     }
 
     public static void quit() {
-        if (methods != null)
-            methods.quit();
+        methods.quit();
     }
 
     public static void getApiKey() {
-        if (methods != null)
-            methods.getApiKey();
+        methods.getApiKey();
     }
 
     public static void callUrl(String url) {
-        if (methods != null)
-            methods.callUrl(url);
+        methods.callUrl(url);
     }
 
     public static void startPictureApp(String file) {
-        if (methods != null)
-            methods.startPictureApp(file);
+        methods.startPictureApp(file);
     }
 
     public static SQLiteInterface getSQLInstance() {
-        if (methods != null) {
-            return methods.getSQLInstance();
-        } else return null;
+        return methods.getSQLInstance();
     }
 
     public static void freeSQLInstance(SQLiteInterface sqlInstance) {
-        if (methods != null) {
-            methods.freeSQLInstance(sqlInstance);
-        }
+        methods.freeSQLInstance(sqlInstance);
     }
 
-
     public static void switchToGpsMeasure() {
-        if (methods != null) {
-            methods.switchToGpsMeasure();
-        }
+        methods.switchToGpsMeasure();
     }
 
     public static void switchToGpsDefault() {
-        if (methods != null) {
-            methods.switchtoGpsDefault();
-        }
+        methods.switchToGpsDefault();
+    }
+
+    public static void handleExternalRequest() {
+        methods.handleExternalRequest();
+    }
+
+    public static String removeHtmlEntyties(String text) {
+        return methods.removeHtmlEntyties(text);
+    }
+
+    public static String getFileProviderContentUrl(String localFile) {
+        return methods.getFileProviderContentUrl(localFile);
+    }
+
+    public static void getDirectoryAccess(String directory) {
+        methods.getDirectoryAccess(directory);
+    }
+
+    public static void startRecordTrack() {
+        methods.startRecordTrack();
+    }
+
+    public static boolean request_getLocationIfInBackground() {
+        return methods.request_getLocationIfInBackground();
     }
 
     public static ArrayList<String> getMediaScannerList() {
@@ -219,26 +211,6 @@ public class PlatformUIBase {
     public static void setClipboard(Clipboard clipBoard) {
         PlatformUIBase.clipBoard = clipBoard;
     }
-
-    public static void handleExternalRequest() {
-        methods.handleExternalRequest();
-    }
-
-    public static String removeHtmlEntyties(String text) {
-        return methods.removeHtmlEntyties(text);
-    }
-
-    public static String getFileProviderContentUrl(String localFile) {
-        return methods.getFileProviderContentUrl(localFile);
-    }
-
-    public static void startService() {
-        methods.startService();
-    }
-
-    public static void getDirectoryAccess(String directory) {
-        methods.getDirectoryAccess(directory);
-    };
 
     public interface IShowViewListener {
         void showView(ViewID viewID, int left, int top, int right, int bottom);
@@ -277,7 +249,7 @@ public class PlatformUIBase {
 
         void switchToGpsMeasure();
 
-        void switchtoGpsDefault();
+        void switchToGpsDefault();
 
         void getApiKey();
 
@@ -297,9 +269,11 @@ public class PlatformUIBase {
 
         String getFileProviderContentUrl(String localFile);
 
-        void startService();
-
         void getDirectoryAccess(String directory);
+
+        void startRecordTrack();
+
+        boolean request_getLocationIfInBackground();
     }
 
 }

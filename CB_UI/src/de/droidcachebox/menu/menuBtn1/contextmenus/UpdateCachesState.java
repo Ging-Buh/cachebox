@@ -1,6 +1,16 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
+import static de.droidcachebox.core.GroundspeakAPI.APIError;
+import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
+import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.updateStatusOfGeoCaches;
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.Config;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -14,17 +24,12 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.RunnableReadyHandler;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class UpdateCachesState extends AbstractAction {
     private static final String sKlasse = "UpdateCachesState";
@@ -170,9 +175,9 @@ public class UpdateCachesState extends AbstractAction {
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 synchronized (Database.Data.cacheList) {
-                    MessageBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(),
+                    MsgBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(),
                             Translation.get("chkState"),
-                            MessageBoxIcon.None);
+                            MsgBoxIcon.None);
                 }
 
             }

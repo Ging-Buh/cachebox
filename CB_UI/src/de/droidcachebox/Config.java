@@ -16,9 +16,9 @@
 package de.droidcachebox;
 
 import de.droidcachebox.core.CB_Core_Settings;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.locator.LocatorSettings;
 import de.droidcachebox.settings.SettingsClass;
 import de.droidcachebox.translation.Translation;
@@ -47,7 +47,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 
     protected void acceptChanges() {
         if (settings.WriteToDB()) {
-            MessageBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+            MsgBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
         }
     }
 

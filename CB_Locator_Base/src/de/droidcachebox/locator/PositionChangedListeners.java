@@ -1,10 +1,10 @@
 package de.droidcachebox.locator;
 
-import de.droidcachebox.locator.PositionChangedEvent.Priority;
-import de.droidcachebox.utils.log.Log;
-
 import java.util.ArrayList;
 import java.util.Collections;
+
+import de.droidcachebox.locator.PositionChangedEvent.Priority;
+import de.droidcachebox.utils.log.Log;
 
 public class PositionChangedListeners {
     private static final String sKlasse = "PositionChangedListeners";
@@ -81,7 +81,7 @@ public class PositionChangedListeners {
                 try {
                     event.orientationChanged();
                 } catch (Exception e) {
-                    // TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+                    // reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
                     e.printStackTrace();
                 }
             }
@@ -98,7 +98,7 @@ public class PositionChangedListeners {
                 try {
                     event.speedChanged();
                 } catch (Exception e) {
-                    // TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+                    // reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
                     e.printStackTrace();
                 }
             }

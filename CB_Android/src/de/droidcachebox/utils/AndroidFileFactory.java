@@ -65,11 +65,9 @@ public class AndroidFileFactory extends FileFactory {
         int newHeight = (int) (oriHeight * scalefactor);
         int newWidth = (int) (oriWidth * scalefactor);
 
-        final int REQUIRED_WIDTH = newWidth;
-        final int REQUIRED_HIGHT = newHeight;
         //Find the correct scale value. It should be the power of 2.
         int scale = 1;
-        while (oriWidth / scale / 2 >= REQUIRED_WIDTH && oriHeight / scale / 2 >= REQUIRED_HIGHT)
+        while (oriWidth / scale / 2 >= newWidth && oriHeight / scale / 2 >= newHeight)
             scale *= 2;
 
         BitmapFactory.Options o2 = new BitmapFactory.Options();
@@ -90,7 +88,7 @@ public class AndroidFileFactory extends FileFactory {
             if (storeExt.equals("jpg"))
                 format = Bitmap.CompressFormat.JPEG;
 
-            if (out == null || format == null || resized == null) {
+            if (resized == null) {
                 return null;
             }
             resized.compress(format, 80, out);

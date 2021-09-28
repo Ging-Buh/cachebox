@@ -1,14 +1,5 @@
 package org.mapsforge.map.swing.view;
 
-import ch.fhnw.imvs.gpssimulator.SimulatorMain;
-import ch.fhnw.imvs.gpssimulator.data.GPSData;
-import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
-import de.droidcachebox.gdx.controls.FileOrFolderPicker;
-import de.droidcachebox.locator.Location;
-import de.droidcachebox.locator.Location.ProviderType;
-import de.droidcachebox.locator.Locator;
-import de.droidcachebox.locator.map.CB_InternalRenderTheme;
-import de.droidcachebox.utils.FileFactory;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
@@ -28,12 +19,25 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Button;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+
+import ch.fhnw.imvs.gpssimulator.SimulatorMain;
+import ch.fhnw.imvs.gpssimulator.data.GPSData;
+import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.locator.CBLocation;
+import de.droidcachebox.locator.CBLocation.ProviderType;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.map.CB_InternalRenderTheme;
+import de.droidcachebox.utils.FileFactory;
 
 public class MapPanel extends JPanel implements ActionListener {
 
@@ -76,7 +80,7 @@ public class MapPanel extends JPanel implements ActionListener {
             public void valueChanged() {
                 LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
                 model.mapViewPosition.setCenter(pos);
-                Locator.getInstance().setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true, (float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
+                Locator.getInstance().setNewLocation(new CBLocation(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true, (float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
             }
         });
     }

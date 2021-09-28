@@ -1,9 +1,13 @@
 package de.droidcachebox.menu.menuBtn1;
 
+import static de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
@@ -15,9 +19,9 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditCache;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
@@ -31,12 +35,10 @@ import de.droidcachebox.menu.quickBtns.EditFilterSettings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
-import static de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter;
-
 public class ShowCacheList extends AbstractShowAction {
     private static ShowCacheList that;
     private EditCache editCache;
-    private MessageBox gL_MsgBox;
+    private MsgBox gL_MsgBox;
 
     private ShowCacheList() {
         super("cacheList", "  (" + Database.Data.cacheList.size() + ")");
@@ -50,6 +52,9 @@ public class ShowCacheList extends AbstractShowAction {
 
     @Override
     public void execute() {
+        if (PlatformUIBase.isGPSon()) {
+            PlatformUIBase.request_getLocationIfInBackground();
+        }
         ViewManager.leftTab.showView(GeoCacheListListView.getInstance());
     }
 
@@ -135,9 +140,9 @@ public class ShowCacheList extends AbstractShowAction {
                 msgText = "askResetFavorites";
             }
             final boolean finalchecked = checked;
-            gL_MsgBox = MessageBox.show(Translation.get(msgText), Translation.get("Favorites"), MessageBoxButton.OKCancel, MessageBoxIcon.Question, (which, data) -> {
+            gL_MsgBox = MsgBox.show(Translation.get(msgText), Translation.get("Favorites"), MsgBoxButton.OKCancel, MsgBoxIcon.Question, (which, data) -> {
                 gL_MsgBox_close();
-                if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                if (which == MsgBox.BTN_LEFT_POSITIVE) {
                     Database.Data.sql.beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", finalchecked ? 1 : 0);

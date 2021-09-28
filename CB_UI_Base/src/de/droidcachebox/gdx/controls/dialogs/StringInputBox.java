@@ -4,11 +4,11 @@ import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.Size;
 
-public class StringInputBox extends MessageBox {
+public class StringInputBox extends MsgBox {
     public static EditTextField editText;
 
     private StringInputBox(Size size) {
@@ -40,7 +40,7 @@ public class StringInputBox extends MessageBox {
         msgBox.setTitle(title);
         msgBox.addLast(editText);
         msgBox.addLast(label);
-        msgBox.addButtons(MessageBoxButton.OKCancel);
+        msgBox.addButtons(MsgBoxButton.OKCancel);
 
         msgBox.setMsgBoxClickListener(Listener);
 

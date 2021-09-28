@@ -1,5 +1,14 @@
 package de.droidcachebox.controls;
 
+import static de.droidcachebox.core.GroundspeakAPI.APIError;
+import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
+import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
+import static de.droidcachebox.core.GroundspeakAPI.fetchMyCacheLimits;
+import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
+import static de.droidcachebox.core.GroundspeakAPI.isDownloadLimitExceeded;
+import static de.droidcachebox.core.GroundspeakAPI.isPremiumMember;
+import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,25 +23,38 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
 import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.ViewOptionsMenu;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.ImageDAO;
+import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.database.LogDAO;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.views.forms.MessageBox;
-
-import java.io.File;
-import java.util.*;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private final static String sKlasse = "DescriptionViewControl";
@@ -104,7 +126,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
                         s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-                        MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                        MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, null);
                     }
                 }
             }
@@ -122,12 +144,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 }
                 case 2: {
                     pd.dismiss();
-                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, null);
                     break;
                 }
                 case 3: {
                     pd.dismiss();
-                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MessageBoxButton.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
+                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
                     break;
                 }
                 case 4: {
@@ -273,7 +295,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         if (cache != null) {
             Log.debug(sKlasse, "set " + cache.getGeoCacheCode() + " for description");
             if (aktCache == cache) {
-                // todo check maybe new cache values
+                // check maybe new cache values
                 Log.debug(sKlasse, "same Cche " + cache.getGeoCacheCode());
                 return;
             }

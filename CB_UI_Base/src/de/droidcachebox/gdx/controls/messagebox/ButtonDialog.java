@@ -17,6 +17,10 @@ package de.droidcachebox.gdx.controls.messagebox;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -31,9 +35,6 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 public class ButtonDialog extends Dialog {
 
     private final ArrayList<CB_View_Base> FooterItems = new ArrayList<>();
@@ -41,18 +42,18 @@ public class ButtonDialog extends Dialog {
     public CB_Button btnLeftPositive;
     public CB_Button btnMiddleNeutral;
     public CB_Button btnRightNegative;
-    public MessageBox.OnMsgBoxClickListener mMsgBoxClickListener;
+    public MsgBox.OnMsgBoxClickListener mMsgBoxClickListener;
     protected CB_Label label;
     protected Object data;
     protected OnClickListener btnLeftPositiveClickListener;
     protected OnClickListener btnMiddleNeutralClickListener;
     protected OnClickListener btnRightNegativeClickListener;
 
-    public ButtonDialog(String Name, String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, MessageBox.OnMsgBoxClickListener Listener) {
-        this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButton.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
+    public ButtonDialog(String Name, String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, MsgBox.OnMsgBoxClickListener Listener) {
+        this(calcMsgBoxSize(msg, true, (buttons != MsgBoxButton.NOTHING), (icon != MsgBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
     }
 
-    public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, MessageBox.OnMsgBoxClickListener Listener) {
+    public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, MsgBox.OnMsgBoxClickListener Listener) {
         super(rec, Name);
         setTitle(title);
         setButtonCaptions(buttons);
@@ -60,7 +61,7 @@ public class ButtonDialog extends Dialog {
 
         CB_RectF imageRec = new CB_RectF(0, contentSize.getHeight() - margin - UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
 
-        if (icon != MessageBoxIcon.None && icon != null) {
+        if (icon != MsgBoxIcon.None && icon != null) {
             Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
             iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
             addChild(iconImage);
@@ -83,7 +84,7 @@ public class ButtonDialog extends Dialog {
     }
 
     public static ButtonDialog show(String msg) {
-        ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MessageBoxButton.NOTHING, MessageBoxIcon.None, null);
+        ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MsgBoxButton.NOTHING, MsgBoxIcon.None, null);
         GL.that.showDialog(msgBox);
         return msgBox;
     }
@@ -107,23 +108,23 @@ public class ButtonDialog extends Dialog {
         GL.that.RunOnGL(() -> GL.that.closeDialog(this));
     }
 
-    public void setButtonCaptions(MessageBoxButton buttons) {
+    public void setButtonCaptions(MsgBoxButton buttons) {
         if (buttons == null)
-            buttons = MessageBoxButton.NOTHING;
+            buttons = MsgBoxButton.NOTHING;
 
-        if (buttons == MessageBoxButton.AbortRetryIgnore) {
+        if (buttons == MsgBoxButton.AbortRetryIgnore) {
             createButtons(3, Translation.get("abort"), Translation.get("retry"), Translation.get("ignore"));
-        } else if (buttons == MessageBoxButton.OK) {
+        } else if (buttons == MsgBoxButton.OK) {
             createButtons(1, Translation.get("ok"), "", "");
-        } else if (buttons == MessageBoxButton.OKCancel) {
+        } else if (buttons == MsgBoxButton.OKCancel) {
             createButtons(2, Translation.get("ok"), "", Translation.get("cancel"));
-        } else if (buttons == MessageBoxButton.RetryCancel) {
+        } else if (buttons == MsgBoxButton.RetryCancel) {
             createButtons(2, Translation.get("retry"), "", Translation.get("cancel"));
-        } else if (buttons == MessageBoxButton.YesNo) {
+        } else if (buttons == MsgBoxButton.YesNo) {
             createButtons(2, Translation.get("yes"), "", Translation.get("no"));
-        } else if (buttons == MessageBoxButton.YesNoCancel) {
+        } else if (buttons == MsgBoxButton.YesNoCancel) {
             createButtons(3, Translation.get("yes"), Translation.get("no"), Translation.get("cancel"));
-        } else if (buttons == MessageBoxButton.Cancel) {
+        } else if (buttons == MsgBoxButton.Cancel) {
             createButtons(3, "", "", Translation.get("cancel"));
             btnLeftPositive.setInvisible();
             btnMiddleNeutral.setInvisible();
@@ -219,7 +220,7 @@ public class ButtonDialog extends Dialog {
         });
     }
 
-    private Sprite getIcon(MessageBoxIcon msgIcon) {
+    private Sprite getIcon(MsgBoxIcon msgIcon) {
         if (msgIcon == null)
             return null;
 

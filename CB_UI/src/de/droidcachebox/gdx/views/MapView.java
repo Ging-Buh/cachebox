@@ -16,39 +16,85 @@
 
 package de.droidcachebox.gdx.views;
 
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
+import static de.droidcachebox.gdx.Sprites.Arrows;
+import static de.droidcachebox.gdx.Sprites.IconName;
+import static de.droidcachebox.gdx.Sprites.ListBack;
+import static de.droidcachebox.gdx.Sprites.MapStars;
+import static de.droidcachebox.gdx.Sprites.getMapOverlay;
+import static de.droidcachebox.gdx.Sprites.getSprite;
+import static de.droidcachebox.utils.Config_Core.displayDensity;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.*;
+
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
+
+import de.droidcachebox.CB_UI_Settings;
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.Config;
+import de.droidcachebox.Energy;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.OnResumeListeners;
+import de.droidcachebox.TrackList;
+import de.droidcachebox.WaypointListChangedEventList;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
+import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditWaypoint;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.InfoBubble;
+import de.droidcachebox.gdx.controls.LiveButton;
+import de.droidcachebox.gdx.controls.MapInfoPanel;
 import de.droidcachebox.gdx.controls.MapInfoPanel.CoordType;
+import de.droidcachebox.gdx.controls.MultiToggleButton;
+import de.droidcachebox.gdx.controls.ZoomButtons;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
-import de.droidcachebox.gdx.graphics.*;
-import de.droidcachebox.gdx.math.*;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.graphics.CircleDrawable;
+import de.droidcachebox.gdx.graphics.GL_Paint;
+import de.droidcachebox.gdx.graphics.HSV_Color;
+import de.droidcachebox.gdx.graphics.KineticZoom;
+import de.droidcachebox.gdx.graphics.PolygonDrawable;
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.GL_UISizes;
+import de.droidcachebox.gdx.math.GeometryList;
+import de.droidcachebox.gdx.math.Line;
+import de.droidcachebox.gdx.math.Quadrangle;
+import de.droidcachebox.gdx.math.SizeF;
+import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.MapViewCacheList.MapViewCacheListUpdateData;
 import de.droidcachebox.gdx.views.MapViewCacheList.WayPointRenderInfo;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
+import de.droidcachebox.locator.map.Descriptor;
+import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.locator.map.MapScale;
-import de.droidcachebox.locator.map.*;
+import de.droidcachebox.locator.map.MapTileLoader;
+import de.droidcachebox.locator.map.MapViewBase;
+import de.droidcachebox.locator.map.ZoomScale;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -56,16 +102,6 @@ import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.PointL;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
-
-import static de.droidcachebox.core.GroundspeakAPI.OK;
-import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
-import static de.droidcachebox.gdx.Sprites.*;
-import static de.droidcachebox.utils.Config_Core.displayDensity;
 
 public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String sKlasse = "MapView";
@@ -330,7 +366,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                             }
                         } else {
                             if (GroundspeakAPI.APIError != OK) {
-                                GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MessageBoxButton.OK, MessageBoxIcon.Information, null));
+                                GL.that.RunOnGL(() -> MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information, null));
                             }
                         }
 

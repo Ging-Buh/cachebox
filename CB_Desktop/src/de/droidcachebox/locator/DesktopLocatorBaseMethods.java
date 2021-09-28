@@ -2,6 +2,25 @@ package de.droidcachebox.locator;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+
+import javax.imageio.ImageIO;
+
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.locator.map.BoundingBox;
@@ -9,17 +28,6 @@ import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.DataBufferInt;
-import java.awt.image.Raster;
-import java.io.*;
-import java.util.Arrays;
 
 public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Methods {
     private static final String sKlasse = "DesktopLocatorBaseMethods";
@@ -55,7 +63,7 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
     // }
     // catch (Exception e)
     // {
-    // // TODO: handle exception
+    // // handle exception
     // }
     // }
     // }

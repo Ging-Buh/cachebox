@@ -15,9 +15,14 @@
  */
 package de.droidcachebox.gdx.views;
 
+import static de.droidcachebox.PlatformUIBase.callUrl;
+import static de.droidcachebox.PlatformUIBase.hideForDialog;
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
@@ -25,7 +30,12 @@ import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.Image;
@@ -34,21 +44,22 @@ import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.locator.*;
-import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.CBLocation.ProviderType;
+import de.droidcachebox.locator.GPS;
+import de.droidcachebox.locator.GpsStateChangeEvent;
+import de.droidcachebox.locator.GpsStateChangeEventList;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.PositionChangedEvent;
+import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.UnitFormatter;
-
-import static de.droidcachebox.PlatformUIBase.callUrl;
-import static de.droidcachebox.PlatformUIBase.hideForDialog;
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
     private static AboutView aboutView;
@@ -58,11 +69,13 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     private CancelWaitDialog pd;
     private SatBarChart chart;
     private int result = -1;
+    private boolean mustShowNewInstallInfo;
 
     private AboutView() {
         super(ViewManager.leftTab.getContentRec(), "AboutView");
         registerSkinChangedEvent();
         createControls();
+        mustShowNewInstallInfo = true;
     }
 
     public static AboutView getInstance() {
@@ -86,6 +99,14 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (chart != null)
             chart.onShow();
         refreshText();
+
+
+        if (Config.newInstall.getValue() && mustShowNewInstallInfo) {
+            mustShowNewInstallInfo = false;
+            String langId = Config.Sel_LanguagePath.getValue().substring(Config.languagePath.getValue().length()).substring(1,3);
+            String Welcome = Translation.that.getTextFile("welcome", langId) + Translation.that.getTextFile("changelog", langId);
+            MsgBox.show(Welcome, Translation.get("welcome"), MsgBoxButton.OK, MsgBoxIcon.Information, (btnNumber, data) -> true);
+        }
 
         hideForDialog();
     }
@@ -139,15 +160,15 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         CachesFoundLabel.setWidth(getWidth());
 
         CachesFoundLabel.setClickHandler(new OnClickListener() {
-            MessageBox messageBox;
+            MsgBox msgBox;
 
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                messageBox = MessageBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MessageBoxButton.YesNo, MessageBoxIcon.GC_Live,
+                msgBox = MsgBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
                         (which, data) -> {
                             switch (which) {
                                 case 1:
-                                    messageBox.close();
+                                    msgBox.close();
                                     pd = CancelWaitDialog.ShowWait(Translation.get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
                                         @Override
                                         public void run() {
@@ -155,7 +176,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                             pd.close();
                                             if (result > -1) {
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
-                                                MessageBox.show(Text, Translation.get("LoadFinds!"), MessageBoxButton.OK, MessageBoxIcon.GC_Live, null);
+                                                MsgBox.show(Text, Translation.get("LoadFinds!"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
                                                 Config.FoundOffset.setValue(result);
                                                 Config.AcceptChanges();
                                                 AboutView.this.refreshText();
@@ -169,7 +190,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                     });
                                     break;
                                 case 3:
-                                    messageBox.close();
+                                    msgBox.close();
                                     GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Config.FoundOffset.getValue(), new IReturnValueListener() {
                                         @Override
                                         public void returnValue(int value) {

@@ -15,10 +15,8 @@
  */
 package de.droidcachebox.activities;
 
-import static android.os.Build.VERSION_CODES.KITKAT;
 import static de.droidcachebox.utils.Config_Core.displayDensity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -58,15 +55,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.Main;
-import de.droidcachebox.PermissionCheck;
 import de.droidcachebox.R;
 import de.droidcachebox.components.CopyAssetFolder;
 import de.droidcachebox.database.AndroidDB;
@@ -75,8 +69,8 @@ import de.droidcachebox.database.Database.DatabaseType;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.Handler;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.Size;
@@ -103,20 +97,20 @@ import de.droidcachebox.views.forms.MessageBox;
 public class Splash extends Activity {
     private static final String log = "CB2 Splash";
     private Bitmap bitmap;
-    private AlertDialog gpsDisclosureDialog, pleaseWaitDialog;
+    private AlertDialog pleaseWaitDialog;
     private String workPath;
     private int AdditionalWorkPathCount;
     private Dialog msg;
     private ArrayList<String> AdditionalWorkPathArray;
     private SharedPreferences androidSetting;
-    private boolean showSandbox, showGPSDisclosureDialog;
+    private boolean showSandbox;
     private Bundle bundledData;
     private boolean askForWorkPath;
     private FrameLayout frame;
     private Activity main;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         androidSetting = getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
         if (!FileFactory.isInitialized()) {
@@ -138,6 +132,7 @@ public class Splash extends Activity {
         setContentView(R.layout.splash);
         frame = findViewById(R.id.frameLayout1);
         loadImages();
+
         Log.info(log, "onCreate finished.");
     }
 
@@ -168,8 +163,11 @@ public class Splash extends Activity {
         }
         int width = frame.getMeasuredWidth();
         int height = frame.getMeasuredHeight();
-        int delaytime = 0; // give splash the time to show: width/height != 0
-        if (width == 0 || height == 0) delaytime = 1000;
+        int delaytime; // give splash the time to show: width/height != 0
+        if (width == 0 || height == 0)
+            delaytime = 1000;
+        else
+            delaytime=0;
         new Handler().postDelayed(() -> {
             // could bundle utils too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
@@ -331,13 +329,12 @@ public class Splash extends Activity {
 
     private void initializationStep1() {
 
-        File filesDirectory = this.getFilesDir();// workaround for Android bug #10515463
+        this.getFilesDir();// workaround for Android bug #10515463
         // String privateFilesDirectory = filesDirectory.getAbsolutePath(); // /data/data/de.droidcachebox/files
         Gdx.files = new DefaultAndroidFiles(this.getAssets(), this, true); // will be set automatically to this values in init of gdx's AndroidApplication
 
         // read some setting from Android Preferences (Platform
 
-        showGPSDisclosureDialog = androidSetting.getBoolean("ShowGPSDisclosure", true);
         if (android.os.Build.VERSION.SDK_INT < 30) {
             workPath = androidSetting.getString("WorkPath", Environment.getExternalStorageDirectory().getPath() + "/CacheBox");
             setWorkPathFromRedirectionFileIfExists();
@@ -361,7 +358,7 @@ public class Splash extends Activity {
 
         String languagePath = androidSetting.getString("Sel_LanguagePath", ""); // ""
         if (languagePath.length() == 0) {
-            String locale = Locale.getDefault().getLanguage();
+            String locale = Locale.getDefault().getLanguage(); // en
             if (locale.equalsIgnoreCase("en")) {
                 locale = "en-GB";
             } else if (locale.equalsIgnoreCase("pt")) {
@@ -371,36 +368,9 @@ public class Splash extends Activity {
         }
         try {
             new Translation(workPath).loadTranslation(languagePath);
-            gpsDisclosureDialog = null;
-            if (showGPSDisclosureDialog) {
-                showDisclosure(); // and after dialog do initializationStep2
-            } else {
-                initializationStep2();
-            }
         } catch (Exception ignored) {
         }
-    }
-
-    private void showDisclosure() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(Translation.get("GPSDisclosureTitle"));
-        alert.setMessage(Translation.get("GPSDisclosureText"));
-        alert.setPositiveButton(Translation.get("ok"), (dialogInterface, i) -> initializationStep2());
-        gpsDisclosureDialog = alert.create();
-        gpsDisclosureDialog.setCancelable(false);
-        gpsDisclosureDialog.show();
-    }
-
-    private void initializationStep2() {
-        if (gpsDisclosureDialog != null) gpsDisclosureDialog.dismiss();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            PermissionCheck.checkNeededPermissions(this);
-        }
-        if (askForWorkPath) {
-            askForWorkPath(); // does finishInitializationAndStartMain()
-        } else {
-            finishInitializationAndStartMain();
-        }
+        initializationStep3();
     }
 
     private void setWorkPathFromRedirectionFileIfExists() {
@@ -423,7 +393,14 @@ public class Splash extends Activity {
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    private void initializationStep3() {
+        if (askForWorkPath) {
+            askForWorkPath(); // does finishInitializationAndStartMain()
+        } else {
+            finishInitializationAndStartMain();
+        }
+    }
+
     private void askForWorkPath() {
         workPath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
 
@@ -443,10 +420,12 @@ public class Splash extends Activity {
             dialog.setContentView(R.layout.sdselectdialog);
 
             TextView title = dialog.findViewById(R.id.select_sd_title);
-            title.setText(Translation.get("selectWorkSpace") + "\n\n");
+            String titleText = Translation.get("selectWorkSpace") + "\n\n";
+            title.setText(titleText);
 
             Button btnInternal_SD = dialog.findViewById(R.id.btnInternal_SD);
-            btnInternal_SD.setText("Internal SD\n\n" + workPath);
+            String btnInternal_SDText = "Internal SD\n\n" + workPath;
+            btnInternal_SD.setText(btnInternal_SDText);
             btnInternal_SD.setOnClickListener(v -> {
                 // close select dialog
                 dialog.dismiss();
@@ -476,7 +455,8 @@ public class Splash extends Activity {
             final boolean isSandbox = externalSd != null && externalSd.contains("Android/data/de.droidcachebox");
             if (hasExtSd) {
                 String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
-                btnExternalSandbox.setText(extSdText + externalSd);
+                String btnExternalSandboxText = extSdText + externalSd;
+                btnExternalSandbox.setText(btnExternalSandboxText);
                 btnExternalSandbox.setOnClickListener(v -> {
                     if (isSandbox && !showSandbox) {
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Splash.this);
@@ -558,7 +538,8 @@ public class Splash extends Activity {
                 }
 
                 Button btnAdditionalWorkpath = new Button(Splash.this);
-                btnAdditionalWorkpath.setText(Name + "\n\n" + _AdditionalWorkPath);
+                String btnAdditionalWorkpathText = Name + "\n\n" + _AdditionalWorkPath;
+                btnAdditionalWorkpath.setText(btnAdditionalWorkpathText);
                 btnAdditionalWorkpath.setOnLongClickListener(v -> {
 
                     // setting the MessageBox then the UI_sizes are not initial in this moment
@@ -576,7 +557,7 @@ public class Splash extends Activity {
                     MessageBox.Builder.ButtonHeight = (int) (50 * scale);
 
                     // Ask before delete
-                    msg = MessageBox.show(this, Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MessageBoxButton.YesNo, MessageBoxIcon.Question,
+                    msg = MessageBox.show(this, Translation.get("shuredeleteWorkspace", Name), Translation.get("deleteWorkspace"), MsgBoxButton.YesNo, MsgBoxIcon.Question,
                             (dialog1, which) -> {
                                 if (which == Dialog.BUTTON_POSITIVE) {
                                     // Delete this Workpath only from Settings don't delete any File
@@ -647,7 +628,7 @@ public class Splash extends Activity {
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         Log.debug(log, "onDestroy");
         if (isFinishing()) {
@@ -668,38 +649,6 @@ public class Splash extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    /*
-    private void showPleaseWaitDialog() {
-        pleaseWaitDialog = ProgressDialog.show(Splash.this, "In progress", "Copy resources");
-        pleaseWaitDialog.show();
-        TextView tv1 = pleaseWaitDialog.findViewById(android.R.id.message);
-        tv1.setTextColor(Color.WHITE);
-
-    }
-     */
-    /*
-    private void showPleaseWaitDialog() {
-        // to handle deprecation
-        RelativeLayout layout = (RelativeLayout) findViewById(R.layout.splash);
-        ProgressBar progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        layout.addView(progressBar, params);
-        // To show the progress bar
-        progressBar.setVisibility(View.VISIBLE);
-        // To hide the progress bar
-        progressBar.setVisibility(View.GONE);
-        // To disable the user interaction you just need to add the following code
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        // To get user interaction back you just need to add the following code
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        // Just for future reference, change the android.R.attr.progressBarStyleSmall to android.R.attr.progressBarStyleHorizontal.
-        //        The code below only works above API level 21
-        // progressBar.setProgressTintList(ColorStateList.valueOf(Color.RED));
-    }
-     */
-
-    @SuppressLint("SetTextI18n")
     private void showPleaseWaitDialog() {
         int llPadding = 30;
         LinearLayout ll = new LinearLayout(this);
@@ -745,52 +694,6 @@ public class Splash extends Activity {
         }
     }
 
-
-    /*
-    private String testExtSdPath(String extPath) {
-        // this will test whether the extPath is an existing path to an external sd card
-        if (extPath.equalsIgnoreCase(workPath))
-            return null; // if this extPath is the same than the actual workPath -> this is the
-        // internal SD, not
-        // the external!!!
-        try {
-            if (FileIO.fileExists(extPath)) {
-                StatFs stat = new StatFs(extPath);
-                @SuppressWarnings("deprecation")
-                long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
-                if (bytesAvailable == 0) {
-                    return null; // ext SD-Card is not plugged in -> do not use it
-                } else {
-                    // Check can Read/Write
-
-                    File f = FileFactory.createFile(extPath);
-                    if (f.canWrite()) {
-                        if (f.canRead()) {
-                            return f.getAbsolutePath() + "/CacheBox"; // ext SD-Card is plugged in
-                        }
-                    }
-
-                    // Check can Read/Write on Application Storage
-                    String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
-                    int Pos = appPath.indexOf("/Android/data/");
-                    String p = appPath.substring(Pos);
-                    File fi = FileFactory.createFile(extPath + p);// "/Android/data/de.droidcachebox/files");
-                    fi.mkdirs();
-                    if (fi.canWrite()) {
-                        if (fi.canRead()) {
-                            return fi.getAbsolutePath() + "/CacheBox";
-                        }
-                    }
-                    return null;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-     */
 
     private void saveWorkPath() {
 
@@ -941,47 +844,6 @@ public class Splash extends Activity {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
-        if (requestCode == PermissionCheck.MY_PERMISSIONS_REQUEST) {
-            Map<String, Integer> receivedPermissions = new HashMap<>();
-
-            for (String permission : PermissionCheck.neededPermissions) {
-                receivedPermissions.put(permission, PackageManager.PERMISSION_GRANTED);
-            }
-
-            for (int i = 0; i < permissions.length; i++)
-                receivedPermissions.put(permissions[i], grantResults[i]);
-
-            ArrayList<String> deniedList = new ArrayList<>();
-            for (String permission : PermissionCheck.neededPermissions) {
-                Integer receivedPermission = receivedPermissions.get(permission);
-                if (receivedPermission != null) {
-                    if (receivedPermission != PackageManager.PERMISSION_GRANTED)
-                        deniedList.add(permission);
-                }
-            }
-
-            if (!deniedList.isEmpty()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Some Permission is Denied\n");
-
-                for (String denied : deniedList) {
-                    sb.append(denied).append("\n");
-                }
-
-                sb.append("\nCachbox will close");
-
-                Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
-
-                // close
-                this.finish();
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
     private AbstractFile getExternalSandbox() {
         java.io.File[] dirs = getExternalFilesDirs(null);
         if (dirs.length > 1) {
@@ -1000,13 +862,12 @@ public class Splash extends Activity {
             Log.info(log, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
             Log.info(log, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
 
-            if (android.os.Build.VERSION.SDK_INT >= KITKAT) {
-                // normally [0] is the internal SD, [1] is the external SD
-                java.io.File[] dirs = getExternalFilesDirs(null);
-                for (int i = 0; i < dirs.length; i++) {
-                    Log.info(log, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
-                }
-                // will be automatically created
+            // normally [0] is the internal SD, [1] is the external SD
+            File[] dirs = getExternalFilesDirs(null);
+            for (int i = 0; i < dirs.length; i++) {
+                Log.info(log, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+            }
+            // will be automatically created
 				/*
 				if (android.os.Build.VERSION.SDK_INT >= LOLLIPOP) {
 					dirs = getExternalMediaDirs();
@@ -1015,7 +876,6 @@ public class Splash extends Activity {
 					}
 				}
 				*/
-            }
         } catch (Exception e) {
             Log.err(log, e.getLocalizedMessage());
         }

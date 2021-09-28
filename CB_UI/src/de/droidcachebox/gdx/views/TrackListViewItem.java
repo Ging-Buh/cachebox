@@ -1,8 +1,17 @@
 package de.droidcachebox.gdx.views;
 
+import static de.droidcachebox.gdx.controls.messagebox.MsgBox.BTN_LEFT_POSITIVE;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.TrackList;
 import de.droidcachebox.WrapType;
@@ -13,9 +22,9 @@ import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -28,14 +37,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSITIVE;
 
 public class TrackListViewItem extends ListViewItemBackground {
     private final static String log = "TrackListViewItem";
@@ -74,10 +75,10 @@ public class TrackListViewItem extends ListViewItemBackground {
                         if (!this.track.isActualTrack()) {
                             AbstractFile trackAbstractFile = FileFactory.createFile(this.track.getFileName());
                             if (trackAbstractFile.exists()) {
-                                cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> MessageBox.show(Translation.get("DeleteTrack"),
+                                cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> MsgBox.show(Translation.get("DeleteTrack"),
                                         Translation.get("DeleteTrack"),
-                                        MessageBoxButton.YesNo,
-                                        MessageBoxIcon.Question,
+                                        MsgBoxButton.YesNo,
+                                        MsgBoxIcon.Question,
                                         (which, data) -> {
                                             if (which == BTN_LEFT_POSITIVE) {
                                                 try {
@@ -85,7 +86,7 @@ public class TrackListViewItem extends ListViewItemBackground {
                                                     TrackList.getInstance().removeTrack(this.track);
                                                     TrackListView.getInstance().notifyDataSetChanged();
                                                 } catch (Exception ex) {
-                                                    MessageBox.show(ex.toString(), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                                                    MsgBox.show(ex.toString(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
                                                 }
                                             }
                                             return true;
@@ -323,7 +324,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
     private void unloadTrack() {
         if (track.isActualTrack()) {
-            MessageBox.show(Translation.get("IsActualTrack"), null, MessageBoxButton.OK, MessageBoxIcon.Warning, null);
+            MsgBox.show(Translation.get("IsActualTrack"), null, MsgBoxButton.OK, MsgBoxIcon.Warning, null);
         } else {
             TrackList.getInstance().removeTrack(track); // index passt nicht mehr
             TrackListView.getInstance().notifyDataSetChanged();

@@ -1,12 +1,27 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
+import static de.droidcachebox.PlatformUIBase.callUrl;
+import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
+import static de.droidcachebox.gdx.controls.messagebox.MsgBox.BTN_LEFT_POSITIVE;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.LogDAO;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -14,26 +29,26 @@ import de.droidcachebox.gdx.activities.EditCache;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.views.GeoCacheListListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
-import de.droidcachebox.menu.menuBtn2.*;
+import de.droidcachebox.menu.menuBtn2.HintDialog;
+import de.droidcachebox.menu.menuBtn2.ShowDescription;
+import de.droidcachebox.menu.menuBtn2.ShowLogs;
+import de.droidcachebox.menu.menuBtn2.ShowNotes;
+import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
+import de.droidcachebox.menu.menuBtn2.ShowWaypoint;
+import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
-
-import static de.droidcachebox.PlatformUIBase.callUrl;
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.gdx.controls.messagebox.MessageBox.BTN_LEFT_POSITIVE;
 
 public class CacheContextMenu {
     private static final String sKlasse = "CacheContextMenu";
@@ -106,7 +121,7 @@ public class CacheContextMenu {
 
     private void rememberGeoCache() {
         if (GlobalCore.isSetSelectedCache()) {
-            MessageBox mb = MessageBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MessageBoxButton.AbortRetryIgnore, MessageBoxIcon.Question, null);
+            MsgBox mb = MsgBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
                 Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
                 Config.AcceptChanges();
@@ -165,7 +180,7 @@ public class CacheContextMenu {
 
                     } else {
                         if (GroundspeakAPI.APIError != OK) {
-                            GL.that.RunOnGL(() -> MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MessageBoxButton.OK, MessageBoxIcon.Information, null));
+                            GL.that.RunOnGL(() -> MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information, null));
                         }
                     }
                     wd.close();
@@ -177,7 +192,7 @@ public class CacheContextMenu {
                 }
             });
         } else {
-            MessageBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MessageBoxIcon.Error);
+            MsgBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxIcon.Error);
         }
     }
 
@@ -206,7 +221,7 @@ public class CacheContextMenu {
     }
 
     private void toggleShortClick() {
-        MessageBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MessageBoxButton.YesNo, MessageBoxIcon.Question,
+        MsgBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MsgBoxButton.YesNo, MsgBoxIcon.Question,
                 (btnNumber, data) -> {
                     if (btnNumber == BTN_LEFT_POSITIVE)
                         Config.CacheContextMenuShortClickToggle.setValue(false);
@@ -229,9 +244,9 @@ public class CacheContextMenu {
     }
 
     private void deleteGeoCache() {
-        MessageBox.show(Translation.get("sure"), Translation.get("question"), MessageBoxButton.OKCancel, MessageBoxIcon.Question,
+        MsgBox.show(Translation.get("sure"), Translation.get("question"), MsgBoxButton.OKCancel, MsgBoxIcon.Question,
                 (which, data) -> {
-                    if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                    if (which == MsgBox.BTN_LEFT_POSITIVE) {
                         deleteSelectedCache();
                         Log.debug(sKlasse, "deleteSelectedCache");
                         GlobalCore.setSelectedWaypoint(null, null, true);

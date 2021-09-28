@@ -50,6 +50,7 @@ import ch.fhnw.imvs.gpssimulator.nmea.RMC;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.PlatformUIBase.Methods;
+import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.settings.SettingBase;
 
@@ -171,7 +172,7 @@ public class SimulatorMain {
             }
 
             @Override
-            public void switchtoGpsDefault() {
+            public void switchToGpsDefault() {
 
             }
 
@@ -235,13 +236,16 @@ public class SimulatorMain {
             }
 
             @Override
-            public void startService() {
+            public void getDirectoryAccess(String _DirectoryToAccess) {            }
 
+            @Override
+            public void startRecordTrack() {
+                TrackRecorder.startRecording();
             }
 
             @Override
-            public void getDirectoryAccess(String _DirectoryToAccess) {
-
+            public boolean request_getLocationIfInBackground() {
+                return true;
             }
 
         });

@@ -15,35 +15,47 @@
  */
 package de.droidcachebox.gdx.views;
 
+import static de.droidcachebox.core.GroundspeakAPI.UserInfos;
+import static de.droidcachebox.core.GroundspeakAPI.fetchMyCacheLimits;
+import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
+import static de.droidcachebox.core.GroundspeakAPI.isPremiumMember;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.ViewConst;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.Image;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.PolygonDrawable;
-import de.droidcachebox.gdx.math.*;
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.GL_UISizes;
+import de.droidcachebox.gdx.math.Line;
+import de.droidcachebox.gdx.math.Quadrangle;
+import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
 import de.droidcachebox.translation.Translation;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class DescriptionView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private final static String BASIC = "Basic";
@@ -209,9 +221,9 @@ public class DescriptionView extends CB_View_Base implements CacheSelectionChang
             fetchMyCacheLimits();
             if (fetchMyUserInfos().remaining <= 0) {
                 if (isPremiumMember()) {
-                    MessageBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
+                    MsgBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
                 } else {
-                    MessageBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MessageBoxButton.OK, MessageBoxIcon.Exclamation, null);
+                    MsgBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
                 }
                 return;
             }

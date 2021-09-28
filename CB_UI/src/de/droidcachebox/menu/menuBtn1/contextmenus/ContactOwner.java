@@ -1,21 +1,22 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.net.URLEncoder;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.http.Webb;
-
-import java.net.URLEncoder;
 
 public class ContactOwner extends AbstractAction {
 
@@ -81,7 +82,7 @@ public class ContactOwner extends AbstractAction {
                             PlatformUIBase.callUrl("https://www.geocaching.com/account/messagecenter?recipientId=" + guid + "&gcCode=" + mGCCode);
                         }
                         else {
-                            MessageBox.show(Translation.get("noRecipient"), Translation.get("Error"), MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                            MsgBox.show(Translation.get("noRecipient"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
                         }
                     } catch (Exception ignored) {
                     }

@@ -15,11 +15,29 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.CHECK_ITEM;
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.COLLAPSE_BUTTON_ITEM;
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.FilterSetEntry;
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_INT_ITEM;
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.SELECT_ALL_ITEM;
+import static de.droidcachebox.gdx.controls.FilterSetListViewItem.THREE_STATE_ITEM;
+import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
@@ -28,18 +46,34 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
-import de.droidcachebox.database.*;
-import de.droidcachebox.gdx.*;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.Category;
+import de.droidcachebox.database.CategoryDAO;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Input;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.FilterSetListViewItem;
+import de.droidcachebox.gdx.controls.MultiToggleButton;
+import de.droidcachebox.gdx.controls.TextFilterView;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
@@ -47,13 +81,6 @@ import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.SettingStringList;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static de.droidcachebox.gdx.controls.FilterSetListViewItem.*;
-import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
-import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * Defining a Filter for geoCaches to show is done by selection within 4 Tabs (in contentBox):
@@ -364,7 +391,7 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         if (exist) {
-            MessageBox.show(Translation.get("PresetExist") + br + br + "\"" + existName + "\"", null, MessageBoxButton.OK, MessageBoxIcon.Warning,
+            MsgBox.show(Translation.get("PresetExist") + br + br + "\"" + existName + "\"", null, MsgBoxButton.OK, MsgBoxIcon.Warning,
                     (which, data) -> {
                         de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
                         return true;
@@ -374,7 +401,7 @@ public class EditFilterSettings extends ActivityBase {
 
         StringInputBox.show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset",
                 (which, data) -> {
-                    if (which == MessageBox.BTN_LEFT_POSITIVE) { // ok Clicked
+                    if (which == MsgBox.BTN_LEFT_POSITIVE) { // ok Clicked
                         String nameOfNewFilter = StringInputBox.editText.getText();
                         String userFilters = Config.UserFilters.getValue();
                         String newFilterString = tmpFilterProps.toString();
@@ -480,10 +507,10 @@ public class EditFilterSettings extends ActivityBase {
                             GL.that.closeActivity();
                             PresetListViewItem clickedItem = (PresetListViewItem) v1;
                             tmpFilterProps = new FilterProperties(clickedItem.mPreset.filterProperties.toString());
-                            MessageBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MessageBoxButton.YesNo, MessageBoxIcon.Question,
+                            MsgBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MsgBoxButton.YesNo, MsgBoxIcon.Question,
                                     (which, data) -> {
                                         // NO clicked
-                                        if (which == MessageBox.BTN_LEFT_POSITIVE) { // YES Clicked
+                                        if (which == MsgBox.BTN_LEFT_POSITIVE) { // YES Clicked
                                             try {
                                                 String userEntries = Config.UserFilters.getValue();
                                                 int p1 = userEntries.indexOf(clickedItem.mPreset.mName);

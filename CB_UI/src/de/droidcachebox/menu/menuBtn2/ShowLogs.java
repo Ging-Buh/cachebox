@@ -1,6 +1,18 @@
 package de.droidcachebox.menu.menuBtn2;
 
+import static de.droidcachebox.core.GroundspeakAPI.ERROR;
+import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCacheLogs;
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
@@ -16,23 +28,15 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.views.LogListView;
 import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.RunnableReadyHandler;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class ShowLogs extends AbstractShowAction {
 
@@ -173,7 +177,7 @@ public class ShowLogs extends AbstractShowAction {
                                     pd.close();
                                     if (result != -1) {
                                         synchronized (Database.Data.cacheList) {
-                                            MessageBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MessageBoxIcon.None);
+                                            MsgBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None);
                                         }
 
                                     }
@@ -192,9 +196,9 @@ public class ShowLogs extends AbstractShowAction {
             if (GroundspeakAPI.APIError == OK) {
                 Config.friends.setValue(friends);
                 Config.AcceptChanges();
-                MessageBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                MsgBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
             } else {
-                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
             }
         });
     }

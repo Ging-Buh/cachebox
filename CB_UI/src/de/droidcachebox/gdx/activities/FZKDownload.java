@@ -5,17 +5,35 @@ import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
+
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.LatLong;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.ex_import.BreakawayImportThread;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.ImportAnimation;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.MapDownloadItem;
+import de.droidcachebox.gdx.controls.ProgressBar;
+import de.droidcachebox.gdx.controls.ScrollBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
@@ -26,12 +44,6 @@ import de.droidcachebox.utils.ProgressChangedEvent;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.LatLong;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.*;
 
 public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "MapDownload";
@@ -108,9 +120,9 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             }
 
             if (importStarted) {
-                MessageBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MessageBoxButton.YesNo, MessageBoxIcon.Stop,
+                MsgBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop,
                         (which, data) -> {
-                            if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                            if (which == MsgBox.BTN_LEFT_POSITIVE) {
                                 finishImport();
                             }
                             return true;

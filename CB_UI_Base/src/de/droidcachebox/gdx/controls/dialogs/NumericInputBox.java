@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
 import com.badlogic.gdx.Input.Keys;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -8,7 +9,7 @@ import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.NumPad;
 import de.droidcachebox.gdx.controls.NumPad.IKeyPressedListener;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -29,14 +30,14 @@ public class NumericInputBox extends CB_View_Base {
     /**
      * * show msgbox for input of int
      **/
-    public static MessageBox Show(String msg, String title, int initialValue, IReturnValueListener listener) {
+    public static MsgBox Show(String msg, String title, int initialValue, IReturnValueListener listener) {
         mReturnListener = listener;
         mType = type.intType;
 
-        Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
+        Size msgBoxSize = MsgBox.calcMsgBoxSize(msg, true, true, false);
 
         float margin = UiSizes.getInstance().getMargin();
-        MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
+        MsgBox msgBox = new MsgBox(msgBoxSize, "MsgBox");
 
         editText = new EditTextField(null, "NumerikInputBox editText");
         float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
@@ -80,13 +81,13 @@ public class NumericInputBox extends CB_View_Base {
     /**
      * * show msgbox for input of double
      **/
-    public static MessageBox Show(String msg, String title, double initialValue, IReturnValueListenerDouble listener) {
+    public static MsgBox Show(String msg, String title, double initialValue, IReturnValueListenerDouble listener) {
         mReturnListenerDouble = listener;
         mType = type.doubleType;
-        Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
+        Size msgBoxSize = MsgBox.calcMsgBoxSize(msg, true, true, false);
 
         float margin = UiSizes.getInstance().getMargin();
-        MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
+        MsgBox msgBox = new MsgBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
         CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
@@ -138,14 +139,14 @@ public class NumericInputBox extends CB_View_Base {
     /**
      * * show msgbox for input of min + sec (int)
      **/
-    public static MessageBox Show(String msg, String title, int initialMin, int initialSec, IReturnValueListenerTime listener) {
+    public static MsgBox Show(String msg, String title, int initialMin, int initialSec, IReturnValueListenerTime listener) {
         mReturnListenerTime = listener;
         mType = type.timeType;
 
-        Size msgBoxSize = MessageBox.calcMsgBoxSize(msg, true, true, false);
+        Size msgBoxSize = MsgBox.calcMsgBoxSize(msg, true, true, false);
 
         float margin = UiSizes.getInstance().getMargin();
-        MessageBox msgBox = new MessageBox(msgBoxSize, "MsgBox");
+        MsgBox msgBox = new MsgBox(msgBoxSize, "MsgBox");
         msgBox.setTitle(title);
 
         CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
@@ -196,7 +197,7 @@ public class NumericInputBox extends CB_View_Base {
         return msgBox;
     }
 
-    static IKeyPressedListener getKeyListener(final MessageBox msgBox) {
+    static IKeyPressedListener getKeyListener(final MsgBox msgBox) {
 
         IKeyPressedListener keyListener = new IKeyPressedListener() {
 
@@ -298,7 +299,7 @@ public class NumericInputBox extends CB_View_Base {
         return keyListener;
     }
 
-    private static void close(final MessageBox msgBox) {
+    private static void close(final MsgBox msgBox) {
         GL.that.RunOnGL(() -> GL.that.closeDialog(msgBox));
 
     }

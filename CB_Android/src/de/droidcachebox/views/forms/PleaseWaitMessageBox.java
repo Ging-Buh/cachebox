@@ -29,13 +29,19 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.Global;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
@@ -243,12 +249,12 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                            </pre>
      */
 
-    public static Dialog show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener) {
+    public static Dialog show(String msg, String title, MsgBoxButton buttons, DialogInterface.OnClickListener Listener) {
         parent = null;
         return show(msg, title, buttons, Listener, null);
     }
 
-    public static Dialog show(String msg, String title, MessageBoxButton buttons, DialogInterface.OnClickListener Listener, Activity act) {
+    public static Dialog show(String msg, String title, MsgBoxButton buttons, DialogInterface.OnClickListener Listener, Activity act) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
@@ -308,12 +314,12 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
      *                                                                            </pre>
      */
 
-    public static Dialog show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
+    public static Dialog show(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, DialogInterface.OnClickListener Listener) {
         parent = null;
         return show(msg, title, buttons, icon, Listener, null);
     }
 
-    public static Dialog show(String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener, Activity act) {
+    public static Dialog show(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, DialogInterface.OnClickListener Listener, Activity act) {
         listener = Listener;
         Bundle b = new Bundle();
         b.putString("msg", msg);
@@ -325,8 +331,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
         return dialog;
     }
 
-    public static Dialog show(String msg, String title, MessageBoxIcon icon) {
-        return show(msg, title, MessageBoxButton.OK, icon, null);
+    public static Dialog show(String msg, String title, MsgBoxIcon icon) {
+        return show(msg, title, MsgBoxButton.OK, icon, null);
 
     }
 

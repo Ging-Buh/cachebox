@@ -1,22 +1,22 @@
 package de.droidcachebox.gdx;
 
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.translation.Translation;
 
 public class Quit {
-    private static MessageBox messageBox;
+    private static MsgBox msgBox;
 
     public static void quit() {
-        if (messageBox != null && GL.that.getCurrentDialog() == messageBox)
+        if (msgBox != null && GL.that.getCurrentDialog() == msgBox)
             return;
 
         try {
-            messageBox = MessageBox.show(Translation.get("QuitReally"), Translation.get("Quit?"), MessageBoxButton.OKCancel, MessageBoxIcon.Stop,
+            msgBox = MsgBox.show(Translation.get("QuitReally"), Translation.get("Quit?"), MsgBoxButton.OKCancel, MsgBoxIcon.Stop,
                     (which, data) -> {
-                        if (which == MessageBox.BTN_LEFT_POSITIVE) {
+                        if (which == MsgBox.BTN_LEFT_POSITIVE) {
                             PlatformUIBase.quit();
                         }
                         return true;

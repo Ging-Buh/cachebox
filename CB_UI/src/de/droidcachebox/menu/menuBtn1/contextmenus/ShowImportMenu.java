@@ -1,7 +1,20 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import de.droidcachebox.*;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import de.droidcachebox.AbstractShowAction;
+import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GpxSerializer;
 import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.CB_View_Base;
@@ -15,8 +28,8 @@ import de.droidcachebox.gdx.activities.SearchOverNameOwnerGcCode;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -24,14 +37,6 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.RunnableReadyHandler;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ShowImportMenu extends AbstractShowAction {
     public static final int MI_IMPORT_CBS = 189;
@@ -185,9 +190,9 @@ public class ShowImportMenu extends AbstractShowAction {
                     }
 
                     if (canceld) {
-                        MessageBox.show(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MessageBoxIcon.Stop);
+                        MsgBox.show(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MsgBoxIcon.Stop);
                     } else {
-                        MessageBox.show(Translation.get("exported", String.valueOf(actExportedCount)), Translation.get("export"), MessageBoxIcon.Information);
+                        MsgBox.show(Translation.get("exported", String.valueOf(actExportedCount)), Translation.get("export"), MsgBoxIcon.Information);
                     }
 
                 }

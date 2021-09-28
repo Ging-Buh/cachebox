@@ -16,6 +16,8 @@
 
 package de.droidcachebox.views.forms;
 
+import static android.view.View.GONE;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -30,15 +32,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-
-import static android.view.View.GONE;
 
 /**
  * Zeigt ein Meldungsfeld an, das Text, Schaltflächen und Symbole mit Informationen und Anweisungen für den Benutzer enthalten kann.
@@ -120,7 +121,7 @@ public class MessageBox {
      *                                                                     }
      *                                                                 </pre>
      */
-    public static Dialog show(Activity activity, String msg, String title, MessageBoxButton buttons, MessageBoxIcon icon, DialogInterface.OnClickListener listener) {
+    public static Dialog show(Activity activity, String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, DialogInterface.OnClickListener listener) {
         Bundle b = new Bundle();
         b.putString("msg", msg);
         b.putString("title", title);
@@ -134,8 +135,8 @@ public class MessageBox {
         return dialog;
     }
 
-    public static void show(Activity activity, String msg, String title, MessageBoxIcon icon) {
-        show(activity, msg, title, MessageBoxButton.OK, icon, null);
+    public static void show(Activity activity, String msg, String title, MsgBoxIcon icon) {
+        show(activity, msg, title, MsgBoxButton.OK, icon, null);
     }
 
     private static Dialog createDialog(Activity activity, int dialogId, Bundle b, DialogInterface.OnClickListener listener) {

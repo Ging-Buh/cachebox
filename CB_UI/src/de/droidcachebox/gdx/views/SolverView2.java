@@ -19,7 +19,11 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WaypointListChangedEventList;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Database;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -32,9 +36,9 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -227,7 +231,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
     }
 
     private void DeleteLine() {
-        MessageBox.show("Zeile löschen?", "Solver", MessageBoxButton.YesNo, MessageBoxIcon.Question, (which, data) -> {
+        MsgBox.show("Zeile löschen?", "Solver", MsgBoxButton.YesNo, MsgBoxIcon.Question, (which, data) -> {
             if (which == 1) {
                 solver.remove(selectedIndex);
                 solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());

@@ -14,8 +14,8 @@ import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.ImageButton;
 import de.droidcachebox.gdx.controls.Linearlayout;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
@@ -33,7 +33,7 @@ public class ParkingDialog extends ButtonDialog {
     private CB_Label lblSetGPS, lblSelectWP, lblDeleteP;
 
     public ParkingDialog() {
-        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation.get("My_Parking_Area_Title"), MessageBoxButton.Cancel, null, null);
+        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation.get("My_Parking_Area_Title"), MsgBoxButton.Cancel, null, null);
 
         msgBoxContentSize = getContentSize();
         // initial VariableField
@@ -98,7 +98,7 @@ public class ParkingDialog extends ButtonDialog {
             }
         }
 
-        Size msgBoxSize = MessageBox.calcMsgBoxSize("teste", true, true, false);
+        Size msgBoxSize = MsgBox.calcMsgBoxSize("teste", true, true, false);
         msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 

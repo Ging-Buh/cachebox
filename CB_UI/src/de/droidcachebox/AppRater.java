@@ -1,15 +1,15 @@
 package de.droidcachebox;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class AppRater {
     private static final String log = "AppRater";
@@ -19,7 +19,7 @@ public class AppRater {
     private final static int DAYS_UNTIL_PROMPT = 30;// 30;
     private final static int LAUNCHES_UNTIL_PROMPT = 15;// 15;
     private final static int MINIMUM_RUN = 10 * 60 * 1000;// 10 min
-    private static MessageBox msgBox;
+    private static MsgBox msgBox;
 
     public static void app_launched() {
         if (Config.AppRaterDontShowAgain.getValue())
@@ -63,7 +63,7 @@ public class AppRater {
         String later = Translation.get("Rate_later");
         String never = Translation.get("Rate_never");
 
-        msgBox = MessageBox.show(message, title, MessageBoxButton.YesNoCancel, MessageBoxIcon.Question,
+        msgBox = MsgBox.show(message, title, MsgBoxButton.YesNoCancel, MsgBoxIcon.Question,
                 (which, data) -> {
                     switch (which) {
                         case 1:
@@ -93,9 +93,9 @@ public class AppRater {
                     }
                     return true;
                 });
-        msgBox.setButtonText(MessageBox.BTN_LEFT_POSITIVE, now);
-        msgBox.setButtonText(MessageBox.BTN_MIDDLE_NEUTRAL, later);
-        msgBox.setButtonText(MessageBox.BTN_RIGHT_NEGATIVE, never);
+        msgBox.setButtonText(MsgBox.BTN_LEFT_POSITIVE, now);
+        msgBox.setButtonText(MsgBox.BTN_MIDDLE_NEUTRAL, later);
+        msgBox.setButtonText(MsgBox.BTN_RIGHT_NEGATIVE, never);
 
     }
 }

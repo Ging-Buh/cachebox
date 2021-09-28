@@ -7,9 +7,9 @@ import de.droidcachebox.gdx.IRunOnGL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.RouteDialog;
-import de.droidcachebox.gdx.controls.messagebox.MessageBox;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MessageBoxIcon;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
@@ -31,7 +31,7 @@ public class OpenRouteService {
     private void generateOpenRoute() {
 
         if (!Locator.getInstance().isGPSprovided()) {
-            MessageBox.show("GPS ungültig", "Error", MessageBoxButton.OK, MessageBoxIcon.Error, null);
+            MsgBox.show("GPS ungültig", "Error", MsgBoxButton.OK, MsgBoxIcon.Error, null);
             return;
         } else {
             start = Locator.getInstance().getMyPosition();
@@ -42,7 +42,7 @@ public class OpenRouteService {
         } else if (GlobalCore.isSetSelectedCache()) {
             target = GlobalCore.getSelectedCache().getCoordinate();
         } else {
-            MessageBox.show("Cache / WP ungültig", "Error", MessageBoxButton.OK, MessageBoxIcon.Error, null);
+            MsgBox.show("Cache / WP ungültig", "Error", MsgBoxButton.OK, MsgBoxIcon.Error, null);
             return;
         }
 
@@ -109,7 +109,7 @@ public class OpenRouteService {
                                                         // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                                         @Override
                                                         public void run() {
-                                                            MessageBox.show(errorMessage, "OpenRouteService", MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                                                            MsgBox.show(errorMessage, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
                                                         }
                                                     });
 
@@ -164,7 +164,7 @@ public class OpenRouteService {
                                                     @Override
                                                     public void run() {
                                                         String msg = Translation.get("generateRouteLength") + sDistance;
-                                                        MessageBox.show(msg, "OpenRouteService", MessageBoxButton.OK, MessageBoxIcon.Information, null);
+                                                        MsgBox.show(msg, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Information, null);
                                                     }
                                                 });
                                             } else {
@@ -175,7 +175,7 @@ public class OpenRouteService {
                                                     // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                                     @Override
                                                     public void run() {
-                                                        MessageBox.show("no route found", "OpenRouteService", MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                                                        MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
                                                     }
                                                 });
 
@@ -190,7 +190,7 @@ public class OpenRouteService {
                                                 // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                                 @Override
                                                 public void run() {
-                                                    MessageBox.show("no route found", "OpenRouteService", MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                                                    MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
                                                 }
                                             });
                                         }
@@ -204,7 +204,7 @@ public class OpenRouteService {
                                             // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                             @Override
                                             public void run() {
-                                                MessageBox.show("no route found", "OpenRouteService", MessageBoxButton.OK, MessageBoxIcon.Error, null);
+                                                MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
                                             }
                                         });
                                     }

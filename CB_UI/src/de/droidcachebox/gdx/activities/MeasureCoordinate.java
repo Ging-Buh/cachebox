@@ -20,6 +20,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
@@ -29,18 +35,17 @@ import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.SatBarChart;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.locator.*;
-import de.droidcachebox.locator.Location.ProviderType;
+import de.droidcachebox.locator.CBLocation.ProviderType;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.PositionChangedEvent;
+import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.PointD;
 import de.droidcachebox.utils.UnitFormatter;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent {
     private final int projectionZoom = 18;// 18;
@@ -424,7 +429,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
          * @return Coordinate
          */
         Coordinate getAccuWeightedAverageCoord() {
-            // TODO berechne Coord nach Genauigkeits Wichtung
+            // berechne Coord nach Genauigkeits Wichtung
             return getMeasuredAverageCoord(); // Vorerst, bis die Wichtung fertig
             // ist!
         }
