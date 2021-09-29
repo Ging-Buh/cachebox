@@ -424,8 +424,23 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         // perhaps move to about
         if (androidUIBaseMethods.askForLocationPermission()) {
             androidUIBaseMethods.resetAskForLocationPermission();
-            final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-            ActivityCompat.requestPermissions(this, locationPermissions, Request_ForLocationManager);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                runOnUiThread(() -> {
+                    MessageBox.show(this, Translation.get("GPSDisclosureText"), Translation.get("GPSDisclosureTitle"), MsgBoxButton.YesNo, MsgBoxIcon.Information, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == Dialog.BUTTON_POSITIVE) {
+                                final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+                                ActivityCompat.requestPermissions(Main.this, locationPermissions, Request_ForLocationManager);
+                            }
+                        }
+                    });
+                });
+            }
+            else {
+                final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+                ActivityCompat.requestPermissions(this, locationPermissions, Request_ForLocationManager);
+            }
         }
 
         super.onResume();
