@@ -572,17 +572,24 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 } else {
                     intent = new Intent(action);
                 }
+                if (intent != null) {
+                    // check if there is an activity that can handle the desired intent (not needed: this is implicit done by startActivity(event))
+                    if (intent.resolveActivity(mainActivity.getPackageManager()) == null) {
+                        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                            Log.err(sKlasse, "Navigation: No App for " + action + " , " + data);
+                            intent = null;
+                        }
+                        else {
+                            // from Build.VERSION_CODES.R onwards the Activity may exist even, if not visible
+                            Log.info(sKlasse, "Navigation: No visible App for " + action + " , " + data);
+                        }
+                    }
+                }
             } else {
                 intent = mainActivity.getPackageManager().getLaunchIntentForPackage(data);
-            }
-            if (intent != null) {
-                // check if there is an activity that can handle the desired intent
-                if (intent.resolveActivity(mainActivity.getPackageManager()) == null) {
-                    intent = null;
+                if (intent == null) {
+                    Log.err(sKlasse, "Navigation: No package/App for " + data);
                 }
-            }
-            if (intent == null) {
-                Log.err(sKlasse, "No intent for " + action + " , " + data);
             }
         } catch (Exception e) {
             intent = null;

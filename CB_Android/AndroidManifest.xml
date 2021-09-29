@@ -129,4 +129,34 @@
         <service android:name=".activities.CBForeground" />
 
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:host="maps.google.com" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:host="download.osmand.net" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="waze" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="com.sygic.aura" />
+        </intent>
+        <intent>
+            <action android:name="com.oruxmaps.VIEW_MAP_ONLINE" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.navigon.START_PUBLIC" />
+        </intent>
+    </queries>
+
 </manifest>

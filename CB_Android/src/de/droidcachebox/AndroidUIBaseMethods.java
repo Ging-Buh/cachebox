@@ -26,7 +26,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.DocumentsContract;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -118,8 +117,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         mainMain = main;
         OnResumeListeners.getInstance().addListener(AndroidUIBaseMethods.this::handleExternalRequest);
         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"));
-        final ResolveInfo resolveInfo = mainActivity.getPackageManager()
-                .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        final ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (resolveInfo != null)
             defaultBrowserPackageName = resolveInfo.activityInfo.packageName;
         else
@@ -142,7 +140,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
 
                 @Override
                 public void onSatelliteStatusChanged(final GnssStatus status) {
-                    Log.debug(sKlasse, "start onSatelliteStatusChanged");
                     final int satellites = status.getSatelliteCount();
                     int fixed = 0;
                     coreSatList.clear();
@@ -173,7 +170,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                             timer.schedule(task, 1000);
                         }
                     }
-                    Log.debug(sKlasse, "handled onSatelliteStatusChanged");
                 }
 
                 @Override
@@ -381,15 +377,17 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                 intent.setPackage(defaultBrowserPackageName);
             } else {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                // The BROWSABLE category is required to get links from web pages.
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
             }
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 Log.info(sKlasse, "Start activity for " + uri.toString());
-                mainActivity.startActivity(intent);
             } else {
-                Log.err(sKlasse, "Activity for " + url + " not installed. (" + defaultBrowserPackageName + ")");
-                Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
+                Log.err(sKlasse, "Activity for " + url + " not visible. (" + defaultBrowserPackageName + "). Try startActivity(intent) anyway.");
+                // Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
+                // start independent from visibility ( Android 11 hides, even if invisible, a browser starts! )
             }
+            mainActivity.startActivity(intent);
         } catch (Exception ex) {
             Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", ex);
         }
@@ -789,7 +787,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        // ist obsolete, aber braucht eine leere Implementierung
     }
 
     @Override
