@@ -20,18 +20,34 @@ import com.thebuzzmedia.sjxp.XMLParserException;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
+
+import java.io.FileInputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
 import de.droidcachebox.core.CB_Core_Settings;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Category;
+import de.droidcachebox.database.GeoCacheSize;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.FileInputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class GPXFileImporter {
     private final static String sKlasse = "GPXFileImporter";
@@ -1288,7 +1304,7 @@ public class GPXFileImporter {
                     cache.setCoordinate(new Coordinate(lat, lon));
 
                     // create final WP with Corrected Coords
-                    String newGcCode = Database.Data.createFreeGcCode(cache.getGeoCacheCode());
+                    String newGcCode = CBDB.Data.createFreeGcCode(cache.getGeoCacheCode());
 
                     // Check if "Final GSAK Corrected" exist
                     WaypointDAO WPDao = new WaypointDAO();
@@ -1297,7 +1313,7 @@ public class GPXFileImporter {
                     for (int i = 0; i < wplist.size(); i++) {
                         Waypoint wp = wplist.get(i);
                         if (wp.isCorrectedFinal()) {
-                            newGcCode = wp.getGcCode();
+                            newGcCode = wp.getWaypointCode();
                             break;
                         }
                     }
@@ -1339,10 +1355,10 @@ public class GPXFileImporter {
 
         // Write Note and Solver
         if (values.containsKey("cachebox-extension_solver")) {
-            Database.setSolver(cache, values.get("cachebox-extension_solver"));
+            CBDB.Data.setSolver(cache, values.get("cachebox-extension_solver"));
         }
         if (values.containsKey("cachebox-extension_note")) {
-            Database.setNote(cache, values.get("cachebox-extension_note"));
+            CBDB.Data.setNote(cache, values.get("cachebox-extension_note"));
         }
 
         // Merge mit cache info
@@ -1366,15 +1382,15 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("wpt_name")) {
-            waypoint.setGcCode(values.get("wpt_name"));
-            waypoint.setTitle(waypoint.getGcCode());
+            waypoint.setWaypointCode(values.get("wpt_name"));
+            waypoint.setTitle(waypoint.getWaypointCode());
             // TODO Hack to get parent Cache
 
             if (values.containsKey("cache_gsak_Parent")) {
                 String parent = values.get("cache_gsak_Parent");
                 waypoint.geoCacheId = Cache.generateCacheId(parent);
             } else {
-                waypoint.geoCacheId = Cache.generateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
+                waypoint.geoCacheId = Cache.generateCacheId("GC" + waypoint.getWaypointCode().substring(2, waypoint.getWaypointCode().length()));
             }
 
         }
@@ -1402,7 +1418,7 @@ public class GPXFileImporter {
 
         currentwpt++;
         if (mip != null)
-            mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentwpt + "/" + countwpt + "\n" + waypoint.getGcCode() + " - " + waypoint.getDescription(), false);
+            mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentwpt + "/" + countwpt + "\n" + waypoint.getWaypointCode() + " - " + waypoint.getDescription(), false);
 
         mImportHandler.handleWayPoint(waypoint);
 

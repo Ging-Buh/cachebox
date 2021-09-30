@@ -16,12 +16,17 @@
 package de.droidcachebox;
 
 import de.droidcachebox.SoundCache.Sounds;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheWithWP;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.locator.*;
+import de.droidcachebox.locator.GPS;
+import de.droidcachebox.locator.GPS_FallBackEvent;
+import de.droidcachebox.locator.GPS_FallBackEventList;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.PositionChangedEvent;
+import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.Log;
 
@@ -97,9 +102,9 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
             try {
                 if (!initialResortAfterFirstFixCompleted) {
-                    if (!Database.Data.cacheList.resortAtWork) {
-                        synchronized (Database.Data.cacheList) {
-                            CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
+                    if (!CBDB.Data.cacheList.resortAtWork) {
+                        synchronized (CBDB.Data.cacheList) {
+                            CacheWithWP ret = CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
                             if (ret != null && ret.getCache() != null) {
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 GlobalCore.setNearestCache(ret.getCache());
@@ -116,7 +121,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                 // schau die 50 nächsten Caches durch, wenn einer davon näher ist
                 // als der aktuell nächste -> umsortieren und raus
                 // only when showing Map or cacheList
-                if (!Database.Data.cacheList.resortAtWork) {
+                if (!CBDB.Data.cacheList.resortAtWork) {
                     if (GlobalCore.getAutoResort()) {
                         if ((GlobalCore.getNearestCache() == null)) {
                             GlobalCore.setNearestCache(GlobalCore.getSelectedCache());
@@ -132,8 +137,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                 }
                                 float nearestDistance = GlobalCore.getNearestCache().recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
 
-                                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
-                                    Cache cache = Database.Data.cacheList.get(i);
+                                for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
+                                    Cache cache = CBDB.Data.cacheList.get(i);
                                     z++;
                                     if (z >= 50) {
                                         return;
@@ -155,8 +160,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                 }
                             }
                             if (resort || z == 0) {
-                                if (!Database.Data.cacheList.resortAtWork) {
-                                    CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
+                                if (!CBDB.Data.cacheList.resortAtWork) {
+                                    CacheWithWP ret = CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
                                     if (ret != null && ret.getCache() != null) {
                                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                         GlobalCore.setNearestCache(ret.getCache());

@@ -68,9 +68,10 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.components.CopyAssetFolder;
-import de.droidcachebox.database.AndroidDB;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.Database.DatabaseType;
+import de.droidcachebox.database.CacheboxDB;
+import de.droidcachebox.database.DraftsDB;
+import de.droidcachebox.database.SettingsDB;
+import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.Handler;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
@@ -177,7 +178,7 @@ public class Splash extends Activity {
         new Handler().postDelayed(() -> {
             // could bundle utils too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
-            if (Database.Settings.isDbNew()) {
+            if (SettingsDatabase.Settings.isDbNew()) {
                 Config.mapViewDPIFaktor.setValue(displayDensity);
             }
             Global.Paints.init(this);
@@ -803,10 +804,10 @@ public class Splash extends Activity {
         boolean userFolderExists = FileIO.createDirectory(workPath + "/User");
         if (!userFolderExists)
             return;
-        Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-        Database.Settings.startUp(workPath + "/User/Config.db3");
+        new SettingsDB(this);
+        SettingsDB.Settings.startUp(workPath + "/User/Config.db3");
         // Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
-        if (Database.Settings.isDbNew()) {
+        if (SettingsDatabase.Settings.isDbNew()) {
             Config.settings.LoadAllDefaultValues();
             Config.settings.WriteToDB();
             Log.info(log, "Default Settings written to new configDB.");
@@ -818,7 +819,7 @@ public class Splash extends Activity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+        new CacheboxDB(this);
 
         // copy AssetFolder only if Rev-Number changed, like at new installation
         try {
@@ -848,8 +849,8 @@ public class Splash extends Activity {
 
         Log.info(log, GlobalCore.getInstance().getVersionString());
 
-        Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-        Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
+        new CacheboxDB(this);
+        new DraftsDB(this);
 
         Config.AcceptChanges();
 

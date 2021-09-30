@@ -15,11 +15,6 @@
  */
 package de.droidcachebox.core;
 
-import de.droidcachebox.database.*;
-import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.log.Log;
 import org.kxml2.io.KXmlSerializer;
 import org.xmlpull.v1.XmlSerializer;
 
@@ -31,6 +26,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheList;
+import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * GPX writer, which the given cache code from the current DB after each other, with all the details, loads, <br>
@@ -250,10 +257,10 @@ public final class GpxSerializer {
             }
 
             String additinalIfFound = cache.isFound() ? "|Found" : "";
-            String note = Database.getNote(cache);
+            String note = CBDB.Data.getNote(cache);
             if (note == null)
                 note = "";
-            String solver = Database.getSolver(cache);
+            String solver = CBDB.Data.getSolver(cache);
             if (solver == null)
                 solver = "";
 
@@ -382,7 +389,7 @@ public final class GpxSerializer {
             gpx.attribute("", "lat", Double.toString(coords.getLatitude()));
             gpx.attribute("", "lon", Double.toString(coords.getLongitude()));
             multipleTexts(gpx, PREFIX_GPX, //
-                    "name", wp.getGcCode(), //
+                    "name", wp.getWaypointCode(), //
                     "cmt", wp.getDescription(), //
                     "desc", wp.getTitle(), //
                     "sym", wp.waypointType.toString(), //
@@ -400,7 +407,7 @@ public final class GpxSerializer {
     }
 
     private void writeLogs(final Cache cache) throws IOException {
-        CB_List<LogEntry> logEntries = Database.getLogs(cache);
+        CB_List<LogEntry> logEntries = CBDB.Data.getLogs(cache);
         if (logEntries.isEmpty()) {
             return;
         }

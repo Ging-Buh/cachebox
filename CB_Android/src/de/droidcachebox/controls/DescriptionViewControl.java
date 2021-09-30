@@ -38,12 +38,11 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.ViewOptionsMenu;
 import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.ImageDAO;
 import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.database.LogDAO;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
@@ -78,17 +77,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
                     newCache = geoCacheRelated.cache;
 
-                    synchronized (Database.Data.cacheList) {
-                        Database.Data.sql.beginTransaction();
+                    synchronized (CBDB.Data.cacheList) {
+                        CBDB.Data.sql.beginTransaction();
 
-                        Database.Data.cacheList.remove(aktCache);
-                        Database.Data.cacheList.add(newCache);
+                        CBDB.Data.cacheList.remove(aktCache);
+                        CBDB.Data.cacheList.add(newCache);
 
                         new CacheDAO().UpdateDatabase(newCache);
                         newCache.setLongDescription("");
 
-                        LogDAO logDAO = new LogDAO();
-                        for (LogEntry apiLog : geoCacheRelated.logs) logDAO.WriteToDatabase(apiLog);
+                        for (LogEntry apiLog : geoCacheRelated.logs) CBDB.Data.WriteLogEntry(apiLog);
 
                         WaypointDAO waypointDAO = new WaypointDAO();
                         for (int i = 0, n = newCache.getWayPoints().size(); i < n; i++) {
@@ -99,7 +97,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             // dont refresh wp if aktCache.wp is user changed
                             for (int j = 0, m = aktCache.getWayPoints().size(); j < m; j++) {
                                 Waypoint wp = aktCache.getWayPoints().get(j);
-                                if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
+                                if (wp.getWaypointCode().equalsIgnoreCase(waypoint.getWaypointCode())) {
                                     if (wp.isUserWaypoint)
                                         update = false;
                                     break;
@@ -113,10 +111,10 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         ImageDAO imageDAO = new ImageDAO();
                         for (ImageEntry image : geoCacheRelated.images) imageDAO.writeToDatabase(image, false);
 
-                        Database.Data.sql.setTransactionSuccessful();
-                        Database.Data.sql.endTransaction();
+                        CBDB.Data.sql.setTransactionSuccessful();
+                        CBDB.Data.sql.endTransaction();
 
-                        Database.Data.updateCacheCountForGPXFilenames();
+                        CBDB.Data.updateCacheCountForGPXFilenames();
                     }
                     aktCache = newCache;
                     setCache(newCache);
@@ -302,7 +300,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             aktCache = cache;
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String html = Database.getShortDescription(cache) + Database.getDescription(cache);
+            String html = CBDB.Data.getShortDescription(cache) + CBDB.Data.getDescription(cache);
             // cache.getApiStatus() == Cache.IS_FULL
             if (html.length() > 0) {
                 html = DescriptionImageGrabber.resolveImages(cache, html, false, NonLocalImages, NonLocalImagesUrl);

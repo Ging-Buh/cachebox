@@ -15,11 +15,14 @@
  */
 package de.droidcachebox.gdx.views;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.Fonts;
@@ -33,9 +36,6 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class LogListView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static CB_RectF itemRec;
@@ -109,7 +109,7 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
             setAdapter(null);
             logs = new CB_List<>();
             setEmptyMsgItem(Translation.get("EmptyLogList"));
-            for (LogEntry logEntry : Database.getLogs(currentCache)) {
+            for (LogEntry logEntry : CBDB.Data.getLogs(currentCache)) {
                 if (GlobalCore.filterLogsOfFriends) {
                     if (!friendList.contains(logEntry.finder)) {
                         continue;

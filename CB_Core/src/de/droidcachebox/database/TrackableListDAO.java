@@ -1,8 +1,8 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.utils.log.Log;
-
 import java.util.Iterator;
+
+import de.droidcachebox.utils.log.Log;
 
 public class TrackableListDAO {
     private static final String log = "TrackableListDAO";
@@ -37,7 +37,7 @@ public class TrackableListDAO {
      * Deleate all TBs
      */
     public static void clearDB() {
-        Database.Drafts.sql.delete("Trackable", "", null);
+        DraftsDatabase.Drafts.sql.delete("Trackable", "", null);
     }
 
 }

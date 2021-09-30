@@ -15,17 +15,17 @@
  */
 package de.droidcachebox.database;
 
-import de.droidcachebox.database.Database_Core.Parameters;
-import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.utils.DLong;
-import de.droidcachebox.utils.log.Log;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.utils.DLong;
+import de.droidcachebox.utils.log.Log;
 
 public class CacheDAO {
     static final String SQL_BY_ID = "from Caches c where id = ?";
@@ -76,7 +76,7 @@ public class CacheDAO {
             return true;
         cache.setGeoCacheDetail(new CacheDetail());
 
-        CoreCursor reader = Database.Data.sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
+        CoreCursor reader = CBDB.Data.sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -214,7 +214,7 @@ public class CacheDAO {
             args.put("Hint", cache.getHint());
         }
         try {
-            Database.Data.sql.insert("Caches", args);
+            CBDB.Data.sql.insert("Caches", args);
         } catch (Exception exc) {
             Log.err(log, "Write Cache", "", exc);
         }
@@ -224,7 +224,7 @@ public class CacheDAO {
         Parameters args = new Parameters();
         args.put("found", cache.isFound());
         try {
-            Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
+            CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
             Replication.FoundChanged(cache.generatedId, cache.isFound());
         } catch (Exception exc) {
             Log.err(log, "Write Cache Found", "", exc);
@@ -296,7 +296,7 @@ public class CacheDAO {
         args.put("TourName", cache.getTourName());
         args.put("FavPoints", cache.favPoints);
         try {
-            long ret = Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
+            long ret = CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
             return ret > 0;
         } catch (Exception exc) {
             Log.err(log, "Update Cache", "", exc);
@@ -311,7 +311,7 @@ public class CacheDAO {
      *         or null if not in table
      */
     public Cache getFromDbByCacheId(long CacheID) {
-        CoreCursor reader = Database.Data.sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = CBDB.Data.sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();
@@ -337,7 +337,7 @@ public class CacheDAO {
     {
         String where = SQL_GET_CACHE + (withDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
 
-        CoreCursor reader = Database.Data.sql.rawQuery(where, new String[]{GcCode});
+        CoreCursor reader = CBDB.Data.sql.rawQuery(where, new String[]{GcCode});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -362,7 +362,7 @@ public class CacheDAO {
 
     public boolean cacheExists(long CacheID) {
 
-        CoreCursor reader = Database.Data.sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = CBDB.Data.sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
 
         boolean exists = (reader.getCount() > 0);
 
@@ -419,7 +419,7 @@ public class CacheDAO {
         if (changed) {
 
             try {
-                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
+                CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
             } catch (Exception exc) {
                 Log.err(log, "Update Cache", "", exc);
 
@@ -473,7 +473,7 @@ public class CacheDAO {
 
         ArrayList<String> GcCodes = new ArrayList<String>();
 
-        CoreCursor reader = Database.Data.sql.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
 
         if (reader.getCount() > 0) {
             reader.moveToFirst();
@@ -488,7 +488,7 @@ public class CacheDAO {
     }
 
     public boolean loadBooleanValue(String gcCode, String key) {
-        CoreCursor reader = Database.Data.sql.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
         try {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {

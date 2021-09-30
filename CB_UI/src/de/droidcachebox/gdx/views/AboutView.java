@@ -340,7 +340,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
             if (selectedCache != null) {
                 try {
                     if (selectedWaypoint != null) {
-                        WaypointLabel.setText(selectedWaypoint.getGcCode());
+                        WaypointLabel.setText(selectedWaypoint.getWaypointCode());
                         CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.getLongitude()));
                     } else {
                         WaypointLabel.setText(selectedCache.getGeoCacheCode());

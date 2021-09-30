@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class AndroidDB extends Database {
+public class CacheboxDB extends CBDB {
 
-    public AndroidDB(DatabaseType databaseType, Activity activity) {
-        super(databaseType);
+    public CacheboxDB(Activity activity) {
+        super();
         this.sql = new SQLiteClass(activity);
     }
 
@@ -21,7 +21,7 @@ public class AndroidDB extends Database {
             c.close();
             myDB.close();
             return count;
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return 0;
     }

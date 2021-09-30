@@ -15,11 +15,11 @@
  */
 package de.droidcachebox.ex_import;
 
-import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.utils.log.Log;
-
 import java.util.ArrayList;
+
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.utils.log.Log;
 
 public class ExportList extends ArrayList<ExportEntry> {
     private static final String log = "ExportList";
@@ -35,7 +35,7 @@ public class ExportList extends ArrayList<ExportEntry> {
 
         CoreCursor reader = null;
         try {
-            reader = Database.Data.sql.rawQuery(sql, null);
+            reader = CBDB.Data.sql.rawQuery(sql, null);
         } catch (Exception exc) {
             Log.err(log, "ExportList", "LoadExportList", exc);
         }

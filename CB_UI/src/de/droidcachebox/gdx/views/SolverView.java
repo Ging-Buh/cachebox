@@ -19,8 +19,8 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
@@ -81,7 +81,7 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
         CacheSelectionChangedListeners.getInstance().addListener(this);
 
         if (mustLoadSolver) {
-            String sol = Database.getSolver(aktCache);
+            String sol = CBDB.Data.getSolver(aktCache);
             if (sol == null)
                 sol = "";
             edInput.setText(sol);
@@ -96,7 +96,7 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
         KeyboardFocusChangedEventList.remove(this);
         CacheSelectionChangedListeners.getInstance().remove(this);
         if (aktCache != null) {
-            Database.setSolver(aktCache, edInput.getText());
+            CBDB.Data.setSolver(aktCache, edInput.getText());
             // When Solver 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
             aktCache.setSolver1Changed(true);
         }

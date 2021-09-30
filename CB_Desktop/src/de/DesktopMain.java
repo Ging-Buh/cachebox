@@ -17,11 +17,11 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.PlatformUIBase.Methods;
 import de.droidcachebox.TrackRecorder;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.Database.DatabaseType;
-import de.droidcachebox.database.DesktopDB;
+import de.droidcachebox.database.CacheboxDB;
+import de.droidcachebox.database.DraftsDB;
 import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.database.SettingsDB;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Listener_Interface;
@@ -390,11 +390,11 @@ public class DesktopMain {
         // todo set firstSDCard and secondSDCard somehow
         GlobalCore.firstSDCard = "C:/";
         GlobalCore.secondSDCard = "D:/";
-        Database.Settings = new DesktopDB(DatabaseType.Settings);
-        Database.Settings.startUp(Config.workPath + "/User/Config.db3");
-        Database.Data = new DesktopDB(DatabaseType.CacheBox);
-        Database.Drafts = new DesktopDB(DatabaseType.Drafts);
-        Database.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
+        new SettingsDB();
+        SettingsDB.Settings.startUp(Config.workPath + "/User/Config.db3");
+        new CacheboxDB();
+        new DraftsDB();
+        DraftsDB.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
     }
 
     /**

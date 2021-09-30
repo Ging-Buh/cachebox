@@ -15,12 +15,12 @@
  */
 package de.droidcachebox.database;
 
-import de.droidcachebox.database.Database_Core.Parameters;
-import de.droidcachebox.utils.log.Log;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+
+import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.utils.log.Log;
 
 public class TrackableDAO {
     private static final String log = "TrackableDAO";
@@ -37,7 +37,7 @@ public class TrackableDAO {
     public void writeToDatabase(Trackable trackable) {
         try {
             Log.info(log, "Write Trackable insert");
-            Database.Drafts.sql.insert("Trackable", createArgs(trackable));
+            DraftsDatabase.Drafts.sql.insert("Trackable", createArgs(trackable));
             Log.info(log, "Write Trackable insert done");
         } catch (Exception exc) {
             Log.err(log, "Write Trackable error", exc);
@@ -49,7 +49,7 @@ public class TrackableDAO {
             Log.info(log, "Write Trackable createArgs");
             Parameters args = createArgs(trackable);
             Log.info(log, "Write Trackable update");
-            Database.Drafts.sql.update("Trackable", args, "GcCode='" + trackable.getTbCode() + "'", null);
+            DraftsDatabase.Drafts.sql.update("Trackable", args, "GcCode='" + trackable.getTbCode() + "'", null);
         } catch (Exception exc) {
             Log.err(log, "Update Trackable error", exc);
         }
@@ -132,7 +132,7 @@ public class TrackableDAO {
     public Trackable getFromDbByGcCode(String gcCode) {
         String where = "GcCode = \"" + gcCode + "\"";
         String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE " + where;
-        CoreCursor reader = Database.Drafts.sql.rawQuery(query, null);
+        CoreCursor reader = DraftsDatabase.Drafts.sql.rawQuery(query, null);
 
         try {
             if (reader != null && reader.getCount() > 0) {

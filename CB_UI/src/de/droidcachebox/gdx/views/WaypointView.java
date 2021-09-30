@@ -20,8 +20,8 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WaypointListChangedEvent;
 import de.droidcachebox.WaypointListChangedEventList;
 import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
@@ -211,7 +211,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             createNewWaypoint = true;
             String newGcCode;
             try {
-                newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
+                newGcCode = CBDB.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
             } catch (Exception e) {
                 return;
             }
@@ -304,7 +304,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             MsgBox.show(Translation.get("?DelWP") + "\n\n[" + currentWaypoint.getTitleForGui() + "]", Translation.get("!DelWP"), MsgBoxButton.YesNo, MsgBoxIcon.Question, (which, data) -> {
                 if (which == MsgBox.BTN_LEFT_POSITIVE) {
                     try {
-                        Database.deleteFromDatabase(currentWaypoint);
+                        CBDB.Data.deleteFromDatabase(currentWaypoint);
                         GlobalCore.getSelectedCache().getWayPoints().remove(currentWaypoint);
                         currentWaypoint = null;
                         GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
@@ -364,7 +364,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
 
                 String newGcCode;
                 try {
-                    newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
+                    newGcCode = CBDB.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
                 } catch (Exception e) {
 
                     return;
@@ -396,7 +396,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 Log.debug(sKlasse, "Got a coordinate");
                 String newGcCode;
                 try {
-                    newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
+                    newGcCode = CBDB.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
                 } catch (Exception e) {
                     return;
                 }

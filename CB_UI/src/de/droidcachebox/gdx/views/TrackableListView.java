@@ -14,7 +14,7 @@ import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.database.LogType;
 import de.droidcachebox.database.TBList;
 import de.droidcachebox.database.Trackable;
@@ -82,7 +82,7 @@ public class TrackableListView extends V_ListView {
 
     private void readTbList() {
         trackableList.clear();
-        CoreCursor reader = Database.Drafts.sql.rawQuery("select Id,Archived,GcCode,CacheId,CurrentGoal,CurrentOwnerName,DateCreated,Description,IconUrl,ImageUrl,Name,OwnerName,Url,TypeName,Home,TravelDistance from Trackable", null);
+        CoreCursor reader = DraftsDatabase.Drafts.sql.rawQuery("select Id,Archived,GcCode,CacheId,CurrentGoal,CurrentOwnerName,DateCreated,Description,IconUrl,ImageUrl,Name,OwnerName,Url,TypeName,Home,TravelDistance from Trackable", null);
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {

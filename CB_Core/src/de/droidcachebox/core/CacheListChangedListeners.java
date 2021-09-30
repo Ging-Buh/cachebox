@@ -16,13 +16,14 @@
 package de.droidcachebox.core;
 
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.Energy;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import de.droidcachebox.Energy;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.utils.log.Log;
 
 public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListChangedListeners.CacheListChangedListener> {
     private static CacheListChangedListeners cacheListChangedListeners;
@@ -49,32 +50,32 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
         if (Energy.isDisplayOff())
             return;
 
-        synchronized (Database.Data.cacheList) {
+        synchronized (CBDB.Data.cacheList) {
 
             // remove Parking Cache
-            Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
+            Cache cache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache != null)
-                Database.Data.cacheList.remove(cache);
+                CBDB.Data.cacheList.remove(cache);
             // add Parking Cache from saved Config (ParkingLatitude, ParkingLongitude)
             if (CB_Core_Settings.ParkingLatitude.getValue() != 0) {
                 cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", GeoCacheType.MyParking, "CBPark");
-                Database.Data.cacheList.add(0, cache);
+                CBDB.Data.cacheList.add(0, cache);
             }
 
             for (Array<Cache> geoCacheList : LiveMapQue.getInstance().getAllCacheLists()) {
                 for (Cache geoCache : geoCacheList) {
                     if (geoCache != null) {
                         if (FilterInstances.isLastFilterSet()) {
-                            if (!Database.Data.cacheList.contains(geoCache)) {
+                            if (!CBDB.Data.cacheList.contains(geoCache)) {
                                 if (FilterInstances.getLastFilter().passed(geoCache)) {
                                     geoCache.setLive(true);
-                                    Database.Data.cacheList.add(geoCache);
+                                    CBDB.Data.cacheList.add(geoCache);
                                 }
                             }
                         } else {
-                            if (!Database.Data.cacheList.contains(geoCache)) {
+                            if (!CBDB.Data.cacheList.contains(geoCache)) {
                                 geoCache.setLive(true);
-                                Database.Data.cacheList.add(geoCache);
+                                CBDB.Data.cacheList.add(geoCache);
                             }
                         }
                     }

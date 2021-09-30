@@ -1,13 +1,13 @@
 package de.droidcachebox.database;
 
+import java.util.Iterator;
+
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.SDBM_Hash;
 import de.droidcachebox.utils.UnitFormatter;
-
-import java.util.Iterator;
 
 public class WaypointDAO {
 
@@ -22,10 +22,10 @@ public class WaypointDAO {
     public void WriteToDatabase(Waypoint waypoint, boolean useReplication) {
         int newCheckSum = createCheckSum(waypoint);
         if (useReplication) {
-            Replication.WaypointNew(waypoint.geoCacheId, waypoint.getCheckSum(), newCheckSum, waypoint.getGcCode());
+            Replication.WaypointNew(waypoint.geoCacheId, waypoint.getCheckSum(), newCheckSum, waypoint.getWaypointCode());
         }
         Parameters args = new Parameters();
-        args.put("gccode", waypoint.getGcCode());
+        args.put("gccode", waypoint.getWaypointCode());
         args.put("cacheid", waypoint.geoCacheId);
         args.put("latitude", waypoint.getLatitude());
         args.put("longitude", waypoint.getLongitude());
@@ -40,15 +40,15 @@ public class WaypointDAO {
         args.put("isStart", waypoint.isStartWaypoint);
 
         try {
-            long count = Database.Data.sql.insert("Waypoint", args);
+            long count = CBDB.Data.sql.insert("Waypoint", args);
             if (count <= 0) {
-                Database.Data.sql.update("Waypoint", args, "gccode=\"" + waypoint.getGcCode() + "\"", null);
+                CBDB.Data.sql.update("Waypoint", args, "gccode=\"" + waypoint.getWaypointCode() + "\"", null);
             }
             if (waypoint.isUserWaypoint) {
                 // HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist!!!
                 args = new Parameters();
                 args.put("hasUserData", true);
-                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(waypoint.geoCacheId)});
+                CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(waypoint.geoCacheId)});
             }
         } catch (Exception exc) {
             return;
@@ -65,11 +65,11 @@ public class WaypointDAO {
         boolean result = false;
         int newCheckSum = createCheckSum(WP);
         if (useReplication) {
-            Replication.WaypointChanged(WP.geoCacheId, WP.getCheckSum(), newCheckSum, WP.getGcCode());
+            Replication.WaypointChanged(WP.geoCacheId, WP.getCheckSum(), newCheckSum, WP.getWaypointCode());
         }
         if (newCheckSum != WP.getCheckSum()) {
             Parameters args = new Parameters();
-            args.put("gccode", WP.getGcCode());
+            args.put("gccode", WP.getWaypointCode());
             args.put("cacheid", WP.geoCacheId);
             args.put("latitude", WP.getLatitude());
             args.put("longitude", WP.getLongitude());
@@ -81,7 +81,7 @@ public class WaypointDAO {
             args.put("title", WP.getTitle());
             args.put("isStart", WP.isStartWaypoint);
             try {
-                long count = Database.Data.sql.update("Waypoint", args, "CacheId=" + WP.geoCacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
+                long count = CBDB.Data.sql.update("Waypoint", args, "CacheId=" + WP.geoCacheId + " and GcCode=\"" + WP.getWaypointCode() + "\"", null);
                 if (count > 0)
                     result = true;
             } catch (Exception exc) {
@@ -94,7 +94,7 @@ public class WaypointDAO {
                 args = new Parameters();
                 args.put("hasUserData", true);
                 try {
-                    Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.geoCacheId)});
+                    CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.geoCacheId)});
                 } catch (Exception exc) {
                     return result;
                 }
@@ -116,7 +116,7 @@ public class WaypointDAO {
 
         WP = new Waypoint(full);
 
-        WP.setGcCode(reader.getString(0));
+        WP.setWaypointCode(reader.getString(0));
         WP.geoCacheId = reader.getLong(1);
         double latitude = reader.getDouble(2);
         double longitude = reader.getDouble(3);
@@ -137,7 +137,7 @@ public class WaypointDAO {
 
     private int createCheckSum(Waypoint waypoint) {
         // for Replication
-        String sCheckSum = waypoint.getGcCode();
+        String sCheckSum = waypoint.getWaypointCode();
         sCheckSum += UnitFormatter.FormatLatitudeDM(waypoint.getLatitude());
         sCheckSum += UnitFormatter.FormatLongitudeDM(waypoint.getLongitude());
         sCheckSum += waypoint.getDescription();
@@ -167,7 +167,7 @@ public class WaypointDAO {
 
     public void WriteImportToDatabase(Waypoint waypoint) {
         Parameters args = new Parameters();
-        args.put("gccode", waypoint.getGcCode());
+        args.put("gccode", waypoint.getWaypointCode());
         args.put("cacheid", waypoint.geoCacheId);
         args.put("latitude", waypoint.getLatitude());
         args.put("longitude", waypoint.getLongitude());
@@ -180,11 +180,11 @@ public class WaypointDAO {
         args.put("isStart", waypoint.isStartWaypoint);
 
         try {
-            Database.Data.sql.insertWithConflictReplace("Waypoint", args);
+            CBDB.Data.sql.insertWithConflictReplace("Waypoint", args);
 
             args = new Parameters();
             args.put("hasUserData", true);
-            Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(waypoint.geoCacheId)});
+            CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(waypoint.geoCacheId)});
         } catch (Exception exc) {
             return;
 
@@ -204,7 +204,7 @@ public class WaypointDAO {
                 Parameters args = new Parameters();
                 args.put("isStart", false);
                 try {
-                    long count = Database.Data.sql.update("Waypoint", args, "CacheId=" + wp.geoCacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
+                    long count = CBDB.Data.sql.update("Waypoint", args, "CacheId=" + wp.geoCacheId + " and GcCode=\"" + wp.getWaypointCode() + "\"", null);
 
                 } catch (Exception exc) {
 
@@ -218,7 +218,7 @@ public class WaypointDAO {
      */
     public void ClearOrphanedWaypoints() {
         String SQL = "DELETE  FROM  Waypoint WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Waypoint.CacheId = c.Id)";
-        Database.Data.sql.execSQL(SQL);
+        CBDB.Data.sql.execSQL(SQL);
     }
 
     /**
@@ -235,7 +235,7 @@ public class WaypointDAO {
         StringBuilder sqlState = new StringBuilder(Full ? SQL_WP_FULL : SQL_WP);
         sqlState.append("  where CacheId = ?");
 
-        CoreCursor reader = Database.Data.sql.rawQuery(sqlState.toString(), new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = CBDB.Data.sql.rawQuery(sqlState.toString(), new String[]{String.valueOf(CacheID)});
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
             Waypoint wp = getWaypoint(reader, Full);

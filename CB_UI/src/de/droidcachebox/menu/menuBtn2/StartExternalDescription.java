@@ -16,22 +16,23 @@
 package de.droidcachebox.menu.menuBtn2;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import de.droidcachebox.AbstractAction;
-import de.droidcachebox.CB_UI_Base_Settings;
-import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.ex_import.DescriptionImageGrabber;
-import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.utils.log.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
+
+import de.droidcachebox.AbstractAction;
+import de.droidcachebox.CB_UI_Base_Settings;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.ex_import.DescriptionImageGrabber;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * @author Longri
@@ -64,7 +65,7 @@ public class StartExternalDescription extends AbstractAction {
             Cache cache = GlobalCore.getSelectedCache();
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String cachehtml = Database.getShortDescription(cache) + Database.getDescription(cache);
+            String cachehtml = CBDB.Data.getShortDescription(cache) + CBDB.Data.getDescription(cache);
             String html = DescriptionImageGrabber.resolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
             String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
             html = header + html;

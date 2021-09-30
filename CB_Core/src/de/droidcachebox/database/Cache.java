@@ -15,13 +15,6 @@
  */
 package de.droidcachebox.database;
 
-import de.droidcachebox.core.CB_Core_Settings;
-import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.DLong;
-import de.droidcachebox.utils.MathUtils;
-import de.droidcachebox.utils.MathUtils.CalculationType;
-
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +22,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+
+import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.DLong;
+import de.droidcachebox.utils.MathUtils;
+import de.droidcachebox.utils.MathUtils.CalculationType;
 
 public class Cache implements Comparable<Cache>, Serializable {
     public final static byte IS_LITE = 1;
@@ -215,7 +215,7 @@ public class Cache implements Comparable<Cache>, Serializable {
             boolean found = false;
             for (int j = 0; j < wayPoints.size(); j++) {
                 Waypoint existingWaypoint = wayPoints.get(j);
-                if (readWaypoint.getGcCode().equals(existingWaypoint.getGcCode())) {
+                if (readWaypoint.getWaypointCode().equals(existingWaypoint.getWaypointCode())) {
                     found = true;
                     existingWaypoint.detail = readWaypoint.detail; // copy Detail Info
                     break;
@@ -360,7 +360,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         if (isDisposed)
             return null;
         for (Waypoint wayPoint : wayPoints) {
-            if (wayPoint.getGcCode().equals(gc)) {
+            if (wayPoint.getWaypointCode().equals(gc)) {
                 return wayPoint;
             }
         }
@@ -401,7 +401,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         // do not copy waypoints List directly because actual user defined Waypoints would be deleted
 
         for (Waypoint newWaypoint : cache.wayPoints) {
-            Waypoint wayPoint = findWayPointByGc(newWaypoint.getGcCode());
+            Waypoint wayPoint = findWayPointByGc(newWaypoint.getWaypointCode());
             if (wayPoint == null) {
                 // this waypoint is new -> Add to list
                 wayPoints.add(newWaypoint);
@@ -900,7 +900,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getLongDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getLongDescription() == null || geoCacheDetail.getLongDescription().length() == 0) {
-                return Database.getDescription(this);
+                return CBDB.Data.getDescription(this);
             }
             return geoCacheDetail.getLongDescription();
         } else {
@@ -918,7 +918,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getShortDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getShortDescription() == null || geoCacheDetail.getShortDescription().length() == 0) {
-                return Database.getShortDescription(this);
+                return CBDB.Data.getShortDescription(this);
             }
             return geoCacheDetail.getShortDescription();
         } else {

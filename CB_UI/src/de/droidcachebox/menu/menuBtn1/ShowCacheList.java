@@ -12,8 +12,8 @@ import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheWithWP;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
@@ -41,7 +41,7 @@ public class ShowCacheList extends AbstractShowAction {
     private MsgBox gL_MsgBox;
 
     private ShowCacheList() {
-        super("cacheList", "  (" + Database.Data.cacheList.size() + ")");
+        super("cacheList", "  (" + CBDB.Data.cacheList.size() + ")");
         editCache = null;
     }
 
@@ -92,10 +92,10 @@ public class ShowCacheList extends AbstractShowAction {
 
         MenuItem mi;
         cm.addMenuItem("ResortList", Sprites.getSprite(IconName.sortIcon.name()), () -> {
-            if (!Database.Data.cacheList.resortAtWork) {
-                synchronized (Database.Data.cacheList) {
+            if (!CBDB.Data.cacheList.resortAtWork) {
+                synchronized (CBDB.Data.cacheList) {
                     Log.debug("ShowCacheList", "sort CacheList by Menu ResortList");
-                    CacheWithWP nearstCacheWp = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    CacheWithWP nearstCacheWp = CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     if (nearstCacheWp != null && nearstCacheWp.getCache() != null) {
                         GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
                         GlobalCore.setNearestCache(nearstCacheWp.getCache());
@@ -143,12 +143,12 @@ public class ShowCacheList extends AbstractShowAction {
             gL_MsgBox = MsgBox.show(Translation.get(msgText), Translation.get("Favorites"), MsgBoxButton.OKCancel, MsgBoxIcon.Question, (which, data) -> {
                 gL_MsgBox_close();
                 if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                    Database.Data.sql.beginTransaction();
+                    CBDB.Data.sql.beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", finalchecked ? 1 : 0);
-                    Database.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
-                    Database.Data.sql.setTransactionSuccessful();
-                    Database.Data.sql.endTransaction();
+                    CBDB.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
+                    CBDB.Data.sql.setTransactionSuccessful();
+                    CBDB.Data.sql.endTransaction();
                     ViewManager.reloadCacheList();
                     GlobalCore.checkSelectedCacheValid();
                 }
@@ -162,10 +162,10 @@ public class ShowCacheList extends AbstractShowAction {
         mi = cm.addMenuItem("AutoResort", null, () -> {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {
-                if (!Database.Data.cacheList.resortAtWork) {
-                    synchronized (Database.Data.cacheList) {
+                if (!CBDB.Data.cacheList.resortAtWork) {
+                    synchronized (CBDB.Data.cacheList) {
                         Log.debug("ShowCacheList", "sort CacheList by Menu AutoResort");
-                        Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                        CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     }
                 }
             }

@@ -47,12 +47,12 @@ import java.util.TreeMap;
 
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.database.GeoCacheSize;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.database.LogDAO;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogType;
 import de.droidcachebox.database.TBList;
@@ -553,7 +553,7 @@ public class GroundspeakAPI {
                 long cacheId = Cache.generateCacheId(draft.gcCode);
                 // Cache cache = new CacheDAO().getFromDbByCacheId(cacheId);
                 LogEntry logEntry = createLog(geocacheLog, cacheId);
-                new LogDAO().WriteToDatabase(logEntry);
+                CBDB.Data.WriteLogEntry(logEntry);
                 // logReferenceCode is return value
                 logReferenceCode = geocacheLog.optString("referenceCode", ""); // as return value
             } else {
@@ -1402,7 +1402,7 @@ public class GroundspeakAPI {
                 waypoint.setTitle(wpt.optString("name", ""));
                 waypoint.setDescription(wpt.optString("description", ""));
                 waypoint.waypointType = CacheTypeFromID(wpt.optInt("typeId", 0));
-                waypoint.setGcCode(wpt.optString("prefix", "XX") + cache.getGeoCacheCode().substring(2));
+                waypoint.setWaypointCode(wpt.optString("prefix", "XX") + cache.getGeoCacheCode().substring(2));
                 cache.getWayPoints().add(waypoint);
             }
         }
@@ -1426,7 +1426,7 @@ public class GroundspeakAPI {
                     waypoint.setTitle("Corrected Coordinates (API)");
                     waypoint.setDescription(wpt.optString("description", ""));
                     waypoint.waypointType = GeoCacheType.Final;
-                    waypoint.setGcCode("CO" + cache.getGeoCacheCode().substring(2));
+                    waypoint.setWaypointCode("CO" + cache.getGeoCacheCode().substring(2));
                     cache.getWayPoints().add(waypoint);
                 }
             }

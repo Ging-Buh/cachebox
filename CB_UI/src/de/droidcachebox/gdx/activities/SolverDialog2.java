@@ -1,6 +1,9 @@
 package de.droidcachebox.gdx.activities;
 
 import com.badlogic.gdx.graphics.Color;
+
+import java.util.TreeMap;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.database.Cache;
@@ -9,11 +12,17 @@ import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_CheckBox.OnCheckChangedListener;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
+import de.droidcachebox.gdx.controls.CoordinateButton;
+import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
+import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.MultiToggleButton.OnStateChangeListener;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.SelectSolverFunction;
@@ -24,8 +33,6 @@ import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Function;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.translation.Translation;
-
-import java.util.TreeMap;
 
 public class SolverDialog2 extends ActivityBase implements OnStateChangeListener {
     //private final SolverDialog2BuildFormula buildFormula;
@@ -168,7 +175,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             return true;
         for (int i = 0; i < aktCache.getWayPoints().size(); i++) {
             Waypoint waypoint = aktCache.getWayPoints().get(i);
-            if (this.solverString.equals("$" + waypoint.getGcCode()))
+            if (this.solverString.equals("$" + waypoint.getWaypointCode()))
                 return true;
         }
         return false;
@@ -1082,8 +1089,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             String description = "";
             if (i > 0) {
                 waypoint = aktCache.getWayPoints().get(i - 1);
-                data = "$" + waypoint.getGcCode();
-                description = "$" + waypoint.getGcCode() + " - " + waypoint.getTitle();
+                data = "$" + waypoint.getWaypointCode();
+                description = "$" + waypoint.getWaypointCode() + " - " + waypoint.getTitle();
             } else {
                 data = "$" + aktCache.getGeoCacheCode();
                 description = "$" + aktCache.getGeoCacheCode() + " - " + aktCache.getGeoCacheName();

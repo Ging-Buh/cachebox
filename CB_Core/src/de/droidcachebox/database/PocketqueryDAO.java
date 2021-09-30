@@ -15,14 +15,14 @@
  */
 package de.droidcachebox.database;
 
-import de.droidcachebox.core.GroundspeakAPI.PQ;
-import de.droidcachebox.database.Database_Core.Parameters;
-import de.droidcachebox.utils.log.Log;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import de.droidcachebox.core.GroundspeakAPI.PQ;
+import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.utils.log.Log;
 
 public class PocketqueryDAO {
     private static final String log = "PocketqueryDAO";
@@ -35,7 +35,7 @@ public class PocketqueryDAO {
         args.put("CreationTimeOfPQ", stimestamp);
 
         try {
-            Database.Data.sql.insertWithConflictReplace("PocketQueries", args);
+            CBDB.Data.sql.insertWithConflictReplace("PocketQueries", args);
         } catch (Exception exc) {
             Log.err(log, "Write Pocketquery to DB", pq.name, exc);
             return -1;
@@ -52,7 +52,7 @@ public class PocketqueryDAO {
      * @return
      */
     public Date getLastGeneratedDate(String pqName) {
-        CoreCursor reader = Database.Data.sql.rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]{pqName});
+        CoreCursor reader = CBDB.Data.sql.rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]{pqName});
         try {
             if (reader.getCount() > 0) {
                 reader.moveToFirst();

@@ -17,13 +17,14 @@
 package de.droidcachebox.database;
 
 import com.badlogic.gdx.files.FileHandle;
-import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * @author ging-buh
@@ -52,7 +53,9 @@ public class CacheListDAO {
             orParts.add("GcCode like '%" + gcCode + "%'");
         }
         String where = join(orParts);
-        return readCacheList(where, withDescription, fullDetails, loadAllWaypoints);
+        CacheList cacheList = new CacheList();
+        readCacheList(cacheList, where, withDescription, fullDetails, loadAllWaypoints);
+        return cacheList;
     }
 
     private String join(ArrayList<String> array) {
@@ -67,11 +70,12 @@ public class CacheListDAO {
         return retString.toString();
     }
 
-    /**
-     *
-     */
-    public CacheList readCacheList(String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
-        CacheList cacheList = new CacheList();
+    public void readCacheList(String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        readCacheList(CBDB.Data.cacheList, sqlQualification, withDescription, fullDetails, loadAllWaypoints);
+    }
+
+    public void readCacheList(CacheList cacheList, String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        cacheList.clear();
 
         // Log.trace(log, "readCacheList 1.Waypoints");
         SortedMap<Long, CB_List<Waypoint>> waypoints;
@@ -87,9 +91,8 @@ public class CacheListDAO {
             sql += " where IsStart=\"true\" or Type=" + GeoCacheType.Final.ordinal(); // StartWaypoint or CacheTypes.Final
         }
         sql += " order by CacheId";
-        CoreCursor reader = Database.Data.sql.rawQuery(sql, null);
-        if (reader == null)
-            return cacheList;
+        CoreCursor reader = CBDB.Data.sql.rawQuery(sql, null);
+        if (reader == null) return ;
 
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
@@ -129,7 +132,7 @@ public class CacheListDAO {
             // an empty sqlQualification and a sqlQualification other than where (p.e for join) starting with 5 blanks (by my definition)
             boolean addWhere = sqlQualification.length() > 0 && !sqlQualification.startsWith("     ");
             sql += " from Caches c " + (addWhere ? "where " + sqlQualification : sqlQualification);
-            reader = Database.Data.sql.rawQuery(sql, null);
+            reader = CBDB.Data.sql.rawQuery(sql, null);
 
         } catch (Exception e) {
             Log.err(log, "CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
@@ -140,31 +143,6 @@ public class CacheListDAO {
 
         while (!reader.isAfterLast()) {
             Cache cache = cacheDAO.readFromCursor(reader, fullDetails, withDescription);
-            /*
-            // implemented in sql query in november 2019. arbor95
-            boolean doAdd = true;
-            if (FilterInstances.hasCorrectedCoordinates != 0) {
-                if (waypoints.containsKey(cache.Id)) {
-                    CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
-                    for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
-                        cache.waypoints.add(tmpwaypoints.get(i));
-                    }
-                }
-                boolean hasCorrectedCoordinates = cache.hasCorrectedCoordinatesOrHasCorrectedFinal();
-                if (FilterInstances.hasCorrectedCoordinates < 0) {
-                    // show only those without corrected ones
-                    if (hasCorrectedCoordinates)
-                        doAdd = false;
-                } else if (FilterInstances.hasCorrectedCoordinates > 0) {
-                    // only those with corrected ones
-                    if (!hasCorrectedCoordinates)
-                        doAdd = false;
-                }
-            }
-            if (doAdd) {
-
-            }
-             */
             cacheList.add(cache);
             cache.getWayPoints().clear();
             if (waypoints.containsKey(cache.generatedId)) {
@@ -176,13 +154,9 @@ public class CacheListDAO {
 
                 waypoints.remove(cache.generatedId);
             }
-            // ++Global.CacheCount;
             reader.moveToNext();
-
         }
         reader.close();
-
-        return cacheList;
 
     }
 
@@ -196,8 +170,8 @@ public class CacheListDAO {
     public long deleteArchived(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
             delCacheImages(getGcCodes("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            long ret = Database.Data.sql.delete("Caches", "Archived=1", null);
-            Database.Data.updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
+            long ret = CBDB.Data.sql.delete("Caches", "Archived=1", null);
+            CBDB.Data.updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
             return ret;
         } catch (Exception e) {
             Log.err(log, "CacheListDAO.DelArchiv()", "Archiv ERROR", e);
@@ -215,8 +189,8 @@ public class CacheListDAO {
     public long deleteFinds(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
             delCacheImages(getGcCodes("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            long ret = Database.Data.sql.delete("Caches", "Found=1", null);
-            Database.Data.updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
+            long ret = CBDB.Data.sql.delete("Caches", "Found=1", null);
+            CBDB.Data.updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
             return ret;
         } catch (Exception e) {
             Log.err(log, "CacheListDAO.DelFound()", "Found ERROR", e);
@@ -235,11 +209,11 @@ public class CacheListDAO {
     public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
             delCacheImages(getGcCodes(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            Database.Data.sql.beginTransaction();
-            long ret = Database.Data.sql.delete("Caches", Where, null);
-            Database.Data.sql.setTransactionSuccessful();
-            Database.Data.sql.endTransaction();
-            Database.Data.updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
+            CBDB.Data.sql.beginTransaction();
+            long ret = CBDB.Data.sql.delete("Caches", Where, null);
+            CBDB.Data.sql.setTransactionSuccessful();
+            CBDB.Data.sql.endTransaction();
+            CBDB.Data.updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
             return ret;
         } catch (Exception e) {
             Log.err(log, "CacheListDAO.DelFilter()", "Filter ERROR", e);
@@ -248,12 +222,14 @@ public class CacheListDAO {
     }
 
     private ArrayList<String> getGcCodes(String where) {
-        CacheList list = readCacheList(where, false, false, false);
-        ArrayList<String> gcCodes = new ArrayList<>();
+        CacheList list = new CacheList();
+        readCacheList(list, where, false, false, false);
 
+        ArrayList<String> gcCodes = new ArrayList<>();
         for (int i = 0, n = list.size(); i < n; i++) {
             gcCodes.add(list.get(i).getGeoCacheCode());
         }
+
         list.dispose();
         return gcCodes;
     }

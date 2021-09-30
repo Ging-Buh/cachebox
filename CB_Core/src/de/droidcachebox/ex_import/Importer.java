@@ -15,16 +15,6 @@
  */
 package de.droidcachebox.ex_import;
 
-import de.droidcachebox.core.*;
-import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.GCVoteDAO;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.ProgresssChangedEventList;
-import de.droidcachebox.utils.log.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,6 +23,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.zip.ZipException;
+
+import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.core.GCVote;
+import de.droidcachebox.core.GCVoteCacheInfo;
+import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.core.RatingData;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.database.GCVoteDAO;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.ProgresssChangedEventList;
+import de.droidcachebox.utils.log.Log;
 
 public class Importer {
     private static final String sKlasse = "Importer";
@@ -284,7 +288,7 @@ public class Importer {
         String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
         if (where.length() > 0)
             sql += " where " + where;
-        CoreCursor reader = Database.Data.sql.rawQuery(sql, null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery(sql, null);
 
         int cnt = -1;
         int numCaches = reader.getCount();

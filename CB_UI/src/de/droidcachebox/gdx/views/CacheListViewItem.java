@@ -7,9 +7,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -119,7 +120,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
         if (mCache.getCoordinate() == null) {
             // mCache was disposed
-            Cache c = Database.Data.cacheList.getCacheByIdFromCacheList(mCache.generatedId);
+            Cache c = CBDB.Data.cacheList.getCacheByIdFromCacheList(mCache.generatedId);
             if (c == null) {
                 return;
             }

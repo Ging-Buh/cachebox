@@ -1,10 +1,11 @@
 package de.droidcachebox.menu.quickBtns;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheWithWP;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.locator.Locator;
@@ -37,10 +38,10 @@ public class SwitchAutoresort extends AbstractAction {
     public void execute() {
         GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
         if (GlobalCore.getAutoResort()) {
-            if (!Database.Data.cacheList.resortAtWork) {
-                synchronized (Database.Data.cacheList) {
+            if (!CBDB.Data.cacheList.resortAtWork) {
+                synchronized (CBDB.Data.cacheList) {
                     Log.debug("ShowCacheList", "sort CacheList by Quick Action SwitchAutoresort");
-                    CacheWithWP ret = Database.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    CacheWithWP ret = CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     if (ret != null && ret.getCache() != null) {
                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                         GlobalCore.setNearestCache(ret.getCache());

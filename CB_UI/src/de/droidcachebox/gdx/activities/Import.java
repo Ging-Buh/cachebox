@@ -45,7 +45,7 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.core.GroundspeakAPI.PQ;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.ex_import.BreakawayImportThread;
 import de.droidcachebox.ex_import.GPXFileImporter;
 import de.droidcachebox.ex_import.Importer;
@@ -920,19 +920,19 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                         long startTime = System.currentTimeMillis();
 
-                        Database.Data.sql.beginTransaction();
-                        Database.Data.cacheList.clear();
+                        CBDB.Data.sql.beginTransaction();
+                        CBDB.Data.cacheList.clear();
                         try {
                             importer.importGpx(directoryPath, ip);
-                            Database.Data.sql.setTransactionSuccessful();
+                            CBDB.Data.sql.setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
-                            Database.Data.sql.endTransaction();
+                            CBDB.Data.sql.endTransaction();
                             cancelImport();
                             ip.ProgressChangeMsg("", "");
                             return;
                         }
-                        Database.Data.sql.endTransaction();
+                        CBDB.Data.sql.endTransaction();
 
                         if (BreakawayImportThread.isCanceled()) {
                             cancelImport();
@@ -972,16 +972,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                     if (checkBoxGcVote.isChecked()) {
                         dis.setAnimationType(AnimationType.Download);
-                        Database.Data.sql.beginTransaction();
+                        CBDB.Data.sql.beginTransaction();
                         try {
                             importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), ip);
 
-                            Database.Data.sql.setTransactionSuccessful();
+                            CBDB.Data.sql.setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
                         }
                         dis.setAnimationType(AnimationType.Work);
-                        Database.Data.sql.endTransaction();
+                        CBDB.Data.sql.endTransaction();
                         if (BreakawayImportThread.isCanceled()) {
                             cancelImport();
                             ip.ProgressChangeMsg("", "");
@@ -1016,14 +1016,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                     if (checkBoxCleanLogs.isChecked()) {
                         ip.setJobMax("DeleteLogs", 1);
                         ip.ProgressChangeMsg("DeleteLogs", "");
-                        Database.Data.deleteOldLogs(Config.LogMinCount.getValue(), Config.LogMaxMonthAge.getValue());
+                        CBDB.Data.deleteOldLogs(Config.LogMinCount.getValue(), Config.LogMaxMonthAge.getValue());
                         ip.ProgressInkrement("DeleteLogs", "", true);
                     }
 
                     if (checkBoxCompactDB.isChecked()) {
                         ip.setJobMax("CompactDB", 1);
                         ip.ProgressChangeMsg("CompactDB", "");
-                        Database.Data.sql.execSQL("vacuum");
+                        CBDB.Data.sql.execSQL("vacuum");
                         ip.ProgressInkrement("CompactDB", "", true);
                     }
 

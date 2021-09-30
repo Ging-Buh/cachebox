@@ -17,8 +17,8 @@ import java.util.Locale;
 import de.droidcachebox.Global;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.R;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogType;
 import de.droidcachebox.gdx.math.CB_Rect;
@@ -322,7 +322,7 @@ public class CacheDraw {
 
     private static String getLastFoundLogDate(Cache cache) {
         String foundDate = "";
-        CB_List<LogEntry> logs = Database.getLogs(cache);
+        CB_List<LogEntry> logs = CBDB.Data.getLogs(cache);
         int n = logs.size();
         for (int i = 0; i < n; i++) {
             LogEntry l = logs.get(i);

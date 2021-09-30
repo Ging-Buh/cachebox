@@ -36,9 +36,9 @@ import de.droidcachebox.core.API_ErrorEventHandler;
 import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.ParentInfo;
@@ -123,8 +123,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     public static void reloadCacheList() {
-        synchronized (Database.Data.cacheList) {
-            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), false, false, Config.showAllWaypoints.getValue());
+        synchronized (CBDB.Data.cacheList) {
+            CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), false, false, Config.showAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
@@ -227,9 +227,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         // set last selected Cache
         String sGc = Config.LastSelectedCache.getValue();
         if (sGc != null && sGc.length() > 0) {
-            synchronized (Database.Data.cacheList) {
-                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
-                    Cache c = Database.Data.cacheList.get(i);
+            synchronized (CBDB.Data.cacheList) {
+                for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
+                    Cache c = CBDB.Data.cacheList.get(i);
                     if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
                         Log.debug(sKlasse, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                         GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
@@ -426,14 +426,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         // ##################################
         String Name;
 
-        synchronized (Database.Data.cacheList) {
-            int filterCount = Database.Data.cacheList.size();
+        synchronized (CBDB.Data.cacheList) {
+            int filterCount = CBDB.Data.cacheList.size();
 
-            if (Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark") != null) {
+            if (CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark") != null) {
                 filterCount = filterCount - 1;
             }
 
-            int DBCount = Database.Data.getCacheCountInDB();
+            int DBCount = CBDB.Data.getCacheCountInDB();
             String strFilterCount = "";
             if (filterCount != DBCount) {
                 strFilterCount = filterCount + "/";

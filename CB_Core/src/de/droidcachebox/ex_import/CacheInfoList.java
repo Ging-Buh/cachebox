@@ -15,18 +15,22 @@
  */
 package de.droidcachebox.ex_import;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+
 import de.droidcachebox.core.CoreData;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Category;
+import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.SDBM_Hash;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
 
 public class CacheInfoList {
     private static final String log = "CacheInfoList";
@@ -43,7 +47,7 @@ public class CacheInfoList {
     public static void IndexDB() {
         mCacheInfoList = new HashMap<>();
 
-        CoreCursor reader = Database.Data.sql.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
 
         reader.moveToFirst();
 
@@ -184,7 +188,7 @@ public class CacheInfoList {
 
             // get recent logtext of owner
             String recentOwnerLogString = "";
-            CB_List<LogEntry> logEntries = Database.getLogs(cache);
+            CB_List<LogEntry> logEntries = CBDB.Data.getLogs(cache);
             for (LogEntry logEntry : logEntries) {
                 if (logEntry.finder.equalsIgnoreCase(cache.getOwner())) {
                     recentOwnerLogString = logEntry.logText;
@@ -192,7 +196,7 @@ public class CacheInfoList {
                 }
             }
 
-            String stringForListingCheckSum = Database.getDescription(cache);
+            String stringForListingCheckSum = CBDB.Data.getDescription(cache);
             int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
 
             boolean ListingChanged = cacheInfo.ListingChanged;
@@ -263,7 +267,7 @@ public class CacheInfoList {
             args.put("Found", info.Found ? 1 : 0);
 
             try {
-                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(info.id)});
+                CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(info.id)});
             } catch (Exception exc) {
                 Log.err(log, "CacheInfoList.writeListToDB()", "", exc);
 
@@ -297,7 +301,7 @@ public class CacheInfoList {
     public static void putNewInfo(Cache cache) {
         // get recent logtext of owner
         String recentOwnerLogString = "";
-        CB_List<LogEntry> logEntries = Database.getLogs(cache);
+        CB_List<LogEntry> logEntries = CBDB.Data.getLogs(cache);
         for (LogEntry logEntry : logEntries) {
             if (logEntry.finder.equalsIgnoreCase(cache.getOwner())) {
                 recentOwnerLogString = logEntry.logText;
@@ -305,7 +309,7 @@ public class CacheInfoList {
             }
         }
 
-        String stringForListingCheckSum = Database.getDescription(cache);
+        String stringForListingCheckSum = CBDB.Data.getDescription(cache);
         int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
 
         CacheInfo info = new CacheInfo(cache.generatedId, cache.getGPXFilename_ID());

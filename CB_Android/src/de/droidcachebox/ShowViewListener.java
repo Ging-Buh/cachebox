@@ -507,7 +507,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             } else {
                 lat = GlobalCore.getSelectedWayPoint().getLatitude();
                 lon = GlobalCore.getSelectedWayPoint().getLongitude();
-                targetName = GlobalCore.getSelectedWayPoint().getGcCode();
+                targetName = GlobalCore.getSelectedWayPoint().getWaypointCode();
             }
 
             String selectedNavi = Config.Navis.getValue();

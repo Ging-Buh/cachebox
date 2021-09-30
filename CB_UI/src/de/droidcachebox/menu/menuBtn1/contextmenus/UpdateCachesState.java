@@ -15,10 +15,10 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.Config;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -47,12 +47,12 @@ public class UpdateCachesState extends AbstractAction {
             isCanceled = false;
             ArrayList<Cache> chkList = new ArrayList<>();
 
-            synchronized (Database.Data.cacheList) {
-                if (Database.Data.cacheList == null || Database.Data.cacheList.size() == 0)
+            synchronized (CBDB.Data.cacheList) {
+                if (CBDB.Data.cacheList == null || CBDB.Data.cacheList.size() == 0)
                     return;
                 ChangedCount = 0;
-                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
-                    chkList.add(Database.Data.cacheList.get(i));
+                for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
+                    chkList.add(CBDB.Data.cacheList.get(i));
                 }
 
             }
@@ -96,13 +96,13 @@ public class UpdateCachesState extends AbstractAction {
                     skip += BlockSize;
 
                     /* */
-                    Database.Data.sql.beginTransaction();
+                    CBDB.Data.sql.beginTransaction();
                     for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
                         if (dao.updateDatabaseCacheState(ci.cache))
                             ChangedCount++;
                     }
-                    Database.Data.sql.setTransactionSuccessful();
-                    Database.Data.sql.endTransaction();
+                    CBDB.Data.sql.setTransactionSuccessful();
+                    CBDB.Data.sql.endTransaction();
                     /* */
 
                     /*
@@ -169,13 +169,13 @@ public class UpdateCachesState extends AbstractAction {
             String sCanceld = canceled ? Translation.get("isCanceld") + br : "";
             if (result != -1) {
                 // Reload result from DB
-                synchronized (Database.Data.cacheList) {
+                synchronized (CBDB.Data.cacheList) {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
-                synchronized (Database.Data.cacheList) {
-                    MsgBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + Database.Data.cacheList.size(),
+                synchronized (CBDB.Data.cacheList) {
+                    MsgBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + CBDB.Data.cacheList.size(),
                             Translation.get("chkState"),
                             MsgBoxIcon.None);
                 }

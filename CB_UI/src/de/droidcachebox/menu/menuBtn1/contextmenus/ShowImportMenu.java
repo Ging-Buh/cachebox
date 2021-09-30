@@ -16,7 +16,7 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GpxSerializer;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -147,7 +147,7 @@ public class ShowImportMenu extends AbstractShowAction {
             }
 
         // Export all Caches from DB
-        final ArrayList<String> allGeocodesForExport = Database.Data.cacheList.getGcCodes();
+        final ArrayList<String> allGeocodesForExport = CBDB.Data.cacheList.getGcCodes();
 
         final int count = allGeocodesForExport.size();
         actExportedCount = 0;

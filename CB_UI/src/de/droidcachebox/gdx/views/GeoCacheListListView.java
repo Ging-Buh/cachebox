@@ -19,12 +19,16 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
@@ -45,9 +49,6 @@ import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GeoCacheListListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String log = "GeoCacheListListView";
@@ -131,11 +132,11 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
 
         PositionChangedListeners.addListener(this);
 
-        synchronized (Database.Data.cacheList) {
+        synchronized (CBDB.Data.cacheList) {
             try {
                 geoCacheListViewAdapter = new GeoCacheListViewAdapter();
                 geoCacheListView.setAdapter(geoCacheListViewAdapter);
-                if (geoCacheListView.getMaxNumberOfVisibleItems() >= Database.Data.cacheList.size()) {
+                if (geoCacheListView.getMaxNumberOfVisibleItems() >= CBDB.Data.cacheList.size()) {
                     geoCacheListView.setUnDraggable();
                 } else {
                     geoCacheListView.setDraggable();
@@ -173,9 +174,9 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
             int id = 0;
             Point firstAndLast = geoCacheListView.getFirstAndLastVisibleIndex();
 
-            synchronized (Database.Data.cacheList) {
-                for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
-                    Cache ca = Database.Data.cacheList.get(i);
+            synchronized (CBDB.Data.cacheList) {
+                for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
+                    Cache ca = CBDB.Data.cacheList.get(i);
                     if (ca.generatedId == GlobalCore.getSelectedCache().generatedId) {
                         geoCacheListView.setSelection(id);
                         if (geoCacheListView.isDraggable()) {
@@ -228,11 +229,11 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
      */
     @Override
     public void cacheListChanged() {
-        synchronized (Database.Data.cacheList) {
+        synchronized (CBDB.Data.cacheList) {
             geoCacheListView.setAdapter(null);
             geoCacheListViewAdapter = new GeoCacheListViewAdapter();
             geoCacheListView.setAdapter(geoCacheListViewAdapter);
-            if (geoCacheListView.getMaxNumberOfVisibleItems() >= Database.Data.cacheList.size()) {
+            if (geoCacheListView.getMaxNumberOfVisibleItems() >= CBDB.Data.cacheList.size()) {
                 geoCacheListView.setUnDraggable();
             } else {
                 geoCacheListView.setDraggable();
@@ -346,29 +347,29 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
 
         @Override
         public int getCount() {
-            if (Database.Data.cacheList == null)
+            if (CBDB.Data.cacheList == null)
                 return 0;
-            return Database.Data.cacheList.size();
+            return CBDB.Data.cacheList.size();
         }
 
         @Override
         public ListViewItemBase getView(int index) {
-            synchronized (Database.Data.cacheList) {
-                if (Database.Data.cacheList == null) return null;
-                if (Database.Data.cacheList.size() <= index) return null;
+            synchronized (CBDB.Data.cacheList) {
+                if (CBDB.Data.cacheList == null) return null;
+                if (CBDB.Data.cacheList.size() <= index) return null;
 
-                CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, Database.Data.cacheList.get(index));
+                CacheListViewItem v = new CacheListViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), index, CBDB.Data.cacheList.get(index));
 
                 v.setClickable(true);
 
-                if (Database.Data.cacheList.get(index).getGeoCacheType() == GeoCacheType.Traditional)
+                if (CBDB.Data.cacheList.get(index).getGeoCacheType() == GeoCacheType.Traditional)
                     v.setEnabled(false);
 
                 v.setClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
                     Cache geoCache;
-                    synchronized (Database.Data.cacheList) {
-                        geoCache = Database.Data.cacheList.get(selectionIndex);
+                    synchronized (CBDB.Data.cacheList) {
+                        geoCache = CBDB.Data.cacheList.get(selectionIndex);
                     }
                     if (geoCache != null) {
                         Waypoint waypoint = geoCache.getCorrectedFinal();
@@ -390,8 +391,8 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
                 v.setOnLongClickListener((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
                     Cache geoCache;
-                    synchronized (Database.Data.cacheList) {
-                        geoCache = Database.Data.cacheList.get(selectionIndex);
+                    synchronized (CBDB.Data.cacheList) {
+                        geoCache = CBDB.Data.cacheList.get(selectionIndex);
                     }
                     if (geoCache != null) {
                         Waypoint waypoint = geoCache.getCorrectedFinal();
@@ -415,12 +416,12 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
 
         @Override
         public float getItemSize(int position) {
-            if (Database.Data.cacheList == null)
+            if (CBDB.Data.cacheList == null)
                 return 0;
-            synchronized (Database.Data.cacheList) {
-                if (Database.Data.cacheList.size() == 0)
+            synchronized (CBDB.Data.cacheList) {
+                if (CBDB.Data.cacheList.size() == 0)
                     return 0;
-                Cache cache = Database.Data.cacheList.get(position);
+                Cache cache = CBDB.Data.cacheList.get(position);
                 if (cache == null)
                     return 0;
 

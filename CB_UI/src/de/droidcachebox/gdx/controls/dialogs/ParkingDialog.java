@@ -3,8 +3,8 @@ package de.droidcachebox.gdx.controls.dialogs;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
@@ -90,8 +90,8 @@ public class ParkingDialog extends ButtonDialog {
         this.addChild(layout);
 
         // chk disable select and delete Button
-        synchronized (Database.Data.cacheList) {
-            Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
+        synchronized (CBDB.Data.cacheList) {
+            Cache cache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache == null) {
                 btSelectWP.disable();
                 btDeleteP.disable();
@@ -120,8 +120,8 @@ public class ParkingDialog extends ButtonDialog {
 
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                synchronized (Database.Data.cacheList) {
-                    Cache cache = Database.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
+                synchronized (CBDB.Data.cacheList) {
+                    Cache cache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
                     if (cache != null)
                         GlobalCore.setSelectedCache(cache);
                 }

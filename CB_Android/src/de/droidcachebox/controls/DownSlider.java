@@ -33,7 +33,16 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import de.droidcachebox.*;
+
+import java.util.Iterator;
+
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.Config;
+import de.droidcachebox.Energy;
+import de.droidcachebox.Global;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.Main;
+import de.droidcachebox.R;
 import de.droidcachebox.components.CacheDraw;
 import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.Cache;
@@ -42,12 +51,14 @@ import de.droidcachebox.gdx.QuickButtonList;
 import de.droidcachebox.gdx.Slider;
 import de.droidcachebox.gdx.math.CB_Rect;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.locator.*;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.GPS;
+import de.droidcachebox.locator.GpsStateChangeEvent;
+import de.droidcachebox.locator.GpsStateChangeEventList;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.UnitFormatter;
-
-import java.util.Iterator;
 
 public final class DownSlider extends View implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent {
     private static final String log = "downSlider";
@@ -667,7 +678,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
                 WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                 WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
                 WPLayoutTextPaintBold.setFakeBoldText(true);
-                WPLayoutName = new StaticLayout(waypoint.getGcCode() + ": " + waypoint.getTitle(), WPLayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+                WPLayoutName = new StaticLayout(waypoint.getWaypointCode() + ": " + waypoint.getTitle(), WPLayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                 WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight() + WPLayoutName.getHeight();
             }
 

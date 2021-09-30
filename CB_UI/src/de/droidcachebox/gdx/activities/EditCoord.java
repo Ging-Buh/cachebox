@@ -1,11 +1,24 @@
 package de.droidcachebox.gdx.activities;
 
 import com.badlogic.gdx.graphics.Color;
+
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.gdx.*;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
+import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.translation.Translation;
@@ -13,10 +26,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.converter.UTMConvert;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 
 public class EditCoord extends ActivityBase {
     private static final String log = "EditCoord";
@@ -82,7 +91,7 @@ public class EditCoord extends ActivityBase {
                 if (GlobalCore.getSelectedWayPoint() == null) {
                     writer.write((coordsToWrite + GlobalCore.getSelectedCache().getGeoCacheCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
                 } else {
-                    writer.write((coordsToWrite + GlobalCore.getSelectedWayPoint().getGcCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
+                    writer.write((coordsToWrite + GlobalCore.getSelectedWayPoint().getWaypointCode() + "\r\n").getBytes(StandardCharsets.UTF_8));
                 }
                 writer.flush();
                 writer.close();

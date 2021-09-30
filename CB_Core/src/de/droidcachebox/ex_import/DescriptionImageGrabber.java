@@ -30,8 +30,8 @@ import java.util.LinkedList;
 
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.database.ImageEntry;
 import de.droidcachebox.translation.Translation;
@@ -308,7 +308,7 @@ public class DescriptionImageGrabber {
             if (!imageLoadError) {
                 Parameters args = new Parameters();
                 args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
+                CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
             }
             Log.debug(log, "GrabImagesSelectedByCache done");
         }
@@ -376,7 +376,7 @@ public class DescriptionImageGrabber {
                 if (!imageLoadError) {
                     Parameters args = new Parameters();
                     args.put("ImagesUpdated", additionalImagesUpdated);
-                    Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
+                    CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
                     // jetzt können noch alle "alten" Spoiler gelöscht werden.
                     // "alte" Spoiler sind die, die auf der SD vorhanden sind, aber nicht als Link über die API gemeldet wurden.
                     // Alle Spoiler in der Liste allSpoilers sind "alte"

@@ -15,10 +15,17 @@
  */
 package de.droidcachebox.gdx.activities.notUsed;
 
+import static de.droidcachebox.gdx.Sprites.IconName;
+import static de.droidcachebox.gdx.Sprites.getMapOverlay;
+import static de.droidcachebox.gdx.Sprites.getSprite;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.Date;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.TrackList;
 import de.droidcachebox.database.GeoCacheType;
@@ -42,10 +49,6 @@ import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MoveableList;
-
-import java.util.Date;
-
-import static de.droidcachebox.gdx.Sprites.*;
 
 /**
  * A Activity for create a Track over the Map.<br>
@@ -209,7 +212,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
                 wpi.selected = false;
                 if (selectedWP != null) {
-                    if (selectedWP.getGcCode().equals(wp.getGcCode())) {
+                    if (selectedWP.getWaypointCode().equals(wp.getWaypointCode())) {
                         wpi.selected = true;
                         wpi.underlayIcon = getMapOverlay(IconName.shaddowrectselected);
                     }

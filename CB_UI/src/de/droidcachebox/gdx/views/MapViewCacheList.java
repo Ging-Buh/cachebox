@@ -15,22 +15,25 @@
  */
 package de.droidcachebox.gdx.views;
 
+import static de.droidcachebox.gdx.Sprites.IconName;
+import static de.droidcachebox.gdx.Sprites.getMapOverlay;
+import static de.droidcachebox.gdx.Sprites.getSprite;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static de.droidcachebox.gdx.Sprites.*;
 
 /**
  * @author ging-buh
@@ -378,9 +381,9 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
 
                         wayPointRenderInfos.clear();
                         selectedWPRenderInfo = null;
-                        synchronized (Database.Data.cacheList) {
-                            for (int i = 0, n = Database.Data.cacheList.size(); i < n; i++) {
-                                Cache cache = Database.Data.cacheList.get(i);
+                        synchronized (CBDB.Data.cacheList) {
+                            for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
+                                Cache cache = CBDB.Data.cacheList.get(i);
                                 // handle show option "
                                 if (hideMyFinds && cache.isFound()) continue;
                                 boolean selectedCache = false;

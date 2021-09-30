@@ -1,13 +1,22 @@
 package de.droidcachebox.ex_import;
 
 import de.droidcachebox.core.CoreData;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.Categories;
+import de.droidcachebox.database.Category;
+import de.droidcachebox.database.CategoryDAO;
+import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.database.ImageDAO;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 
 public class ImportHandler implements IImportHandler {
 
     public Categories categories;
     private CacheDAO cacheDAO = new CacheDAO();
-    private LogDAO logDAO = new LogDAO();
     private WaypointDAO waypointDAO = new WaypointDAO();
     private ImageDAO imageDAO = new ImageDAO();
 
@@ -32,7 +41,7 @@ public class ImportHandler implements IImportHandler {
 
     @Override
     public void handleLog(LogEntry log) {
-        logDAO.WriteToDatabase(log);
+        CBDB.Data.WriteLogEntry(log);
     }
 
     @Override
@@ -52,7 +61,7 @@ public class ImportHandler implements IImportHandler {
 
     @Override
     public void updateCacheCountForGPXFilenames() {
-        Database.Data.updateCacheCountForGPXFilenames();
+        CBDB.Data.updateCacheCountForGPXFilenames();
         CategoryDAO.getInstance().deleteEmptyCategories();
     }
 

@@ -13,9 +13,9 @@ import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheSize;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.ActivityBase;
@@ -161,7 +161,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues = new Cache(true);
         newValues.copyFrom(updateCache);
         newValues.setShortDescription("");
-        newValues.setLongDescription(Database.getDescription(updateCache));
+        newValues.setLongDescription(CBDB.Data.getDescription(updateCache));
         updateCache.setLongDescription(newValues.getLongDescription());
         cache = updateCache;
         doShow();
@@ -182,7 +182,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         do {
             count++;
             newValues.setGeoCacheCode(prefix + String.format(Locale.US, "%04d", count));
-        } while (Database.Data.cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGeoCacheCode())) != null);
+        } while (CBDB.Data.cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGeoCacheCode())) != null);
         newValues.setGeoCacheName(newValues.getGeoCacheCode());
         newValues.setOwner("Unbekannt");
         newValues.setState("");
@@ -234,7 +234,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
             cache.generatedId = Cache.generateCacheId(gcc);
 
-            Cache cl = Database.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
+            Cache cl = CBDB.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
 
             if (cl != null) {
                 update = true;
@@ -260,7 +260,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 cacheDAO.UpdateDatabase(cache);
                 CacheListChangedListeners.getInstance().cacheListChanged();
             } else {
-                Database.Data.cacheList.add(cache);
+                CBDB.Data.cacheList.add(cache);
                 cacheDAO.WriteToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
                 CacheListChangedListeners.getInstance().cacheListChanged();

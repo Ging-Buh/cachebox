@@ -1,15 +1,48 @@
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.database.Cache.IS_FULL;
+
 import android.text.InputType;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.core.*;
-import de.droidcachebox.database.*;
+import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.core.CoreData;
+import de.droidcachebox.core.FilterInstances;
+import de.droidcachebox.core.FilterProperties;
+import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.Category;
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.database.GeoCacheSize;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.ProgressBar;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.MenuItemDivider;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
@@ -18,13 +51,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.Copy;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-
-import static de.droidcachebox.database.Cache.IS_FULL;
 
 public class Import_GSAK extends ActivityBase {
     private static final String sKlasse = "Import_GSAK";
@@ -233,7 +259,7 @@ public class Import_GSAK extends ActivityBase {
                 Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
                 Config.withLogImages.setValue(chkLogImages.isChecked());
                 Config.AcceptChanges();
-                Database.Data.sql.beginTransaction();
+                CBDB.Data.sql.beginTransaction();
 
                 int count = 0;
                 CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
@@ -265,11 +291,11 @@ public class Import_GSAK extends ActivityBase {
 
                 writeLogs();
 
-                Database.Data.sql.setTransactionSuccessful();
+                CBDB.Data.sql.setTransactionSuccessful();
             }
             PlatformUIBase.freeSQLInstance(sql);
-            Database.Data.sql.endTransaction();
-            Database.Data.updateCacheCountForGPXFilenames();
+            CBDB.Data.sql.endTransaction();
+            CBDB.Data.updateCacheCountForGPXFilenames();
 
             if (mImageDatabaseName.length() > 0) {
                 doImportImages("CacheImages");
@@ -395,7 +421,7 @@ public class Import_GSAK extends ActivityBase {
             logEntry.logType = LogType.parseString(LogsReader.getString("lType"));
             logEntry.logId = LogsReader.getInt("lLogId");
 
-            WriteIntoDB.logDAO.WriteToDatabase(logEntry);
+            CBDB.Data.WriteLogEntry(logEntry);
 
             LogsReader.moveToNext();
         }
@@ -414,7 +440,7 @@ public class Import_GSAK extends ActivityBase {
             waypoint.setTitle(WaypointsReader.getString("cName"));
             waypoint.setDescription(WaypointsReader.getString("cComment"));
             waypoint.waypointType = geoCacheTypeFromGSString(WaypointsReader.getString("cType"));
-            waypoint.setGcCode(WaypointsReader.getString("cCode"));
+            waypoint.setWaypointCode(WaypointsReader.getString("cCode"));
             cache.getWayPoints().add(waypoint);
             WaypointsReader.moveToNext();
         }

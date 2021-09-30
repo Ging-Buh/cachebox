@@ -57,10 +57,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import de.droidcachebox.activities.Splash;
 import de.droidcachebox.controls.HorizontalListView;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.database.AndroidDB;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.Database.DatabaseType;
+import de.droidcachebox.database.CacheboxDB;
+import de.droidcachebox.database.DraftsDB;
+import de.droidcachebox.database.DraftsDatabase;
+import de.droidcachebox.database.SettingsDB;
+import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
@@ -211,10 +214,10 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     new Config(savedInstanceState.getString("WorkPath"));
                     if (!FileIO.createDirectory(Config.workPath + "/User"))
                         return;
-                    Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-                    Database.Settings.startUp(Config.workPath + "/User/Config.db3");
-                    Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-                    Database.Drafts = new AndroidDB(DatabaseType.Drafts, this);
+                    new SettingsDB(this);
+                    SettingsDB.Settings.startUp(Config.workPath + "/User/Config.db3");
+                    new CacheboxDB(this);
+                    new DraftsDB(this);
 
                     Resources res = getResources();
                     DevicesSizes ui = new DevicesSizes();
@@ -325,7 +328,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         if (GlobalCore.isSetSelectedCache())
             savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGeoCacheCode());
         if (GlobalCore.getSelectedWayPoint() != null)
-            savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWayPoint().getGcCode());
+            savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWayPoint().getWaypointCode());
 
         super.onSaveInstanceState(savedInstanceState);
         Log.info(sKlasse, "onSaveInstanceState <=");
@@ -508,12 +511,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
                     Config.AcceptChanges();
 
-                    Database.Data.sql.close();
-                    Database.Drafts.sql.close();
+                    CBDB.Data.sql.close();
+                    DraftsDatabase.Drafts.sql.close();
 
                     Sprites.destroyCache();
 
-                    Database.Settings.sql.close();
+                    SettingsDatabase.Settings.sql.close();
 
                 }
 
@@ -524,9 +527,9 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 Log.info(sKlasse, "isFinishing==false");
                 showViewListener.onDestroyWithoutFinishing();
 
-                Database.Settings.sql.close();
-                Database.Data.sql.close();
-                Database.Drafts.sql.close();
+                SettingsDatabase.Settings.sql.close();
+                CBDB.Data.sql.close();
+                DraftsDatabase.Drafts.sql.close();
 
                 super.onDestroy();
             }

@@ -16,6 +16,7 @@
 package de.droidcachebox.database;
 
 import com.badlogic.gdx.utils.Array;
+
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
@@ -102,7 +103,7 @@ public class Drafts extends Array<Draft> {
             }
 
             try {
-                CoreCursor reader = Database.Drafts.sql.rawQuery(sql, null);
+                CoreCursor reader = DraftsDatabase.Drafts.sql.rawQuery(sql, null);
                 if (reader != null) {
                     reader.moveToFirst();
                     while (!reader.isAfterLast()) {

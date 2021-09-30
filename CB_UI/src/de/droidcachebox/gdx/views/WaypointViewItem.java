@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
+
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
@@ -20,7 +21,11 @@ import de.droidcachebox.gdx.controls.CacheInfo;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.locator.*;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.PositionChangedEvent;
+import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
@@ -275,7 +280,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 float textYPos = getHeight() - mLeft;
 
                 mNameCache = new BitmapFontCache(Fonts.getNormal());
-                String theName = wayPoint.getGcCode().substring(0, 2) + ": " + wayPoint.getTitleForGui();
+                String theName = wayPoint.getWaypointCode().substring(0, 2) + ": " + wayPoint.getTitleForGui();
                 mNameCache.setColor(COLOR.getFontColor());
                 GlyphLayout glName = mNameCache.setText(theName, mSpriteCachePos.x + mIconSize + mLeft, textYPos);
                 allHeight = glName.height + mLeft + mLeft;

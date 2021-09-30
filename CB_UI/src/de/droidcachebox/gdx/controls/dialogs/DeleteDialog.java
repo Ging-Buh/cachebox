@@ -5,8 +5,8 @@ import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.LogDAO;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -176,8 +176,7 @@ public class DeleteDialog extends ButtonDialog {
     }
 
     private void cleanupLogs() {
-        LogDAO dao = new LogDAO();
-        dao.ClearOrphanedLogs();
+        CBDB.Data.ClearOrphanedLogs();
     }
 
     private void cleanupWaypoints() {

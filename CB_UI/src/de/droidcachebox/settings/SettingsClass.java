@@ -4,8 +4,9 @@ import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.CB_Core_Settings;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Database_Core;
+import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.locator.LocatorSettings;
 
 public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, LocatorSettings {
@@ -18,12 +19,12 @@ public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_
 
     @Override
     protected Database_Core getSettingsDB() {
-        return Database.Settings;
+        return SettingsDatabase.Settings;
     }
 
     @Override
     protected Database_Core getDataDB() {
-        return Database.Data;
+        return CBDB.Data;
     }
 
     @Override

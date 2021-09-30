@@ -39,7 +39,7 @@ public class CategoryDAO {
         result.pinned = reader.getInt(2) != 0;
 
         // alle GpxFilenames einlesen
-        CoreCursor reader2 = Database.Data.sql.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]{String.valueOf(result.Id)});
+        CoreCursor reader2 = CBDB.Data.sql.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]{String.valueOf(result.Id)});
         reader2.moveToFirst();
         while (!reader2.isAfterLast()) {
             GpxFilenameDAO gpxFilenameDAO = new GpxFilenameDAO();
@@ -60,7 +60,7 @@ public class CategoryDAO {
         Parameters args = new Parameters();
         args.put("pinned", pinned);
         try {
-            Database.Data.sql.update("Category", args, "Id=" + category.Id, null);
+            CBDB.Data.sql.update("Category", args, "Id=" + category.Id, null);
         } catch (Exception exc) {
             Log.err(log, "setPinned", "CategoryDAO", exc);
         }
@@ -73,7 +73,7 @@ public class CategoryDAO {
         CoreData.categories.beginnTransaction();
         CoreData.categories.clear();
 
-        CoreCursor reader = Database.Data.sql.rawQuery("select ID, GPXFilename, Pinned from Category", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery("select ID, GPXFilename, Pinned from Category", null);
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -94,7 +94,7 @@ public class CategoryDAO {
         for (int i = 0, n = CoreData.categories.size(); i < n; i++) {
             Category cat = CoreData.categories.get(i);
             if (cat.CacheCount() == 0) {
-                Database.Data.sql.delete("Category", "Id=?", new String[]{String.valueOf(cat.Id)});
+                CBDB.Data.sql.delete("Category", "Id=?", new String[]{String.valueOf(cat.Id)});
                 delete.add(cat);
             }
         }

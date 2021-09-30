@@ -1,15 +1,15 @@
 package de.droidcachebox.database;
 
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
-
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class Waypoint implements Serializable {
     public static final Charset US_ASCII = StandardCharsets.US_ASCII;
@@ -44,7 +44,7 @@ public class Waypoint implements Serializable {
     /**
      * Waypoint Code
      */
-    private byte[] gcCode;
+    private byte[] waypointCode;
     /**
      * Titel des Wegpunktes
      */
@@ -52,7 +52,7 @@ public class Waypoint implements Serializable {
 
     public Waypoint(boolean withDetails) {
         geoCacheId = -1;
-        setGcCode("");
+        setWaypointCode("");
         coordinate = new Coordinate(0, 0);
         setDescription("");
         isStartWaypoint = false;
@@ -62,7 +62,7 @@ public class Waypoint implements Serializable {
     }
 
     public Waypoint(String gcCode, GeoCacheType waypointType, String description, double latitude, double longitude, long geoCacheId, String clue, String title) {
-        setGcCode(gcCode);
+        setWaypointCode(gcCode);
         this.geoCacheId = geoCacheId;
         coordinate = new Coordinate(latitude, longitude);
         setDescription(description);
@@ -121,7 +121,7 @@ public class Waypoint implements Serializable {
 
     public void clear() {
         geoCacheId = -1;
-        setGcCode("");
+        setWaypointCode("");
         coordinate = new Coordinate(0, 0);
         setTitle("");
         setDescription("");
@@ -134,11 +134,11 @@ public class Waypoint implements Serializable {
 
     @Override
     public String toString() {
-        return "WP:" + getGcCode() + " " + coordinate.toString();
+        return "WP:" + getWaypointCode() + " " + coordinate.toString();
     }
 
     public void dispose() {
-        setGcCode(null);
+        setWaypointCode(null);
         coordinate = null;
         setTitle(null);
         setDescription(null);
@@ -146,18 +146,18 @@ public class Waypoint implements Serializable {
         setClue(null);
     }
 
-    public String getGcCode() {
-        if (gcCode == null)
+    public String getWaypointCode() {
+        if (waypointCode == null)
             return EMPTY_STRING;
-        return new String(gcCode, US_ASCII);
+        return new String(waypointCode, US_ASCII);
     }
 
-    public void setGcCode(String gcCode) {
-        if (gcCode == null) {
-            this.gcCode = null;
+    public void setWaypointCode(String waypointCode) {
+        if (waypointCode == null) {
+            this.waypointCode = null;
             return;
         }
-        this.gcCode = gcCode.getBytes(US_ASCII);
+        this.waypointCode = waypointCode.getBytes(US_ASCII);
     }
 
     public String getTitle() {
@@ -230,11 +230,11 @@ public class Waypoint implements Serializable {
         if (obj instanceof Waypoint) {
 
             Waypoint wp = (Waypoint) obj;
-            if (wp.gcCode == null)
+            if (wp.waypointCode == null)
                 return false;
-            if (this.gcCode == null)
+            if (this.waypointCode == null)
                 return false;
-            return Arrays.equals(wp.gcCode, this.gcCode);
+            return Arrays.equals(wp.waypointCode, this.waypointCode);
         }
         return false;
     }

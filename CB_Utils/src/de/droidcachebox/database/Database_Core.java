@@ -1,8 +1,8 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.utils.log.Log;
-
 import java.util.HashMap;
+
+import de.droidcachebox.utils.log.Log;
 
 
 public abstract class Database_Core {
@@ -25,7 +25,7 @@ public abstract class Database_Core {
         return databasePath;
     }
 
-    public boolean startUp(String databasePath) {
+    public void startUp(String databasePath) {
         Log.debug(log, "DB Startup : " + databasePath);
 
         this.databasePath = databasePath;
@@ -41,11 +41,9 @@ public abstract class Database_Core {
             setDatabaseSchemeVersion();
         }
         setDatabaseSchemeVersion();
-        return true;
     }
 
-    protected void alterDatabase(int lastDatabaseSchemeVersion) {
-    }
+    protected abstract void alterDatabase(int lastDatabaseSchemeVersion);
 
     /**
      *
@@ -185,9 +183,6 @@ public abstract class Database_Core {
         }
     }
 
-    public abstract int getCacheCountInDB(String filename);
-
-    // Zur Parameter Übergabe an die DB
     public static class Parameters extends HashMap<String, Object> {
         private static final long serialVersionUID = 6506158947781669528L;
     }

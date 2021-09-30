@@ -16,7 +16,7 @@
 package de.droidcachebox.gdx.views;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
-import static de.droidcachebox.database.Database.Data;
+import static de.droidcachebox.database.CBDB.Data;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -683,7 +683,8 @@ public class DraftsView extends V_ListView {
 
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + currentDraft.CacheId, false, false, false);
+            CacheList lCaches = new CacheList();
+            CacheListDAO.getInstance().readCacheList(lCaches,"Id = " + currentDraft.CacheId, false, false, false);
             Cache tmpCache = null;
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
@@ -724,7 +725,8 @@ public class DraftsView extends V_ListView {
             Cache tmpCache = null;
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
-            CacheList lCaches = CacheListDAO.getInstance().readCacheList("Id = " + currentDraft.CacheId, false, false, false);
+            CacheList lCaches = new CacheList();
+            CacheListDAO.getInstance().readCacheList(lCaches,"Id = " + currentDraft.CacheId, false, false, false);
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
             final Cache cache = tmpCache;

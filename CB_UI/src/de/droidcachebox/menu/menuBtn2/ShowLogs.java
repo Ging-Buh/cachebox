@@ -19,8 +19,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.Database;
-import de.droidcachebox.database.LogDAO;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
@@ -139,25 +138,24 @@ public class ShowLogs extends AbstractShowAction {
                                             GL.that.toast(LastAPIError);
                                         }
                                         if (logList.size() > 0) {
-                                            Database.Data.sql.beginTransaction();
+                                            CBDB.Data.sql.beginTransaction();
 
                                             Iterator<LogEntry> iterator = logList.iterator();
-                                            LogDAO dao = new LogDAO();
                                             if (loadAllLogs)
-                                                dao.deleteLogs(GlobalCore.getSelectedCache().generatedId);
+                                                CBDB.Data.deleteLogs(GlobalCore.getSelectedCache().generatedId);
                                             do {
                                                 ChangedCount++;
                                                 try {
                                                     Thread.sleep(10);
                                                     LogEntry writeTmp = iterator.next();
-                                                    dao.WriteToDatabase(writeTmp);
+                                                    CBDB.Data.WriteLogEntry(writeTmp);
                                                 } catch (InterruptedException e) {
                                                     doCancelThread = true;
                                                 }
                                             } while (iterator.hasNext() && !doCancelThread);
 
-                                            Database.Data.sql.setTransactionSuccessful();
-                                            Database.Data.sql.endTransaction();
+                                            CBDB.Data.sql.setTransactionSuccessful();
+                                            CBDB.Data.sql.endTransaction();
                                             // update LogListView
                                             LogListView.getInstance().resetIsInitialized();
                                             // for update slider, ?, ?, ? with latest logs
@@ -176,7 +174,7 @@ public class ShowLogs extends AbstractShowAction {
                                     String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
                                     pd.close();
                                     if (result != -1) {
-                                        synchronized (Database.Data.cacheList) {
+                                        synchronized (CBDB.Data.cacheList) {
                                             MsgBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None);
                                         }
 

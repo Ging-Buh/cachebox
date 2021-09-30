@@ -26,9 +26,10 @@ import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.Categories;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -87,8 +88,8 @@ public class SelectDB extends ActivityBase {
 
                 String database = Config.workPath + "/" + NewDB_Name + ".db3";
                 Config.DatabaseName.setValue(NewDB_Name + ".db3");
-                Database.Data.sql.close();
-                Database.Data.startUp(database);
+                CBDB.Data.sql.close();
+                CBDB.Data.startUp(database);
 
                 // OwnRepository?
                 if (data != null && !(Boolean) data) {
@@ -125,16 +126,16 @@ public class SelectDB extends ActivityBase {
                 Config.AcceptChanges();
 
                 CoreData.categories = new Categories();
-                Database.Data.updateCacheCountForGPXFilenames();
+                CBDB.Data.updateCacheCountForGPXFilenames();
 
-                synchronized (Database.Data.cacheList) {
-                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                synchronized (CBDB.Data.cacheList) {
+                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
 
                 if (!FileIO.createDirectory(Config.workPath + "/User"))
                     return true;
-                Database.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
+                DraftsDatabase.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
 
                 Config.AcceptChanges();
                 currentDBFile = FileFactory.createFile(database);
@@ -504,7 +505,7 @@ public class SelectDB extends ActivityBase {
             lblInfo.setVAlignment(CB_Label.VAlignment.BOTTOM);
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
-            lblInfo.setText(Database.Data.getCacheCountInDB(theFileToShow.getAbsolutePath())
+            lblInfo.setText(CBDB.Data.getCacheCountInDB(theFileToShow.getAbsolutePath())
                     + " Caches  "
                     + theFileToShow.length() / (1024 * 1024) + "MB"
                     + "    last use "

@@ -35,9 +35,9 @@ import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheList;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
@@ -191,7 +191,7 @@ public class GlobalCore implements SolverCacheInterface {
 
     public static void checkSelectedCacheValid() {
 
-        CacheList List = Database.Data.cacheList;
+        CacheList List = CBDB.Data.cacheList;
 
         // Prüfen, ob der SelectedCache noch in der cacheList drin ist.
         if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId) == null)) {

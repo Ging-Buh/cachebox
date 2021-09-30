@@ -15,11 +15,16 @@
  */
 package de.droidcachebox.menu;
 
+import static de.droidcachebox.utils.Config_Core.br;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.io.IOException;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
@@ -27,7 +32,13 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
-import de.droidcachebox.database.*;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.Categories;
+import de.droidcachebox.database.DraftsDatabase;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -46,10 +57,6 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileList;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.IOException;
-
-import static de.droidcachebox.utils.Config_Core.br;
 
 /**
  * @author ging-buh
@@ -336,7 +343,7 @@ public class MainViewInit extends MainViewBase {
     private void ini_CacheDB() {
         Log.info(log, "ini_CacheDB");
 
-        Database.Data.startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
+        CBDB.Data.startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
 
         Config.settings.ReadFromDB();
 
@@ -344,15 +351,15 @@ public class MainViewInit extends MainViewBase {
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 
         CoreData.categories = new Categories();
-        Database.Data.updateCacheCountForGPXFilenames();
+        CBDB.Data.updateCacheCountForGPXFilenames();
 
-        synchronized (Database.Data.cacheList) {
-            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+        synchronized (CBDB.Data.cacheList) {
+            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();
 
-        Database.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
+        DraftsDatabase.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
 
     }
 
@@ -375,8 +382,8 @@ public class MainViewInit extends MainViewBase {
         GL.that.switchToMainView();
 
         if (GlobalCore.restartCache != null) {
-            synchronized (Database.Data.cacheList) {
-                Cache c = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
+            synchronized (CBDB.Data.cacheList) {
+                Cache c = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
                 if (c != null) {
                     if (GlobalCore.restartWayPoint != null) {
                         WaypointDAO dao = new WaypointDAO();
@@ -386,7 +393,7 @@ public class MainViewInit extends MainViewBase {
 
                             for (int i = 0, n = waypoints.size(); i < n; i++) {
                                 Waypoint wp = waypoints.get(i);
-                                if (wp.getGcCode().equalsIgnoreCase(GlobalCore.restartWayPoint)) {
+                                if (wp.getWaypointCode().equalsIgnoreCase(GlobalCore.restartWayPoint)) {
                                     w = wp;
                                 }
                             }

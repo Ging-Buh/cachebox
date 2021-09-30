@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheSize;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.Waypoint;
@@ -230,7 +230,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                         header = header + "!!!M!";
                     }
                      */
-                    CB_List<LogEntry> logEntries = Database.getLogs(cache);
+                    CB_List<LogEntry> logEntries = CBDB.Data.getLogs(cache);
                     for (int i = 0; i < 5; i++) {
                         last5Logs[i].setText(" ");
                         if (i < logEntries.size()) {

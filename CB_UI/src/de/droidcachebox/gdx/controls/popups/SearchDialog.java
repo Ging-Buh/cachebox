@@ -33,14 +33,13 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.Category;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.ImageDAO;
 import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.database.LogDAO;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
@@ -365,7 +364,7 @@ public class SearchDialog extends PopUp_Base {
 
             boolean criterionMatches = false;
 
-            synchronized (Database.Data.cacheList) {
+            synchronized (CBDB.Data.cacheList) {
 
                 if (!mSearchAktive) {
                     mSearchAktive = true;
@@ -373,8 +372,8 @@ public class SearchDialog extends PopUp_Base {
 
                 Cache tmp = null;
                 if (beginnSearchIndex < 0) beginnSearchIndex = 0;
-                for (int i = beginnSearchIndex, n = Database.Data.cacheList.size(); i < n; i++) {
-                    tmp = Database.Data.cacheList.get(i);
+                for (int i = beginnSearchIndex, n = CBDB.Data.cacheList.size(); i < n; i++) {
+                    tmp = CBDB.Data.cacheList.get(i);
 
                     switch (mSearchState) {
                         case Title:
@@ -524,27 +523,26 @@ public class SearchDialog extends PopUp_Base {
 
                 if (geoCacheRelateds.size() > 0) {
 
-                    Database.Data.sql.beginTransaction();
+                    CBDB.Data.sql.beginTransaction();
 
                     CacheDAO cacheDAO = new CacheDAO();
-                    LogDAO logDAO = new LogDAO();
                     ImageDAO imageDAO = new ImageDAO();
                     WaypointDAO waypointDAO = new WaypointDAO();
 
                     int counter = 0;
 
-                    synchronized (Database.Data.cacheList) {
+                    synchronized (CBDB.Data.cacheList) {
                         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
                             Cache cache = geoCacheRelated.cache;
                             counter++;
-                            if (Database.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
-                                Database.Data.cacheList.add(cache);
+                            if (CBDB.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
+                                CBDB.Data.cacheList.add(cache);
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.Id);
                                 }
                                 cacheDAO.WriteToDatabase(cache);
                                 for (LogEntry log : geoCacheRelated.logs) {
-                                    logDAO.WriteToDatabase(log);
+                                    CBDB.Data.WriteLogEntry(log);
                                 }
                                 for (ImageEntry image : geoCacheRelated.images) {
                                     imageDAO.writeToDatabase(image, false);
@@ -557,16 +555,16 @@ public class SearchDialog extends PopUp_Base {
                         }
                     }
 
-                    Database.Data.sql.setTransactionSuccessful();
-                    Database.Data.sql.endTransaction();
+                    CBDB.Data.sql.setTransactionSuccessful();
+                    CBDB.Data.sql.endTransaction();
 
-                    Database.Data.updateCacheCountForGPXFilenames();
+                    CBDB.Data.updateCacheCountForGPXFilenames();
 
                     CacheListChangedListeners.getInstance().cacheListChanged();
 
                     if (counter == 1) {
                         // select this Cache
-                        Cache cache = Database.Data.cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.generatedId);
+                        Cache cache = CBDB.Data.cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.generatedId);
                         GlobalCore.setSelectedCache(cache);
                     }
 

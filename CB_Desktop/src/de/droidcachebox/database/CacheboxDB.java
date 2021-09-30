@@ -1,11 +1,15 @@
 package de.droidcachebox.database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public class DesktopDB extends Database {
+public class CacheboxDB extends CBDB {
 
-    public DesktopDB(DatabaseType databaseType) {
-        super(databaseType);
+    public CacheboxDB() {
+        super();
         this.sql = new SQLiteClass();
     }
 

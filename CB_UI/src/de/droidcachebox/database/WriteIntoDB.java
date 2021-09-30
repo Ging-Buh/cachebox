@@ -1,13 +1,12 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.core.CoreData;
+import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 
 import java.util.ArrayList;
 
-import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
+import de.droidcachebox.core.CoreData;
 
 public class WriteIntoDB {
-    static public LogDAO logDAO = new LogDAO();
     static CacheDAO cacheDAO = new CacheDAO();
     static ImageDAO imageDAO = new ImageDAO();
     static WaypointDAO waypointDAO = new WaypointDAO();
@@ -16,21 +15,20 @@ public class WriteIntoDB {
 
         if (cacheDAO == null) {
             cacheDAO = new CacheDAO();
-            logDAO = new LogDAO();
             imageDAO = new ImageDAO();
             waypointDAO = new WaypointDAO();
         }
 
-        Database.Data.sql.beginTransaction();
+        CBDB.Data.sql.beginTransaction();
 
         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
             writeCacheAndLogsAndImagesIntoDB(geoCacheRelated, forCategory);
         }
 
-        Database.Data.sql.setTransactionSuccessful();
-        Database.Data.sql.endTransaction();
+        CBDB.Data.sql.setTransactionSuccessful();
+        CBDB.Data.sql.endTransaction();
 
-        Database.Data.updateCacheCountForGPXFilenames();
+        CBDB.Data.updateCacheCountForGPXFilenames();
 
     }
 
@@ -110,7 +108,7 @@ public class WriteIntoDB {
             String begin = "<Import from Geocaching.com>";
             String end = "</Import from Geocaching.com>";
             if (keepOldCacheValues) {
-                String oldNote = Database.getNote(cache);
+                String oldNote = CBDB.Data.getNote(cache);
 
                 if (oldNote != null) {
                     oldNote = oldNote.trim();
@@ -139,15 +137,15 @@ public class WriteIntoDB {
                     newNote += "\n" + end;
                 }
                 cache.setTmpNote(newNote);
-                Database.setNote(cache, cache.getUserNote() + cache.getTmpNote());
+                CBDB.Data.setNote(cache, cache.getUserNote() + cache.getTmpNote());
             } else {
-                Database.setNote(cache, cache.getUserNote() + "\n" + begin + "\n" + cache.getTmpNote() + "\n" + end + "\n");
+                CBDB.Data.setNote(cache, cache.getUserNote() + "\n" + begin + "\n" + cache.getTmpNote() + "\n" + end + "\n");
             }
             cache.setUserNote(""); // better is it, if cache reused, will be fetch from db in NotesView
         }
 
         for (LogEntry log : geoCacheRelated.logs) {
-            logDAO.WriteToDatabase(log);
+            CBDB.Data.WriteLogEntry(log);
         }
 
         imageDAO.deleteImagesForCache(cache.getGeoCacheCode());
@@ -167,10 +165,10 @@ public class WriteIntoDB {
                         Waypoint oldWaypoint = oldCache.getWayPoints().get(j);
                         if (waypoint.isUserWaypoint && waypoint.waypointType == GeoCacheType.Final)
                             if (oldWaypoint.isUserWaypoint && oldWaypoint.waypointType == GeoCacheType.Final) {
-                                waypoint.setGcCode(oldWaypoint.getGcCode());
+                                waypoint.setWaypointCode(oldWaypoint.getWaypointCode());
                                 break;
                             }
-                        if (oldWaypoint.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
+                        if (oldWaypoint.getWaypointCode().equalsIgnoreCase(waypoint.getWaypointCode())) {
                             if (oldWaypoint.isUserWaypoint)
                                 update = false;
                             break;
@@ -189,7 +187,7 @@ public class WriteIntoDB {
         }
 
         if (oldCache == null) {
-            Database.Data.cacheList.add(cache);
+            CBDB.Data.cacheList.add(cache);
             // cacheDAO.writeToDatabase(cache);
         } else {
             // 2012-11-17: do not remove old instance from cacheList because of problems with cacheList and MapView

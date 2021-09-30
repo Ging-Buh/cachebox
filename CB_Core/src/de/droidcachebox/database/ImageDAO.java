@@ -15,10 +15,10 @@
  */
 package de.droidcachebox.database;
 
+import java.util.ArrayList;
+
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
 
 public class ImageDAO {
     private static final String log = "ImageDAO";
@@ -37,9 +37,9 @@ public class ImageDAO {
         args.put("IsCacheImage", image.isCacheImage());
         try {
             if (ignoreExisting) {
-                Database.Data.sql.insertWithConflictIgnore("Images", args);
+                CBDB.Data.sql.insertWithConflictIgnore("Images", args);
             } else {
-                Database.Data.sql.insertWithConflictReplace("Images", args);
+                CBDB.Data.sql.insertWithConflictReplace("Images", args);
             }
         } catch (Exception exc) {
             Log.err(log, "", exc);
@@ -53,7 +53,7 @@ public class ImageDAO {
     public ArrayList<ImageEntry> getImagesForCache(String GcCode) {
         ArrayList<ImageEntry> images = new ArrayList<>();
 
-        CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]{GcCode});
+        CoreCursor reader = CBDB.Data.sql.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]{GcCode});
         if (reader.getCount() > 0) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -67,7 +67,7 @@ public class ImageDAO {
     }
 
     public void deleteImagesForCache(String GcCode) {
-        Database.Data.sql.execSQL("DELETE from Images where GcCode = '" + GcCode + "'");
+        CBDB.Data.sql.execSQL("DELETE from Images where GcCode = '" + GcCode + "'");
     }
 
     /*

@@ -1,9 +1,26 @@
 package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.database.*;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Locale;
+
+import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.GeoCacheSize;
+import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogType;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -15,12 +32,6 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Locale;
 
 public class CacheInfo extends CB_View_Base {
     public static final Color gcVoteColor = new Color(0.5f, 0.5f, 1f, 1f);
@@ -140,7 +151,7 @@ public class CacheInfo extends CB_View_Base {
      */
 
     private String getLastFoundLogDate() {
-        CB_List<LogEntry> logEntries = Database.getLogs(mCache);
+        CB_List<LogEntry> logEntries = CBDB.Data.getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
             if (logEntry.logType == LogType.found) {

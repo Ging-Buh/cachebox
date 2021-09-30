@@ -18,9 +18,19 @@ package de.droidcachebox.core;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+
+import org.json.JSONArray;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Category;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.locator.Coordinate;
@@ -30,14 +40,6 @@ import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.LoopThread;
 import de.droidcachebox.utils.log.Log;
-import org.json.JSONArray;
-import org.json.JSONTokener;
-
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Longri
@@ -129,10 +131,10 @@ public class LiveMapQue {
                     } else {
                         if (geoCachesToRemove.size > 0) {
                             new Thread(() -> {
-                                synchronized (Database.Data.cacheList) {
+                                synchronized (CBDB.Data.cacheList) {
                                     // todo reuse removeAll
                                     for (Cache geoCache : geoCachesToRemove) {
-                                        Database.Data.cacheList.remove(geoCache);
+                                        CBDB.Data.cacheList.remove(geoCache);
                                     }
                                 }
                             }).start();

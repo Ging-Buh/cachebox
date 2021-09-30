@@ -1,11 +1,11 @@
 package de.droidcachebox.database;
 
+import java.util.ArrayList;
+
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.MoveableList;
-
-import java.util.ArrayList;
 
 public class Categories extends MoveableList<Category> {
     /**
@@ -48,14 +48,14 @@ public class Categories extends MoveableList<Category> {
         Parameters args = new Parameters();
         args.put("GPXFilename", filename);
         try {
-            Database.Data.sql.insert("Category", args);
+            CBDB.Data.sql.insert("Category", args);
         } catch (Exception exc) {
             //Log.err(log, "CreateNewCategory", filename, exc);
         }
 
         long Category_ID = 0;
 
-        CoreCursor reader = Database.Data.sql.rawQuery("Select max(ID) from Category", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery("Select max(ID) from Category", null);
         reader.moveToFirst();
         if (!reader.isAfterLast()) {
             Category_ID = reader.getLong(0);

@@ -47,10 +47,10 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.Attribute;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.CategoryDAO;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.gdx.ActivityBase;
@@ -268,11 +268,10 @@ public class EditFilterSettings extends ActivityBase {
 
         new Thread(() -> {
             try {
-                synchronized (Database.Data.cacheList) {
+                synchronized (CBDB.Data.cacheList) {
                     String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
                     Log.info(log, "Main.applyFilter: " + sqlWhere);
-                    Database.Data.cacheList.clear();
-                    Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();

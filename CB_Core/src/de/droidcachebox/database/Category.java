@@ -1,12 +1,12 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.database.Database_Core.Parameters;
-import de.droidcachebox.utils.FileFactory;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.utils.FileFactory;
 
 public class Category extends ArrayList<GpxFilename> implements Comparable<Category> {
     /**
@@ -38,14 +38,14 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
         String stimestamp = iso8601Format.format(new Date());
         args.put("Imported", stimestamp);
         try {
-            Database.Data.sql.insert("GpxFilenames", args);
+            CBDB.Data.sql.insert("GpxFilenames", args);
         } catch (Exception exc) {
             //Log.err(log, "CreateNewGpxFilename", filename, exc);
         }
 
         long GPXFilename_ID = 0;
 
-        CoreCursor reader = Database.Data.sql.rawQuery("Select max(ID) from GpxFilenames", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery("Select max(ID) from GpxFilenames", null);
         reader.moveToFirst();
         if (!reader.isAfterLast()) {
             GPXFilename_ID = reader.getLong(0);
@@ -65,14 +65,14 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
         String stimestamp = iso8601Format.format(importedDate);
         args.put("Imported", stimestamp);
         try {
-            Database.Data.sql.insert("GpxFilenames", args);
+            CBDB.Data.sql.insert("GpxFilenames", args);
         } catch (Exception exc) {
             //Log.err(log, "CreateNewGpxFilename", filename, exc);
         }
 
         long GPXFilename_ID = 0;
 
-        CoreCursor reader = Database.Data.sql.rawQuery("Select max(ID) from GpxFilenames", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery("Select max(ID) from GpxFilenames", null);
         reader.moveToFirst();
         if (!reader.isAfterLast()) {
             GPXFilename_ID = reader.getLong(0);

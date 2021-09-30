@@ -49,9 +49,9 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.core.LiveMapQue;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.Database;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
@@ -371,12 +371,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         }
 
                         // Reload result from DB
-                        synchronized (Database.Data.cacheList) {
+                        synchronized (CBDB.Data.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                            Database.Data.cacheList = CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                         }
 
-                        Cache selCache = Database.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
+                        Cache selCache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -818,7 +818,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     public void createWaypointAtCenter() {
         String newGcCode;
         try {
-            newGcCode = Database.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
+            newGcCode = CBDB.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
         } catch (Exception e) {
             return;
         }
@@ -1233,13 +1233,13 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     protected void setInitialLocation() {
         // Log.debug(sKlasse, "setInitialLocation");
         try {
-            if (Database.Data != null) {
-                if (Database.Data.cacheList != null) {
-                    synchronized (Database.Data.cacheList) {
-                        if (Database.Data.cacheList.size() > 0) {
+            if (CBDB.Data != null) {
+                if (CBDB.Data.cacheList != null) {
+                    synchronized (CBDB.Data.cacheList) {
+                        if (CBDB.Data.cacheList.size() > 0) {
                             // Koordinaten des ersten Caches der Datenbank
                             // nehmen
-                            setCenter(new CoordinateGPS(Database.Data.cacheList.get(0).getCoordinate().getLatitude(), Database.Data.cacheList.get(0).getCoordinate().getLongitude()));
+                            setCenter(new CoordinateGPS(CBDB.Data.cacheList.get(0).getCoordinate().getLatitude(), CBDB.Data.cacheList.get(0).getCoordinate().getLongitude()));
                             positionInitialized = true;
                             // setLockPosition(0);
                         } else {

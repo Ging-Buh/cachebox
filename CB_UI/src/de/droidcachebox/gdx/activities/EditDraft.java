@@ -38,7 +38,7 @@ import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
@@ -347,7 +347,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         CB_Button btnFromNotes = new CB_Button(Translation.get("fromNotes"));
         btnFromNotes.setClickHandler((v, x, y, pointer, button) -> {
-            String text = Database.getNote(currentDraft.CacheId);
+            String text = CBDB.Data.getNote(currentDraft.CacheId);
             if (text.length() > 0) {
                 String sBegin = "<Import from Geocaching.com>";
                 String sEnd = "</Import from Geocaching.com>";

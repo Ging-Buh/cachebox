@@ -1,11 +1,16 @@
 package de.droidcachebox.solver;
 
-import de.droidcachebox.database.*;
+import java.util.ArrayList;
+
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.translation.Translation;
-
-import java.util.ArrayList;
 
 public class CoordinateEntity extends Entity {
 
@@ -25,7 +30,7 @@ public class CoordinateEntity extends Entity {
     }
 
     private Coordinate LoadFromDB(String sql) {
-        CoreCursor reader = Database.Data.sql.rawQuery(sql, null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery(sql, null);
         try {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -58,7 +63,7 @@ public class CoordinateEntity extends Entity {
             } else {
                 for (int i = 0, n = selCache.getWayPoints().size(); i < n; i++) {
                     Waypoint wp = selCache.getWayPoints().get(i);
-                    if (wp.getGcCode().equalsIgnoreCase(gcCode)) {
+                    if (wp.getWaypointCode().equalsIgnoreCase(gcCode)) {
                         coord = wp.getCoordinate();
                         break;
                     }
@@ -91,7 +96,7 @@ public class CoordinateEntity extends Entity {
         WaypointDAO waypointDAO = new WaypointDAO();
         Waypoint dbWaypoint = null;
         // Suchen, ob dieser Waypoint bereits vorhanden ist.
-        CoreCursor reader = Database.Data.sql.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
+        CoreCursor reader = CBDB.Data.sql.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
         try {
             reader.moveToFirst();
             if (reader.isAfterLast())
@@ -121,14 +126,14 @@ public class CoordinateEntity extends Entity {
 
             // evtl. bereits geladenen Waypoint aktualisieren
             Cache cacheFromCacheList;
-            synchronized (Database.Data.cacheList) {
-                cacheFromCacheList = Database.Data.cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
+            synchronized (CBDB.Data.cacheList) {
+                cacheFromCacheList = CBDB.Data.cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
             }
             cacheFromCacheList = Solver.solverCacheInterface.sciGetSelectedCache();
             if (cacheFromCacheList != null) {
                 for (int i = 0, n = cacheFromCacheList.getWayPoints().size(); i < n; i++) {
                     Waypoint wp = cacheFromCacheList.getWayPoints().get(i);
-                    if (wp.getGcCode().equalsIgnoreCase(this.gcCode)) {
+                    if (wp.getWaypointCode().equalsIgnoreCase(this.gcCode)) {
                         wp.setCoordinate(new Coordinate(coord));
                         break;
                     }

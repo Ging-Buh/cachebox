@@ -48,7 +48,7 @@ import de.droidcachebox.activities.GcApiLogin;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
-import de.droidcachebox.database.Database;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.ex_import.GPXFileImporter;
@@ -420,7 +420,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
             Config.AcceptChanges();
             Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
-        Database.Data.sql.close();
+        CBDB.Data.sql.close();
         mainActivity.finish();
     }
 
@@ -629,13 +629,13 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                         Importer importer = new Importer();
                         ImporterProgress ip = new ImporterProgress();
 
-                        Database.Data.sql.beginTransaction();
+                        CBDB.Data.sql.beginTransaction();
                         try {
                             importer.importGpx(externalRequestGpxPath, ip);
                         } catch (Exception ignored) {
                         }
-                        Database.Data.sql.setTransactionSuccessful();
-                        Database.Data.sql.endTransaction();
+                        CBDB.Data.sql.setTransactionSuccessful();
+                        CBDB.Data.sql.endTransaction();
 
                         wd.close();
                         CacheListChangedListeners.getInstance().cacheListChanged();
