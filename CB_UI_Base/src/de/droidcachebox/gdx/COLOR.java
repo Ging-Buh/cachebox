@@ -16,6 +16,7 @@
 package de.droidcachebox.gdx;
 
 import com.badlogic.gdx.graphics.Color;
+
 import de.droidcachebox.gdx.graphics.HSV_Color;
 
 /**
@@ -30,7 +31,7 @@ public class COLOR {
     private static HSV_Color day_fontColorDisable;
     private static HSV_Color day_fontColorHighLight;
     private static HSV_Color day_fontColorLink;
-    private static HSV_Color day_darknesColor;
+    private static HSV_Color day_darknessColor;
     private static HSV_Color day_crossColor;
     private static HSV_Color day_MenuBackColor;
     private static HSV_Color day_popup_menu_info_back;
@@ -41,7 +42,7 @@ public class COLOR {
     private static HSV_Color night_fontColorDisable;
     private static HSV_Color night_fontColorHighLight;
     private static HSV_Color night_fontColorLink;
-    private static HSV_Color night_darknesColor;
+    private static HSV_Color night_darknessColor;
     private static HSV_Color night_crossColor;
     private static HSV_Color night_MenuBackColor;
     private static HSV_Color night_popup_menu_info_back;
@@ -53,7 +54,7 @@ public class COLOR {
         day_fontColorDisable = getDayColor("font-color-disable");
         day_fontColorHighLight = getDayColor("font-color-highlight");
         day_fontColorLink = getDayColor("font-color-link");
-        day_darknesColor = getDayColor("darknes");
+        day_darknessColor = getDayColor("darknes");
         day_crossColor = getDayColor("cross");
         day_MenuBackColor = getDayColor("menu-back-color");
         day_popup_menu_info_back = getDayColor("popup-menu-info-back");
@@ -64,7 +65,7 @@ public class COLOR {
         night_fontColorDisable = getNightColor("font-color-disable");
         night_fontColorHighLight = getNightColor("font-color-highlight");
         night_fontColorLink = getNightColor("font-color-link");
-        night_darknesColor = getNightColor("darknes");
+        night_darknessColor = getNightColor("darknes");
         night_crossColor = getNightColor("cross");
         night_MenuBackColor = getNightColor("menu-back-color");
         night_popup_menu_info_back = getNightColor("popup-menu-info-back");
@@ -77,7 +78,7 @@ public class COLOR {
         Color ret = null;
         try {
             ret = CB_Skin.getInstance().getDaySkin().getColor(name);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         if (ret == null) // use default from APK
@@ -92,7 +93,7 @@ public class COLOR {
         Color ret = null;
         try {
             ret = CB_Skin.getInstance().getNightSkin().getColor(name);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         if (ret == null) // use default from APK
@@ -122,8 +123,8 @@ public class COLOR {
         return CB_Skin.getInstance().getNightMode() ? night_fontColorLink : day_fontColorLink;
     }
 
-    public static HSV_Color getDarknesColor() {
-        return CB_Skin.getInstance().getNightMode() ? night_darknesColor : day_darknesColor;
+    public static HSV_Color getDarknessColor() {
+        return CB_Skin.getInstance().getNightMode() ? night_darknessColor : day_darknessColor;
     }
 
     public static HSV_Color getCrossColor() {

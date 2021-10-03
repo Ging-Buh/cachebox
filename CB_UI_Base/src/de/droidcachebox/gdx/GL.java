@@ -911,7 +911,7 @@ public class GL implements ApplicationListener {
         if (mDarknessSprite == null) {
             disposeTexture();
             mDarknessPixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
-            mDarknessPixmap.setColor(COLOR.getDarknesColor());
+            mDarknessPixmap.setColor(COLOR.getDarknessColor());
             mDarknessPixmap.fillRectangle(0, 0, width, height);
             mDarknessTexture = new Texture(mDarknessPixmap, Pixmap.Format.RGBA8888, false);
             mDarknessSprite = new Sprite(mDarknessTexture, width, height);
