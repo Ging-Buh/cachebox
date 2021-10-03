@@ -15,13 +15,14 @@
  */
 package de.droidcachebox.gdx.math;
 
+import static de.droidcachebox.utils.Config_Core.displayDensity;
+
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
+
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.utils.log.Log;
-
-import static de.droidcachebox.utils.Config_Core.displayDensity;
 
 /**
  * Diese Klasse Kapselt die Werte, welche in der OpenGL Map benötigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Grösse
@@ -219,7 +220,11 @@ public class GL_UISizes implements SizeChangedEvent {
         GlyphLayout bounds;
         if (Fonts.getNormal() != null) {
             bounds = new GlyphLayout();
-            bounds.setText(Fonts.getSmall(), "52° 34,806N ");
+            try {
+                bounds.setText(Fonts.getSmall(), "52° 34,806N ");
+            } catch (Exception e) {
+                bounds.setText(Fonts.getSmall(), "Error");
+            }
         } else {
             bounds = new GlyphLayout();
             bounds.height = 20;

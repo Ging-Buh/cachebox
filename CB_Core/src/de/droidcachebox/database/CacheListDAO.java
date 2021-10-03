@@ -84,14 +84,14 @@ public class CacheListDAO {
         CB_List<Waypoint> wpList = new CB_List<>();
         long aktCacheID = -1;
 
-        String sql = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
+        String query = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
         if (!((fullDetails || loadAllWaypoints))) {
             // when CacheList should be loaded without full details and without all Waypoints
             // do not load all waypoints from db!
-            sql += " where IsStart=\"true\" or Type=" + GeoCacheType.Final.ordinal(); // StartWaypoint or CacheTypes.Final
+            query += " where IsStart=\"true\" or Type=" + GeoCacheType.Final.ordinal(); // StartWaypoint or CacheTypes.Final
         }
-        sql += " order by CacheId";
-        CoreCursor reader = CBDB.Data.sql.rawQuery(sql, null);
+        query += " order by CacheId";
+        CoreCursor reader = CBDB.Data.sql.rawQuery(query, null);
         if (reader == null) return ;
 
         reader.moveToFirst();
@@ -119,20 +119,20 @@ public class CacheListDAO {
         // Log.trace(log, "readCacheList 2.Caches");
         try {
             if (fullDetails) {
-                sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
+                query = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
                 if (withDescription) {
                     // load Cache with Description, Solver, Notes for Transfering Data from Server to ACB
-                    sql += "," + CacheDAO.SQL_GET_DETAIL_WITH_DESCRIPTION;
+                    query += "," + CacheDAO.SQL_GET_DETAIL_WITH_DESCRIPTION;
                 }
             } else {
-                sql = CacheDAO.SQL_GET_CACHE;
+                query = CacheDAO.SQL_GET_CACHE;
 
             }
 
             // an empty sqlQualification and a sqlQualification other than where (p.e for join) starting with 5 blanks (by my definition)
             boolean addWhere = sqlQualification.length() > 0 && !sqlQualification.startsWith("     ");
-            sql += " from Caches c " + (addWhere ? "where " + sqlQualification : sqlQualification);
-            reader = CBDB.Data.sql.rawQuery(sql, null);
+            query = query + " from Caches c " + (addWhere ? "where " + sqlQualification : sqlQualification);
+            reader = CBDB.Data.sql.rawQuery(query, null);
 
         } catch (Exception e) {
             Log.err(log, "CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);

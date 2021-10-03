@@ -104,13 +104,10 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
                 super.render(batch);
             }
         } catch (Exception e) {
-            if (emptyMsg == null) {
-                emptyMsg = new BitmapFontCache(Fonts.getBig());
-                GlyphLayout bounds = emptyMsg.setText(Translation.get("EmptyCacheList"), 0f, 0f, getWidth(), Align.left, true);
-                emptyMsg.setPosition(getHalfWidth() - (bounds.width / 2), getHalfHeight() - (bounds.height / 2));
-            }
-            if (emptyMsg != null)
-                emptyMsg.draw(batch, 0.5f);
+            emptyMsg = new BitmapFontCache(Fonts.getBig());
+            GlyphLayout bounds = emptyMsg.setText("empty / leere Liste", 0f, 0f, getWidth(), Align.left, true);
+            emptyMsg.setPosition(getHalfWidth() - (bounds.width / 2), getHalfHeight() - (bounds.height / 2));
+            emptyMsg.draw(batch, 0.5f);
         }
     }
 

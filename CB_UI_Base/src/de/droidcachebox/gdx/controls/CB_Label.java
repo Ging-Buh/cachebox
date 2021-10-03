@@ -22,6 +22,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
@@ -30,13 +35,13 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.graphics.PolygonDrawable;
-import de.droidcachebox.gdx.math.*;
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.GeometryList;
+import de.droidcachebox.gdx.math.Line;
+import de.droidcachebox.gdx.math.Quadrangle;
+import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Longri
@@ -316,10 +321,9 @@ public class CB_Label extends CB_View_Base {
                     bounds = mTextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), true);
                     break;
             }
-        } catch (Exception ignored) {
-            // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-            // e.printStackTrace();
-            // Log.err(log, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"", e);
+        } catch (Exception e) {
+            // ich vermute bei Zeichen nicht im Zeichensatz
+            Log.err(log, "Für " + mText, e);
         }
         if (underlineStrikeoutDrawable != null) {
             underlineStrikeoutDrawable.dispose();

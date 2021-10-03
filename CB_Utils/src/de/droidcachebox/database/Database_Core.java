@@ -2,6 +2,8 @@ package de.droidcachebox.database;
 
 import java.util.HashMap;
 
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
 
@@ -30,9 +32,21 @@ public abstract class Database_Core {
 
         this.databasePath = databasePath;
 
-        if (!sql.open(databasePath)) {
-            sql.create(databasePath);
-            newDB = true;
+        AbstractFile dbFile = FileFactory.createFile(databasePath);
+        if (dbFile.exists()) {
+            if (sql.open(databasePath)) {
+
+            } else {
+                Log.err(log, "Error open " + databasePath);
+            }
+        }
+        else {
+            if (sql.create(databasePath)) {
+                newDB = true;
+            }
+            else {
+                Log.err(log, "Error create " + databasePath);
+            }
         }
 
         int databaseSchemeVersion = getDatabaseSchemeVersion();

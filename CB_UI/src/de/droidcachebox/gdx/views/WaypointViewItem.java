@@ -45,7 +45,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     private BitmapFontCache mNameCache;
     private BitmapFontCache mDescCache;
     private BitmapFontCache mCoordCache;
-    private int viewMode;
+    private final int viewMode;
 
     public WaypointViewItem(CB_RectF rec, int index, Cache cache, Waypoint waypoint) {
         // CB_UI.Slider, WaypointView (geoCache + waypoint) for the waypointentry
@@ -294,7 +294,12 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                         float textXPos = mSpriteCachePos.x + mIconSize + mLeft;
                         mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
                         mDescCache.setColor(COLOR.getFontColor());
-                        GlyphLayout gl = mDescCache.setText(wpDescription, textXPos, textYPos, getWidth() - (textXPos + mIconSize + mLeft), Align.left, true);
+                        GlyphLayout gl;
+                        try {
+                            gl = mDescCache.setText(wpDescription, textXPos, textYPos, getWidth() - (textXPos + mIconSize + mLeft), Align.left, true);
+                        } catch (Exception e) {
+                            gl = mDescCache.setText("", textXPos, textYPos, getWidth() - (textXPos + mIconSize + mLeft), Align.left, true);
+                        }
                         float descHeight = gl.height + mLeft + mLeft;
                         allHeight = allHeight + descHeight;
                         textYPos = textYPos - descHeight;
@@ -309,7 +314,12 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 }
                 mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
                 mCoordCache.setColor(COLOR.getFontColor());
-                GlyphLayout glCoords = mCoordCache.setText(sCoord, mSpriteCachePos.x + mIconSize + mLeft, textYPos);
+                GlyphLayout glCoords;
+                try {
+                    glCoords = mCoordCache.setText(sCoord, mSpriteCachePos.x + mIconSize + mLeft, textYPos);
+                } catch (Exception e) {
+                    glCoords = mCoordCache.setText("???", mSpriteCachePos.x + mIconSize + mLeft, textYPos);
+                }
                 allHeight = allHeight + glCoords.height + mLeft + mLeft;
 
                 if (allHeight > UiSizes.getInstance().getCacheListItemRec().asFloat().getHeight()) {

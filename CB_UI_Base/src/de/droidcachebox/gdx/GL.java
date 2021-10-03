@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.gdx;
 
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -32,11 +34,22 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncTask;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.Energy;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.Dialog;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.SelectionMarker;
+import de.droidcachebox.gdx.controls.TextInputInterface;
 import de.droidcachebox.gdx.controls.animation.Fader;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.popups.PopUp_Base;
@@ -52,14 +65,6 @@ import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.Trace;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 
 public class GL implements ApplicationListener {
 
@@ -1158,7 +1163,12 @@ public class GL implements ApplicationListener {
             toastView = new Toast(new CB_RectF(0, 0, 100, mainButtonSize.getHeight() / 1.5f), "StringToast");
         }
         toastView.setWrappedText(string);
-        GlyphLayout bounds = Fonts.measureWrapped(string, UiSizes.getInstance().getWindowWidth());
+        GlyphLayout bounds = null;
+        try {
+            bounds = Fonts.measureWrapped(string, UiSizes.getInstance().getWindowWidth());
+        } catch (Exception e) {
+            bounds = Fonts.measureWrapped("", UiSizes.getInstance().getWindowWidth());
+        }
         float border = +(toastView.getLeftWidth() * 2) + (UiSizes.getInstance().getMargin() * 2);
         toastView.setWidth(bounds.width + border);
         toastView.setHeight(bounds.height + border);

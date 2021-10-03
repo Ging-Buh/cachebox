@@ -21,7 +21,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.gdx.*;
+
+import java.util.ArrayList;
+
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.DrawUtils;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.MapView;
@@ -31,8 +38,6 @@ import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
 
 /**
  * mainly holds the list of tracks in tracks with getNumberOfTracks
@@ -51,10 +56,10 @@ public class TrackList {
     private static TrackList trackList;
     private boolean aTrackChanged;
     private int thisZoom;
-    private ArrayList<Track> tracks;
+    private final ArrayList<Track> tracks;
     private Track routingTrack; // for identifying the track! has been originally from openRouteService implementation. now from BRouter
     // for rendering
-    private ArrayList<DrawTrack> tracksToDraw;
+    private final ArrayList<DrawTrack> tracksToDraw;
     private GlyphLayout glyphLayout;
 
     TrackList() {
@@ -146,7 +151,7 @@ public class TrackList {
 
         }
 
-        if (tracksToDraw != null && tracksToDraw.size() > 0) {
+        if (tracksToDraw.size() > 0) {
             for (DrawTrack drawTrack : tracksToDraw) {
                 Sprite arrow = drawTrack.arrow;
                 Sprite point = drawTrack.point;
@@ -212,18 +217,18 @@ public class TrackList {
                 else {
                     Log.err(log, "skinFontColor should never be null");
                 }
-                if (fontColor != null) {
-                    if (glyphLayout == null)
+                if (glyphLayout == null)
+                    try {
                         glyphLayout = new GlyphLayout(smallFont, text);
-                    else {
-                        // reuse? of glyphLayout sometimes gives NPE in com.badlogic.gdx.graphics.g2d.GlyphLayout$GlyphRun.color
-                        glyphLayout.setText(smallFont, text);
+                    } catch (Exception e) {
+                        glyphLayout = new GlyphLayout(smallFont, "Error");
                     }
-                    float halfWidth = glyphLayout.width / 2;
-                    smallFont.draw(batch, glyphLayout, position.x - halfWidth, position.y - 2 * glyphLayout.height);
-                } else {
-                    Log.err(log, "fontColor should never be null");
+                else {
+                    // reuse? of glyphLayout sometimes gives NPE in com.badlogic.gdx.graphics.g2d.GlyphLayout$GlyphRun.color
+                    glyphLayout.setText(smallFont, text);
                 }
+                float halfWidth = glyphLayout.width / 2;
+                smallFont.draw(batch, glyphLayout, position.x - halfWidth, position.y - 2 * glyphLayout.height);
             } else {
                 Log.err(log, "fontColor should never be null");
             }

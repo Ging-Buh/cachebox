@@ -124,10 +124,16 @@ public class Fonts {
 
     public static GlyphLayout Measure(String txt) {
         if (txt == null || txt.equals(""))
-            txt = "text";
+            txt = "Text";
         if (measureNormalCache == null)
             measureNormalCache = new BitmapFontCache(Fonts.getNormal());
-        GlyphLayout bounds = measureNormalCache.setText(txt, 0, 0);
+        GlyphLayout bounds;
+        try {
+            bounds = measureNormalCache.setText(txt, 0, 0);
+        }
+        catch (Exception ex) {
+            bounds = measureNormalCache.setText("Text", 0, 0);
+        }
         bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
         return bounds;
     }
@@ -136,23 +142,31 @@ public class Fonts {
 
         if (txt == null || txt.equals(""))
             txt = "text";
+        if (measureSmallCache == null)
+            measureSmallCache = new BitmapFontCache(Fonts.getSmall());
+        GlyphLayout bounds;
         try {
-            if (measureSmallCache == null)
-                measureSmallCache = new BitmapFontCache(Fonts.getSmall());
-            GlyphLayout bounds = measureSmallCache.setText(txt, 0, 0);
-            bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
-            return bounds;
-        } catch (Exception ex) {
-            return new GlyphLayout();
+            bounds = measureSmallCache.setText(txt, 0, 0);
         }
+        catch (Exception ex) {
+            bounds = measureSmallCache.setText("Text", 0, 0);
+        }
+        bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
+        return bounds;
     }
 
     public static GlyphLayout measureForBigFont(String txt) {
         if (txt == null || txt.equals(""))
-            txt = "text";
+            txt = "Text";
         if (measureBigCache == null)
             measureBigCache = new BitmapFontCache(Fonts.getBig());
-        GlyphLayout bounds = measureBigCache.setText(txt, 0, 0);
+        GlyphLayout bounds;
+        try {
+            bounds = measureBigCache.setText(txt, 0, 0);
+        }
+        catch (Exception e) {
+            bounds = measureBigCache.setText("Text", 0, 0);
+        }
         bounds.height = bounds.height - measureBigCache.getFont().getDescent();
         return bounds;
     }
@@ -162,7 +176,13 @@ public class Fonts {
             txt = "Text";
         if (measureNormalCache == null)
             measureNormalCache = new BitmapFontCache(Fonts.getNormal());
-        GlyphLayout bounds = measureNormalCache.setText(txt, 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);
+        GlyphLayout bounds;
+        try {
+            bounds = measureNormalCache.setText(txt, 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);
+        }
+        catch (Exception e) {
+            bounds = measureNormalCache.setText("Text", 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);
+        }
         bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
         return bounds;
     }

@@ -17,12 +17,18 @@ package de.droidcachebox.gdx.graphics;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Point;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXPaint;
-import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.graphics.*;
-import org.mapsforge.core.model.Point;
 
 /**
  * @author Longri
@@ -94,11 +100,13 @@ public class GL_Paint implements GDXPaint {
     public int getTextHeight(String text) {
         if (font == null)
             return 0;
-
         if (layout == null)
             layout = new GlyphLayout();
-        layout.setText(font, text);
-
+        try {
+            layout.setText(font, text);
+        } catch (Exception e) {
+            layout.setText(font, "Text");
+        }
         return (int) layout.height;
 
     }
@@ -107,11 +115,13 @@ public class GL_Paint implements GDXPaint {
     public int getTextWidth(String text) {
         if (font == null)
             return 0;
-
         if (layout == null)
             layout = new GlyphLayout();
-        layout.setText(font, text);
-
+        try {
+            layout.setText(font, text);
+        } catch (Exception e) {
+            layout.setText(font, "Text");
+        }
         return (int) layout.width;
     }
 

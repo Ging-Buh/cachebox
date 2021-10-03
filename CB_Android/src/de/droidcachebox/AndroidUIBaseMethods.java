@@ -282,7 +282,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     @Override
     public boolean isGPSon() {
         boolean ret = getLocationManager().isProviderEnabled(GPS_PROVIDER);
-        if (!ret)
+        if (!ret && Config.Ask_Switch_GPS_ON.getValue())
             mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // dialog gps ein
         return ret;
     }

@@ -33,13 +33,13 @@ public abstract class CBDB extends Database_Core {
     private static final String log = "Database";
     public static CBDB Data;
     private static CB_List<LogEntry> cacheLogs;
-    private static String lastGeoCache;
     public final CacheList cacheList;
+    private static String lastGeoCache;
 
     public CBDB() {
         super();
-        cacheList = new CacheList();
         latestDatabaseChange = DatabaseVersions.CachesDBLatestVersion;
+        cacheList = new CacheList();
         cacheLogs = new CB_List<>();
         lastGeoCache = "";
         Data = this;

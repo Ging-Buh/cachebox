@@ -101,7 +101,11 @@ public class CacheDAO {
         // Reader includes Compleate Cache or Details only
         int readerOffset = withReaderOffset ? 21 : 0;
 
-        detail.PlacedBy = reader.getString(readerOffset).trim();
+        try {
+            detail.PlacedBy = reader.getString(readerOffset).trim();
+        } catch (Exception e) {
+            detail.PlacedBy = "";
+        }
 
         if (reader.isNull(readerOffset + 5))
             detail.ApiStatus = Cache.NOT_LIVE;

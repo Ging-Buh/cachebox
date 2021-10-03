@@ -576,7 +576,12 @@ public class CacheInfo extends CB_View_Base {
     public float getTextHeight() {
         if (layout == null)
             layout = new GlyphLayout();
-        layout.setText(mBitmapFont, createText().toString());
+        try {
+            layout.setText(mBitmapFont, createText().toString());
+        }
+        catch (Exception ex) {
+            layout.setText(mBitmapFont, "Text");
+        }
         return layout.height;
     }
 

@@ -255,9 +255,11 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                     }
                     geoCacheType.setBackground(new SpriteDrawable(Sprites.getSprite("map" + cache.getGeoCacheType().name()))); // GeoCacheType.toShortString(cache) +
                     header = header + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getGeoCacheName();
+                    mLblCacheName.setText(header);
                 }
-                mLblCacheName.setText(header);
-                Log.debug("Slider", "ready setSelectedCache: " + cache.getGeoCacheCode());
+                else {
+                    Log.err("Slider", "mLblCacheName in setSelectedCache = null! cache is " + cache.getGeoCacheCode());
+                }
             } else {
                 mLblCacheName.setText("");
                 geoCacheType.setBackground(this.getBackground());

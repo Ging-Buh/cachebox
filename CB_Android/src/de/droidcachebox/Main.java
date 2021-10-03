@@ -217,7 +217,6 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     new SettingsDB(this);
                     SettingsDB.Settings.startUp(Config.workPath + "/User/Config.db3");
                     new CacheboxDB(this);
-                    new DraftsDB(this);
 
                     Resources res = getResources();
                     DevicesSizes ui = new DevicesSizes();
@@ -237,6 +236,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 GlobalCore.restartAfterKill = false;
             }
 
+            new DraftsDB(this);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             setContentView(R.layout.main);
@@ -403,7 +403,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
 
         boolean ret = ((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(GPS_PROVIDER);
-        if (!ret) {
+        if (!ret && Config.Ask_Switch_GPS_ON.getValue()) {
             runOnUiThread(() -> {
                 // can't use GL MsgBox here, cause Fonts ara not loaded yet
                 MessageBox.show(this,
